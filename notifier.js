@@ -10,20 +10,8 @@
 // @version 1.0.6
 // ==/UserScript==
 
-/*
- * extension.js - contains your code to be run on page load
- *
- */
-
-
 function tbnoti() {   
     if (!reddit.logged) return;
-
-    //
-    // load the sticky js from github. 
-    //
-
-    $("head").prepend("<script type='text/javascript' src='http://creesch.github.com/reddit-declutter/sticky.js'></script>");
 
     //
     // preload some generic variables 

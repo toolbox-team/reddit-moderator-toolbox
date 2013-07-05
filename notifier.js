@@ -123,7 +123,7 @@ function tbnoti() {
             \
             </div>\
             <div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
-            <div class="tb-help-content">Choose what you want to edit.</div>\
+            <div class="tb-help-content">In this window you can change the settings related to the notifications and toolbar. Other settings can be found in the subreddit settings for individual subreddits you moderate and in the modmail window for modmail related settings.</div>\
             </div>\
             </div>\
             ';
@@ -139,6 +139,8 @@ function tbnoti() {
         showSettings();
     });
 
+	
+	
     // Save the settings 
     $('body').delegate('.tb-save', 'click', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
@@ -167,6 +169,29 @@ function tbnoti() {
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');
     });
+	
+	
+	$('body').delegate('.tb-help', 'click', function() {	
+        var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
+		var htmlcontent = $(this).parents('.tb-window-wrapper').find('.tb-help-content').html();
+        var html = '\
+        <!DOCTYPE html>\
+        <html>\
+        <head>\
+		<style>\
+		body {\
+        font: normal x-small verdana,arial,helvetica,sans-serif;\
+        }\
+		</style>\
+		</head>\
+        <body>\
+        <div class="help-content">'+htmlcontent+'</div>\
+		</body>\
+        </html>\
+        ';
+        helpwindow.document.write(html);
+        helpwindow.focus();
+	});
 
     // Close the Settings menu
     $('body').delegate('.tb-close', 'click', function () {

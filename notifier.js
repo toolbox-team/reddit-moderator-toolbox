@@ -208,7 +208,7 @@ function tbnoti() {
         function getcommentitle(unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
             $.getJSON(unreadcontexturl, function (jsondata) {
                  var commenttitle = jsondata[0].data.children[0].data.title;
-				 TBUtils.notification('New comment in:'+commenttitle+' from:'+unreadauthor , $(unreadbody_html).text().substring(0,400) + '...', 'http://www.reddit.com' + unreadcontext);     
+				 TBUtils.notification('New reply:'+commenttitle+' from:'+unreadauthor , $(unreadbody_html).text().substring(0,400) + '...', 'http://www.reddit.com' + unreadcontext);     
 	 });
         }
         // getting unread messages
@@ -267,7 +267,7 @@ function tbnoti() {
 							var id = json.data.children[i].data.id;
                             
 							
-							TBUtils.notification('New message from:'+author , $(body_html).text().substring(0,400) + '...', 'http://www.reddit.com/message/messages/'+ id);
+							TBUtils.notification('New message from:'+ author , $(body_html).text().substring(0,400) + '...', 'http://www.reddit.com/message/messages/'+ id);
 							
 							                           
 							}

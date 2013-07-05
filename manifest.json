@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+
+  "name": "reddit moderator Toolbox",
+  "description": "moderator 'console' for reddit",
+  "version": "0.1",
+
+  "permissions": [
+    "https://*.reddit.com/",
+	"http://*.reddit.com/",
+	"notifications",
+	"tabs",
+	"storage",
+	"unlimitedStorage"
+  ],
+  "icons": { "16": "icon16.png",
+           "48": "icon48.png",
+          "128": "icon128.png" },
+"content_scripts": [
+    {
+      "matches": ["http://*.reddit.com/*"],
+      "css": ["toolbox.css"],
+      "js": ["tbutils.js","notifier.js","domaintagger.js","usernotes.js","modbutton.js","modmailpro.js","stattittab.js","modtools.js","config.js"]
+	  }
+  ]
+}

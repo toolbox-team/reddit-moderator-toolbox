@@ -1,0 +1,321 @@
+	#tb-bottombar {
+        bottom: 0px;
+        z-index: 6000;
+        position: fixed;
+        text-align: left;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+        height: 20px;
+        background-color: rgba(206, 227, 248, 0.86);
+        font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
+        font-size: small;
+        color: #696969;
+        padding: 2px;
+		border-top: solid 1px #A8B5C2;
+        }
+	#tb-mail.nohavemail {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: -16px -645px;
+        background-repeat: no-repeat;
+        }
+	#tb-mail.havemail {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: 0px -645px;
+        background-repeat: no-repeat;
+        }
+	#tb-mail {
+        top: 2px;
+        background-repeat: no-repeat;
+        line-height: 8px;
+        position: relative;
+        display: inline-block;
+        text-indent: -9999px;
+        overflow: hidden;
+        width: 15px;
+        height: 10px;
+        }
+	#tb-modmail {
+        display: inline-block;
+        height: 16px;
+        overflow: hidden;
+        position: relative;
+        text-indent: -9999px;
+        width: 16px;
+        }
+	#tb-modmail.havemail {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: -85px -577px;
+        background-repeat: no-repeat;
+        }
+	#tb-modmail.nohavemail {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: -102px -577px;
+        background-repeat: no-repeat;
+        }
+	#tb-modqueue {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: -102px -595px;
+        background-repeat: no-repeat;
+        line-height: 8px;
+        position: relative;
+        top: 2px;
+        display: inline-block;
+        text-indent: -9999px;
+        overflow: hidden;
+        width: 16px;
+        height: 16px;
+        }
+	#tb-unmoderated {
+        background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
+        background-position: -51px -612px;
+        background-repeat: no-repeat;
+        line-height: 8px;
+        position: relative;
+        top: 2px;
+        display: inline-block;
+        text-indent: -9999px;
+        overflow: hidden;
+        width: 17px;
+        height: 15px;
+        }
+	#tb-toolbarcounters {
+        float: right;
+        display: inline-block;
+        margin-right: 25px;
+		font-weight: bold;
+        }
+    .tb-page-overlay {
+        padding: 10px 15px;
+        background-color: rgba(250, 250, 250, 0.84);
+        border: 0px;
+        border-radius: 0px;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        overflow: auto;
+        z-index: 10000;
+        }
+    .tb-window-wrapper {
+        position: relative;
+        top: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0px;
+        background-color: #FFF;
+        border: solid 1px #808080;
+        box-shadow: 0px 1px 3px 1px #D6D6D6;
+        }
+    .tb-window-header {
+        right: 0px;
+        left: 0px;
+        display: block;
+        background-color: #CEE3F8;
+        text-align: center;
+        font-weight: bold;
+        padding: 4px;
+        font-size: small;
+        border-bottom: solid 1px #A8B5C2;
+        }
+    .tb-window-content {
+        overflow: auto;
+        left: 0px;
+        right: 0px;
+        padding: 5px
+        }
+    .tb-window-footer {
+        width:100%;
+        height: 15px;
+        display:block;
+        background-color: #CEE3F8;
+        text-align:center;
+        border-top: solid 1px #A8B5C2;
+        }
+    .tb-window-header-options {
+        display: inline-block;
+        float: right;
+        position:relative;
+        }
+    .tb-close {
+        cursor: pointer;
+        }
+    .tb-help {
+        cursor: pointer;
+        }
+    .tb-help-content {
+        display: none;
+        }
+	.tb-window-content p {
+        padding-top: 10px;
+        padding-bottom: 2px;
+        border-bottom: 1px dotted #E0E0E0;
+        }
+	.tb-window-content input[type="text"] {
+		width: 98%;
+		}
+		div.sticky-queue {
+        position:fixed;
+        box-shadow: 0px 1px 3px 1px #D6D6D6;
+        border: 0;
+        width:300px;
+        z-index: 5000;
+        }
+	div.sticky-note {
+        padding-right:20px; z-index: 5000;
+		}
+	div.sticky {
+        font-size: small;
+        background-color: rgba(206, 227, 248, 0.86);
+        font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
+		color: #696969;
+        display:none;
+        padding:10px;
+        position:relative;
+        z-index: 5000;
+        }
+	img.sticky-close {
+        position:absolute;
+        top:10px;
+        right:10px;
+        height:14px;
+        width:14px;
+        cursor:pointer;
+        z-index: 5000;
+        }
+	.top-right { 
+		right:20px; z-index: 5000;
+		}
+	.top-left { 
+		left:20px; z-index: 5000;
+		}
+	.top-right, .top-left{
+        top:-2px;
+        z-index: 5000;
+        }
+	.bottom-right{ 
+		right:20px; z-index: 5000;
+		}
+	.bottom-left { 
+		left:20px; z-index: 5000;
+		}
+    .bottom-right, .bottom-left {
+        bottom:25px;
+        z-index: 5000;
+        }
+	.border-top-right, .border-top-left { 
+		border-top:0; 
+		}
+	.border-bottom-right, .border-bottom-left { 
+		border-bottom:0; 
+		}
+			#tb-notification-permission{
+        top: 100px;
+        left: 100px;
+        z-index: 6000;
+        position: fixed;
+        text-align: left;
+        width: 500px;
+        height: 50px;
+        background-color: rgba(206, 227, 248, 0.86);
+        font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
+        font-size: small;
+        color: #696969;
+        padding: 2px;
+		border: solid 1px #A8B5C2;
+        }
+
+        .dtagger-popup { max-width:900px;padding:10px 15px;background-color: #FAFAFA;border: 1px solid #369;position:absolute;z-index:10000} 
+        .dtagger-popup .right{ float:right }
+        .dtagger-popup .left{ float:left }
+        .dtagger-popup .status{ display:none; }
+        .dtagger-popup tbody tr{ width: 225px; vertical-align:top; border-bottom:1px solid gray;display:block;padding:5px }
+        .dtagger-popup th{ padding-right:10px }
+        .dtagger-popup .buttons{ padding-top:10px }
+        .add-domain-tag:hover {text-decoration:underline}
+		
+		
+		.utagger-popup { max-width:900px;padding:10px 15px;background-color: #FAFAFA;border: 1px solid #808080 ;position:absolute;z-index:10000; box-shadow: 0px 1px 3px 1px #D6D6D6;} 
+        .utagger-popup .right{ float:right }
+        .utagger-popup .left{ float:left }
+        .utagger-popup .status{ display:none; }
+        .utagger-popup .buttons{ padding-top:10px }
+        .add-user-tag:hover {text-decoration:underline}
+        .utagger-date { font-size: 80%;}
+        .utagger-notes { width: 100%; } 
+        .utagger-notes td { padding: 2px; border: solid 1px #C1BFBF; vertical-align: top; }
+        .utagger-notes-td1 { width: 65px; }
+        .utagger-notes-td3 { width: 5px; }
+        .utagger-notes-td3 a { color: #C92A2A; font-weight: bold; }
+        .utagger-notes .utagger-notes-td3 { border: 0; }
+		
+		.mod-popup { max-width:900px;padding:10px 15px;background-color: #FAFAFA;border: 1px solid #369;position:absolute;z-index:10000} 
+        .mod-popup .right{ float:right }
+        .mod-popup .left{ float:left }
+        .mod-popup .status{ display:none; }
+        .mod-popup .add-sub-link{ text-decoration:none }
+        .mod-popup .remove-sub-link{ text-decoration:none }
+        .mod-popup .global-button { text-decoration:none; color: red }
+        .mod-popup tbody tr{ width: 225px; vertical-align:top; border-bottom:1px solid gray;display:block;padding:5px }
+        .mod-popup th{ padding-right:10px }
+        .mod-popup .buttons{ padding-top:10px }
+        .mod-popup .edit-subreddits {width: 260px}
+        .mod-popup .edit-dropdown {width: 190px}
+        .mod-popup .ban-note {width: 230px}
+
+
+        .reason-popup {;padding:10px 15px;background-color: rgba(250, 250, 250, 0.84);;border: 0px;-moz-border-radius: 0px;-webkit-border-radius: 0px;border-radius: 0px;position:fixed; top:0px; left:0px; right:0px; bottom:0px; overflow:auto; z-index:10000} 
+        .reason-popup .right{ float:right }
+        .reason-popup .status{ display:none; }
+        .reason-popup input,.reason-popup select,.reason-popup textarea{ font-size:x-small;border:1px solid #ccc;background-color:#fafafa }
+        .reason-popup textarea{ min-width:400px}
+        .reason-popup tbody tr{ vertical-align:top; border:1px solid rgb(187, 187, 187);display:block;margin-bottom: 5px;font-size: 115%;font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;padding:5px }
+        .reason-popup th{ padding-right:10px }
+        .reason-popup .buttons{ padding-top:10px }
+		.reason-popup .reason-popup-content { position: relative; top:40px; max-width: 1000px; margin: 0 auto; padding: 10px; background-color: white; border: solid 1px gray; }
+		.reason-popup .reason-popup-content span p { padding: 3px;}
+        
+        .choice.dashed{border-top:1px dashed}
+        .thing.approved{background-color:paleGreen}
+        .thing.removed{background-color:lightgray}
+        .thing.spammed{background-color:Tomato}
+        .thing.flaired{background-color:PaleTurquoise}
+        .pretty-button.inoffensive{background-position:0 -240px;background-image:url(http://www.redditstatic.com/sprite-reddit.rQ7y8qN-wzQ.png);background-repeat:repeat; -moz-border-radius: 0px;-webkit-border-radius: 0px;border-radius: 0px;}
+        .pretty-button.inoffensive.pressed{background-position:0 -200px!important}
+        .thing+input[type="checkbox"]:focus{outline:blue solid 1px}
+        
+        .user-history{ padding:10px }
+        .user-history td{ border:1px dotted lightgray;border-bottom:none }
+        .user-history th{ border:1px solid lightgray;border-top:none;font-weight:bold }
+        .user-history th,.user-history td{ padding:5px; border-right:none }
+        .user-history table{ width:100% }
+        .user-history .table{ margin:10px; max-height: 300px;overflow-x: hidden;overflow-y: scroll;border-bottom: 1px dotted lightgray;border-top: 1px solid lightgray; }
+        .user-history .table .error{ text-align:center }
+        .rts-report,.rts-report-clicked{ font-weight:bold;font-size:x-small; float:right }
+		
+		
+    .removal-reason{
+        border-bottom:thin solid #000000;
+        }
+    .removal-reason label {
+        cursor: pointer;
+        }
+    .toolbox-edit:hover {
+        text-decoration: underline;
+        }
+    .edit-wikidata {
+        width: 99%;
+        font: normal small verdana,arial,helvetica,sans-serif;
+        -webkit-appearance: textarea;
+        background-color: white;
+        border: 1px solid;
+        -webkit-rtl-ordering: logical;
+        -webkit-user-select: text;
+        -webkit-flex-direction: column;
+        resize: auto;
+        cursor: auto;
+        padding: 2px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        }

@@ -589,7 +589,7 @@ function modtools() {
         $('.pretty-button').live('click', function () {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
-            $(thing).hide();
+ //           $(thing).hide();
         });
 
         // Set reports threshold (hide reports with less than X reports)

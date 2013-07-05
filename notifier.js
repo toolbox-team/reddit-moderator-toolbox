@@ -7,7 +7,7 @@
 // @include http://*.reddit.com/*
 // @include https://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/172111.user.js
-// @version 1.1.2
+// @version 1.2
 // ==/UserScript==
 
 function tbnoti() {   
@@ -315,31 +315,33 @@ function tbnoti() {
                         var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
                         var modqueeamount = json.data.children.length;
 
-                        // loop through all items that haven't been shown yet
-                        for (var i = (modqueeamount - 1); i > modqueecountersecond; i--) {
-
-                            // message for a submission
-                            if (json.data.children[i].kind == 't3') {
-
-                                var mqpermalink = json.data.children[i].data.permalink;
-                                var mqtitle = json.data.children[i].data.title;
-                                var mqauthor = json.data.children[i].data.author;
-                                var mqsubreddit = json.data.children[i].data.subreddit;
-                               
-                                TBUtils.notification('Modqueue - submission:' , mqtitle + ' By: ' + mqauthor + 'in ' + mqsubreddit, 'http://www.reddit.com' + mqpermalink);
-
-
-                              // message for a comment (or other freak id's
-                            } else {
-
-                                var reportauthor = json.data.children[i].data.author;
-
-                                var idname = json.data.children[i].data.name;
-                                var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
-                                //since we want to add some adition details to this we call the previous declared function
-                                procesmqcomments(linkid, reportauthor, idname);
-                            }
-                        }
+					TBUtils.notification('New modqueue items', modqueecounter +' new items','http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');	
+						
+                    //  // loop through all items that haven't been shown yet
+                    //    for (var i = (modqueeamount - 1); i > modqueecountersecond; i--) {
+                    //
+                    //        // message for a submission
+                    //        if (json.data.children[i].kind == 't3') {
+                    //
+                    //            var mqpermalink = json.data.children[i].data.permalink;
+                    //            var mqtitle = json.data.children[i].data.title;
+                    //            var mqauthor = json.data.children[i].data.author;
+                    //           var mqsubreddit = json.data.children[i].data.subreddit;
+                    //           
+                    //            TBUtils.notification('Modqueue - submission:' , mqtitle + ' By: ' + mqauthor + 'in ' + mqsubreddit, 'http://www.reddit.com' + mqpermalink);
+                    //
+                    //
+                    //         // message for a comment (or other freak id's
+                    //       } else {
+                    //
+                    //           var reportauthor = json.data.children[i].data.author;
+                    // 
+                    //           var idname = json.data.children[i].data.name;
+                    //          var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
+                    //          //since we want to add some adition details to this we call the previous declared function
+                    //           procesmqcomments(linkid, reportauthor, idname);
+                    //       }
+                    //   }
                         // here we wil set the new value for modqueuecount, disabled so it will keep showing messages for debugging. This will also be used in order to change the counters in the toolbar to the correct value.
                     }
                 }
@@ -402,7 +404,7 @@ function tbnoti() {
 
     }
     // How often we check for new messages, this will later be adjustable in the settings. 
-    var timer = setInterval(getmessages, 60000);
+    var timer = setInterval(getmessages, 30000);
     getmessages();
 }
 

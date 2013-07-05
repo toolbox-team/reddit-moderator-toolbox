@@ -15,30 +15,32 @@ function tbutils() {
         now = new Date().getTime(),
         lastgetlong = JSON.parse(localStorage['Toolbox.cache.lastgetlong'] || -1),
         lastgetshort = JSON.parse(localStorage['Toolbox.cache.lastgetshort'] || -1),
+        shortlength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
+        longlength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
         cachename = localStorage['Toolbox.cache.cachename'] || '',
         id = Math.floor((Math.random() * 1000)),
         newlogin = (cachename != reddit.logged),
-        getnewlong = (((now - lastgetlong) / (60 * 1000) > 30) || newlogin),
-        getnewshort = (((now - lastgetshort) / (60 * 1000) > 5) || newlogin);
+        getnewlong = (((now - lastgetlong) / (60 * 1000) > longlength) || newlogin),
+        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin);
 
     // Public variables
     TBUtils.version = 1;
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
-    TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/),
-    TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/),
-    TBUtils.noteCache = (getnewshort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}'),
-    TBUtils.configCache = (getnewlong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}'),
-    TBUtils.noConfig = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]'),
-    TBUtils.noNotes = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]'),
+    TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
+    TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
+    TBUtils.noteCache = (getnewshort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
+    TBUtils.configCache = (getnewlong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
+    TBUtils.noConfig = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
+    TBUtils.noNotes = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]');
     TBUtils.mySubs = (getnewlong) ? [] : JSON.parse(localStorage['Toolbox.cache.moderatedsubs'] || '[]');
 
     // Update cache vars as needed.
     if (newlogin) {
         localStorage['Toolbox.cache.cachename'] = reddit.logged;
     }
-    
+
     if (getnewlong) {
         localStorage['Toolbox.cache.lastgetlong'] = JSON.stringify(now);
     }
@@ -69,195 +71,191 @@ function tbutils() {
     TBUtils.getID = function (callback) {
         callback(id);
     };
-
-    //Private functions
     
-        TBUtils.notification = function (title, body, url) {
+    TBUtils.notification = function (title, body, url) {
 
-	    var toolboxnotificationenabled = true;
-	    // check if notifications are enabled. When they are not we simply abort the function. 
-	    if (toolboxnotificationenabled === false) {
-	        console.log('notifications disabled, stopping function');
-	        return;
-	    }
+        var toolboxnotificationenabled = true;
+        // check if notifications are enabled. When they are not we simply abort the function. 
+        if (toolboxnotificationenabled === false) {
+            //console.log('notifications disabled, stopping function');
+            return;
+        }
 
-	    // fallback notifications if the browser does not support notifications or the users does not allow them. 
-	    // Adapted from Sticky v1.0 by Daniel Raftery
-	    // http://thrivingkings.com/sticky
+        // fallback notifications if the browser does not support notifications or the users does not allow them. 
+        // Adapted from Sticky v1.0 by Daniel Raftery
+        // http://thrivingkings.com/sticky
 
-	    // Using it without an object
-	    $.sticky = function (note, options, callback) {
-	        return $.fn.sticky(note, options, callback);
-	    };
+        // Using it without an object
+        $.sticky = function (note, options, callback) {
+            return $.fn.sticky(note, options, callback);
+        };
 
-	    $.fn.sticky = function (note, options, callback) {
-	        // Default settings
-	        var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
+        $.fn.sticky = function (note, options, callback) {
+            // Default settings
+            var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
 
-	        var settings = {
-	            'speed': 'fast', // animations: fast, slow, or integer
-	            'duplicates': true, // true or false
-	            'autoclose': 15000 // integer or false
-	        };
+            var settings = {
+                'speed': 'fast', // animations: fast, slow, or integer
+                'duplicates': true, // true or false
+                'autoclose': 15000 // integer or false
+            };
 
-	        // Passing in the object instead of specifying a note
-	        if (!note) {
-	            note = this.html();
-	        }
+            // Passing in the object instead of specifying a note
+            if (!note) {
+                note = this.html();
+            }
 
-	        if (options) {
-	            $.extend(settings, options);
-	        }
+            if (options) {
+                $.extend(settings, options);
+            }
 
-	        // Variables
-	        var display = true;
-	        var duplicate = 'no';
+            // Variables
+            var display = true;
+            var duplicate = 'no';
 
-	        // Somewhat of a unique ID
-	        var uniqID = Math.floor(Math.random() * 99999);
+            // Somewhat of a unique ID
+            var uniqID = Math.floor(Math.random() * 99999);
 
-	        // Handling duplicate notes and IDs
-	        $('.sticky-note').each(function () {
-	            if ($(this).html() == note && $(this).is(':visible')) {
-	                duplicate = 'yes';
-	                if (!settings['duplicates']) {
-	                    display = false;
-	                }
-	            }
-	            if ($(this).attr('id') == uniqID) {
-	                uniqID = Math.floor(Math.random() * 9999999);
-	            }
-	        });
+            // Handling duplicate notes and IDs
+            $('.sticky-note').each(function () {
+                if ($(this).html() == note && $(this).is(':visible')) {
+                    duplicate = 'yes';
+                    if (!settings.duplicates) {
+                        display = false;
+                    }
+                }
+                if ($(this).attr('id') == uniqID) {
+                    uniqID = Math.floor(Math.random() * 9999999);
+                }
+            });
 
-	        // Make sure the sticky queue exists
-	        if (!$('body').find('.sticky-queue').html()) {
-	            $('body').append('<div class="sticky-queue ' + position + '"></div>');
-	        }
+            // Make sure the sticky queue exists
+            if (!$('body').find('.sticky-queue').html()) {
+                $('body').append('<div class="sticky-queue ' + position + '"></div>');
+            }
 
-	        // Can it be displayed?
-	        if (display) {
-	            // Building and inserting sticky note
-	            $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
-	            $('#' + uniqID).append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
-	            $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
+            // Can it be displayed?
+            if (display) {
+                // Building and inserting sticky note
+                $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
+                $('#' + uniqID).append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
+                $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
 
-	            // Smoother animation
-	            var height = $('#' + uniqID).height();
-	            $('#' + uniqID).css('height', height);
+                // Smoother animation
+                var height = $('#' + uniqID).height();
+                $('#' + uniqID).css('height', height);
 
-	            $('#' + uniqID).slideDown(settings['speed']);
-	            display = true;
-	        }
+                $('#' + uniqID).slideDown(settings.speed);
+                display = true;
+            }
 
-	        // Listeners
-	        $('.sticky').ready(function () {
-	            // If 'autoclose' is enabled, set a timer to close the sticky
-	            if (settings['autoclose']) {
-	                $('#' + uniqID).delay(settings['autoclose']).fadeOut(settings['speed']);
-	            }
-	        });
-	        // Closing a sticky
-	        $('.sticky-close').click(function () {
-	            $('#' + $(this).attr('rel')).dequeue().fadeOut(settings['speed']);
-	        });
+            // Listeners
+            $('.sticky').ready(function () {
+                // If 'autoclose' is enabled, set a timer to close the sticky
+                if (settings.autoclose) {
+                    $('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
+                }
+            });
+            // Closing a sticky
+            $('.sticky-close').click(function () {
+                $('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
+            });
 
+            // Callback data
+            var response = {
+                'id': uniqID,
+                'duplicate': duplicate,
+                'displayed': display,
+                'position': position
+            };
 
-	        // Callback data
-	        var response = {
-	            'id': uniqID,
-	                'duplicate': duplicate,
-	                'displayed': display,
-	                'position': position
-	        }
+            // Callback function?
+            if (callback) {
+                callback(response);
+            } else {
+                return (response);
+            }
 
-	        // Callback function?
-	        if (callback) {
-	            callback(response);
-	        } else {
-	            return (response);
-	        }
+        };
 
-	    }
+        if (!window.Notification && !window.webkitNotifications) {
+            // fallback on a javascript notification 
+            //console.log('boring old rickety browser, falling back on jquery based notifications');
+            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
 
+        } else if (window.Notification && navigator.userAgent.indexOf("Firefox") !== -1) {
+            // Do some stuff with window notification for firefox versions that support notifications
+            //console.log('firefox and it supports notifications');
 
-	    if (!window.Notification && !window.webkitNotifications) {
-	        // fallback on a javascript notification 
-	        console.log('boring old rickety browser, falling back on jquery based notifications');
-	        $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
+            // Let's check if the user has granted us permission and if not ask it. 
+            window.Notification.requestPermission(function (perm) {
+                if (perm == 'granted') {
+                    // if everything checks out we can finally show the notification
+                    //console.log('granted');
+                    //console.log('firefox notification!');
 
-	    } else if (window.Notification && navigator.userAgent.indexOf("Firefox") !== -1) {
-	        // Do some stuff with window notification for firefox versions that support notifications
-	        console.log('firefox and it supports notifications');
+                    // create the notification    
+                    new window.Notification(title, {
+                        dir: "auto",
+                        body: body,
+                        icon: "http://creesch.github.io/reddit-declutter/reddit-icon.png",
+                        onshow: function () {
+                            setTimeout(notification.close(), 15000);
+                        },
+                        onclick: function () {
+                            // Open the page
+                            window.open(url);
+                            // Remove notification
+                            this.cancel();
+                        }
+                    });
+                }
+            });
+        } else if (window.webkitNotifications) {
+            // use the webkit variant for chrome based browsers
+            //console.log('using webkit variant of notifications');
 
-	        // Let's check if the user has granted us permission and if not ask it. 
-	        window.Notification.requestPermission(function (perm) {
-	            if (perm == 'granted') {
-	                // if everything checks out we can finally show the notification
-	                console.log('granted');
-	                console.log('firefox notification!');
+            if (window.webkitNotifications.checkPermission() === 0) {
+                // if everything checks out we can finally show the notification
+                //console.log('webkit notification!');
 
-	                // create the notification	
-	                new window.Notification(title, {
-	                    dir: "auto",
-	                    body: body,
-	                    icon: "http://creesch.github.io/reddit-declutter/reddit-icon.png",
-	                    onshow: function () {
-	                        setTimeout(notification.close(), 15000);
-	                    },
-	                    onclick: function () {
-	                        // Open the page
-	                        window.open(url);
-	                        // Remove notification
-	                        this.cancel();
-	                    }
-	                });
-	            }
-	        });
-	    } else if (window.webkitNotifications) {
-	        // use the webkit variant for chrome based browsers
-	        console.log('using webkit variant of notifications');
+                // create the notification    
+                var toolboxnotification = window.webkitNotifications.createNotification('http://creesch.github.io/reddit-declutter/reddit-icon.png', title, body);
 
-	        if (window.webkitNotifications.checkPermission() === 0) {
-	            // if everything checks out we can finally show the notification
-	            console.log('webkit notification!');
+                // Auto-hide after a while
+                toolboxnotification.ondisplay = function (event) {
+                    setTimeout(function () {
+                        event.currentTarget.cancel();
+                    }, 10000);
+                };
 
-	            // create the notification	
-	            var toolboxnotification = window.webkitNotifications.createNotification('http://creesch.github.io/reddit-declutter/reddit-icon.png', title, body);
+                // Define what happens when the notification is clicked. 
+                toolboxnotification.onclick = function () {
+                    // Open the page
+                    window.open(url);
+                    // Remove notification
+                    this.cancel();
+                };
+                // Remove notification
+                toolboxnotification.show();
 
-	            // Auto-hide after a while
-	            toolboxnotification.ondisplay = function (event) {
-	                setTimeout(function () {
-	                    event.currentTarget.cancel();
-	                }, 10000);
-	            };
+            } else if (window.webkitNotifications.checkPermission() == 2) {
+                // fallback on a javascript notification if permission is not given. 
+                //console.log('User will not let us use notifications, fall back on internal version');
+                $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
 
-	            // Define what happens when the notification is clicked. 
-	            toolboxnotification.onclick = function () {
-	                // Open the page
-	                window.open(url);
-	                // Remove notification
-	                this.cancel();
-	            };
-	            // Remove notification
-	            toolboxnotification.show();
+            } else {
+                // Ask for permission. 
+                $('<div id="tb-notification-permission">An toolbox script would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.</div>').appendTo('body').click(function () {
+                    window.webkitNotifications.requestPermission();
+                    // We could build in a function to show the notifcation that prompted this whole function, but since it is likely a one time occurence I thought it would be a bit over the top.
+                    $(this).remove();
+                });
+            }
+        }
 
-	        } else if (window.webkitNotifications.checkPermission() == 2) {
-	            // fallback on a javascript notification if permission is not given. 
-	            console.log('User will not let us use notifications, fall back on internal version');
-	            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
+    }
 
-	        } else {
-	            // Ask for permission. 
-	            $('<div id="tb-notification-permission">An toolbox script would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.</div>').appendTo('body').click(function () {
-	                window.webkitNotifications.requestPermission();
-	                // We could build in a function to show the notifcation that prompted this whole function, but since it is likely a one time occurence I thought it would be a bit over the top.
-	                $(this).remove();
-	            });
-	        }
-	    }
-
-	}
-    
     TBUtils.getModSubs = function (callback) {
 
         // If it has been more than ten minutes, refresh mod cache.
@@ -278,7 +276,6 @@ function tbutils() {
         }
 
         // Callback because reddits/mod/mine is paginated.
-
         function getSubsResult(subs, after) {
             $(subs).each(function () {
                 var sub = this.data.display_name.trim();
@@ -313,8 +310,9 @@ function tbutils() {
     TBUtils.getThingInfo = function (thing, modCheck) {
 
         var user = $(thing).find('.author:first').text(),
-            subreddit = $('.titlebox h1.redditname a').text(),
-            permalink = $(thing).closest('.entry').find('a.bylink').attr('href');
+            subreddit = reddit.post_site || $('.titlebox h1.redditname a').text(),
+            permalink = $(thing).closest('.entry').find('a.bylink').attr('href'),
+            domain = $(thing).find('span.domain:first').text().replace('(', '').replace(')', '');
 
         if (TBUtils.isEditUserPage && !user) {
             user = $(thing).closest('.user').find('a:first').text();
@@ -329,6 +327,10 @@ function tbutils() {
         if (!permalink) {
             permalink = $(thing).closest('.entry').find('a.comments').attr('href');
         }
+        
+        if (!permalink) {
+            permalink = $(thing).find('.buttons:first .first a').attr('href');
+        }
 
         if (!subreddit) {
             subreddit = $(thing).closest('.entry').find('.subreddit').text();
@@ -336,6 +338,10 @@ function tbutils() {
 
         if (!subreddit) {
             subreddit = $(thing).closest('.thing').find('.subreddit').text();
+        }
+        
+        if (!subreddit) {
+            subreddit = $(thing).children('.thing').find('.subreddit').text();
         }
 
         // If we still don't have a sub, we're in mod mail
@@ -368,7 +374,8 @@ function tbutils() {
         return {
             subreddit: subreddit,
             user: user,
-            permalink: permalink
+            permalink: permalink,
+            domain: domain
         };
     };
 

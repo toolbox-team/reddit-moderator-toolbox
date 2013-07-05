@@ -21,15 +21,9 @@ function tbconf() {
                 
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,'+ icon +'" /><span class="separator"></span><a href="javascript:;" class="toolbox-edit">toolbox configuration</a></li>',
-        oldReasons = '',
         subreddit = reddit.post_site || $('.titlebox h1.redditname a').text();
     
-     var config = {
-                ver: 1,
-                domainTags: '',
-                removalReasons: '',
-                modMacros: '',
-            }
+     var config = TBUtils.config;
     
     if (!subreddit) return;
     
@@ -52,55 +46,8 @@ function tbconf() {
     });    
     
     function postToWiki(page, data, isJSON, updateAM) {
-        
-        if (isJSON) {
-            data = JSON.stringify(data, undefined, 2);
-        }
-        
-        $.post('/r/'+ subreddit +'/api/wiki/edit', {
-            content: data,
-            page: page,
-            reason: 'updated via toolbox config',
-            uh: reddit.modhash
-        })
-        
-        .error(function (err) {
-            console.log(err.responseText);
-        })
-
-        .success(function () {
-            
-            if (updateAM) {
-                $.post('/api/compose', {
-                    to: 'automoderator',
-                    uh: reddit.modhash,
-                    subject: subreddit,
-                    text: 'update'
-                })
-                .success(function () {
-                    alert('sucessfully sent update PM to automoderator');
-                })
-                .error(function () {
-                    alert('error sending update PM to automoderator');
-                    window.location = 'http://www.reddit.com/message/compose/?to=AutoModerator&subject='+ subreddit +'&message=update'
-                });
-            }
-            
-            setTimeout(function () {
-
-                // hide the page
-                $.post('/r/' + subreddit + '/wiki/settings/' + page, {
-                        permlevel: 2,
-                        uh: reddit.modhash
-                    })
-
-                // Super extra double-secret secure, just to be safe.
-                .error(function (err) {
-                    alert('error setting wiki page to mod only access');
-                    window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/'  + page;
-                });
-
-            }, 500);
+        TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
+            if (!succ) console.log(err.responseText);
         });
     }
     
@@ -108,7 +55,20 @@ function tbconf() {
         
         // No reasons storred in the config.  Check the CSS.
         if (!config.removalReasons) {
-            getReasosnFromCSS();
+            TBUtils.getReasosnFromCSS(subreddit, function(resp) {
+                if (resp) {
+                    $('.reasons-notice').show();
+                    
+                    // Save old removal reasosns when clicked.
+                    $('.update-reasons').click(function() {
+                        config.removalReasons = resp;
+                        
+                        postToWiki('toolbox', config, true);
+                        
+                        $('.reasons-notice').hide();
+                    });
+                }
+            });
         }           
         
         var html = '\
@@ -148,63 +108,6 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         ';
         $(html).appendTo('body').show();
         $('body').css('overflow','hidden');
-    }
-    
-    function getReasosnFromCSS() {
-        var oldReasons = '';
-        // If not, build a new one, getting the XML from the stylesheet
-        $.get('http://www.reddit.com/r/' + subreddit + '/about/stylesheet.json').success(function (response) {
-            if (!response.data) return;
-            
-            // See if this subreddit is configured for leaving reasons using <removalreasons2>
-            var match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .match(/<removereasons2>.+<\/removereasons2>/i);
-            
-            // Try falling back to <removalreasons>
-            if (!match) {
-                match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-                .replace(/&lt;/g, '<')
-                .replace(/&gt;/g, '>')
-                .match(/<removereasons>.+<\/removereasons>/i);
-            }
-            
-            // Neither can be found.    
-            if (!match) return; 
-            
-            // Create valid XML from parsed string and convert it to a JSON object.
-            var XML = $(match[0]);
-            var reasons = [];
-            
-            XML.find('reason').each(function() {
-                var reason = { text: escape(this.innerHTML) };
-                reasons.push(reason);
-            });
-            
-            oldReasons = {
-                pmsubject: XML.find('pmsubject').text() || '',
-                logreason: XML.find('logreason').text() || '',
-                header: escape(XML.find('header').text() || ''),
-                footer: escape(XML.find('footer').text() || ''),
-                logsub: XML.find('logsub').text() || '',
-                logtitle: XML.find('logtitle').text() || '',
-                bantitle: XML.find('bantitle').text() || '',
-                getfrom: XML.find('getfrom').text() || '',
-                reasons: reasons
-            };
-            
-            $('.reasons-notice').show();
-            
-            // Save old removal reasosns when clicked.
-            $('.update-reasons').click(function() {
-                config.removalReasons = oldReasons;
-                
-                postToWiki('toolbox', config, true);
-                
-                $('.reasons-notice').hide();
-            });
-        });
     }
     
     $('body').delegate('.tb-close', 'click', function() {
@@ -497,25 +400,35 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         var page = $(e.target).attr('page'),
             textArea = $('.edit-wikidata'),
             saveButton = $('.save-wiki-data'),
-            editArea = $('.wiki-edit-area');
+            editArea = $('.wiki-edit-area'),
+            isAM = (page === 'automoderator');
         
         // load the text area, but not the save button.
         $(editArea).show();
         $(textArea).val('getting wiki data...');
         
-        $.getJSON('http://www.reddit.com/r/'+ subreddit +'/wiki/'+ page +'.json', function(json) { 
-            var text = json.data.content_md;
-            
-            $(textArea).val(text);
-            $(saveButton).show();
-            $(saveButton).attr('page', page);
-            
-        }).error(function(e) {
-            if (JSON.parse(e.responseText).reason == 'PAGE_NOT_CREATED') {
+        TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+            if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                $(textArea).val('error getting wiki data.');
+                return;
+            }
+
+            if (resp === TBUtils.NO_WIKI_PAGE) {
                 $(textArea).val('');
                 $(saveButton).show();
                 $(saveButton).attr('page', page);
+                return;
             }
+            
+            // Fix < and > for AM config.
+            if (isAM) {
+                resp = resp.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            }
+            
+            // Found it, show it.
+            $(textArea).val(resp);
+            $(saveButton).show();
+            $(saveButton).attr('page', page);
         });
     });
     
@@ -542,7 +455,6 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         // so they don't need to be re-strinified.
         postToWiki(page, text, false, updateAM);
     });
-
 }
 
 // Add scripts to page

@@ -3,7 +3,7 @@
 
   "name": "reddit moderator Toolbox",
   "description": "moderator 'console' for reddit",
-  "version": "0.1",
+  "version": "0.2",
 
   "permissions": [
     "https://*.reddit.com/",

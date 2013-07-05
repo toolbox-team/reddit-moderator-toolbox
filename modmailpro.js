@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 function modmailpro() {
-    if (!location.pathname.match(/\/message\/(?:moderator)\/?/) && !reddit.logged) return;
+        if (!TBUtils.isModmail && !reddit.logged) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
     
     var INVITE = "moderator invited",
@@ -509,7 +509,7 @@ function modmailpro() {
 }
 
 function realtimemail() {
-    if (!location.pathname.match(/\/message\/(?:moderator)\/?/) && !reddit.logged) return;
+    if (!TBUtils.isModmail && !reddit.logged) return;
     // Don't run if the page we're viewing is paginated, or if we're viewing a 'rising' page.
     if (location.search.match(/before|after/)) return;
 
@@ -613,7 +613,7 @@ function realtimemail() {
 }
 
 function compose() {
-    if (!location.pathname.match(/\/message\/(?:moderator)\/?/) && !reddit.logged) return;
+         if (!TBUtils.isModmail && !reddit.logged) return;
     var COMPOSE = "compose-message",
         mySubs = [],
         modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
@@ -700,7 +700,7 @@ function compose() {
 }
 
 function settings() {
-   if (!location.pathname.match(/\/message\/(?:moderator)\/?/) && !reddit.logged) return;
+        if (!TBUtils.isModmail && !reddit.logged) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4;
     
     var VERSION = '3.0',

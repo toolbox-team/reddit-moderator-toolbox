@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "reddit moderator Toolbox",
-  "description": "moderator 'console' for reddit",
+  "name": "reddit Moderator Toolbox",
+  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
   "version": "0.2",
 
   "permissions": [

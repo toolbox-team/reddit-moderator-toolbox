@@ -315,7 +315,7 @@ function tbnoti() {
                         var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
                         var modqueeamount = json.data.children.length;
 
-					TBUtils.notification('New modqueue items', modqueecounter +' new items','http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');	
+					TBUtils.notification('New modqueue items', modqueecounter +' new item(s)','http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');	
 						
                     //  // loop through all items that haven't been shown yet
                     //    for (var i = (modqueeamount - 1); i > modqueecountersecond; i--) {

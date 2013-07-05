@@ -7,7 +7,7 @@
 // @include http://*.reddit.com/*
 // @include https://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/172111.user.js
-// @version 1.0.6
+// @version 1.1.2
 // ==/UserScript==
 
 function tbnoti() {   

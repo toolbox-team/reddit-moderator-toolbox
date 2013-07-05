@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Mod Tools Enhanced
 // @namespace   http://userscripts.org/scripts/show/165486
-// @version     6.3.1
+// @version     6.4
 // @include     http://www.reddit.com/*
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*

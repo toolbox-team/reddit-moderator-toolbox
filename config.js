@@ -6,7 +6,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170952.user.js
-// @version    1.1.2
+// @version    1.2
 // ==/UserScript==
 
 

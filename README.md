@@ -11,3 +11,9 @@ Containing:
 - Stattit Tab
 - Toolbox Notifier
 - Toolbox Config 
+
+
+### Todo
+
+- Migrate all settings to config.js 
+- Ability to turn on/off individual modules 

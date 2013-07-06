@@ -339,8 +339,8 @@ function tbnoti() {
                 var infotitle = jsondata.data.children[0].data.title;
                 var infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink = infopermalink + mqidname.substring(3);
-
-				TBUtils.notification('Modqueue - comment:'+author , mqreportauthor + '\'s comment in ' + infotitle + ' subreddit: ' + infosubreddit, 'http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');
+                console.log(infopermalink);
+				TBUtils.notification('Modqueue - /r/' + infosubreddit+ ' - comment:' , mqreportauthor + '\'s comment in ' + infotitle, 'http://www.reddit.com'+infopermalink+ '?context=3');
 				});
         }
         // getting modqueue
@@ -356,41 +356,64 @@ function tbnoti() {
                 var mqitemsinqueue = json.data.children.length;
 
                 if (modnotifications == 'on') {
-                    // check if it can come out and play or already did last time
+                    // Ok let's have a look and see if there are actually new items to display 
                     if (json.data.children.length > modqueuecount) {
-                        var modqueecounter = (json.data.children.length - modqueuecount);
-                        var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
-                        var modqueeamount = json.data.children.length;
 
-					TBUtils.notification('New modqueue items', modqueecounter +' new item(s)','http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');	
-						
-                    //  // loop through all items that haven't been shown yet
-                    //    for (var i = (modqueeamount - 1); i > modqueecountersecond; i--) {
-                    //
-                    //        // message for a submission
-                    //        if (json.data.children[i].kind == 't3') {
-                    //
-                    //            var mqpermalink = json.data.children[i].data.permalink;
-                    //            var mqtitle = json.data.children[i].data.title;
-                    //            var mqauthor = json.data.children[i].data.author;
-                    //           var mqsubreddit = json.data.children[i].data.subreddit;
-                    //           
-                    //            TBUtils.notification('Modqueue - submission:' , mqtitle + ' By: ' + mqauthor + 'in ' + mqsubreddit, 'http://www.reddit.com' + mqpermalink);
-                    //
-                    //
-                    //         // message for a comment (or other freak id's
-                    //       } else {
-                    //
-                    //           var reportauthor = json.data.children[i].data.author;
-                    // 
-                    //           var idname = json.data.children[i].data.name;
-                    //          var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
-                    //          //since we want to add some adition details to this we call the previous declared function
-                    //           procesmqcomments(linkid, reportauthor, idname);
-                    //       }
-                    //   }
-                        // here we wil set the new value for modqueuecount, disabled so it will keep showing messages for debugging. This will also be used in order to change the counters in the toolbar to the correct value.
+
+
+
+                    var modqueecounter = (json.data.children.length - modqueuecount);
+                    var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
+                    var modqueeamount = json.data.children.length;
+                    // set up an array in which we will load the last 100 items that have been displayed. 
+                    // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                    var pusheditems = new Array();
+                    pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
+                    console.log(pusheditems);
+                    console.log('ok0');
+                    for (var i = 0; i < modqueeamount; i++) {
+					
+                    console.log('for loop' + json.data.children[i].kind);
+					
+                    if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
+                       console.log('ok1' + i);
+
+					 var mqpermalink = json.data.children[i].data.permalink;
+					console.log('ok2');	 
+                    var mqtitle = json.data.children[i].data.title;
+					console.log('ok3');	 
+                    var mqauthor = json.data.children[i].data.author;
+					console.log('ok4');	 
+                    var mqsubreddit = json.data.children[i].data.subreddit;
+
+                       TBUtils.notification('Modqueue: /r/' + mqsubreddit + ' - post', mqtitle + ' By: ' + mqauthor , 'http://www.reddit.com' + mqpermalink); 
+                       pusheditems.push(json.data.children[i].data.name);
+                       console.log(pusheditems);
+                    
+					} else if ($.inArray(json.data.children[i].data.name, pusheditems) == -1) {
+					var reportauthor = json.data.children[i].data.author;
+					console.log(reportauthor);
+                    var idname = json.data.children[i].data.name;
+					console.log(idname);
+                    var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
+                    //since we want to add some adition details to this we call the previous declared function
+                    procesmqcomments(linkid, reportauthor, idname);						
+                    pusheditems.push(json.data.children[i].data.name);
+                    console.log(pusheditems)						
                     }
+                    }
+                    
+                    localStorage['Toolbox.Notifier.modqueuepushed'] = JSON.stringify(pusheditems);
+                    
+                    
+                    
+					}
+				
+				
+				
+				
+				
+				
                 }
                 localStorage['Toolbox.Notifier.modqueuecount'] = json.data.children.length;
                 $('#tb-queueCount').html('[' + json.data.children.length + ']');
@@ -450,7 +473,7 @@ function tbnoti() {
 
     }
     // How often we check for new messages, this will later be adjustable in the settings. 
-    var timer = setInterval(getmessages, 30000);
+    var timer = setInterval(getmessages, 300000);
     getmessages();
 }
 

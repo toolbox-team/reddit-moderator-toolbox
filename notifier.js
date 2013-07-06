@@ -90,14 +90,25 @@ function tbnoti() {
         }
 
 
+		// The window in which all settings will be showed. 
         var html = '\
             <div class="tb-page-overlay tb-settings">\
             <div class="tb-window-wrapper">\
-            <div class="tb-window-header"> Notifier Configuration <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
-            <div class="tb-window-content">\
-            \
-            \
-			<p>\
+            <div class="tb-window-header"> Notifier Configuration <span class="tb-window-header-options"><a class="tb-help" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+            <div class="tb-window-tabs"></div>\
+			<div class="tb-window-content">\
+            </div>\
+            <div class="tb-window-footer" comment="for the looks"><input class="tb-save" type="button" value="save"></div>\
+            </div>\
+            </div>\
+            ';
+        $(html).appendTo('body').show();
+        $('body').css('overflow', 'hidden');
+		
+		// Settings for the tool bar. 
+		var htmltoolbar = '\
+					<div class="tb-window-content-toolbar">\
+						<p>\
 				Get notifications for new messages?<br>\
 				<input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '>\
 			</p>\
@@ -105,7 +116,33 @@ function tbnoti() {
 				Get modqueue notifications? <br>\
 				<input type="checkbox" name="modnotifications" ' + modnotificationschecked + '>\
 			</p>\
-    		<p>\
+			<p>\
+				Shortcuts (carefull! takes full html):<br>\
+				<input type="text" name="shortcuts">\
+				</p>\
+			<p>\
+				Multireddit of subs you want displayed in the modqueue counter:<br>\
+				<input type="text" name="modsubreddits">\
+			</p>\
+			<p>\
+				Multireddit of subs you want displayed in the unmoderated counter:<br>\
+				<input type="text" name="unmoderatedsubreddits">\
+			</p>\
+			<div class="tb-help-content">Edit toolbar stuff</div>\
+		     ';
+            $(htmltoolbar).appendTo('.tb-window-content')	
+			$('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
+			$('.tb-help').attr('currentpage', 'tb-window-content-toolbar');
+		
+        $("input[name=shortcuts]").val(unescape(shortcuts));
+        $("input[name=modsubreddits]").val(unescape(modsubreddits));
+        $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedsubreddits));
+
+		
+		// Settings to toggle the modules 
+		var htmlmodules = '\
+		<div class="tb-window-content-modules">\
+		    		<p>\
 				Enable ModMailPro? <br>\
 				<input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '>\
 			</p>\
@@ -133,32 +170,14 @@ function tbnoti() {
 				Enable Stattit Tab? <br>\
 				<input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '>\
 			</p>\
-			<p>\
-				Shortcuts (carefull! takes full html):<br>\
-				<input type="text" name="shortcuts">\
-				</p>\
-			<p>\
-				Multireddit of subs you want displayed in the modqueue counter:<br>\
-				<input type="text" name="modsubreddits">\
-			</p>\
-			<p>\
-				Multireddit of subs you want displayed in the unmoderated counter:<br>\
-				<input type="text" name="unmoderatedsubreddits">\
-			</P>\
-			<input class="tb-save" type="button" value="save">\
-            \
-            \
-            </div>\
-            <div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
-            <div class="tb-help-content">In this window you can change the settings related to the notifications and toolbar. Other settings can be found in the subreddit settings for individual subreddits you moderate and in the modmail window for modmail related settings.</div>\
-            </div>\
-            </div>\
+			<div class="tb-help-content">Here you can disable the several toolbox modules.</div>\
+			</div>\
             ';
-        $(html).appendTo('body').show();
-        $('body').css('overflow', 'hidden');
-        $("input[name=shortcuts]").val(unescape(shortcuts));
-        $("input[name=modsubreddits]").val(unescape(modsubreddits));
-        $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedsubreddits));
+			$(htmlmodules).appendTo('.tb-window-content').hide();;
+			$('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
+
+			
+
     }
 
     // Open the settings
@@ -166,8 +185,17 @@ function tbnoti() {
         showSettings();
     });
 
-
-
+    // change tabs 
+	$('body').delegate('.tb-window-tabs a', 'click', function() { 
+	console.log('tab toggle');
+		var tab = $(this).attr('class');
+		console.log(tab);
+		console.log($('.tb-window-content').children());
+		$('.tb-help').attr('currentpage', tab);
+		$('.tb-window-content').children().hide(); 
+		$('div.'+tab).show();
+            
+	});		
     // Save the settings 
     $('body').delegate('.tb-save', 'click', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
@@ -208,8 +236,12 @@ function tbnoti() {
 
 
     $('body').delegate('.tb-help', 'click', function () {
+	    var tab = $(this).attr('currentpage');
+		tab = '.'+tab;
+		console.log(tab);
         var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100')
-        var htmlcontent = $(this).parents('.tb-window-wrapper').find('.tb-help-content').html();
+        var htmlcontent = $(tab).find('.tb-help-content').html();
+		console.log(htmlcontent);
         var html = '\
         <!DOCTYPE html>\
         <html>\

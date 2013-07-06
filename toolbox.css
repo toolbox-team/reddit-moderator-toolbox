@@ -119,6 +119,20 @@
         font-size: small;
         border-bottom: solid 1px #A8B5C2;
         }
+    .tb-window-tabs {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-bottom: solid 1px #A8B5C2;
+        background-color: #C7D6E6;
+        }
+	.tb-window-tabs a {
+        background-color: #C7D6E6;
+        padding: 10px;
+        border-right: dotted 1px #A8B5C2;
+        }
+	.tb-window-tabs a:hover {
+        background-color: #9FBAD6;
+        }		
     .tb-window-content {
         overflow: auto;
         left: 0px;
@@ -127,7 +141,8 @@
         }
     .tb-window-footer {
         width:100%;
-        height: 15px;
+        height: 30px;
+		line-height: 30px;
         display:block;
         background-color: #CEE3F8;
         text-align:center;

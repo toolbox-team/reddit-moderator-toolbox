@@ -1,23 +1,22 @@
 // ==UserScript==
-// @name       Mod Domain Tagger
-// @namespace  http://www.reddit.com/r/toolbox
-// @author  agentlame, creesch
-// @description    Highlight domains for easier moderation
-// @include http://www.reddit.com/r/*/about/unmoderated*
-// @include http://*.reddit.com/r/*/about/unmoderated*
-// @include http://reddit.com/r/*/about/unmoderated*
-// @include http://www.reddit.com/r/*/about/modqueue*
-// @include http://*.reddit.com/r/*/about/modqueue*
-// @include http://reddit.com/r/*/about/modqueue*
-// @include *://*.reddit.com/r/*
+// @name        Mod Domain Tagger
+// @namespace   http://www.reddit.com/r/toolbox
+// @author      agentlame, creesch
+// @description Highlight domains for easier moderation
+// @include     http://www.reddit.com/r/*/about/unmoderated*
+// @include     http://*.reddit.com/r/*/about/unmoderated*
+// @include     http://reddit.com/r/*/about/unmoderated*
+// @include     http://www.reddit.com/r/*/about/modqueue*
+// @include     http://*.reddit.com/r/*/about/modqueue*
+// @include     http://reddit.com/r/*/about/modqueue*
+// @include     *://*.reddit.com/r/*
 // @downloadURL http://userscripts.org/scripts/source/168936.user.js
-// @version    2.5
+// @version     2.5
 // ==/UserScript==
 
-function domaintagger() {
 
-    if (!TBUtils.isModpage) return;
-    if (!reddit.logged) return;
+function domaintagger() {
+    if (!TBUtils.isModpage || !reddit.logged || !TBUtils.setting('DomainTagger', 'enabled', true)) return;
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';
 
@@ -221,9 +220,37 @@ function domaintagger() {
 
 // Add script to page
 (function () {
-
+    
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
         var s = document.createElement('script');
         s.textContent = "(" + domaintagger.toString() + ')();';
         document.head.appendChild(s);
-  
+    }  
 })();

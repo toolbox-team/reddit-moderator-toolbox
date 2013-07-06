@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name       Mod User Notes
-// @namespace  http://www.reddit.com/r/toolbox
-// @author  agentlame, creesch
-// @description    Create and display user notes for mods.
+// @name        Mod User Notes
+// @namespace   http://www.reddit.com/r/toolbox
+// @author      agentlame, creesch
+// @description Create and display user notes for mods.
 // @include     *://www.reddit.com/*
 // @include     *://reddit.com/*
 // @include     *://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170091.user.js
-// @version    1.3
+// @version     1.3
 // ==/UserScript==
 
 function usernotes() {
-    if (!reddit.logged) return;
+    if (!reddit.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
 
@@ -278,11 +278,37 @@ function usernotes() {
 
 // Add script to page
 (function () {
-
-
+    
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
         var s = document.createElement('script');
         s.textContent = "(" + usernotes.toString() + ')();';
         document.head.appendChild(s);
-
-
+    }
 })();

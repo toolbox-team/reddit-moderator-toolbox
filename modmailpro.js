@@ -1,18 +1,18 @@
 // ==UserScript==
-// @name    Mod Mail Pro
-// @namespace    reddit.com/r/agentlame
-// @author    agentlame, creesch, DEADB33F, gavin19
-// @description    Filter subs from mod mail.
-// @match    *://*.reddit.com/message/moderator/*
-// @match    *://*.reddit.com/r/*/message/moderator/*
-// @include  *://*.reddit.com/message/moderator/*
-// @include  *://*.reddit.com/r/*/message/moderator/*
+// @name        Mod Mail Pro
+// @namespace   http://www.reddit.com/r/toolbox
+// @author      agentlame, creesch, DEADB33F, gavin19
+// @description Filter subs from mod mail.
+// @match       *://*.reddit.com/message/moderator/*
+// @match       *://*.reddit.com/r/*/message/moderator/*
+// @include     *://*.reddit.com/message/moderator/*
+// @include     *://*.reddit.com/r/*/message/moderator/*
 // @downloadURL http://userscripts.org/scripts/source/167234.user.js
-// @version    3.0
+// @version     3.1
 // ==/UserScript==
 
 function modmailpro() {
-    if (!TBUtils.isModmail || !reddit.logged) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var INVITE = "moderator invited",
@@ -485,7 +485,7 @@ function modmailpro() {
 }
 
 function realtimemail() {
-    if (!TBUtils.isModmail || !reddit.logged) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return;  
     // Don't run if the page we're viewing is paginated.
     if (location.search.match(/before|after/)) return;
 
@@ -563,7 +563,6 @@ function realtimemail() {
     }
 
     // Insert new things into sitetable.
-
     function insertHTML(html) {
         var height = sitetable.css('top').slice(0, -2),
             things = $(html.join(''))
@@ -597,7 +596,7 @@ function realtimemail() {
 }
 
 function compose() {
-    if (!TBUtils.isModmail || !reddit.logged) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
     var COMPOSE = "compose-message",
         //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
@@ -629,7 +628,7 @@ function compose() {
 }
 
 function settings() {
-    if (!TBUtils.isModmail || !reddit.logged) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var VERSION = '3.1',
@@ -813,27 +812,53 @@ function settings() {
     });
 }
 
-// Add scripts to page
+// Add script to page
 (function () {
-    // Add mmp.
-    addScriptToPage(modmailpro, 'modmailpro');
-
-    // Add realtime mod mail.
-    addScriptToPage(realtimemail, 'realtimemail');
-
-    // Add realtime mod mail.
-    addScriptToPage(compose, 'compose');
     
-    // Add settings area
-    addScriptToPage(settings, 'settings');
-
-    function addScriptToPage(script, name) {
-       
-
-            s = document.createElement('script');
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
+        // Add mmp.
+        addScriptToPage(modmailpro, 'modmailpro');
+        
+        // Add realtime mod mail.
+        addScriptToPage(realtimemail, 'realtimemail');
+        
+        // Add compose mod mail.
+        addScriptToPage(compose, 'compose');
+        
+        // Add settings area
+        addScriptToPage(settings, 'settings');
+        
+        function addScriptToPage(script, name) {
+            var s = document.createElement('script');
             s.textContent = "(" + script.toString() + ')();';
             document.head.appendChild(s);
-        
+        }
     }
-
 })();

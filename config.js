@@ -1,17 +1,17 @@
 // ==UserScript==
-// @name       Toolbox Config
-// @namespace    reddit.com/r/agentlame
-// @description  Edit toolbox configuration settings.
+// @name        Toolbox Config
+// @namespace   http://www.reddit.com/r/toolbox
+// @author      agentlame, creesch
+// @description Edit toolbox configuration settings.
 // @include     http://www.reddit.com/*
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170952.user.js
-// @version    1.2
+// @version     1.2
 // ==/UserScript==
 
-
 function tbconf() {   
-    if (!reddit.logged) return;
+    if (!reddit.logged || !TBUtils.setting('TBConfig', 'enabled', true)) return;
     
     var icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
                 d5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5fJ5wOHwygVgsZpjVW60WqqqWz\
@@ -457,14 +457,39 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
     });
 }
 
-// Add scripts to page
+// Add script to page
 (function () {
     
-
- 
-    // Add settings
-    var m = document.createElement('script');
-    m.textContent = "(" + tbconf.toString() + ')();';
-    document.head.appendChild(m);
-
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
+        var s = document.createElement('script');
+        s.textContent = "(" + tbconf.toString() + ')();';
+        document.head.appendChild(s);
+    }
 })();

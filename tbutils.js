@@ -1,14 +1,6 @@
-// ==UserScript==
-// @name       TBUtils
-// @namespace    reddit.com/r/toolbox/wiki/TBUtils
-// @description  Edit toolbox configuration settings.
-// @include     http://www.reddit.com/*
-// @include     http://reddit.com/*
-// @include     http://*.reddit.com/*
-// @version    1.8
-// ==/UserScript==
+function main() {
 
-function tbutils() {
+
 (function (TBUtils) {
     //Private variables
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
@@ -18,7 +10,7 @@ function tbutils() {
         shortlength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
         longlength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
         cachename = localStorage['Toolbox.cache.cachename'] || '',
-        id = Math.floor((Math.random() * 1000)),
+        id = Math.floor(Math.random() * 9999),
         newlogin = (cachename != reddit.logged),
         getnewlong = (((now - lastgetlong) / (60 * 1000) > longlength) || newlogin),
         getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin);
@@ -30,6 +22,9 @@ function tbutils() {
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
+    TBUtils.isExtension = (typeof chrome !== "undefined" && chrome.extension);
+    
+    // Cache vars.
     TBUtils.noteCache = (getnewshort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
     TBUtils.configCache = (getnewlong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
     TBUtils.noConfig = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
@@ -70,6 +65,20 @@ function tbutils() {
 
     TBUtils.getID = function (callback) {
         callback(id);
+    };
+    
+    TBUtils.setting = function (module, setting, defaultVal, value) {
+        var storageKey = 'Toolbox.'+ module +'.'+ setting;
+        
+        if (value !== undefined) {
+            localStorage[storageKey] = JSON.stringify(value);
+        }
+        
+        var keyval = localStorage[storageKey];
+        
+        if (keyval === undefined) return defaultVal;
+        
+        return JSON.parse(keyval);
     };
     
     TBUtils.notification = function (title, body, url) {
@@ -254,7 +263,7 @@ function tbutils() {
             }
         }
 
-    }
+    };
 
     TBUtils.getModSubs = function (callback) {
 
@@ -482,6 +491,11 @@ function tbutils() {
             return;
 
         }).error(function (e) {
+            if (!e.responseText) {
+                callback(TBUtils.WIKI_PAGE_UNKNOWN);
+                return;
+            }
+            
             var reason = JSON.parse(e.responseText).reason || '';
             if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
                 callback(TBUtils.NO_WIKI_PAGE);
@@ -566,12 +580,11 @@ function tbutils() {
 
 }(TBUtils = window.TBUtils || {}));
 
+
 }
 
 (function () {
-    // Add settings
     var m = document.createElement('script');
-    m.textContent = "(" + tbutils.toString() + ')();';
+    m.textContent = "(" + main.toString() + ')();';
     document.head.appendChild(m);
-
 })();

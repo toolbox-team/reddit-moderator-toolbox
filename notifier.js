@@ -1,12 +1,13 @@
 // ==UserScript==
-// @name Toolbox Notifier
-// @namespace reddit.com/r/toolbox/notifier
-// @description notifications of messages
-// @include http://reddit.com/*
-// @include https://reddit.com/*
-// @include http://*.reddit.com/*
-// @include https://*.reddit.com/*
-// @downloadURL http://userscripts.org/scripts/source/172111.user.js
+// @name         Toolbox Notifier
+// @namespace    http://www.reddit.com/r/toolbox
+// @author       creesch, agentlame
+// @description  notifications of messages
+// @include      http://reddit.com/*
+// @include      https://reddit.com/*
+// @include      http://*.reddit.com/*
+// @include      https://*.reddit.com/*
+// @downloadURL  http://userscripts.org/scripts/source/172111.user.js
 // @version 1.2
 // ==/UserScript==
 
@@ -25,6 +26,15 @@ function tbnoti() {
         modqueuecount = localStorage['Toolbox.Notifier.modqueuecount'] || '0',
         unmoderatedcount = localStorage['Toolbox.Notifier.unmoderatedcount'] || '0',
         modmailcount = localStorage['Toolbox.Notifier.modmailcount'] || '0';
+        
+    // Module settings.
+    var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
+        mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
+        mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
+        notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
+        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
+        configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
+        stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true);
 
     //
     // generic functions
@@ -79,6 +89,7 @@ function tbnoti() {
             messagenotificationschecked = 'checked';
         }
 
+
         var html = '\
             <div class="tb-page-overlay tb-settings">\
             <div class="tb-window-wrapper">\
@@ -93,6 +104,34 @@ function tbnoti() {
 			<p>\
 				Get modqueue notifications? <br>\
 				<input type="checkbox" name="modnotifications" ' + modnotificationschecked + '>\
+			</p>\
+    		<p>\
+				Enable ModMailPro? <br>\
+				<input type="checkbox" id="mmpEnabled" '+ ((mmpEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable ModButton? <br>\
+				<input type="checkbox" id="mbEnabled" '+ ((mbEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable Mod Tools Enhanced? <br>\
+				<input type="checkbox" id="mteEnabled" '+ ((mteEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable User Notes? <br>\
+				<input type="checkbox" id="notesEnabled" '+ ((notesEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable Domain Tagger? <br>\
+				<input type="checkbox" id="dtagEnabled" '+ ((dtagEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable Toolbox Config? <br>\
+				<input type="checkbox" id="configEnabled" '+ ((configEnabled) ? "checked" : "") +'>\
+			</p>\
+        	<p>\
+				Enable Stattit Tab? <br>\
+				<input type="checkbox" id="stattitEnabled" '+ ((stattitEnabled) ? "checked" : "") +'>\
 			</p>\
 			<p>\
 				Shortcuts (carefull! takes full html):<br>\
@@ -153,6 +192,15 @@ function tbnoti() {
 
         unmoderatedsubreddits = $("input[name=unmoderatedsubreddits]").val();
         localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedsubreddits;
+        
+        // Save which modules are enabled.
+        TBUtils.setting('ModMailPro', 'enabled', '', $("#mmpEnabled").prop('checked'));
+        TBUtils.setting('ModButton', 'enabled', '', $("#mbEnabled").prop('checked'));
+        TBUtils.setting('ModTools', 'enabled', '', $("#mteEnabled").prop('checked'));
+        TBUtils.setting('UserNotes', 'enabled', '', $("#notesEnabled").prop('checked'));
+        TBUtils.setting('DomainTagger', 'enabled', '', $("#dtagEnabled").prop('checked'));
+        TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
+        TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
 
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');
@@ -285,7 +333,6 @@ function tbnoti() {
         //
 
         // wrapper around $.getJSON so it can be part of a loop
-
         function procesmqcomments(mqlinkid, mqreportauthor, mqidname) {
             $.getJSON(mqlinkid, function (jsondata) {
                 var infopermalink = jsondata.data.children[0].data.permalink;
@@ -354,7 +401,6 @@ function tbnoti() {
         //
 
         // getting unmoderated, for now only a counter, otherwise it might be to much with the notifications
-
         $.getJSON('http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated.json', function (json) {
             // check if there are items in the modqueue
             if (json.data.children == '') {
@@ -408,10 +454,39 @@ function tbnoti() {
     getmessages();
 }
 
+// Add script to page
 (function () {
-    // Add settings
-    var m = document.createElement('script');
-    m.textContent = "(" + tbnoti.toString() + ')();';
-    document.head.appendChild(m);
-
+    
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
+        var s = document.createElement('script');
+        s.textContent = "(" + tbnoti.toString() + ')();';
+        document.head.appendChild(s);
+    }
 })();

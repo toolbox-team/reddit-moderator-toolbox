@@ -43,5 +43,6 @@ var stattitTab = {
 }
 
 if (document.body) {
+  if (!JSON.parse(localStorage['Toolbox.StattitTab.enabled'] || 'true')) return;
   stattitTab.init();  
 }

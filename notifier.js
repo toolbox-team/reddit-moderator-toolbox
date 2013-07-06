@@ -287,42 +287,50 @@ function tbnoti() {
                 //console.log('unreadmessagecount3: ' + unreadmessagecount);
                 // Are we allowed to show a popup?
                 if (messagenotifications == 'on') {
-                    // make sure we haven't shown the unread messages before
-                    if (json.data.children.length > unreadmessagecount) {
+                if (json.data.children.length > unreadmessagecount) {
                         //console.log('go ahead for a popup!');
                         var unreadmessagecounter = (json.data.children.length - unreadmessagecount);
                         var unreadmessageamount = json.data.children.length;
 
-                        //console.log('sticky soon!');
-                        // go ahead and show the messages that haven't been shown yet
-                        for (var i = 0; i < unreadmessagecounter; i++) {
+                    // set up an array in which we will load the last 100 messages that have been displayed. 
+                    // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                    var pushedunread = new Array();
+                    pushedunread = JSON.parse(localStorage['Toolbox.Notifier.unreadpushed'] || '[]');						
+                    for (var i = 0; i < unreadmessageamount; i++) {					
+				
+				    if ($.inArray(json.data.children[i].data.name, pushedunread) == -1 && json.data.children[i].kind == 't1') {
 
-                            // if it is a comment we use this code block                        
-                            if (json.data.children[i].kind == 't1') {
+                    var context = json.data.children[i].data.context;
+                    var body_html = htmlDecode(json.data.children[i].data.body_html);
 
-                                var context = json.data.children[i].data.context;
-                                var body_html = htmlDecode(json.data.children[i].data.body_html);
-
-                                var author = json.data.children[i].data.author;
-                                var contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
-                                getcommentitle(contexturl, context, author, body_html);
-                                // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
-                            } else {
-                                //console.log('sticky here?');
-                            var author = json.data.children[i].data.author;
-                            var body_html = htmlDecode(json.data.children[i].data.body_html);
-                            var subject = htmlDecode(json.data.children[i].data.subject);
-							var id = json.data.children[i].data.id;
+                    var author = json.data.children[i].data.author;
+                    var contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
+                    getcommentitle(contexturl, context, author, body_html);
+					pushedunread.push(json.data.children[i].data.name);
+                    
+					// if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
+                    } else if ($.inArray(json.data.children[i].data.name, pushedunread) == -1){
+                        var author = json.data.children[i].data.author;
+                        var body_html = htmlDecode(json.data.children[i].data.body_html);
+                        var subject = htmlDecode(json.data.children[i].data.subject);
+   					    var id = json.data.children[i].data.id;
                             
 							
-							TBUtils.notification('New message from:'+ author , $(body_html).text().substring(0,400) + '...', 'http://www.reddit.com/message/messages/'+id);
-							
+						TBUtils.notification('New message from:'+ author , $(body_html).text().substring(0,400) + '...', 'http://www.reddit.com/message/messages/'+id);
+						pushedunread.push(json.data.children[i].data.name);	
 							                           
-							}
-                        }
+					}
+				
 
-                      
-                    }
+				
+				
+				}
+									if (pushedunread.length > 100) { 
+					pushedunread.splice(0, 100-pushedunread.length);
+					}
+					
+                    localStorage['Toolbox.Notifier.unreadpushed'] = JSON.stringify(pushedunread);
+                }
                 }
 			  // Write the new variable to localstorage
 			localStorage['Toolbox.Notifier.unreadmessagecount'] = json.data.children.length;	
@@ -339,7 +347,6 @@ function tbnoti() {
                 var infotitle = jsondata.data.children[0].data.title;
                 var infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink = infopermalink + mqidname.substring(3);
-                console.log(infopermalink);
 				TBUtils.notification('Modqueue - /r/' + infosubreddit+ ' - comment:' , mqreportauthor + '\'s comment in ' + infotitle, 'http://www.reddit.com'+infopermalink+ '?context=3');
 				});
         }
@@ -359,9 +366,6 @@ function tbnoti() {
                     // Ok let's have a look and see if there are actually new items to display 
                     if (json.data.children.length > modqueuecount) {
 
-
-
-
                     var modqueecounter = (json.data.children.length - modqueuecount);
                     var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
                     var modqueeamount = json.data.children.length;
@@ -373,36 +377,40 @@ function tbnoti() {
                     console.log('ok0');
                     for (var i = 0; i < modqueeamount; i++) {
 					
-                    console.log('for loop' + json.data.children[i].kind);
+                    
 					
                     if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
                        console.log('ok1' + i);
 
 					 var mqpermalink = json.data.children[i].data.permalink;
-					console.log('ok2');	 
+
                     var mqtitle = json.data.children[i].data.title;
-					console.log('ok3');	 
+ 
                     var mqauthor = json.data.children[i].data.author;
-					console.log('ok4');	 
+
                     var mqsubreddit = json.data.children[i].data.subreddit;
 
                        TBUtils.notification('Modqueue: /r/' + mqsubreddit + ' - post', mqtitle + ' By: ' + mqauthor , 'http://www.reddit.com' + mqpermalink); 
                        pusheditems.push(json.data.children[i].data.name);
-                       console.log(pusheditems);
+
                     
 					} else if ($.inArray(json.data.children[i].data.name, pusheditems) == -1) {
 					var reportauthor = json.data.children[i].data.author;
-					console.log(reportauthor);
+
                     var idname = json.data.children[i].data.name;
-					console.log(idname);
+
                     var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
                     //since we want to add some adition details to this we call the previous declared function
                     procesmqcomments(linkid, reportauthor, idname);						
                     pusheditems.push(json.data.children[i].data.name);
-                    console.log(pusheditems)						
+					
                     }
                     }
                     
+					if (pusheditems.length > 100) { 
+					pusheditems.splice(0, 100-pusheditems.length);
+					}
+					
                     localStorage['Toolbox.Notifier.modqueuepushed'] = JSON.stringify(pusheditems);
                     
                     
@@ -473,7 +481,7 @@ function tbnoti() {
 
     }
     // How often we check for new messages, this will later be adjustable in the settings. 
-    var timer = setInterval(getmessages, 300000);
+    var timer = setInterval(getmessages, 30000);
     getmessages();
 }
 

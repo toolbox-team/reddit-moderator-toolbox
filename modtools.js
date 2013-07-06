@@ -1071,44 +1071,6 @@ function modtools() {
 
 }
 
-// Add script to the page
-document.addEventListener('DOMContentLoaded', function (e) {
-    
-    // Check if we are running as an extension, or if TBUtils has been added.
-    if (typeof chrome !== "undefined" && chrome.extension) {
-        init();
-        return;
-    } 
-    
-    // Check if TBUtils has been added.
-    if (!window.TBUadded) {
-        console.log('loading utils')
-        window.TBUadded = true;
-        
-        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
-        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
-        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
-        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
-    }
-    
-    // Do not add script to page until TBUtils is added.
-    (function loadLoop() {
-        setTimeout(function () {
-            if (typeof TBUtils !== "undefined") {
-                init();
-            } else {
-                loadLoop();
-            }
-        }, 100);
-    })();
-    
-    function init() {
-        var s = document.createElement('script');
-        s.textContent = "(" + modtools.toString() + ')();';
-        document.head.appendChild(s)
-    }
-});
-
 // Add CSS
 (function addcss() {
     if (!document.head) return setTimeout(addcss);
@@ -1133,4 +1095,41 @@ document.addEventListener('DOMContentLoaded', function (e) {
         s.textContent = css;
         document.head.appendChild(s);
     }
+    
+    // Add script to the page
+    (function addscript() {
+        if (!document.body) return setTimeout(addscript);
+        // Check if we are running as an extension, or if TBUtils has been added.
+        if (typeof chrome !== "undefined" && chrome.extension) {
+            init();
+            return;
+        } 
+        
+        // Check if TBUtils has been added.
+        if (!window.TBUadded) {
+            window.TBUadded = true;
+            
+            var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+            var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+            $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+            $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+        }
+        
+        // Do not add script to page until TBUtils is added.
+        (function loadLoop() {
+            setTimeout(function () {
+                if (typeof TBUtils !== "undefined") {
+                    init();
+                } else {
+                    loadLoop();
+                }
+            }, 100);
+        })();
+        
+        function init() {
+            var s = document.createElement('script');
+            s.textContent = "(" + modtools.toString() + ')();';
+            document.head.appendChild(s)
+        }
+    })();
 })();

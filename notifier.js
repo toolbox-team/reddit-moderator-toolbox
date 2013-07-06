@@ -1,16 +1,17 @@
 // ==UserScript==
-// @name Toolbox Notifier
-// @namespace reddit.com/r/toolbox/notifier
-// @description notifications of messages
-// @include http://reddit.com/*
-// @include https://reddit.com/*
-// @include http://*.reddit.com/*
-// @include https://*.reddit.com/*
-// @downloadURL http://userscripts.org/scripts/source/172111.user.js
+// @name         Toolbox Notifier
+// @namespace    http://www.reddit.com/r/toolbox
+// @author       creesch, agentlame
+// @description  notifications of messages
+// @include      http://reddit.com/*
+// @include      https://reddit.com/*
+// @include      http://*.reddit.com/*
+// @include      https://*.reddit.com/*
+// @downloadURL  http://userscripts.org/scripts/source/172111.user.js
 // @version 1.2
 // ==/UserScript==
 
-function tbnoti() {   
+function tbnoti() {
     if (!reddit.logged) return;
 
     //
@@ -25,6 +26,15 @@ function tbnoti() {
         modqueuecount = localStorage['Toolbox.Notifier.modqueuecount'] || '0',
         unmoderatedcount = localStorage['Toolbox.Notifier.unmoderatedcount'] || '0',
         modmailcount = localStorage['Toolbox.Notifier.modmailcount'] || '0';
+
+    // Module settings.
+    var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
+        mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
+        mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
+        notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
+        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
+        configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
+        stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true);
 
     //
     // generic functions
@@ -79,6 +89,7 @@ function tbnoti() {
             messagenotificationschecked = 'checked';
         }
 
+
         var html = '\
             <div class="tb-page-overlay tb-settings">\
             <div class="tb-window-wrapper">\
@@ -93,6 +104,34 @@ function tbnoti() {
 			<p>\
 				Get modqueue notifications? <br>\
 				<input type="checkbox" name="modnotifications" ' + modnotificationschecked + '>\
+			</p>\
+    		<p>\
+				Enable ModMailPro? <br>\
+				<input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable ModButton? <br>\
+				<input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable Mod Tools Enhanced? <br>\
+				<input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable User Notes? <br>\
+				<input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable Domain Tagger? <br>\
+				<input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable Toolbox Config? <br>\
+				<input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '>\
+			</p>\
+        	<p>\
+				Enable Stattit Tab? <br>\
+				<input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '>\
 			</p>\
 			<p>\
 				Shortcuts (carefull! takes full html):<br>\
@@ -127,8 +166,8 @@ function tbnoti() {
         showSettings();
     });
 
-	
-	
+
+
     // Save the settings 
     $('body').delegate('.tb-save', 'click', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
@@ -154,14 +193,23 @@ function tbnoti() {
         unmoderatedsubreddits = $("input[name=unmoderatedsubreddits]").val();
         localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedsubreddits;
 
+        // Save which modules are enabled.
+        TBUtils.setting('ModMailPro', 'enabled', '', $("#mmpEnabled").prop('checked'));
+        TBUtils.setting('ModButton', 'enabled', '', $("#mbEnabled").prop('checked'));
+        TBUtils.setting('ModTools', 'enabled', '', $("#mteEnabled").prop('checked'));
+        TBUtils.setting('UserNotes', 'enabled', '', $("#notesEnabled").prop('checked'));
+        TBUtils.setting('DomainTagger', 'enabled', '', $("#dtagEnabled").prop('checked'));
+        TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
+        TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
+
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');
     });
-	
-	
-	$('body').delegate('.tb-help', 'click', function() {	
-        var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
-		var htmlcontent = $(this).parents('.tb-window-wrapper').find('.tb-help-content').html();
+
+
+    $('body').delegate('.tb-help', 'click', function () {
+        var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100')
+        var htmlcontent = $(this).parents('.tb-window-wrapper').find('.tb-help-content').html();
         var html = '\
         <!DOCTYPE html>\
         <html>\
@@ -173,13 +221,13 @@ function tbnoti() {
 		</style>\
 		</head>\
         <body>\
-        <div class="help-content">'+htmlcontent+'</div>\
+        <div class="help-content">' + htmlcontent + '</div>\
 		</body>\
         </html>\
         ';
         helpwindow.document.write(html);
         helpwindow.focus();
-	});
+    });
 
     // Close the Settings menu
     $('body').delegate('.tb-close', 'click', function () {
@@ -207,9 +255,9 @@ function tbnoti() {
 
         function getcommentitle(unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
             $.getJSON(unreadcontexturl, function (jsondata) {
-                 var commenttitle = jsondata[0].data.children[0].data.title;
-				 TBUtils.notification('New reply:'+commenttitle+' from:'+unreadauthor , $(unreadbody_html).text().substring(0,400) + '...', 'http://www.reddit.com'+unreadcontext);     
-	 });
+                var commenttitle = jsondata[0].data.children[0].data.title;
+                TBUtils.notification('New reply:' + commenttitle + ' from:' + unreadauthor, $(unreadbody_html).text().substring(0, 400) + '...', 'http://www.reddit.com' + unreadcontext);
+            });
         }
         // getting unread messages
         $.getJSON('http://www.reddit.com/message/unread.json', function (json) {
@@ -239,18 +287,18 @@ function tbnoti() {
                 //console.log('unreadmessagecount3: ' + unreadmessagecount);
                 // Are we allowed to show a popup?
                 if (messagenotifications == 'on') {
-                    // make sure we haven't shown the unread messages before
                     if (json.data.children.length > unreadmessagecount) {
                         //console.log('go ahead for a popup!');
                         var unreadmessagecounter = (json.data.children.length - unreadmessagecount);
                         var unreadmessageamount = json.data.children.length;
 
-                        //console.log('sticky soon!');
-                        // go ahead and show the messages that haven't been shown yet
-                        for (var i = 0; i < unreadmessagecounter; i++) {
+                        // set up an array in which we will load the last 100 messages that have been displayed. 
+                        // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                        var pushedunread = new Array();
+                        pushedunread = JSON.parse(localStorage['Toolbox.Notifier.unreadpushed'] || '[]');
+                        for (var i = 0; i < unreadmessageamount; i++) {
 
-                            // if it is a comment we use this code block                        
-                            if (json.data.children[i].kind == 't1') {
+                            if ($.inArray(json.data.children[i].data.name, pushedunread) == -1 && json.data.children[i].kind == 't1') {
 
                                 var context = json.data.children[i].data.context;
                                 var body_html = htmlDecode(json.data.children[i].data.body_html);
@@ -258,26 +306,34 @@ function tbnoti() {
                                 var author = json.data.children[i].data.author;
                                 var contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
                                 getcommentitle(contexturl, context, author, body_html);
+                                pushedunread.push(json.data.children[i].data.name);
+
                                 // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
-                            } else {
-                                //console.log('sticky here?');
-                            var author = json.data.children[i].data.author;
-                            var body_html = htmlDecode(json.data.children[i].data.body_html);
-                            var subject = htmlDecode(json.data.children[i].data.subject);
-							var id = json.data.children[i].data.id;
-                            
-							
-							TBUtils.notification('New message from:'+ author , $(body_html).text().substring(0,400) + '...', 'http://www.reddit.com/message/messages/'+id);
-							
-							                           
-							}
+                            } else if ($.inArray(json.data.children[i].data.name, pushedunread) == -1) {
+                                var author = json.data.children[i].data.author;
+                                var body_html = htmlDecode(json.data.children[i].data.body_html);
+                                var subject = htmlDecode(json.data.children[i].data.subject);
+                                var id = json.data.children[i].data.id;
+
+
+                                TBUtils.notification('New message from:' + author, $(body_html).text().substring(0, 400) + '...', 'http://www.reddit.com/message/messages/' + id);
+                                pushedunread.push(json.data.children[i].data.name);
+
+                            }
+
+
+
+
+                        }
+                        if (pushedunread.length > 100) {
+                            pushedunread.splice(0, 100 - pushedunread.length);
                         }
 
-                      
+                        localStorage['Toolbox.Notifier.unreadpushed'] = JSON.stringify(pushedunread);
                     }
                 }
-			  // Write the new variable to localstorage
-			localStorage['Toolbox.Notifier.unreadmessagecount'] = json.data.children.length;	
+                // Write the new variable to localstorage
+                localStorage['Toolbox.Notifier.unreadmessagecount'] = json.data.children.length;
             }
         });
         //
@@ -292,9 +348,8 @@ function tbnoti() {
                 var infotitle = jsondata.data.children[0].data.title;
                 var infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink = infopermalink + mqidname.substring(3);
-
-				TBUtils.notification('Modqueue - comment:'+author , mqreportauthor + '\'s comment in ' + infotitle + ' subreddit: ' + infosubreddit, 'http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');
-				});
+                TBUtils.notification('Modqueue - /r/' + infosubreddit + ' - comment:', mqreportauthor + '\'s comment in ' + infotitle, 'http://www.reddit.com' + infopermalink + '?context=3');
+            });
         }
         // getting modqueue
         $.getJSON('http://www.reddit.com/r/' + modsubreddits + '/about/modqueue.json?limit=100', function (json) {
@@ -309,41 +364,63 @@ function tbnoti() {
                 var mqitemsinqueue = json.data.children.length;
 
                 if (modnotifications == 'on') {
-                    // check if it can come out and play or already did last time
+                    // Ok let's have a look and see if there are actually new items to display 
                     if (json.data.children.length > modqueuecount) {
+
                         var modqueecounter = (json.data.children.length - modqueuecount);
                         var modqueecountersecond = (json.data.children.length - modqueecounter - 1);
                         var modqueeamount = json.data.children.length;
+                        // set up an array in which we will load the last 100 items that have been displayed. 
+                        // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                        var pusheditems = new Array();
+                        pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
+                        console.log(pusheditems);
+                        console.log('ok0');
+                        for (var i = 0; i < modqueeamount; i++) {
 
-					TBUtils.notification('New modqueue items', modqueecounter +' new item(s)','http://www.reddit.com/r/'+modsubreddits+'/about/modqueue');	
-						
-                    //  // loop through all items that haven't been shown yet
-                    //    for (var i = (modqueeamount - 1); i > modqueecountersecond; i--) {
-                    //
-                    //        // message for a submission
-                    //        if (json.data.children[i].kind == 't3') {
-                    //
-                    //            var mqpermalink = json.data.children[i].data.permalink;
-                    //            var mqtitle = json.data.children[i].data.title;
-                    //            var mqauthor = json.data.children[i].data.author;
-                    //           var mqsubreddit = json.data.children[i].data.subreddit;
-                    //           
-                    //            TBUtils.notification('Modqueue - submission:' , mqtitle + ' By: ' + mqauthor + 'in ' + mqsubreddit, 'http://www.reddit.com' + mqpermalink);
-                    //
-                    //
-                    //         // message for a comment (or other freak id's
-                    //       } else {
-                    //
-                    //           var reportauthor = json.data.children[i].data.author;
-                    // 
-                    //           var idname = json.data.children[i].data.name;
-                    //          var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
-                    //          //since we want to add some adition details to this we call the previous declared function
-                    //           procesmqcomments(linkid, reportauthor, idname);
-                    //       }
-                    //   }
-                        // here we wil set the new value for modqueuecount, disabled so it will keep showing messages for debugging. This will also be used in order to change the counters in the toolbar to the correct value.
+
+
+                            if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
+                                console.log('ok1' + i);
+
+                                var mqpermalink = json.data.children[i].data.permalink;
+
+                                var mqtitle = json.data.children[i].data.title;
+
+                                var mqauthor = json.data.children[i].data.author;
+
+                                var mqsubreddit = json.data.children[i].data.subreddit;
+
+                                TBUtils.notification('Modqueue: /r/' + mqsubreddit + ' - post', mqtitle + ' By: ' + mqauthor, 'http://www.reddit.com' + mqpermalink);
+                                pusheditems.push(json.data.children[i].data.name);
+
+
+                            } else if ($.inArray(json.data.children[i].data.name, pusheditems) == -1) {
+                                var reportauthor = json.data.children[i].data.author;
+
+                                var idname = json.data.children[i].data.name;
+
+                                var linkid = 'http://www.reddit.com/api/info.json?id=' + json.data.children[i].data.link_id;
+                                //since we want to add some adition details to this we call the previous declared function
+                                procesmqcomments(linkid, reportauthor, idname);
+                                pusheditems.push(json.data.children[i].data.name);
+
+                            }
+                        }
+
+                        if (pusheditems.length > 100) {
+                            pusheditems.splice(0, 100 - pusheditems.length);
+                        }
+
+                        localStorage['Toolbox.Notifier.modqueuepushed'] = JSON.stringify(pusheditems);
+
+
+
                     }
+
+
+
+
                 }
                 localStorage['Toolbox.Notifier.modqueuecount'] = json.data.children.length;
                 $('#tb-queueCount').html('[' + json.data.children.length + ']');
@@ -354,7 +431,6 @@ function tbnoti() {
         //
 
         // getting unmoderated, for now only a counter, otherwise it might be to much with the notifications
-
         $.getJSON('http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated.json', function (json) {
             // check if there are items in the modqueue
             if (json.data.children == '') {
@@ -408,10 +484,39 @@ function tbnoti() {
     getmessages();
 }
 
+// Add script to page
 (function () {
-    // Add settings
-    var m = document.createElement('script');
-    m.textContent = "(" + tbnoti.toString() + ')();';
-    document.head.appendChild(m);
 
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    }
+
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
+    }
+
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+
+    function init() {
+        var s = document.createElement('script');
+        s.textContent = "(" + tbnoti.toString() + ')();';
+        document.head.appendChild(s);
+    }
 })();

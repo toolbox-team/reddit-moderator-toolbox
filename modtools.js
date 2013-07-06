@@ -10,6 +10,8 @@
 // ==/UserScript==
 
 function modtools() {
+    if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
+    
    var currenturl = document.URL,
         notEnabled = []; //because of the CSS fallback, we can't use TBUtils.noConfig.
 
@@ -1069,21 +1071,13 @@ function modtools() {
 
 }
 
-// Add script to the page
-(function () {
-        // Add script
-        var script = document.createElement('script');
-        script.textContent = "(" + modtools.toString() + ')();';
-        document.head.appendChild(script);
-})();
-
 // Add CSS
 (function addcss() {
-        // Add to all pages
-        var css;
-
-        // Add to mod pages only
-        if (location.pathname.match(/(^\/r\/mod\/)|(\/about\/(?:reports|modqueue|spam|unmoderated))/)) css = '\
+    if (!document.head) return setTimeout(addcss);
+    
+    // Add to mod pages only
+    if (location.pathname.match(/(^\/r\/mod\/)|(\/about\/(?:reports|modqueue|spam|unmoderated))/)) {
+        var css = '\
             .subscription-box .option.active{font-size:0;display:inline-block!important;width:10px;height:10px;padding:2px}\
             .subscription-box .option.add{background-color:#7BB850;background-position:3px 3px;background-repeat: no-repeat;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAHCAIAAABV+fA3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABrSURBVBhXY6zeEcAAATwx+dYW147m7P4CFWD6/58BjoAAmcvEyPgfhkByjIz/4CIMVYfXvPqPCZ7sPxzAWLnVH6QeCHhiC+0srh7K2vUFbALIvr//oAhsIUgPTISJ4R8DFP0FKwaSEO4/BgA35Fw9UX68TAAAAABJRU5ErkJggg==")}\
             .subscription-box .option.remove{background-color:#C85F63;background-position:3px 5px;background-repeat: no-repeat;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAACCAIAAAAb/VE3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVBhXYzyXmMoABoxg8j+YZDg/8/x/NPB8KwA1RRZZO8v/6AAAAABJRU5ErkJggg==")}\
@@ -1095,9 +1089,47 @@ function modtools() {
             .midcol{margin-left:0!important;width:auto!important}\
             ,a.pretty-button:focus{box-shadow: 0 0 5px rgba(0,0,255,1);-webkit-box-shadow: 0 0 5px rgba(0,0,255,1);-moz-box-shadow: 0 0 5px rgba(0,0,255,1)}\
             .thing{margin-bottom:0;padding:4px 0}';
-
-        s = document.createElement('style');
+        
+        var s = document.createElement('style');
         s.type = "text/css";
         s.textContent = css;
         document.head.appendChild(s);
+    }
+    
+    // Add script to the page
+    (function addscript() {
+        if (!document.body) return setTimeout(addscript);
+        // Check if we are running as an extension, or if TBUtils has been added.
+        if (typeof chrome !== "undefined" && chrome.extension) {
+            init();
+            return;
+        } 
+        
+        // Check if TBUtils has been added.
+        if (!window.TBUadded) {
+            window.TBUadded = true;
+            
+            var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+            var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+            $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+            $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+        }
+        
+        // Do not add script to page until TBUtils is added.
+        (function loadLoop() {
+            setTimeout(function () {
+                if (typeof TBUtils !== "undefined") {
+                    init();
+                } else {
+                    loadLoop();
+                }
+            }, 100);
+        })();
+        
+        function init() {
+            var s = document.createElement('script');
+            s.textContent = "(" + modtools.toString() + ')();';
+            document.head.appendChild(s)
+        }
     })();
+})();

@@ -1,18 +1,17 @@
 // ==UserScript==
-// @name       Mod Button
-// @namespace    http://www.reddit.com/r/toolbox
-// @description  Universal moderator action button.
+// @name        Mod Button
+// @namespace   http://www.reddit.com/r/toolbox
+// @author      agentlame, creesch, LowSociety
+// @description Universal moderator action button.
 // @include     http://www.reddit.com/*
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/167236.user.js
-// @version    1.10.9
+// @version     1.11
 // ==/UserScript==
-// Known bugs:
-// username... nay, subreddit. (TBUtils).
 
 function modbutton() {
-    if (!reddit.logged) return;
+    if (!reddit.logged || !TBUtils.setting('ModButton', 'enabled', true)) return;
 
     var buttonName = 'mod',
         saveButton = 'Save',
@@ -31,47 +30,6 @@ function modbutton() {
         savedSubs = TBUtils.saneSort(savedSubs);
         run();
     });
-
-    /*
-
-    function getUserAndSub(thing) {
-        var user = $(thing).find('.author:first').text(),
-            currentsub = $('.titlebox h1.redditname a').text();
-
-        // do it differently on the about mod page.
-        if (location.pathname.match(/\/about\/(?:moderator)\/?/) && !user) {
-            user = $(thing).closest('.user').find('a:first').text();
-        }
-
-        // Try again.
-        if (!user) {
-            user = $(thing).closest('.entry').find('.author:first').text();
-        }
-
-        if (!currentsub) {
-            currentsub = $(thing).closest('.entry').find('.subreddit').text();
-        }
-
-        if (!currentsub) {
-            currentsub = $(thing).closest('.thing').find('.subreddit').text();
-        }
-
-        // If we still don't have a sub, we're in mod mail
-        if (!currentsub) {
-            currentsub = $(thing).closest('.entry').find('.head a:last').text().replace('/r/', '').replace('/', '').trim();
-        }
-
-        // Not a mod, reset current sub.
-        if ($.inArray(currentsub, mySubs) === -1) {
-            currentsub = '';
-        }
-
-        return {
-            'currentsub': currentsub,
-            'user': user
-        };
-    }
-    */
 
     function run() {
         // do it differently on the about mod page.
@@ -407,10 +365,39 @@ function modbutton() {
     });
 }
 
-// Add scripts/style to page
+// Add script to page
 (function () {
-        // Add script
-        var script = document.createElement('script');
-        script.textContent = "(" + modbutton.toString() + ')();';
-        document.head.appendChild(script);
+    
+    // Check if we are running as an extension
+    if (typeof chrome !== "undefined" && chrome.extension) {
+        init();
+        return;
+    } 
+    
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+        
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+    }
+    
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+    
+    function init() {
+        var s = document.createElement('script');
+        s.textContent = "(" + modbutton.toString() + ')();';
+        document.head.appendChild(s);
+    }
 })();

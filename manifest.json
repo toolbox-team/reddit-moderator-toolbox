@@ -3,15 +3,15 @@
 
   "name": "reddit Moderator Toolbox",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "0.9",
+  "version": "0.11",
 
   "permissions": [
     "https://*.reddit.com/",
-	"http://*.reddit.com/",
-	"notifications",
-	"tabs",
-	"storage",
-	"unlimitedStorage"
+  "http://*.reddit.com/",
+  "notifications",
+  "tabs",
+  "storage",
+  "unlimitedStorage"
   ],
   "icons": { "16": "icon16.png",
            "48": "icon48.png",
@@ -21,6 +21,6 @@
       "matches": ["http://*.reddit.com/*"],
       "css": ["toolbox.css"],
       "js": ["tbutils.js","notifier.js","domaintagger.js","usernotes.js","modbutton.js","modmailpro.js","stattittab.js","modtools.js","config.js"]
-	  }
+    }
   ]
 }

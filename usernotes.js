@@ -165,7 +165,7 @@ function usernotes() {
 
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
-                notEnabled.push(currsub);
+                TBUtils.noNotes.push(currsub);
                 return;
             }
 

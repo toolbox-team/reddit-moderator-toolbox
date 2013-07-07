@@ -85,7 +85,7 @@ function modbutton() {
 
         var display = (savedSubs.length < 1) ? 'none' : '',
             showglobal = (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")) ? '' : 'none',
-            info = TBUtils.getThingInfo(this),
+            info = TBUtils.getThingInfo(this,true),
             currentsub = info.subreddit,
             user = info.user;
 

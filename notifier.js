@@ -346,16 +346,12 @@ function tbnoti() {
                                 var body_html = htmlDecode(json.data.children[i].data.body_html);
                                 var subject = htmlDecode(json.data.children[i].data.subject);
                                 var id = json.data.children[i].data.id;
-
-
+                                
                                 TBUtils.notification('New message from:' + author, $(body_html).text().substring(0, 400) + '...', 'http://www.reddit.com/message/messages/' + id);
                                 pushedunread.push(json.data.children[i].data.name);
-
+                                
                             }
-
-
-
-
+                            
                         }
                         if (pushedunread.length > 100) {
                             pushedunread.splice(0, 100 - pushedunread.length);

@@ -102,7 +102,8 @@
         position: relative;
         top: 40px;
         max-width: 1000px;
-        margin: 0 auto;
+		margin-right:auto;
+		margin-left:auto;
         padding: 0px;
         background-color: #FFF;
         border: solid 1px #808080;
@@ -120,15 +121,15 @@
         border-bottom: solid 1px #A8B5C2;
         }
     .tb-window-tabs {
-        padding-top: 10px;
-        padding-bottom: 10px;
         border-bottom: solid 1px #A8B5C2;
         background-color: #C7D6E6;
+		height: 34px;
         }
 	.tb-window-tabs a {
         background-color: #C7D6E6;
-        padding: 10px;
         border-right: dotted 1px #A8B5C2;
+		line-height: 34px;
+		padding: 10px;
         }
 	.tb-window-tabs a:hover {
         background-color: #9FBAD6;

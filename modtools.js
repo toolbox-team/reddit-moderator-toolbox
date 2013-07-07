@@ -13,8 +13,10 @@ function modtools() {
     if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
     
    var currenturl = document.URL,
-       notEnabled = []; //because of the CSS fallback, we can't use TBUtils.noConfig.
-
+       notEnabled = [], //because of the CSS fallback, we can't use TBUtils.noConfig.
+       hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
+       ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false);
+        
     function removequotes(string) {
         return string.replace(/['"]/g, '');
     }
@@ -591,12 +593,12 @@ function modtools() {
         // Uncheck anything we've taken an action, if it's checked.
         $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');
-            if (e.target.innerText.indexOf('approve') !== -1) {
+            if (ignoreonapprove && e.target.innerText.indexOf('approve') !== -1) {
                 $(thing).find('a:contains("ignore reports")').click(); //needs setting
             }
             
             $(thing).find('input[type=checkbox]').attr('checked', false);
-            $(thing).hide(); // needs setting,
+            if (hideactioneditems) $(thing).hide();
         });
 
         // Set reports threshold (hide reports with less than X reports)

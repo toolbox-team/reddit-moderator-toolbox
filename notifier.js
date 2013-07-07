@@ -35,6 +35,10 @@ function tbnoti() {
         dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
         configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true);
+        
+    // MTE settings.
+    var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
+        ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false);
 
     //
     // generic functions
@@ -107,14 +111,12 @@ function tbnoti() {
 		
 		// Settings for the tool bar. 
 		var htmltoolbar = '\
-					<div class="tb-window-content-toolbar">\
-						<p>\
-				Get notifications for new messages?<br>\
-				<input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '>\
+            <div class="tb-window-content-toolbar">\
+            <p>\
+				<label><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
 			</p>\
 			<p>\
-				Get modqueue notifications? <br>\
-				<input type="checkbox" name="modnotifications" ' + modnotificationschecked + '>\
+				<label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
 			</p>\
 			<p>\
 				Shortcuts (carefull! takes full html):<br>\
@@ -129,8 +131,8 @@ function tbnoti() {
 				<input type="text" name="unmoderatedsubreddits">\
 			</p>\
 			<div class="tb-help-content">Edit toolbar stuff</div>\
-		     ';
-            $(htmltoolbar).appendTo('.tb-window-content')	
+            ';
+            $(htmltoolbar).appendTo('.tb-window-content');
 			$('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
 			$('.tb-help').attr('currentpage', 'tb-window-content-toolbar');
 		
@@ -141,43 +143,48 @@ function tbnoti() {
 		
 		// Settings to toggle the modules 
 		var htmlmodules = '\
-		<div class="tb-window-content-modules">\
-		    		<p>\
-				Enable ModMailPro? <br>\
-				<input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '>\
+            <div class="tb-window-content-modules">\
+            <p>\
+				<label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
 			</p>\
-        	<p>\
-				Enable ModButton? <br>\
-				<input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '> Enable Mod Button</label>\
 			</p>\
-        	<p>\
-				Enable Mod Tools Enhanced? <br>\
-				<input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '> Enable Mod Tools Enhanced</label>\
 			</p>\
-        	<p>\
-				Enable User Notes? <br>\
-				<input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
 			</p>\
-        	<p>\
-				Enable Domain Tagger? <br>\
-				<input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '> Enable Domain Tagger</label>\
 			</p>\
-        	<p>\
-				Enable Toolbox Config? <br>\
-				<input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
 			</p>\
-        	<p>\
-				Enable Stattit Tab? <br>\
-				<input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '>\
+            <p>\
+				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Stattit Tab</label>\
 			</p>\
 			<div class="tb-help-content">Here you can disable the several toolbox modules.</div>\
 			</div>\
             ';
-			$(htmlmodules).appendTo('.tb-window-content').hide();;
+			$(htmlmodules).appendTo('.tb-window-content').hide();
 			$('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
-
-			
-
+        
+        // Settings to toggle the modules 
+		var htmlmodtools = '\
+            <div class="tb-window-content-modtools">\
+            <p>\
+				<label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
+			</p>\
+            <p>\
+				<label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
+			</p>\
+			<div class="tb-help-content">Settings for Mod Tools Enhanced.</div>\
+			</div>\
+            ';
+			$(htmlmodtools).appendTo('.tb-window-content').hide();
+			$('<a href="javascript:;" class="tb-window-content-modtools">Mod Tools</a>').appendTo('.tb-window-tabs');
     }
 
     // Open the settings
@@ -187,10 +194,10 @@ function tbnoti() {
 
     // change tabs 
 	$('body').delegate('.tb-window-tabs a', 'click', function() { 
-	console.log('tab toggle');
+	//console.log('tab toggle');
 		var tab = $(this).attr('class');
-		console.log(tab);
-		console.log($('.tb-window-content').children());
+		//console.log(tab);
+		//console.log($('.tb-window-content').children());
 		$('.tb-help').attr('currentpage', tab);
 		$('.tb-window-content').children().hide(); 
 		$('div.'+tab).show();
@@ -229,19 +236,24 @@ function tbnoti() {
         TBUtils.setting('DomainTagger', 'enabled', '', $("#dtagEnabled").prop('checked'));
         TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
         TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
+        
+        // Save MTE settings.
+        TBUtils.setting('ModTools', 'hideactioneditems', '', $("#hideactioneditems").prop('checked'));
+        TBUtils.setting('ModTools', 'ignoreonapprove', '', $("#ignoreonapprove").prop('checked'));
 
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');
+        window.location.reload();
     });
 
 
     $('body').delegate('.tb-help', 'click', function () {
 	    var tab = $(this).attr('currentpage');
 		tab = '.'+tab;
-		console.log(tab);
-        var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100')
+		//console.log(tab);
+        var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
         var htmlcontent = $(tab).find('.tb-help-content').html();
-		console.log(htmlcontent);
+		//console.log(htmlcontent);
         var html = '\
         <!DOCTYPE html>\
         <html>\
@@ -402,14 +414,14 @@ function tbnoti() {
                         // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
                         var pusheditems = new Array();
                         pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
-                        console.log(pusheditems);
-                        console.log('ok0');
+                        //console.log(pusheditems);
+                        //console.log('ok0');
                         for (var i = 0; i < modqueeamount; i++) {
 
 
 
                             if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
-                                console.log('ok1' + i);
+                                //console.log('ok1' + i);
 
                                 var mqpermalink = json.data.children[i].data.permalink;
 

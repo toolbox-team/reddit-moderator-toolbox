@@ -153,7 +153,7 @@ function usernotes() {
                     <span>/u/' + user + ': <span><input type="text" class="user-note" user="' + user + '" subreddit="' + subreddit + '" link= "' + link + '"/>\
                     <input class="save-user" type="button" value="save for /r/' + subreddit + '"/>\
                     <input class="cancel-user" type="button" value="cancel"/>\
-                    <label><input class="include-link" type="checkbox" checked/>include link</label<br><br>\
+                    <label><input class="include-link" type="checkbox" checked/>include link</label><br><br>\
                     <table class="utagger-notes"><tr><td class="utagger-notes-td1">Author</td><td class="utagger-notes-td2">Note</td><td class="utagger-notes-td3"></td></tr></table>\
                     <div>')
             .appendTo('body')

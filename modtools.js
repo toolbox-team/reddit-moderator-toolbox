@@ -1106,7 +1106,7 @@ function modtools() {
     (function addscript() {
         if (!document.body) return setTimeout(addscript);
         // Check if we are running as an extension, or if TBUtils has been added.
-        if (typeof chrome !== "undefined" && chrome.extension) {
+        if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
             init();
             return;
         } 

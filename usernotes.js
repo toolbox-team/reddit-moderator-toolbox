@@ -280,7 +280,7 @@ function usernotes() {
 (function () {
     
     // Check if we are running as an extension
-    if (typeof chrome !== "undefined" && chrome.extension) {
+    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
         init();
         return;
     } 

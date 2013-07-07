@@ -461,7 +461,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 (function () {
     
     // Check if we are running as an extension
-    if (typeof chrome !== "undefined" && chrome.extension) {
+    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
         init();
         return;
     } 

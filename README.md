@@ -15,5 +15,5 @@ Containing:
 
 ### Todo
 
-- Migrate all settings to config.js 
-- Ability to turn on/off individual modules 
+- Migrate all settings to config.js - started
+- Ability to turn on/off individual modules - done

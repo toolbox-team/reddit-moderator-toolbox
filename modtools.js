@@ -13,7 +13,7 @@ function modtools() {
     if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
     
    var currenturl = document.URL,
-        notEnabled = []; //because of the CSS fallback, we can't use TBUtils.noConfig.
+       notEnabled = []; //because of the CSS fallback, we can't use TBUtils.noConfig.
 
     function removequotes(string) {
         return string.replace(/['"]/g, '');
@@ -113,16 +113,17 @@ function modtools() {
             thing = button.thing(),
             info = TBUtils.getThingInfo(thing);
             data = {
-                subreddit: thing.find('a.subreddit').text() || reddit.post_site || thing.find('.buttons .first a').attr('href').match(/\/r\/(\w+)\//)[1],
+                subreddit: info.subreddit,
                 fullname: thing.thing_id(),
-                author: thing.find('a.author:first').text(),
+                author: info.user,
                 title: thing.find('a.title').length ? '"' + thing.find('a.title').text() + '"' : '',
                 kind: thing.hasClass('link') ? 'submission' : 'comment',
                 mod: reddit.logged,
-                url: info.permalink,//thing.find('.buttons:first .first a').attr('href'),
+                url: info.permalink,
                 link: thing.find('a.title').attr('href'),
-                domain: thing.find('span.domain:first').text().replace('(', '').replace(')', '')
+                domain: info.domain
             };
+            console.log(data);
 
         if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) return;
 
@@ -184,7 +185,7 @@ function modtools() {
                     <div class="reason-popup-content"> \
                     <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
                     <p>Removing: <a href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
-					<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
+    				<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
@@ -588,10 +589,14 @@ function modtools() {
         });
 
         // Uncheck anything we've taken an action, if it's checked.
-        $('.pretty-button').live('click', function () {
+        $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');
+            if (e.target.innerText.indexOf('approve') !== -1) {
+                $(thing).find('a:contains("ignore reports")').click(); //needs setting
+            }
+            
             $(thing).find('input[type=checkbox]').attr('checked', false);
- //           $(thing).hide();
+            $(thing).hide(); // needs setting,
         });
 
         // Set reports threshold (hide reports with less than X reports)
@@ -908,7 +913,6 @@ function modtools() {
                     data.bantitle = data.bantitle.replace('{title}', data.title);
                     data.bantitle = data.bantitle.replace('{author}', data.author);
                     data.bantitle = data.bantitle.replace('{subreddit}', data.subreddit);
-                    console.log(data);
                     
                     $.post('/api/submit', {
                         kind: 'link',

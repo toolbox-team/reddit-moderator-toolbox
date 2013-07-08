@@ -26,6 +26,13 @@ function tbnoti() {
         modqueuecount = localStorage['Toolbox.Notifier.modqueuecount'] || '0',
         unmoderatedcount = localStorage['Toolbox.Notifier.unmoderatedcount'] || '0',
         modmailcount = localStorage['Toolbox.Notifier.modmailcount'] || '0';
+		
+    var icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
+                d5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5fJ5wOHwygVgsZpjVW60WqqqWz\
+                bVgMIjf78fn8xlTBcTy736/T7VaJRQKfQoEArqmafR6Pdxu9/ECkUjkglje63Q6NBoNisUihUKBcrlMpVLB6XR2D4df3VQnmRstsWzU63WazSZmX6vV0HWdUqmEw+GY2Gw25SC8dV1l1wrZNX5s3qLdbpPL5fB6vXumZal\
+                q2O32rtVqVQ6GuGnCd+HbFnx9AZrC+MkSHo/np8vlmj/M7f4ks6yysyawgB8fwPv70HgKG8v8cp/7fFRO/+AllewqNJ/DhyBsi9A7J1QTkF4E69mXRws8u6ayvSJwRqoG4K2Md+ygxyF5FdbPaMfdlIXUZfiyAUWx/OY25O\
+                4JHBP4CtyZ16a9EwuRi1CXs+5K1ew6lB9DXERX517P8tEsPDzfNIP6C5YeQewSrJyeCd4P0bnwXYISy3MCn5oZNtsf3pH46e7XBJcAAAAASUVORK5CYII=';
+				
 
     // Module settings.
     var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
@@ -63,7 +70,7 @@ function tbnoti() {
     // toolbar, this will display all counters, quick links and other settings for the toolbox
     $('.footer-parent').prepend('\
     <div id="tb-bottombar" class="tb-toolbar">\
-		<a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)">Settings</a>\
+		<a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,'+ icon +'" /></a> ::\
 		<span id="tb-toolbarshortcuts">' + unescape(shortcuts) + '</span>\
 		<span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \

@@ -641,7 +641,7 @@ function settings() {
     // Create setting elements 
     var settingsDiv = $('<div class="mmp-settings">'),
         separator = '<span style="color:gray"> | </span>',
-        settingsToggle = $('<li><a style="color:gray" href="javascript:;" class="settings-link">?</a><label class="first-run" style="display: none;">\
+        settingsToggle = $('<li><a style="color:gray" href="javascript:;" class="settings-link">' + String.fromCharCode(9660) + '</a><label class="first-run" style="display: none;">\
                            &#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>  </span></li>'),
         about = $('<span class="mmp-info" style="float:right; display:none"><b><a href="https://github.com/agentlame/modmailpro">Mod Mail Pro</a> v' + VERSION + '</b></span>'),
         info = $('<span  style="float:right;">all changes require reload</span>');

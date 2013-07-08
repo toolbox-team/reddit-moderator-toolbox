@@ -27,7 +27,8 @@ function modmailpro() {
         expandreplies = JSON.parse(localStorage["Toolbox.ModMailPro.expandreplies"] || "false"),
         noredmodmail = JSON.parse(localStorage["Toolbox.ModMailPro.noredmodmail"] || "true"),
         hideinvitespam = JSON.parse(localStorage["Toolbox.ModMailPro.hideinvitespam"] || "false"),
-        highlightnew = JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true");
+        highlightnew = JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true"),
+        unreadpage = location.pathname.match(/\/moderator\/(?:unread)\/?/);
 
     var moreCommentThreads = [],
         unreadThreads = [];
@@ -88,7 +89,7 @@ function modmailpro() {
 
     function setView() {
         var a = []; //hacky-hack for 'all' view.
-
+        //console.log()
         // Neither a switch nor === will work correctly.
         if (inbox == ALL) {
             $(alllink).closest('li').addClass('selected');
@@ -206,6 +207,10 @@ function modmailpro() {
 
     function initialize() {
         console.log('MMP init');
+        
+        // Update the notifier.
+        TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
+        TBUtils.setting('Notifier', 'modmailcount', '', 0);
 
         var threads = $('.message-parent');
 
@@ -224,6 +229,16 @@ function modmailpro() {
             // If set collapse all threads on load.
             if (collapsed) {
                 collapseall();
+            }
+            
+            // If we're on the unread page, don't filter anything.
+            if (unreadpage) {
+                var entries = $('.entry');
+                var newCount = entries.length;
+                inbox = ALL;
+                menulist.html('<a href="http://www.reddit.com/message/moderator/">go to full mod mail</a>');
+                $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
+                $(entries).click();
             }
 
             // Set views.
@@ -325,6 +340,7 @@ function modmailpro() {
         if (newThread) {
             $(thread).removeClass('realtime-new');
             $(thread).find('.correspondent:first').css('background-color', 'yellow');
+            $(thread).find('.child').remove(); //remove stupid 'false' child.
             setView();
             setFilterLinks();
 
@@ -485,9 +501,10 @@ function modmailpro() {
 }
 
 function realtimemail() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return;  
-    // Don't run if the page we're viewing is paginated.
-    if (location.search.match(/before|after/)) return;
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    
+    // Don't run if the page we're viewing is paginated, or if we're in the unread page.
+    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)) return;
 
     var realtime = localStorage.getItem('realtime'),
         delay = 1 * 60000, // Default 1 min delay between requests.

@@ -74,7 +74,7 @@ function tbnoti() {
 		<span id="tb-toolbarshortcuts">' + unescape(shortcuts) + '</span>\
 		<span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-			<a href="http://www.reddit.com/message/unread" class="tb-toolbar" id="tb-mailCount">[' + unreadmessagecount + '] </a>\
+			<a href="http://www.reddit.com/message/inbox" class="tb-toolbar" id="tb-mailCount">[' + unreadmessagecount + '] </a>\
 			<a title="modqueue" href="http://www.reddit.com/r/' + modsubreddits + '/about/modqueue" id="tb-modqueue"></a> \
 			<a href="http://www.reddit.com/r/' + modsubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[' + modqueuecount + ']</a>\
 			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
@@ -318,6 +318,7 @@ function tbnoti() {
                 unreadmessagecount = 0;
                 $('#mailCount').html('');
                 $('#tb-mailCount').html('[0]');
+				$('#tb-mailCount').attr('href', 'http://www.reddit.com/message/inbox/');
                 // here we wil set the new value for dcunreamessagedcount. a function call to change counters will also be here
                 localStorage['Toolbox.Notifier.unreadmessagecount'] = unreadmessagecount;
                 $('#mail').attr('class', 'nohavemail');
@@ -334,6 +335,7 @@ function tbnoti() {
                 $('#tb-mail').attr('class', 'havemail');
                 $('#tb-mail').attr('title', 'new mail!');
                 $('#tb-mail').attr('href', 'http://www.reddit.com/message/unread');
+				$('#tb-mailCount').attr('href', 'http://www.reddit.com/message/unread');
                 $('#tb-mailCount').html('[' + json.data.children.length + ']');
                 //console.log('unreadmessagecount3: ' + unreadmessagecount);
                 // Are we allowed to show a popup?

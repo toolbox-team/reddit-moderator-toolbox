@@ -12,16 +12,19 @@
 function modtools() {
     if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
     
-   var currenturl = document.URL,
-       notEnabled = [], //because of the CSS fallback, we can't use TBUtils.noConfig.
+   var notEnabled = [], //because of the CSS fallback, we can't use TBUtils.noConfig.
        hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-       ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false);
+       ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
+       removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
+       commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
+       rtscomment = TBUtils.setting('ModTools', 'rtscomment', true);
+       
         
     function removequotes(string) {
         return string.replace(/['"]/g, '');
     }
 
-    function getRemovalReasons(subreddit, callback) {
+    function getRemovalReasons(subreddit, callback) {        
         console.log('getting config: ' + subreddit);
         var reasons = '';
 
@@ -99,8 +102,10 @@ function modtools() {
     $('.big-mod-buttons>span>.pretty-button.neutral, .remove-button').live('click', openRemovalPopup);
 
     function openRemovalPopup(event) {
+        if (!removalreasons) return;
+        
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/)) return;
+        if (thingclasses.match(/\bcomment\b/) && !commentreasons) return;
 
         // Close popup if we click outside of it, disabled for now since it is causing a annoyance
         //    $(document).mouseup(function (e) {
@@ -187,7 +192,7 @@ function modtools() {
                     <div class="reason-popup-content"> \
                     <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
                     <p>Removing: <a href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
-    				<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
+        			<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
@@ -760,6 +765,8 @@ function modtools() {
                 domaintable = contentBox.find('.domain-table tbody'),
                 subreddits = {}, subredditlist = [],
                 subreddittable = contentBox.find('.subreddit-table tbody');
+                
+            $('.rts-report').attr('data-author', author);
 
             // Show user's karma
             $.get('/user/' + author + '/about.json').success(function (d) {
@@ -854,9 +861,7 @@ function modtools() {
                         }
                         if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
 
-                        $('.rts-report')
-                            .attr('data-commentbody', commentbody)
-                            .attr('data-author', author);
+                        $('.rts-report').attr('data-commentbody', commentbody);
 
                         if (after) populateHistory(after);
                         else gettingUserdata = false;
@@ -1000,7 +1005,7 @@ function modtools() {
                     }
 
                     // Post stats as a comment.
-                    if (!commentbody.length) return;
+                    if (!commentbody.length || !rtscomment) return;
                     $.post('/api/comment', {
                         uh: reddit.modhash,
                         thing_id: submission.json.data.name,

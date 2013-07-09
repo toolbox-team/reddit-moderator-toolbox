@@ -10,10 +10,13 @@ function main() {
         shortlength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
         longlength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
         cachename = localStorage['Toolbox.cache.cachename'] || '',
+        seennotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
+        notelastshown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1),
         id = Math.floor(Math.random() * 9999),
         newlogin = (cachename != reddit.logged),
         getnewlong = (((now - lastgetlong) / (60 * 1000) > longlength) || newlogin),
-        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin);
+        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin),
+        noteURL = 'http://agentlame.github.io/toolbox/tbnote.js';
 
     // Public variables
     TBUtils.version = 1;
@@ -43,7 +46,10 @@ function main() {
     if (getnewshort) {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
-
+    
+    // Add note JS file to page.
+    $('head').prepend('<script type="text/javascript" src=' + noteURL + '></script>');
+    
     TBUtils.usernotes = {
         ver: 1,
         users: [] //typeof userNotes
@@ -79,6 +85,27 @@ function main() {
         if (keyval === undefined) return defaultVal;
         
         return JSON.parse(keyval);
+    };
+    
+    TBUtils.alert = function(message, callback){
+        $('<div id="tb-notification-alert">'+ message +'</div>').appendTo('body').click(function () {
+            $(this).remove();
+            callback();
+        });
+    };
+    
+    TBUtils.showNote = function(note) {
+        if (!note.id || !note.text) return;
+        
+        if ($.inArray(note.id, seennotes) === -1) {
+            TBUtils.setting('Utils', 'notelastshown', '', now);
+            
+            TBUtils.alert(note.text, function(){
+                seennotes.push(note.id);
+                TBUtils.setting('Utils', 'seennotes', '', seennotes);
+                if (note.link) window.open(note.link);
+            });
+        }
     };
     
     TBUtils.notification = function (title, body, url, timeout) {
@@ -258,10 +285,10 @@ function main() {
 
             } else {
                 // Ask for permission. 
-                $('<div id="tb-notification-permission">An toolbox script would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.</div>').appendTo('body').click(function () {
+                var message = 'Toolbox would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.';
+                TBUtils.alert(message, function () {
                     window.webkitNotifications.requestPermission();
                     // We could build in a function to show the notifcation that prompted this whole function, but since it is likely a one time occurence I thought it would be a bit over the top.
-                    $(this).remove();
                 });
             }
         }

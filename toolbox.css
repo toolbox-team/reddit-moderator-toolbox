@@ -15,6 +15,24 @@
     border-top: solid 1px #A8B5C2;
 }
 
+#tb-bottombar-hidden {
+    bottom: 0px;
+    z-index: 6000;
+    position: fixed;
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    width: 30px;
+    height: 20px;
+    background-color: rgba(206, 227, 248, 0.86);
+    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
+    font-size: small;
+    color: #696969;
+    padding: 2px !important;
+    border-top: solid 1px #A8B5C2;
+    border-right: solid 1px #A8B5C2;
+}
+
 #tb-mail.nohavemail {
     background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
     background-position: -16px -645px;
@@ -267,7 +285,7 @@ img.sticky-close {
     border-bottom: 0;
 }
 
-#tb-notification-permission {
+#tb-notification-alert {
     top: 100px;
     left: 100px;
     z-index: 6000;
@@ -457,7 +475,7 @@ img.sticky-close {
     position: fixed;
     top: 0px;
     left: 0px;
-	margin-left: auto;
+    margin-left: auto;
 	margin-right: auto;
 	padding: 5px !important;
     right: 0px;

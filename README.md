@@ -1,13 +1,14 @@
-reddit-moderator-toolbox
+reddit Moderator Toolbox
 ========================
 
-bundled extension of the /r/toolbox moderator tools for reddit.com 
+Bundled extension of the /r/toolbox moderator tools for reddit.com 
 
 Containing: 
 - Mod Tools Enhanced
 - Mod Button
 - Mod Mail Pro
 - Mod Domain Tagger
+- Mod User Notes
 - Stattit Tab
 - Toolbox Notifier
 - Toolbox Config 
@@ -15,5 +16,4 @@ Containing:
 
 ### Todo
 
-- Migrate all settings to config.js - started
-- Ability to turn on/off individual modules - done
+- Migrate all settings to notify.js - started

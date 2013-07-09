@@ -22,7 +22,7 @@
     text-align: left;
     margin-left: 0;
     margin-right: 0;
-    width: 30px;
+    width: auto;
     height: 20px;
     background-color: rgba(206, 227, 248, 0.86);
     font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
@@ -226,6 +226,21 @@ font-weight:bold;
 text-decoration:underline;
 
 }
+
+.tb-window-content-shortcuts-table td {
+width: 50%;
+padding: 3px;
+}
+
+.tb-window-content-shortcuts-table td input{
+width: 98%;
+}
+
+.tb-window-content-shortcuts-td-remove { 
+width: 25px;
+}
+
+
 
 div.sticky-queue {
     position: fixed;

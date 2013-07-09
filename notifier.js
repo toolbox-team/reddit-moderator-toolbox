@@ -49,29 +49,7 @@ function tbnoti() {
         removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
         commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true);
-        
-		// Make sure that people can fix the "unread" message sticking around in /unread/ by adding an "mark all unread" button
-		if (TBUtils.isModmailUnread) {
-		$('.menuarea').after('<div class="tb-mark-unread">Mark all modmail as read</div>');
-		 $('body').delegate('.tb-mark-unread', 'click', function() {
-		console.log('something has been clicked');
-        
-		if ($('.message')){
-		$('.message').each(function() {
-		
-		var unreadmessageid = $(this).find('.bylink').attr('href');
-				
-				$.post('/api/read_message', {
-                     id: 't4_'+unreadmessageid.match(/[^/]+$/),
-                     uh: reddit.modhash,
-                     api_type: 'json'
-                });
-				
-		
-		}); 
-		}
-		}); 
-}		
+	
 
     //
     // UI elements 
@@ -90,8 +68,8 @@ function tbnoti() {
 			<a href="http://www.reddit.com/r/' + modsubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
 			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
 			<a href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount">[0]</a> \
-			<a title="modmail" href="http://www.reddit.com/message/moderator/unread/" id="tb-modmail" class="nohavemail"></a>\
-			<a href="http://www.reddit.com/message/moderator/unread/" class="tb-toolbar" id="tb-modmailcount">[0]</a>\
+			<a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
+			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount">[0]</a>\
 		</span>\
 	</div>');
     

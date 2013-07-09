@@ -50,7 +50,28 @@ function tbnoti() {
         commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true);
         
+		// Make sure that people can fix the "unread" message sticking around in /unread/ by adding an "mark all unread" button
+		if (TBUtils.isModmailUnread) {
+		$('.menuarea').after('<div class="tb-mark-unread">Mark all modmail as read</div>');
+		 $('body').delegate('.tb-mark-unread', 'click', function() {
+		console.log('something has been clicked');
         
+		if ($('.message')){
+		$('.message').each(function() {
+		
+		var unreadmessageid = $(this).find('.bylink').attr('href');
+				
+				$.post('/api/read_message', {
+                     id: 't4_'+unreadmessageid.match(/[^/]+$/),
+                     uh: reddit.modhash,
+                     api_type: 'json'
+                });
+				
+		
+		}); 
+		}
+		}); 
+}		
 
     //
     // UI elements 
@@ -473,9 +494,9 @@ function tbnoti() {
                     // set up an array in which we will load the last 100 items that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
                     var pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
-                    $(pusheditems).each(function(item) {
+                    for (var i = 0; i < count; i++) {
                         
-                        if ($.inArray(item.data.name, pusheditems) == -1 && item.kind == 't3') {
+                        if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
                             
                             var mqpermalink = item.data.permalink,
                                 mqtitle = item.data.title,
@@ -496,7 +517,7 @@ function tbnoti() {
                             pusheditems.push(item.data.name);
                             
                         }
-                    });
+                    }
                     
                     if (pusheditems.length > 100) {
                         pusheditems.splice(0, 100 - pusheditems.length);
@@ -520,50 +541,80 @@ function tbnoti() {
         //
         // Modmail
         //
-        
+		
+       
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        $.getJSON('http://www.reddit.com/message/moderator.json', function (json) {
+        $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             var count = json.data.children.length || 0;
-            if (count === 0) {
-                TBUtils.setting('Notifier', 'modmailcount', '', count);
-                updateModMailCount(count);
-                return;
-            }
-            
-            var lastSeen = TBUtils.setting('Notifier', 'lastseenmodmail', -1),
-                newIdx = '',
-                title = '',
-                text = '',
-                newCount = 0;
-            
-            for (var i = 0; i < json.data.children.length; i++) {
-                var messageTime = json.data.children[i].data.created_utc * 1000;
-                
-                if (!lastSeen || messageTime > lastSeen) {
-                    newCount++;
-                    if (!newIdx) { newIdx = i; }
-                }
-            }
-            
-            // Don't show the message twice.
-            if (newCount === modmailcount) return;
-            
-            console.log('New messages: ', newCount);
-            
-            if (newCount == 1) {
-                var message = json.data.children[newIdx];
-                title = '/r/' + message.data.subreddit + ': ' + message.data.subject;
-                text = 'From: /u/' + message.data.author + '\n' + message.data.body;
-            } else if (newCount > 1) {
-                title = 'New Mod Mail!';
-                text = 'You have ' + newCount + ' new mod mail thead' + (newCount == 1 ? '': 's');
-            }
-                
-            if (newCount > 0) {
-                TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
-            }
-            TBUtils.setting('Notifier', 'modmailcount', '', newCount);
-            updateModMailCount(newCount);
+        //    if (count === 0) {
+        //        TBUtils.setting('Notifier', 'modmailcount', '', count);
+        //        updateModMailCount(count);
+        //        return;
+        //    }
+        //    
+        //    var lastSeen = TBUtils.setting('Notifier', 'lastseenmodmail', -1),
+        //        newIdx = '',
+        //        title = '',
+        //        text = '',
+        //        newCount = 0;
+        //    
+        //    for (var i = 0; i < json.data.children.length; i++) {
+        //        var messageTime = json.data.children[i].data.created_utc * 1000;
+        //        
+        //        if (!lastSeen || messageTime > lastSeen) {
+        //            newCount++;
+        //            if (!newIdx) { newIdx = i; }
+        //        }
+        //    }
+        //    
+        //    // Don't show the message twice.
+        //    if (newCount === modmailcount) return;
+        //    
+        //    console.log('New messages: ', newCount);
+        //    
+        //    if (newCount == 1) {
+        //        var message = json.data.children[newIdx];
+        //        title = '/r/' + message.data.subreddit + ': ' + message.data.subject;
+        //        text = 'From: /u/' + message.data.author + '\n' + message.data.body;
+        //    } else if (newCount > 1) {
+        //        title = 'New Mod Mail!';
+        //        text = 'You have ' + newCount + ' new mod mail thead' + (newCount == 1 ? '': 's');
+        //    }
+        //        
+        //    if (newCount > 0) {
+        //        TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
+        //    }
+		
+		
+		if (count > modmailcount) {
+
+		var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');
+		for (var i = 0; i < count; i++) {
+		if ($.inArray(json.data.children[i].data.name, pushedmodmail) == -1) {
+		var modmailbody = json.data.children[i].data.body;
+		    modmailsubject = json.data.children[i].data.subject;
+			modmailsubreddit = json.data.children[i].data.subreddit;
+			modmailpermalink = json.data.children[i].data.id;
+			
+		TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject , modmailbody , 'http://www.reddit.com/message/messages/' + modmailpermalink);
+		
+		
+		console.log('we have a message to push');
+		}
+		}
+		
+		if (pushedmodmail.length > 100) {
+        pushedmodmail.splice(0, 100 - pushedmodmail.length);
+        }
+		TBUtils.setting('Notifier', 'modmailpushed', '', pushedmodmail);
+		
+		}
+		
+		
+		
+		
+        TBUtils.setting('Notifier', 'modmailcount', '', count);
+        updateModMailCount(count);
             
         });
     }

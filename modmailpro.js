@@ -116,6 +116,16 @@ function modmailpro() {
         // Hide invite spam.
         if (hideinvitespam && inbox != UNREAD) {
             $('.invitespam').each(function () {
+			    if ($(this).hasClass('new')) { 
+				var invitespamid = $(this).find('.bylink').attr('href');
+				
+				$.post('/api/read_message', {
+                     id: 't4_'+invitespamid.match(/[^/]+$/),
+                     uh: reddit.modhash,
+                     api_type: 'json'
+                });
+				}
+			
                 $(this).hide();
             });
         }

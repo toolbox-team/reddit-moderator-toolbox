@@ -15,8 +15,7 @@ function main() {
         id = Math.floor(Math.random() * 9999),
         newlogin = (cachename != reddit.logged),
         getnewlong = (((now - lastgetlong) / (60 * 1000) > longlength) || newlogin),
-        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin),
-        noteURL = 'http://agentlame.github.io/toolbox/tbnote.js';
+        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin);
 
     // Public variables
     TBUtils.version = 1;
@@ -47,9 +46,6 @@ function main() {
     if (getnewshort) {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
-    
-    // Add note JS file to page.
-    $('head').prepend('<script type="text/javascript" src=' + noteURL + '></script>');
     
     TBUtils.usernotes = {
         ver: 1,
@@ -101,7 +97,7 @@ function main() {
         if ($.inArray(note.id, seennotes) === -1) {
             TBUtils.setting('Utils', 'notelastshown', '', now);
             
-            TBUtils.alert(note.text, function(){
+            TBUtils.alert(TBUtils.htmlDecode(note.text), function(){
                 seennotes.push(note.id);
                 TBUtils.setting('Utils', 'seennotes', '', seennotes);
                 if (note.link) window.open(note.link);
@@ -602,6 +598,16 @@ function main() {
         localStorage['Toolbox.cache.nonotes'] = JSON.stringify(TBUtils.noNotes);
 
     };
+    
+    // get toolbox news
+    (function getNotes() {
+        TBUtils.readFromWiki('toolbox', 'tbnotes', true, function(resp) {
+            if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1)  return;
+            $(resp.notes).each(function(){
+                TBUtils.showNote(this);
+            });
+        });
+    })();
 
 }(TBUtils = window.TBUtils || {}));
 

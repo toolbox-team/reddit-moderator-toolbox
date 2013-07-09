@@ -121,7 +121,7 @@ function tbnoti() {
 	// Append shortcuts
 		$.each(shortcuts2, function(index, value) { 
 	var shortcut = $('<span>- <a href="' + unescape(value) + '">' + unescape(index) + '</a> </span>');
-	console.log(shortcut);
+	//console.log(shortcut);
 	
 	$(shortcut).appendTo('#tb-toolbarshortcuts');
 	});
@@ -142,7 +142,7 @@ function tbnoti() {
     
     // Show/hide menubar
     $('body').delegate('.tb-bottombar-unhide, .tb-bottombar-hide', 'click', function () {
-      console.log($(this).hasClass('tb-bottombar-hide'));
+      //console.log($(this).hasClass('tb-bottombar-hide'));
 	   toggleMenuBar($(this).hasClass('tb-bottombar-hide'));
     });
 	
@@ -226,7 +226,7 @@ function tbnoti() {
 		
 		
         // Edit shortcuts
-		console.log(htmlshorcuts);
+		//console.log(htmlshorcuts);
         var htmlshorcuts = '\
 		<div class="tb-window-content-shortcuts">\
 		<table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
@@ -250,7 +250,7 @@ function tbnoti() {
 		shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="'+ unescape(index) + '" name="name"> </td><td> <input type="text" value="' + unescape(value) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
 		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconclose + '" /></a></td></tr>\
 		<br><br>';
-		console.log(shortcutinput);
+		//console.log(shortcutinput);
           $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
           });
 		 
@@ -316,19 +316,19 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<p>\
-		<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox</a>\
-		</p>\
-		<p>\
-		Credits:<br><br>\
-		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a>\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
+		<h3>Special thanks to:</h3>\
+		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit tab and several code contributions <br><br>\
+		<h3>Credits:</h3>\
+		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
+		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a>\
 		<div class="tb-help-content">This is a about page!</div>\
-		</div>\
-            ';
+		</div>';
+		
 		$(htmlabout).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-about">About</a>').appendTo('.tb-window-tabs');
 		
-		$("input[name=shortcuts]").val(unescape(shortcuts));
+	//	$("input[name=shortcuts]").val(unescape(shortcuts));
     }
 
     // Open the settings
@@ -498,7 +498,9 @@ function tbnoti() {
                 $('#tb-mailCount').attr('href', 'http://www.reddit.com/message/unread');
             }
             $('#tb-mailCount').html('[' + count + ']');
+			if (count > 0) {
 			$('#mailCount').html('[' + count + ']');
+			}
         }
 
         function updateModqueueCount(count) {
@@ -528,7 +530,7 @@ function tbnoti() {
         }
 
         if ((now - lastchecked) < checkInterval) {
-            console.log('Checked less than check interval, likely running on another page, or a reload.');
+         //   console.log('Checked less than check interval, likely running on another page, or a reload.');
             updateMessagesCount(unreadmessagecount);
             updateModqueueCount(modqueuecount);
             updateUnmodCount(unmoderatedcount);
@@ -538,7 +540,7 @@ function tbnoti() {
 
         // We're checking now.
         TBUtils.setting('Notifier', 'lastchecked', '', now);
-        console.log('cheicking now');
+       // console.log('cheicking now');
 
         //
         // Messages
@@ -576,7 +578,7 @@ function tbnoti() {
 				}
 				
 			
-                    TBUtils.notification('New messages', notifcationbody, 'http://www.reddit.com/message/');
+                    TBUtils.notification('New messages', notifcationbody, 'http://www.reddit.com/message/unread');
                 } else {
 				
                     // set up an array in which we will load the last 100 messages that have been displayed. 
@@ -646,8 +648,8 @@ function tbnoti() {
 
                 if (consolidatedmessages) {
 				var modqueamount = count - modqueuecount;
-				console.log(count);
-				console.log(modqueuecount);
+				//console.log(count);
+				//console.log(modqueuecount);
 				var notifcationbody;
 				
 				if (modqueamount == 1) {
@@ -656,7 +658,7 @@ function tbnoti() {
 				notifcationbody = 'There are ' + modqueamount.toString(2) + ' new items in modqueue'
 				}
 				
-                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/message/');
+                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r' + modsubreddits + '/about/modqueue');
                 } else {
                     // set up an array in which we will load the last 100 items that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
@@ -760,7 +762,7 @@ function tbnoti() {
                                 TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
 
 
-                                console.log('we have a message to push');
+                                //console.log('we have a message to push');
                             }
                         }
 

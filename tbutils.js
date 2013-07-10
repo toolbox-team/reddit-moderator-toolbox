@@ -343,11 +343,12 @@ function main() {
         });
     };
 
-    TBUtils.getThingInfo = function (thing, modCheck) {
-        var entry = $(thing).closest('.entry') || thing;
+    TBUtils.getThingInfo = function (sender, modCheck) {
+        var entry = $(sender).closest('.entry') || sender;
+        var thing = $(sender).closest('.thing') || sender;
         
         if (!$(thing).hasClass('thing')) {
-            thing = $(thing).closest('.thing') || thing;
+            
         }
 
         var user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
@@ -356,7 +357,7 @@ function main() {
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', '');
 
         if (TBUtils.isEditUserPage && !user) {
-            user = $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
+            user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
         }
         
         // If we still don't have a sub, we're in mod mail, or PMs.

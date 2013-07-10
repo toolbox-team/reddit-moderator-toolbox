@@ -676,7 +676,7 @@ img.sticky-close {
 }
 
 .tb-debug-window {
-    position: absolute;
+    position: fixed;
     bottom: 40px;
     right: 20px;
     width: 500px;

@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name        Mod Tools Enhanced
 // @namespace   http://userscripts.org/scripts/show/165486
-// @version     6.4
 // @include     http://www.reddit.com/*
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/165486.user.js
+// @version     6.5
 // @run-at document-start
 // ==/UserScript==
 
@@ -17,7 +17,8 @@ function modtools() {
        ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
        removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
        commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
-       rtscomment = TBUtils.setting('ModTools', 'rtscomment', true);
+       rtscomment = TBUtils.setting('ModTools', 'rtscomment', true)
+       sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
        
         
     function removequotes(string) {
@@ -192,7 +193,7 @@ function modtools() {
                     <div class="reason-popup-content"> \
                     <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
                     <p>Removing: <a href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
-        			<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
+            		<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
@@ -314,7 +315,9 @@ function modtools() {
         }
 
         function removalmessage_pm(is_tom) {
-            if (is_tom == 'no_tom') {} else {
+            if (!notifyBy) return status.text('error, no reply type selected');
+            
+            if (is_tom !== 'no_tom') {
                 reason = reason.replace('{loglink}', is_tom);
             }
             // Reply to submission/comment...
@@ -597,13 +600,19 @@ function modtools() {
 
         // Uncheck anything we've taken an action, if it's checked.
         $('.pretty-button').live('click', function (e) {
-            var thing = $(this).closest('.thing');
-            if (ignoreonapprove && e.target.innerText.indexOf('approve') !== -1) {
-                $(thing).find('a:contains("ignore reports")').click(); //needs setting
-            }
-            
+            var thing = $(this).closest('.thing');            
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideactioneditems) $(thing).hide();
+        });
+        
+        // Open reason dropdown when we remove something as ham.
+        $('.big-mod-buttons>span>.pretty-button.positive').live('click', function() {
+            if (!ignoreonapprove) return;
+            var thing = $(this).closest('.thing');
+            
+            if ($(thing).find('.reported-stamp').length){
+                $(thing).find('a:contains("ignore reports")').click();
+            }
         });
 
         // Set reports threshold (hide reports with less than X reports)
@@ -1038,12 +1047,9 @@ function modtools() {
     }
     */
 
-    /* DISABLED in MTE.
-     * Causes mod pages to take forever to load.  Not sure it has much value.
-     * Need to establish the sort order and then only sort them only once.
-     * Make option in future version?
+    
     // Check if we're viewing an /r/mod/ fakereddit page
-    if (location.pathname.match(/^\/r\/mod/)) {
+    if (sortmodsubs && location.pathname.match(/^\/r\/mod/)) {
         var now = new Date().valueOf(),
             subs = {},
             delay = 0;
@@ -1078,7 +1084,7 @@ function modtools() {
                 });
         }
     }
-    */
+    
 
 }
 

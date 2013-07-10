@@ -658,7 +658,7 @@ function tbnoti() {
 				notifcationbody = 'There are ' + modqueamount.toString(2) + ' new items in modqueue'
 				}
 				
-                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r' + modsubreddits + '/about/modqueue');
+                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r/' + modsubreddits + '/about/modqueue');
                 } else {
                     // set up an array in which we will load the last 100 items that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								

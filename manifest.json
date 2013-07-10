@@ -3,7 +3,7 @@
 
   "name": "reddit Moderator Toolbox",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "0.19",
+  "version": "0.20",
 
   "permissions": [
     "https://*.reddit.com/",

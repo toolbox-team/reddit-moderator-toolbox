@@ -328,7 +328,7 @@ img.sticky-close {
     color: #000;
     padding: 2px !important;
     border: solid 1px #A8B5C2;
-	top: auto;
+    top: auto;
     box-shadow: #D1D1D1 0px 1px 3px 1px;
 }
 
@@ -677,9 +677,10 @@ img.sticky-close {
 
 .tb-debug-window {
     position: fixed;
-    bottom: 40px;
+    bottom: 30px;
     right: 20px;
-    width: 500px;
+    width: 700px;
+    height: 260px;
     padding: 0px !important;
     background-color: #FFF;
     border: solid 1px #808080;
@@ -723,6 +724,7 @@ img.sticky-close {
 
 .tb-debug-console {
     width: 98%;
+    height: 200px;
     font: normal small CONSOLAS, COURIER,"COURIER NEW";
     -webkit-appearance: textarea;
     background-color: white;

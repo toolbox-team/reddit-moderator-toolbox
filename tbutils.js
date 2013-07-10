@@ -25,7 +25,8 @@ function main() {
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-    TBUtils.isExtension = (typeof chrome !== "undefined" && chrome.extension);
+    TBUtils.isExtension = (typeof chrome !== "undefined" && chrome.extension),
+    TBUtils.log = '';
     
     // Cache vars.
     TBUtils.noteCache = (getnewshort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
@@ -346,10 +347,6 @@ function main() {
     TBUtils.getThingInfo = function (sender, modCheck) {
         var entry = $(sender).closest('.entry') || sender;
         var thing = $(sender).closest('.thing') || sender;
-        
-        if (!$(thing).hasClass('thing')) {
-            
-        }
 
         var user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
             subreddit = reddit.post_site|| $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
@@ -599,6 +596,44 @@ function main() {
         localStorage['Toolbox.cache.nonotes'] = JSON.stringify(TBUtils.noNotes);
 
     };
+    
+    (function($) {
+        $.fn.log = function(message, skip) {
+            if (TBUtils.log !== undefined) {
+                TBUtils.log += message + '\n';
+            } else { 
+                console.log('TB: ' + message);
+            }
+        }
+        $.log = function (message, skip) {
+            if (!TBUtils.setting('Utils', 'debugMode', false)) return;
+            
+            if (skip) {
+                console.log('TB [' + arguments.callee.caller.name + ']: ' + message);
+                return;
+            } 
+            if (typeof message === 'object') {
+                if (message instanceof jQuery) {
+                    message = 'jQuery object:\n' + $('<div>').append($(message).clone()).html();
+                }
+                else {
+                    try {
+                        message = 'Object:\n' + JSON.stringify(message);
+                    } catch(e) {
+                        console.log('TB Console could not convert: ')
+                        console.log(message);
+                        message = String(message) + ' (error converting object see broswer console)\nError Message: '+ e.message;
+                    }
+                }
+            }
+            
+            var lines = String(TBUtils.log.split('\n').length);
+            if (lines.length === 1) lines = '0' + lines;
+            if (lines.length === 2) lines = '0' + lines;
+            var msg = lines + ' [' + arguments.callee.caller.name + ']: ' + message; 
+            return $.fn.log(msg);
+        };
+    })(jQuery);
     
     // get toolbox news
     (function getNotes() {

@@ -25,16 +25,34 @@ function tbnoti() {
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
         shortcuts2 = JSON.parse(localStorage['Toolbox.Notifier.shortcuts2'] || '{}'),
         modbarhidden = TBUtils.setting('Notifier', 'modbarhidden', false),
-    	unmoderatedon = TBUtils.setting('Notifier', 'unmoderatedon', true),
+        unmoderatedon = TBUtils.setting('Notifier', 'unmoderatedon', true),
 		consolidatedmessages = TBUtils.setting('Notifier', 'consolidatedmessages', false),
         footer = $('.footer-parent'),
         unreadmessagecount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
         modqueuecount = TBUtils.setting('Notifier', 'modqueuecount', 0),
         unmoderatedcount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
-		unreadpage = location.pathname.match(/\/message\/(?:unread)\/?/);
-        modmailcount = TBUtils.setting('Notifier', 'modmailcount', 0);
+		unreadpage = location.pathname.match(/\/message\/(?:unread)\/?/),
+        modmailcount = TBUtils.setting('Notifier', 'modmailcount', 0),
+        debugMode = TBUtils.setting('Utils', 'debugMode', false),
+        consoleShowing = false;
+        
             
-				
+    // Module settings.
+    var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
+        mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
+        mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
+        notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
+        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
+        configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
+        stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true);
+
+    // MTE settings.
+    var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
+        ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
+        removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
+        commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
+        rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
+        sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
 
 
     var icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -66,24 +84,15 @@ function tbnoti() {
                 nPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8\
                 BXjWG3FgNHc9XPT71Ojy3sMFdfJRCeKxEsVtKwFHwALZfCUk3tIfNR8XiJwc1LmL4dg141JPKtj3WUdNFJqLGFVPC4OkR4BxajTWsChY64wmCnMxsWPCHcutKBxMVp5mxA1S+aMComToaqTRUQknLTH62kHOVEE+VQnjahsc\
                 NCy0cMBWsSI0TCQcZc5ALkEYckL5A5noWSBhfm2AecMAjbcRWV0pUTh0HE64TNf0mczcnnQyu/MilaFJCae1nw2fbz1DnVOxyGTlKeZft/Ff8x1BRssfACjTwQAAAABJRU5ErkJggg==';
-
-
-    // Module settings.
-    var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
-        mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
-        mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
-        notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
-        configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
-        stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true);
-
-    // MTE settings.
-    var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-        ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-        removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
-        commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
-        rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+                
+    var iconConsole = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFke\
+    XHJZTwAAAIiSURBVBgZpcE7SJZhFMDx/3neV/u8ZlhoVxAkESoyJYoa3BojDCFc25psaS8CWxoEhxAagiCpHCpqaa3AyiIISwjTtHIou3wX/b73nFOPIEG0\
+    SL+fuDv/Q04Mjp052ttz6WvR69wBM9wMNcXNMTdcFXPHVVEzGqsrhamphXPjl/tH0p4jPcNVubrQkmM96gpFHQZG0mLFQ/FrnvUqVTzwW+rqXBxoZ71OD80Sp\
+    e5GVM4UB9wcNTAcM0fN0MzRzFE3yuq0tTagpkQBdyIJQhAIQQgJJCKkIZAmKf7zBeV3Q1RJidqqlMgyJQpqShQAEUGCkAQhJIIECF5ieW6c\
+    +uZ9VD7dJ60ORKZGFNycVSJEAQgihCAkiVD88IDa5i4at3ZRmHsI+RkiMyUKZsoaEQERogBofoFv7+7RsLkJ/XGHLZ2n+P72Bm4ZZkYUskqFVSKI\
+    CJGIEH15c5Pm9uOwPMnEtevUN5X4MfOI77OPySoZUXA1ogQQQEQQoPB5Ei0s0bCpiK3MgBuaf0pb71nmn1yhimWiYGasESAA4sris6s07dqPFV/hVqK7\
+    rwMrfySXm6ZxxyG6aiaI5MTg2FjLzm39poqpoars2fCUkwdztO6uQfMTuJd5fnuK7r5OJNkINcd4NHphpdpLB8Td+dvE8OH5vQPXtyfhPZ4tAc4fgaSmg\
+    8XXL5m+e/5Wyj9kK+Xc5Ghfyc1xM9wMN8PNcTPcHMxw99ZfSC4lgw+6sSMAAAAASUVORK5CYII=';
 
 		
     //
@@ -99,8 +108,6 @@ function tbnoti() {
 			
 
     // toolbar, this will display all counters, quick links and other settings for the toolbox
-    
-	
 	var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
         <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + iconhide + '" /></a>&nbsp;&nbsp;\
@@ -122,6 +129,20 @@ function tbnoti() {
     <div id="tb-bottombar-hidden" class="tb-toolbar">\
        <a class="tb-bottombar-unhide" href="javascript:void(0)"><img src="data:image/png;base64,' + iconshow + '" /></a>\
     </div>');
+    
+    var $console = $('\
+    	<div class="tb-debug-window">\
+			<div class="tb-debug-header"> Debug console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
+			<div class="tb-debug-content">\
+				<textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
+            </div>\
+            <div class="tb-debug-footer" comment="for the looks">&nbsp;</div>\
+            </div>\
+            ');
+            
+    $console.appendTo('body').hide();
+            
+            
 	
     $(footer).prepend(modbar);
 	
@@ -132,6 +153,20 @@ function tbnoti() {
 			<a href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount">[0]</a>\
 			');
 	} 
+    
+    if (debugMode) {
+        $('#tb-bottombar').find('#tb-toolbarcounters').prepend('\
+    		<span><a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + iconConsole + '" /></a>&nbsp;&nbsp;&nbsp;</span>\
+			');
+            
+        var $consoleText = $('.tb-debug-console');
+        (function consoleLoop(){
+            setTimeout(function(){
+                $consoleText.val(TBUtils.log);
+                consoleLoop();
+            }, 500)
+        })();
+    }
 	
 	// Append shortcuts
     $.each(shortcuts2, function(index, value) { 
@@ -146,9 +181,11 @@ function tbnoti() {
         if (hidden) {
             $(modbar).hide();
             $(modbarhid).show();
+            $console.hide(); // hide the console, but don't change consoleShowing.
         } else {
             $(modbar).show();
             $(modbarhid).hide();
+            if (consoleShowing) $console.show();
         }
         TBUtils.setting('Notifier', 'modbarhidden', '', hidden);
     }
@@ -160,15 +197,25 @@ function tbnoti() {
     });
 
     // Show counts on hover
-    $(modbarhid).hover(function(){
+    $(modbarhid).hover(function modbarHover(){
         var hoverString = 'New Messages: ' + unreadmessagecount +
                           '\nMod Queue: ' + modqueuecount +
                           '\nUnmoderated Queue: ' + unmoderatedcount +
                           '\nNew Mod Mail: ' + modmailcount;
                           
-        $(modbarhid).attr('title', hoverString);                          
+        $(modbarhid).attr('title', hoverString);
     }); 	
-	
+    
+    $('body').delegate('#tb-toggle-console, #tb-debug-hide', 'click', function () {
+       if (!consoleShowing) {
+           $console.show();
+       } else {
+           $console.hide();
+       }
+       
+       consoleShowing = !consoleShowing;
+    });
+        
     // Settings menu	
     function showSettings() {
 
@@ -233,6 +280,9 @@ function tbnoti() {
 			<p>\
 				Multireddit of subs you want displayed in the unmoderated counter:<br>\
 				<input type="text" name="unmoderatedsubreddits">\
+			</p>\
+            <p>\
+    			<label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
 			</p>\
 			<div class="tb-help-content">Edit toolbar stuff</div>\
 			</div>\
@@ -410,6 +460,8 @@ function tbnoti() {
 
             unmoderatedsubreddits = $("input[name=unmoderatedsubreddits]").val();
             localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedsubreddits;
+            
+            TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
 
             // Save shortcuts 
             if ($('.tb-window-content-shortcuts-tr').length = 0) {

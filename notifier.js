@@ -31,6 +31,7 @@ function tbnoti() {
         unreadmessagecount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
         modqueuecount = TBUtils.setting('Notifier', 'modqueuecount', 0),
         unmoderatedcount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
+		unreadpage = location.pathname.match(/\/message\/(?:unread)\/?/);
         modmailcount = TBUtils.setting('Notifier', 'modmailcount', 0);
             
 				
@@ -84,10 +85,18 @@ function tbnoti() {
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
         sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
 
-
+		
     //
     // UI elements 
     //
+	
+	// Mark messages on /unread/ read
+
+            if (unreadpage) {
+                var entries = $('.entry');
+                $(entries).click();
+            }	
+			
 
     // toolbar, this will display all counters, quick links and other settings for the toolbox
     

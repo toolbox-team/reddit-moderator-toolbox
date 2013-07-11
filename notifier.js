@@ -20,6 +20,7 @@ function tbnoti() {
     var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1*60*1000), //default to check every minute for new stuff.
         modnotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',
         messagenotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
+		modmailnotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
         modsubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
         unmoderatedsubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
@@ -223,6 +224,7 @@ function tbnoti() {
         var modnotificationschecked,
 			messagenotificationschecked,
 			consolidatedmessageschecked,
+			modmailnotificationschecked,
 			unmoderatedonchecked;
 		
 
@@ -233,6 +235,11 @@ function tbnoti() {
         if (messagenotifications == 'on') {
             messagenotificationschecked = 'checked';
 			}
+		
+		if(modmailnotifications) {
+		    modmailnotificationschecked = 'checked';
+			}			
+			
 		
 		if (unmoderatedon) {
             unmoderatedonchecked = 'checked';
@@ -266,6 +273,9 @@ function tbnoti() {
 			</p>\
             <p>\
 				<label><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+			</p>\
+			<p>\
+				<label><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
 			</p>\
 			<p>\
 				<label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
@@ -447,7 +457,10 @@ function tbnoti() {
                 localStorage['Toolbox.Notifier.modnotifications'] = 'off';
             }
 
-            unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
+            modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
+			TBUtils.setting('Notifier', 'modmailnotifications', '', modmailnotificationscheckedsaved);
+			
+			unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
             TBUtils.setting('Notifier', 'unmoderatedon', '', unmoderatedoncheckedsave);
 
             consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
@@ -788,11 +801,11 @@ function tbnoti() {
         //
         // Modmail
         //
-
+       
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
         $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             var count = json.data.children.length || 0;
-
+            if (modmailnotifications) {
             if (count > modmailcount) {
 
                 if (consolidatedmessages) {
@@ -810,7 +823,8 @@ function tbnoti() {
 
                     for (var i = 0; i < count; i++) {
 
-                        var pushedmodmail = TBUtils.setting('Notifier', 'modmailpushed', '[]');
+					// $.log(TBUtils.setting('ModMailPro', 'hideinvitespam', false));
+                        var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');
 
                         if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
                             invitespamid = json.data.children[i].data.name;
@@ -845,7 +859,7 @@ function tbnoti() {
                 }
 
             }
-            
+            }
             TBUtils.setting('Notifier', 'modmailcount', '', count);
             updateModMailCount(count);
 

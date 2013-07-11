@@ -254,7 +254,7 @@ function tbnoti() {
         var html = '\
             <div class="tb-page-overlay tb-settings">\
             <div class="tb-window-wrapper">\
-            <div class="tb-window-header"> Toolbox configuration <span class="tb-window-header-options"><a class="tb-help" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+            <div class="tb-window-header"> Toolbox configuration <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
             <div class="tb-window-tabs"></div>\
 			<div class="tb-window-content">\
             </div>\
@@ -294,12 +294,12 @@ function tbnoti() {
             <p>\
     			<label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
 			</p>\
-			<div class="tb-help-content">Edit toolbar stuff</div>\
+			<div class="tb-help-main-content">Edit toolbar stuff</div>\
 			</div>\
             ';
         $(htmltoolbar).appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
-        $('.tb-help').attr('currentpage', 'tb-window-content-toolbar');
+        $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
         
         $("input[name=modsubreddits]").val(unescape(modsubreddits));
         $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedsubreddits));
@@ -313,7 +313,7 @@ function tbnoti() {
 		<table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
 		</table>\
 		<a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconadd + '" /></a>\
-		<div class="tb-help-content">Add or remove shortcuts here!</div>\
+		<div class="tb-help-main-content">Add or remove shortcuts here!</div>\
 		</div>\
             ';
 		$(htmlshorcuts).appendTo('.tb-window-content').hide();
@@ -363,7 +363,7 @@ function tbnoti() {
             <p>\
 				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Stattit Tab</label>\
 			</p>\
-			<div class="tb-help-content">Here you can disable the several toolbox modules.</div>\
+			<div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
 			</div>\
             ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
@@ -389,7 +389,7 @@ function tbnoti() {
                 <p>\
             	<label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
-			<div class="tb-help-content">Settings for Mod Tools Enhanced.</div>\
+			<div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
 			</div>\
             ';
         if (mteEnabled) {
@@ -407,7 +407,7 @@ function tbnoti() {
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a>\
-		<div class="tb-help-content">This is a about page!</div>\
+		<div class="tb-help-main-content">This is a about page!</div>\
 		</div>';
 		
 		$(htmlabout).appendTo('.tb-window-content').hide();
@@ -424,7 +424,7 @@ function tbnoti() {
     // change tabs 
     $('body').delegate('.tb-window-tabs a', 'click', function () {
         var tab = $(this).attr('class');
-        $('.tb-help').attr('currentpage', tab);
+        $('.tb-help-main').attr('currentpage', tab);
         $('.tb-window-content').children().hide();
         $('div.' + tab).show();
     });
@@ -518,11 +518,11 @@ function tbnoti() {
     });
 
 
-    $('body').delegate('.tb-help', 'click', function () {
+    $('body').delegate('.tb-help-main', 'click', function () {
         var tab = $(this).attr('currentpage');
         tab = '.' + tab;
-        var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-        var htmlcontent = $(tab).find('.tb-help-content').html();
+		var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        var htmlcontent = $(tab).find('.tb-help-main-content').html();
         var html = '\
         <!DOCTYPE html>\
         <html>\

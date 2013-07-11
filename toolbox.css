@@ -195,11 +195,11 @@
     cursor: pointer;
 }
 
-.tb-help {
+.tb-help, tb-help-main {
     cursor: pointer;
 }
 
-.tb-help-content {
+.tb-help-content, .tb-help-main-content {
     display: none;
 }
 

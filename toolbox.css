@@ -434,6 +434,20 @@ img.sticky-close {
     border: 0;
 }
 
+.utagger-type {
+    border: 1px solid #C1BFBF;
+    margin-top: 2px;
+    width: 100%;
+}
+    	
+.utagger-type td { 
+    padding: 1px 3px 3px; 
+}
+
+#add-user-tag { 
+    cursor: pointer;
+}
+
 .mod-popup {
     max-width: 900px;
     padding: 10px 15px;

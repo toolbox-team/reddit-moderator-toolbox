@@ -7,7 +7,7 @@
 // @include     *://reddit.com/*
 // @include     *://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170091.user.js
-// @version     1.3
+// @version     1.4
 // ==/UserScript==
 
 function usernotes() {
@@ -63,7 +63,7 @@ function usernotes() {
 
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
-        if ($(userattrs).html() != null) {
+        if ($(userattrs).html() !== null) {
             $(userattrs).after(tag);
         } else {
             $(thing).find('.head').after(tag);
@@ -119,14 +119,13 @@ function usernotes() {
                         $(usertag).text('N');
                         return;
                     }
+                    note = unescape(u.notes[0].note).substring(0, 50);
+                    $(usertag).html('<b>' + note + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
-                    $(usertag).css('color', 'red');
+                    var type = u.notes[0].type;
+                    if (!type) type = 'none';
 
-                    if (u.notes.length == 1 && u.notes[0].note.length < 60) {
-                        $(usertag).text(unescape(u.notes[0].note));
-                    } else {
-                        $(usertag).text('N:' + u.notes.length);
-                    }
+                    $(usertag).css('color', TBUtils.getTypeInfo(type).color);
                 }
             });
         });
@@ -148,20 +147,38 @@ function usernotes() {
             link = info.permalink;
 
         // Make box & add subreddit radio buttons
-        var popup = $('\
-                    <div class="utagger-popup">\
-                    <span>/u/' + user + ': <span><input type="text" class="user-note" user="' + user + '" subreddit="' + subreddit + '" link= "' + link + '"/>\
-                    <input class="save-user" type="button" value="save for /r/' + subreddit + '"/>\
-                    <input class="cancel-user" type="button" value="cancel"/>\
-                    <label><input class="include-link" type="checkbox" checked/>include link</label><br><br>\
-                    <table class="utagger-notes"><tr><td class="utagger-notes-td1">Author</td><td class="utagger-notes-td2">Note</td><td class="utagger-notes-td3"></td></tr></table>\
-                    <div>')
+        var popup = $(
+            '<div class="utagger-popup">\
+            		<span>\
+						<a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>:\
+						<input type="text" class="utagger-user-note" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+						<label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
+						<input type="button" class="utagger-save-user" value="save for /r/' + subreddit + '">\
+						<input type="button" class="utagger-cancel-user" value="cancel">\
+					</span>\
+					<table class="utagger-type"><tbody><tr>\
+                    <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
+					</tr></tbody></table>\
+					<br />\
+					<table class="utagger-notes"><tbody><tr>\
+						<td class="utagger-notes-td1">Author</td>\
+						<td class="utagger-notes-td2">Note</td>\
+						<td class="utagger-notes-td3"></td>\
+					</tr></tbody></table>\
+				</div>'
+        )
             .appendTo('body')
             .css({
                 left: e.pageX - 50,
                 top: e.pageY - 10,
                 display: 'block'
             });
+
+        var $table = popup.find('.utagger-type tr:first');
+        $(TBUtils.warningType).each(function () {
+            var info = TBUtils.getTypeInfo(this);
+            $table.append('<td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-' + this + '" value="' + this + '"><label for="utagger-type-' + this + '" style="color: ' + info.color + ';">' + info.text + '</label></td>');
+        });
 
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
@@ -173,10 +190,21 @@ function usernotes() {
 
             $.grep(resp.users, function (u) {
                 if (u.name == user) {
-
+                    popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
+                    
                     var i = 0;
                     $(u.notes).each(function () {
-                        popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + unescape(this.note) + '</td><td class="utagger-notes-td3"><a class="utagger-remove-note" noteid="' + this.time + '" href="javascript:;">X</a></td></tr>');
+                        if (!this.type) this.type = 'none';
+
+                        var info = TBUtils.getTypeInfo(this.type);
+                        var typeSpan = '';
+
+                        if (info.name) {
+                            typeSpan = '<span style="color: ' + info.color + ';">[' + info.name + ']</span> ';
+                        }
+                        
+                        popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><a class="utagger-remove-note" noteid="' + this.time + '" href="javascript:;">X</a></td></tr>');
+
                         if (this.link) {
                             popup.find('#utagger-date-' + i).wrap('<a href="' + this.link + '">');
                         }
@@ -187,19 +215,21 @@ function usernotes() {
         });
     });
 
-    $('body').delegate('.save-user, .utagger-remove-note', 'click', function (e) {
+    $('body').delegate('.utagger-save-user, .utagger-remove-note', 'click', function (e) {
         var popup = $(this).closest('.utagger-popup'),
-            subreddit = popup.find('.user-note').attr('subreddit'),
-            user = popup.find('.user-note').attr('user'),
+            unote = popup.find('.utagger-user-note'),
+            subreddit = unote.attr('data-subreddit'),
+            user = unote.attr('data-user'),
             noteid = $(e.target).attr('noteid'),
-            noteText = popup.find('.user-note').val(),
+            noteText = unote.val(),
             deleteNote = (e.target.className == 'utagger-remove-note'),
+            type = popup.find('.utagger-type-input:checked').val(),
             link = '',
             note = TBUtils.note,
             notes = TBUtils.usernotes;
 
-        if (popup.find('.include-link').is(':checked')) {
-            link = popup.find('.user-note').attr('link');
+        if (popup.find('.utagger-include-link').is(':checked')) {
+            link = popup.find('.user-note').attr('data-link');
         }
 
         if ((!user || !subreddit || !noteText) && !deleteNote) return;
@@ -208,7 +238,8 @@ function usernotes() {
             note: escape(noteText),
             time: new Date().getTime(),
             mod: reddit.logged,
-            link: link
+            link: link,
+            type: type
         };
 
         var userNotes = {
@@ -270,7 +301,7 @@ function usernotes() {
         });
     });
 
-    $('body').delegate('.cancel-user', 'click', function () {
+    $('body').delegate('.utagger-cancel-user', 'click', function () {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
@@ -278,23 +309,23 @@ function usernotes() {
 
 // Add script to page
 (function () {
-    
+
     // Check if we are running as an extension
     if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
         init();
         return;
-    } 
-    
+    }
+
     // Check if TBUtils has been added.
     if (!window.TBUadded) {
         window.TBUadded = true;
-        
+
         var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
         var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
         $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
-        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
     }
-    
+
     // Do not add script to page until TBUtils is added.
     (function loadLoop() {
         setTimeout(function () {
@@ -305,7 +336,7 @@ function usernotes() {
             }
         }, 100);
     })();
-    
+
     function init() {
         var s = document.createElement('script');
         s.textContent = "(" + usernotes.toString() + ')();';

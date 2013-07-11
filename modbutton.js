@@ -15,7 +15,7 @@ function modbutton() {
  
     var buttonName = 'mod',
         saveButton = 'Save',
-        cancelButton = 'Cancel';
+        cancelButton = 'Close';
  
     /////// Don't edit beyond this line. ///////
     var OTHER = 'other-sub',
@@ -98,31 +98,21 @@ function modbutton() {
         // Make box & add subreddit radio buttons
         var popup = $('\
                 <div class="mod-popup">\
-                    <div><h2><label class="action-title">/u/' + user + '</label>\
-                      <a href="javascript:;" title="Edit user flair" class="edit-user-flair">[F]</a>\
-                      <a href="javascript:;" style="display:' + display + '" title="Remove subreddits" class="remove-sub-link right">[-]</a>\
-                      <a href="javascript:;" title="Add subreddits" class="add-sub-link right">[+]</a>\
-                      <span>&nbsp;</span><a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button right">[A]</a>\
-                    </h2></div><span>\
-                    <label id="user" style="display:none">' + user + '</label> \
-                    <label id="subreddit" style="display:none">' + currentsub + '</label>\
-                    <table><tbody class="subs-body" />\
+				    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label></div>\
+					<div class="mod-popup-tabs">\
+						<a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
+						<a href="javascript:;" style="display:' + display + '" title="Remove subreddits" class="remove-sub-link right">Remove subreddits</a>\
+						<a href="javascript:;" title="Add subreddits" class="add-sub-link right">Add subreddits</a>\
+						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">[A]</a>\
+					</div>\
+					<label id="user" style="display:none">' + user + '</label> \
+					<label id="subreddit" style="display:none">' + currentsub + '</label>\
+					<div class="mod-popup-content">\
+					<table><tbody class="subs-body" />\
                     </table>\
-                    <p style="clear:both;"><input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
-                    <div class="buttons">\
-                        <select class="mod-action">\
-                        <option action="banned" api="friend">ban</option> \
-                        <option action="banned" api="unfriend">unban</option> \
-                        <option action="contributor" api="friend">approve</option> \
-                        <option action="contributor" api="unfriend" >unapprove</option> \
-                        <option action="moderator" api="friend">mod</option> \
-                        <option action="moderator" api="unfriend" >demod</option> \
-                        </select>\
-                        <span class="right">\
-                            <button class="save">' + saveButton + '</button>\
-                            <button class="cancel">' + cancelButton + '</button>\
-                        </span>\
-                        <div class="edit-subreddits buttons" style="display:none"><br>\
+					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
+						<div class="other-buttons"></div>\
+						<div class="edit-subreddits buttons" style="display:none"><br>\
                             <select class="edit-dropdown left"></select><button class="edit-save right"></button>\
                             <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
                             <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
@@ -132,8 +122,25 @@ function modbutton() {
                              <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
                              <button class="flair-save right">Save</button>\
                         </div>\
-                        <div><span class="status error left"><br>saving...</span></div>\
-                    <div>\
+						<div><span class="status error left"><br>saving...</span></div>\
+						</div>\
+						<div class="mod-popup-footer">\
+											 <div class="buttons">\
+                        <select class="mod-action">\
+                        <option class="mod-action-negative" action="banned" api="friend">ban</option> \
+                        <option class="mod-action-positive" action="banned" api="unfriend">unban</option> \
+                        <option class="mod-action-positive" action="contributor" api="friend">approve</option> \
+                        <option class="mod-action-negative" action="contributor" api="unfriend" >unapprove</option> \
+                        <option class="mod-action-positive" action="moderator" api="friend">mod</option> \
+                        <option class="mod-action-negative" action="moderator" api="unfriend" >demod</option> \
+                        </select>\
+                        <span class="right">\
+                            <button class="save">' + saveButton + '</button>\
+                            <button class="cancel">' + cancelButton + '</button>\
+                        </span>\
+						</div>\
+						</div>\
+					  <div>\
                 <div>')
             .appendTo('body')
             .css({

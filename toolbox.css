@@ -546,7 +546,8 @@ background-color: #9FBAD6;
 }
 
 .mod-popup .ban-note {
-    width: 230px;
+    margin-top: 3px;
+    width: 98%;
 }
 
 .mod-action-positive {

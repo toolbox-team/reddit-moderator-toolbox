@@ -103,7 +103,7 @@ function modbutton() {
 						<a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
 						<a href="javascript:;" style="display:' + display + '" title="Remove subreddits" class="remove-sub-link right">Remove subreddits</a>\
 						<a href="javascript:;" title="Add subreddits" class="add-sub-link right">Add subreddits</a>\
-						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">[A]</a>\
+						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\

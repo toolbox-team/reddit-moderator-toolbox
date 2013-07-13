@@ -17,7 +17,7 @@ function main() {
         newLogin = (cacheName != reddit.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
-
+        
     // Public variables
     TBUtils.version = 1;
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
@@ -28,33 +28,33 @@ function main() {
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = '',
-    TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false')
-
+    TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
+    
     // Cache vars.
     TBUtils.noteCache = (getnewShort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
     TBUtils.configCache = (getnewLong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
     TBUtils.noConfig = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
     TBUtils.noNotes = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]');
     TBUtils.mySubs = (getnewLong) ? [] : JSON.parse(localStorage['Toolbox.cache.moderatedsubs'] || '[]');
-
+    
     // Update cache vars as needed.
     if (newLogin) {
         localStorage['Toolbox.cache.cachename'] = reddit.logged;
     }
-
+    
     if (getnewLong) {
         localStorage['Toolbox.cache.lastgetlong'] = JSON.stringify(now);
     }
-
+    
     if (getnewShort) {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
-
+    
     TBUtils.usernotes = {
         ver: 2,
         users: [] //typeof userNotes
     };
-
+    
     TBUtils.note = {
         note: '',
         time: '',
@@ -64,39 +64,39 @@ function main() {
     };
 
     TBUtils.warningType = ['spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
-
+    
     TBUtils.config = {
         ver: 1,
         domainTags: '',
         removalReasons: '',
         modMacros: '',
     };
-
+    
     TBUtils.getID = function (callback) {
         callback(id);
     };
-
+    
     TBUtils.setting = function (module, setting, defaultVal, value) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-
+        
         if (value !== undefined) {
             localStorage[storageKey] = JSON.stringify(value);
         }
-
-        var keyval = localStorage[storageKey];
-
-        if (keyval === undefined) return defaultVal;
-
-        return JSON.parse(keyval);
+        
+        var keyVal = localStorage[storageKey];
+        
+        if (keyVal === undefined) return defaultVal;
+        
+        return JSON.parse(keyVal);
     };
-
+    
     TBUtils.getTypeInfo = function (warningType) {
         var typeInfo = {
             name: '',
             color: '',
             text: ''
         };
-
+        
         switch (String(warningType)) { //not sure why it gets passed as an array.
         case 'spamwatch':
             typeInfo = { color: 'fuchsia', name: 'Watching', text: 'Spam Watch' };
@@ -119,23 +119,23 @@ function main() {
         default:
             typeInfo = { color: '', name: '', text: 'none' };
         }
-
+        
         return typeInfo;
     };
-
+    
     TBUtils.alert = function (message, callback) {
         $('<div id="tb-notification-alert">' + message + '</div>').appendTo('body').click(function () {
             $(this).remove();
             callback();
         });
     };
-
+    
     TBUtils.showNote = function (note) {
         if (!note.id || !note.text) return;
-
+        
         if ($.inArray(note.id, seenNotes) === -1) {
             TBUtils.setting('Utils', 'notelastshown', '', now);
-
+            
             TBUtils.alert(TBUtils.htmlDecode(note.text), function () {
                 seenNotes.push(note.id);
                 TBUtils.setting('Utils', 'seennotes', '', seenNotes);
@@ -143,52 +143,51 @@ function main() {
             });
         }
     };
-
+    
     TBUtils.notification = function (title, body, url, timeout) {
         if (timeout === undefined) timeout = 15000;
-
+        
         var toolboxnotificationenabled = true;
+        
         // check if notifications are enabled. When they are not we simply abort the function. 
         if (toolboxnotificationenabled === false) {
             //console.log('notifications disabled, stopping function');
             return;
         }
-
+        
         // fallback notifications if the browser does not support notifications or the users does not allow them. 
         // Adapted from Sticky v1.0 by Daniel Raftery
         // http://thrivingkings.com/sticky
-
+        
         // Using it without an object
         $.sticky = function (note, options, callback) {
             return $.fn.sticky(note, options, callback);
         };
-
+        
         $.fn.sticky = function (note, options, callback) {
             // Default settings
             var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
-
+            
             var settings = {
                 'speed': 'fast', // animations: fast, slow, or integer
                 'duplicates': true, // true or false
                 'autoclose': timeout // integer or false
             };
-
+            
             // Passing in the object instead of specifying a note
             if (!note) {
                 note = this.html();
             }
-
+            
             if (options) {
                 $.extend(settings, options);
             }
-
+            
             // Variables
-            var display = true;
-            var duplicate = 'no';
-
-            // Somewhat of a unique ID
-            var uniqID = Math.floor(Math.random() * 99999);
-
+            var display = true,
+                duplicate = 'no',
+                uniqID = Math.floor(Math.random() * 99999);
+            
             // Handling duplicate notes and IDs
             $('.sticky-note').each(function () {
                 if ($(this).html() == note && $(this).is(':visible')) {
@@ -201,27 +200,27 @@ function main() {
                     uniqID = Math.floor(Math.random() * 9999999);
                 }
             });
-
+            
             // Make sure the sticky queue exists
             if (!$('body').find('.sticky-queue').html()) {
                 $('body').append('<div class="sticky-queue ' + position + '"></div>');
             }
-
+            
             // Can it be displayed?
             if (display) {
                 // Building and inserting sticky note
                 $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
                 $('#' + uniqID).append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="sticky-close" rel="' + uniqID + '" title="Close" />');
                 $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
-
+                
                 // Smoother animation
                 var height = $('#' + uniqID).height();
                 $('#' + uniqID).css('height', height);
-
+                
                 $('#' + uniqID).slideDown(settings.speed);
                 display = true;
             }
-
+            
             // Listeners
             $('.sticky').ready(function () {
                 // If 'autoclose' is enabled, set a timer to close the sticky
@@ -233,7 +232,7 @@ function main() {
             $('.sticky-close').click(function () {
                 $('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
             });
-
+            
             // Callback data
             var response = {
                 'id': uniqID,
@@ -241,32 +240,27 @@ function main() {
                 'displayed': display,
                 'position': position
             };
-
+            
             // Callback function?
             if (callback) {
                 callback(response);
             } else {
                 return (response);
             }
-
         };
-
+        
         if (!window.Notification && !window.webkitNotifications) {
             // fallback on a javascript notification 
             //console.log('boring old rickety browser, falling back on jquery based notifications');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
-
+            
         } else if (window.Notification && navigator.userAgent.indexOf("Firefox") !== -1) {
             // Do some stuff with window notification for firefox versions that support notifications
-            //console.log('firefox and it supports notifications');
-
+            
             // Let's check if the user has granted us permission and if not ask it. 
             window.Notification.requestPermission(function (perm) {
                 if (perm == 'granted') {
                     // if everything checks out we can finally show the notification
-                    //console.log('granted');
-                    //console.log('firefox notification!');
-
                     // create the notification    
                     new window.Notification(title, {
                         dir: "auto",
@@ -287,14 +281,14 @@ function main() {
         } else if (window.webkitNotifications) {
             // use the webkit variant for chrome based browsers
             //console.log('using webkit variant of notifications');
-
+            
             if (window.webkitNotifications.checkPermission() === 0) {
                 // if everything checks out we can finally show the notification
                 //console.log('webkit notification!');
-
+                
                 // create the notification    
                 var toolboxnotification = window.webkitNotifications.createNotification('http://creesch.github.io/reddit-declutter/reddit-icon.png', title, body);
-
+                
                 // Auto-hide after a while
                 toolboxnotification.ondisplay = function (event) {
                     if (timeout) {
@@ -303,7 +297,7 @@ function main() {
                         }, timeout);
                     }
                 };
-
+                
                 // Define what happens when the notification is clicked. 
                 toolboxnotification.onclick = function () {
                     // Open the page
@@ -313,12 +307,12 @@ function main() {
                 };
                 // Remove notification
                 toolboxnotification.show();
-
+                
             } else if (window.webkitNotifications.checkPermission() == 2) {
                 // fallback on a javascript notification if permission is not given. 
                 //console.log('User will not let us use notifications, fall back on internal version');
                 $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
-
+                
             } else {
                 // Ask for permission. 
                 var message = 'Toolbox would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.';
@@ -328,46 +322,44 @@ function main() {
                 });
             }
         }
-
     };
-
+    
     TBUtils.getModSubs = function (callback) {
-
+        
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1) {
             TBUtils.mySubs = []; //resent list.
             getSubs(modMineURL);
         } else {
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-
+            
             // Go!
             callback();
         }
-
+        
         function getSubs(URL) {
             $.getJSON(URL, function (json) {
                 getSubsResult(json.data.children, json.data.after);
             });
         }
-
+        
         // Callback because reddits/mod/mine is paginated.
-
         function getSubsResult(subs, after) {
             $(subs).each(function () {
                 var sub = this.data.display_name.trim();
                 if ($.inArray(sub, TBUtils.mySubs) === -1)
                     TBUtils.mySubs.push(sub);
             });
-
+            
             if (after) {
                 var URL = modMineURL + '&after=' + after;
                 getSubs(URL);
             } else {
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-
+                
                 // Update the cache.
                 localStorage['Toolbox.cache.moderatedsubs'] = JSON.stringify(TBUtils.mySubs);
-
+                
                 // Go!
                 callback();
             }
@@ -384,28 +376,27 @@ function main() {
     };
 
     TBUtils.getThingInfo = function (sender, modCheck) {
-        var entry = $(sender).closest('.entry') || sender;
-        var thing = $(sender).closest('.thing') || sender;
-
-        var user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
+        var entry = $(sender).closest('.entry') || sender,
+            thing = $(sender).closest('.thing') || sender,
+            user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
             subreddit = reddit.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', '');
-
+            
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
         }
-
+        
         // If we still don't have a sub, we're in mod mail, or PMs.
         if (!subreddit) {
             subreddit = ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text()).replace('/r/', '').replace('/', '').trim();
-
+            
             //user: there is still a chance that this is mod mail, but we're us.
             //This is a weird palce to go about this, and the conditions are strange,
             //but if we're going to assume we're us, we better make damned well sure that is likely the case.
             if (!user && ($(entry).find('.remove-button') || $(thing).find('.remove-button')).text() === '') {
                 user = reddit.logged;
-
+                
                 if (!subreddit) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $(thing).closest('.message-parent').find('.correspondent.reddit.rounded a').text()
@@ -413,16 +404,16 @@ function main() {
                 }
             }
         }
-
+        
         // Not a mod, reset current sub.
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
             subreddit = '';
         }
-
+        
         if (user == '[deleted]') {
             user = '';
         }
-
+        
         return {
             subreddit: subreddit,
             user: user,
@@ -430,7 +421,7 @@ function main() {
             domain: domain
         };
     };
-
+    
     // Prevent page lock while parsing things.  (stolen from RES)
     TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
         if (array === null) return;
@@ -439,7 +430,7 @@ function main() {
         if (call === null) return;
         var counter = 0;
         //var length = array.length;
-
+        
         function doChunk() {
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
@@ -453,28 +444,28 @@ function main() {
         }
         window.setTimeout(doChunk, delay);
     };
-
+    
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
-
+        
         if (isJSON) {
             data = JSON.stringify(data, undefined, 2);
         }
-
+        
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
             reason: 'updated via toolbox config',
             uh: reddit.modhash
         })
-
+        
         .error(function (err) {
             callback(false, err.responseText);
         })
-
+        
         .success(function () {
             // Callback regardless of what happens next.  We wrote to the page.
             callback(true);
-
+            
             if (updateAM) {
                 $.post('/api/compose', {
                     to: 'automoderator',
@@ -490,21 +481,21 @@ function main() {
                         window.location = 'http://www.reddit.com/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
                     });
             }
-
+            
             setTimeout(function () {
-
+                
                 // hide the page
                 $.post('/r/' + subreddit + '/wiki/settings/' + page, {
                     permlevel: 2,
                     uh: reddit.modhash
                 })
-
+                
                 // Super extra double-secret secure, just to be safe.
                 .error(function (err) {
                     alert('error setting wiki page to mod only access');
                     window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                 });
-
+                
             }, 500);
         });
     };
@@ -518,7 +509,7 @@ function main() {
                 callback(TBUtils.NO_WIKI_PAGE);
                 return;
             }
-
+            
             if (isJSON) {
                 wikiData = JSON.parse(wikiData);
                 if (wikiData) {
@@ -528,17 +519,17 @@ function main() {
                 }
                 return;
             }
-
+            
             // We have valid data, but it's not JSON.
             callback(wikiData);
             return;
-
+            
         }).error(function (e) {
             if (!e.responseText) {
                 callback(TBUtils.WIKI_PAGE_UNKNOWN);
                 return;
             }
-
+            
             var reason = JSON.parse(e.responseText).reason || '';
             if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
                 callback(TBUtils.NO_WIKI_PAGE);
@@ -581,7 +572,7 @@ function main() {
                 .replace(/&lt;/g, '<')
                 .replace(/&gt;/g, '>')
                 .match(/<removereasons2>.+<\/removereasons2>/i);
-
+                
             // Try falling back to <removalreasons>
             if (!match) {
                 match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
@@ -589,24 +580,24 @@ function main() {
                     .replace(/&gt;/g, '>')
                     .match(/<removereasons>.+<\/removereasons>/i);
             }
-
+            
             // Neither can be found.    
             if (!match) {
                 callback(false);
                 return;
             }
-
+            
             // Create valid XML from parsed string and convert it to a JSON object.
             var XML = $(match[0]);
             var reasons = [];
-
+            
             XML.find('reason').each(function () {
                 var reason = {
                     text: escape(this.innerHTML)
                 };
                 reasons.push(reason);
             });
-
+            
             var oldReasons = {
                 pmsubject: XML.find('pmsubject').text() || '',
                 logreason: XML.find('logreason').text() || '',
@@ -618,7 +609,7 @@ function main() {
                 getfrom: XML.find('getfrom').text() || '',
                 reasons: reasons
             };
-
+            
             callback(oldReasons);
         }).error(function () {
             callback(false);
@@ -626,13 +617,13 @@ function main() {
     };
 
     window.onbeforeunload = function () {
-
+        
         // Cache data.
         localStorage['Toolbox.cache.configcache'] = JSON.stringify(TBUtils.configCache);
         localStorage['Toolbox.cache.notecache'] = JSON.stringify(TBUtils.noteCache);
         localStorage['Toolbox.cache.noconfig'] = JSON.stringify(TBUtils.noConfig);
         localStorage['Toolbox.cache.nonotes'] = JSON.stringify(TBUtils.noNotes);
-
+        
     };
 
     (function ($) {
@@ -645,7 +636,7 @@ function main() {
         };
         $.log = function (message, skip) {
             if (!TBUtils.debugMode) return;
-
+            
             if (skip) {
                 console.log('TB [' + arguments.callee.caller.name + ']: ' + message);
                 return;

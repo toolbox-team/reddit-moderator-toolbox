@@ -1,7 +1,9 @@
 function main() {
+    var extension = true;  //only the extensions use this loding bethod for utils.
 
 (function (TBUtils) {
     //Private variables
+    //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
         lastgetLong = JSON.parse(localStorage['Toolbox.cache.lastgetlong'] || -1),
@@ -10,7 +12,7 @@ function main() {
         longLength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
         cacheName = localStorage['Toolbox.cache.cachename'] || '',
         seenNotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
-        //notelastshown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
+        //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
         id = Math.floor(Math.random() * 9999),
         newLogin = (cacheName != reddit.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
@@ -24,8 +26,9 @@ function main() {
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-    //TBUtils.isExtension = (typeof chrome !== "undefined" && chrome.extension), //TODO: fix
-    TBUtils.log = '';
+    TBUtils.isExtension = (extension || false);
+    TBUtils.log = '',
+    TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false')
 
     // Cache vars.
     TBUtils.noteCache = (getnewShort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
@@ -639,9 +642,9 @@ function main() {
             } else {
                 console.log('TB: ' + message);
             }
-        }
+        };
         $.log = function (message, skip) {
-            if (!TBUtils.setting('Utils', 'debugMode', false)) return;
+            if (!TBUtils.debugMode) return;
 
             if (skip) {
                 console.log('TB [' + arguments.callee.caller.name + ']: ' + message);
@@ -660,7 +663,7 @@ function main() {
                     }
                 }
             }
-
+            
             var lines = String(TBUtils.log.split('\n').length);
             if (lines.length === 1) lines = '0' + lines;
             if (lines.length === 2) lines = '0' + lines;

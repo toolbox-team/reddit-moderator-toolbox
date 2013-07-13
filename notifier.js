@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.5
+// @version 1.6
 // ==/UserScript==
 
 function tbnoti() {
@@ -18,7 +18,7 @@ function tbnoti() {
     // preload some generic variables 
     //
     var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1*60*1000), //default to check every minute for new stuff.
-        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',
+        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on', //TODO: change all localStorage methods to use TBUtils.setting().
         messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
 		modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
         modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
@@ -34,7 +34,7 @@ function tbnoti() {
         unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
 		unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
         modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
-        debugMode = TBUtils.setting('Utils', 'debugMode', false),
+        debugMode = TBUtils.debugMode,
         consoleShowing = false;
         
             

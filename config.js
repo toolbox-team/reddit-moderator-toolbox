@@ -21,9 +21,8 @@ function tbconf() {
                 
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,'+ icon +'" /><span class="separator"></span><a href="javascript:;" class="toolbox-edit">toolbox configuration</a></li>',
-        subreddit = reddit.post_site || $('.titlebox h1.redditname a').text();
-    
-     var config = TBUtils.config;
+        subreddit = reddit.post_site || $('.titlebox h1.redditname a').text(),
+        config = TBUtils.config;
     
     if (!subreddit) return;
     

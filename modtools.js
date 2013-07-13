@@ -13,12 +13,12 @@ function modtools() {
     if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
     
    var notEnabled = [], //because of the CSS fallback, we can't use TBUtils.noConfig.
-       hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-       ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-       removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
-       commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
-       rtscomment = TBUtils.setting('ModTools', 'rtscomment', true)
-       sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+       hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
+       ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
+       removalReasons = TBUtils.setting('ModTools', 'removalreasons', true),
+       commentReasons = TBUtils.setting('ModTools', 'commentreasons', false),
+       rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
+       sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
        
         
     function removequotes(string) {
@@ -103,10 +103,10 @@ function modtools() {
     $('.big-mod-buttons>span>.pretty-button.neutral, .remove-button').live('click', openRemovalPopup);
 
     function openRemovalPopup(event) {
-        if (!removalreasons) return;
+        if (!removalReasons) return;
         
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !commentreasons) return;
+        if (thingclasses.match(/\bcomment\b/) && !commentReasons) return;
 
         // Close popup if we click outside of it, disabled for now since it is causing a annoyance
         //    $(document).mouseup(function (e) {
@@ -602,12 +602,12 @@ function modtools() {
         $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');            
             $(thing).find('input[type=checkbox]').attr('checked', false);
-            if (hideactioneditems) $(thing).hide();
+            if (hideActionedItems) $(thing).hide();
         });
         
         // Open reason dropdown when we remove something as ham.
         $('.big-mod-buttons>span>.pretty-button.positive').live('click', function() {
-            if (!ignoreonapprove) return;
+            if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             
             if ($(thing).find('.reported-stamp').length){
@@ -1014,7 +1014,7 @@ function modtools() {
                     }
 
                     // Post stats as a comment.
-                    if (!commentbody.length || !rtscomment) return;
+                    if (!commentbody.length || !rtsComment) return;
                     $.post('/api/comment', {
                         uh: reddit.modhash,
                         thing_id: submission.json.data.name,

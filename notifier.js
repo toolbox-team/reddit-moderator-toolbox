@@ -18,22 +18,22 @@ function tbnoti() {
     // preload some generic variables 
     //
     var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1*60*1000), //default to check every minute for new stuff.
-        modnotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',
-        messagenotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
-		modmailnotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
-        modsubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
-        unmoderatedsubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
+        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',
+        messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
+		modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
+        modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
+        unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
         shortcuts2 = JSON.parse(localStorage['Toolbox.Notifier.shortcuts2'] || '{}'),
-        modbarhidden = TBUtils.setting('Notifier', 'modbarhidden', false),
-        unmoderatedon = TBUtils.setting('Notifier', 'unmoderatedon', true),
-		consolidatedmessages = TBUtils.setting('Notifier', 'consolidatedmessages', false),
+        modbarHidden = TBUtils.setting('Notifier', 'modbarhidden', false),
+        unmoderatedOn = TBUtils.setting('Notifier', 'unmoderatedon', true),
+		consolidatedMessages = TBUtils.setting('Notifier', 'consolidatedmessages', false),
         footer = $('.footer-parent'),
-        unreadmessagecount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
-        modqueuecount = TBUtils.setting('Notifier', 'modqueuecount', 0),
-        unmoderatedcount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
-		unreadpage = location.pathname.match(/\/message\/(?:unread)\/?/),
-        modmailcount = TBUtils.setting('Notifier', 'modmailcount', 0),
+        unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
+        modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0),
+        unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
+		unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
+        modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.setting('Utils', 'debugMode', false),
         consoleShowing = false;
         
@@ -102,7 +102,7 @@ function tbnoti() {
 	
 	// Mark messages on /unread/ read
 
-            if (unreadpage) {
+            if (unreadPage) {
                 var entries = $('.entry');
                 $(entries).click();
             }	
@@ -117,8 +117,8 @@ function tbnoti() {
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
 			<a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount">[0]</a>\
-			<a title="modqueue" href="http://www.reddit.com/r/' + modsubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-			<a href="http://www.reddit.com/r/' + modsubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
+			<a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
+			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
 			<a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
 			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount">[0]</a>\
 		</span>\
@@ -148,10 +148,10 @@ function tbnoti() {
     $(footer).prepend(modbar);
 	
 	// if mod counters are on we append them to the rest of the counters here. 
-	if (unmoderatedon) {
+	if (unmoderatedOn) {
 	$('#tb-bottombar').find('#tb-toolbarcounters').append('\
-			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-			<a href="http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount">[0]</a>\
+			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
+			<a href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount">[0]</a>\
 			');
 	} 
     
@@ -190,7 +190,7 @@ function tbnoti() {
         }
         TBUtils.setting('Notifier', 'modbarhidden', '', hidden);
     }
-    toggleMenuBar(modbarhidden);
+    toggleMenuBar(modbarHidden);
     
     // Show/hide menubar
     $('body').delegate('.tb-bottombar-unhide, .tb-bottombar-hide', 'click', function () {
@@ -199,10 +199,10 @@ function tbnoti() {
 
     // Show counts on hover
     $(modbarhid).hover(function modbarHover(){
-        var hoverString = 'New Messages: ' + unreadmessagecount +
-                          '\nMod Queue: ' + modqueuecount +
-                          '\nUnmoderated Queue: ' + unmoderatedcount +
-                          '\nNew Mod Mail: ' + modmailcount;
+        var hoverString = 'New Messages: ' + unreadMessageCount +
+                          '\nMod Queue: ' + modqueueCount +
+                          '\nUnmoderated Queue: ' + unmoderatedCount +
+                          '\nNew Mod Mail: ' + modmailCount;
                           
         $(modbarhid).attr('title', hoverString);
     }); 	
@@ -228,24 +228,24 @@ function tbnoti() {
 			unmoderatedonchecked;
 		
 
-        if (modnotifications == 'on') {
+        if (modNotifications == 'on') {
             modnotificationschecked = 'checked';
 			}
 
-        if (messagenotifications == 'on') {
+        if (messageNotifications == 'on') {
             messagenotificationschecked = 'checked';
 			}
 		
-		if(modmailnotifications) {
+		if(modmailNotifications) {
 		    modmailnotificationschecked = 'checked';
 			}			
 			
 		
-		if (unmoderatedon) {
+		if (unmoderatedOn) {
             unmoderatedonchecked = 'checked';
 			}
 
-		if(consolidatedmessages) {
+		if(consolidatedMessages) {
 		    consolidatedmessageschecked = 'checked';
 			}
 
@@ -301,8 +301,8 @@ function tbnoti() {
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
         
-        $("input[name=modsubreddits]").val(unescape(modsubreddits));
-        $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedsubreddits));
+        $("input[name=modsubreddits]").val(unescape(modSubreddits));
+        $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
 
 		
 		
@@ -469,11 +469,11 @@ function tbnoti() {
             shortcuts = escape($("input[name=shortcuts]").val());
             localStorage['Toolbox.Notifier.shortcuts'] = shortcuts;
 
-            modsubreddits = $("input[name=modsubreddits]").val();
-            localStorage['Toolbox.Notifier.modsubreddits'] = modsubreddits;
+            modSubreddits = $("input[name=modsubreddits]").val();
+            localStorage['Toolbox.Notifier.modsubreddits'] = modSubreddits;
 
-            unmoderatedsubreddits = $("input[name=unmoderatedsubreddits]").val();
-            localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedsubreddits;
+            unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
+            localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;
             
             TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
 
@@ -560,10 +560,10 @@ function tbnoti() {
             now = new Date().getTime();
             
         // Update counters.
-        unreadmessagecount = TBUtils.setting('Notifier', 'unreadmessagecount', 0);
-        modqueuecount = TBUtils.setting('Notifier', 'modqueuecount', 0);
-        unmoderatedcount = TBUtils.setting('Notifier', 'unmoderatedcount', 0);
-        modmailcount = TBUtils.setting('Notifier', 'modmailcount', 0);
+        unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0);
+        modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0);
+        unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0);
+        modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0);
             
 
         // 
@@ -620,10 +620,10 @@ function tbnoti() {
         }
 
         if ((now - lastchecked) < checkInterval) {
-            updateMessagesCount(unreadmessagecount);
-            updateModqueueCount(modqueuecount);
-            updateUnmodCount(unmoderatedcount);
-            updateModMailCount(modmailcount);
+            updateMessagesCount(unreadMessageCount);
+            updateModqueueCount(modqueueCount);
+            updateUnmodCount(unmoderatedCount);
+            updateModMailCount(modmailCount);
             return;
         }
         
@@ -652,11 +652,11 @@ function tbnoti() {
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
-            if (messagenotifications == 'on') {
-                if (count > unreadmessagecount) {
+            if (messageNotifications == 'on') {
+                if (count > unreadMessageCount) {
 
-                if (consolidatedmessages) {
-				var messageamount = count - unreadmessagecount;
+                if (consolidatedMessages) {
+				var messageamount = count - unreadMessageCount;
 							var notifcationbody;
 			
 				if (messageamount == 1) {
@@ -722,19 +722,19 @@ function tbnoti() {
             });
         }
         // getting modqueue
-        $.getJSON('http://www.reddit.com/r/' + modsubreddits + '/about/modqueue.json?limit=100', function (json) {
+        $.getJSON('http://www.reddit.com/r/' + modSubreddits + '/about/modqueue.json?limit=100', function (json) {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
             TBUtils.setting('Notifier', 'modqueuecount', '', count);
             if (count === 0) return;
 
-            if (modnotifications == 'on') {
+            if (modNotifications == 'on') {
                 // Ok let's have a look and see if there are actually new items to display 
-                if (count > modqueuecount) {
+                if (count > modqueueCount) {
 
 
-                if (consolidatedmessages) {
-				var modqueamount = count - modqueuecount;
+                if (consolidatedMessages) {
+				var modqueamount = count - modqueueCount;
 				//console.log(count);
 				//console.log(modqueuecount);
 				var notifcationbody;
@@ -745,7 +745,7 @@ function tbnoti() {
 				notifcationbody = 'There are ' + modqueamount.toString(2) + ' new items in modqueue'
 				}
 				
-                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r/' + modsubreddits + '/about/modqueue');
+                    TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
                 } else {
                     // set up an array in which we will load the last 100 items that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
@@ -789,8 +789,8 @@ function tbnoti() {
         //
 
         // getting unmoderated, for now only a counter, otherwise it might be to much with the notifications
-		if (unmoderatedon) {
-    		$.getJSON('http://www.reddit.com/r/' + unmoderatedsubreddits + '/about/unmoderated.json?limit=100', function (json) {
+		if (unmoderatedOn) {
+    		$.getJSON('http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100', function (json) {
                 var count = json.data.children.length || 0;
                 
                 TBUtils.setting('Notifier', 'unmoderatedcount', '', count);
@@ -805,11 +805,11 @@ function tbnoti() {
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
         $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             var count = json.data.children.length || 0;
-            if (modmailnotifications) {
-            if (count > modmailcount) {
+            if (modmailNotifications) {
+            if (count > modmailCount) {
 
-                if (consolidatedmessages) {
-				var modmailamount = count - modmailcount;
+                if (consolidatedMessages) {
+				var modmailamount = count - modmailCount;
                 var notifcationbody;
 			
 				if (modmailamount == 1) {

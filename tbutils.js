@@ -4,17 +4,17 @@ function main() {
     //Private variables
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
-        lastgetlong = JSON.parse(localStorage['Toolbox.cache.lastgetlong'] || -1),
-        lastgetshort = JSON.parse(localStorage['Toolbox.cache.lastgetshort'] || -1),
-        shortlength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
-        longlength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
-        cachename = localStorage['Toolbox.cache.cachename'] || '',
-        seennotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
+        lastgetLong = JSON.parse(localStorage['Toolbox.cache.lastgetlong'] || -1),
+        lastgetShort = JSON.parse(localStorage['Toolbox.cache.lastgetshort'] || -1),
+        shortLength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
+        longLength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
+        cacheName = localStorage['Toolbox.cache.cachename'] || '',
+        seenNotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
         //notelastshown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
         id = Math.floor(Math.random() * 9999),
-        newlogin = (cachename != reddit.logged),
-        getnewlong = (((now - lastgetlong) / (60 * 1000) > longlength) || newlogin),
-        getnewshort = (((now - lastgetshort) / (60 * 1000) > shortlength) || newlogin);
+        newLogin = (cacheName != reddit.logged),
+        getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
+        getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
 
     // Public variables
     TBUtils.version = 1;
@@ -28,22 +28,22 @@ function main() {
     TBUtils.log = '';
 
     // Cache vars.
-    TBUtils.noteCache = (getnewshort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
-    TBUtils.configCache = (getnewlong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
-    TBUtils.noConfig = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
-    TBUtils.noNotes = (getnewshort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]');
-    TBUtils.mySubs = (getnewlong) ? [] : JSON.parse(localStorage['Toolbox.cache.moderatedsubs'] || '[]');
+    TBUtils.noteCache = (getnewShort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
+    TBUtils.configCache = (getnewLong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
+    TBUtils.noConfig = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
+    TBUtils.noNotes = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]');
+    TBUtils.mySubs = (getnewLong) ? [] : JSON.parse(localStorage['Toolbox.cache.moderatedsubs'] || '[]');
 
     // Update cache vars as needed.
-    if (newlogin) {
+    if (newLogin) {
         localStorage['Toolbox.cache.cachename'] = reddit.logged;
     }
 
-    if (getnewlong) {
+    if (getnewLong) {
         localStorage['Toolbox.cache.lastgetlong'] = JSON.stringify(now);
     }
 
-    if (getnewshort) {
+    if (getnewShort) {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
 
@@ -130,12 +130,12 @@ function main() {
     TBUtils.showNote = function (note) {
         if (!note.id || !note.text) return;
 
-        if ($.inArray(note.id, seennotes) === -1) {
+        if ($.inArray(note.id, seenNotes) === -1) {
             TBUtils.setting('Utils', 'notelastshown', '', now);
 
             TBUtils.alert(TBUtils.htmlDecode(note.text), function () {
-                seennotes.push(note.id);
-                TBUtils.setting('Utils', 'seennotes', '', seennotes);
+                seenNotes.push(note.id);
+                TBUtils.setting('Utils', 'seennotes', '', seenNotes);
                 if (note.link) window.open(note.link);
             });
         }

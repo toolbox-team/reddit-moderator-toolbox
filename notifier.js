@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.6
+// @version 1.7
 // ==/UserScript==
 
 function tbnoti() {
@@ -32,7 +32,7 @@ function tbnoti() {
         unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
-    	unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
+        unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
         modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         consoleShowing = false;
@@ -102,6 +102,8 @@ function tbnoti() {
         var entries = $('.entry');
         $(entries).click();
     }
+    
+    $.log(TBUtils.isExtension);
     
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 	var modbar = $('\
@@ -190,13 +192,13 @@ function tbnoti() {
     });
     
     // Show counts on hover
-    $(modbarhid).hover(function modbarHover(){
+    $(modbarhid).hover(function modbarHover(e){
         var hoverString = 'New Messages: ' + unreadMessageCount +
-                          '\nMod Queue: ' + modqueueCount +
-                          '\nUnmoderated Queue: ' + unmoderatedCount +
-                          '\nNew Mod Mail: ' + modmailCount;
+                          '<br>Mod Queue: ' + modqueueCount +
+                          '<br>Unmoderated Queue: ' + unmoderatedCount +
+                          '<br>New Mod Mail: ' + modmailCount;
                           
-        $(modbarhid).attr('title', hoverString);
+        $.tooltip(hoverString, e);
     });
     
     $('body').delegate('#tb-toggle-console, #tb-debug-hide', 'click', function () {

@@ -19,7 +19,7 @@ function main() {
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
         
     // Public variables
-    TBUtils.version = 1;
+    TBUtils.version = 2;
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -124,9 +124,17 @@ function main() {
     };
     
     TBUtils.alert = function (message, callback) {
-        $('<div id="tb-notification-alert">' + message + '</div>').appendTo('body').click(function () {
-            $(this).remove();
-            callback();
+        var $noteDiv = $('<div id="tb-notification-alert">' + message + '</div>');
+        $noteDiv.append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="note-close" title="Close" />'); 
+        $noteDiv.appendTo('body');
+        
+        $noteDiv.click(function (e) {
+            $noteDiv.remove();
+            if (e.target.className === 'note-close') {
+                callback(false);
+                return;
+            } 
+            callback(true);
         });
     };
     
@@ -136,10 +144,10 @@ function main() {
         if ($.inArray(note.id, seenNotes) === -1) {
             TBUtils.setting('Utils', 'notelastshown', '', now);
             
-            TBUtils.alert(TBUtils.htmlDecode(note.text), function () {
+            TBUtils.alert(TBUtils.htmlDecode(note.text), function (resp) {
                 seenNotes.push(note.id);
                 TBUtils.setting('Utils', 'seennotes', '', seenNotes);
-                if (note.link) window.open(note.link);
+                if (note.link && resp) window.open(note.link);
             });
         }
     };
@@ -280,11 +288,9 @@ function main() {
             });
         } else if (window.webkitNotifications) {
             // use the webkit variant for chrome based browsers
-            //console.log('using webkit variant of notifications');
             
             if (window.webkitNotifications.checkPermission() === 0) {
                 // if everything checks out we can finally show the notification
-                //console.log('webkit notification!');
                 
                 // create the notification    
                 var toolboxnotification = window.webkitNotifications.createNotification('http://creesch.github.io/reddit-declutter/reddit-icon.png', title, body);
@@ -544,7 +550,6 @@ function main() {
     TBUtils.compressHTML = function (src) {
         console.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
         return TBUtils.htmlDecode(src);
-        //return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" >  False/, 'child">');
     };
 
     // easy way to simulate the php html encode and decode functions
@@ -662,10 +667,71 @@ function main() {
             return $.fn.log(msg);
         };
     })(jQuery);
+    
+    (function($) {
+        $.fn.tooltip = function(message, sender) {
+            var posX = sender.clientX,
+                posY = sender.clientY;
+                $sender = $(sender.target);
+            $('body').find('#tb-tooltip').remove(); // remove any old tooltips.
+            var $tooltip = $('<div id="tb-tooltip">' + message + '</div>').appendTo('body');
+            $tooltip.append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="note-close" title="Close" />');
+            $tooltip.delegate('.note-close', 'click', function (e) {
+                $tooltip.remove();
+            });
+            /*  The hover to dismis method works better.
+            $sender.hover(null, function () {
+                console.log('firing leave');
+                $tooltip.remove();
+                $sender.unbind('mouseleave');
+            });
+            */
+            
+            $tooltip.css({
+                left: posX - $tooltip.width() + 155,
+                top: posY - $tooltip.height() - 15,
+            });
+            
+            return $tooltip.each(function() {
+                var $this = $(this);
+                var hide = function () {
+                    var timeout = setTimeout(function () {
+                        $tooltip.remove();
+                    }, 500);
+                    
+                    $this.data("tooltip.timeout", timeout);
+                };
+                
+                /* Bind an event handler to 'hover' (mouseover/mouseout): */
+                $this.hover(function () {
+                    clearTimeout($this.data("tooltip.timeout"));
+                    $tooltip.show();
+                }, hide);
+                
+                /* If the user is hovering over the tooltip div, cancel the timeout: */
+                $tooltip.hover(function () {
+                    clearTimeout($this.data("tooltip.timeout"));
+                }, hide);            
+            });
+        };
+        // No clue why I need to do this.
+        $.tooltip = function(message, sender) {
+            $.fn.tooltip(message, sender);
+        };
+    })(jQuery);
 
     // get toolbox news
     (function getNotes() {
         TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
+            if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+            $(resp.notes).each(function () {
+                TBUtils.showNote(this);
+            });
+        });
+        
+        //check dev sub, if debugMode
+        if (!TBUtils.debugMode) return; 
+        TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
             $(resp.notes).each(function () {
                 TBUtils.showNote(this);

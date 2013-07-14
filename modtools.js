@@ -5,7 +5,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/165486.user.js
-// @version     6.5
+// @version     6.6
 // @run-at document-start
 // ==/UserScript==
 
@@ -193,7 +193,7 @@ function modtools() {
                     <div class="reason-popup-content"> \
                     <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
                     <p>Removing: <a href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
-            		<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
+                	<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
@@ -688,7 +688,6 @@ function modtools() {
         });
 
         // Add history button to all users. 
-
         function addUserHistoryLink() {
             var userhistory = '<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>';
 
@@ -1049,7 +1048,7 @@ function modtools() {
 
     
     // Check if we're viewing an /r/mod/ fakereddit page
-    if (sortmodsubs && location.pathname.match(/^\/r\/mod/)) {
+    if (sortModSubs && location.pathname.match(/^\/r\/mod/)) {
         var now = new Date().valueOf(),
             subs = {},
             delay = 0;

@@ -149,7 +149,7 @@ function usernotes() {
         // Make box & add subreddit radio buttons
         var popup = $(
             '<div class="utagger-popup">\
-                	<span>\
+                    <span>\
 						<a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>:\
 						<input type="text" class="utagger-user-note" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
 						<label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\

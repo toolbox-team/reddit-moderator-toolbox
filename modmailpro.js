@@ -24,29 +24,27 @@ function modmailpro() {
         visitedBuffer = JSON.parse(localStorage['Toolbox.ModMailPro.visitedbuffer'] || -1),
         newCount = 0,
         collapsed = JSON.parse(localStorage["Toolbox.ModMailPro.defaultcollapse"] || "false"), //wrapped?,
-        expandreplies = JSON.parse(localStorage["Toolbox.ModMailPro.expandreplies"] || "false"),
-        noredmodmail = JSON.parse(localStorage["Toolbox.ModMailPro.noredmodmail"] || "true"),
-        hideinvitespam = JSON.parse(localStorage["Toolbox.ModMailPro.hideinvitespam"] || "false"),
-        highlightnew = JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true"),
-        unreadpage = location.pathname.match(/\/moderator\/(?:unread)\/?/);
-
-    var moreCommentThreads = [],
-        unreadThreads = [];
-
-    //Because flowwit is a doesn't respect your reddit prefs.
-    var newLoadedMessages = 0;
+        expandReplies = JSON.parse(localStorage["Toolbox.ModMailPro.expandreplies"] || "false"),
+        noRedModmail = JSON.parse(localStorage["Toolbox.ModMailPro.noredmodmail"] || "true"),
+        hideInviteSpam = JSON.parse(localStorage["Toolbox.ModMailPro.hideinvitespam"] || "false"),
+        highlightNew = JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true"),
+        unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/),
+        moreCommentThreads = [],
+        unreadThreads = [],
+        newLoadedMessages = 0; //Because flowwit is a doesn't respect your reddit prefs. (TODO: nake use of flowwit's callback.)
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-        alllink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
-        prioritylink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
-        filteredlink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
-        repliedlink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
-        unreadlink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
-        collapselink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
-        unreadcount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
+        allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
+        priorityLink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
+        filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
+        repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
+        unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
+        collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
+        unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
-
+        
+    // TODO: promote to TBUtils.
     var selectedCSS = {
         "color": "orangered",
         "font-weight": "bold"
@@ -57,25 +55,24 @@ function modmailpro() {
     };
 
     // Find and clear menu list.
-    var menulist = $('.menuarea ul.flat-list').html('');
+    var menuList = $('.menuarea ul.flat-list').html('');
 
     // Add menu items.
-    menulist.append(alllink);
-    menulist.append($(prioritylink).prepend(separator));
-    menulist.append($(filteredlink).prepend(separator));
-    menulist.append($(repliedlink).prepend(separator));
-    menulist.append($(unreadlink).prepend(separator));
-    menulist.append($(collapselink).prepend(spacer));
+    menuList.append(allLink);
+    menuList.append($(priorityLink).prepend(separator));
+    menuList.append($(filteredLink).prepend(separator));
+    menuList.append($(repliedLink).prepend(separator));
+    menuList.append($(unreadLink).prepend(separator));
+    menuList.append($(collapseLink).prepend(spacer));
 
-    mmpMenu.append($(unreadcount).prepend(spacer));
+    mmpMenu.append($(unreadCount).prepend(spacer));
 
-    menulist.after(mmpMenu);
+    menuList.after(mmpMenu);
 
     $('body').delegate('.save', 'click', function (e) {
-        var parent = $(e.target).closest('.message-parent');
-        var id = $(parent).attr('data-fullname');
-
-        var replied = getRepliedThreads();
+        var parent = $(e.target).closest('.message-parent'),
+            id = $(parent).attr('data-fullname'),
+            replied = getRepliedThreads();
 
         // Add sub to filtered subs.
         if ($.inArray(id, replied) === -1) {
@@ -92,29 +89,29 @@ function modmailpro() {
         //console.log()
         // Neither a switch nor === will work correctly.
         if (inbox == ALL) {
-            $(alllink).closest('li').addClass('selected');
+            $(allLink).closest('li').addClass('selected');
             hideThreads(a); // basically hideThreads(none);
             return;
 
         } else if (inbox == PRIORITY) {
-            $(prioritylink).closest('li').addClass('selected');
+            $(priorityLink).closest('li').addClass('selected');
             hideThreads(getFilteredSubs());
 
         } else if (inbox == FILTERED) {
-            $(filteredlink).closest('li').addClass('selected');
+            $(filteredLink).closest('li').addClass('selected');
             showThreads(getFilteredSubs());
 
         } else if (inbox == REPLIED) {
-            $(repliedlink).closest('li').addClass('selected');
+            $(repliedLink).closest('li').addClass('selected');
             showThreads(getRepliedThreads(), true);
 
         } else if (inbox == UNREAD) {
-            $(unreadlink).closest('li').addClass('selected');
+            $(unreadLink).closest('li').addClass('selected');
             showThreads(unreadThreads, true);
         }
 
         // Hide invite spam.
-        if (hideinvitespam && inbox != UNREAD) {
+        if (hideInviteSpam && inbox != UNREAD) {
             $('.invitespam').each(function () {
 			    if ($(this).hasClass('new')) { 
 				$(this).find('.entry').click();
@@ -127,7 +124,7 @@ function modmailpro() {
 
     $('body').delegate('.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink', 'click', function (e) {
         // Just unselect all, then select the caller.
-        $(menulist).find('li').removeClass('selected');
+        $(menuList).find('li').removeClass('selected');
 
         inbox = $(e.target).attr('view');
 
@@ -154,7 +151,7 @@ function modmailpro() {
             $(this).text('[-]');
 
             //Show all comments
-            if (expandreplies) {
+            if (expandReplies) {
                 parent.find('.expand-btn:first').click();
             }
         }
@@ -236,11 +233,11 @@ function modmailpro() {
             }
             
             // If we're on the unread page, don't filter anything.
-            if (unreadpage) {
+            if (unreadPage) {
                 var entries = $('.entry');
                 var newCount = entries.length;
                 inbox = ALL;
-                menulist.html('<a href="http://www.reddit.com/message/moderator/">go to full mod mail</a>');
+                menuList.html('<a href="http://www.reddit.com/message/moderator/">go to full mod mail</a>');
                 $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
                 $(entries).click();
             }
@@ -269,7 +266,7 @@ function modmailpro() {
         $('<span class="info-area correspondent"></span>').insertAfter($(thread).find('.correspondent:first'));
 
         // Only one feature needs thread, so disable it because it's costly.
-        if (hideinvitespam) {
+        if (hideInviteSpam) {
             $(thread).find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
             }).wrap('<span class="message-title">');
@@ -288,7 +285,7 @@ function modmailpro() {
             $('<span class="message-count">' + count + ' </span>' + spacer).appendTo(infoArea);
 
             // Only hide invite spam with no replies.    
-        } else if (hideinvitespam) {
+        } else if (hideInviteSpam) {
             var title = $(thread).find('.message-title').text().trim();
             if (title === INVITE || title === ADDED) {
                 $(thread).addClass('invitespam');
@@ -300,7 +297,7 @@ function modmailpro() {
         $(thread).find('.correspondent.reddit.rounded a').parent().prepend(
             '<a href="javascript:;" class="collapse-link">[-]</a> ');
 
-        if (noredmodmail) {
+        if (noRedModmail) {
             if ($(thread).hasClass('spam')) {
                 $(thread).css('background-color', 'transparent');
                 $(thread).find('.subject').css('color', 'red');
@@ -308,9 +305,9 @@ function modmailpro() {
         }
 
         // Don't parse all entries if we don't need to.
-        if (noredmodmail || highlightnew) {
+        if (noRedModmail || highlightNew) {
             TBUtils.forEachChunked(entries, 25, 250, function (entry) {
-                if (noredmodmail) {
+                if (noRedModmail) {
                     var message = $(entry).parent();
 
                     if (message.hasClass('spam')) {
@@ -319,7 +316,7 @@ function modmailpro() {
                     }
                 }
 
-                if (highlightnew && !newThread) {
+                if (highlightNew && !newThread) {
                     var timestamp = new Date($(entry).find('.head time').attr('datetime')).getTime();
 
                     if (timestamp > lastVisited) {
@@ -494,7 +491,7 @@ function modmailpro() {
             $(thread).find('.entry').show();
             $(thread).find('.expand-btn').show();
 
-            if (expandreplies) {
+            if (expandReplies) {
                 $(thread).find('.expand-btn:first').click();
             }
         });

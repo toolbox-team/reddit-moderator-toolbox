@@ -26,7 +26,7 @@ function modtools() {
     }
 
     function getRemovalReasons(subreddit, callback) {        
-        console.log('getting config: ' + subreddit);
+        $.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -43,7 +43,7 @@ function modtools() {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            console.log('returning: cache');
+            $.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -51,7 +51,7 @@ function modtools() {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                console.log('trying: css.');
+                $.log('trying: css.');
 
                 // Try the CSS.
                 TBUtils.getReasosnFromCSS(subreddit, function (css) {
@@ -61,13 +61,13 @@ function modtools() {
                         rrCache.removalReasons = css;
                         TBUtils.configCache[subreddit] = rrCache;
 
-                        console.log('returning: css.');
+                        $.log('returning: css.');
                         callback(css);
                         return;
                     }
 
                     // Not in the CSS, either.
-                    console.log('failed: css.');
+                    $.log('failed: css.');
                     callback(false);
                     return;
                 });
@@ -81,19 +81,19 @@ function modtools() {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                console.log('trying: get from, no cache.');
+                $.log('trying: get from, no cache.');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                console.log('returning: no cache.');
+                $.log('returning: no cache.');
                 callback(reasons);
                 return;
             }
 
-            console.log('falied: all');
+            $.log('falied: all');
             callback(false);
             return;
         });
@@ -103,7 +103,7 @@ function modtools() {
     $('.big-mod-buttons>span>.pretty-button.neutral, .remove-button').live('click', openRemovalPopup);
 
     function openRemovalPopup(event) {
-        if (!removalReasons) return;
+        if (!removalReasons || TBUtils.isModmail) return;
         
         var thingclasses = $(this).parents('div.thing').attr('class');
         if (thingclasses.match(/\bcomment\b/) && !commentReasons) return;

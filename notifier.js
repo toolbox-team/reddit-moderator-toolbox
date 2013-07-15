@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.7
+// @version 1.8
 // ==/UserScript==
 
 function tbnoti() {
@@ -54,20 +54,24 @@ function tbnoti() {
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
         sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
         
+    // cache settings.
+        var shortLength = TBUtils.setting('cache', 'shortlength', 15),
+            longLength = TBUtils.setting('cache', 'longlength', 45);
+        
     var icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
                 d5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5fJ5wOHwygVgsZpjVW60WqqqWz\
                 bVgMIjf78fn8xlTBcTy736/T7VaJRQKfQoEArqmafR6Pdxu9/ECkUjkglje63Q6NBoNisUihUKBcrlMpVLB6XR2D4df3VQnmRstsWzU63WazSZmX6vV0HWdUqmEw+GY2Gw25SC8dV1l1wrZNX5s3qLdbpPL5fB6vXumZal\
                 q2O32rtVqVQ6GuGnCd+HbFnx9AZrC+MkSHo/np8vlmj/M7f4ks6yysyawgB8fwPv70HgKG8v8cp/7fFRO/+AllewqNJ/DhyBsi9A7J1QTkF4E69mXRws8u6ayvSJwRqoG4K2Md+ygxyF5FdbPaMfdlIXUZfiyAUWx/OY25O\
                 4JHBP4CtyZ16a9EwuRi1CXs+5K1ew6lB9DXERX517P8tEsPDzfNIP6C5YeQewSrJyeCd4P0bnwXYISy3MCn5oZNtsf3pH46e7XBJcAAAAASUVORK5CYII=';
                 
-	var iconclose = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJdSURBVDjLpZP7S1NhGMf9W7YfogSJboSEUVCY8zJ31trcps6z\
+    var iconclose = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJdSURBVDjLpZP7S1NhGMf9W7YfogSJboSEUVCY8zJ31trcps6z\
                 TI9bLGJpjp1hmkGNxVz4Q6ildtXKXzJNbJRaRmrXoeWx8tJOTWptnrNryre5YCYuI3rh+8vL+/m8PA/PkwIg5X+y5mJWrxfOUBXm91QZM6UluUmthntHqplxUml2lciF6wrmdHriI0Wx3xw2hAediLwZRWRkCPzdDswaSvGq\
                 kGCfq8VEUsEyPF1O8Qu3O7A09RbRvjuIttsRbT6HHzebsDjcB4/JgFFlNv9MnkmsEszodIIY7Oaut2OJcSF68Qx8dgv8tmqEL1gQaaARtp5A+N4NzB0lMXxon/uxbI8gIYjB9HytGYuusfiPIQcN71kjgnW6VeFOkgh3XcHL\
                 vAwMSDPohOADdYQJdF1FtLMZPmslvhZJk2ahkgRvq4HHUoWHRDqTEDDl2mDkfheiDgt8pw340/EocuClCuFvboQzb0cwIZgki4KhzlaE6w0InipbVzBfqoK/qRH94i0rgokSFeO11iBkp8EdV8cfJo0yD75aE2ZNRvSJ0lZK\
                 cBXLaUYmQrCzDT6tDN5SyRqYlWeDLZAg0H4JQ+Jt6M3atNLE10VSwQsN4Z6r0CBwqzXesHmV+BeoyAUri8EyMfi2FowXS5dhd7doo2DVII0V5BAjigP89GEVAtda8b2ehodU4rNaAW+dGfzlFkyo89GTlcrHYCLpKD+V7yee\
                 HNzLjkp24Uu1Ed6G8/F8qjqGRzlbl2H2dzjpMg1KdwsHxOlmJ7GTeZC/nesXbeZ6c9OYnuxUc3fmBuFft/Ff8xMd0s65SXIb/gAAAABJRU5ErkJggg==';
                 
-	var iconhide = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEXSURBVDjLY/j//z8DJZiBLgZkz37Ynjrz4ReyDEideb89afrD\
+    var iconhide = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEXSURBVDjLY/j//z8DJZiBLgZkz37Ynjrz4ReyDEideb89afrD\
                 f5ET7v4n2YCEqXf7qpY9/T9r76v/Xu03STMgasLteaVLHv+fufvl/6k7X/y3qrlCvAHBvTeXFC54ANbctv7p/95Nz/5rFZ0nzoCAzpuPsuc++D91x4v/jasf/y9aeP9/89rH/6VTTxJngGPDtc3xU+/879789H/5kgf/02fd\
                 +V+17OF/yZhjxBmgVXCaRT3v7BqP1mv/a1Y+/J824/b/woX3/osHHSAtECVjjqy0Lb/wP2/+3f+Zs+/8F3XfS3o0inntXWSeffJ/0tRb/0Ucdv4nKyEJW25ZYBh/5L+w5fb/ZCdlQYMNs4WMt/wfuMyEDwMA0Irn/pDRT58A\
                 AAAASUVORK5CYII=';
@@ -269,14 +273,14 @@ function tbnoti() {
 			</p>\
 			<p>\
 				Multireddit of subs you want displayed in the modqueue counter:<br>\
-				<input type="text" name="modsubreddits">\
+				<input type="text" name="modsubreddits" value="'+ unescape(modSubreddits) +'">\
 			</p>\
 			<p>\
 				<label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '>Show counter for unmoderated.</label>\
 			</p>\
 			<p>\
 				Multireddit of subs you want displayed in the unmoderated counter:<br>\
-				<input type="text" name="unmoderatedsubreddits">\
+				<input type="text" name="unmoderatedsubreddits" value="'+ unescape(unmoderatedSubreddits) +'">\
 			</p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
@@ -288,8 +292,8 @@ function tbnoti() {
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
         
-        $("input[name=modsubreddits]").val(unescape(modSubreddits));
-        $("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
+        //$("input[name=modsubreddits]").val(unescape(modSubreddits));
+        //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
         
         // Edit shortcuts
 		//console.log(htmlshorcuts);
@@ -378,12 +382,32 @@ function tbnoti() {
             $('<a href="javascript:;" class="tb-window-content-modtools">Mod Tools</a>').appendTo('.tb-window-tabs');
         }
         
+        // Settings to toggle the modules 
+        var htmlcache = '\
+            <div class="tb-window-content-cache">\
+    		<p>\
+				Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+				<input type="text" name="longLength" value="'+ longLength +'">\
+			</p>\
+        	<p>\
+				Cache subreddit user notes time (in minutes):<br>\
+				<input type="text" name="shortLength" value="'+ shortLength +'">\
+			</p>\
+    		<p>\
+				<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.))</label>\
+			</p>\
+			<div class="tb-help-main-content">Settings Toolbox caches.</div>\
+			</div>\
+            ';
+        $(htmlcache).appendTo('.tb-window-content').hide();
+        $('<a href="javascript:;" class="tb-window-content-cache">Cache</a>').appendTo('.tb-window-tabs');
+        
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
 		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
 		<h3>Special thanks to:</h3>\
-		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab and several code contributions <br><br>\
+		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab and several code contributions <br>\
         <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags <br><br>\
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
@@ -462,7 +486,7 @@ function tbnoti() {
             if ($('.tb-window-content-shortcuts-tr').length === 0) {
                 localStorage['Toolbox.Notifier.shortcuts2'] = JSON.stringify('{}');
             } else {
-                shortcuts2 = JSON.parse('{}');
+                shortcuts2 = {};
                 
                 $('.tb-window-content-shortcuts-tr').each(function () {
                 var name = $(this).find('input[name=name]').val(),
@@ -492,6 +516,19 @@ function tbnoti() {
         TBUtils.setting('ModTools', 'commentreasons', '', $("#commentreasons").prop('checked'));
         TBUtils.setting('ModTools', 'rtscomment', '', $("#rtscomment").prop('checked'));
         TBUtils.setting('ModTools', 'sortmodsubs', '', $("#sortmodsubs").prop('checked'));
+        
+        // save cache settings.
+        TBUtils.setting('cache', 'longlength', '', $("input[name=longLength]").val());
+        TBUtils.setting('cache', 'shortlength', '', $("input[name=shortLength]").val());
+        
+        if ($("#clearcache").prop('checked')) {
+            TBUtils.noteCache =  {};
+            TBUtils.configCache = {};
+            TBUtils.noConfig = [];
+            TBUtils.noNotes = [];
+            TBUtils.mySubs = [];
+        }
+        
         
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');

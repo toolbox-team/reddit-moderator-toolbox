@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.8
+// @version 1.9
 // ==/UserScript==
 
 function tbnoti() {
@@ -118,10 +118,10 @@ function tbnoti() {
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
 			<a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount">[0]</a>\
-			<a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
 			<a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
 			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount">[0]</a>\
+			<a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
+			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
 		</span>\
 	</div>\
 		');
@@ -657,8 +657,7 @@ function tbnoti() {
         function getcommentitle(unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
             $.getJSON(unreadcontexturl, function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
-                TBUtils.notification('New reply:' + commenttitle + ' from:' + unreadauthor, $(unreadbody_html).text().substring(0, 400) +
-                    '...', 'http://www.reddit.com' + unreadcontext);
+                TBUtils.notification('New reply:' + commenttitle, $(unreadbody_html).text().substring(0, 400) + ' \n from:' + unreadauthor, 'http://www.reddit.com' + unreadcontext);
             });
         }
         
@@ -669,52 +668,89 @@ function tbnoti() {
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
-            if (messageNotifications == 'on') {
-                if (count > unreadMessageCount) {
-                    
-                if (consolidatedMessages) {
-				var messageamount = count - unreadMessageCount;
-				var notifcationbody; //huh?
-                
-				if (messageamount == 1) {
-                    notifcationbody = 'There is one new message in your inbox';
-				} else {
-                    notifcationbody = 'There are ' + messageamount.toString(2) + ' new messages in your inbox';
-				}
-                TBUtils.notification('New messages', notifcationbody, 'http://www.reddit.com/message/unread');
-                } else {
+            if (messageNotifications == 'on' && count > unreadMessageCount) {
+                   
+      
                     // set up an array in which we will load the last 100 messages that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
                     var pushedunread = JSON.parse(localStorage['Toolbox.Notifier.unreadpushed'] || '[]');
-                    for (var i = 0; i < count; i++) {
+					//$.log(consolidatedMessages);
+					if (consolidatedMessages) {
+					var notificationbody,
+						messagecount = 0; 
+					$.each( json.data.children, function( i, value ) {
+					
+					
+                        if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
+						var subreddit = value.data.subreddit,
+						    author = value.data.author;
+						
+						if(!notificationbody) {
+						 notificationbody = 'reply from: ' + author + '. in:'+ subreddit +'\n'; 
+						} else {
+						 notificationbody = notificationbody+'reply from: ' + author + '. in:'+ subreddit +'\n'; 
+						}						 
+                          messagecount++;
+						  pushedunread.push(value.data.name);
+                            // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
+                        } else if ($.inArray(value.data.name, pushedunread) == -1) {
+							var subject = value.data.subject,
+							author = value.data.author;
+						
+						if(!notificationbody) { 
+						notificationbody = 'pm from: ' + author + ' - '+ subject +'\n';
+						} else {
+						notificationbody = notificationbody+'pm from: ' + author + ' - '+ subject +'\n'; 
+						}
+						messagecount++;
+						pushedunread.push(value.data.name);
+                        }
+					});
+					
+					
+					//$.log(messagecount);
+					//$.log(notificationbody);
+					
+					if (messagecount === 1) { 
+					TBUtils.notification('One new message!', notificationbody, 'http://www.reddit.com/message/messages/unread');
+                            
+					} else { 
+					TBUtils.notification(messagecount.toString() + ' new messages!', notificationbody, 'http://www.reddit.com/message/messages/unread');
+					}
+				
+					
+					
+					} else {				
+                    $.each( json.data.children, function( i, value ) {
                         
-                        if ($.inArray(json.data.children[i].data.name, pushedunread) == -1 && json.data.children[i].kind == 't1') {
+                        if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
                             
-                            var context = json.data.children[i].data.context;
-                            body_html = TBUtils.htmlDecode(json.data.children[i].data.body_html);
-                            
-                            author = json.data.children[i].data.author;
-                            var contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
+                            var context = value.data.context,
+                            body_html = TBUtils.htmlDecode(value.data.body_html),
+                            author = value.data.author,
+                            contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
+							
                             getcommentitle(contexturl, context, author, body_html);
-                            pushedunread.push(json.data.children[i].data.name);
+                            pushedunread.push(value.data.name);
                             
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
-                        } else if ($.inArray(json.data.children[i].data.name, pushedunread) == -1) {
-                            author = json.data.children[i].data.author;
-                            body_html = TBUtils.htmlDecode(json.data.children[i].data.body_html);
-                            //var subject = htmlDecode(json.data.children[i].data.subject);
-                            var id = json.data.children[i].data.id;
+                        } else if ($.inArray(value.data.name, pushedunread) == -1) {
+                            var author = value.data.author,
+                            body_html = TBUtils.htmlDecode(value.data.body_html),
+                            subject = value.data.subject,
+                            id = value.data.id;
                             
-                            TBUtils.notification('New message from:' + author, $(body_html).text().substring(0, 400) + '...', 'http://www.reddit.com/message/messages/' + id);
-                            pushedunread.push(json.data.children[i].data.name);
+                            TBUtils.notification('New message:' + subject, $(body_html).text().substring(0, 400) + '... \n \n from:' + author, 'http://www.reddit.com/message/messages/' + id);
+                            pushedunread.push(value.data.name);
                         }
-                    }
+                    });
+					}
                     if (pushedunread.length > 100) {
                         pushedunread.splice(0, 100 - pushedunread.length);
                     }
                     TBUtils.setting('Notifier', 'unreadpushed', '', pushedunread);
-					}
-                }
+					
+                
             }
         });
         
@@ -736,55 +772,93 @@ function tbnoti() {
         $.getJSON('http://www.reddit.com/r/' + modSubreddits + '/about/modqueue.json?limit=100', function (json) {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
-            TBUtils.setting('Notifier', 'modqueuecount', '', count);
-            if (count === 0) return;
-            
-            if (modNotifications == 'on') {
+            //$.log(modNotifications);
+			
+            if (modNotifications == 'on' && count > modqueueCount) {
                 // Ok let's have a look and see if there are actually new items to display 
-                if (count > modqueueCount) {
-                    
-                if (consolidatedMessages) {
-				var modqueamount = count - modqueueCount;
-				var notifcationbody; // huh?
-				
-				if (modqueamount == 1) {
-                    notifcationbody = 'There is one new item in modqueue';
-				} else {
-                    notifcationbody = 'There are ' + modqueamount.toString(2) + ' new items in modqueue';
-				}
-                TBUtils.notification('New modqueue items', notifcationbody , 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
-                } else {
+                //$.log('test');
                     // set up an array in which we will load the last 100 items that have been displayed. 
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
                     var pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
-                    for (var i = 0; i < count; i++) {
-                        if ($.inArray(json.data.children[i].data.name, pusheditems) == -1 && json.data.children[i].kind == 't3') {
+                    //$.log(consolidatedMessages);
+					if (consolidatedMessages) {
+					//$.log('here we go!');
+					var notificationbody,
+						queuecount = 0; 
+					$.each( json.data.children, function( i, value ) {
+					
+					
+                        if ($.inArray(value.data.name, pusheditems) == -1 && value.kind == 't3') {
+						var subreddit = value.data.subreddit,
+						    author = value.data.author;
+						
+						if(!notificationbody) {
+						 notificationbody = 'post from: ' + author + ', in:'+ subreddit +'\n'; 
+						} else {
+						 notificationbody = notificationbody+'post from: ' + author + ', in:'+ subreddit +'\n'; 
+						}						 
+                          queuecount++;
+						  pusheditems.push(value.data.name);                                   
+                        } else if ($.inArray(value.data.name, pusheditems) == -1) {
+							var subreddit = value.data.subreddit,
+							author = value.data.author;
+						
+						if(!notificationbody) { 
+						notificationbody = 'comment from: ' + author + ', in '+ subreddit +'\n';
+						} else {
+						notificationbody = notificationbody+'comment from: ' + author + ',  in'+ subreddit +'\n'; 
+						}
+						queuecount++;
+						pusheditems.push(value.data.name);
+                        }
+					});
+					
+					
+					//$.log(queuecount);
+					//$.log(notificationbody);
+					
+					if (queuecount === 1) { 
+					TBUtils.notification('One new modqueue item!', notificationbody, 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
                             
-                            var mqpermalink = item.data.permalink,
-                                mqtitle = item.data.title,
-                                mqauthor = item.data.author,
-                                mqsubreddit = item.data.subreddit;
+					} else { 
+					TBUtils.notification(queuecount.toString() + ' new modqueue items!', notificationbody, 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
+					}
+				
+					
+					
+					} else {
+					
+					
+					$.each( json.data.children, function( i, value ) {
+                        if ($.inArray(value.data.name, pusheditems) == -1 && value.kind == 't3') {
+                            
+                            var mqpermalink = value.data.permalink,
+                                mqtitle = value.data.title,
+                                mqauthor = value.data.author,
+                                mqsubreddit = value.data.subreddit;
                                 
                             TBUtils.notification('Modqueue: /r/' + mqsubreddit + ' - post', mqtitle + ' By: ' + mqauthor, 'http://www.reddit.com' + mqpermalink);
-                            pusheditems.push(item.data.name);
-                        } else if ($.inArray(item.data.name, pusheditems) == -1) {
-                            var reportauthor = item.data.author,
-                                idname = item.data.name,
-                                linkid = 'http://www.reddit.com/api/info.json?id=' + item.data.link_id;
+                            pusheditems.push(value.data.name);
+                        } else if ($.inArray(value.data.name, pusheditems) == -1) {
+                            var reportauthor = value.data.author,
+                                idname = value.data.name,
+                                linkid = 'http://www.reddit.com/api/info.json?id=' + value.data.link_id;
                                 
                             //since we want to add some adition details to this we call the previous declared function
                             procesmqcomments(linkid, reportauthor, idname);
-                            pusheditems.push(item.data.name);
+                            pusheditems.push(value.data.name);
                         }
-                    }
+                    });
                     
+					}
                     if (pusheditems.length > 100) {
                         pusheditems.splice(0, 100 - pusheditems.length);
                     }
                     TBUtils.setting('Notifier', 'modqueuepushed', '', pusheditems);
-					}
-                }
+					
+                
             }
+			TBUtils.setting('Notifier', 'modqueuecount', '', count);
         });
         
         //
@@ -808,55 +882,77 @@ function tbnoti() {
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
         $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             var count = json.data.children.length || 0;
-            if (modmailNotifications) {
-            if (count > modmailCount) { // ^ these should be a single check.
-                
-                if (consolidatedMessages) {
-				var modmailamount = count - modmailCount;
-                var notifcationbody;
-                
-				if (modmailamount == 1) {
-                    notifcationbody = 'There is one new message in modmail.';
-				} else {
-                    notifcationbody = 'There are ' + modmailamount.toString(2) + ' new messages in modmail';
-				}
-				
-                TBUtils.notification('New modmail messages', notifcationbody, 'http://www.reddit.com/message/moderator/');
-                } else {
-                    for (var i = 0; i < count; i++) {
-                        
-					// $.log(TBUtils.setting('ModMailPro', 'hideinvitespam', false));
-                        var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');
-                        
-                        if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
-                            invitespamid = json.data.children[i].data.name;
+            if (modmailNotifications && count > modmailCount) {
+            var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');    
+
+			if (consolidatedMessages) { 
+ 					var notificationbody,
+						modmailcount = 0;                    
+					$.each( json.data.children, function( i, value ) {
+					if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                            invitespamid = value.data.name;
                             
                             $.post('/api/read_message', {
                                 id: invitespamid,
                                 uh: reddit.modhash,
                                 api_type: 'json'
                             });
-                        } else {
-                            if ($.inArray(json.data.children[i].data.name, pushedmodmail) == -1) {
-                                var modmailbody = json.data.children[i].data.body;
-                                modmailsubject = json.data.children[i].data.subject;
-                                modmailsubreddit = json.data.children[i].data.subreddit;
-                                modmailpermalink = json.data.children[i].data.id;
+                        } else if ($.inArray(value.data.name, pushedmodmail) == -1) { 
+						
+						var subreddit = value.data.subreddit,
+						author = value.data.author;
+						
+						if(!notificationbody) {
+						 notificationbody = 'from: ' + author + ', in:'+ subreddit +'\n'; 
+						} else {
+						 notificationbody = notificationbody+'from: ' + author + ', in:'+ subreddit +'\n'; 
+						}						 
+                          modmailcount++;
+						  pushedmodmail.push(value.data.name);  
+						
+						}
+
+						});	
+
+				 	if (modmailcount === 1) { 
+					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com/message/moderator');
+                            
+					} else { 
+					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com/message/moderator');
+					}		
+			} else {
+                    $.each( json.data.children, function( i, value ) {
+                    
+                    if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                            invitespamid = value.data.name;
+                            
+                            $.post('/api/read_message', {
+                                id: invitespamid,
+                                uh: reddit.modhash,
+                                api_type: 'json'
+                            });
+                        } else if ($.inArray(value.data.name, pushedmodmail) == -1) {
+                                var modmailbody = value.data.body;
+                                modmailsubject = value.data.subject;
+                                modmailsubreddit = value.data.subreddit;
+                                modmailpermalink = value.data.id;
                                 
                                 TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
+                                pushedmodmail.push(value.data.name);
                                 
-                                
-                            }
+                            
                         }
-                        if (pushedmodmail.length > 100) {
-                            pushedmodmail.splice(0, 100 - pushedmodmail.length);
-                        }
-                        TBUtils.setting('Notifier', 'modmailpushed', '', pushedmodmail);
-                        
-                    }
+
+                    });
+					
+			}
                     
+                if (pushedmodmail.length > 100) {
+                    pushedmodmail.splice(0, 100 - pushedmodmail.length);
                 }
-            }
+                TBUtils.setting('Notifier', 'modmailpushed', '', pushedmodmail);
+                                       
+            
             
             }
             TBUtils.setting('Notifier', 'modmailcount', '', count);

@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.9
+// @version 1.10
 // ==/UserScript==
 
 function tbnoti() {
@@ -35,7 +35,8 @@ function tbnoti() {
         unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
         modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
-        consoleShowing = false;
+        consoleShowing = false,
+        newLoad = true;
         
     // Module settings.
     var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
@@ -117,11 +118,11 @@ function tbnoti() {
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-			<a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount">[0]</a>\
+			<a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
 			<a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
-			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount">[0]</a>\
+			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
 			<a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount">[0]</a>\
+			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
 		</span>\
 	</div>\
 		');
@@ -149,7 +150,7 @@ function tbnoti() {
 	if (unmoderatedOn) {
 	$('#tb-bottombar').find('#tb-toolbarcounters').append('\
 			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-			<a href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount">[0]</a>\
+			<a href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
 			');
 	}
     
@@ -636,13 +637,17 @@ function tbnoti() {
             $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
         }
         
-        if ((now - lastchecked) < checkInterval) {
+        if (!newLoad && (now - lastchecked) < checkInterval) {
             updateMessagesCount(unreadMessageCount);
             updateModqueueCount(modqueueCount);
             updateUnmodCount(unmoderatedCount);
             updateModMailCount(modmailCount);
             return;
         }
+        
+        newLoad = false;
+        
+        //$.log('updating totals');
         
         // We're checking now.
         TBUtils.setting('Notifier', 'lastchecked', '', now);
@@ -819,15 +824,12 @@ function tbnoti() {
 					
 					if (queuecount === 1) { 
 					TBUtils.notification('One new modqueue item!', notificationbody, 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
-                            
+                  
 					} else { 
 					TBUtils.notification(queuecount.toString() + ' new modqueue items!', notificationbody, 'http://www.reddit.com/r/' + modSubreddits + '/about/modqueue');
 					}
-				
-					
-					
+                    
 					} else {
-					
 					
 					$.each( json.data.children, function( i, value ) {
                         if ($.inArray(value.data.name, pusheditems) == -1 && value.kind == 't3') {
@@ -918,7 +920,7 @@ function tbnoti() {
 					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com/message/moderator');
                             
 					} else { 
-					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com/message/moderator');
+					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com/message/moderator/');
 					}		
 			} else {
                     $.each( json.data.children, function( i, value ) {
@@ -942,7 +944,7 @@ function tbnoti() {
                                 
                             
                         }
-
+                        
                     });
 					
 			}

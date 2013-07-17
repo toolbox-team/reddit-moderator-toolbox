@@ -7,7 +7,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/167236.user.js
-// @version     1.12
+// @version     1.13
 // ==/UserScript==
  
 function modbutton() {
@@ -98,11 +98,10 @@ function modbutton() {
         // Make box & add subreddit radio buttons
         var popup = $('\
                 <div class="mod-popup">\
-				    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label></div>\
+    			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label></div>\
 					<div class="mod-popup-tabs">\
 						<a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
-						<a href="javascript:;" style="display:' + display + '" title="Remove subreddits" class="remove-sub-link right">Remove subreddits</a>\
-						<a href="javascript:;" title="Add subreddits" class="add-sub-link right">Add subreddits</a>\
+						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
 						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
@@ -113,7 +112,8 @@ function modbutton() {
 					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
 						<div class="other-buttons"></div>\
 						<div class="edit-subreddits buttons" style="display:none"><br>\
-                            <select class="edit-dropdown left"></select><button class="edit-save right"></button>\
+                            <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
+                            <select class="add-dropdown left"></select><button class="add-save right">add</button>\
                             <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
                             <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
                         </div>\
@@ -125,17 +125,18 @@ function modbutton() {
 						<div><span class="status error left"><br>saving...</span></div>\
 						</div>\
 						<div class="mod-popup-footer">\
-											 <div class="buttons">\
+                        <div class="buttons">\
                         <select class="mod-action">\
-                        <option class="mod-action-negative" action="banned" api="friend">ban</option> \
-                        <option class="mod-action-positive" action="banned" api="unfriend">unban</option> \
-                        <option class="mod-action-positive" action="contributor" api="friend">approve</option> \
-                        <option class="mod-action-negative" action="contributor" api="unfriend" >unapprove</option> \
-                        <option class="mod-action-positive" action="moderator" api="friend">mod</option> \
-                        <option class="mod-action-negative" action="moderator" api="unfriend" >demod</option> \
+                        <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
+                        <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
+                        <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
+                        <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
+                        <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
+                        <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                         </select>\
                         <span class="right">\
                             <button class="save">' + saveButton + '</button>\
+                            <button class="settingSave" style="display:none">Save</button>\
                             <button class="cancel">' + cancelButton + '</button>\
                         </span>\
 						</div>\
@@ -164,7 +165,7 @@ function modbutton() {
             var banned = data.data.children;
             for (var i = 0; i < banned.length; i++) {
                 if (banned[i].name.toLowerCase() == user.toLowerCase()) {
-                    popup.find("select.mod-action option[api=unfriend][action=banned]").attr("selected", "selected");
+                    popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
                     $("#ban-note").val(banned[i].note);
                     $('.action-title').css('color', 'red');
                     break;
@@ -176,11 +177,11 @@ function modbutton() {
         // if we're on the mod page, it's likely we want to mod them to another sub.
         // unselect current, change action to 'mod'.
         if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {
-            popup.find("select.mod-action option[api=friend][action=moderator]").attr("selected", "selected");
+            popup.find("select.mod-action option[data-api=friend][data-action=moderator]").attr("selected", "selected");
             $('.ban-note').hide();
             $('.action-sub:checkbox:checked').removeAttr('checked');
         } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
-            popup.find("select.mod-action option[api=friend][action=contributor]").attr("selected", "selected");
+            popup.find("select.mod-action option[data-api=friend][data-action=contributor]").attr("selected", "selected");
             $('.ban-note').hide();
             $('.action-sub:checkbox:checked').removeAttr('checked');
         }
@@ -245,8 +246,8 @@ function modbutton() {
         var button = $(this),
             popup = button.parents('.mod-popup'),
             selected = popup.find('.mod-action :selected'),
-            api = selected.attr('api'),
-            action = selected.attr('action'),
+            api = selected.attr('data-api'),
+            action = selected.attr('data-action'),
             actionName = selected.val(),
             status = popup.find('.status').show(),
             banReason = popup.find('.ban-note').val(),
@@ -303,7 +304,7 @@ function modbutton() {
                 $('.mod-popup').remove();
             }
  
-        }, 500); //ban tax.
+        }, 250); //ban tax.
     });
  
     // 'cancel' button clicked
@@ -386,8 +387,27 @@ function modbutton() {
         });
     });
  
-    function loadEditArea() {
-        $('.edit-dropdown').find('option').remove();
+    // settings button clicked
+    $('body').delegate('.edit-modbutton-settings', 'click', function () {
+ 
+        $('.add-dropdown').find('option').remove();
+        $('.remove-dropdown').find('option').remove();
+        
+         $(TBUtils.mySubs).each(function () {
+            $('.add-dropdown')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+        });
+        
+        $(savedSubs).each(function () {
+            $('.remove-dropdown')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+        });
  
         $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
  
@@ -397,65 +417,71 @@ function modbutton() {
         $('.ban-note').hide();
         $('.global-button').hide();
         $('.edit-user-flair').hide();
+        $('.edit-dropdown').hide();
+        
+        $('.settingSave').show();
         $('.edit-subreddits').show();
-    }
- 
-    // 'edit add' button clicked
-    $('body').delegate('.add-sub-link', 'click', function () {
-        loadEditArea();
-        $('.action-title').text('add sub');
- 
-        $(TBUtils.mySubs).each(function () {
-            $('.edit-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
-        });
- 
-        $('.edit-save').text('Add');
-        $('.edit-save').addClass('add-sub');
     });
  
-    // 'edit remove' button clicked
-    $('body').delegate('.remove-sub-link', 'click', function () {
-        loadEditArea();
-        $('.action-title').text('remove sub');
- 
+    function updateSavedSubs(){
+        savedSubs = TBUtils.saneSort(savedSubs);
+        savedSub = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
+        
+        $('.remove-dropdown').find('option').remove();
+        
         $(savedSubs).each(function () {
-            $('.edit-dropdown')
+            $('.remove-dropdown')
                 .append($('<option>', {
                         value: this
                     })
                     .text('/r/' + this));
-        });
- 
-        $('.edit-save').text('Remove');
+        }); 
+    }
+    
+    $('body').delegate('.remove-save', 'click', function () {
+        var subname = $('.remove-dropdown option:selected').val();
+        
+        savedSubs.splice(savedSubs.indexOf(subname), 1);
+        
+        updateSavedSubs();
+    });
+    
+    $('body').delegate('.add-save', 'click', function () {
+        var subname = $('.add-dropdown option:selected').val();
+        
+        // Don't add the sub twice.
+        if ($.inArray(subname, savedSubs) === -1) {
+            savedSubs.push(subname);
+        }
+        
+        updateSavedSubs();
     });
  
     // Edit save button clicked.
-    $('body').delegate('.edit-save', 'click', function () {
-        var subname = $('.edit-dropdown option:selected').val();
+    $('body').delegate('.settingSave', 'click', function () {
+        var $popup = $(this).parents('.mod-popup'),
+            $table = $(this).parents('.mod-popup').find('tbody');
  
-        // If it's in the subs, remove it; if it's not, add it.
-        if ($(this).hasClass('add-sub')) {
-            $(this).removeClass('add-sub');
- 
-            // Don't add the sub twice.
-            if ($.inArray(subname, savedSubs) === -1) {
-                savedSubs.push(subname);
-            }
-        } else {
-            savedSubs.splice(subname.indexOf(subname), 1);
-        }
- 
-        savedSubs = TBUtils.saneSort(savedSubs);
-        localStorage['Toolbox.ModButton.sublist'] = JSON.stringify(savedSubs);
+        $('.save').show();
+        $('.mod-action').show();
+        $('.subs-body').show();
+        $('.ban-note').show();
+        $('.global-button').show();
+        $('.edit-user-flair').show();
+        $('.edit-dropdown').show();
+        
+        $('.settingSave').hide();
+        $('.edit-subreddits').hide();
  
         // Enable/diable global ban button.
         localStorage['Toolbox.ModButton.globalbutton'] = JSON.stringify($('.the-nuclear-option').is(':checked'));
- 
-        $(this).parents('.mod-popup').remove();
+        
+        $table.html(''); //clear all the current subs.
+        
+        $(savedSubs).each(function () {
+                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
+        });
     });
 }
  

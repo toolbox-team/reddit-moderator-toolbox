@@ -654,23 +654,23 @@ background-color: #FA8072;
     padding: 3px !important;
 }
 
-.choice.dashed {
+body .choice.dashed {
     border-top: 1px dashed;
 }
 
-.thing.approved {
+body .thing.approved {
     background-color: paleGreen;
 }
 
-.thing.removed {
+body .thing.removed {
     background-color: lightgray;
 }
 
-.thing.spammed {
+body .thing.spammed {
     background-color: Tomato;
 }
 
-.thing.flaired {
+body .thing.flaired {
     background-color: PaleTurquoise;
 }
 

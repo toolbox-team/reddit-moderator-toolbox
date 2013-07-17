@@ -602,7 +602,24 @@ function modtools() {
         $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');            
             $(thing).find('input[type=checkbox]').attr('checked', false);
-            if (hideActionedItems) $(thing).hide();
+            if (hideActionedItems) { 
+			$(thing).hide();
+			} else if ($(this).hasClass('negative')) { 
+			$(thing).removeClass('removed');
+			$(thing).removeClass('approved');
+			$(thing).addClass('spammed');
+			} else if ($(this).hasClass('neutral')) { 
+			$(thing).removeClass('spammed');
+			$(thing).removeClass('approved');
+			$(thing).addClass('removed');
+			} else if ($(this).hasClass('positive')) { 
+			$(thing).removeClass('removed');
+			$(thing).removeClass('spammed');
+			$(thing).addClass('approved');
+			} 
+			
+	
+			
         });
         
         // Open reason dropdown when we remove something as ham.

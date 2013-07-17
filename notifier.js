@@ -729,7 +729,7 @@ function tbnoti() {
 					if (messagecount === 1) { 
 					TBUtils.notification('One new message!', notificationbody, 'http://www.reddit.com'+ messageunreadurl);
                             
-					} else { 
+					} else (messagecount > 1) { 
 					TBUtils.notification(messagecount.toString() + ' new messages!', notificationbody, 'http://www.reddit.com'+ messageunreadurl);
 					}
 				
@@ -930,7 +930,7 @@ function tbnoti() {
 				 	if (modmailcount === 1) { 
 					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com'+ modmailunreadurl);
                             
-					} else if (modmailcount > 1){ 
+					} else if (modmailcount > 1) { 
 					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com'+ modmailunreadurl);
 					}		
 			} else {

@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.10
+// @version 1.11
 // ==/UserScript==
 
 function tbnoti() {
@@ -36,7 +36,21 @@ function tbnoti() {
         modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         consoleShowing = false,
-        newLoad = true;
+        newLoad = true,
+		messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
+		modmailunreadlink = TBUtils.setting('Notifier', 'modmailunreadlink', false);
+		
+		if (messageunreadlink) {
+        	messageunreadurl= '/message/unread/';
+		} else { 
+        	messageunreadurl= '/message/inbox/';
+		}
+		if (modmailunreadlink) {
+        	modmailunreadurl = '/message/moderator/unread/';
+		} else {
+        	modmailunreadurl = '/message/moderator/';
+		}
+        
         
     // Module settings.
     var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
@@ -59,62 +73,18 @@ function tbnoti() {
         var shortLength = TBUtils.setting('cache', 'shortlength', 15),
             longLength = TBUtils.setting('cache', 'longlength', 45);
         
-    var icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
-                d5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5fJ5wOHwygVgsZpjVW60WqqqWz\
-                bVgMIjf78fn8xlTBcTy736/T7VaJRQKfQoEArqmafR6Pdxu9/ECkUjkglje63Q6NBoNisUihUKBcrlMpVLB6XR2D4df3VQnmRstsWzU63WazSZmX6vV0HWdUqmEw+GY2Gw25SC8dV1l1wrZNX5s3qLdbpPL5fB6vXumZal\
-                q2O32rtVqVQ6GuGnCd+HbFnx9AZrC+MkSHo/np8vlmj/M7f4ks6yysyawgB8fwPv70HgKG8v8cp/7fFRO/+AllewqNJ/DhyBsi9A7J1QTkF4E69mXRws8u6ayvSJwRqoG4K2Md+ygxyF5FdbPaMfdlIXUZfiyAUWx/OY25O\
-                4JHBP4CtyZ16a9EwuRi1CXs+5K1ew6lB9DXERX517P8tEsPDzfNIP6C5YeQewSrJyeCd4P0bnwXYISy3MCn5oZNtsf3pH46e7XBJcAAAAASUVORK5CYII=';
-                
-    var iconclose = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJdSURBVDjLpZP7S1NhGMf9W7YfogSJboSEUVCY8zJ31trcps6z\
-                TI9bLGJpjp1hmkGNxVz4Q6ildtXKXzJNbJRaRmrXoeWx8tJOTWptnrNryre5YCYuI3rh+8vL+/m8PA/PkwIg5X+y5mJWrxfOUBXm91QZM6UluUmthntHqplxUml2lciF6wrmdHriI0Wx3xw2hAediLwZRWRkCPzdDswaSvGq\
-                kGCfq8VEUsEyPF1O8Qu3O7A09RbRvjuIttsRbT6HHzebsDjcB4/JgFFlNv9MnkmsEszodIIY7Oaut2OJcSF68Qx8dgv8tmqEL1gQaaARtp5A+N4NzB0lMXxon/uxbI8gIYjB9HytGYuusfiPIQcN71kjgnW6VeFOkgh3XcHL\
-                vAwMSDPohOADdYQJdF1FtLMZPmslvhZJk2ahkgRvq4HHUoWHRDqTEDDl2mDkfheiDgt8pw340/EocuClCuFvboQzb0cwIZgki4KhzlaE6w0InipbVzBfqoK/qRH94i0rgokSFeO11iBkp8EdV8cfJo0yD75aE2ZNRvSJ0lZK\
-                cBXLaUYmQrCzDT6tDN5SyRqYlWeDLZAg0H4JQ+Jt6M3atNLE10VSwQsN4Z6r0CBwqzXesHmV+BeoyAUri8EyMfi2FowXS5dhd7doo2DVII0V5BAjigP89GEVAtda8b2ehodU4rNaAW+dGfzlFkyo89GTlcrHYCLpKD+V7yee\
-                HNzLjkp24Uu1Ed6G8/F8qjqGRzlbl2H2dzjpMg1KdwsHxOlmJ7GTeZC/nesXbeZ6c9OYnuxUc3fmBuFft/Ff8xMd0s65SXIb/gAAAABJRU5ErkJggg==';
-                
-    var iconhide = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEXSURBVDjLY/j//z8DJZiBLgZkz37Ynjrz4ReyDEideb89afrD\
-                f5ET7v4n2YCEqXf7qpY9/T9r76v/Xu03STMgasLteaVLHv+fufvl/6k7X/y3qrlCvAHBvTeXFC54ANbctv7p/95Nz/5rFZ0nzoCAzpuPsuc++D91x4v/jasf/y9aeP9/89rH/6VTTxJngGPDtc3xU+/879789H/5kgf/02fd\
-                +V+17OF/yZhjxBmgVXCaRT3v7BqP1mv/a1Y+/J824/b/woX3/osHHSAtECVjjqy0Lb/wP2/+3f+Zs+/8F3XfS3o0inntXWSeffJ/0tRb/0Ucdv4nKyEJW25ZYBh/5L+w5fb/ZCdlQYMNs4WMt/wfuMyEDwMA0Irn/pDRT58A\
-                AAAASUVORK5CYII=';
-                
-	var iconshow = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEdSURBVDjLY/j//z8DJZiB6gY0rH7xpW7li3YKDHj1v2bli38l\
-                ix61k2VA5fJn/9eeeP+/fcOL/wlT7/aRbEDegkf/Vxx/93/xobf/S5c8/u/ecm0eSQYkTX/4f+HBN/8nbX/xf+bul/8Tp9/9r1N0dgnRBgT33QZqfPW/YdXj/42rH//v2vjkv3fHtf9SScceEWWAc8u1/xO2Pv9fsvjB//Il\
-                D4CGPPrvXH/5v2Tksc1EGWBaful/+/on/4sW3gfGxsP/9lUX/ksEH1gj6rqdhSgDlPPO/q9b8fB/5bIH/23LL/wXD9i7kqRAlEo6+b908f3/NiXn/4t57V1EcjRKRB75b1145r+o684FZCUkMb8D/0Uct88euMxEKgYA7Ojr\
-                v4CgE7EAAAAASUVORK5CYII=';
-				
-	var iconadd= 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7b\
-                lnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMD\
-                vokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXIt\
-                nPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8\
-                BXjWG3FgNHc9XPT71Ojy3sMFdfJRCeKxEsVtKwFHwALZfCUk3tIfNR8XiJwc1LmL4dg141JPKtj3WUdNFJqLGFVPC4OkR4BxajTWsChY64wmCnMxsWPCHcutKBxMVp5mxA1S+aMComToaqTRUQknLTH62kHOVEE+VQnjahsc\
-                NCy0cMBWsSI0TCQcZc5ALkEYckL5A5noWSBhfm2AecMAjbcRWV0pUTh0HE64TNf0mczcnnQyu/MilaFJCae1nw2fbz1DnVOxyGTlKeZft/Ff8x1BRssfACjTwQAAAABJRU5ErkJggg==';
-                
-    var iconConsole = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFke\
-    XHJZTwAAAIiSURBVBgZpcE7SJZhFMDx/3neV/u8ZlhoVxAkESoyJYoa3BojDCFc25psaS8CWxoEhxAagiCpHCpqaa3AyiIISwjTtHIou3wX/b73nFOPIEG0\
-    SL+fuDv/Q04Mjp052ttz6WvR69wBM9wMNcXNMTdcFXPHVVEzGqsrhamphXPjl/tH0p4jPcNVubrQkmM96gpFHQZG0mLFQ/FrnvUqVTzwW+rqXBxoZ71OD80Sp\
-    e5GVM4UB9wcNTAcM0fN0MzRzFE3yuq0tTagpkQBdyIJQhAIQQgJJCKkIZAmKf7zBeV3Q1RJidqqlMgyJQpqShQAEUGCkAQhJIIECF5ieW6c\
-    +uZ9VD7dJ60ORKZGFNycVSJEAQgihCAkiVD88IDa5i4at3ZRmHsI+RkiMyUKZsoaEQERogBofoFv7+7RsLkJ/XGHLZ2n+P72Bm4ZZkYUskqFVSKI\
-    CJGIEH15c5Pm9uOwPMnEtevUN5X4MfOI77OPySoZUXA1ogQQQEQQoPB5Ei0s0bCpiK3MgBuaf0pb71nmn1yhimWiYGasESAA4sris6s07dqPFV/hVqK7\
-    rwMrfySXm6ZxxyG6aiaI5MTg2FjLzm39poqpoars2fCUkwdztO6uQfMTuJd5fnuK7r5OJNkINcd4NHphpdpLB8Td+dvE8OH5vQPXtyfhPZ4tAc4fgaSmg\
-    8XXL5m+e/5Wyj9kK+Xc5Ghfyc1xM9wMN8PNcTPcHMxw99ZfSC4lgw+6sSMAAAAASUVORK5CYII=';
-    
+   
     //
     // UI elements 
     //
-    
-	// Mark messages on /unread/ read.
-    if (unreadPage) {
-        var entries = $('.entry');
-        $(entries).click();
-    }
     
     $.log(TBUtils.isExtension);
     
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 	var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
-        <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + iconhide + '" /></a>&nbsp;&nbsp;\
-        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + icon + '" /></a>\
+        <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconhide + '" /></a>&nbsp;&nbsp;\
+        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.icon + '" /></a>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
@@ -129,7 +99,7 @@ function tbnoti() {
         
     var modbarhid = $('\
     <div id="tb-bottombar-hidden" class="tb-toolbar">\
-       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img src="data:image/png;base64,' + iconshow + '" /></a>\
+       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconshow + '" /></a>\
     </div>');
     
     var $console = $('\
@@ -156,7 +126,7 @@ function tbnoti() {
     
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('\
-            <span><a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + iconConsole + '" /></a>&nbsp;&nbsp;&nbsp;</span>\
+            <span><a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a>&nbsp;&nbsp;&nbsp;</span>\
 			');
             
         var $consoleText = $('.tb-debug-console');
@@ -222,10 +192,18 @@ function tbnoti() {
         // I probably should have stored "checked" instead of "on" will have to change that later. 
         var modnotificationschecked,
 			messagenotificationschecked,
+			messageunreadlinkchecked,
 			consolidatedmessageschecked,
 			modmailnotificationschecked,
+			modmailunreadlinkchecked,
 			unmoderatedonchecked;
-            
+        
+		if (messageunreadlink) {
+            messageunreadlinkchecked = 'checked'; 
+		} 		
+		if (modmailunreadlink) {
+            modmailunreadlinkchecked= 'checked'; 
+		} 			
         if (modNotifications == 'on') {
             modnotificationschecked = 'checked';
         }
@@ -264,10 +242,12 @@ function tbnoti() {
 				<label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Do show consolidated notifications (x new messages) instead of individual notifications.</label>\
 			</p>\
             <p>\
-				<label><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+				<label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+				<label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
 			</p>\
 			<p>\
-				<label><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
+				<label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
+				<label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
 			</p>\
 			<p>\
 				<label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
@@ -302,7 +282,7 @@ function tbnoti() {
 		<div class="tb-window-content-shortcuts">\
 		<table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
 		</table>\
-		<a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconadd + '" /></a>\
+		<a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconadd + '" /></a>\
 		<div class="tb-help-main-content">Add or remove shortcuts here!</div>\
 		</div>\
             ';
@@ -310,13 +290,13 @@ function tbnoti() {
         
 		if($.isEmptyObject(shortcuts2)) {
 		$('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconclose + '" /></a></td></tr>\
+		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
 		').appendTo('.tb-window-content-shortcuts-table');
         
 		}  else {
 		$.each(shortcuts2, function(index, value) {
 		shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="'+ unescape(index) + '" name="name"> </td><td> <input type="text" value="' + unescape(value) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconclose + '" /></a></td></tr>\
+		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
 		<br><br>';
 		//console.log(shortcutinput);
           $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
@@ -443,7 +423,7 @@ function tbnoti() {
     // add a shortcut 
     $('body').delegate('.tb-add-shortcuts', 'click', function () {
 			$('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + iconclose + '" /></a></td></tr>\
+		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
 		').appendTo('.tb-window-content-shortcuts-table');
     });
     
@@ -472,6 +452,12 @@ function tbnoti() {
             consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
             TBUtils.setting('Notifier', 'consolidatedmessages', '', consolidatedmessagescheckedsave);
             
+			messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
+			TBUtils.setting('Notifier', 'messageunreadlink', '', messageunreadlinkcheckedsave),
+		    
+			modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
+			TBUtils.setting('Notifier', 'modmailunreadlink', '', modmailunreadlinkcheckedsave);
+			
             shortcuts = escape($("input[name=shortcuts]").val());
             localStorage['Toolbox.Notifier.shortcuts'] = shortcuts;
             
@@ -480,7 +466,8 @@ function tbnoti() {
             
             unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
             localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;
-            
+			
+           
             TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
             
             // Save shortcuts 
@@ -570,6 +557,25 @@ function tbnoti() {
     //
     // Counters and notifications 
     //
+	
+	// Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
+	// If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab. 
+    if (TBUtils.isModmailUnread || TBUtils.isModmail) {
+	$.log('clearing all unread stuff');
+        $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
+            $.each(json.data.children, function (i, value) {
+
+                var unreadmessageid = value.data.name;
+
+                $.post('/api/read_message', {
+                    id: unreadmessageid,
+                    uh: reddit.modhash,
+                    api_type: 'json'
+                });
+            });
+        });
+    }
+	
     
     function getmessages() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
@@ -593,6 +599,8 @@ function tbnoti() {
                 $('#mailCount').html('');
                 $('#mail').attr('class', 'nohavemail');
                 $('#mail').attr('title', 'no new mail!');
+				$('#mail').attr('href', 'http://www.reddit.com/message/inbox/');
+				$('#mailcount').attr('href', 'http://www.reddit.com'+ messageunreadurl);
                 $('#tb-mail').attr('class', 'nohavemail');
                 $('#tb-mail').attr('title', 'no new mail!');
                 $('#tb-mail').attr('href', 'http://www.reddit.com/message/inbox/');
@@ -600,10 +608,12 @@ function tbnoti() {
             } else {
                 $('#mail').attr('class', 'havemail');
                 $('#mail').attr('title', 'new mail!');
+				$('#mail').attr('href', 'http://www.reddit.com'+ messageunreadurl);
+				$('#mailcount').attr('href', 'http://www.reddit.com'+ messageunreadurl);
                 $('#tb-mail').attr('class', 'havemail');
                 $('#tb-mail').attr('title', 'new mail!');
-                $('#tb-mail').attr('href', 'http://www.reddit.com/message/unread');
-                $('#tb-mailCount').attr('href', 'http://www.reddit.com/message/unread');
+                $('#tb-mail').attr('href', 'http://www.reddit.com'+ messageunreadurl);
+                $('#tb-mailCount').attr('href', 'http://www.reddit.com'+ messageunreadurl);
             }
             $('#tb-mailCount').html('[' + count + ']');
             
@@ -624,17 +634,17 @@ function tbnoti() {
             if (count < 1) {
                 $('#tb-modmail').attr('class', 'nohavemail');
                 $('#tb-modmail').attr('title', 'no new mail!');
-                //$('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
+                $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator');
             } else {
                 $('#modmail').attr('class', 'havemail');
                 $('#modmail').attr('title', 'new mail!');
-                //$('#modmail').attr('href', 'http://www.reddit.com/message/moderator/unread');
+                $('#modmail').attr('href', 'http://www.reddit.com'+ modmailunreadurl);
                 $('#tb-modmail').attr('class', 'havemail');
                 $('#tb-modmail').attr('title', 'new mail!');
-                //$('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/unread');
+                $('#tb-modmail').attr('href', 'http://www.reddit.com'+ modmailunreadurl);
             }
             $('#tb-modmailcount').html('[' + count + ']');
-            $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
+            // $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
         }
         
         if (!newLoad && (now - lastchecked) < checkInterval) {
@@ -659,10 +669,10 @@ function tbnoti() {
         // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes: 
         // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
         
-        function getcommentitle(unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
+        function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
             $.getJSON(unreadcontexturl, function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
-                TBUtils.notification('New reply:' + commenttitle, $(unreadbody_html).text().substring(0, 400) + ' \n from:' + unreadauthor, 'http://www.reddit.com' + unreadcontext);
+                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit ,  ' post: '+commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com' + unreadcontext);
             });
         }
         
@@ -717,10 +727,10 @@ function tbnoti() {
 					//$.log(notificationbody);
 					
 					if (messagecount === 1) { 
-					TBUtils.notification('One new message!', notificationbody, 'http://www.reddit.com/message/messages/unread');
+					TBUtils.notification('One new message!', notificationbody, 'http://www.reddit.com'+ messageunreadurl);
                             
 					} else { 
-					TBUtils.notification(messagecount.toString() + ' new messages!', notificationbody, 'http://www.reddit.com/message/messages/unread');
+					TBUtils.notification(messagecount.toString() + ' new messages!', notificationbody, 'http://www.reddit.com'+ messageunreadurl);
 					}
 				
 					
@@ -733,9 +743,10 @@ function tbnoti() {
                             var context = value.data.context,
                             body_html = TBUtils.htmlDecode(value.data.body_html),
                             author = value.data.author,
+							subreddit = value.data.subreddit,
                             contexturl = 'http://www.reddit.com' + context.slice(0, -10) + '.json';
 							
-                            getcommentitle(contexturl, context, author, body_html);
+                            getcommentitle(subreddit, contexturl, context, author, body_html);
                             pushedunread.push(value.data.name);
                             
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
@@ -745,7 +756,7 @@ function tbnoti() {
                             subject = value.data.subject,
                             id = value.data.id;
                             
-                            TBUtils.notification('New message:' + subject, $(body_html).text().substring(0, 400) + '... \n \n from:' + author, 'http://www.reddit.com/message/messages/' + id);
+                            TBUtils.notification('New message:' + subject, $(body_html).text() + '... \n \n from:' + author, 'http://www.reddit.com/message/inbox/' + id);
                             pushedunread.push(value.data.name);
                         }
                     });
@@ -917,10 +928,10 @@ function tbnoti() {
 						});	
 
 				 	if (modmailcount === 1) { 
-					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com/message/moderator');
+					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com'+ modmailunreadurl);
                             
-					} else { 
-					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com/message/moderator/');
+					} else if (modmailcount > 1){ 
+					TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com'+ modmailunreadurl);
 					}		
 			} else {
                     $.each( json.data.children, function( i, value ) {

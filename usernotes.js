@@ -7,7 +7,7 @@
 // @include     *://reddit.com/*
 // @include     *://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170091.user.js
-// @version     1.4.1
+// @version     1.5.0
 // ==/UserScript==
 
 function usernotes() {
@@ -149,22 +149,27 @@ function usernotes() {
         // Make box & add subreddit radio buttons
         var popup = $(
             '<div class="utagger-popup">\
-                    <span>\
-						<a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>:\
-						<input type="text" class="utagger-user-note" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
-						<label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
-						<input type="button" class="utagger-save-user" value="save for /r/' + subreddit + '">\
-						<input type="button" class="utagger-cancel-user" value="cancel">\
-					</span>\
-					<table class="utagger-type"><tbody><tr>\
-                    <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
-					</tr></tbody></table>\
-					<br />\
+				<div class="utagger-popup-header">User tagger for <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a></div>\
+				<div class="utagger-popup-content">\
 					<table class="utagger-notes"><tbody><tr>\
 						<td class="utagger-notes-td1">Author</td>\
 						<td class="utagger-notes-td2">Note</td>\
 						<td class="utagger-notes-td3"></td>\
 					</tr></tbody></table>\
+					<table class="utagger-type"><tbody>\
+					<tr>\
+                    <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
+					</tr>\
+					</tbody></table>\
+					<span>\
+						<input type="text" placeholder="something about the user..." class="utagger-user-note" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+						<br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
+					</span>\
+				</div>\
+				<div class="utagger-popup-footer">\
+						<input type="button" class="utagger-save-user" value="save for /r/' + subreddit + '">\
+						<input type="button" class="utagger-cancel-user" value="cancel">\
+				</div>\
 				</div>'
         )
             .appendTo('body')
@@ -203,8 +208,7 @@ function usernotes() {
                             typeSpan = '<span style="color: ' + info.color + ';">[' + info.name + ']</span> ';
                         }
                         
-                        popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><a class="utagger-remove-note" noteid="' + this.time + '" href="javascript:;">X</a></td></tr>');
-
+                        popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');
                         if (this.link) {
                             popup.find('#utagger-date-' + i).wrap('<a href="' + this.link + '">');
                         }

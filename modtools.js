@@ -598,12 +598,15 @@ function modtools() {
             });
         });
 
+		var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
         $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');            
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideActionedItems) { 
 			$(thing).hide();
+			} else if (ignoreOnApproveset) {
+			ignoreOnApproveset = false;
 			} else if ($(this).hasClass('negative')) { 
 			$(thing).removeClass('removed');
 			$(thing).removeClass('approved');
@@ -626,6 +629,10 @@ function modtools() {
         $('.big-mod-buttons>span>.pretty-button.positive').live('click', function() {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
+            $(thing).removeClass('removed');
+			$(thing).removeClass('spammed');
+			$(thing).addClass('approved');
+			ignoreOnApproveset = true;
             
             if ($(thing).find('.reported-stamp').length){
                 $(thing).find('a:contains("ignore reports")').click();

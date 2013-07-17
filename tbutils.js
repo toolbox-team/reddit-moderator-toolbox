@@ -85,7 +85,7 @@ function main() {
         
         var keyVal = localStorage[storageKey];
         
-        if (keyVal === undefined) return defaultVal;
+        if (keyVal === undefined && defaultVal) return defaultVal;
         
         return JSON.parse(keyVal);
     };

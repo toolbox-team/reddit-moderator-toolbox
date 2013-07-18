@@ -756,7 +756,7 @@ function tbnoti() {
                             subject = value.data.subject,
                             id = value.data.id;
                             
-                            TBUtils.notification('New message:' + subject, $(body_html).text() + '... \n \n from:' + author, 'http://www.reddit.com/message/inbox/' + id);
+                            TBUtils.notification('New message:' + subject, $(body_html).text() + '... \n \n from:' + author, 'http://www.reddit.com/message/messages/' + id);
                             pushedunread.push(value.data.name);
                         }
                     });

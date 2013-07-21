@@ -37,7 +37,7 @@ function tbnoti() {
         debugMode = TBUtils.debugMode,
         consoleShowing = false,
         newLoad = true,
-		messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
+    	messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
 		modmailunreadlink = TBUtils.setting('Notifier', 'modmailunreadlink', false);
 		
 		if (messageunreadlink) {
@@ -132,7 +132,7 @@ function tbnoti() {
         var $consoleText = $('.tb-debug-console');
         (function consoleLoop(){
             setTimeout(function(){
-                $consoleText.val(TBUtils.log);
+                $consoleText.val(TBUtils.log.join('\n'));
                 consoleLoop();
             }, 500);
         })();
@@ -386,7 +386,7 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v0.27</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v'+ TBUtils.toolboxVersion +'</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
 		<h3>Special thanks to:</h3>\
 		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab and several code contributions <br>\
         <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags <br><br>\
@@ -922,11 +922,9 @@ function tbnoti() {
 						}						 
                           modmailcount++;
 						  pushedmodmail.push(value.data.name);  
-						
 						}
-
 						});	
-
+                        
 				 	if (modmailcount === 1) { 
 					TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com'+ modmailunreadurl);
                             

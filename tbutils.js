@@ -19,7 +19,8 @@ function main() {
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
         
     // Public variables
-    TBUtils.version = 2;
+    TBUtils.version = 3;
+    TBUtils.toolboxVersion = '0.28';
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -27,11 +28,12 @@ function main() {
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
     TBUtils.isExtension = (extension || false);
-    TBUtils.log = '',
+    TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
-	
-	// Icons 
-	TBUtils.icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
+    TBUtils.browser = 'unknown';
+    
+    // Icons 
+    TBUtils.icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
                 d5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5fJ5wOHwygVgsZpjVW60WqqqWz\
                 bVgMIjf78fn8xlTBcTy736/T7VaJRQKfQoEArqmafR6Pdxu9/ECkUjkglje63Q6NBoNisUihUKBcrlMpVLB6XR2D4df3VQnmRstsWzU63WazSZmX6vV0HWdUqmEw+GY2Gw25SC8dV1l1wrZNX5s3qLdbpPL5fB6vXumZal\
                 q2O32rtVqVQ6GuGnCd+HbFnx9AZrC+MkSHo/np8vlmj/M7f4ks6yysyawgB8fwPv70HgKG8v8cp/7fFRO/+AllewqNJ/DhyBsi9A7J1QTkF4E69mXRws8u6ayvSJwRqoG4K2Md+ygxyF5FdbPaMfdlIXUZfiyAUWx/OY25O\
@@ -49,7 +51,7 @@ function main() {
                 +V+17OF/yZhjxBmgVXCaRT3v7BqP1mv/a1Y+/J824/b/woX3/osHHSAtECVjjqy0Lb/wP2/+3f+Zs+/8F3XfS3o0inntXWSeffJ/0tRb/0Ucdv4nKyEJW25ZYBh/5L+w5fb/ZCdlQYMNs4WMt/wfuMyEDwMA0Irn/pDRT58A\
                 AAAASUVORK5CYII=';
                 
-	TBUtils.iconshow = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEdSURBVDjLY/j//z8DJZiB6gY0rH7xpW7li3YKDHj1v2bli38l\
+    TBUtils.iconshow = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEdSURBVDjLY/j//z8DJZiB6gY0rH7xpW7li3YKDHj1v2bli38l\
                 ix61k2VA5fJn/9eeeP+/fcOL/wlT7/aRbEDegkf/Vxx/93/xobf/S5c8/u/ecm0eSQYkTX/4f+HBN/8nbX/xf+bul/8Tp9/9r1N0dgnRBgT33QZqfPW/YdXj/42rH//v2vjkv3fHtf9SScceEWWAc8u1/xO2Pv9fsvjB//Il\
                 D4CGPPrvXH/5v2Tksc1EGWBaful/+/on/4sW3gfGxsP/9lUX/ksEH1gj6rqdhSgDlPPO/q9b8fB/5bIH/23LL/wXD9i7kqRAlEo6+b908f3/NiXn/4t57V1EcjRKRB75b1145r+o684FZCUkMb8D/0Uct88euMxEKgYA7Ojr\
                 v4CgE7EAAAAASUVORK5CYII=';
@@ -88,6 +90,21 @@ function main() {
     
     if (getnewShort) {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
+    }
+    
+    if (typeof(self.on) !== "undefined") {
+        TBUtils.browser = 'firefox';
+    } else if (typeof(chrome) !== "undefined") {
+        TBUtils.browser = 'chrome';
+    }
+    
+    if (TBUtils.debugMode) {
+        var consoleText = 'Toolbox verson: ' + TBUtils.toolboxVersion +
+                          ' TBUtils version: ' + TBUtils.version +
+                          ' Browser: ' + TBUtils.browser +
+                          ' Extension: ' + TBUtils.isExtension + '\n';
+        
+        TBUtils.log.push(consoleText);
     }
     
     TBUtils.usernotes = {
@@ -180,15 +197,35 @@ function main() {
     TBUtils.showNote = function (note) {
         if (!note.id || !note.text) return;
         
-        if ($.inArray(note.id, seenNotes) === -1) {
-            TBUtils.setting('Utils', 'notelastshown', '', now);
-            
-            TBUtils.alert(TBUtils.htmlDecode(note.text), function (resp) {
-                seenNotes.push(note.id);
-                TBUtils.setting('Utils', 'seennotes', '', seenNotes);
-                if (note.link && resp) window.open(note.link);
-            });
+        function show(){
+            if ($.inArray(note.id, seenNotes) === -1) {
+                TBUtils.setting('Utils', 'notelastshown', '', now);
+                
+                TBUtils.alert(TBUtils.htmlDecode(note.text), function (resp) {
+                    seenNotes.push(note.id);
+                    TBUtils.setting('Utils', 'seennotes', '', seenNotes); 
+                    if (note.link && resp) window.open(note.link);
+                });
+            }
         }
+        
+        
+        //platform check.  
+        switch (note.platform) {
+        case 'firefox':
+            if (TBUtils.browser == 'firefox' && TBUtils.isExtension) show();
+            break;
+        case 'chrome':
+            if (TBUtils.browser == 'chrome' && TBUtils.isExtension) show();
+            break;
+        case 'script':
+            if (!TBUtils.isExtension) show();
+            break;
+        case 'all':
+        default:
+            show();
+        }
+        
     };
     
     TBUtils.notification = function (title, body, url, timeout) {
@@ -673,7 +710,7 @@ function main() {
     (function ($) {
         $.fn.log = function (message, skip) {
             if (TBUtils.log !== undefined) {
-                TBUtils.log += message + '\n';
+                TBUtils.log.push(message);
             } else {
                 console.log('TB: ' + message);
             }
@@ -699,10 +736,15 @@ function main() {
                 }
             }
             
-            var lines = String(TBUtils.log.split('\n').length);
-            if (lines.length === 1) lines = '0' + lines;
-            if (lines.length === 2) lines = '0' + lines;
-            var msg = lines + ' [' + arguments.callee.caller.name + ']: ' + message;
+            var lines = String(TBUtils.log.length);//String(TBUtils.log.split('\n').length);
+            if (lines !== '0') {
+                if (lines.length === 1) lines = '0' + lines;
+                if (lines.length === 2) lines = '0' + lines;
+            } else {
+                lines = '';
+            }
+            
+            var msg = lines + ' [' + (arguments.callee.caller.name || 'anonymous function') + ']: ' + message;
             return $.fn.log(msg);
         };
     })(jQuery);

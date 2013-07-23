@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.11
+// @version 1.12
 // ==/UserScript==
 
 function tbnoti() {
@@ -114,7 +114,7 @@ function tbnoti() {
             
     $console.appendTo('body').hide();
     
-    $(footer).prepend(modbar);
+    $('body').append(modbar);
     
 	// if mod counters are on we append them to the rest of the counters here. 
 	if (unmoderatedOn) {

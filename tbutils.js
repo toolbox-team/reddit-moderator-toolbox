@@ -20,7 +20,7 @@ function main() {
         
     // Public variables
     TBUtils.version = 3;
-    TBUtils.toolboxVersion = '0.30';
+    TBUtils.toolboxVersion = '1.0';
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);

@@ -135,14 +135,23 @@ function domaintagger() {
         // Make box & add subreddit radio buttons
         var popup = $('\
                     <div class="dtagger-popup">\
-                    <span><span><input type="text" class="domain-name" value="' + domain + '" subreddit="' + subreddit + '"/>\
+					<div class="dtagger-popup-header"> \
+						Domain Tagger \
+						<span class="dtagger-popup-options">\
+							<a class="cancel-domain" id="cancel-domain" href="javascript:;">X</a>\
+						</span>\
+					</div>\
+					<div class="dtagger-popup-content">\
+                    <input type="text" class="domain-name" value="' + domain + '" subreddit="' + subreddit + '"/>\
                     <select class="domain-color">\
                         <option value="' + GREEN + '">green</option><option value="' + YELLOW + '">yellow</option>\
                         <option value="' + RED + '">red</option><option value="' + BLACK + '">black</option><option value="none">none</option>\
                     </select>\
-                    <input class="save-domain" type="button" value="save for /r/' + subreddit + '" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com"/>\
-                    <input class="cancel-domain" type="button" value="cancel"/>\
-                    <br><span>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</span>\
+					<br><span>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</span>\
+                    </div>\
+					<div class="dtagger-popup-footer">\
+					<input class="save-domain" type="button" value="save for /r/' + subreddit + '" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com"/>\
+                    </div>\
                     <div>')
             .appendTo('body')
             .css({

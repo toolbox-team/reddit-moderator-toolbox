@@ -191,7 +191,8 @@ function modtools() {
                 <div class="reason-popup" id="reason-popup-' + data.subreddit + '" >\
                     <attrs />\
                     <div class="reason-popup-content"> \
-                    <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
+                    <div class="reason-popup-header">Reason for /r/' + data.subreddit + '/ :</div>\
+					<div class="reason-popup-innercontent"> \
                     <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
                     <div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
@@ -205,15 +206,15 @@ function modtools() {
                         <label for="type-PM-' + data.subreddit + '"><input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"    name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'PM' ? ' checked="1"' : '') + '>PM</label> / \
                         <label for="type-reply-' + data.subreddit + '"><input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'reply' ? ' checked="1"' : '') + '>reply</label> / \
                         <label for="type-both-' + data.subreddit + '"><input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'both' ? ' checked="1"' : '') + '>both</label>\
-                        <span class="right">\
-						<input type="hidden" name="tom_or_not" value="no-tom"> \
+                        </div>\
+						</div>\
+						<div class="reason-popup-footer">\
+                        	<input type="hidden" name="tom_or_not" value="no-tom"> \
                             <span class="status error">saving....</span>\
                             <button class="save">send</button>\
                             <button class="cancel">no reason</button>\
-                        </span>\
-						<div>\
-                    <div>\
-                <div>')
+							</div>\
+                   </div>')
                 .appendTo('body')
                 .css({
                     display: 'block'

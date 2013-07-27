@@ -360,11 +360,47 @@ img.note-close {
 
 .dtagger-popup {
     max-width: 900px;
-    padding: 10px 15px !important;
-    background-color: #FAFAFA;
-    border: 1px solid #369;
+	padding: 0px !important;
+    background-color: #FFF;
+    border: solid 1px #808080;
+    box-shadow: 0px 1px 3px 1px #D6D6D6;
     position: absolute;
     z-index: 10000;
+}
+
+.dtagger-popup-header {
+    right: 0px;
+    left: 0px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    font-weight: bold;
+    padding: 4px !important;
+    font-size: small;
+    border-bottom: solid 1px #A8B5C2;
+}
+
+.dtagger-popup-content {
+    overflow: auto;
+    left: 0px;
+    right: 0px;
+    padding: 5px !important;
+}
+
+.dtagger-popup-footer {
+    width: 100%;
+    height: 30px;
+	line-height: 30px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    border-top: solid 1px #A8B5C2;
+}
+
+.dtagger-popup-options {
+    display: inline-block;
+    float: right;
+    position: relative;
 }
 
 .dtagger-popup .right {
@@ -603,6 +639,35 @@ background-color: #FA8072;
 
 }
 
+.reason-popup-header {
+    right: 0px;
+    left: 0px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    font-weight: bold;
+    padding: 4px !important;
+    font-size: small;
+    border-bottom: solid 1px #A8B5C2;
+}
+
+.reason-popup-innercontent {
+    overflow: auto;
+    left: 0px;
+    right: 0px;
+    padding: 5px !important;
+}
+
+.reason-popup-footer {
+    width: 100%;
+    height: 30px;
+	line-height: 30px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    border-top: solid 1px #A8B5C2;
+}
+
 .reason-popup .right {
     float: right;
 }
@@ -643,9 +708,10 @@ background-color: #FA8072;
     position: relative;
     top: 40px;
     max-width: 1000px;
-    padding: 10px !important;
-    background-color: white;
-    border: solid 1px gray;
+    padding: 0px !important;
+    background-color: #FFF;
+    border: solid 1px #808080;
+    box-shadow: 0px 1px 3px 1px #D6D6D6;
 	margin-left: auto !important;
 	margin-right: auto !important;
 }

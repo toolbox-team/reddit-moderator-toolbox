@@ -5,7 +5,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/165486.user.js
-// @version     6.6
+// @version     6.7
 // @run-at document-start
 // ==/UserScript==
 
@@ -131,7 +131,6 @@ function modtools() {
                 link: thing.find('a.title').attr('href'),
                 domain: info.domain
             };
-            console.log(data);
 
         if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) return;
 
@@ -142,8 +141,9 @@ function modtools() {
                 display: ''
             })
                 .find('attrs').attr(data).end()
-                .find('th input[type=checkbox]:checked').attr('checked', false)
-                .end().find('.status').hide();
+                .find('th input[type=checkbox]:checked').attr('checked', false).end()
+                .find('.status').hide().end()
+                .find('.mte-thread-link').attr('href', data.url).text(data.title);
             button.find('.yes').click();
             return false;
         }
@@ -192,8 +192,8 @@ function modtools() {
                     <attrs />\
                     <div class="reason-popup-content"> \
                     <h2>Reason for /r/' + data.subreddit + '/ :</h2><span> \
-                    <p>Removing: <a href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
-                	<div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
+                    <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
+                    <div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\

@@ -139,6 +139,18 @@
     box-shadow: 0px 1px 3px 1px #D6D6D6;
 }
 
+.tb-window-wrapper-two { 
+    position: relative;
+    top: 60px;
+    max-width: 1000px;
+    margin-right: auto !important;
+    margin-left: 50px !important;
+    padding: 0px !important;
+    background-color: #FFF;
+    border: solid 1px #808080;
+    box-shadow: 0px 1px 3px 1px #D6D6D6;
+	}
+
 .tb-window-header {
     right: 0px;
     left: 0px;
@@ -162,6 +174,14 @@
     border-right: dotted 1px #A8B5C2;
     line-height: 34px;
     padding: 10px !important;
+}
+
+.tb-window-spacer { 
+    background-color: #8d9caa;
+	display: inline-block;
+    border-right: dotted 1px #A8B5C2;
+    height: 34px;    
+	line-height: 34px;   
 }
 
 .tb-window-tabs a:hover {
@@ -238,6 +258,23 @@ width: 98%;
 
 .tb-window-content-shortcuts-td-remove { 
     width: 25px;
+}
+
+.tb-form td {
+    padding: 2px;
+}
+
+.tb-form td:first-child {
+    width: 10%;
+}
+
+.tb-form td:last-child {
+    width: 90%;
+}
+
+.tb-form .edit-header, .tb-form .edit-footer {
+width: 98%;
+height: 100px;
 }
 
 div.sticky-queue {

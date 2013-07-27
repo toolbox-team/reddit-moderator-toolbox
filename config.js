@@ -7,7 +7,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/170952.user.js
-// @version     1.2
+// @version     1.3
 // ==/UserScript==
 
 function tbconf() {   
@@ -74,33 +74,34 @@ function tbconf() {
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper" comment="the window itself">\
 <div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+<div class="tb-form">\
+<div class="tb-window-tabs">\
+<a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\
+<a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
+<a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
+<a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
+<span class="tb-window-spacer">&nbsp;</span>\
+<a class="reason-settings" href="javascript:;">removal reason settings</a><a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
+<a class="edit-domains" href="javascript:;">domain tags</a>\
+<!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
+</div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
-<div class="tb-form">\
-<p>\
-<a class="reason-settings" href="javascript:;">removal reason settings</a><br>\
-<a class="edit-reasons" href="javascript:;">edit removal reasons</a><br>\
-<a class="edit-domains" href="javascript:;">domain tags</a><br>\
-<!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
-<a href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a><br><br>\
-<a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a><br>\
-<a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a><br>\
-<a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a><br>\
 <div class="wiki-edit-area" style="display: none;">\
 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-<input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
-<input class="cancel-wiki-data" type="button" value="Cancel"></input></div>\
-</p>\
+</div>\
 <div class="reasons-notice" style="display:none;">\
 <br><br><p>Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
 You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
 <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)</p>\
-</div></div>\
+</div>\
 \
 \
 </div>\
-<div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
+<div class="tb-window-footer" ><div class="wiki-edit-area" style="display: none;"><input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
+<input class="cancel-wiki-data" type="button" value="Cancel"></input></div></div>\
+</div>\
 <div class="tb-help-content">Choose what you want to edit.</div>\
 </div>\
 </div>\
@@ -118,19 +119,18 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
-<div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a></span></div>\
+<div class="tb-window-wrapper-two" comment="the window itself">\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
 <div class="tb-form">\
-<p>import tags from /r/:&nbsp;<input class="importfrom" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)\
-<p><input class="import" type="button" value="import" />&nbsp;&nbsp;&nbsp;<input class="cancel" type="button" value="cancel" /></p>\
+<p>import tags from /r/:&nbsp;<input class="importfrom" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>\
 <table><tbody /></table></div>\
 \
 \
 </div>\
-<div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
+<div class="tb-window-footer"><input class="import" type="button" value="import" /></p>\</div>\
 <div class="tb-help-content">Help for "edit domains"</div>\
 </div>\
 </div>\
@@ -163,20 +163,20 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
-<div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a></span></div>\
+<div class="tb-window-wrapper-two" comment="the window itself">\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
 <div class="tb-form">\
 <p><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea></p>\
-<span class="edit-save-area"><input class="save" type="button" value="new"/>&nbsp;&nbsp;&nbsp;<input class="cancel" type="button" value="cancel" />\
+<span class="edit-save-area">\
 &nbsp;&nbsp;(click on a reason below to edit it.)</span><br><br><br>\
 <table ><tbody /></table></div>\
 \
 \
 </div>\
-<div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
+<div class="tb-window-footer" ><input class="save" type="button" value="new"/></div>\
 <div class="tb-help-content">\
 <h2>Input options:</h2>\
 <p>\
@@ -263,8 +263,8 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
     $('body').delegate('.reason-settings', 'click', function() {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
-<div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a></span></div>\
+<div class="tb-window-wrapper-two" comment="the window itself">\
+<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -285,39 +285,37 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
             <td>\
                pmsubject:\
 			</td><td>\
-			   <input class="pmsubject" style="width: 600px;" type="text" value="'+ (config.removalReasons.pmsubject ||'') +'"/>\
+			   <input class="pmsubject" type="text" value="'+ (config.removalReasons.pmsubject ||'') +'"/>\
 			</td>\
 			</tr><tr>\
             <td>\
                 logtitle:\
 			</td><td>\
-				<input class="logtitle" style="width: 600px;" type="text" value="'+ (config.removalReasons.logtitle || '') +'"/>\
+				<input class="logtitle" type="text" value="'+ (config.removalReasons.logtitle || '') +'"/>\
  			</td>\
 			</tr><tr>\
             <td>\
 				bantitle:\
 			</td><td>\
-				<input class="bantitle" style="width: 600px;" type="text" value="'+ (config.removalReasons.bantitle || '') +'"/>\
+				<input class="bantitle" type="text" value="'+ (config.removalReasons.bantitle || '') +'"/>\
  			</td>\
 			</tr><tr>\
             <td>\
 				logreason:\
 			</td><td>\
-				<input class="logreason" style="width: 600px;" type="text" value="'+ (config.removalReasons.logreason || '') +'"/>\
+				<input class="logreason" type="text" value="'+ (config.removalReasons.logreason || '') +'"/>\
 			</td>\
-			</tr><tr>\
-            <td>\
-			</table>\
+			</tr>\
+           	</table>\
 				<span>Header:</span>\
-                <p><textarea class="edit-header" style="width: 600px; height: 100px;">'+ unescape(config.removalReasons.header || '') +'</textarea></p>\
+                <p><textarea class="edit-header" >'+ unescape(config.removalReasons.header || '') +'</textarea></p>\
                 <span>Footer:</span>\
-                <p><textarea class="edit-footer" style="width: 600px; height: 100px;">'+ unescape(config.removalReasons.footer || '') +'</textarea></p>\
-                <p><input class="save" type="button" value="save" />&nbsp;&nbsp;&nbsp;<input class="cancel" type="button" value="cancel" /></p>\
+                <p><textarea class="edit-footer" >'+ unescape(config.removalReasons.footer || '') +'</textarea></p>\
             </div>\
 \
 \
 </div>\
-<div class="tb-window-footer" comment="for the looks">&nbsp;</div>\
+<div class="tb-window-footer"><input class="save" type="button" value="save" /></div>\
 <div class="tb-help-content">\
         <p><strong>get reason from /r/:</strong> This will load the excisting reasons from an other subreddit. <span style="color:red">WARNING:</span> Will override all settings currently in place<p>\
         <p><strong>logsub /r/:</strong>If this is filled in all removals will be logged to a subreddit specified in this field.<p>\
@@ -397,9 +395,9 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 
     $('body').delegate('.edit-wiki-page', 'click', function(e) {
         var page = $(e.target).attr('page'),
-            textArea = $('.edit-wikidata'),
-            saveButton = $('.save-wiki-data'),
-            editArea = $('.wiki-edit-area'),
+            textArea = $('body').find('.edit-wikidata'),
+            saveButton = $('body').find('.save-wiki-data'),
+            editArea = $('body').find('.wiki-edit-area'),
             isAM = (page === 'automoderator');
         
         // load the text area, but not the save button.

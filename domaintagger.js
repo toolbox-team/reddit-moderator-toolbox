@@ -11,7 +11,7 @@
 // @include     http://reddit.com/r/*/about/modqueue*
 // @include     *://*.reddit.com/r/*
 // @downloadURL http://userscripts.org/scripts/source/168936.user.js
-// @version     2.5
+// @version     2.6
 // ==/UserScript==
 
 

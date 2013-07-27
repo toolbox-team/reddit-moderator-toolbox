@@ -5,7 +5,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/165486.user.js
-// @version     6.7
+// @version     6.8
 // @run-at document-start
 // ==/UserScript==
 

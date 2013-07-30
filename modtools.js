@@ -5,7 +5,7 @@
 // @include     http://reddit.com/*
 // @include     http://*.reddit.com/*
 // @downloadURL http://userscripts.org/scripts/source/165486.user.js
-// @version     6.8
+// @version     6.9
 // @run-at document-start
 // ==/UserScript==
 
@@ -660,11 +660,11 @@ function modtools() {
         }
         setThreshold($('.thing'));
 
-        // Function to sort items
         function sortThings(order, asc) {
+            var pagination = $('#siteTable .nextprev');
             var things = $('#siteTable .thing').sort(function (a, b) {
                 (asc) ? (A = a, B = b) : (A = b, B = a);
-
+ 
                 switch (order) {
                 case 'age':
                     var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
@@ -680,7 +680,7 @@ function modtools() {
                     return reportsA - reportsB;
                 }
             });
-            $('#siteTable').empty().append(things);
+            $('#siteTable').empty().append(things).append(pagination);
         }
         sortThings(listingOrder, sortAscending);
 
@@ -721,7 +721,6 @@ function modtools() {
         $('.thing .entry .userattrs').each(addUserHistoryLink);
 
         // Add ban button to all users. 
-
         function addUserBanLink() {
             if (!$(this).hasClass('ban-button')) {
 
@@ -779,7 +778,6 @@ function modtools() {
         };
 
         //User history button pressed
-        /////////HERE FOR RTS///////////
         var gettingUserdata = false;
         $('.user-history-button').live('click', function () {
             $('html').one('click', function () {

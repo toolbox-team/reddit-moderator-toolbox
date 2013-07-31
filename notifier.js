@@ -605,7 +605,7 @@ function tbnoti() {
         
         function updateMessagesCount(count) {
             if (count < 1) {
-                $('#mailCount').html('');
+                $('#mailCount').empty();
                 $('#mail').attr('class', 'nohavemail');
                 $('#mail').attr('title', 'no new mail!');
 				$('#mail').attr('href', 'http://www.reddit.com/message/inbox/');
@@ -624,19 +624,19 @@ function tbnoti() {
                 $('#tb-mail').attr('href', 'http://www.reddit.com'+ messageunreadurl);
                 $('#tb-mailCount').attr('href', 'http://www.reddit.com'+ messageunreadurl);
             }
-            $('#tb-mailCount').html('[' + count + ']');
+            $('#tb-mailCount').text('[' + count + ']');
             
 			if (count > 0) {
-                $('#mailCount').html('[' + count + ']');
+                $('#mailCount').text('[' + count + ']');
 			}
         }
         
         function updateModqueueCount(count) {
-            $('#tb-queueCount').html('[' + count + ']');
+            $('#tb-queueCount').text('[' + count + ']');
         }
         
         function updateUnmodCount(count) {
-            $('#tb-unmoderatedcount').html('[' + count + ']');
+            $('#tb-unmoderatedcount').text('[' + count + ']');
         }
         
         function updateModMailCount(count) {
@@ -652,7 +652,7 @@ function tbnoti() {
                 $('#tb-modmail').attr('title', 'new mail!');
                 $('#tb-modmail').attr('href', 'http://www.reddit.com'+ modmailunreadurl);
             }
-            $('#tb-modmailcount').html('[' + count + ']');
+            $('#tb-modmailcount').text('[' + count + ']');
             // $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
         }
         

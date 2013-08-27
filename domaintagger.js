@@ -11,15 +11,14 @@
 // @include     http://reddit.com/r/*/about/modqueue*
 // @include     *://*.reddit.com/r/*
 // @downloadURL http://userscripts.org/scripts/source/168936.user.js
-// @version     2.6
+// @version     2.7
 // ==/UserScript==
 
 
 function domaintagger() {
-    if (!TBUtils.isModpage || !reddit.logged || !TBUtils.setting('DomainTagger', 'enabled', true)) return;
+    if (!reddit.logged || !TBUtils.setting('DomainTagger', 'enabled', true)) return;
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';
-
     var subs = [];
 
     TBUtils.getModSubs(function () {

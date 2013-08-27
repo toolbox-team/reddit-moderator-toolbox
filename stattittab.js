@@ -31,6 +31,9 @@ var stattitTab = {
         var header = document.getElementById("header-bottom-left");
         var tabList = header.getElementsByTagName("ul")[0];
         
+        if (tabList == null)
+            return false;
+        
         var listItem = document.createElement("li");
         var link = document.createElement("a");
         link.href = "http://stattit.com/" + page.section + "/" + page.subSection;
@@ -43,6 +46,7 @@ var stattitTab = {
 }
 
 if (document.body) {
-  if (!JSON.parse(localStorage['Toolbox.StattitTab.enabled'] || 'true')) return;
-  stattitTab.init();  
+  if (JSON.parse(localStorage['Toolbox.StattitTab.enabled'] || 'true')) {
+      stattitTab.init();  
+  }
 }

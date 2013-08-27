@@ -8,7 +8,7 @@
 // @include      http://*.reddit.com/*
 // @include      https://*.reddit.com/*
 // @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.12
+// @version 1.13
 // ==/UserScript==
 
 function tbnoti() {
@@ -35,6 +35,7 @@ function tbnoti() {
         unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  //TODO: promote to TBUtils.isUnreadPage
         modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
+        betaMode = TBUtils.betaMode,
         consoleShowing = false,
         newLoad = true,
     	messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
@@ -266,6 +267,9 @@ function tbnoti() {
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
 			</p>\
+            <p>\
+                <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
+    		</p>\
 			<div class="tb-help-main-content">Edit toolbar stuff</div>\
 			</div>\
             ';
@@ -388,7 +392,7 @@ function tbnoti() {
 		<div class="tb-window-content-about">\
 		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v'+ TBUtils.toolboxVersion +'</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
 		<h3>Special thanks to:</h3>\
-		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab and several code contributions <br>\
+		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab, Mod Log Matrix and several code contributions <br>\
         <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags <br><br>\
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
@@ -469,6 +473,7 @@ function tbnoti() {
 			
            
             TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
+            TBUtils.setting('Utils', 'betaMode', '', $("#betaMode").prop('checked'));
             
             // Save shortcuts 
             if ($('.tb-window-content-shortcuts-tr').length === 0) {

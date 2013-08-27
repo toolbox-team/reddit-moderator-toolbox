@@ -19,8 +19,9 @@ function main() {
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
         
     // Public variables
-    TBUtils.version = 3;
-    TBUtils.toolboxVersion = '1.0';
+    TBUtils.version = 4;
+    TBUtils.toolboxVersion = '1.1';
+    TBUtils.shortVersion = 110; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -30,6 +31,7 @@ function main() {
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
+    TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
     TBUtils.browser = 'unknown';
     
     // Icons 
@@ -100,9 +102,11 @@ function main() {
     
     if (TBUtils.debugMode) {
         var consoleText = 'Toolbox verson: ' + TBUtils.toolboxVersion +
-                          ' TBUtils version: ' + TBUtils.version +
-                          ' Browser: ' + TBUtils.browser +
-                          ' Extension: ' + TBUtils.isExtension + '\n';
+                          ', TBUtils version: ' + TBUtils.version +
+                          ', Browser: ' + TBUtils.browser +
+                          ', Extension: ' + TBUtils.isExtension + 
+                          ', Beta features: ' + TBUtils.betaMode +
+                          '\n';
         
         TBUtils.log.push(consoleText);
     }
@@ -804,6 +808,12 @@ function main() {
     (function getNotes() {
         TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+            if (resp.stableVerson > TBUtils.shortVersion) {
+                TBUtils.alert("There is a new version of Toolbox!  Click here to update.", function (clicked) {
+                    if (clicked) window.open("http://creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
+                });
+                return; //don't spam the user with notes until they have the current version.
+            }
             $(resp.notes).each(function () {
                 TBUtils.showNote(this);
             });
@@ -813,6 +823,12 @@ function main() {
         if (!TBUtils.debugMode) return; 
         TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+            if (resp.devVersion > TBUtils.shortVersion) {
+                TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
+                    if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
+                });
+                //return; //do spam?  I donno.
+            }
             $(resp.notes).each(function () {
                 TBUtils.showNote(this);
             });

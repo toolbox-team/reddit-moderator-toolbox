@@ -79,7 +79,6 @@ function tbnoti() {
     // UI elements 
     //
     
-    $.log(TBUtils.isExtension);
     
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 	var modbar = $('\
@@ -125,6 +124,7 @@ function tbnoti() {
 			');
 	}
     
+	// Debug mode/console
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('\
             <span><a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a>&nbsp;&nbsp;&nbsp;</span>\
@@ -137,6 +137,9 @@ function tbnoti() {
                 consoleLoop();
             }, 500);
         })();
+		
+		//$.log("InstallTrigger " + typeof (InstallTrigger));
+		//$.log(TBUtils.isExtension);
     }
     
 	// Append shortcuts
@@ -177,6 +180,7 @@ function tbnoti() {
         $.tooltip(hoverString, e);
     });
     
+	// Show/hide console
     $('body').delegate('#tb-toggle-console, #tb-debug-hide', 'click', function () {
        if (!consoleShowing) {
            $console.show();

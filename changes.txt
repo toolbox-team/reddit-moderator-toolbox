@@ -1,7 +1,7 @@
 1.1:
 - added 'beta mode'
 - added /u/LowSocity's Mod Matrix
-- added 'new version' notification.  (still needs ff identification bug resolved.)
+- added 'new version' notification.
 - fixed some console errors in stattit tab (again, from /u/LowSocity)
 - Domain tagger now works in all views (again)
-- 
+- fixed browser detection of Firefox

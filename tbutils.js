@@ -94,7 +94,7 @@ function main() {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
     
-    if (typeof(self.on) !== "undefined") {
+    if (typeof (InstallTrigger) !== "undefined") {
         TBUtils.browser = 'firefox';
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = 'chrome';
@@ -808,8 +808,8 @@ function main() {
     (function getNotes() {
         TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
-            if (resp.stableVerson > TBUtils.shortVersion) {
-                TBUtils.alert("There is a new version of Toolbox!  Click here to update.", function (clicked) {
+            if (resp.stableVerson > TBUtils.shortVersion && TBUtils.browser == 'firefox' && TBUtils.isExtension) {
+                TBUtils.alert("There is a new version of Toolbox for Firefox!  Click here to update.", function (clicked) {
                     if (clicked) window.open("http://creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
                 });
                 return; //don't spam the user with notes until they have the current version.
@@ -823,7 +823,7 @@ function main() {
         if (!TBUtils.debugMode) return; 
         TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
-            if (resp.devVersion > TBUtils.shortVersion) {
+            if (resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
                 TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
                     if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
                 });

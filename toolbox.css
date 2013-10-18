@@ -16,6 +16,8 @@
     color: #696969;
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
+	left: 0px;
+	right: 0px;
 }
 
 
@@ -36,6 +38,7 @@
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
     border-right: solid 1px #A8B5C2;
+	left: 0px;
 }
 
 .mod-toolbox #tb-mail.nohavemail {

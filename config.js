@@ -73,7 +73,7 @@ function tbconf() {
         var html = '\
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
 <div class="tb-form">\
 <div class="tb-window-tabs">\
 <a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\
@@ -102,7 +102,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 <div class="tb-window-footer" ><div class="wiki-edit-area" style="display: none;"><input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
 <input class="cancel-wiki-data" type="button" value="Cancel"></input></div></div>\
 </div>\
-<div class="tb-help-content">Choose what you want to edit.</div>\
+<div class="tb-help-config-content">Choose what you want to edit.</div>\
 </div>\
 </div>\
         ';
@@ -120,7 +120,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -131,7 +131,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 \
 </div>\
 <div class="tb-window-footer"><input class="import" type="button" value="import" /></p>\</div>\
-<div class="tb-help-content">Help for "edit domains"</div>\
+<div class="tb-help-config-content">Help for "edit domains"</div>\
 </div>\
 </div>\
 ');
@@ -164,7 +164,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -177,7 +177,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 \
 </div>\
 <div class="tb-window-footer" ><input class="save" type="button" value="new"/></div>\
-<div class="tb-help-content">\
+<div class="tb-help-config-content">\
 <h2>Input options:</h2>\
 <p>\
 <strong>Selection box:</strong><br>\
@@ -264,7 +264,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -316,7 +316,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 \
 </div>\
 <div class="tb-window-footer"><input class="save" type="button" value="save" /></div>\
-<div class="tb-help-content">\
+<div class="tb-help-config-content">\
         <p><strong>get reason from /r/:</strong> This will load the excisting reasons from an other subreddit. <span style="color:red">WARNING:</span> Will override all settings currently in place<p>\
         <p><strong>logsub /r/:</strong>If this is filled in all removals will be logged to a subreddit specified in this field.<p>\
         <p><strong>pmsubject:</strong> Subject field for the pm that can be send to a user after a removal.<p>\
@@ -368,9 +368,10 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         });
     });
 
-    $('body').delegate('.tb-help', 'click', function() {	
+    $('body').delegate('.tb-config-help', 'click', function() {	
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
-		var htmlcontent = $(this).parents('.tb-window-wrapper').find('.tb-help-content').html();
+		var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
+		console.log(htmlcontent);
         var html = '\
         <!DOCTYPE html>\
         <html>\

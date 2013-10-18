@@ -14,13 +14,16 @@
 function tbnoti() {
     if (!reddit.logged) return;
     
+	
+	$('body').addClass('mod-toolbox');
     //
     // preload some generic variables 
     //
-    var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1*60*1000), //default to check every minute for new stuff.
+	var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1*60*1000), //default to check every minute for new stuff.
         modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on', //TODO: change all localStorage methods to use TBUtils.setting().
         messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
         modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
+		hideRemoved = TBUtils.setting('Notifier', 'hideRemoved', true),
         modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
         unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
@@ -201,7 +204,8 @@ function tbnoti() {
 			consolidatedmessageschecked,
 			modmailnotificationschecked,
 			modmailunreadlinkchecked,
-			unmoderatedonchecked;
+			unmoderatedonchecked,
+			hideRemovedChecked;
         
 		if (messageunreadlink) {
             messageunreadlinkchecked = 'checked'; 
@@ -223,6 +227,9 @@ function tbnoti() {
 		}
 		if(consolidatedMessages) {
             consolidatedmessageschecked = 'checked';
+        }	
+		if(hideRemoved) {
+            hideRemovedChecked = 'checked';
         }
         
         // The window in which all settings will be showed. 
@@ -267,6 +274,9 @@ function tbnoti() {
 			<p>\
 				Multireddit of subs you want displayed in the unmoderated counter:<br>\
 				<input type="text" name="unmoderatedsubreddits" value="'+ unescape(unmoderatedSubreddits) +'">\
+			</p>\
+			            <p>\
+                <label><input type="checkbox" id="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
 			</p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
@@ -358,7 +368,7 @@ function tbnoti() {
                 <label><input type="checkbox" id="commentreasons" ' + ((commentreasons) ? "checked" : "") + '> Enable removal reasons for comments</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammes</label>\
+                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
                 <p>\
                 <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
@@ -456,6 +466,9 @@ function tbnoti() {
 			
 			unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
             TBUtils.setting('Notifier', 'unmoderatedon', '', unmoderatedoncheckedsave);
+			
+			hideRemovedCheckedsave = $("input[name=hideRemoved]").is(':checked');
+			TBUtils.setting('Notifier', 'hideRemoved', '', hideRemovedCheckedsave);
             
             consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
             TBUtils.setting('Notifier', 'consolidatedmessages', '', consolidatedmessagescheckedsave);
@@ -475,7 +488,7 @@ function tbnoti() {
             unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
             localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;
 			
-           
+            TBUtils.setting('Notifier', 'hideremoved', '', $("#hideremoved").prop('checked'));
             TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
             TBUtils.setting('Utils', 'betaMode', '', $("#betaMode").prop('checked'));
             
@@ -567,6 +580,32 @@ function tbnoti() {
     // Counters and notifications 
     //
 	
+	// Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
+	var removedCounter = 0;
+	
+	$('.comments-page .thing.spam > .entry').each(function() {
+	$(this).addClass('tb-comment-spam');	
+	removedCounter= removedCounter+1;
+	});
+	console.log(removedCounter);
+	if (removedCounter==1) { 
+	$('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title"Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[1]</a>');
+	} else if (removedCounter>1) { 
+	$('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />['+removedCounter.toString()+']</a>');
+	}
+    
+	if (hideRemoved) { 
+	$('.tb-comment-spam').hide();
+	}
+	
+		$('body').delegate('#tb-toggle-removed', 'click', function () {
+	if($('.tb-comment-spam').is(':visible')) {
+    $('.tb-comment-spam').hide();
+    } else {
+	$('.tb-comment-spam').show();
+	}
+
+	});
 	// Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
 	// If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab. 
     if (TBUtils.isModmailUnread || TBUtils.isModmail) {

@@ -20,8 +20,8 @@ function main() {
         
     // Public variables
     TBUtils.version = 4;
-    TBUtils.toolboxVersion = '1.3';
-    TBUtils.shortVersion = 130; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '1.3.1';
+    TBUtils.shortVersion = 131; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);

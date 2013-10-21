@@ -276,7 +276,7 @@ function tbnoti() {
 				<input type="text" name="unmoderatedsubreddits" value="'+ unescape(unmoderatedSubreddits) +'">\
 			</p>\
 			            <p>\
-                <label><input type="checkbox" id="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
+                <label><input type="checkbox" name="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
 			</p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
@@ -468,6 +468,7 @@ function tbnoti() {
             TBUtils.setting('Notifier', 'unmoderatedon', '', unmoderatedoncheckedsave);
 			
 			hideRemovedCheckedsave = $("input[name=hideRemoved]").is(':checked');
+			console.log(hideRemovedCheckedsave);
 			TBUtils.setting('Notifier', 'hideRemoved', '', hideRemovedCheckedsave);
             
             consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
@@ -488,7 +489,6 @@ function tbnoti() {
             unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
             localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;
 			
-            TBUtils.setting('Notifier', 'hideremoved', '', $("#hideremoved").prop('checked'));
             TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
             TBUtils.setting('Utils', 'betaMode', '', $("#betaMode").prop('checked'));
             

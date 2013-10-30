@@ -23,7 +23,7 @@ function tbnoti() {
         modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on', //TODO: change all localStorage methods to use TBUtils.setting().
         messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
         modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
-		hideRemoved = TBUtils.setting('Notifier', 'hideRemoved', true),
+		hideRemoved = TBUtils.setting('Notifier', 'hideRemoved', false),
         modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
         unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
@@ -583,7 +583,7 @@ function tbnoti() {
 	// Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
 	var removedCounter = 0;
 	
-	$('.comments-page .thing.spam > .entry').each(function() {
+	$('.comments-page .thing.comment.spam > .entry').each(function() {
 	$(this).addClass('tb-comment-spam');	
 	removedCounter= removedCounter+1;
 	});
@@ -606,6 +606,20 @@ function tbnoti() {
 	}
 
 	});
+
+	
+		
+	$('body').delegate('.thing.comment.spam', 'click', function () {
+	var test;
+	test = $(this).find('.tb-comment-spam');
+	console.log(test)
+	
+	if(test.is(':visible')) {
+    test.hide();
+    } else {
+	test.show();
+	}
+		});
 	// Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
 	// If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab. 
     if (TBUtils.isModmailUnread || TBUtils.isModmail) {

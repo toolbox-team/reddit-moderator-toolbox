@@ -1,4 +1,7 @@
-
+body.comments-page .content .sitetable .thing.spam.comment:hover { 
+   cursor: pointer;
+   background-color: #D3E5F8 !important;
+   }
 
 
 .mod-toolbox #tb-bottombar {

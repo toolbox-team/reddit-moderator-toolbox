@@ -223,9 +223,19 @@ function modtools() {
                 i = 0;
 
             $(data.reasons).each(function () {
-                popup.find('tbody').append('<tr><th><input type="checkbox" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + i + '"></th><td><label for="reason-' + data.subreddit + '-' + (i++) + '">' + this + '<BR></label></td></tr>');
+                popup.find('tbody').append('<tr class="tb_removal_reason_tr"><th><input type="checkbox" class="tb_removal_reason_check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + i + '"></th><td class="' + data.subreddit + '-' + (i++) + '">' + this + '<BR></td></tr>');
             });
 
+			$('body').delegate('.tb_removal_reason_tr', 'click', function (e) {
+			if(!$(this).find('.tb_removal_reason_check').is(':checked') && !$(e.target).is('.tb_removal_reason_check')) { 
+			$(this).css('background', '#b1ddaa'); 
+			$(this).find('.tb_removal_reason_check').prop('checked', true);
+			} else if($(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) { 
+			$(this).css('background', '#b1ddaa'); 
+			} else if(!$(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) { 
+			$(this).css('background', '#fff'); 
+			}
+			});
             // Pre fill reason input elements which have IDs.
             popup.find('td input[id],td textarea[id]').each(function () {
                 this.value = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.value;
@@ -286,7 +296,7 @@ function modtools() {
         if (!checked.length) return status.text('error, no reason selected');
 
         // Get reason text
-        checked.parent().next().children().contents().each(function () {
+        checked.closest('.tb_removal_reason_tr').find('td').contents().each(function () {
             reason += this.tagName == 'BR' ? '\n\n' : this.value || this.textContent;
         });
 

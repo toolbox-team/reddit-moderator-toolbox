@@ -12,7 +12,7 @@
 
 
 function tbcomm() {
-    if (!reddit.logged || !$('.moderator').length) return;
+    if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
 
     //
     // preload some generic variables 
@@ -63,7 +63,7 @@ function tbcomm() {
             hiddenComment.show();
         }
     }).children().click(function (e) {
-        return false;
+        return;
     });
 
     // Add a bit of js based css since the hover effects otherwise will go to the child elements as well 

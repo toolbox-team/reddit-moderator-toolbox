@@ -1,7 +1,16 @@
-body.comments-page .content .sitetable .thing.spam.comment:hover { 
+body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBoxes body.comments-page .content .sitetable .thing.spam.comment:hover  { 
    cursor: pointer;
    background-color: #D3E5F8 !important;
    }
+
+.thing.spam, body .sitetable .thing.spam.deleted.link.self, .res-commentBoxes body.res.moderator .content .sitetable .thing.spam, .res-commentBoxes body.res.moderator .sitetable .thing.spam.deleted.link.self {
+
+   background-color:#FA8072 !important;
+}
+
+.mod-toolbox .tb-highlight { 
+background-color: #ffff16;
+} 
 
 
 .mod-toolbox #tb-bottombar {
@@ -384,17 +393,24 @@ img.note-close {
     position: fixed;
     text-align: left;
     width: 500px;
-    height: 50px;
-    background-color: rgba(206, 227, 248, 0.86);
+    height: 70px;
+    background-color: rgba(206, 227, 248, 1);
     font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
-    font-size: small;
+    font-size: 14px;
     color: #000;
     padding: 2px !important;
-    border: solid 1px #A8B5C2;
+    border: solid 2px #B83E3E;
     top: auto;
     box-shadow: #D1D1D1 0px 1px 3px 1px;
+	cursor: pointer;
+
 }
 
+.mod-toolbox #tb-notification-alert span {
+position: relative;
+display: inline-block;
+padding: 10px;
+}
 .mod-toolbox #tb-tooltip {
     /* left: 5px;
     bottom: 30px; */

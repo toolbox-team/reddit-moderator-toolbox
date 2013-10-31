@@ -9,23 +9,25 @@
 // @run-at document-start
 // ==/UserScript==
 
+
 function modtools() {
     if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
-    
-   var notEnabled = [], //because of the CSS fallback, we can't use TBUtils.noConfig.
-       hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-       ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-       removalReasons = TBUtils.setting('ModTools', 'removalreasons', true),
-       commentReasons = TBUtils.setting('ModTools', 'commentreasons', false),
-       rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
-       sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
-       
-        
+
+    var notEnabled = [],
+        //because of the CSS fallback, we can't use TBUtils.noConfig.
+        hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
+        ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
+        removalReasons = TBUtils.setting('ModTools', 'removalreasons', true),
+        commentReasons = TBUtils.setting('ModTools', 'commentreasons', false),
+        rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
+        sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+
+
     function removequotes(string) {
         return string.replace(/['"]/g, '');
     }
 
-    function getRemovalReasons(subreddit, callback) {        
+    function getRemovalReasons(subreddit, callback) {
         $.log('getting config: ' + subreddit);
         var reasons = '';
 
@@ -104,7 +106,7 @@ function modtools() {
 
     function openRemovalPopup(event) {
         if (!removalReasons || TBUtils.isModmail) return;
-        
+
         var thingclasses = $(this).parents('div.thing').attr('class');
         if (thingclasses.match(/\bcomment\b/) && !commentReasons) return;
 
@@ -115,22 +117,21 @@ function modtools() {
         //             $(".reason-popup").hide();
         //        }
         //     });
-
         // Get link/comment attributes
         var button = $(this),
             thing = button.thing(),
             info = TBUtils.getThingInfo(thing);
-            data = {
-                subreddit: info.subreddit,
-                fullname: thing.thing_id(),
-                author: info.user,
-                title: thing.find('a.title').length ? '"' + thing.find('a.title').text() + '"' : '',
-                kind: thing.hasClass('link') ? 'submission' : 'comment',
-                mod: reddit.logged,
-                url: info.permalink,
-                link: thing.find('a.title').attr('href'),
-                domain: info.domain
-            };
+        data = {
+            subreddit: info.subreddit,
+            fullname: thing.thing_id(),
+            author: info.user,
+            title: thing.find('a.title').length ? '"' + thing.find('a.title').text() + '"' : '',
+            kind: thing.hasClass('link') ? 'submission' : 'comment',
+            mod: reddit.logged,
+            url: info.permalink,
+            link: thing.find('a.title').attr('href'),
+            domain: info.domain
+        };
 
         if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) return;
 
@@ -139,11 +140,7 @@ function modtools() {
         if (popup.length) {
             popup.css({
                 display: ''
-            })
-                .find('attrs').attr(data).end()
-                .find('th input[type=checkbox]:checked').attr('checked', false).end()
-                .find('.status').hide().end()
-                .find('.mte-thread-link').attr('href', data.url).text(data.title);
+            }).find('attrs').attr(data).end().find('th input[type=checkbox]:checked').attr('checked', false).end().find('.status').hide().end().find('.mte-thread-link').attr('href', data.url).text(data.title);
             button.find('.yes').click();
             return false;
         }
@@ -214,28 +211,25 @@ function modtools() {
                             <button class="save">send</button>\
                             <button class="cancel">no reason</button>\
 							</div>\
-                   </div>')
-                .appendTo('body')
-                .css({
-                    display: 'block'
-                })
-                .find('attrs').attr(data).end(),
+                   </div>').appendTo('body').css({
+                display: 'block'
+            }).find('attrs').attr(data).end(),
                 i = 0;
 
             $(data.reasons).each(function () {
                 popup.find('tbody').append('<tr class="tb_removal_reason_tr"><th><input type="checkbox" class="tb_removal_reason_check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + i + '"></th><td class="' + data.subreddit + '-' + (i++) + '">' + this + '<BR></td></tr>');
             });
 
-			$('body').delegate('.tb_removal_reason_tr', 'click', function (e) {
-			if(!$(this).find('.tb_removal_reason_check').is(':checked') && !$(e.target).is('.tb_removal_reason_check')) { 
-			$(this).css('background', '#b1ddaa'); 
-			$(this).find('.tb_removal_reason_check').prop('checked', true);
-			} else if($(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) { 
-			$(this).css('background', '#b1ddaa'); 
-			} else if(!$(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) { 
-			$(this).css('background', '#fff'); 
-			}
-			});
+            $('body').delegate('.tb_removal_reason_tr', 'click', function (e) {
+                if (!$(this).find('.tb_removal_reason_check').is(':checked') && !$(e.target).is('.tb_removal_reason_check')) {
+                    $(this).css('background', '#b1ddaa');
+                    $(this).find('.tb_removal_reason_check').prop('checked', true);
+                } else if ($(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) {
+                    $(this).css('background', '#b1ddaa');
+                } else if (!$(this).find('.tb_removal_reason_check').is(':checked') && $(e.target).is('.tb_removal_reason_check')) {
+                    $(this).css('background', '#fff');
+                }
+            });
             // Pre fill reason input elements which have IDs.
             popup.find('td input[id],td textarea[id]').each(function () {
                 this.value = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.value;
@@ -327,7 +321,7 @@ function modtools() {
 
         function removalmessage_pm(is_tom) {
             if (!notifyBy) return status.text('error, no reply type selected');
-            
+
             if (is_tom !== 'no_tom') {
                 reason = reason.replace('{loglink}', is_tom);
             }
@@ -337,22 +331,18 @@ function modtools() {
                 uh: reddit.modhash,
                 text: reason,
                 api_type: 'json'
-            })
-                .success(function (d) {
-                    $.post('/api/distinguish/yes', {
-                        id: d.json.data.things[0].data.id,
-                        uh: reddit.modhash
-                    })
-                        .success(function (d) {
-                            popup.hide();
-                        })
-                        .error(function () {
-                            status.text('error distinguishing reply');
-                        });
-                })
-                .error(function () {
-                    status.text('error posting reply');
+            }).success(function (d) {
+                $.post('/api/distinguish/yes', {
+                    id: d.json.data.things[0].data.id,
+                    uh: reddit.modhash
+                }).success(function (d) {
+                    popup.hide();
+                }).error(function () {
+                    status.text('error distinguishing reply');
                 });
+            }).error(function () {
+                status.text('error posting reply');
+            });
 
             // ...and/or PM the user
             if (notifyBy == 'PM' || notifyBy == 'both') $.post('/api/compose', {
@@ -360,13 +350,11 @@ function modtools() {
                 uh: reddit.modhash,
                 subject: subject,
                 text: reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]'
-            })
-                .success(function () {
-                    popup.hide();
-                })
-                .error(function () {
-                    status.text('error sending PM');
-                });
+            }).success(function () {
+                popup.hide();
+            }).error(function () {
+                status.text('error sending PM');
+            });
         }
 
         // If logsub is not empty we should log the removal.
@@ -379,19 +367,18 @@ function modtools() {
                 title: removequotes(logtitle),
                 sr: data.logsub,
                 api_type: 'json'
-            })
-                .done(function (data) {
-                    removalmessage_pm(data.json.data.url);
-                    var removalid = data.json.data.url;
-                    removalid = removalid.match(/http:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
-                    removalid = 't3_' + removalid[1];
+            }).done(function (data) {
+                removalmessage_pm(data.json.data.url);
+                var removalid = data.json.data.url;
+                removalid = removalid.match(/http:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
+                removalid = 't3_' + removalid[1];
 
-                    $.post('/api/approve', {
-                        id: removalid,
-                        uh: reddit.modhash
-                    });
-                    return;
+                $.post('/api/approve', {
+                    id: removalid,
+                    uh: reddit.modhash
                 });
+                return;
+            });
 
         } else {
             removalmessage_pm('no_tom');
@@ -404,6 +391,8 @@ function modtools() {
     });
 
     // Add modtools buttons to page.
+
+
     function addModtools() {
         var numberRX = /-?\d+/,
             reportsThreshold = (localStorage.getItem('reports-threshold') || 1),
@@ -485,7 +474,6 @@ function modtools() {
         });
 
         //// Button actions ////
-
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
         $('.thing .entry').live('click', function (e) {
@@ -589,17 +577,13 @@ function modtools() {
                 type = (this.type == 'positive' ? 'approve' : 'remove');
 
             // Apply action
-            $('.thing:visible>input:checked').parent()
-                .each(function () {
-                    $.post('/api/' + type, {
-                        uh: reddit.modhash,
-                        spam: spam,
-                        id: $(this).thing_id()
-                    });
-                })
-                .css('opacity', '1')
-                .removeClass('flaired spammed removed approved')
-                .addClass((spam ? 'spamme' : type) + 'd');
+            $('.thing:visible>input:checked').parent().each(function () {
+                $.post('/api/' + type, {
+                    uh: reddit.modhash,
+                    spam: spam,
+                    id: $(this).thing_id()
+                });
+            }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
         });
 
         // menuarea pretty-button feedback.
@@ -609,43 +593,43 @@ function modtools() {
             });
         });
 
-		var ignoreOnApproveset;
+        var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
         $('.pretty-button').live('click', function (e) {
-            var thing = $(this).closest('.thing');            
+            var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
-            if (hideActionedItems) { 
-			$(thing).hide();
-			} else if (ignoreOnApproveset) {
-			ignoreOnApproveset = false;
-			} else if ($(this).hasClass('negative')) { 
-			$(thing).removeClass('removed');
-			$(thing).removeClass('approved');
-			$(thing).addClass('spammed');
-			} else if ($(this).hasClass('neutral')) { 
-			$(thing).removeClass('spammed');
-			$(thing).removeClass('approved');
-			$(thing).addClass('removed');
-			} else if ($(this).hasClass('positive')) { 
-			$(thing).removeClass('removed');
-			$(thing).removeClass('spammed');
-			$(thing).addClass('approved');
-			} 
-			
-	
-			
+            if (hideActionedItems) {
+                $(thing).hide();
+            } else if (ignoreOnApproveset) {
+                ignoreOnApproveset = false;
+            } else if ($(this).hasClass('negative')) {
+                $(thing).removeClass('removed');
+                $(thing).removeClass('approved');
+                $(thing).addClass('spammed');
+            } else if ($(this).hasClass('neutral')) {
+                $(thing).removeClass('spammed');
+                $(thing).removeClass('approved');
+                $(thing).addClass('removed');
+            } else if ($(this).hasClass('positive')) {
+                $(thing).removeClass('removed');
+                $(thing).removeClass('spammed');
+                $(thing).addClass('approved');
+            }
+
+
+
         });
-        
+
         // Open reason dropdown when we remove something as ham.
-        $('.big-mod-buttons>span>.pretty-button.positive').live('click', function() {
+        $('.big-mod-buttons>span>.pretty-button.positive').live('click', function () {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             $(thing).removeClass('removed');
-			$(thing).removeClass('spammed');
-			$(thing).addClass('approved');
-			ignoreOnApproveset = true;
-            
-            if ($(thing).find('.reported-stamp').length){
+            $(thing).removeClass('spammed');
+            $(thing).addClass('approved');
+            ignoreOnApproveset = true;
+
+            if ($(thing).find('.reported-stamp').length) {
                 $(thing).find('a:contains("ignore reports")').click();
             }
         });
@@ -674,7 +658,7 @@ function modtools() {
             var pagination = $('#siteTable .nextprev');
             var things = $('#siteTable .thing').sort(function (a, b) {
                 (asc) ? (A = a, B = b) : (A = b, B = a);
- 
+
                 switch (order) {
                 case 'age':
                     var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
@@ -698,17 +682,17 @@ function modtools() {
         var expandosOpen = false;
         $('.open-expandos').toggle(
 
-            function () {
-                $('.open-expandos').text('[-]');
-                $('.expando-button.collapsed').click();
-                expandosOpen = true;
-            },
+        function () {
+            $('.open-expandos').text('[-]');
+            $('.expando-button.collapsed').click();
+            expandosOpen = true;
+        },
 
-            function () {
-                $('.open-expandos').text('[+]');
-                $('.expando-button.expanded').click();
-                expandosOpen = false;
-            });
+        function () {
+            $('.open-expandos').text('[+]');
+            $('.expando-button.expanded').click();
+            expandosOpen = false;
+        });
 
         // Open inline context
         $('.inline-content').click(function (e) {
@@ -723,6 +707,8 @@ function modtools() {
         });
 
         // Add history button to all users. 
+
+
         function addUserHistoryLink() {
             var userhistory = '<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>';
 
@@ -731,6 +717,8 @@ function modtools() {
         $('.thing .entry .userattrs').each(addUserHistoryLink);
 
         // Add ban button to all users. 
+
+
         function addUserBanLink() {
             if (!$(this).hasClass('ban-button')) {
 
@@ -744,17 +732,15 @@ function modtools() {
         $('.thing .entry .userattrs').each(addUserBanLink);
 
         //Process new things loaded by RES or flowwit.
+
+
         function processNewThings(things) {
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
-            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />')
-                .find('.collapsed:visible a.expand:contains("[+]")').click().end()
-                .find('.userattrs').each(addUserHistoryLink).end()
-                .find('.userattrs').each(addUserBanLink)
-                .filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
-                    $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
-                });
+            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />').find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').each(addUserHistoryLink).end().find('.userattrs').each(addUserBanLink).filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
+                $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
+            });
             if (expandosOpen) $(things).find('.expando-button.collapsed').click();
             if (!viewingspam) setThreshold(things);
         }
@@ -798,15 +784,15 @@ function modtools() {
 
             var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
                 commentbody = '',
-                contentBox = $('.inline-content')
-                    .show().offset($(this).offset())
-                    .html('<div class="user-history"><a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Submit to RTS</a><div><br /><b>Submission history:</b></div><div class="table domain-table"><table><thead><tr><th>domain submitted from</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div><div class="table subreddit-table"><table><thead><tr><th>subreddit submitted to</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div></div>'),
+                contentBox = $('.inline-content').show().offset($(this).offset()).html('<div class="user-history"><a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Submit to RTS</a><div><br /><b>Submission history:</b></div><div class="table domain-table"><table><thead><tr><th>domain submitted from</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div><div class="table subreddit-table"><table><thead><tr><th>subreddit submitted to</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div></div>'),
 
-                domains = {}, domainslist = [],
+                domains = {},
+                domainslist = [],
                 domaintable = contentBox.find('.domain-table tbody'),
-                subreddits = {}, subredditlist = [],
+                subreddits = {},
+                subredditlist = [],
                 subreddittable = contentBox.find('.subreddit-table tbody');
-                
+
             $('.rts-report').attr('data-author', author);
 
             // Show user's karma
@@ -816,102 +802,102 @@ function modtools() {
 
             // Get user's domain & subreddit submission history
             (function populateHistory(after) {
-                $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || ''))
-                    .error(function () {
-                        contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
-                    })
-                    .success(function (d) {
+                $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
+                    contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
+                }).success(function (d) {
 
-                        if (!gettingUserdata) return;
-                        if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
+                    if (!gettingUserdata) return;
+                    if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
 
-                        var after = d.data.after,
-                            commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
+                    var after = d.data.after,
+                        commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
 
-                        for (i in d.data.children) {
-                            var data = d.data.children[i].data;
+                    for (i in d.data.children) {
+                        var data = d.data.children[i].data;
 
-                            if (!domains[data.domain]) {
-                                domains[data.domain] = {
-                                    ups: 0,
-                                    downs: 0,
-                                    score: 0,
-                                    count: 0
-                                };
-                                domainslist.push(data.domain);
-                            }
-
-                            domains[data.domain].ups += data.ups;
-                            domains[data.domain].downs += data.downs;
-                            domains[data.domain].score += data.score;
-                            domains[data.domain].count++;
-
-                            if (!subreddits[data.subreddit]) {
-                                subreddits[data.subreddit] = {
-                                    ups: 0,
-                                    downs: 0,
-                                    score: 0,
-                                    count: 0
-                                };
-                                subredditlist.push(data.subreddit);
-                            }
-                            subreddits[data.subreddit].ups += data.ups;
-                            subreddits[data.subreddit].downs += data.downs;
-                            subreddits[data.subreddit].score += data.score;
-                            subreddits[data.subreddit].count++;
+                        if (!domains[data.domain]) {
+                            domains[data.domain] = {
+                                ups: 0,
+                                downs: 0,
+                                score: 0,
+                                count: 0
+                            };
+                            domainslist.push(data.domain);
                         }
 
-                        domainslist.sort(function (a, b) {
-                            return domains[b].count - domains[a].count;
-                        });
-                        domaintable.empty();
+                        domains[data.domain].ups += data.ups;
+                        domains[data.domain].downs += data.downs;
+                        domains[data.domain].score += data.score;
+                        domains[data.domain].count++;
 
-                        for (i in domainslist) {
-                            var dom = domainslist[i],
-                                n = domains[dom].count,
-                                u = domains[dom].ups,
-                                d = domains[dom].downs,
-                                s = domains[dom].score,
-                                url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
-                                match = dom.match(/^self.(\w+)$/);
-
-                            if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
-                            domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
-
-                            if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
+                        if (!subreddits[data.subreddit]) {
+                            subreddits[data.subreddit] = {
+                                ups: 0,
+                                downs: 0,
+                                score: 0,
+                                count: 0
+                            };
+                            subredditlist.push(data.subreddit);
                         }
-                        if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
+                        subreddits[data.subreddit].ups += data.ups;
+                        subreddits[data.subreddit].downs += data.downs;
+                        subreddits[data.subreddit].score += data.score;
+                        subreddits[data.subreddit].count++;
+                    }
 
-                        commentbody += '\n\nsubreddit submitted to|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
-
-                        subredditlist.sort(function (a, b) {
-                            return subreddits[b].count - subreddits[a].count;
-                        });
-                        subreddittable.empty();
-                        for (i in subredditlist) {
-                            var sr = subredditlist[i],
-                                n = subreddits[sr].count,
-                                u = subreddits[sr].ups,
-                                d = subreddits[sr].downs,
-                                s = subreddits[sr].score,
-                                url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
-
-                            subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
-
-                            if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
-                        }
-                        if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
-
-                        $('.rts-report').attr('data-commentbody', commentbody);
-
-                        if (after) populateHistory(after);
-                        else gettingUserdata = false;
+                    domainslist.sort(function (a, b) {
+                        return domains[b].count - domains[a].count;
                     });
+                    domaintable.empty();
+
+                    for (i in domainslist) {
+                        var dom = domainslist[i],
+                            n = domains[dom].count,
+                            u = domains[dom].ups,
+                            d = domains[dom].downs,
+                            s = domains[dom].score,
+                            url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
+                            match = dom.match(/^self.(\w+)$/);
+
+                        if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
+                        domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
+
+                        if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
+                    }
+                    if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
+
+                    commentbody += '\n\nsubreddit submitted to|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
+
+                    subredditlist.sort(function (a, b) {
+                        return subreddits[b].count - subreddits[a].count;
+                    });
+                    subreddittable.empty();
+                    for (i in subredditlist) {
+                        var sr = subredditlist[i],
+                            n = subreddits[sr].count,
+                            u = subreddits[sr].ups,
+                            d = subreddits[sr].downs,
+                            s = subreddits[sr].score,
+                            url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
+
+                        subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
+
+                        if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
+                    }
+                    if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
+
+                    $('.rts-report').attr('data-commentbody', commentbody);
+
+                    if (after) populateHistory(after);
+                    else gettingUserdata = false;
+                });
             })();
             return false;
         });
 
         // User ban button pressed. 
+
+
         function postbanlog(subreddit, author, reason) {
             var data = {
                 subreddit: subreddit,
@@ -922,19 +908,19 @@ function modtools() {
                 logreason: '',
                 url: 'http://www.reddit.com/user/' + author
             };
-            
+
             if (notEnabled.indexOf(data.subreddit) != -1) return;
-            
+
             // Get removal reasosn.
             getRemovalReasons(data.subreddit, function (resp) {
                 if (!resp || resp.reasons.length < 1) {
                     notEnabled.push(data.subreddit);
                     return;
                 }
-                
+
                 // Get PM subject line
                 data.subject = resp.pmsubject || 'Your {kind} was removed from {subreddit}';
-                
+
                 // Add additinal data that is found in the wikiJSON.  
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
                 data.logreason = resp.logreason || '';
@@ -944,12 +930,12 @@ function modtools() {
                 data.logtitle = resp.logtitle || 'Removed: {kind} by /u/{author} to /r/{subreddit}';
                 data.bantitle = resp.bantitle || '/u/{author} has been {title} from /r/{subreddit} for {reason}';
                 data.reasons = [];
-                
+
                 // Loop through the reasons... unescaping each.
                 $(resp.reasons).each(function () {
                     data.reasons.push(unescape(this.text));
                 });
-                
+
                 if (!data || !data.logsub) {
                     return;
                 } else if (reason == '' || reason == undefined || reason == null) {
@@ -961,7 +947,7 @@ function modtools() {
                     data.bantitle = data.bantitle.replace('{title}', data.title);
                     data.bantitle = data.bantitle.replace('{author}', data.author);
                     data.bantitle = data.bantitle.replace('{subreddit}', data.subreddit);
-                    
+
                     $.post('/api/submit', {
                         kind: 'link',
                         resubmit: 'true',
@@ -970,12 +956,11 @@ function modtools() {
                         title: removequotes(data.bantitle),
                         sr: data.logsub,
                         api_type: 'json'
-                    })
-                    .done(function (data) {
+                    }).done(function (data) {
                         var removalid = data.json.data.url;
                         removalid = removalid.match(/http:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
                         removalid = 't3_' + removalid[1];
-                        
+
                         $.post('/api/approve', {
                             id: removalid,
                             uh: reddit.modhash
@@ -1010,10 +995,9 @@ function modtools() {
                     r: currentsub,
                     note: (reason == null) ? '' : reason,
                     api_type: 'json'
-                })
-                    .done(function (data) {
-                        alert(user + " has been banned from/r/" + currentsub);
-                    });
+                }).done(function (data) {
+                    alert(user + " has been banned from/r/" + currentsub);
+                });
             }
         });
 
@@ -1034,35 +1018,31 @@ function modtools() {
                 url: 'http://www.reddit.com/user/' + author,
                 sr: 'reportthespammers',
                 api_type: 'json'
-            })
-                .error(function () {
-                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
-                })
-                .success(function (submission) {
-                    if (submission.json.errors.length) {
-                        rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
-                        if (submission.json.errors[0][0] == 'ALREADY_SUB') rtsLink.href = 'http://www.reddit.com/r/reportthespammers/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
-                        return;
-                    }
+            }).error(function () {
+                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
+            }).success(function (submission) {
+                if (submission.json.errors.length) {
+                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
+                    if (submission.json.errors[0][0] == 'ALREADY_SUB') rtsLink.href = 'http://www.reddit.com/r/reportthespammers/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                    return;
+                }
 
-                    // Post stats as a comment.
-                    if (!commentbody.length || !rtsComment) return;
-                    $.post('/api/comment', {
-                        uh: reddit.modhash,
-                        thing_id: submission.json.data.name,
-                        text: commentbody,
-                        api_type: 'json'
-                    })
-                        .error(function (e) {
-                            rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
-                        })
-                        .success(function (comment) {
-                            if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
-                            rtsLink.textContent = 'reported';
-                            rtsLink.href = submission.json.data.url;
-                            rtsLink.className = '';
-                        });
+                // Post stats as a comment.
+                if (!commentbody.length || !rtsComment) return;
+                $.post('/api/comment', {
+                    uh: reddit.modhash,
+                    thing_id: submission.json.data.name,
+                    text: commentbody,
+                    api_type: 'json'
+                }).error(function (e) {
+                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
+                }).success(function (comment) {
+                    if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
+                    rtsLink.textContent = 'reported';
+                    rtsLink.href = submission.json.data.url;
+                    rtsLink.className = '';
                 });
+            });
         });
     }
 
@@ -1070,7 +1050,7 @@ function modtools() {
     if (TBUtils.isModpage) addModtools();
     if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!reddit.post_site || $('body.moderator').length)) $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
 
-    /* Disabled, see below.
+/* Disabled, see below.
     // Check if we're viewing a subreddit's reports/spam/modqueue page
     if (location.pathname.match(/^\/r\/\w+\/about\/(?:reports|modqueue|spam|unmoderated)\/?$/)) {
         // Reset the modqueue cache timer for this sr
@@ -1079,7 +1059,7 @@ function modtools() {
     }
     */
 
-    
+
     // Check if we're viewing an /r/mod/ fakereddit page
     if (sortModSubs && location.pathname.match(/^\/r\/mod/)) {
         var now = new Date().valueOf(),
@@ -1089,41 +1069,41 @@ function modtools() {
         // Update modqueue items count
         var modSubs = [];
         $('.subscription-box a.title').each(function () {
-                var elem = $(this),
-                    sr = elem.text(),
-                    data = JSON.parse(localStorage.getItem('mq-' + reddit.logged + '-' + sr)) || [0, 0];
-                modSubs.push(sr);
+            var elem = $(this),
+                sr = elem.text(),
+                data = JSON.parse(localStorage.getItem('mq-' + reddit.logged + '-' + sr)) || [0, 0];
+            modSubs.push(sr);
 
-                // Update count and re-cache data if more than an hour old.
-                elem.parent().append('<a href="/r/' + sr + '/about/modqueue" count="' + data[0] + '">' + data[0] + '</a>');
-                if (now > data[1] + 3600000) setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
-            });
+            // Update count and re-cache data if more than an hour old.
+            elem.parent().append('<a href="/r/' + sr + '/about/modqueue" count="' + data[0] + '">' + data[0] + '</a>');
+            if (now > data[1] + 3600000) setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
+        });
         localStorage.setItem('mod-' + reddit.logged, JSON.stringify(modSubs));
 
         function sortSubreddits() {
             var subs = $('.subscription-box li').sort(function (a, b) {
-                    return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
-                });
+                return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
+            });
             $('.subscription-box').empty().append(subs);
         }
         sortSubreddits();
 
         function updateModqueueCount(sr) {
             $.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-                    localStorage.setItem('mq-' + reddit.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
-                    $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
-                    sortSubreddits(); 
-                });
+                localStorage.setItem('mq-' + reddit.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
+                sortSubreddits();
+            });
         }
     }
-    
+
 
 }
 
 // Add CSS
 (function addcss() {
     if (!document.head) return setTimeout(addcss);
-    
+
     // Add to mod pages only
     if (location.pathname.match(/(^\/r\/mod\/)|(\/about\/(?:reports|modqueue|spam|unmoderated))/)) {
         var css = '\
@@ -1138,13 +1118,13 @@ function modtools() {
             .midcol{margin-left:0!important;width:auto!important}\
             ,a.pretty-button:focus{box-shadow: 0 0 5px rgba(0,0,255,1);-webkit-box-shadow: 0 0 5px rgba(0,0,255,1);-moz-box-shadow: 0 0 5px rgba(0,0,255,1)}\
             .thing{margin-bottom:0;padding:4px 0}';
-        
+
         var s = document.createElement('style');
         s.type = "text/css";
         s.textContent = css;
         document.head.appendChild(s);
     }
-    
+
     // Add script to the page
     (function addscript() {
         if (!document.body) return setTimeout(addscript);
@@ -1152,18 +1132,18 @@ function modtools() {
         if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
             init();
             return;
-        } 
-        
+        }
+
         // Check if TBUtils has been added.
         if (!window.TBUadded) {
             window.TBUadded = true;
-            
+
             var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
             var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
             $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
-            $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
+            $('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
         }
-        
+
         // Do not add script to page until TBUtils is added.
         (function loadLoop() {
             setTimeout(function () {
@@ -1174,7 +1154,7 @@ function modtools() {
                 }
             }, 100);
         })();
-        
+
         function init() {
             var s = document.createElement('script');
             s.textContent = "(" + modtools.toString() + ')();';

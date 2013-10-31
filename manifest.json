@@ -20,7 +20,7 @@
     {
       "matches": ["http://*.reddit.com/*"],
       "css": ["toolbox.css"],
-      "js": ["jquery.js", "tbutils.js","notifier.js","domaintagger.js","usernotes.js","modbutton.js","modmailpro.js","stattittab.js","modtools.js","config.js", "modmatrix.js"]
+      "js": ["jquery.js", "tbutils.js","notifier.js","domaintagger.js","usernotes.js","modbutton.js","modmailpro.js","stattittab.js","modtools.js", "comment.js", "config.js", "modmatrix.js"]
     }
   ],
   "web_accessible_resources": [

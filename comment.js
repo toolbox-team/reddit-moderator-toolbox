@@ -53,18 +53,18 @@ function tbcomm() {
 
 
 
-    $('.thing.comment.spam').click(function () {
-        var hiddenComment;
-        hiddenComment = $(this).find('.tb-comment-spam');
+  //  $('.thing.comment.spam').click(function () {
+  //      var hiddenComment;
+   //     hiddenComment = $(this).find('.tb-comment-spam');
 
-        if (hiddenComment.is(':visible')) {
-            hiddenComment.hide();
-        } else {
-            hiddenComment.show();
-        }
-    }).children().click(function (e) {
-        return;
-    });
+  //      if (hiddenComment.is(':visible')) {
+ //           hiddenComment.hide();
+ //       } else {
+ //           hiddenComment.show();
+ //       }
+ //   }).children().click(function (e) {
+//        return;
+//    });
 
     // Add a bit of js based css since the hover effects otherwise will go to the child elements as well 
     $('.thing.comment.spam').children().hover(function () {

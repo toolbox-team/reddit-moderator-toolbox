@@ -1,12 +1,7 @@
 body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBoxes body.comments-page .content .sitetable .thing.spam.comment:hover  { 
    cursor: pointer;
-   background-color: #D3E5F8 !important;
+   
    }
-
-.thing.spam, body .sitetable .thing.spam.deleted.link.self, .res-commentBoxes body.res.moderator .content .sitetable .thing.spam, .res-commentBoxes body.res.moderator .sitetable .thing.spam.deleted.link.self {
-
-   background-color:#FA8072 !important;
-}
 
 .mod-toolbox .tb-highlight { 
 background-color: #ffff16;

@@ -14,6 +14,11 @@ Containing:
 - Toolbox Config 
 
 
-### Todo
+### Third party support. 
 
-- Migrate all settings to notify.js - started
+All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes. 
+
+Examples: 
+
+- https://github.com/creesch/reddit-moderator-toolbox/wiki/toolbox-config
+- https://github.com/creesch/reddit-moderator-toolbox/wiki/usernotes-json

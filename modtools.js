@@ -190,7 +190,7 @@ function modtools() {
                     <div class="reason-popup-content"> \
                     <div class="reason-popup-header">Reason for /r/' + data.subreddit + '/ :</div>\
 					<div class="reason-popup-innercontent"> \
-                    <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + data.title + '</a></p>\
+                    <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p>\
                     <div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
                     <table><tbody /></table>\

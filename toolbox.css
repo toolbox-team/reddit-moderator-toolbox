@@ -3,6 +3,10 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
    
    }
 
+.debuginfo { 
+	height: 40px;
+}
+
 .mod-toolbox .tb-highlight { 
 background-color: #ffff16;
 } 

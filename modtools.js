@@ -460,7 +460,12 @@ function modtools() {
                 </span> \
             </div>');
 
-        $('#header-bottom-left').append('<ul class="tabmenu ">' + (viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>') + '</ul>');
+        //Check if the tab menu exists and create it if it doesn't
+        var tabmenu = $('#header-bottom-left .tabmenu')
+        if(tabmenu.length == 0)
+            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu "></ul>')
+        tabmenu.append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
+        
         $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
         $('.buttons .pretty-button').attr('tabindex', '2');
 

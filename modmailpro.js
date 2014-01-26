@@ -645,6 +645,36 @@ function compose() {
     }
 }
 
+
+function modmailSwitch() {
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+
+        switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
+        
+
+    TBUtils.getModSubs(function () {
+        populateSwitch();
+    });
+
+    function populateSwitch() {
+        $('.mmp-menu').append($(switchSelect).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
+
+        $(TBUtils.mySubs).each(function () {
+            $('.switch-mail')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+        });
+        $('.switch-mail').change(function () {
+            var sub = $(this).val();
+            if (sub !== 'modmailswitch') {
+                window.open('http://www.reddit.com/r/' + $(this).val() + '/message/moderator/inbox');
+                $(switchSelect).val('modmailswtich');
+            }
+        });
+    }
+}
 function settings() {
     if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
@@ -869,6 +899,9 @@ function settings() {
         
         // Add compose mod mail.
         addScriptToPage(compose, 'compose');
+
+        // Add switch mod mail.		
+		addScriptToPage(modmailSwitch, 'modmailSwitch');
         
         // Add settings area
         addScriptToPage(settings, 'settings');

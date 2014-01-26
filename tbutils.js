@@ -405,7 +405,7 @@ function main() {
                 
             } else {
                 // Ask for permission. 
-                var message = 'Toolbox would like to use native desktop notifications. Click here to allow or deny this, when denied the it will use build in notifications <br>Note: notifications can be disabled in preferences.';
+                var message = 'Toolbox would like to use native desktop notifications. Click here to allow or deny this, when denied it will use build in notifications <br>Note: notifications can be disabled in preferences.';
                 TBUtils.alert(message, function () {
                     window.webkitNotifications.requestPermission();
                     // We could build in a function to show the notifcation that prompted this whole function, but since it is likely a one time occurence I thought it would be a bit over the top.

@@ -463,8 +463,8 @@ function modtools() {
         //Check if the tab menu exists and create it if it doesn't
         var tabmenu = $('#header-bottom-left .tabmenu')
         if(tabmenu.length == 0)
-            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu "></ul>')
-        tabmenu.append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
+            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>')
+        $('.tabmenu').append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
         
         $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
         $('.buttons .pretty-button').attr('tabindex', '2');
@@ -1024,7 +1024,7 @@ function modtools() {
                 sr: 'reportthespammers',
                 api_type: 'json'
             }).error(function () {
-                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
+                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
             }).success(function (submission) {
                 if (submission.json.errors.length) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
@@ -1040,7 +1040,7 @@ function modtools() {
                     text: commentbody,
                     api_type: 'json'
                 }).error(function (e) {
-                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</error>';
+                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
                 }).success(function (comment) {
                     if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
                     rtsLink.textContent = 'reported';

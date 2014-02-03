@@ -962,6 +962,16 @@ body .thing.flaired {
     word-wrap: break-word;
 }
 
+/* various reddit css fixes for mods */ 
+
+.moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover  {
+background-color: #CEE3F8;
+}
+
+.moderator-table tr:nth-child(even), .banned-table tr:nth-child(even), .contributor-table tr:nth-child(even) {
+background: #F5F5F5;
+}
+
 /* Mod Log Matrix */
 #mod-matrix-wrapper a { cursor: pointer; }
 

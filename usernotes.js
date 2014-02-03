@@ -56,7 +56,8 @@ function usernotes() {
 
         if (!subreddit) return;
 
-        var tag = '<span style="color:#888888; font-size:x-small;">&nbsp;[<a class="add-user-tag-' +
+        var tag = '<span class="usernote-span-' +
+            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<a class="add-user-tag-' +
             subreddit + '" id="add-user-tag" "href="javascript:;">N</a>]</span>';
 
         $(thing).attr('subreddit', subreddit);
@@ -103,6 +104,19 @@ function usernotes() {
     }
 
     function setNotes(notes, subreddit) {
+    	$.log("notes.ver = " + notes.ver);
+    	
+    	// schema check.
+    	if (notes.ver > 2) {   // Temp hack for 1.4.4.  should be: if (notes.ver > TBUtils.notesSchema) {
+          
+          // Remove the option to add notes.
+          $('.usernote-span-' + subreddit).remove();
+          
+            TBUtils.alert("You are using a version of toolbox that cannot read a nerwer usernote data format.  Please update your extension.", function(clicked) {
+                if (clicked) window.open("http://www.reddit.com/r/toolbox/wiki/download");
+            });
+            return;
+        }
 
         var things = $('div.thing .entry[subreddit=' + subreddit + ']');
         TBUtils.forEachChunked(things, 25, 250, function (thing) {

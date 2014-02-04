@@ -174,10 +174,10 @@ var modLogMatrix = {
 		
 		// Moderator filter
 		var modFilterRow = $("<tr><td>moderators:</td></tr>");
-		var modFilterCell = $("<div></div>").wrap("<td></td>").hide();
+		var modFilterCell = $("<div></div>").wrap("<td></td>").hide().attr("id", "modfilter");
 		modFilterCell.append('<div><input type="checkbox" value="" id="modmatrixmodfilter-all" checked="checked" /><label for="modmatrixmodfilter-all">All</label></div>');
 		for(var moderator in this.subredditModerators) {
-			modFilterCell.append('<div style="padding-left: 10px;"><input class=\"mod-filter\" type="checkbox" value="' + moderator + '" id="modmatrixmodfilter-' + moderator + '" checked="checked" /><label for="modmatrixmodfilter-' + moderator + '">' + moderator + '</label></div>');
+			modFilterCell.append('<div style="padding-left: 10px;"><input class=\"mod-filter\" type="checkbox" value="' + moderator + '" id="modmatrixmodfilter-' + moderator + '" /><label for="modmatrixmodfilter-' + moderator + '">' + moderator + '</label></div>');
 		}
 		modMatrixSettings.find("table").append(modFilterRow);
 		var addButton = $("<a></a>").text("show moderator filter").insertBefore(modFilterCell);
@@ -185,6 +185,24 @@ var modLogMatrix = {
 		$("#modmatrixmodfilter-all").change(function() { if(this.checked) { $("#mod-matrix-settings .mod-filter").prop("checked", "checked"); } else { $("#mod-matrix-settings .mod-filter").removeAttr("checked"); } });
 		modFilterCell.find(".mod-filter").change(function() { if($("#mod-matrix-settings .mod-filter:not(:checked)").length > 0) { $("#modmatrixmodfilter-all").removeAttr("checked"); } else { $("#modmatrixmodfilter-all").prop("checked", "checked"); }});
 		addButton.click(function() { if(modFilterCell.is(":hidden")) { modFilterCell.show(); $(this).text("hide moderator filter"); } else { modFilterCell.hide(); $(this).text("show moderator filter"); }});
+		
+		// Unless we're on /r/mod, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
+		if(this.subredditName != "mod") {
+			var subredditNames = this.subredditName.split("+");
+			var self = this;
+			for(var i = 0; i < subredditNames.length; i++) {
+				$.getJSON("/r/" + subredditNames[i] + "/about/moderators.json", function(moderatorData) {
+					for(var j = 0; j < moderatorData.data.children.length; j++) {
+						$("#modmatrixmodfilter-" + moderatorData.data.children[j].name).prop("checked", "checked");
+					}
+					if($("#mod-matrix-settings .mod-filter:not(:checked)").length > 0) {
+						$("#modmatrixmodfilter-all").removeAttr("checked");
+					} else {
+						$("#modmatrixmodfilter-all").prop("checked", "checked");
+					}
+				});
+			}
+		}
 		
 		// Action filter
 		var actionFilterRow = $("<tr><td>actions:</td></tr>");
@@ -206,9 +224,14 @@ var modLogMatrix = {
 		actionFilterCell.find(".action-filter").change(function() { if($("#mod-matrix-settings .action-filter:not(:checked)").length > 0) { $("#modmatrixactionfilter-all").removeAttr("checked"); } else { $("#modmatrixactionfilter-all").prop("checked", "checked"); }});
 		addButton.click(function() { if(actionFilterCell.is(":hidden")) { actionFilterCell.show(); $(this).text("hide action filter"); } else { actionFilterCell.hide(); $(this).text("show action filter"); }});
 		
-		modMatrixSettings.find(".action-filter, .mod-filter").change(function() {
+		// Automatic refresh the table when action filter is changed. Same thing with mod filter, as long as there are fewer than 20 mods
+		modMatrixSettings.find(".action-filter" + (modMatrixSettings.find(".mod-filter").length < 20? ", .mod-filter" : "")).change(function() {
 			modLogMatrix.refreshTable();
 		});
+		
+		// Show labels
+		modMatrixSettings.find("table").append('<tr><td><label for="showlabels">show header labels:</label></td><td><input id="showlabels" type="checkbox" /></td></tr>');
+		$("#showlabels").change(function() { $("#mod-matrix").toggleClass("labels",this.checked); });
 		
 		// Show percentages
 		modMatrixSettings.find("table").append('<tr><td><label for="showpercentages">show percentages:</label></td><td><input id="showpercentages" type="checkbox" checked="checked" /></td></tr>');

@@ -972,7 +972,7 @@ background-color: #CEE3F8;
 background: #F5F5F5;
 }
 
-/* Mod Log Matrix */
+/* mod log matrix */
 #mod-matrix-wrapper a { cursor: pointer; }
 
 #mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage { font-weight: bold; }
@@ -980,7 +980,7 @@ background: #F5F5F5;
 #mod-matrix tfoot tr { border-top: 1px solid #eee; }
 #mod-matrix td, #mod-matrix th { padding: 5px; border-right: 1px solid #eee; text-align: center; font-size: x-small; }
 #mod-matrix td:first-child, #mod-matrix th:first-child { text-align: left; }
-#mod-matrix a.modactions { margin-right: 0px; }
+#mod-matrix a.modactions { margin-right: 0px; display: inline-block; float: none; }
 #mod-matrix tbody tr:nth-of-type(even) { background: #fafafa; }
 #mod-matrix tr:hover, #mod-matrix td.hover { background: #ffc!important; }
 #mod-matrix thead th { position: relative; cursor:s-resize; }
@@ -999,3 +999,9 @@ background: #F5F5F5;
 #mod-matrix-statistics { margin-top: 1em; }
 #mod-matrix-statistics { border-top: 1px dotted #000; padding: 7px; }
 #mod-matrix-statistics strong { font-weight: bold; }
+
+	/* show header labels (thanks to /u/ashishtiwari) */
+		#mod-matrix.labels  th { vertical-align: text-bottom; text-align: center; text-overflow: ellipsis; overflow: hidden; padding-top: 150px; }
+			#mod-matrix.labels a.modactions { vertical-align: bottom; width: 16px!important; height: 16px!important; }
+				#mod-matrix.labels a.modactions:before { content: attr(title); position: relative; bottom: 20px; display: block; font-size: 11px; white-space: nowrap; font-weight: normal; color: #000; -webkit-transform: rotate(-90.0deg); transform: rotate(-90.0deg); }
+

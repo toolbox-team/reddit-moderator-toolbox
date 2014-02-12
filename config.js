@@ -169,9 +169,9 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 \
 \
 <div class="tb-form">\
-<p><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea></p>\
+<p style="text-align:center;"><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea><br/><input type="text" style="width: 150px;" name="flair-text" placeholder="flair text" /> <input type="text" style="width: 150px;" name="flair-css" placeholder="flair css" /></p>\
 <span class="edit-save-area">\
-&nbsp;&nbsp;(click on a reason below to edit it.)</span><br><br><br>\
+&nbsp;&nbsp;(click on a reason below to edit it.)</span><br><br>\
 <table ><tbody /></table></div>\
 \
 \
@@ -222,7 +222,14 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
-                $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><br><label for="reason-' + subreddit + '-' + (i++) + '">' + unescape(this.text) + '</label><br><br></td></tr>');
+				var label = unescape(this.text);
+				if(label.length > 200) {
+					label = label.substring(0,197) + "...";
+				}
+				if(label == "") {
+					label = '<span style="color: #cecece">(no reason)</span>';
+				}
+                $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
             }); 
             
             $('th input[type=radio]').change(function(){
@@ -230,6 +237,8 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
                 var reasonsNum = $(this).attr('reason');
                 $('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text));
                 $('.edit-area').attr('reason', reasonsNum);
+				$('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText);
+				$('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS);
             }); 
         }
         
@@ -237,12 +246,23 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         $(html).delegate('.save', 'click', function() {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
+			var reasonFlairText = $("input[name=flair-text]").val();
+			var reasonFlairCSS = $("input[name=flair-css]").val();
             
             if (reasonsNum) {
                 config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
+				if(reasonFlairText)
+					config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
+				if(reasonFlairCSS)
+					config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
             } else { 
                 var reason = { text: escape(reasonText) };
                 
+				if(reasonFlairText)
+					reason.flairText = reasonFlairText;
+				if(reasonFlairCSS)
+					reason.flairCSS = reasonFlairCSS;
+				
                 if (!config.removalReasons) {
                     config.removalReasons = {
                         reasons: []
@@ -252,6 +272,9 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
                 config.removalReasons.reasons.push(reason);
             }
             postToWiki('toolbox', config, true);
+			if(TBUtils.configCache[subreddit] !== undefined) {
+				delete TBUtils.configCache[subreddit];
+			}
             $(html).remove();
         });
         

@@ -758,16 +758,18 @@ background-color: #FA8072;
 
 .reason-popup tbody tr {
     vertical-align: top;
-    border: 1px solid rgb(187, 187, 187);
-    display: block;
-    margin-bottom: 5px;
+    border-bottom: 1px solid rgb(187, 187, 187);
     font-size: 115%;
     font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-    padding: 5px !important;
+}
+.reason-popup tbody tr td, .reason-popup thead tr th {
+	padding: 5px;
 }
 
-.reason-popup th {
-    padding-right: 10px !important;
+.reason-popup thead th {
+    white-space: nowrap;
+	font-weight: bold;
+	 border-bottom: 1px dotted rgb(187, 187, 187);
 }
 
 .reason-popup .buttons {

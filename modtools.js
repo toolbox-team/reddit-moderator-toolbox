@@ -167,7 +167,11 @@ function modtools() {
 
             // Loop through the reasons... unescaping each.
             $(resp.reasons).each(function () {
-                data.reasons.push(unescape(this.text));
+                data.reasons.push({
+					text : unescape(this.text),
+					flairText : this.flairText,
+					flairCSS : this.flairCSS
+				});
             });
 
             showPopUp();
@@ -193,7 +197,7 @@ function modtools() {
                     <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p>\
                     <div style="display:' + headerDisplay + '"><p><input type="checkbox" id="include-header" checked> Include header. </input><br>\
                     <label id="reason-header">' + data.header + '</label></p></div> \
-                    <table><tbody /></table>\
+                    <table><thead><tr><th></th><th>reason</th><th>flair text</th><th>flair css</th></thead><tbody /></table>\
 					<div style="display:' + footerDisplay + '"><p><input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
                     <label id="reason-footer" name="footer">' + data.footer + '</label></p></div> \
 					<p><label style="display:' + logDisplay + '">  Log Reason(s): </label> \
@@ -217,7 +221,13 @@ function modtools() {
                 i = 0;
 
             $(data.reasons).each(function () {
-                popup.find('tbody').append('<tr class="tb_removal_reason_tr"><th><input type="checkbox" class="tb_removal_reason_check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + i + '"></th><td class="' + data.subreddit + '-' + (i++) + '">' + this + '<BR></td></tr>');
+				var tr = $('<tr class="tb_removal_reason_tr"><td><input type="checkbox" class="tb_removal_reason_check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + i + '"></td><td class="' + data.subreddit + '-' + (i++) + ' reason">' + this.text + '<BR></td><td>' + (this.flairText? this.flairText : "") + '</td><td>' + (this.flairCSS? this.flairCSS : "") + '</td></tr>');
+					tr.data({
+						flairText : this.flairText,
+						flairCSS : this.flairCSS,
+						reasonId : i
+					});
+                popup.find('tbody').append(tr);
             });
 
             $('body').delegate('.tb_removal_reason_tr', 'click', function (e) {
@@ -231,12 +241,12 @@ function modtools() {
                 }
             });
             // Pre fill reason input elements which have IDs.
-            popup.find('td input[id],td textarea[id]').each(function () {
+            popup.find('td.reason input[id],td.reason textarea[id]').each(function () {
                 this.value = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.value;
             });
 
             // Disabled as it can cause you to select the wrong removal reason, now that you can choose more than one.
-            //popup.find('td select[id]').each(function () {
+            //popup.find('td.reason select[id]').each(function () {
             //    this.selectedIndex = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.selectedIndex;
             //});
         }
@@ -264,7 +274,7 @@ function modtools() {
         var button = $(this),
             popup = button.parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
-            checked = popup.find('th input[type=checkbox]:checked'),
+            checked = popup.find('.tb_removal_reason_check:checked'),
             status = popup.find('.status').show(),
             attrs = popup.find('attrs'),
             subject = attrs.attr('subject'),
@@ -288,11 +298,19 @@ function modtools() {
 
         // Check if reason checked
         if (!checked.length) return status.text('error, no reason selected');
-
+		
+		var flairText = "", flairCSS = "";
         // Get reason text
-        checked.closest('.tb_removal_reason_tr').find('td').contents().each(function () {
-            reason += this.tagName == 'BR' ? '\n\n' : this.value || this.textContent;
-        });
+        checked.closest('.tb_removal_reason_tr').each(function() {
+			$(this).find('td.reason').contents().each(function () {
+				reason += this.tagName == 'BR' ? '\n\n' : this.value || this.textContent;
+			});
+			
+			if($(this).data("flairText"))
+				flairText += " " + $(this).data("flairText");
+			if($(this).data("flairCSS"))
+				flairCSS += " " + $(this).data("flairCSS");
+		});
 
         // Add header and footer to reason, if they are selected.
         if (popup.find('#include-header').is(':checked')) {
@@ -325,37 +343,67 @@ function modtools() {
             if (is_tom !== 'no_tom') {
                 reason = reason.replace('{loglink}', is_tom);
             }
+			
+			if(reason.trim() == "") {
+				return popup.hide();
+			}
+			
             // Reply to submission/comment...
-            if (notifyBy == 'reply' || notifyBy == 'both') $.post('/api/comment', {
-                parent: data.fullname,
-                uh: reddit.modhash,
-                text: reason,
-                api_type: 'json'
-            }).success(function (d) {
-                $.post('/api/distinguish/yes', {
-                    id: d.json.data.things[0].data.id,
-                    uh: reddit.modhash
-                }).success(function (d) {
-                    popup.hide();
-                }).error(function () {
-                    status.text('error distinguishing reply');
-                });
-            }).error(function () {
-                status.text('error posting reply');
-            });
+            if (notifyBy == 'reply' || notifyBy == 'both') {
+				$.post('/api/comment', {
+					parent: data.fullname,
+					uh: reddit.modhash,
+					text: reason,
+					api_type: 'json'
+				}).success(function (d) {
+					if(d.json.errors.length > 0) {
+						status.text(d.json.errors[0][1]);
+					} else {
+						$.post('/api/distinguish/yes', {
+							id: d.json.data.things[0].data.id,
+							uh: reddit.modhash
+						}).success(function (d) {
+							popup.hide();
+						}).error(function () {
+							status.text('error distinguishing reply');
+						});
+					}
+				}).error(function () {
+					status.text('error posting reply');
+				});
+			}
 
             // ...and/or PM the user
-            if (notifyBy == 'PM' || notifyBy == 'both') $.post('/api/compose', {
-                to: data.author,
-                uh: reddit.modhash,
-                subject: subject,
-                text: reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]'
-            }).success(function () {
-                popup.hide();
-            }).error(function () {
-                status.text('error sending PM');
-            });
+            if (notifyBy == 'PM' || notifyBy == 'both') {
+				$.post('/api/compose', {
+					to: data.author,
+					uh: reddit.modhash,
+					subject: subject,
+					text: reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]'
+				}).success(function () {
+					popup.hide();
+				}).error(function () {
+					status.text('error sending PM');
+				});
+			}
         }
+		
+		function flairPost(text, css) {
+		  $.post('/api/flair', {
+				api_type: 'json',
+				link: data.fullname,
+				text: text,
+				css_class: css,
+				r: data.subreddit,
+				uh: reddit.modhash
+			})
+		}
+		
+		flairText = flairText.trim();
+		flairCSS = flairCSS.trim();
+		if(flairText != "" || flairCSS != "") {
+			flairPost(flairText, flairCSS);
+		}
 
         // If logsub is not empty we should log the removal.
         if (data.logsub) {

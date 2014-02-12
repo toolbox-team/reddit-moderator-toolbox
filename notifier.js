@@ -416,10 +416,9 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>, <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
 		<h3>Special thanks to:</h3>\
-		<a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> - Stattit Tab, Mod Log Matrix and several code contributions <br>\
-        <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags <br><br>\
+		 <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags, several other fixes<br><br>\
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a>\

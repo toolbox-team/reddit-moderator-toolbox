@@ -213,7 +213,8 @@ function modtools() {
                         	<input type="hidden" name="tom_or_not" value="no-tom"> \
                             <span class="status error">saving....</span>\
                             <button class="save">send</button>\
-                            <button class="cancel">no reason</button>\
+                            <button class="no-reason">no reason</button>\
+							<button class="cancel">cancel and approve</button>\
 							</div>\
                    </div>').appendTo('body').css({
                 display: 'block'
@@ -263,8 +264,16 @@ function modtools() {
         localStorage.setItem('reason-type', this.value);
     });
 
-    // 'cancel' button clicked
+    // 'no reason' button clicked
+    $('body').delegate('.reason-popup .no-reason', 'click', function () {
+        $(this).parents('.reason-popup').hide();
+    });
+	// 'cancel' button clicked
     $('body').delegate('.reason-popup .cancel', 'click', function () {
+		$.post('/api/approve', {
+			id: data.fullname,
+			uh: reddit.modhash
+		})
         $(this).parents('.reason-popup').hide();
     });
 

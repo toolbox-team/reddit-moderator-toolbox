@@ -161,7 +161,7 @@ function modbutton() {
         }
  
         // Show if current user is banned, and why. - thanks /u/LowSociety
-        $.get("http://www.reddit.com/r/" + currentsub + "/about/banned/.json", null, function (data) {
+        $.get("http://www.reddit.com/r/" + currentsub + "/about/banned/.json", { user : user }, function (data) {
             var banned = data.data.children;
             for (var i = 0; i < banned.length; i++) {
                 if (banned[i].name.toLowerCase() == user.toLowerCase()) {

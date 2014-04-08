@@ -134,7 +134,7 @@ function usernotes() {
                         return;
                     }
                     note = unescape(u.notes[0].note).substring(0, 50);
-                    $(usertag).html('<b>' + note + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
+                    $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
                     var type = u.notes[0].type;
                     if (!type) type = 'none';
@@ -219,7 +219,7 @@ function usernotes() {
                         var typeSpan = '';
 
                         if (info.name) {
-                            typeSpan = '<span style="color: ' + info.color + ';">[' + info.name + ']</span> ';
+                            typeSpan = '<span style="color: ' + TBUtils.htmlEncode(info.color) + ';">[' + TBUtils.htmlEncode(info.name) + ']</span> ';
                         }
                         
                         popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');

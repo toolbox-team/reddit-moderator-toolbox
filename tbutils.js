@@ -21,6 +21,7 @@ function main() {
     // Public variables
     TBUtils.version = 4;
     TBUtils.toolboxVersion = '1.4.4';
+    TBUtils.notesSchema = 3;
     TBUtils.shortVersion = 144; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';

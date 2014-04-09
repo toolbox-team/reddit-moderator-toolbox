@@ -14,6 +14,8 @@ function usernotes() {
     if (!reddit.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
+    
+    var LINK_ID_REGEX = /\/(\w+)\/\w+\/?$/;
 
     TBUtils.getModSubs(function () {
         run();
@@ -98,21 +100,42 @@ function usernotes() {
                 return;
             }
 
-            TBUtils.noteCache[currsub] = resp;
+            TBUtils.noteCache[currsub] = convertNotes(resp);
             setNotes(resp, currsub);
         });
+    }
+    
+    function convertNotes(notes) {
+        // Try to convert older usernotes formats into the current one.
+        if(notes.ver <= 2) {
+            notes.users.forEach(function(user) {
+                user.notes.forEach(function(note) {
+                    if(note.link && note.link.trim()) {
+                        // get just the link ID
+                        var linkMatches = note.link.match(LINK_ID_REGEX);
+                        if(linkMatches.length > 1) {
+                            note.link = linkMatches[1];
+                        } else {
+                            note.link = "";
+                        }
+                    }
+                });
+            });
+            notes.ver = TBUtils.notesSchema;
+        }
+        return notes;
     }
 
     function setNotes(notes, subreddit) {
     	$.log("notes.ver = " + notes.ver);
     	
     	// schema check.
-    	if (notes.ver > 2) {   // Temp hack for 1.4.4.  should be: if (notes.ver > TBUtils.notesSchema) {
+    	if (notes.ver > TBUtils.notesSchema) {
           
           // Remove the option to add notes.
           $('.usernote-span-' + subreddit).remove();
           
-            TBUtils.alert("You are using a version of toolbox that cannot read a nerwer usernote data format.  Please update your extension.", function(clicked) {
+            TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function(clicked) {
                 if (clicked) window.open("http://www.reddit.com/r/toolbox/wiki/download");
             });
             return;
@@ -205,7 +228,7 @@ function usernotes() {
                 return;
             }
 
-            TBUtils.noteCache[subreddit] = resp;
+            TBUtils.noteCache[subreddit] = convertNotes(resp);
 
             $.grep(resp.users, function (u) {
                 if (u.name == user) {
@@ -224,7 +247,7 @@ function usernotes() {
                         
                         popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');
                         if (this.link) {
-                            popup.find('#utagger-date-' + i).wrap('<a href="' + this.link + '">');
+                            popup.find('#utagger-date-' + i).wrap('<a href="http://redd.it/' + encodeURIComponent(this.link) + '">');
                         }
                         i++;
                     });
@@ -281,7 +304,7 @@ function usernotes() {
             }
 
             // if we got this far, we have valid JSON
-            notes = resp;
+            notes = convertNotes(resp);
 
             if (notes) {
                 var results = $.grep(notes.users, function (u) {

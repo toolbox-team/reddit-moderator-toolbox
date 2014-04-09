@@ -537,7 +537,8 @@ function main() {
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
         
         if (isJSON) {
-            data = JSON.stringify(data, undefined, 2);
+            // Not indenting saves precious bytes.
+            data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
         }
         
         $.post('/r/' + subreddit + '/api/wiki/edit', {

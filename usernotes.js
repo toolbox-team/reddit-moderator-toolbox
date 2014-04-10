@@ -14,15 +14,42 @@ function usernotes() {
     if (!reddit.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
-    
-    var LINK_ID_REGEX = /\/(\w+)\/\w+\/?$/;
 
     TBUtils.getModSubs(function () {
         run();
     });
+    
+    var PERMA_TO_THING_ID = /\/(\w+)\/\w+\/?$/;
+    
+    var ConstManager = function(init_pools) {
+        return {
+            _pools: init_pools,
+            create: function(poolName, constant) {
+                var pool = this._pools[poolName];
+                var id = pool.indexOf(constant);
+                if(id !== -1)
+                    return id;
+                pool.push(constant);
+                return pool.length - 1;
+            },
+            get: function(poolName, id) {
+                return this._pools[poolName][id];
+            }
+        };
+    }
+    
+    function permaToThingID(permalink) {
+        var linkMatches = permalink.match(PERMA_TO_THING_ID);
+        if(linkMatches.length > 1) {
+            return linkMatches[1];
+        } else {
+            return "";
+        }
+    }
 
     function postToWiki(sub, json) {
         TBUtils.noteCache[sub] = json;
+        json = deflateNotes(json);
 
         TBUtils.postToWiki('usernotes', sub, json, true, false, function done(succ, err) {
             if (succ) {
@@ -99,38 +126,98 @@ function usernotes() {
                 TBUtils.noNotes.push(currsub);
                 return;
             }
-
-            TBUtils.noteCache[currsub] = convertNotes(resp);
+            
+            resp = convertNotes(resp);
+            
+            TBUtils.noteCache[currsub] = resp;
             setNotes(resp, currsub);
         });
     }
     
+    // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes) {
-        // Try to convert older usernotes formats into the current one.
+        // ver 2 is pretty close to the in-memory format.
         if(notes.ver <= 2) {
             notes.users.forEach(function(user) {
                 user.notes.forEach(function(note) {
                     if(note.link && note.link.trim()) {
                         // get just the link ID
-                        var linkMatches = note.link.match(LINK_ID_REGEX);
-                        if(linkMatches.length > 1) {
-                            note.link = linkMatches[1];
-                        } else {
-                            note.link = "";
-                        }
+                        note.link = permaToThingID(note.link);
                     }
                 });
             });
             notes.ver = TBUtils.notesSchema;
+            return notes;
         }
+        else if(notes.ver == 3) {
+            return inflateNotes(notes);
+        }
+        
+        //TODO: throw an error if unrecognized version?
+    }
+    
+    // Compress notes so they'll store well in the database.
+    function deflateNotes(notes) {
+        var deflated = {
+            ver: TBUtils.notesSchema,
+            constants: {
+                users: [],
+                warnings: []
+            }
+        };
+        
+        var mgr = new ConstManager(deflated.constants);
+        
+        deflated.users = notes.users.map(function(user) {
+            return {
+                "u": mgr.create("users", user.name),
+                "ns": user.notes.map(function(note) {
+                    return {
+                        "n": note.note,
+                        "t": note.time,
+                        "m": mgr.create("users", note.mod),
+                        "l": note.link,
+                        "w": mgr.create("warnings", note.type),
+                    };
+                })
+            };
+        });
+        
+        return deflated;
+    }
+    
+    // Decompress notes from the database into a more useful format
+    function inflateNotes(deflated) {
+        var notes = {
+            ver: TBUtils.notesSchema,
+            users: []
+        };
+        
+        var mgr = new ConstManager(deflated.constants);
+        
+        notes.users = deflated.users.map(function(user) {
+            return {
+                "name": mgr.get("users", user.u),
+                "notes": user.ns.map(function(note) {
+                    return {
+                        "note": note.n,
+                        "time": note.t,
+                        "mod": mgr.get("users", note.m),
+                        "link": note.l,
+                        "type": mgr.get("warnings", note.w),
+                    };
+                })
+            };
+        });
+        
         return notes;
     }
 
     function setNotes(notes, subreddit) {
-    	$.log("notes.ver = " + notes.ver);
-    	
-    	// schema check.
-    	if (notes.ver > TBUtils.notesSchema) {
+        $.log("notes.ver = " + notes.ver);
+        
+        // schema check.
+        if (notes.ver > TBUtils.notesSchema) {
           
           // Remove the option to add notes.
           $('.usernote-span-' + subreddit).remove();
@@ -181,7 +268,7 @@ function usernotes() {
             info = TBUtils.getThingInfo(thing),
             subreddit = info.subreddit,
             user = info.user,
-            link = info.permalink;
+            link = permaToThingID(info.permalink);
 
         // Make box & add subreddit radio buttons
         var popup = $(
@@ -227,8 +314,10 @@ function usernotes() {
                 TBUtils.noNotes.push(currsub);
                 return;
             }
-
-            TBUtils.noteCache[subreddit] = convertNotes(resp);
+            
+            resp = convertNotes(resp);
+            
+            TBUtils.noteCache[subreddit] = resp;
 
             $.grep(resp.users, function (u) {
                 if (u.name == user) {
@@ -304,7 +393,7 @@ function usernotes() {
             }
 
             // if we got this far, we have valid JSON
-            notes = convertNotes(resp);
+            notes = resp = convertNotes(resp);
 
             if (notes) {
                 var results = $.grep(notes.users, function (u) {

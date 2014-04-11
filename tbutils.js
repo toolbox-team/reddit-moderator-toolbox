@@ -472,14 +472,14 @@ function main() {
             subreddit = reddit.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', '');
-            
+        
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
         }
         
         // If we still don't have a sub, we're in mod mail, or PMs.
         if (TBUtils.isModmail) {
-            subreddit = (subreddit) ? subreddit : ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text()).replace('/r/', '').replace('/', '').trim();
+            subreddit = (subreddit) ? subreddit : ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text());
             
             //This is a weird palce to go about this, and the conditions are strange,
             //but if we're going to assume we're us, we better make damned well sure that is likely the case.
@@ -494,11 +494,17 @@ function main() {
             }
         }
         
+        // A recent reddit change makes subreddit names sometimes start with "/r/".
+        // Mod mail subreddit names additionally end with "/".
+        // reddit pls, need consistency
+        if (subreddit.charAt(0) == '/')
+            subreddit = subreddit.replace('/r/', '').replace('/', '').trim();
+        
         // Not a mod, reset current sub.
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
             subreddit = '';
         }
-        
+		
         if (user == '[deleted]') {
             user = '';
         }

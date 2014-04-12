@@ -214,6 +214,7 @@ function usernotes() {
     }
 
     function setNotes(notes, subreddit) {
+        $.log("notes = " + notes);
         $.log("notes.ver = " + notes.ver);
         
         // schema check.

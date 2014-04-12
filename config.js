@@ -45,8 +45,16 @@ function tbconf() {
     });    
     
     function postToWiki(page, data, isJSON, updateAM) {
+        $.log("posting to wiki");
         TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
-            if (!succ) console.log(err.responseText);
+            $.log("save succ = " + succ);
+            if (!succ) {
+                console.log(err.responseText)
+            }
+            else {
+                $.log("clearing cache");
+                TBUtils.clearCache();
+            }
         });
     }
     
@@ -273,7 +281,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
             }
             postToWiki('toolbox', config, true);
 			if(TBUtils.configCache[subreddit] !== undefined) {
-				delete TBUtils.configCache[subreddit];
+				delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
 			}
             $(html).remove();
         });

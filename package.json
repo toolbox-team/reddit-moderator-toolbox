@@ -1,8 +1,8 @@
 {
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.", 
     "license": "GPL", 
-    "author": "agentlame,creesch", 
-    "version": "1.4.4", 
+    "author": "agentlame,creesch,LowSociety", 
+    "version": "1.5.0", 
     "fullName": "reddit Moderator Toolbox", 
     "id": "yes", 
     "name": "reddit_mod_tb",

@@ -147,6 +147,20 @@ background-color: #ffff16;
 	font: normal x-small verdana,arial,helvetica,sans-serif !important;
 }
 
+.mod-toolbox .tb-overlay-label {
+        position: relative;
+        top: 40px;
+        max-width: 250px;
+        margin: 0 auto;
+        padding: 3px;
+        background-color: #FFF;
+        border: solid 1px #808080;
+        box-shadow: 0px 1px 3px 1px #D6D6D6;
+        text-align: center;
+        color: Blue;
+        font-size: 150%;
+}
+
 .mod-toolbox .tb-window-wrapper {
     position: relative;
     top: 40px;
@@ -388,7 +402,7 @@ img.note-close {
 .mod-toolbox #tb-notification-alert {
     left: 5px;
     bottom: 30px;
-    z-index: 6000;
+    z-index: 10001;
     position: fixed;
     text-align: left;
     width: 500px;

@@ -19,15 +19,16 @@ function main() {
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
         
     // Public variables
-    TBUtils.version = 4;
-    TBUtils.toolboxVersion = '1.4.4';
-    TBUtils.notesSchema = 3;
-    TBUtils.shortVersion = 144; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.version = 5;  //don't think we need this anymore.
+    TBUtils.toolboxVersion = '1.5.0';
+    TBUtils.shortVersion = 150; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.configSchema = 1,
+    TBUtils.notesSchema = 3,
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
-    TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|trials)\/?/);
+    TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
@@ -106,7 +107,7 @@ function main() {
     }
     
     if (TBUtils.debugMode) {
-        var consoleText = 'Toolbox verson: ' + TBUtils.toolboxVersion +
+        var consoleText = 'Toolbox version: ' + TBUtils.toolboxVersion +
                           ', TBUtils version: ' + TBUtils.version +
                           ', Browser: ' + TBUtils.browser +
                           ', Extension: ' + TBUtils.isExtension + 
@@ -117,7 +118,7 @@ function main() {
     }
     
     TBUtils.usernotes = {
-        ver: 2,
+        ver: TBUtils.notesSchema,
         users: [] //typeof userNotes
     };
     
@@ -132,7 +133,7 @@ function main() {
     TBUtils.warningType = ['spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
     
     TBUtils.config = {
-        ver: 1,
+        ver: TBUtils.configSchema,
         domainTags: '',
         removalReasons: '',
         modMacros: '',
@@ -187,6 +188,32 @@ function main() {
         
         return typeInfo;
     };
+
+    TBUtils.pageOverlay = function (text, createOrDestroy) {
+        if (createOrDestroy !== undefined) {
+
+            // Create the overlay
+            if (createOrDestroy) {
+                var html = '\
+            <div class="mod-toolbox tb-page-overlay">\
+            <div class="mod-toolbox tb-overlay-label"></div></div>\
+        ';
+
+                $(html).appendTo('body').show();
+                $('body').css('overflow', 'hidden');
+            }
+
+                // Destory the overlay
+            else {
+                $('.tb-page-overlay').remove();
+                $('body').css('overflow', 'auto');
+            }
+        }
+
+        // Regardless, update the text.  It doen't matter if you pass text for destory.
+        $('.tb-overlay-label').text(text);
+
+    };
     
     TBUtils.alert = function (message, callback) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
@@ -231,6 +258,8 @@ function main() {
             if (!TBUtils.isExtension) show();
             break;
         case 'all':
+                show();
+                break;
         default:
             show();
         }
@@ -419,7 +448,7 @@ function main() {
         
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1) {
-            TBUtils.mySubs = []; //resent list.
+            TBUtils.mySubs = []; //reset list.
             getSubs(modMineURL);
         } else {
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
@@ -652,6 +681,21 @@ function main() {
 
     TBUtils.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
+    };
+
+    TBUtils.clearCache = function () {
+        console.log('TBUtils.clearCache()');
+
+        TBUtils.noteCache = {};
+        TBUtils.configCache = {};
+        TBUtils.noConfig = [];
+        TBUtils.noNotes = [];
+        TBUtils.mySubs = [];
+
+        console.log('TBUtils.clearCache(): reloading page.');
+
+        // fuck you, you call it, you get a page reload.  #yolo
+        window.location.reload();
     };
 
     TBUtils.getReasosnFromCSS = function (sub, callback) {
@@ -934,7 +978,7 @@ function main() {
 }
 
 (function () {
-    var m = document.createElement('script');
-    m.textContent = "(" + main.toString() + ')();';
-    document.head.appendChild(m);
+    var s = document.createElement('script');
+    s.textContent = "(" + main.toString() + ')();';
+    document.head.appendChild(s);
 })();

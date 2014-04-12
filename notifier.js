@@ -547,11 +547,7 @@ function tbnoti() {
         TBUtils.setting('cache', 'shortlength', '', $("input[name=shortLength]").val());
 
         if ($("#clearcache").prop('checked')) {
-            TBUtils.noteCache = {};
-            TBUtils.configCache = {};
-            TBUtils.noConfig = [];
-            TBUtils.noNotes = [];
-            TBUtils.mySubs = [];
+            TBUtils.clearCache();
         }
 
 

@@ -21,6 +21,7 @@ function main() {
     // Public variables
     TBUtils.version = 4;
     TBUtils.toolboxVersion = '1.4.4';
+    TBUtils.notesSchema = 3;
     TBUtils.shortVersion = 144; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
@@ -543,7 +544,8 @@ function main() {
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
         
         if (isJSON) {
-            data = JSON.stringify(data, undefined, 2);
+            // Not indenting saves precious bytes.
+            data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
         }
         
         $.post('/r/' + subreddit + '/api/wiki/edit', {

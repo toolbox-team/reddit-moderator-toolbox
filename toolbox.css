@@ -980,6 +980,14 @@ body .thing.flaired {
 
 /* various reddit css fixes for mods */ 
 
+.wikirevisionlisting tr:hover, .wikirevisionlisting tr:nth-child(even):hover, .moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover  {
+background-color: #CEE3F8;
+}
+
+.wikirevisionlisting tr:nth-child(even), .moderator-table tr:nth-child(even), .banned-table tr:nth-child(even), .contributor-table tr:nth-child(even) {
+background: #F5F5F5;
+}
+
 .moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover  {
 background-color: #CEE3F8;
 }

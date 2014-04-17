@@ -69,7 +69,7 @@ function tbnoti() {
         dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
         configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
-    commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
+        commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
 
     // MTE settings.
     var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
@@ -92,7 +92,7 @@ function tbnoti() {
     var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
         <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconhide + '" /></a>&nbsp;&nbsp;\
-        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.icon + '" /></a>\
+        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconBox + '" title="toolbox settings"/></a>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
@@ -416,9 +416,9 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>, <a href="http://www.reddit.com/user/creesch/">/u/creesch</a> and <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a><br><br>\
-		<h3>Special thanks to:</h3>\
-		 <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags, several other fixes<br><br>\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> and <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> <br><br>\
+		<!--h3>Special thanks to:</h3-->\
+		  <!--a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags, several other fixes<br><br-->\
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a>\

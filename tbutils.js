@@ -1,5 +1,5 @@
 function main() {
-    var extension = true;  //only the extensions use this loding bethod for utils.
+    var extension = true;  //only the extensions use this loading method for utils.
 
 (function (TBUtils) {
     //Private variables
@@ -30,6 +30,7 @@ function main() {
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
+	TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
@@ -570,6 +571,8 @@ function main() {
         window.setTimeout(doChunk, delay);
     };
     
+	// Reddit API stuff
+	
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
         
         if (isJSON) {
@@ -665,7 +668,133 @@ function main() {
             }
         });
     };
-
+	
+	TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
+		$.post('/api/flair', {
+			api_type: 'json',
+			link: data.fullname,
+			text: text,
+			css_class: css,
+			r: subreddit,
+			uh: reddit.modhash
+		})
+		.success(function() {
+			if(typeof callback !== "undefined")
+				callback(true);
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error);
+		});
+	};
+	
+	TBUtils.distinguishThing = function(id, callback) {
+		$.post('/api/distinguish/yes', {
+			id: id,
+			uh: reddit.modhash
+		})
+		.success(function(d) {
+			if(typeof callback !== "undefined")
+				callback(true);
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error);
+		});
+	};
+	
+	TBUtils.approveThing = function(id, callback) {
+		$.post('/api/approve', {
+            id: id,
+			uh: reddit.modhash
+        })
+		.success(function() {
+			if(typeof callback !== "undefined")
+				callback(true);
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error);
+		});
+	};
+	
+	TBUtils.postComment = function(parent, text, callback) {
+		$.post('/api/comment', {
+			parent: parent,
+			uh: reddit.modhash,
+			text: text,
+			api_type: 'json'
+		})
+		.success(function(response) {
+			if(typeof callback !== "undefined")
+				callback(true, response);
+			return;
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error);
+			return;
+		});
+	};
+	
+	TBUtils.postLink = function(link, title, subreddit, callback) {
+		$.post('/api/submit', {
+			kind: 'link',
+			resubmit: 'true',
+			url: link,
+			uh: reddit.modhash,
+			title: title,
+			sr: subreddit,
+			api_type: 'json'
+		})
+		.success(function(response) {
+			if(typeof callback !== "undefined")
+				callback(true, response);
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error);
+		});
+	};
+	
+	TBUtils.sendPM = function(to, subject, text, callback) {
+		$.post('/api/compose', {
+			to: to,
+			uh: reddit.modhash,
+			subject: subject,
+			text: text
+		})
+		.success(function() {
+			if(typeof callback !== "undefined")
+				callback(true);
+		})
+		.error(function(error) {
+			if(typeof callback !== "undefined")
+				callback(false, error.responseText);
+		});
+	};
+	
+	TBUtils.banUser = function(user, subreddit, reason, callback) {
+		$.post('/api/friend', {
+			uh: reddit.modhash,
+			type: 'banned',
+			name: user,
+			r: subreddit,
+			note: (reason == null) ? '' : reason,
+			api_type: 'json'
+		})
+		.done(function(data) {
+			if(typeof callback !== "undefined")
+				callback();
+		});
+	};
+	
+	// Utility methods
+	
+	TBUtils.removeQuotes = function(string) {
+        return string.replace(/['"]/g, '');
+    }
+	
     // Needs to be replaced. 
     TBUtils.compressHTML = function (src) {
         console.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
@@ -698,7 +827,7 @@ function main() {
         window.location.reload();
     };
 
-    TBUtils.getReasosnFromCSS = function (sub, callback) {
+    TBUtils.getReasonsFromCSS = function (sub, callback) {
 
         // If not, build a new one, getting the XML from the stylesheet
         $.get('http://www.reddit.com/r/' + sub + '/about/stylesheet.json').success(function (response) {
@@ -971,7 +1100,6 @@ function main() {
                 }).end();
         };
 }(window.jQuery);
-	
 	
 }(TBUtils = window.TBUtils || {}));
 

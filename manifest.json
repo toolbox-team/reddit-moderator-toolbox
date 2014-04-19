@@ -7,16 +7,18 @@
 
   "permissions": [
     "https://*.reddit.com/",
-  "http://*.reddit.com/",
-  "notifications",
-  "tabs",
-  "storage",
-  "unlimitedStorage"
+    "http://*.reddit.com/",
+    "notifications",
+    "tabs",
+    "storage",
+    "unlimitedStorage"
   ],
-  "icons": { "16": "icon16.png",
-           "48": "icon48.png",
-          "128": "icon128.png" },
-"content_scripts": [
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
     {
       "matches": ["http://*.reddit.com/*"],
       "css": ["toolbox.css"],
@@ -24,6 +26,6 @@
     }
   ],
   "web_accessible_resources": [
-  "jquery.js"
+	"jquery.js", "snuownd.js"
   ]
 }

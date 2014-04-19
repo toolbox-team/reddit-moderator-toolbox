@@ -11,7 +11,6 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 background-color: #ffff16;
 } 
 
-
 .mod-toolbox #tb-bottombar {
     bottom: 0px;
     z-index: 6000;
@@ -30,8 +29,6 @@ background-color: #ffff16;
 	left: 0px;
 	right: 0px;
 }
-
-
 
 .mod-toolbox #tb-bottombar-hidden {
     bottom: 0px;
@@ -424,6 +421,7 @@ position: relative;
 display: inline-block;
 padding: 10px;
 }
+
 .mod-toolbox #tb-tooltip {
     /* left: 5px;
     bottom: 30px; */
@@ -565,10 +563,10 @@ padding: 10px;
     color: #C92A2A;
     font-weight: bold;
 }
+
 .utagger-remove-note {
 cursor: pointer; 
 }
-
 
 .utagger-notes .utagger-notes-td3 {
     border: 0;
@@ -703,19 +701,18 @@ background-color: #E5F0E1;
 background-color: #FA8072;
 }
 
+/* Removal reasons */
+
 .reason-popup {
-    padding: 10px 15px !important;
+	display: block;
     background-color: rgba(250, 250, 250, 0.84);
     border: 0px;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
     border-radius: 0px;
     position: fixed;
     top: 0px;
     left: 0px;
     margin-left: auto;
 	margin-right: auto;
-	padding: 5px !important;
     right: 0px;
     bottom: 0px;
     overflow: auto;
@@ -752,14 +749,6 @@ background-color: #FA8072;
     border-top: solid 1px #A8B5C2;
 }
 
-.reason-popup .right {
-    float: right;
-}
-
-.reason-popup .status {
-    display: none;
-}
-
 .reason-popup input,.reason-popup select,.reason-popup textarea {
     font-size: x-small;
     border: 1px solid #ccc;
@@ -767,6 +756,7 @@ background-color: #FA8072;
 }
 
 .reason-popup input[type="checkbox"],.reason-popup input[type="radio"] {
+	/* CENTER DAT SHIT */
 	vertical-align: text-bottom;
 	margin-right: 2px;
 	margin-top: 0;
@@ -774,6 +764,15 @@ background-color: #FA8072;
 
 .reason-popup textarea {
     min-width: 400px;
+}
+
+.reason-popup #reason-table {
+	border-left: solid 1px transparent;
+	border-right: solid 1px transparent;
+}
+
+.reason-popup #reason-table.error-highlight {
+	border: solid 1px red;
 }
 
 .reason-popup thead th {
@@ -798,18 +797,38 @@ background-color: #FA8072;
 	margin-top: 2px;
 }
 
-.reason-popup .removal-reason {
+.reason-popup .reason-check {
+	margin: 4px 6px 6px 6px !important;
+}
+
+.reason-popup .reason-num {
+	margin-top: 2px;
+	text-align: center;
+	font-size: 16px;
+	font-family: arial;
+	color: #D3D3D3;
+}
+
+.reason-popup .selectable-reason.reason-selected .reason-num {
+	color: black;
+}
+
+.reason-popup .styled-reason {
 	margin-top: 4px;
-	padding: 6px !important;
-	border: 1px solid #D3D3D3 !important;
+	padding: 6px;
+	border: 1px solid #D3D3D3;
 }
 
-.reason-popup .removal-reason.reason-selected {
-	background: #b1ddaa;
+.reason-popup .selectable-reason:last-child .styled-reason {
+    margin-bottom: 4px;
 }
 
-.reason-popup .reason {
-	padding-left: 6px;
+.reason-popup .selectable-reason.reason-selected .styled-reason {
+	background: #B1DDAA;
+}
+
+.reason-popup .reason-content {
+	padding-left: 8px;
 }
 
 .reason-popup #header-reason, .reason-popup #footer-reason {
@@ -817,10 +836,15 @@ background-color: #FA8072;
 }
 
 .reason-popup #buttons {
-    padding-top: 6px;
-	padding-bottom: 6px;
+	margin-top: 2px;
+    padding: 6px 0 6px 2px;
 	vertical-align: middle;
 	text-align: middle;
+	border: solid 1px transparent;
+}
+
+.reason-popup #buttons.error-highlight {
+	border-color: red;
 }
 
 .reason-popup #log-reason {
@@ -831,6 +855,10 @@ background-color: #FA8072;
 .reason-popup #log-reason-input {
 	padding-left: 1px;
 	min-width: 365px;
+}
+
+.reason-popup #log-reason-input.error-highlight {
+	border-color: red;
 }
 
 .reason-popup #log-reason p {
@@ -860,6 +888,8 @@ background-color: #FA8072;
 .reason-popup em {
 	font-style: oblique;
 }
+
+/* --- */
 
 body .choice.dashed {
     border-top: 1px dashed;
@@ -1026,14 +1056,6 @@ body .thing.flaired {
 }
 
 /* various reddit css fixes for mods */ 
-
-.wikirevisionlisting tr:hover, .wikirevisionlisting tr:nth-child(even):hover, .moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover  {
-background-color: #CEE3F8;
-}
-
-.wikirevisionlisting tr:nth-child(even), .moderator-table tr:nth-child(even), .banned-table tr:nth-child(even), .contributor-table tr:nth-child(even) {
-background: #F5F5F5;
-}
 
 .moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover  {
 background-color: #CEE3F8;

@@ -157,19 +157,7 @@ function modtools() {
 			// Click yes on the removal
 			button.find('.yes').click();
 			
-			console.log(data);
-			
-			// Reset state
-			popup.find('attrs').attr(data).end()
-				.find('.removal-reason td input[type=checkbox]:checked').attr('checked', false).end()
-				.find('.removal-reason.selected').removeClass('reason-selected').end()
-				.find('.status').hide().end()
-				.find('.mte-thread-link').attr('href', data.url).text(data.title);
-			
-			// Open popup
-			popup.css({
-				display: ''
-			});
+			openPopup();
 			
 			return false;
 		}
@@ -208,10 +196,11 @@ function modtools() {
 			});
 			
 			// Open popup
-			showPopUp();
+			createPopup();
+			openPopup();
 		});
 		
-		function showPopUp() {
+		function createPopup() {
 			var logDisplay = data.logsub ? '' : 'none',
 				headerDisplay = data.header ? '' : 'none',
 				footerDisplay = data.footer ? '' : 'none';
@@ -233,19 +222,24 @@ function modtools() {
 						<div class="reason-popup-header">Removal reasons for /r/' + data.subreddit + ':</div> \
 						<div class="reason-popup-innercontent"> \
 							<p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p> \
-							<div class="removal-reason" id="header-reason" style="display:' + headerDisplay + '"> \
+							<div class="styled-reason" id="header-reason" style="display:' + headerDisplay + '"> \
 								<p> \
-									<input type="checkbox" id="include-header" checked> Include header. </input><br> \
+									<input type="checkbox" id="include-header" checked> Include header. </input><br /> \
 									<label id="reason-header">' + headerText + '</label> \
 								</p> \
 							</div> \
 							<table> \
-								<thead><tr><th></th><th>reason</th><th>flair text</th><th>flair css</th></thead> \
-								<tbody /> \
+								<thead><tr> \
+									<th></th> \
+									<th>reason</th> \
+									<th>flair text</th> \
+									<th>flair css</th> \
+								</tr></thead> \
+								<tbody id="reason-table" /> \
 							</table> \
-							<div class="removal-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
+							<div class="styled-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
 								<p>	\
-									<input type="checkbox" id="include-footer" checked> Include footer. </input><br>\
+									<input type="checkbox" id="include-footer" checked> Include footer. </input><br />\
 									<label id="reason-footer" name="footer">' + footerText + '</label> \
 								</p> \
 							</div> \
@@ -268,7 +262,7 @@ function modtools() {
 						</div> \
 						<div class="reason-popup-footer"> \
 							<input type="hidden" name="tom_or_not" value="no-tom"> \
-							<span class="status error">This is an easter egg.</span> \
+							<span class="status error" style="display:none">This is an easter egg.</span> \
 							<button class="save">send</button> \
 							<button class="no-reason">no reason</button> \
 							<button class="cancel">cancel and approve</button> \
@@ -276,9 +270,7 @@ function modtools() {
 					</div> \
 				</div>');
 			
-			popup = $(popup).appendTo('body').css({
-				display: 'block'
-			}).find('attrs').attr(data).end();
+			popup = $(popup).appendTo('body').find('attrs').attr(data).end();
 			
 			// Render reasons and add to popup
 			$(data.reasons).each(function(index) {
@@ -286,11 +278,14 @@ function modtools() {
 				var reasonHtml = parser.render(reasonMarkdown);
 				
 				var tr = $('\
-					<tr class="selectable-removal-reason removal-reason"> \
+					<tr class="selectable-reason"> \
 						<td> \
-							<input type="checkbox" class="tb_removal_reason_check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + index + '"> \
+							<input type="checkbox" class="reason-check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + index + '" /> \
+							<div class="reason-num">' + (index+1) + '</div> \
 						</td> \
-						<td class="' + data.subreddit + '-' + index + ' reason">' + reasonHtml + '<br /></td> \
+						<td> \
+							<div class="styled-reason reason-content ' + data.subreddit + '-' + index + '">' + reasonHtml + '<br /></div> \
+						</td> \
 						<td>' + (this.flairText? this.flairText : "") + '</td> \
 						<td>' + (this.flairCSS? this.flairCSS : "") + '</td> \
 					</tr>');
@@ -305,12 +300,26 @@ function modtools() {
 			});
 			
 			// Pre-fill reason input elements which have IDs.
-			popup.find('td.reason input[id], td.reason textarea[id]').each(function () {
+			popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
 				this.value = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.value;
 			});
 		}
 		
-		return false;
+		function openPopup() {
+			// Reset state
+			popup.find('attrs').attr(data);
+			popup.find('.selectable-reason input[type=checkbox]:checked').attr('checked', false);
+			popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
+			popup.find('.status').hide();//css('display: none;');
+			popup.find('.error-highlight').removeClass('error-highlight');
+			popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
+			
+			// Open popup
+			/*popup.css({
+				display: ''
+			});*/
+			popup.show();
+		}
 	}
 	
 	// Popup events
@@ -320,10 +329,10 @@ function modtools() {
 	});
 	
 	// Selection/deselection of removal reasons
-	$('body').delegate('.selectable-removal-reason', 'click', function (e) {
-		var checkBox = $(this).find('.tb_removal_reason_check'),
+	$('body').delegate('.selectable-reason', 'click', function (e) {
+		var checkBox = $(this).find('.reason-check'),
 			isChecked = checkBox.is(':checked'),
-			targetIsCheckBox = $(e.target).is('.tb_removal_reason_check');
+			targetIsCheckBox = $(e.target).is('.reason-check');
 		
 		if (!isChecked && !targetIsCheckBox) {
 			$(this).addClass('reason-selected');
@@ -365,7 +374,7 @@ function modtools() {
 	$('body').delegate('.reason-popup .save', 'click', function () {
 		var popup = $(this).parents('.reason-popup'),
 			notifyBy = popup.find('.reason-type:checked').val(),
-			checked = popup.find('.tb_removal_reason_check:checked'),
+			checked = popup.find('.reason-check:checked'),
 			status = popup.find('.status'),
 			attrs = popup.find('attrs'),
 			subject = attrs.attr('subject'),
@@ -389,23 +398,28 @@ function modtools() {
 		// Update status
 		status.text(STATUS_DEFAULT_TEXT);
 		status.show();
+		popup.find('.error-highlight').removeClass('error-highlight');
 		
 		// Check if reason checked
-		if (!checked.length)
+		if (!checked.length) {
+			var table = popup.find('#reason-table');
+			console.log(table.tagName);
+			popup.find('#reason-table').addClass('error-highlight');
 			return status.text(NO_REASON_ERROR);
+		}
 		
 		// Get custom reason input
 		var markdownReasons = [];
 		var customInput = [];
 		var flairText = "", flairCSS = "";
 		
-		checked.closest('.selectable-removal-reason').each(function() {
+		checked.closest('.selectable-reason').each(function() {
 			// Get markdown-formatted reason
 			var markdownReason = $(this).data('reasonMarkdown');
 			markdownReasons.push(markdownReason);
 			
 			// Get input from HTML-formatted reason
-			var htmlReason = $(this).find('td.reason');
+			var htmlReason = $(this).find('.reason-content');
 			htmlReason.find('select, input, textarea').each(function() {
 				customInput.push(this.value);
 			});
@@ -480,72 +494,29 @@ function modtools() {
 			});
 		}
 		
-		// Function to send PM and comment
-		function sendRemovalMessage(shouldComment, shouldPM, logLink) {
-			if(reason.trim() == "")
-				return popup.hide();
-				
-			if (logLink !== 'undefined')
-				reason = reason.replace('{loglink}', logLink);
-			
-			// Reply to submission/comment...
-			if (notifyBy == 'reply' || notifyBy == 'both') {
-				TBUtils.postComment(data.fullname, reason, function(successful, response) {
-					if(successful) {
-						// Check if reddit actually returned an error
-						if(response.json.errors.length > 0) {
-							status.text(REPLY_ERROR+": "+response.json.errors[0][1]);
-						}
-						else {
-							// Distinguish the new reply
-							TBUtils.distinguishThing(response.json.data.things[0].data.id, function(successful, response) {
-								if(successful) {
-									popup.hide();
-								}
-								else {
-									status.text(DISTINGUISH_ERROR);
-								}
-							});
-						}
-					}
-					else {
-						status.text(REPLY_ERROR);
-					}
-				});
-			}
-
-			// ...and/or PM the user
-			if (notifyBy == 'PM' || notifyBy == 'both') {
-				TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
-					if(successful) {
-						popup.hide();
-					}
-					else {
-						status.text(PM_ERROR);
-					}
-				});
-			}
-		}
-		
 		// If logsub is not empty, log the removal and send a PM/comment
 		if (data.logsub) {
 			// Check if a log reason is selected
-			if (!logreason)
+			if (!logreason) {
+				popup.find('#log-reason-input').addClass('error-highlight');
 				return status.text(LOG_REASON_MISSING_ERROR);
+			}
 			
 			// Set log reason to entered reason
 			logtitle = logtitle.replace('{reason}', logreason);
 			
 			// Submit log post
+			console.log("Submitting new log post...");
 			TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logtitle), data.logsub, function(successful, response) {
 				if(successful) {
+					console.log("Success!");
 					var logLink = response.json.data.url;
-					
-					sendRemovalMessage(logLink);
 					
 					logLink = logLink.match(/https?:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
 					logLink = 't3_' + logLink[1];
 					TBUtils.approveThing(logLink);
+					
+					sendRemovalMessage(logLink);
 				}
 				else {
 					status.text(LOG_POST_ERROR);
@@ -553,11 +524,85 @@ function modtools() {
 			});
 
 		}
-		// Otherwise only send a PM/comment
+		// Otherwise only send PM and/or comment
 		else {
-			if (!notifyBy)
+			sendRemovalMessage(null);
+		}
+		
+		// Function to send PM and comment
+		function sendRemovalMessage(logLink) {
+			// Dunno what this is for. Leaving it in just 'cuz.
+			if (reason.trim() == "")
+				return popup.hide();
+			
+			// Check if a valid notification type is selected
+			if (!notifyBy || (logLink == null && notifyBy == 'none')) {
+				popup.find('#buttons').addClass('error-highlight');
 				return status.text(NO_REPLY_TYPE_ERROR);
-			sendRemovalMessage();
+			}
+			
+			// Finalize the reason with optional log post link
+			if (logLink !== 'undefined')
+				reason = reason.replace('{loglink}', logLink);
+			
+			var notifyByPM = notifyBy == 'PM' || notifyBy == 'both',
+				notifyByReply = notifyBy == 'reply' || notifyBy == 'both';
+			
+			// Reply to submission/comment
+			if (notifyByReply) {
+				console.log("Replying with reason...");
+				TBUtils.postComment(data.fullname, reason, function(successful, response) {
+					if(successful) {
+						console.log("Success!");
+						// Check if reddit actually returned an error
+						if(response.json.errors.length > 0) {
+							console.log("Error 2! "+response.json.errors[0][1]);
+							status.text(REPLY_ERROR+": " + response.json.errors[0][1]);
+						}
+						else {
+							// Distinguish the new reply
+							console.log("Distinguishing reply...");
+							TBUtils.distinguishThing(response.json.data.things[0].data.id, function(successful, response) {
+								if(successful) {
+									console.log("Success!");
+									if(notifyByPM)
+										sendPM();
+									else
+										popup.hide();
+								}
+								else {
+									console.log("Error!");
+									status.text(DISTINGUISH_ERROR);
+								}
+							});
+						}
+					}
+					else {
+						console.log("Error 1!");
+						status.text(REPLY_ERROR);
+					}
+				});
+			}
+			else {
+				sendPM();
+			}
+			
+			// Send PM the user
+			function sendPM() {
+				if (notifyByPM) {
+					console.log("Sending comment...");
+					TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
+						if(successful) {
+							console.log("Success!");
+							popup.hide();
+						}
+						else {
+							console.log("Error!");
+							status.text(PM_ERROR);
+						}
+					});
+				}
+			}
 		}
 	});
 	
@@ -1261,6 +1306,11 @@ function modtools() {
 	// Check if we are running as an extension
 	if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
 		init();
+		
+		// Workaround for chrome not properly including snuownd
+		var markdownURL = chrome.extension.getURL('snuownd.js');
+		$('head').prepend('<script type="text/javascript" src="' + markdownURL + '"></script>');
+		
 		return;
 	}
 	
@@ -1274,9 +1324,9 @@ function modtools() {
 		//var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
 		var cssURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/toolbox.css';
 		var markdownURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/snuownd.js';
-		$('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+		$('head').prepend('<script type="text/javascript" src="' + utilsURL + '"></script>');
 		$('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
-		$('head').prepend('<script type="text/javascript" src=' + markdownURL + '></script>');
+		$('head').prepend('<script type="text/javascript" src="' + markdownURL + '"></script>');
 	}
 	
 	// Do not add script to page until TBUtils is added.

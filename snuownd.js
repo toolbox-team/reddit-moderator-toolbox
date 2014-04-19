@@ -1375,7 +1375,7 @@
 	// rndr_html_tag(struct buf *ob, const struct buf *text, void *opaque, char* tagname, char** whitelist, int tagtype)
 	//NOT A CALLBACK!
 	function rndr_html_tag(out, text, options, tagname, whitelist, tagtype) {
-	    var x, z, in_str = 0, seen_equals = 0, done, reset;
+	    var x, z, in_str = 0, seen_equals = 0, done, reset, self_closed = 0;
 	    var attr = new Buffer()
 	    var c;
 	    
@@ -1397,6 +1397,9 @@
 	            reset = 0;
 	            
 	            switch(c) {
+					case '/':
+						self_closed = 1;
+						break;	
 	                case '>':
 	                    if(seen_equals && !in_str) {
 	                        done = 1;
@@ -1407,20 +1410,23 @@
 	                    break;
 	                case '\'':
 	                case '"':
+						self_closed = 0;
 	                    if(!in_str)
 	                        in_str = c;
 	                    else if(in_str == c)
 	                        in_str = !in_str;
 	                    break;
 	                default:
+						self_closed = 0;
 	                    if(!in_str) {
 	                        switch(c) {
 	                            case ' ':
 	                                if(seen_equals) {
 	                                    done = 1;
 	                                    reset = 1;
-	                                } else
+	                                } else {
 	                                    reset = 1;
+									}
 	                                break;
 	                            case '=':
 	                                if(seen_equals) {
@@ -1459,6 +1465,8 @@
 	    }
 	    
 	    // bufrelease(attr);
+		if(self_closed)
+			out.s += ' /';
 	    out.s += '>';
 	}
 

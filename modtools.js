@@ -10,8 +10,7 @@
 // ==/UserScript==
 
 function modtools() {
-	//REMOVE AFTER DEV
-	//if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
+	if (!reddit.logged || !TBUtils.setting('ModTools', 'enabled', true)) return;
 	
 	// The CSS that was supposed to be added but wasn't actually being added by the old version looked weird.
 	// So I disabled it for now.
@@ -1318,12 +1317,9 @@ function modtools() {
 	if (!window.TBUadded) {
 		window.TBUadded = true;
 		
-		//CHANGE AFTER DEV
-		//var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
-		var utilsURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/tbutils.js';
-		//var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
-		var cssURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/toolbox.css';
-		var markdownURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/snuownd.js';
+		var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+		var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
+		var markdownURL = 'http://agentlame.github.io/toolbox/snuownd.js';
 		$('head').prepend('<script type="text/javascript" src="' + utilsURL + '"></script>');
 		$('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
 		$('head').prepend('<script type="text/javascript" src="' + markdownURL + '"></script>');

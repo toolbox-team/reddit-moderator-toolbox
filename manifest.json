@@ -20,7 +20,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["http://*.reddit.com/*"],
+      "matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
       "css": ["toolbox.css"],
       "js": ["jquery.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "modtools.js", "comment.js", "config.js", "modmatrix.js"]
     }

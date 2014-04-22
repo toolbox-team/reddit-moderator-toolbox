@@ -26,6 +26,6 @@
     }
   ],
   "web_accessible_resources": [
-	"jquery.js", "snuownd.js"
+	"jquery.js", "jquery-1.10.1.min.map", "snuownd.js"
   ]
 }

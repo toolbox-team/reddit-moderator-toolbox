@@ -70,6 +70,7 @@ function tbnoti() {
         configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
+        banlistEnabled = TBUtils.setting('BanList', 'enabled', true);
 
     // MTE settings.
     var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
@@ -336,10 +337,14 @@ function tbnoti() {
 			</p>\
             <p>\
 				<label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
-			</p>\
-			            <p>\
-				<label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
-			</p>\
+            </p>\
+                        <p>\
+                <label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
+            </p>\
+            </p>\
+                        <p>\
+                <label><input type="checkbox" id="banlistEnabled" ' + ((banlistEnabled) ? "checked" : "") + '> Enable Ban List Module</label>\
+            </p>\
             <p>\
 				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Stattit Tab</label>\
 			</p>\
@@ -531,7 +536,8 @@ function tbnoti() {
         TBUtils.setting('UserNotes', 'enabled', '', $("#notesEnabled").prop('checked'));
         TBUtils.setting('DomainTagger', 'enabled', '', $("#dtagEnabled").prop('checked'));
         TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
-		TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
+        TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
+        TBUtils.setting('BanList', 'enabled', '', $("#banlistEnabled").prop('checked'));
         TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
 
         // Save MTE settings.

@@ -89,6 +89,10 @@ function banlist () {
     $('#user').parent().spin('small');
     // hide it
     var $loading = $('.spinner').hide();
+
+    // counter for number of bans
+    var $num_bans = $('<span id="ban_count"></span>');
+    $num_bans.appendTo($('#user').parent());
     
     $('#user').prop('placeholder', 'Please wait while the banlist loads -->');
     
@@ -139,6 +143,8 @@ function banlist () {
                     last_update = Date.now();
                     $loading.hide();
                     $('input#user').prop('disabled', false);
+                    // update the visible counter
+                    $num_bans.html($(".banned-table table tbody tr:visible").length);
                 }
             }
         });
@@ -146,6 +152,7 @@ function banlist () {
     }
  
     function filter(element) {
+        var count = 0;
         var value = $(element).val().toLowerCase();
  
         debug.info("filter("+value+")");
@@ -160,8 +167,8 @@ function banlist () {
  
             _get_next_ban_page();
         }
- 
- 
+
+        // the actual filtering happens here
         $(".banned-table table tbody tr").each(function() {
             if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
                 $(this).show();
@@ -169,6 +176,11 @@ function banlist () {
                 $(this).hide();
             }
         });
+
+        // update the results counter
+        count = $(".banned-table table tbody tr:visible").length;
+        debug.info(count);
+        $num_bans.html(count);
     }
  
  
@@ -176,8 +188,9 @@ function banlist () {
         filter(this);
     });
  
+    // we want to populate the table immediately on load. TODO: add a setting for this.
     $('input#user').keyup();
- 
+
 }
  
  

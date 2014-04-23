@@ -120,6 +120,7 @@ function banlist () {
             async: true,
             success: function(data) {
                 debug.info("  success!");
+                debug.info("  "+pages_back+" pages back");
                 response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                 $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
@@ -138,6 +139,7 @@ function banlist () {
                         setTimeout(_get_next_ban_page, sleep, after);
                     }
                 } else {
+                    debug.info("  last page");
                     last_update = Date.now();
                     $loading.hide();
                     $('input#user').prop('disabled', false);

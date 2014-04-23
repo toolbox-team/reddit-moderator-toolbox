@@ -124,7 +124,6 @@ function banlist () {
      
             // make sure we have the loading icon
             $loading.show();
-            $('input#user').prop('disabled', true);
      
             after = null;
             last_request = Date.now();
@@ -141,7 +140,8 @@ function banlist () {
                     response_page = $(data);
                     // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                     $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
-     
+                    filter_banlist($('input#user').val().toLowerCase());
+
                     after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                     debug.info(after_url);
                     after = getURLParameter(after_url, 'after');
@@ -159,9 +159,6 @@ function banlist () {
                         debug.info("  last page");
                         last_update = Date.now();
                         $loading.hide();
-                        $('input#user').prop('disabled', false);
-                        // update the visible counter
-                        $num_bans.html($(".banned-table table tbody tr:visible").length);
                     }
                 },
                 error: function(data) {
@@ -173,7 +170,6 @@ function banlist () {
                     } else {
                         // Did we get logged out during the process, or some other error?
                         $loading.hide();
-                        $('input#user').prop('disabled', false);
                         $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                     }
                 }
@@ -181,12 +177,24 @@ function banlist () {
      
         }
      
-        function filter(element) {
-            var count = 0;
-            var value = $(element).val().toLowerCase();
+        function filter_banlist(value) {
+            // the actual filtering happens here
+            $(".banned-table table tbody tr").each(function() {
+                if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            // update the results counter
+            $num_bans.html($(".banned-table table tbody tr:visible").length);
+        }
      
-            debug.info("filter("+value+")");
      
+        $('input#user').keyup(function() {
+            var value = $(this).val().toLowerCase();
+          
             if (last_update === 0 || (last_update + time_to_update) <= Date.now()) {
                 debug.info("Last updated at "+last_update);
                 debug.info("Update delay is "+time_to_update);
@@ -198,27 +206,10 @@ function banlist () {
                 _get_next_ban_page();
             }
 
-            // the actual filtering happens here
-            $(".banned-table table tbody tr").each(function() {
-                if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            // update the results counter
-            count = $(".banned-table table tbody tr:visible").length;
-            debug.info(count);
-            $num_bans.html(count);
-        }
-     
-     
-        $('input#user').keyup(function() {
-            filter(this);
+            filter_banlist(value);
         });
      
-        // we want to populate the table immediately on load. TODO: add a setting for this.
+        // we want to populate the table immediately on load.
         $('input#user').keyup();
     }
 

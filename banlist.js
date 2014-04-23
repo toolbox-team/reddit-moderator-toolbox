@@ -110,7 +110,8 @@ function banlist () {
  
         after = null;
         last_request = Date.now();
-        
+        pages_back = 0;
+
         $.ajax({
             url: document.location.href,
             data: parameters,
@@ -128,23 +129,42 @@ function banlist () {
                 after = getURLParameter(after_url, 'after');
                 debug.info(after);
                 if (after) {
-                    sleep = last_request + 2000 - Date.now();
-                    setTimeout(_get_next_ban_page, sleep, after);
-/*
-                    if (pages_back <= 10) {
+                    // hit the API hard, to make it more responsive on small subs
+                    if (pages_back < 10) {
                         pages_back++;
-                        _get_next_ban_page(after);
+                        _get_next_ban_page();
                     } else {
-                        last_update = Date.now();
-                        alert("It looks like your subreddit has more than 10 pages of bans. Due to API restrictions, only the first 10 have been indexed.");
+                        sleep = last_request + 2000 - Date.now();
+                        setTimeout(_get_next_ban_page, sleep, after);
+    /*
+                        if (pages_back <= 10) {
+                            pages_back++;
+                            _get_next_ban_page(after);
+                        } else {
+                            last_update = Date.now();
+                            alert("It looks like your subreddit has more than 10 pages of bans. Due to API restrictions, only the first 10 have been indexed.");
+                        }
+    */
                     }
-*/
                 } else {
                     last_update = Date.now();
                     $loading.hide();
                     $('input#user').prop('disabled', false);
                     // update the visible counter
                     $num_bans.html($(".banned-table table tbody tr:visible").length);
+                }
+            },
+            error: function(data) {
+                debug.info("  failed");
+                debug.info(data.status);
+                if (data.status == 504) {
+                    // "504, post some more"
+                    this.success(data);
+                } else {
+                    // Did we get logged out during the process, or some other error?
+                    $loading.hide();
+                    $('input#user').prop('disabled', false);
+                    $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                 }
             }
         });

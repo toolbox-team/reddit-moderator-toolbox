@@ -136,15 +136,6 @@ function banlist () {
                     } else {
                         sleep = last_request + 2000 - Date.now();
                         setTimeout(_get_next_ban_page, sleep, after);
-    /*
-                        if (pages_back <= 10) {
-                            pages_back++;
-                            _get_next_ban_page(after);
-                        } else {
-                            last_update = Date.now();
-                            alert("It looks like your subreddit has more than 10 pages of bans. Due to API restrictions, only the first 10 have been indexed.");
-                        }
-    */
                     }
                 } else {
                     last_update = Date.now();

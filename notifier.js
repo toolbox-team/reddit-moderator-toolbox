@@ -71,6 +71,7 @@ function tbnoti() {
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
         banlistEnabled = TBUtils.setting('BanList', 'enabled', true);
+        banlistAutomatic = TBUtils.setting('BanList', 'automatic', false);
 
     // MTE settings.
     var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
@@ -273,6 +274,9 @@ function tbnoti() {
 				Multireddit of subs you want displayed in the unmoderated counter:<br>\
 				<input type="text" name="unmoderatedsubreddits" value="' + unescape(unmoderatedSubreddits) + '">\
 			</p>\
+            <p>\
+                <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
+            </p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
 			</p>\
@@ -537,6 +541,7 @@ function tbnoti() {
         TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
         TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
         TBUtils.setting('BanList', 'enabled', '', $("#banlistEnabled").prop('checked'));
+        TBUtils.setting('BanList', 'automatic', '', $("#banlistAutomatic").prop('checked'));
         TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
 
         // Save MTE settings.

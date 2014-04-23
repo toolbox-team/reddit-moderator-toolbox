@@ -163,7 +163,7 @@ function banlist () {
  
  
         $(".banned-table table tbody tr").each(function() {
-            if ($(this).find('.user a').text().search(value) > -1) {
+            if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
                 $(this).show();
             } else {
                 $(this).hide();

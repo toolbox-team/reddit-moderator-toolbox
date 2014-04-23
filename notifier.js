@@ -338,11 +338,10 @@ function tbnoti() {
             <p>\
 				<label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
             </p>\
-                        <p>\
+            <p>\
                 <label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
             </p>\
-            </p>\
-                        <p>\
+            <p>\
                 <label><input type="checkbox" id="banlistEnabled" ' + ((banlistEnabled) ? "checked" : "") + '> Enable Ban List Module</label>\
             </p>\
             <p>\

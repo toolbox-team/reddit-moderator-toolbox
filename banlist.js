@@ -89,14 +89,18 @@ function banlist () {
         return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
     }
  
-    // debug at "warn"
-    debug.setLevel(3);
  
     var last_update = 0;
     var last_request = 0;
     var time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
     var ban_items = [];
     var pages_back = 0;
+    // debug only in dev mode
+    if (TBUtils.setting('Utils', 'debugMode', true)) {
+        debug.setLevel(5);
+    } else {
+        debug.setLevel(0);
+    }
  
     // initialize the loading spinner
     $('#user').parent().spin('small');

@@ -132,7 +132,7 @@ function banlist () {
                     // hit the API hard, to make it more responsive on small subs
                     if (pages_back < 10) {
                         pages_back++;
-                        _get_next_ban_page();
+                        _get_next_ban_page(after);
                     } else {
                         sleep = last_request + 2000 - Date.now();
                         setTimeout(_get_next_ban_page, sleep, after);

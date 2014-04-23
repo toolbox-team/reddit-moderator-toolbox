@@ -96,9 +96,10 @@ function banlist () {
     
     $('#user').prop('placeholder', 'Please wait while the banlist loads -->');
     
-    function _get_next_ban_page(after) {
+    function _get_next_ban_page(after, pages_back) {
         // default parameter value handling
-        after = typeof after !== 'undefined' ? after : '';
+        after      = typeof after      !== 'undefined' ? after      : '';
+        pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
  
         debug.info("_get_next_ban_page("+after+")");
  
@@ -110,7 +111,6 @@ function banlist () {
  
         after = null;
         last_request = Date.now();
-        pages_back = 0;
 
         $.ajax({
             url: document.location.href,
@@ -133,10 +133,10 @@ function banlist () {
                     // hit the API hard, to make it more responsive on small subs
                     if (pages_back < 10) {
                         pages_back++;
-                        _get_next_ban_page(after);
+                        _get_next_ban_page(after, pages_back);
                     } else {
                         sleep = last_request + 2000 - Date.now();
-                        setTimeout(_get_next_ban_page, sleep, after);
+                        setTimeout(_get_next_ban_page, sleep, after, pages_back);
                     }
                 } else {
                     debug.info("  last page");

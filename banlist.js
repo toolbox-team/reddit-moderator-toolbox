@@ -229,6 +229,7 @@ function banlist () {
         $tb_liveFilter.insertAfter($('input#user').next());
         $tb_liveFilter.click(function() {
             liveFilter();
+            $(this).remove();
         });
     }
 }

@@ -173,7 +173,7 @@ function banlist () {
         // the actual filtering happens here
         $(".banned-table tr").each(function() {
             if ($(this).find('.user a').text().toLowerCase().search(value) > -1
-                || $(this).find('input[name="note"]').text().toLowerCase().search(value) > -1) {
+                || $(this).find('input[name="note"]').val().toLowerCase().search(value) > -1) {
                 $(this).show();
                 $(this).addClass('visible');
             } else {

@@ -129,15 +129,29 @@ function banlist () {
                 debug.info("  "+pages_back+" pages back");
                 response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
-                filter_banlist($('input#user').val().toLowerCase());
+                var $new_rows = $('.banned-table table tbody tr', response_page);
+                debug.info($new_rows.length);
+                if ($new_rows.length > 0) {
+                    $new_rows.each(function() {
+                        // workaround for known bug in listings where "next" button is available on last page
+                        if (this.className == 'notfound') { return; }
+
+                        var t = $(this).find('.user a').text().toLowerCase()
+                                + $(this).find('input[name="note"]').val().toLowerCase(); //all row text
+                        $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+                    });
+                    filter_banlist($new_rows, $('input#user').val().toLowerCase());
+                    $('.banned-table table tbody').append($new_rows);
+                } else {
+                    return;
+                }
 
                 after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                 debug.info(after_url);
                 after = getURLParameter(after_url, 'after');
                 debug.info(after);
                 if (after) {
-                    // hit the API hard, to make it more responsive on small subs
+                    // hit the API hard the first 10, to make it more responsive on small subs
                     if (pages_back < 10) {
                         pages_back++;
                         _get_next_ban_page(after, pages_back);
@@ -169,23 +183,17 @@ function banlist () {
  
     }
  
-    function filter_banlist(value) {
-        // the actual filtering happens here
-        $(".banned-table tr").each(function() {
-            if ($(this).find('.user a').text().toLowerCase().search(value) > -1
-                || $(this).find('input[name="note"]').val().toLowerCase().search(value) > -1) {
-                $(this).show();
-                $(this).addClass('visible');
-            } else {
-                $(this).hide();
-                $(this).removeClass('visible');
-            }
-        });
-        $(".banned-table tr:visible").removeClass('even');        
-        $(".banned-table tr:visible:even").addClass('even');
+    function filter_banlist(banlist, value) {
+        $("tr", banlist).show().addClass('visible');
+        // combine and use a single selector for increased performance
+        // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
+        $("tr:visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
+
+        $("tr", banlist).removeClass('even');        
+        $("tr:visible:even", banlist).addClass('even');
 
         // update the results counter
-        $num_bans.html($(".banned-table table tbody tr:visible").length);
+        $num_bans.html($('.banned-table tr:visible').length);
     }
 
     function liveFilter() {
@@ -202,6 +210,12 @@ function banlist () {
 
         $('.banned-table').addClass('filtered');
 
+        $(".banned-table tr").each(function(){
+            var t = $(this).text().toLowerCase(); //all row text
+            $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+        });//each tr
+
+
         // text input trigger
         $('input#user').keyup(function() {
             var value = $(this).val().toLowerCase();
@@ -217,7 +231,7 @@ function banlist () {
                 _get_next_ban_page();
             }
 
-            filter_banlist(value);
+            filter_banlist($('.banned-table'), value);
         });
      
         // we want to populate the table immediately on load.

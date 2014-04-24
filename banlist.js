@@ -96,113 +96,124 @@ function banlist () {
         debug.setLevel(0);
     }
  
+    banlist_updating = false;
+    banlist_last_update = 0;
+    last_request = 0;
+    time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
+    pages_back = 0;
+    
+    function _get_next_ban_page(after, pages_back) {
+
+        // default parameter value handling
+        after      = typeof after      !== 'undefined' ? after      : '';
+        pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
+ 
+        debug.info("_get_next_ban_page("+after+")");
+ 
+        var parameters = {'count': '100', 'after': after};
+ 
+        // make sure we have the loading icon
+        $loading.show();
+ 
+        after = null;
+        last_request = Date.now();
+
+        $.ajax({
+            url: document.location.href,
+            data: parameters,
+            type: 'get',
+            dataType: 'html',
+            async: true,
+            success: function(data) {
+                debug.info("  success!");
+                debug.info("  "+pages_back+" pages back");
+                response_page = $(data);
+                // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
+                $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
+                filter_banlist($('input#user').val().toLowerCase());
+
+                after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
+                debug.info(after_url);
+                after = getURLParameter(after_url, 'after');
+                debug.info(after);
+                if (after) {
+                    // hit the API hard, to make it more responsive on small subs
+                    if (pages_back < 10) {
+                        pages_back++;
+                        _get_next_ban_page(after, pages_back);
+                    } else {
+                        sleep = last_request + 2000 - Date.now();
+                        setTimeout(_get_next_ban_page, sleep, after, pages_back);
+                    }
+                } else {
+                    debug.info("  last page");
+                    banlist_updating = false;
+                    banlist_last_update = Date.now();
+                    $loading.hide();
+                }
+            },
+            error: function(data) {
+                debug.info("  failed");
+                debug.info(data.status);
+                if (data.status == 504) {
+                    // "504, post some more"
+                    this.success(data);
+                } else {
+                    // Did we get logged out during the process, or some other error?
+                    banlist_updating = false;
+                    $loading.hide();
+                    $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
+                }
+            }
+        });
+ 
+    }
+ 
+    function filter_banlist(value) {
+        // the actual filtering happens here
+        $(".banned-table tr").each(function() {
+            if ($(this).find('.user a').text().toLowerCase().search(value) > -1
+                || $(this).find('input[name="note"]').text().toLowerCase().search(value) > -1) {
+                $(this).show();
+                $(this).addClass('visible');
+            } else {
+                $(this).hide();
+                $(this).removeClass('visible');
+            }
+        });
+        $(".banned-table tr:visible").removeClass('even');        
+        $(".banned-table tr:visible:even").addClass('even');
+
+        // update the results counter
+        $num_bans.html($(".banned-table table tbody tr:visible").length);
+    }
+
     function liveFilter() {
-        var last_update = 0;
-        var last_request = 0;
-        var time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
-        var pages_back = 0;
-     
         // initialize the loading spinner
         $('#user').parent().spin('small');
         // hide it
-        var $loading = $('.spinner').hide();
+        $loading = $('.spinner').hide();
 
         // counter for number of bans
-        var $num_bans = $('<span id="ban_count"></span>');
+        $num_bans = $('<span id="ban_count"></span>');
         $num_bans.appendTo($('#user').parent());
         
         $('#user').prop('placeholder', 'Begin typing to live filter the ban list.');
-        
-        function _get_next_ban_page(after, pages_back) {
-            // default parameter value handling
-            after      = typeof after      !== 'undefined' ? after      : '';
-            pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
-     
-            debug.info("_get_next_ban_page("+after+")");
-     
-            var parameters = {'count': '100', 'after': after};
-     
-            // make sure we have the loading icon
-            $loading.show();
-     
-            after = null;
-            last_request = Date.now();
 
-            $.ajax({
-                url: document.location.href,
-                data: parameters,
-                type: 'get',
-                dataType: 'html',
-                async: true,
-                success: function(data) {
-                    debug.info("  success!");
-                    debug.info("  "+pages_back+" pages back");
-                    response_page = $(data);
-                    // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                    $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
-                    filter_banlist($('input#user').val().toLowerCase());
+        $('.banned-table').addClass('filtered');
 
-                    after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
-                    debug.info(after_url);
-                    after = getURLParameter(after_url, 'after');
-                    debug.info(after);
-                    if (after) {
-                        // hit the API hard, to make it more responsive on small subs
-                        if (pages_back < 10) {
-                            pages_back++;
-                            _get_next_ban_page(after, pages_back);
-                        } else {
-                            sleep = last_request + 2000 - Date.now();
-                            setTimeout(_get_next_ban_page, sleep, after, pages_back);
-                        }
-                    } else {
-                        debug.info("  last page");
-                        last_update = Date.now();
-                        $loading.hide();
-                    }
-                },
-                error: function(data) {
-                    debug.info("  failed");
-                    debug.info(data.status);
-                    if (data.status == 504) {
-                        // "504, post some more"
-                        this.success(data);
-                    } else {
-                        // Did we get logged out during the process, or some other error?
-                        $loading.hide();
-                        $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
-                    }
-                }
-            });
-     
-        }
-     
-        function filter_banlist(value) {
-            // the actual filtering happens here
-            $(".banned-table table tbody tr").each(function() {
-                if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
-
-            // update the results counter
-            $num_bans.html($(".banned-table table tbody tr:visible").length);
-        }
-     
-     
+        // text input trigger
         $('input#user').keyup(function() {
             var value = $(this).val().toLowerCase();
-          
-            if (last_update === 0 || (last_update + time_to_update) <= Date.now()) {
-                debug.info("Last updated at "+last_update);
-                debug.info("Update delay is "+time_to_update);
-                debug.info("Time to update: "+(last_update + time_to_update));
-                debug.info("UPDATING now at "+Date.now());
+
+            if (!banlist_updating // don't trigger an update if we're still running
+                && (banlist_last_update === 0 // catch the first run, before last_update has been set
+                    || (banlist_last_update + time_to_update) <= Date.now())
+            ) {
+                banlist_updating = true;
+                debug.info("Updating now")
                 // clean up
                 $('.banned-table table tbody').empty();
-     
                 _get_next_ban_page();
             }
 

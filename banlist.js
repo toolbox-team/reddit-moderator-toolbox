@@ -110,7 +110,7 @@ function banlist () {
  
         debug.info("_get_next_ban_page("+after+")");
  
-        var parameters = {'count': '100', 'after': after};
+        var parameters = {'limit': 1000, 'after': after};
  
         // make sure we have the loading icon
         $loading.show();

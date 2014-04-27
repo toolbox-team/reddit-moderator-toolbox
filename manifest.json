@@ -3,7 +3,7 @@
 
   "name": "reddit Moderator Toolbox",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "1.5.0",
+  "version": "1.6.0",
 
   "permissions": [
     "https://*.reddit.com/",
@@ -22,10 +22,10 @@
     {
       "matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
       "css": ["toolbox.css"],
-      "js": ["jquery.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "modtools.js", "comment.js", "config.js", "modmatrix.js"]
+      "js": ["jquery.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "modtools.js", "comment.js", "config.js", "modmatrix.js", "banlist.js"]
     }
   ],
   "web_accessible_resources": [
-	"jquery.js", "snuownd.js"
+	"jquery.js", "jquery-1.10.1.min.map", "snuownd.js"
   ]
 }

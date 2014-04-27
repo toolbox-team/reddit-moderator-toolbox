@@ -54,7 +54,6 @@ function modtools() {
 
 			// If we need to get them from another sub, recurse.
 			if (reasons && reasons.getfrom) {
-				console.log('trying: cache, get from');
 				getRemovalReasons(reasons.getfrom, callback); //this may not work.
 				return;
 			}
@@ -200,9 +199,12 @@ function modtools() {
 		});
 		
 		function createPopup() {
+			// Options
 			var logDisplay = data.logsub ? '' : 'none',
 				headerDisplay = data.header ? '' : 'none',
 				footerDisplay = data.footer ? '' : 'none';
+			
+			var reasonType = TBUtils.setting('modtools', 'reason-type', 'none');
 			
 			// Set up markdown renderer
 			SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -243,11 +245,11 @@ function modtools() {
 								</p> \
 							</div> \
 							<div id="buttons"> \
-								<input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'PM' ? ' checked="1"' : '') + '><label for="type-PM-' + data.subreddit + '">PM</label> / \
-								<input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'reply' ? ' checked="1"' : '') + '><label for="type-reply-' + data.subreddit + '">reply</label> / \
-								<input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'both' ? ' checked="1"' : '') + '><label for="type-both-' + data.subreddit + '">both</label> \
+								<input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + '><label for="type-PM-' + data.subreddit + '">PM</label> / \
+								<input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + '><label for="type-reply-' + data.subreddit + '">reply</label> / \
+								<input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + '><label for="type-both-' + data.subreddit + '">both</label> \
 								<span style="display:' + logDisplay + '"> / \
-									<input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (localStorage.getItem('reason-type') == 'none' ? ' checked="1"' : '') + '><label for="type-none-' + data.subreddit + '">none</label> \
+									<input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + '><label for="type-none-' + data.subreddit + '">none</label> \
 								</span> \
 							</div> \
 							<div id="log-reason" style="display:' + logDisplay + '"> \
@@ -300,7 +302,8 @@ function modtools() {
 			
 			// Pre-fill reason input elements which have IDs.
 			popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
-				this.value = localStorage.getItem(this.id = 'reason-input-' + data.subreddit + '-' + this.id) || this.value;
+				this.id = 'reason-input-' + data.subreddit + '-' + this.id;
+				this.value = TBUtils.setting('modtools', this.id, this.value);
 			});
 		}
 		
@@ -347,7 +350,7 @@ function modtools() {
 	
 	// Toggle PM/reply/both notification method
 	$('body').delegate('.reason-type', 'click', function () {
-		localStorage.setItem('reason-type', this.value);
+		TBUtils.setting('modtools', 'reason-type', null, this.value);
 	});
 	
 	// 'no reason' button clicked
@@ -402,7 +405,6 @@ function modtools() {
 		// Check if reason checked
 		if (!checked.length) {
 			var table = popup.find('#reason-table');
-			console.log(table.tagName);
 			popup.find('#reason-table').addClass('error-highlight');
 			return status.text(NO_REASON_ERROR);
 		}
@@ -505,10 +507,8 @@ function modtools() {
 			logtitle = logtitle.replace('{reason}', logreason);
 			
 			// Submit log post
-			console.log("Submitting new log post...");
 			TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logtitle), data.logsub, function(successful, response) {
 				if(successful) {
-					console.log("Success!");
 					var logLink = response.json.data.url;
 					
 					logLink = logLink.match(/https?:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
@@ -549,35 +549,28 @@ function modtools() {
 			
 			// Reply to submission/comment
 			if (notifyByReply) {
-				console.log("Replying with reason...");
 				TBUtils.postComment(data.fullname, reason, function(successful, response) {
 					if(successful) {
-						console.log("Success!");
 						// Check if reddit actually returned an error
 						if(response.json.errors.length > 0) {
-							console.log("Error 2! "+response.json.errors[0][1]);
 							status.text(REPLY_ERROR+": " + response.json.errors[0][1]);
 						}
 						else {
 							// Distinguish the new reply
-							console.log("Distinguishing reply...");
 							TBUtils.distinguishThing(response.json.data.things[0].data.id, function(successful, response) {
 								if(successful) {
-									console.log("Success!");
 									if(notifyByPM)
 										sendPM();
 									else
 										popup.hide();
 								}
 								else {
-									console.log("Error!");
 									status.text(DISTINGUISH_ERROR);
 								}
 							});
 						}
 					}
 					else {
-						console.log("Error 1!");
 						status.text(REPLY_ERROR);
 					}
 				});
@@ -589,14 +582,11 @@ function modtools() {
 			// Send PM the user
 			function sendPM() {
 				if (notifyByPM) {
-					console.log("Sending comment...");
 					TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
 						if(successful) {
-							console.log("Success!");
 							popup.hide();
 						}
 						else {
-							console.log("Error!");
 							status.text(PM_ERROR);
 						}
 					});
@@ -607,15 +597,15 @@ function modtools() {
 	
 	// Reason textarea/input/select changed
 	$('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
-		localStorage.setItem(this.id, this.selectedIndex || this.value);
+		TBUtils.setting('modtools', this.id, null, this.selectedIndex || this.value);
 	});
 
 	// Add modtools buttons to page.
 	function addModtools() {
 		var numberRX = /-?\d+/,
-			reportsThreshold = (localStorage.getItem('reports-threshold') || 1),
-			listingOrder = (localStorage.getItem('reports-order') || 'age'),
-			sortAscending = (localStorage.getItem('reports-ascending') == 'true'),
+			reportsThreshold = TBUtils.setting('modtools', 'reports-threshold', 1),
+			listingOrder = TBUtils.setting('modtools', 'reports-order', 'age'),
+			sortAscending = (TBUtils.setting('modtools', 'reports-ascending', 'false') == 'true'),
 			viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
 			viewingreports = !! location.pathname.match(/\/about\/reports/),
 			allSelected = false;
@@ -711,8 +701,8 @@ function modtools() {
 
 			if (toggleAsc) sortAscending = !sortAscending;
 
-			localStorage.setItem('reports-ascending', sortAscending);
-			localStorage.setItem('reports-order', order);
+			TBUtils.setting('modtools', 'reports-ascending', null, sortAscending);
+			TBUtils.setting('modtools', 'reports-order', null, order);
 
 			$('.sortorder').text(order);
 			sortThings(order, sortAscending);
@@ -865,14 +855,15 @@ function modtools() {
 			if (isNaN(threshold)) return;
 
 			$(this).val(threshold);
-			localStorage.setItem('reports-threshold', threshold);
+			TBUtils.setting('modtools', 'reports-threshold', null, threshold);
 			setThreshold($('.thing'));
 		});
 
 		function setThreshold(things) {
-			var threshold = localStorage.getItem('reports-threshold');
+			var threshold = TBUtils.setting('modtools', 'reports-threshold', 1);
 			things.show().find('.reported-stamp').text(function (_, str) {
-				if (str.match(/\d+/) < threshold) $(this).thing().hide();
+				if (str.match(/\d+/) < threshold)
+					$(this).thing().hide();
 			});
 		}
 		setThreshold($('.thing'));
@@ -1266,7 +1257,7 @@ function modtools() {
 		$('.subscription-box a.title').each(function () {
 			var elem = $(this),
 				sr = elem.text(),
-				data = JSON.parse(localStorage.getItem('mq-' + reddit.logged + '-' + sr)) || [0, 0];
+				data = JSON.parse(TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, '')) || [0, 0];
 			modSubs.push(sr);
 
 			// Update count and re-cache data if more than an hour old.
@@ -1274,7 +1265,7 @@ function modtools() {
 			if (now > data[1] + 3600000)
 				setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
 		});
-		localStorage.setItem('mod-' + reddit.logged, JSON.stringify(modSubs));
+		TBUtils.setting('modtools', 'mod-' + reddit.logged, null, JSON.stringify(modSubs));
 
 		function sortSubreddits() {
 			var subs = $('.subscription-box li').sort(function (a, b) {
@@ -1286,7 +1277,7 @@ function modtools() {
 
 		function updateModqueueCount(sr) {
 			$.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-				localStorage.setItem('mq-' + reddit.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+				TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, null, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
 				$('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
 				sortSubreddits();
 			});
@@ -1317,9 +1308,13 @@ function modtools() {
 	if (!window.TBUadded) {
 		window.TBUadded = true;
 		
-		var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
-		var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
-		var markdownURL = 'http://agentlame.github.io/toolbox/snuownd.js';
+		//CHANGE AFTER DEV
+		//var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+		var utilsURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/tbutils.js';
+		//var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
+		var cssURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/toolbox.css';
+		//var markdownURL = 'http://agentlame.github.io/toolbox/snuownd.js';
+		var markdownURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/snuownd.js';
 		$('head').prepend('<script type="text/javascript" src="' + utilsURL + '"></script>');
 		$('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
 		$('head').prepend('<script type="text/javascript" src="' + markdownURL + '"></script>');

@@ -700,7 +700,7 @@ function main() {
 			id: id,
 			uh: reddit.modhash
 		})
-		.success(function(d) {
+		.success(function() {
 			if(typeof callback !== "undefined")
 				callback(true);
 		})

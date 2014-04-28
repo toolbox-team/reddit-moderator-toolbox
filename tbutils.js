@@ -618,8 +618,8 @@ function main() {
                     });
             }
             
-			if(!TBUtils.setting('ModTools', 'persistantwikiperms', true)
-			{
+            if(!TBUtils.setting('ModTools', 'persistantwikiperms', true))
+            {
             setTimeout(function () {
                 
                 // hide the page
@@ -635,7 +635,7 @@ function main() {
                 });
                 
             }, 500);
-			}
+            }
         });
     };
 

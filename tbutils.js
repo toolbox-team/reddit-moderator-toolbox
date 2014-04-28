@@ -618,7 +618,7 @@ function main() {
                     });
             }
             
-            if(!TBUtils.setting('ModTools', 'persistantwikiperms', true))
+			if(!localStorage['Toolbox.ModTools.persistantwikiperms'])
             {
             setTimeout(function () {
                 

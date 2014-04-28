@@ -79,7 +79,7 @@ function tbnoti() {
         commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
         sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false),
-        persistantwikiperms = TBUtils.setting('Modtools', 'persistantwikiperms', true);
+        persistantwikiperms = TBUtils.setting('ModTools', 'persistantwikiperms', true);
 
     // cache settings.
     var shortLength = TBUtils.setting('cache', 'shortlength', 15),

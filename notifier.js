@@ -362,7 +362,7 @@ function tbnoti() {
 				<label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
 			</p>\
             <p>\
-				<label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
+                <label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
                 <p>\
                 <label><input type="checkbox" id="removalreasons" ' + ((removalreasons) ? "checked" : "") + '> Enable removal reasons</label>\
                 </p>\
@@ -372,9 +372,9 @@ function tbnoti() {
                 <p>\
                 <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
-				<p>\
-				<label><input type="checkbox" id="persistantwikiperms" ' + ((persistantwikiperms) ? "checked" : "") + '> Maintain current wiki permissions</label>\
-				</p>\
+                <p>\
+                <label><input type="checkbox" id="persistantwikiperms" ' + ((persistantwikiperms) ? "checked" : "") + '> Maintain current wiki permissions</label>\
+                </p>\
                 <p>\
                 <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
@@ -551,7 +551,7 @@ function tbnoti() {
         TBUtils.setting('ModTools', 'commentreasons', '', $("#commentreasons").prop('checked'));
         TBUtils.setting('ModTools', 'rtscomment', '', $("#rtscomment").prop('checked'));
         TBUtils.setting('ModTools', 'sortmodsubs', '', $("#sortmodsubs").prop('checked'));
-		TBUtils.setting('ModTools', 'persistantwikiperms', '', $("#persistantwikiperms").prop('checked'));
+        TBUtils.setting('ModTools', 'persistantwikiperms', '', $("#persistantwikiperms").prop('checked'));
 
         // save cache settings.
         TBUtils.setting('cache', 'longlength', '', $("input[name=longLength]").val());

@@ -89,38 +89,31 @@ function banlist () {
         return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
     }
  
-    // debug at "warn"
-    debug.setLevel(3);
+    // debug only in dev mode
+    if (TBUtils.setting('Utils', 'debugMode', true)) {
+        debug.setLevel(5);
+    } else {
+        debug.setLevel(0);
+    }
  
-    var last_update = 0;
-    var last_request = 0;
-    var time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
-    var ban_items = [];
-    var pages_back = 0;
- 
-    // initialize the loading spinner
-    $('#user').parent().spin('small');
-    // hide it
-    var $loading = $('.spinner').hide();
-
-    // counter for number of bans
-    var $num_bans = $('<span id="ban_count"></span>');
-    $num_bans.appendTo($('#user').parent());
-    
-    $('#user').prop('placeholder', 'Please wait while the banlist loads -->');
+    banlist_updating = false;
+    banlist_last_update = 0;
+    last_request = 0;
+    time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
+    pages_back = 0;
     
     function _get_next_ban_page(after, pages_back) {
+
         // default parameter value handling
         after      = typeof after      !== 'undefined' ? after      : '';
         pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
  
         debug.info("_get_next_ban_page("+after+")");
  
-        var parameters = {'count': '100', 'after': after};
+        var parameters = {'limit': 1000, 'after': after};
  
         // make sure we have the loading icon
         $loading.show();
-        $('input#user').prop('disabled', true);
  
         after = null;
         last_request = Date.now();
@@ -136,14 +129,29 @@ function banlist () {
                 debug.info("  "+pages_back+" pages back");
                 response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
- 
+                var $new_rows = $('.banned-table table tbody tr', response_page);
+                debug.info($new_rows.length);
+                if ($new_rows.length > 0) {
+                    $new_rows.each(function() {
+                        // workaround for known bug in listings where "next" button is available on last page
+                        if (this.className == 'notfound') { return; }
+
+                        var t = $(this).find('.user a').text().toLowerCase()
+                                + $(this).find('input[name="note"]').val().toLowerCase(); //all row text
+                        $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+                    });
+                    filter_banlist($new_rows, $('input#user').val().toLowerCase());
+                    $('.banned-table table tbody').append($new_rows);
+                } else {
+                    return;
+                }
+
                 after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                 debug.info(after_url);
                 after = getURLParameter(after_url, 'after');
                 debug.info(after);
                 if (after) {
-                    // hit the API hard, to make it more responsive on small subs
+                    // hit the API hard the first 10, to make it more responsive on small subs
                     if (pages_back < 10) {
                         pages_back++;
                         _get_next_ban_page(after, pages_back);
@@ -153,11 +161,9 @@ function banlist () {
                     }
                 } else {
                     debug.info("  last page");
-                    last_update = Date.now();
+                    banlist_updating = false;
+                    banlist_last_update = Date.now();
                     $loading.hide();
-                    $('input#user').prop('disabled', false);
-                    // update the visible counter
-                    $num_bans.html($(".banned-table table tbody tr:visible").length);
                 }
             },
             error: function(data) {
@@ -168,8 +174,8 @@ function banlist () {
                     this.success(data);
                 } else {
                     // Did we get logged out during the process, or some other error?
+                    banlist_updating = false;
                     $loading.hide();
-                    $('input#user').prop('disabled', false);
                     $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                 }
             }
@@ -177,46 +183,71 @@ function banlist () {
  
     }
  
-    function filter(element) {
-        var count = 0;
-        var value = $(element).val().toLowerCase();
- 
-        debug.info("filter("+value+")");
- 
-        if (last_update === 0 || (last_update + time_to_update) <= Date.now()) {
-            debug.info("Last updated at "+last_update);
-            debug.info("Update delay is "+time_to_update);
-            debug.info("Time to update: "+(last_update + time_to_update));
-            debug.info("UPDATING now at "+Date.now());
-            // clean up
-            $('.banned-table table tbody').empty();
- 
-            _get_next_ban_page();
-        }
+    function filter_banlist(banlist, value) {
+        $("tr", banlist).show().addClass('visible');
+        // combine and use a single selector for increased performance
+        // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
+        $("tr:visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
 
-        // the actual filtering happens here
-        $(".banned-table table tbody tr").each(function() {
-            if ($(this).find('.user a').text().toLowerCase().search(value) > -1) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
+        $("tr", banlist).removeClass('even');        
+        $("tr:visible:even", banlist).addClass('even');
 
         // update the results counter
-        count = $(".banned-table table tbody tr:visible").length;
-        debug.info(count);
-        $num_bans.html(count);
+        $num_bans.html($('.banned-table tr:visible').length);
     }
- 
- 
-    $('input#user').keyup(function() {
-        filter(this);
-    });
- 
-    // we want to populate the table immediately on load. TODO: add a setting for this.
-    $('input#user').keyup();
 
+    function liveFilter() {
+        // initialize the loading spinner
+        $('#user').parent().spin('small');
+        // hide it
+        $loading = $('.spinner').hide();
+
+        // counter for number of bans
+        $num_bans = $('<span id="ban_count"></span>');
+        $num_bans.appendTo($('#user').parent());
+        
+        $('#user').prop('placeholder', 'Begin typing to live filter the ban list.');
+
+        $('.banned-table').addClass('filtered');
+
+        $(".banned-table tr").each(function(){
+            var t = $(this).text().toLowerCase(); //all row text
+            $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+        });//each tr
+
+
+        // text input trigger
+        $('input#user').keyup(function() {
+            var value = $(this).val().toLowerCase();
+
+            if (!banlist_updating // don't trigger an update if we're still running
+                && (banlist_last_update === 0 // catch the first run, before last_update has been set
+                    || (banlist_last_update + time_to_update) <= Date.now())
+            ) {
+                banlist_updating = true;
+                debug.info("Updating now")
+                // clean up
+                $('.banned-table table tbody').empty();
+                _get_next_ban_page();
+            }
+
+            filter_banlist($('.banned-table'), value);
+        });
+     
+        // we want to populate the table immediately on load.
+        $('input#user').keyup();
+    }
+
+    if (TBUtils.setting('BanList', 'automatic', false)) {
+        liveFilter();
+    } else {
+        $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
+        $tb_liveFilter.insertAfter($('input#user').next());
+        $tb_liveFilter.click(function() {
+            liveFilter();
+            $(this).remove();
+        });
+    }
 }
  
  

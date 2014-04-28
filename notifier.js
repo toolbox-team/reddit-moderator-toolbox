@@ -71,6 +71,7 @@ function tbnoti() {
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
         banlistEnabled = TBUtils.setting('BanList', 'enabled', true);
+        banlistAutomatic = TBUtils.setting('BanList', 'automatic', false);
 
     // MTE settings.
     var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
@@ -274,6 +275,9 @@ function tbnoti() {
 				<input type="text" name="unmoderatedsubreddits" value="' + unescape(unmoderatedSubreddits) + '">\
 			</p>\
             <p>\
+                <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
+            </p>\
+            <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
 			</p>\
             <p>\
@@ -338,11 +342,10 @@ function tbnoti() {
             <p>\
 				<label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
             </p>\
-                        <p>\
+            <p>\
                 <label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
             </p>\
-            </p>\
-                        <p>\
+            <p>\
                 <label><input type="checkbox" id="banlistEnabled" ' + ((banlistEnabled) ? "checked" : "") + '> Enable Ban List Module</label>\
             </p>\
             <p>\
@@ -421,7 +424,7 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> and <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> <br><br>\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>, <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, and <a href="http://www.reddit.com/user/dakta">/u/dakta</a> <br><br>\
 		<!--h3>Special thanks to:</h3-->\
 		  <!--a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags, several other fixes<br><br-->\
 		<h3>Credits:</h3>\
@@ -538,6 +541,7 @@ function tbnoti() {
         TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
         TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
         TBUtils.setting('BanList', 'enabled', '', $("#banlistEnabled").prop('checked'));
+        TBUtils.setting('BanList', 'automatic', '', $("#banlistAutomatic").prop('checked'));
         TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
 
         // Save MTE settings.

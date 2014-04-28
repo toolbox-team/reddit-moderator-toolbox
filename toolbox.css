@@ -1065,6 +1065,15 @@ background-color: #CEE3F8;
 background: #F5F5F5;
 }
 
+/* css fix for banlist module */
+.moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
+background: inherit;
+}
+.moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
+background: #F5F5F5;
+}
+
+
 /* Modtools mod page-only CSS */
 
 body.mod-page .subscription-box .option.active {

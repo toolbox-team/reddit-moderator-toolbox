@@ -618,7 +618,8 @@ function main() {
                     });
             }
             
-            setTimeout(function () {
+			//TODO, make this togable for people who want to keep the automod page public
+            /*setTimeout(function () {
                 
                 // hide the page
                 $.post('/r/' + subreddit + '/wiki/settings/' + page, {
@@ -626,13 +627,13 @@ function main() {
                     uh: reddit.modhash
                 })
                 
-                // Super extra double-secret secure, just to be safe.
+                 Super extra double-secret secure, just to be safe.
                 .error(function (err) {
                     alert('error setting wiki page to mod only access');
                     window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                 });
                 
-            }, 500);
+            }, 500);*/
         });
     };
 

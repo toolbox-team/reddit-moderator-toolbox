@@ -618,8 +618,9 @@ function main() {
                     });
             }
             
-			//TODO, make this togable for people who want to keep the automod page public
-            /*setTimeout(function () {
+			if(!TBUtils.setting('ModTools', 'persistantwikiperms', true)
+			{
+            setTimeout(function () {
                 
                 // hide the page
                 $.post('/r/' + subreddit + '/wiki/settings/' + page, {
@@ -633,7 +634,8 @@ function main() {
                     window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                 });
                 
-            }, 500);*/
+            }, 500);
+			}
         });
     };
 

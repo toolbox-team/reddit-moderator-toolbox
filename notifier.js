@@ -78,7 +78,8 @@ function tbnoti() {
         removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
         commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
         rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+        sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false),
+		persistantwikiperms = TBUtils.setting('Notifier', 'persistantwikiperms', true);
 
     // cache settings.
     var shortLength = TBUtils.setting('cache', 'shortlength', 15),
@@ -371,6 +372,9 @@ function tbnoti() {
                 <p>\
                 <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
+				<p>\
+				<label><input type="checkbox" id="persistantwikiperms" ' + ((persistantwikiperms) ? "checked" : "") + '> Maintain current wiki permissions</label>\
+				</p>\
                 <p>\
                 <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
@@ -547,6 +551,7 @@ function tbnoti() {
         TBUtils.setting('ModTools', 'commentreasons', '', $("#commentreasons").prop('checked'));
         TBUtils.setting('ModTools', 'rtscomment', '', $("#rtscomment").prop('checked'));
         TBUtils.setting('ModTools', 'sortmodsubs', '', $("#sortmodsubs").prop('checked'));
+		TBUtils.setting('ModTools', 'persistantwikiperms', '', $("#persistantwikiperms").prop('checked'));
 
         // save cache settings.
         TBUtils.setting('cache', 'longlength', '', $("input[name=longLength]").val());

@@ -187,7 +187,7 @@ function modbutton() {
         }
  
         $(savedSubs).each(function () {
-            if (this != currentsub) {
+            if (this != currentsub && $.inArray(this, TBUtils.mySubs)) {
                 popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
             }

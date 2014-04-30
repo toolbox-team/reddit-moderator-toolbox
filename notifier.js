@@ -69,9 +69,12 @@ function tbnoti() {
         dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
         configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
-        commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true);
-        banlistEnabled = TBUtils.setting('BanList', 'enabled', true);
-        banlistAutomatic = TBUtils.setting('BanList', 'automatic', false);
+        commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true),
+        banlistEnabled = TBUtils.setting('BanList', 'enabled', true),
+        modmatrixEnabled = TBUtils.setting('ModMatrix', 'enabled', true);
+
+    // Ban list settings.
+    var banlistAutomatic = TBUtils.setting('BanList', 'automatic', false);
 
     // MTE settings.
     var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
@@ -349,7 +352,10 @@ function tbnoti() {
                 <label><input type="checkbox" id="banlistEnabled" ' + ((banlistEnabled) ? "checked" : "") + '> Enable Ban List Module</label>\
             </p>\
             <p>\
-				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Stattit Tab</label>\
+				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Reddit Metrics Tab</label>\
+			</p>\
+            <p>\
+				<label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Mod Log Matrix</label>\
 			</p>\
 			<div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
 			</div>\
@@ -541,8 +547,11 @@ function tbnoti() {
         TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
         TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
         TBUtils.setting('BanList', 'enabled', '', $("#banlistEnabled").prop('checked'));
-        TBUtils.setting('BanList', 'automatic', '', $("#banlistAutomatic").prop('checked'));
         TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
+        TBUtils.setting('ModMatrix', 'enabled', '', $("#modmatrixEnabled").prop('checked'));
+
+        // Ban list settings
+        TBUtils.setting('BanList', 'automatic', '', $("#banlistAutomatic").prop('checked'));
 
         // Save MTE settings.
         TBUtils.setting('ModTools', 'hideactioneditems', '', $("#hideactioneditems").prop('checked'));

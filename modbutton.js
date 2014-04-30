@@ -187,8 +187,7 @@ function modbutton() {
         }
  
         $(savedSubs).each(function () {
-            $.log(this + ': ' + TBUtils.mySubs.indexOf(this))
-            if (this != currentsub) { //Neither of these work, and I have no clue why. //&& TBUtils.mySubs.indexOf(this) !== -1) { //&& ($.inArray(this, TBUtils.mySubs) !== -1)) {
+            if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
                 popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
             }

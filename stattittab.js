@@ -13,7 +13,7 @@
 var stattitTab = {
 	
     getSectionFromUrl : function(url) {
-        var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(r)\/([^\/]+)(\/|$)/g);
+        var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
         var matches = regex.exec(url);
         
         if(matches != null)
@@ -36,8 +36,15 @@ var stattitTab = {
         
         var listItem = document.createElement("li");
         var link = document.createElement("a");
-        link.href = "http://redditmetrics.com/" + page.section + "/" + page.subSection;
-        link.innerHTML = "reddit metrics";
+
+        if (page.section === 'user') {
+            link.href = "http://karmawhores.net/" + page.section + "/" + page.subSection;
+            link.innerHTML = "karma stats";
+        } else {
+            link.href = "http://redditmetrics.com/" + page.section + "/" + page.subSection;
+            link.innerHTML = "reddit metrics";
+        }
+
         link.target = "_blank";
         listItem.appendChild(link);
         tabList.appendChild(listItem);

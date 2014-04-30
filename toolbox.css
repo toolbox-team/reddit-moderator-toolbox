@@ -184,7 +184,7 @@ background-color: #ffff16;
 	}
 	
 .mod-toolbox .tb-window-wrapper a:hover, .mod-toolbox .tb-window-tabs a:hover {
-color: #000 !important;
+    color: #000 !important;
 }
 .mod-toolbox .tb-window-header {
     right: 0px;
@@ -438,6 +438,11 @@ padding: 10px;
     border: solid 1px #A8B5C2;
     top: auto;
     box-shadow: #D1D1D1 0px 1px 3px 1px;
+}
+
+.tb-first-run {
+    display: none;
+    color: red;
 }
 
 .dtagger-popup {

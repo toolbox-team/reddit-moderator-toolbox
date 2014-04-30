@@ -12,6 +12,7 @@ function main() {
         longLength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
         cacheName = localStorage['Toolbox.cache.cachename'] || '',
         seenNotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
+        lastVersion = JSON.parse(localStorage['Toolbox.Utils.lastversion'] || 0),
         //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
         id = Math.floor(Math.random() * 9999),
         newLogin = (cacheName != reddit.logged),
@@ -36,6 +37,7 @@ function main() {
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
     TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
     TBUtils.browser = 'unknown';
+    TBUtils.firstRun = false;
     
     // Icons 
     TBUtils.icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -119,6 +121,31 @@ function main() {
         TBUtils.browser = 'firefox';
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = 'chrome';
+    }
+
+    // First run changes.
+    if (TBUtils.shortVersion > lastVersion) {
+        TBUtils.firstRun = true; // for use by other modules.
+        localStorage['Toolbox.Utils.lastversion'] = JSON.stringify(TBUtils.shortVersion); //set last sersin to this version.
+
+        //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
+        
+        // Start: ver 2.0 changes.
+        console.log("Running 2.0 changes");
+
+        localStorage['Toolbox.DomainTagger.enabled'] = JSON.stringify(false);  // Everyone hates this module.
+        localStorage['Toolbox.CommentsMod.enabled'] = JSON.stringify(true); //Re-enable this for people that disabled it due to bugs.
+        localStorage['Toolbox.Notifier.consolidatedmessages'] = JSON.stringify(true); // Default to consolidated messages.
+        localStorage['Toolbox.CommentsMod.hideRemoved'] = JSON.stringify(false);  // Make sure this is off.
+        localStorage['Toolbox.Notifier.modmailnotifications'] = JSON.stringify(true); // Turn mod mail notifications back on for people that disabled them due to bugs.
+        // End: ver 2.0 changes.
+
+        // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
+        localStorage['Toolbox.Utils.debugMode'] = JSON.stringify(false);
+        localStorage['Toolbox.Utils.betaMode'] = JSON.stringify(false);
+        TBUtils.debugMode = false;
+        TBUtils.betaMode = false;
+               
     }
     
     if (TBUtils.debugMode) {

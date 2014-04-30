@@ -20,11 +20,10 @@ function tbnoti() {
     //
     // preload some generic variables 
     //
-    var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1 * 60 * 1000),
-        //default to check every minute for new stuff.
-        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',
+    var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
         //TODO: change all localStorage methods to use TBUtils.setting().
-        messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on',
+        messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
         modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
         modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
         unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
@@ -66,7 +65,7 @@ function tbnoti() {
         mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
         mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
         notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', true),
+        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
         configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true),
@@ -92,12 +91,13 @@ function tbnoti() {
     //
     // UI elements 
     //
-
+    // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
     var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
         <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconhide + '" /></a>&nbsp;&nbsp;\
         <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconBox + '" title="toolbox settings"/></a>\
+        <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
 			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
@@ -137,6 +137,10 @@ function tbnoti() {
 			');
     }
 
+    if (TBUtils.firstRun) {
+        $('.tb-first-run').show();
+    }
+
     // Debug mode/console
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('\
@@ -150,9 +154,6 @@ function tbnoti() {
                 consoleLoop();
             }, 500);
         })();
-
-        //$.log("InstallTrigger " + typeof (InstallTrigger));
-        //$.log(TBUtils.isExtension);
     }
 
     // Append shortcuts

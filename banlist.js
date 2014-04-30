@@ -127,21 +127,25 @@ function banlist () {
             success: function(data) {
                 debug.info("  success!");
                 debug.info("  "+pages_back+" pages back");
-                response_page = $(data);
+                var response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                var $new_rows = $('.banned-table table tbody tr', response_page);
-                debug.info($new_rows.length);
-                if ($new_rows.length > 0) {
-                    $new_rows.each(function() {
+                // var $new_banlist = $('.banned-table', response_page);
+                debug.info($('.banned-table table tbody tr', response_page).length);
+                if ($('.banned-table table tbody tr', response_page).length > 0) {
+                    $('.banned-table table tbody tr', response_page).each(function() {
                         // workaround for known bug in listings where "next" button is available on last page
                         if (this.className == 'notfound') { return; }
 
-                        var t = $(this).find('.user a').text().toLowerCase()
+                        var t = $(this).find('.user a').text().toLowerCase() + ' '
                                 + $(this).find('input[name="note"]').val().toLowerCase(); //all row text
                         $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+                        $(this).addClass('visible');
                     });
-                    filter_banlist($new_rows, $('input#user').val().toLowerCase());
-                    $('.banned-table table tbody').append($new_rows);
+                    var value = $('input#user').val().toLowerCase();
+                    filter_banlist($('.banned-table', response_page), value, true);
+                    $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
+                    // update the results counter
+                    $num_bans.html($('.banned-table tr:visible').length);
                 } else {
                     return;
                 }
@@ -183,17 +187,32 @@ function banlist () {
  
     }
  
-    function filter_banlist(banlist, value) {
-        $("tr", banlist).show().addClass('visible');
-        // combine and use a single selector for increased performance
-        // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
-        $("tr:visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
+    function filter_banlist(banlist, value, ignore_last) {
+        debug.info('filter('+value+')');
+        last_value = typeof last_value !== 'undefined' ? last_value : '';
+        ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
+        if ( value == '' ) {
+            debug.info('empty');
+            // empty search? show all
+            $('tr', banlist).show().addClass('visible');
+        } else if ( !ignore_last && last_value && value.indexOf(last_value) > -1 ) {
+            debug.info('subset');
+            // is this query a subset of the last query?
+            // filter *out* non-matching
+            $("tr.visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
+        } else {
+            debug.info('full search');
+            $('tr', banlist).hide().removeClass('visible');
+            // combine and use a single selector for increased performance
+            // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
+            $("tr .indexColumn:contains('" + value + "')", banlist).parent().show().addClass('visible');
+        }
         $("tr", banlist).removeClass('even');        
-        $("tr:visible:even", banlist).addClass('even');
+        $("tr.visible:even", banlist).addClass('even');
 
-        // update the results counter
-        $num_bans.html($('.banned-table tr:visible').length);
+        // update last value
+        last_value = value;
     }
 
     function liveFilter() {
@@ -216,10 +235,7 @@ function banlist () {
         });//each tr
 
 
-        // text input trigger
-        $('input#user').keyup(function() {
-            var value = $(this).val().toLowerCase();
-
+        function _filter(value) {
             if (!banlist_updating // don't trigger an update if we're still running
                 && (banlist_last_update === 0 // catch the first run, before last_update has been set
                     || (banlist_last_update + time_to_update) <= Date.now())
@@ -228,10 +244,25 @@ function banlist () {
                 debug.info("Updating now")
                 // clean up
                 $('.banned-table table tbody').empty();
+                pages_back = 0;
                 _get_next_ban_page();
             }
 
             filter_banlist($('.banned-table'), value);
+            // update the results counter
+            $num_bans.html($('.banned-table tr:visible').length);
+        }
+
+        // text input trigger
+        $('input#user').keyup(function() {
+            if ($('.banned-table tr').length > 1000) { return; } // don't live filter
+            var value = $(this).val().toLowerCase();
+            _filter(value);
+        });
+
+        $('input#user').parent().submit(function (e) {
+            _filter($('input#user').val().toLowerCase());
+            e.preventDefault();
         });
      
         // we want to populate the table immediately on load.

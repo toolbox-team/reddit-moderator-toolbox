@@ -618,6 +618,8 @@ function main() {
                     });
             }
             
+			if(!localStorage['Toolbox.ModTools.persistantwikiperms'])
+            {
             setTimeout(function () {
                 
                 // hide the page
@@ -626,13 +628,14 @@ function main() {
                     uh: reddit.modhash
                 })
                 
-                // Super extra double-secret secure, just to be safe.
+                 //Super extra double-secret secure, just to be safe.
                 .error(function (err) {
                     alert('error setting wiki page to mod only access');
                     window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                 });
                 
             }, 500);
+            }
         });
     };
 

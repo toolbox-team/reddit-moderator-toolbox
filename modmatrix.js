@@ -628,6 +628,6 @@ var modLogMatrix = {
 	
 }
 
-if (JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false') && location.pathname.match(/\/about\/(?:log)\/?/)) {
+if (location.pathname.match(/\/about\/(?:log)\/?/)) {
 	modLogMatrix.init();
 }

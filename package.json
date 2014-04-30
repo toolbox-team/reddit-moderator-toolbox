@@ -2,7 +2,7 @@
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.", 
     "license": "GPL", 
     "author": "agentlame,creesch,LowSociety,dakta", 
-    "version": "1.6.0", 
+    "version": "2.0.0", 
     "fullName": "reddit Moderator Toolbox", 
     "id": "yes", 
     "name": "reddit_mod_tb",

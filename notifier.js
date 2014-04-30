@@ -30,11 +30,11 @@ function tbnoti() {
         unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
         shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
         shortcuts2 = JSON.parse(localStorage['Toolbox.Notifier.shortcuts2'] || '{}'),
-        highlighted = TBUtils.setting('commentsMod', 'highlighted', ''),
+        highlighted = TBUtils.setting('CommentsMod', 'highlighted', ''),
         modbarHidden = TBUtils.setting('Notifier', 'modbarhidden', false),
-        hideRemoved = TBUtils.setting('commentsMod', 'hideRemoved', false),
+        hideRemoved = TBUtils.setting('CommentsMod', 'hideRemoved', false),
         unmoderatedOn = TBUtils.setting('Notifier', 'unmoderatedon', true),
-        consolidatedMessages = TBUtils.setting('Notifier', 'consolidatedmessages', false),
+        consolidatedMessages = TBUtils.setting('Notifier', 'consolidatedmessages', true),
         footer = $('.footer-parent'),
         unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0),
@@ -250,7 +250,7 @@ function tbnoti() {
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
 			<p>\
-				<label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Do show consolidated notifications (x new messages) instead of individual notifications.</label>\
+				<label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
 			</p>\
             <p>\
 				<label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
@@ -424,9 +424,10 @@ function tbnoti() {
         // About page
         var htmlabout = '\
 		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>, <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, and <a href="http://www.reddit.com/user/dakta">/u/dakta</a> <br><br>\
-		<!--h3>Special thanks to:</h3-->\
-		  <!--a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> - User Notes: note type tags, several other fixes<br><br-->\
+		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br> made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a> and <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> <br><br>\
+		<h3>Special thanks to:</h3>\
+		  <a href="http://www.reddit.com/user/dakta">/u/dakta</a> - Live banlist module<br>\
+		  <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br>\
 		<h3>Credits:</h3>\
 		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a>\
@@ -487,8 +488,7 @@ function tbnoti() {
         TBUtils.setting('Notifier', 'unmoderatedon', '', unmoderatedoncheckedsave);
 
         hideRemovedCheckedsave = $("input[name=hideRemoved]").is(':checked');
-        //console.log(hideRemovedCheckedsave);
-        TBUtils.setting('commentsMod', 'hideRemoved', '', hideRemovedCheckedsave);
+        TBUtils.setting('CommentsMod', 'hideRemoved', '', hideRemovedCheckedsave);
 
         consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
         TBUtils.setting('Notifier', 'consolidatedmessages', '', consolidatedmessagescheckedsave);
@@ -506,7 +506,7 @@ function tbnoti() {
         localStorage['Toolbox.Notifier.modsubreddits'] = modSubreddits;
 
         highlighted = $("input[name=highlighted]").val();
-        TBUtils.setting('commentsMod', 'highlighted', '', highlighted);
+        TBUtils.setting('CommentsMod', 'highlighted', '', highlighted);
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;

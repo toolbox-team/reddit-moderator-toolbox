@@ -173,7 +173,7 @@ function modbutton() {
             }
             return;
         });
- 
+
         // if we're on the mod page, it's likely we want to mod them to another sub.
         // unselect current, change action to 'mod'.
         if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {

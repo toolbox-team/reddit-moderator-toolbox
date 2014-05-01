@@ -638,7 +638,8 @@ height: 24px;
     padding: 5px;
 }
 
-.mod-popup-tabs a:hover {
+.mod-popup-tabs a:hover,
+.mod-popup-tabs a.active {
 background-color: #9FBAD6;
 }
 

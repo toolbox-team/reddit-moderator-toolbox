@@ -98,50 +98,62 @@ function modbutton() {
         // Make box & add subreddit radio buttons
         var popup = $('\
                 <div class="mod-popup">\
-    			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label></div>\
+    			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label> <span class="close right"><a href="javascript:;">[x]</a></span></div>\
 					<div class="mod-popup-tabs">\
-						<a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
+                        <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
+                        <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
 						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
 						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\
 					<div class="mod-popup-content">\
-					<table><tbody class="subs-body" />\
-                    </table>\
-					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
-						<div class="other-buttons"></div>\
-						<div class="edit-subreddits buttons" style="display:none"><br>\
-                            <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
-                            <select class="add-dropdown left"></select><button class="add-save right">add</button>\
-                            <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
-                            <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
+                        <div class="mod-popup-tab-role">\
+        					<table><tbody class="subs-body" />\
+                            </table>\
+        					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
+    						<div class="other-buttons"></div>\
+                            \
+                            <div class="mod-popup-footer"><div class="buttons">\
+                                <select class="mod-action">\
+                                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
+                                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
+                                    <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
+                                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
+                                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
+                                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
+                                </select>\
+                                <span class="right">\
+                                    <button class="save">' + saveButton + '</button>\
+                                </span>\
+                            </div></div>\
                         </div>\
-                        <div class="edit-flair buttons" style="display:none"><br>\
-                             <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
-                             <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
-                             <button class="flair-save right">Save</button>\
+                        \
+                        <div class="mod-popup-tab-flair" style="display:none;">\
+                            <div class="edit-flair buttons">\
+                                <br>\
+                                <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
+                                <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
+                            </div>\
+                            <div class="mod-popup-footer"><div class="buttons">\
+                                 <button class="flair-save right">Save</button>\
+                            </div></div>\
                         </div>\
-						<div><span class="status error left"><br>saving...</span></div>\
-						</div>\
-						<div class="mod-popup-footer">\
-                        <div class="buttons">\
-                        <select class="mod-action">\
-                        <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
-                        <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                        <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
-                        <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
-                        <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
-                        <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
-                        </select>\
-                        <span class="right">\
-                            <button class="save">' + saveButton + '</button>\
-                            <button class="settingSave" style="display:none">Save</button>\
-                            <button class="cancel">' + cancelButton + '</button>\
-                        </span>\
-						</div>\
-						</div>\
-					  <div>\
+                        \
+                        <div class="mod-popup-tab-settings" style="display:none;">\
+                            <div class="edit-subreddits buttons"><br>\
+                                <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
+                                <select class="add-dropdown left"></select><button class="add-save right">add</button>\
+                                <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
+                                <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
+                            </div>\
+                            <div class="mod-popup-footer"><div class="buttons">\
+                                <button class="settingSave">Save</button>\
+                            </div></div>\
+                        </div>\
+                    </div>\
+                    <div><span class="status error left"><br>saving...</span></div>\
+				  <div>\
                 <div>')
             .appendTo('body')
             .css({
@@ -309,7 +321,10 @@ function modbutton() {
     });
  
     // 'cancel' button clicked
-    $('body').delegate('.mod-popup .cancel', 'click', function () {
+    // $('body').delegate('.mod-popup .cancel', 'click', function () {
+    //     $(this).parents('.mod-popup').remove();
+    // });
+    $('body').delegate('.mod-popup .close', 'click', function () {
         $(this).parents('.mod-popup').remove();
     });
  
@@ -322,14 +337,23 @@ function modbutton() {
  
         if (!user || !subreddit) return;
  
-        $('.edit-dropdown').find('option').remove();
-        $('.action-title').text('edit flair');
-        $('.save').hide();
-        $('.mod-action').hide();
-        $('.subs-body').hide();
-        $('.ban-note').hide();
-        $('.global-button').hide();
-        $('.edit-user-flair').hide();
+
+        $(this).addClass('active');
+        $(this).parents('.mod-popup').find('.user-role').removeClass('active');
+        $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
+
+        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').show();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
+
+        // $('.edit-dropdown').find('option').remove();
+        // $('.action-title').text('edit flair');
+        // $('.save').hide();
+        // $('.mod-action').hide();
+        // $('.subs-body').hide();
+        // $('.ban-note').hide();
+        // $('.global-button').hide();
+        // $('.edit-user-flair').hide();
  
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
@@ -389,7 +413,25 @@ function modbutton() {
     });
  
     // settings button clicked
+    $('body').delegate('.user-role', 'click', function () {
+        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
+        $(this).addClass('active');
+        $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
+
+        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
+    });
+
+    // settings button clicked
     $('body').delegate('.edit-modbutton-settings', 'click', function () {
+        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
+        $(this).parents('.mod-popup').find('.user-role').removeClass('active');
+        $(this).addClass('active');
+
+        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').show();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
  
         $('.add-dropdown').find('option').remove();
         $('.remove-dropdown').find('option').remove();
@@ -412,16 +454,16 @@ function modbutton() {
  
         $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
  
-        $('.save').hide();
-        $('.mod-action').hide();
-        $('.subs-body').hide();
-        $('.ban-note').hide();
-        $('.global-button').hide();
-        $('.edit-user-flair').hide();
-        $('.edit-dropdown').hide();
+        // $('.save').hide();
+        // $('.mod-action').hide();
+        // $('.subs-body').hide();
+        // $('.ban-note').hide();
+        // $('.global-button').hide();
+        // $('.edit-user-flair').hide();
+        // $('.edit-dropdown').hide();
         
-        $('.settingSave').show();
-        $('.edit-subreddits').show();
+        // $('.settingSave').show();
+        // $('.edit-subreddits').show();
     });
  
     function updateSavedSubs(){
@@ -436,7 +478,20 @@ function modbutton() {
                         value: this
                     })
                     .text('/r/' + this));
-        }); 
+        });
+
+        var $table = $(this).parents('.mod-popup').find('tbody'),
+            currentsub = $('#subreddit').text();
+
+        $table.html(''); //clear all the current subs.
+        
+        $(savedSubs).each(function () {
+            if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
+                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
+            }
+        });
+
     }
     
     $('body').delegate('.remove-save', 'click', function () {
@@ -462,27 +517,32 @@ function modbutton() {
     $('body').delegate('.settingSave', 'click', function () {
         var $popup = $(this).parents('.mod-popup'),
             $table = $(this).parents('.mod-popup').find('tbody');
+
+        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
+        $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
  
-        $('.save').show();
-        $('.mod-action').show();
-        $('.subs-body').show();
-        $('.ban-note').show();
-        $('.global-button').show();
-        $('.edit-user-flair').show();
-        $('.edit-dropdown').show();
+        // $('.save').show();
+        // $('.mod-action').show();
+        // $('.subs-body').show();
+        // $('.ban-note').show();
+        // $('.global-button').show();
+        // $('.edit-user-flair').show();
+        // $('.edit-dropdown').show();
         
-        $('.settingSave').hide();
-        $('.edit-subreddits').hide();
+        // $('.settingSave').hide();
+        // $('.edit-subreddits').hide();
  
         // Enable/diable global ban button.
         localStorage['Toolbox.ModButton.globalbutton'] = JSON.stringify($('.the-nuclear-option').is(':checked'));
         
-        $table.html(''); //clear all the current subs.
+        updateSavedSubs();
+        // $table.html(''); //clear all the current subs.
         
-        $(savedSubs).each(function () {
-                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-        });
+        // $(savedSubs).each(function () {
+        //         $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+        //             '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
+        // });
     });
 }
  

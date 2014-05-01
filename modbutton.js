@@ -85,7 +85,8 @@ function modbutton() {
             showglobal = (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")) ? '' : 'none',
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
-            user = info.user;
+            user = info.user,
+            id = info.id;
  
         if (!user) {
             $(benbutton).text('error');
@@ -100,11 +101,13 @@ function modbutton() {
 					<div class="mod-popup-tabs">\
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
                         <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
+						<!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
 						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
 						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\
+					<label id="id" style="display:none">' + id + '</label>\
 					<div class="mod-popup-content">\
                         <div class="mod-popup-tab-role">\
         					<table><tbody class="subs-body" />\
@@ -170,8 +173,16 @@ function modbutton() {
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
             popup.find('.edit-user-flair').remove();
+
+            // We can oly nuke comments in subs we mod.
+            popup.find('.nuke-comment-chain').remove();
         }
  
+        if (TBUtils.isModmail || TBUtils.isModpage) {
+            // Nothing to nuke in mod mail or on mod pages.
+            popup.find('.nuke-comment-chain').remove();
+        }
+
         // Show if current user is banned, and why. - thanks /u/LowSociety
         $.get("http://www.reddit.com/r/" + currentsub + "/about/banned/.json", { user : user }, function (data) {
             var banned = data.data.children;
@@ -215,7 +226,7 @@ function modbutton() {
                                    <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
  
         $(TBUtils.mySubs).each(function () {
-            $.log(this)
+            //$.log(this)
             $('.' + OTHER)
                 .append($('<option>', {
                         value: this
@@ -322,12 +333,19 @@ function modbutton() {
                 $('.mod-popup').remove();
             }
  
-        }, 250); //ban tax.
+        }, 1000); //ban tax.
     });
  
     // 'cancel' button clicked
     $('body').delegate('.mod-popup .close', 'click', function () {
         $(this).parents('.mod-popup').remove();
+    });
+
+    $('body').delegate('.nuke-comment-chain', 'click', function () {
+        var popup = $(this).parents('.mod-popup'),
+            id = popup.find('#id').text();
+
+        $.log(id);
     });
  
     $('body').delegate('.edit-user-flair', 'click', function () {
@@ -347,8 +365,8 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
         $(this).parents('.mod-popup').find('.mod-popup-tab-flair').show();
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
-
  
+
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
  

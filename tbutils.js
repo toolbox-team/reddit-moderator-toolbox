@@ -981,11 +981,12 @@ function main() {
     })(jQuery);
     
     (function($) {
-        $.fn.tooltip = function(message, sender) {
+        $.fn.tooltip = function (message, sender) {
+            if ($('body').find('#tb-tooltip').length) return; // don't show more then one, ever.
             var posX = sender.clientX,
                 posY = sender.clientY;
                 $sender = $(sender.target);
-            $('body').find('#tb-tooltip').remove(); // remove any old tooltips.
+            //$('body').find('#tb-tooltip').remove(); // remove any old tooltips.
             var $tooltip = $('<div id="tb-tooltip">' + message + '</div>').appendTo('body');
             $tooltip.append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="note-close" title="Close" />');
             $tooltip.delegate('.note-close', 'click', function (e) {

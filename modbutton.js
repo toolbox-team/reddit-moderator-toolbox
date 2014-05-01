@@ -52,10 +52,8 @@ function modbutton() {
     }
  
     // Add mod button to all users
- 
     function processThing(thing) {
         if (!$(thing).hasClass('mod-button')) {
- 
             // Add the class so we don't add buttons twice.
             $(thing).addClass('mod-button');
  
@@ -168,6 +166,8 @@ function modbutton() {
                 '" id="action-' + currentsub + '" checked><label for="action-' + currentsub + '">&nbsp;&nbsp;/r/' + currentsub +
                 ' (current)</label></th></tr>');
         } else {
+            // Hide the flair tab
+            // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
             popup.find('.edit-user-flair').remove();
         }
@@ -198,14 +198,19 @@ function modbutton() {
             $('.action-sub:checkbox:checked').removeAttr('checked');
         }
  
-        $(savedSubs).each(function () {
-            if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
-                popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-            }
-        });
+
+
+        // $(savedSubs).each(function () {
+        //     if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
+        //         popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+        //             '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
+        //     }
+        // });
  
-        // add all our subs.
+
+        // add all our subs to the "other subreddit" action dropdown
+        // TODO: make this dropdown add to a list of other subreddits to action on,
+        //       like a single-use version of the modbuton "saved subreddit" feature
         popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" id="' + OTHER + '-checkbox" value="' + OTHER + '">\
                                    <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
  
@@ -321,9 +326,6 @@ function modbutton() {
     });
  
     // 'cancel' button clicked
-    // $('body').delegate('.mod-popup .cancel', 'click', function () {
-    //     $(this).parents('.mod-popup').remove();
-    // });
     $('body').delegate('.mod-popup .close', 'click', function () {
         $(this).parents('.mod-popup').remove();
     });
@@ -337,7 +339,7 @@ function modbutton() {
  
         if (!user || !subreddit) return;
  
-
+        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
         $(this).addClass('active');
         $(this).parents('.mod-popup').find('.user-role').removeClass('active');
         $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
@@ -346,14 +348,6 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-flair').show();
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
 
-        // $('.edit-dropdown').find('option').remove();
-        // $('.action-title').text('edit flair');
-        // $('.save').hide();
-        // $('.mod-action').hide();
-        // $('.subs-body').hide();
-        // $('.ban-note').hide();
-        // $('.global-button').hide();
-        // $('.edit-user-flair').hide();
  
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
@@ -414,6 +408,7 @@ function modbutton() {
  
     // settings button clicked
     $('body').delegate('.user-role', 'click', function () {
+        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
         $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
         $(this).addClass('active');
         $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
@@ -425,6 +420,7 @@ function modbutton() {
 
     // settings button clicked
     $('body').delegate('.edit-modbutton-settings', 'click', function () {
+        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
         $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
         $(this).parents('.mod-popup').find('.user-role').removeClass('active');
         $(this).addClass('active');
@@ -433,9 +429,43 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
  
+        updateSavedSubs();
+        // // empty the dropdowns out
+        // $('.add-dropdown').find('option').remove();
+        // $('.remove-dropdown').find('option').remove();
+        
+        // // add back in the subreddits
+        //  $(TBUtils.mySubs).each(function () {
+        //     $('.add-dropdown')
+        //         .append($('<option>', {
+        //                 value: this
+        //             })
+        //             .text('/r/' + this));
+        // });
+        // $(savedSubs).each(function () {
+        //     $('.remove-dropdown')
+        //         .append($('<option>', {
+        //                 value: this
+        //             })
+        //             .text('/r/' + this));
+        // });
+ 
+        // display global ban button enabled/disabled
+        $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
+    });
+ 
+    function updateSavedSubs(){
+        savedSubs = TBUtils.saneSort(savedSubs);
+        savedSub = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
+
+        //
+        // Refresh the settings tab dropdowns
+        //
+        // empty the dropdowns out
         $('.add-dropdown').find('option').remove();
         $('.remove-dropdown').find('option').remove();
         
+        // add back in the subreddits
          $(TBUtils.mySubs).each(function () {
             $('.add-dropdown')
                 .append($('<option>', {
@@ -443,7 +473,6 @@ function modbutton() {
                     })
                     .text('/r/' + this));
         });
-        
         $(savedSubs).each(function () {
             $('.remove-dropdown')
                 .append($('<option>', {
@@ -452,34 +481,10 @@ function modbutton() {
                     .text('/r/' + this));
         });
  
-        $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
- 
-        // $('.save').hide();
-        // $('.mod-action').hide();
-        // $('.subs-body').hide();
-        // $('.ban-note').hide();
-        // $('.global-button').hide();
-        // $('.edit-user-flair').hide();
-        // $('.edit-dropdown').hide();
-        
-        // $('.settingSave').show();
-        // $('.edit-subreddits').show();
-    });
- 
-    function updateSavedSubs(){
-        savedSubs = TBUtils.saneSort(savedSubs);
-        savedSub = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
-        
-        $('.remove-dropdown').find('option').remove();
-        
-        $(savedSubs).each(function () {
-            $('.remove-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
-        });
-
+        //
+        // Refresh the main tab saved subs list (with checkboxes)
+        //
+        // move this code in from the two other places it was
         var $table = $(this).parents('.mod-popup').find('tbody'),
             currentsub = $('#subreddit').text();
 
@@ -518,31 +523,19 @@ function modbutton() {
         var $popup = $(this).parents('.mod-popup'),
             $table = $(this).parents('.mod-popup').find('tbody');
 
+        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
+        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
+        $(this).parents('.mod-popup').find('.user-role').addClass('active');
+        $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
+
         $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
         $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
- 
-        // $('.save').show();
-        // $('.mod-action').show();
-        // $('.subs-body').show();
-        // $('.ban-note').show();
-        // $('.global-button').show();
-        // $('.edit-user-flair').show();
-        // $('.edit-dropdown').show();
-        
-        // $('.settingSave').hide();
-        // $('.edit-subreddits').hide();
- 
+  
         // Enable/diable global ban button.
         localStorage['Toolbox.ModButton.globalbutton'] = JSON.stringify($('.the-nuclear-option').is(':checked'));
         
         updateSavedSubs();
-        // $table.html(''); //clear all the current subs.
-        
-        // $(savedSubs).each(function () {
-        //         $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-        //             '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-        // });
     });
 }
  

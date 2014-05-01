@@ -634,8 +634,8 @@ height: 24px;
 .mod-popup-tabs a {
     background-color: #C7D6E6;
     border-right: 1px dotted #A8B5C2;
-    line-height: 25px;
-    padding: 5px;
+    line-height: 24px;
+    padding: 6px;
 }
 
 .mod-popup-tabs a:hover,

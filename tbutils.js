@@ -543,7 +543,10 @@ function main() {
             user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
             subreddit = reddit.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
-            domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', '');
+            domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', ''),
+            id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname');
+
+        //console.log(id);
         
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
@@ -586,7 +589,8 @@ function main() {
             subreddit: subreddit,
             user: user,
             permalink: permalink,
-            domain: domain
+            domain: domain,
+            id: id
         };
     };
     

@@ -87,7 +87,8 @@ function modbutton() {
             showglobal = (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")) ? '' : 'none',
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
-            user = info.user;
+            user = info.user,
+            id = info.id;
  
         if (!user) {
             $(benbutton).text('error');
@@ -101,11 +102,13 @@ function modbutton() {
     			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label></div>\
 					<div class="mod-popup-tabs">\
 						<a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
+						<!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
 						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
 						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\
+					<label id="id" style="display:none">' + id + '</label>\
 					<div class="mod-popup-content">\
 					<table><tbody class="subs-body" />\
                     </table>\
@@ -158,8 +161,16 @@ function modbutton() {
         } else {
             // We can only edit flair in the current sub.
             popup.find('.edit-user-flair').remove();
+
+            // We can oly nuke comments in subs we mod.
+            popup.find('.nuke-comment-chain').remove();
         }
  
+        if (TBUtils.isModmail || TBUtils.isModpage) {
+            // Nothing to nuke in mod mail or on mod pages.
+            popup.find('.nuke-comment-chain').remove();
+        }
+
         // Show if current user is banned, and why. - thanks /u/LowSociety
         $.get("http://www.reddit.com/r/" + currentsub + "/about/banned/.json", { user : user }, function (data) {
             var banned = data.data.children;
@@ -198,7 +209,7 @@ function modbutton() {
                                    <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
  
         $(TBUtils.mySubs).each(function () {
-            $.log(this)
+            //$.log(this)
             $('.' + OTHER)
                 .append($('<option>', {
                         value: this
@@ -305,12 +316,19 @@ function modbutton() {
                 $('.mod-popup').remove();
             }
  
-        }, 250); //ban tax.
+        }, 1000); //ban tax.
     });
  
     // 'cancel' button clicked
     $('body').delegate('.mod-popup .cancel', 'click', function () {
         $(this).parents('.mod-popup').remove();
+    });
+
+    $('body').delegate('.nuke-comment-chain', 'click', function () {
+        var popup = $(this).parents('.mod-popup'),
+            id = popup.find('#id').text();
+
+        $.log(id);
     });
  
     $('body').delegate('.edit-user-flair', 'click', function () {
@@ -330,6 +348,7 @@ function modbutton() {
         $('.ban-note').hide();
         $('.global-button').hide();
         $('.edit-user-flair').hide();
+        $('.nuke-comment-chain').hide();
  
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
@@ -418,6 +437,7 @@ function modbutton() {
         $('.ban-note').hide();
         $('.global-button').hide();
         $('.edit-user-flair').hide();
+        $('.nuke-comment-chain').hide();
         $('.edit-dropdown').hide();
         
         $('.settingSave').show();
@@ -469,6 +489,7 @@ function modbutton() {
         $('.ban-note').show();
         $('.global-button').show();
         $('.edit-user-flair').show();
+        $('.nuke-comment-chain').show();
         $('.edit-dropdown').show();
         
         $('.settingSave').hide();

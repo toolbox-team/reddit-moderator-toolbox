@@ -163,12 +163,8 @@ function modbutton() {
                 display: 'block'
             });
  
-        // We're a mod of the current sub, add it.
-        if (currentsub) {
-            popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + currentsub +
-                '" id="action-' + currentsub + '" checked><label for="action-' + currentsub + '">&nbsp;&nbsp;/r/' + currentsub +
-                ' (current)</label></th></tr>');
-        } else {
+        // Remove options that only apply to subs we mod
+        if (!currentsub) {
             // Hide the flair tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
@@ -217,23 +213,7 @@ function modbutton() {
         //             '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
         //     }
         // });
- 
-
-        // add all our subs to the "other subreddit" action dropdown
-        // TODO: make this dropdown add to a list of other subreddits to action on,
-        //       like a single-use version of the modbuton "saved subreddit" feature
-        popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" id="' + OTHER + '-checkbox" value="' + OTHER + '">\
-                                   <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
- 
-        $(TBUtils.mySubs).each(function () {
-            //$.log(this)
-            $('.' + OTHER)
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
-        });
- 
+  
         // custom sub changed.
         $('.' + OTHER).change(function () {
             $('#' + OTHER + '-checkbox').prop('checked', ($(this).val() !== OTHER));
@@ -471,50 +451,67 @@ function modbutton() {
         // display global ban button enabled/disabled
         $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
     });
- 
+    
+    /**
+     * Saves the current "savedSubs" and updates their listings in the mod button
+     */
     function updateSavedSubs(){
         savedSubs = TBUtils.saneSort(savedSubs);
         savedSubs = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
 
         //
-        // Refresh the settings tab dropdowns
+        // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
         //
-        // empty the dropdowns out
+        var $table = $('body').find('.mod-popup').find('tbody'),
+            currentsub = $('#subreddit').text();
+
+        // clear out the current stuff
         $('.add-dropdown').find('option').remove();
         $('.remove-dropdown').find('option').remove();
-        
-        // add back in the subreddits
-         $(TBUtils.mySubs).each(function () {
-            $('.add-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
-        });
-        $(savedSubs).each(function () {
+        $table.html('');
+
+ 
+        // add the current sub to the saved subs table on the role tab.
+        if (currentsub) {
+            $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + currentsub +
+                '" id="action-' + currentsub + '" checked><label for="action-' + currentsub + '">&nbsp;&nbsp;/r/' + currentsub +
+                ' (current)</label></th></tr>');
+        }
+
+        // add our saved subs to the "remove saved subs" dropdown on the setting tab
+        // and to the saved subs table on the role tab
+        $.each(savedSubs, function () {
+            // so something funny is going on, because we have to use valueOf() here otherwise it inexplicably fails
+            if (this.valueOf() != currentsub && ($.inArray(this.valueOf(), TBUtils.mySubs) != -1)) {
+                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
+            }
             $('.remove-dropdown')
                 .append($('<option>', {
                         value: this
                     })
                     .text('/r/' + this));
         });
- 
-        //
-        // Refresh the main tab saved subs list (with checkboxes)
-        //
-        // move this code in from the two other places it was
-        var $table = $('body').find('.mod-popup').find('tbody'),
-            currentsub = $('#subreddit').text();
 
-        $table.html(''); //clear all the current subs.
+        // insert the "other-sub" dropdown
+        // TODO: make this dropdown add to a list of other subreddits to action on,
+        //       like a single-use version of the modbuton "saved subreddit" feature
+        $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" id="' + OTHER + '-checkbox" value="' + OTHER + '">\
+                                   <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
         
-        $(savedSubs).each(function () {
-            if (this != currentsub) { //&& ($.inArray(this, TBUtils.mySubs) !== -1)) {
-                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-            }
+        // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
+        $.each(TBUtils.mySubs, function () {
+            $('.add-dropdown')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+            $('.' + OTHER)
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
         });
-
     }
     
     $('body').delegate('.remove-save', 'click', function () {

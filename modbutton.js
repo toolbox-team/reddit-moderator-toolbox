@@ -94,7 +94,7 @@ function modbutton() {
             return;
         }
  
-        // Make box & add subreddit radio buttons
+        // generate the .mod-popup jQuery object
         var popup = $('\
                 <div class="mod-popup">\
     			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label> <span class="close right"><a href="javascript:;">[x]</a></span></div>\
@@ -108,52 +108,50 @@ function modbutton() {
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\
 					<label id="id" style="display:none">' + id + '</label>\
-					<div class="mod-popup-content">\
-                        <div class="mod-popup-tab-role">\
+                    <div class="mod-popup-tab-role">\
+    					<div class="mod-popup-content">\
         					<table><tbody class="subs-body" />\
                             </table>\
         					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
-    						<div class="other-buttons"></div>\
-                            \
-                            <div class="mod-popup-footer"><div class="buttons">\
-                                <select class="mod-action">\
-                                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
-                                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                                    <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
-                                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
-                                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
-                                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
-                                </select>\
-                                <span class="right">\
-                                    <button class="save">' + saveButton + '</button>\
-                                </span>\
-                            </div></div>\
                         </div>\
                         \
-                        <div class="mod-popup-tab-flair" style="display:none;">\
-                            <div class="edit-flair buttons">\
-                                <br>\
-                                <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
-                                <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
-                            </div>\
-                            <div class="mod-popup-footer"><div class="buttons">\
-                                 <button class="flair-save right">Save</button>\
-                            </div></div>\
+                        <div class="mod-popup-footer">\
+                            <select class="mod-action">\
+                                <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
+                                <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
+                                <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
+                                <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
+                                <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
+                                <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
+                            </select>\
+                            <button class="save">' + saveButton + '</button>\
                         </div>\
-                        \
-                        <div class="mod-popup-tab-settings" style="display:none;">\
-                            <div class="edit-subreddits buttons"><br>\
+                    </div>\
+                    \
+                    <div class="mod-popup-tab-flair" style="display:none;">\
+                        <div class="mod-popup-content">\
+                            <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
+                            <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
+                        </div>\
+                        <div class="mod-popup-footer">\
+                             <button class="flair-save">Save</button>\
+                        </div>\
+                    </div>\
+                    \
+                    <div class="mod-popup-tab-settings" style="display:none;">\
+                        <div class="mod-popup-content">\
+                            <div class="edit-subreddits">\
                                 <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
                                 <select class="add-dropdown left"></select><button class="add-save right">add</button>\
                                 <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
                                 <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
                             </div>\
-                            <div class="mod-popup-footer"><div class="buttons">\
-                                <button class="settingSave">Save</button>\
-                            </div></div>\
+                        </div>\
+                        <div class="mod-popup-footer">\
+                            <button class="settingSave">Save</button>\
                         </div>\
                     </div>\
-                    <div><span class="status error left"><br>saving...</span></div>\
+                    <div><span class="status error left">saving...</span></div>\
 				  <div>\
                 <div>')
             .appendTo('body')
@@ -347,7 +345,6 @@ function modbutton() {
             $(textinput).val(resp.users[0].flair_text);
             $(classinput).val(resp.users[0].flair_css_class);
             $('.flair-save').click(saveflair);
-            $('.edit-flair').show();
  
             function saveflair() {
                 var text = $(textinput).val();

@@ -635,7 +635,7 @@ img.note-close {
 	overflow: auto;
 	left: 0px;
 	right: 0px;
-	padding: 0px !important;
+	padding: 5px !important;
 }
 
 .utagger-popup-content {

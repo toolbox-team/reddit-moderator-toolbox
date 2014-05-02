@@ -631,11 +631,18 @@ img.note-close {
 	height: 24px;
 }
 
-.mod-popup-content, .utagger-popup-content {
+.mod-popup-content {
 	overflow: auto;
 	left: 0px;
 	right: 0px;
 	padding: 0px !important;
+}
+
+.utagger-popup-content {
+	overflow: auto;
+	left: 0px;
+	right: 0px;
+	padding: 5px !important;
 }
 
 .mod-popup-tabs a {

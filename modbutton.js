@@ -103,7 +103,6 @@ function modbutton() {
                         <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
 						<!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
 						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
-						<a href="javascript:;" style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</a>\
 					</div>\
 					<label id="user" style="display:none">' + user + '</label> \
 					<label id="subreddit" style="display:none">' + currentsub + '</label>\
@@ -125,6 +124,7 @@ function modbutton() {
                                 <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                             </select>\
                             <button class="save">' + saveButton + '</button>\
+                            <button style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</button>\
                         </div>\
                     </div>\
                     \
@@ -143,8 +143,12 @@ function modbutton() {
                             <div class="edit-subreddits">\
                                 <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
                                 <select class="add-dropdown left"></select><button class="add-save right">add</button>\
-                                <p style="clear:both"><label class="global-label" for="the-nuclear-option">\
-                                <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">&nbsp;enable Global Action button.</label></p>\
+                                <p style="clear:both">\
+                                    <label class="global-label" for="the-nuclear-option">\
+                                        <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">\
+                                        &nbsp;enable Global Action button.\
+                                    </label>\
+                                </p>\
                             </div>\
                         </div>\
                         <div class="mod-popup-footer">\

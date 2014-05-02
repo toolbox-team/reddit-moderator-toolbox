@@ -6,6 +6,8 @@
 // @version	1.1
 // ==/UserScript==
 
+function modMatrixWrapper() {
+
 var modLogMatrix = {
 
 	version : 2.0,
@@ -644,6 +646,45 @@ var modLogMatrix = {
 	
 }
 
-if (JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false') && location.pathname.match(/\/about\/(?:log)\/?/)) {
+
+if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('ModMatrix', 'enabled', true) || TBUtils.isModmail)  { } else {
 	modLogMatrix.init();
 }
+}
+
+// Add script to page
+(function () {
+
+    // Check if we are running as an extension
+    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
+        init();
+        return;
+    }
+
+    // Check if TBUtils has been added.
+    if (!window.TBUadded) {
+        window.TBUadded = true;
+
+        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
+        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
+        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
+        $('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
+    }
+
+    // Do not add script to page until TBUtils is added.
+    (function loadLoop() {
+        setTimeout(function () {
+            if (typeof TBUtils !== "undefined") {
+                init();
+            } else {
+                loadLoop();
+            }
+        }, 100);
+    })();
+
+    function init() {
+        var s = document.createElement('script');
+        s.textContent = "(" + modMatrixWrapper.toString() + ')();';
+        document.head.appendChild(s);
+    }
+})();

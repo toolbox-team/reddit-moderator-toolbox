@@ -621,7 +621,8 @@ img.note-close {
 	border-bottom: solid 1px #A8B5C2;
 }
 
-.mod-toolbox .mod-popup .close.right {
+.mod-toolbox .mod-popup .close.right,
+.mod-toolbox .utagger-popup .close.right {
     float: right;
 }
 

@@ -274,7 +274,10 @@ function usernotes() {
         // Make box & add subreddit radio buttons
         var popup = $(
             '<div class="utagger-popup">\
-				<div class="utagger-popup-header">User tagger for <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a></div>\
+				<div class="utagger-popup-header">\
+                    User tagger for <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>\
+                    <span class="close right"><a href="javascript:;">✕</a></span>\
+                </div>\
 				<div class="utagger-popup-content">\
 					<table class="utagger-notes"><tbody><tr>\
 						<td class="utagger-notes-td1">Author</td>\
@@ -293,7 +296,6 @@ function usernotes() {
 				</div>\
 				<div class="utagger-popup-footer">\
 						<input type="button" class="utagger-save-user" value="save for /r/' + subreddit + '">\
-						<input type="button" class="utagger-cancel-user" value="cancel">\
 				</div>\
 				</div>'
         )
@@ -344,6 +346,11 @@ function usernotes() {
                 }
             });
         });
+    });
+
+    // 'cancel' button clicked
+    $('body').delegate('.utagger-popup .close', 'click', function () {
+        $(this).parents('.utagger-popup').remove();
     });
 
     $('body').delegate('.utagger-save-user, .utagger-remove-note', 'click', function (e) {

@@ -97,7 +97,10 @@ function modbutton() {
         // generate the .mod-popup jQuery object
         var popup = $('\
                 <div class="mod-popup">\
-    			    <div class="mod-popup-header"> /u/' + user + ' -<label class="action-title"> actions </label> <span class="close right"><a href="javascript:;">[x]</a></span></div>\
+    			    <div class="mod-popup-header">\
+                        /u/' + user + ' -<label class="action-title"> actions </label>\
+                        <span class="close right"><a href="javascript:;">✕</a></span>\
+                    </div>\
 					<div class="mod-popup-tabs">\
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
                         <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\

@@ -366,7 +366,7 @@ function modtools() {
 		
 		TBUtils.approveThing(attrs.attr('fullname'), function (successful) {
 			if(successful)
-				popup.hide();
+				popup.remove();
 			else
 				status.text(APPROVE_ERROR);
 		});
@@ -532,7 +532,7 @@ function modtools() {
 		function sendRemovalMessage(logLink) {
 			// Dunno what this is for. Leaving it in just 'cuz.
 			if (reason.trim() == "")
-				return popup.hide();
+				return popup.remove();
 			
 			// Check if a valid notification type is selected
 			if (!notifyBy || (logLink == null && notifyBy == 'none')) {
@@ -562,7 +562,7 @@ function modtools() {
 									if(notifyByPM)
 										sendPM();
 									else
-										popup.hide();
+										popup.remove();
 								}
 								else {
 									status.text(DISTINGUISH_ERROR);
@@ -584,7 +584,7 @@ function modtools() {
 				if (notifyByPM) {
 					TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
 						if(successful) {
-							popup.hide();
+							popup.remove();
 						}
 						else {
 							status.text(PM_ERROR);

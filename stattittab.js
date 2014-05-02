@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 var stattitTab = {
-	
+    
     getSectionFromUrl : function(url) {
         var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
         var matches = regex.exec(url);
@@ -23,7 +23,7 @@ var stattitTab = {
     },
     
     init : function() {
-	var page = this.getSectionFromUrl(window.location.href);
+    var page = this.getSectionFromUrl(window.location.href);
         
         if(page == null)
             return false;

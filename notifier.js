@@ -100,15 +100,15 @@ function tbnoti() {
         <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
-			<a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-			<a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-			<a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
-			<a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
-			<a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-			<a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
-		</span>\
-	</div>\
-		');
+            <a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
+            <a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
+            <a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
+            <a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
+            <a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
+            <a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
+        </span>\
+    </div>\
+        ');
 
     var modbarhid = $('\
     <div id="tb-bottombar-hidden" class="tb-toolbar">\
@@ -117,9 +117,9 @@ function tbnoti() {
 
     var $console = $('\
     <div class="tb-debug-window">\
-			<div class="tb-debug-header"> Debug console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
-			<div class="tb-debug-content">\
-				<textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
+            <div class="tb-debug-header"> Debug console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
+            <div class="tb-debug-content">\
+                <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
             </div>\
             <div class="tb-debug-footer" comment="for the looks">&nbsp;</div>\
     </div>\
@@ -132,9 +132,9 @@ function tbnoti() {
     // if mod counters are on we append them to the rest of the counters here. 
     if (unmoderatedOn) {
         $('#tb-bottombar').find('#tb-toolbarcounters').append('\
-			<a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-			<a href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
-			');
+            <a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
+            <a href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
+            ');
     }
 
     if (TBUtils.firstRun) {
@@ -145,7 +145,7 @@ function tbnoti() {
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').append('\
             <span>&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a></span>\
-			');
+            ');
 
         var $consoleText = $('.tb-debug-console');
         (function consoleLoop() {
@@ -241,7 +241,7 @@ function tbnoti() {
             <div class="tb-window-wrapper">\
             <div class="tb-window-header"> Toolbox configuration <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
             <div class="tb-window-tabs"></div>\
-			<div class="tb-window-content">\
+            <div class="tb-window-content">\
             </div>\
             <div class="tb-window-footer" comment="for the looks"><input class="tb-save" type="button" value="save"></div>\
             </div>\
@@ -253,42 +253,42 @@ function tbnoti() {
         // Settings for the tool bar. 
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
-			<p>\
-				<label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
-			</p>\
             <p>\
-				<label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
-				<label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
-			</p>\
-			<p>\
-				<label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
-				<label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
-			</p>\
-			<p>\
-				<label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
-			</p>\
-			<p>\
-				Multireddit of subs you want displayed in the modqueue counter:<br>\
-				<input type="text" name="modsubreddits" value="' + unescape(modSubreddits) + '">\
-			</p>\
-			<p>\
-				<label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '>Show counter for unmoderated.</label>\
-			</p>\
-			<p>\
-				Multireddit of subs you want displayed in the unmoderated counter:<br>\
-				<input type="text" name="unmoderatedsubreddits" value="' + unescape(unmoderatedSubreddits) + '">\
-			</p>\
+                <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+                <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
+                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
+            </p>\
+            <p>\
+                Multireddit of subs you want displayed in the modqueue counter:<br>\
+                <input type="text" name="modsubreddits" value="' + unescape(modSubreddits) + '">\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '>Show counter for unmoderated.</label>\
+            </p>\
+            <p>\
+                Multireddit of subs you want displayed in the unmoderated counter:<br>\
+                <input type="text" name="unmoderatedsubreddits" value="' + unescape(unmoderatedSubreddits) + '">\
+            </p>\
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
-			</p>\
+            </p>\
             <p>\
                 <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
-    		</p>\
-			<div class="tb-help-main-content">Edit toolbar stuff</div>\
-			</div>\
+            </p>\
+            <div class="tb-help-main-content">Edit toolbar stuff</div>\
+            </div>\
             ';
         $(htmltoolbar).appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
@@ -299,25 +299,25 @@ function tbnoti() {
         // Edit shortcuts
         //console.log(htmlshorcuts);
         var htmlshorcuts = '\
-		<div class="tb-window-content-shortcuts">\
-		<table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
-		</table>\
-		<a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconadd + '" /></a>\
-		<div class="tb-help-main-content">Add or remove shortcuts here!</div>\
-		</div>\
+        <div class="tb-window-content-shortcuts">\
+        <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
+        </table>\
+        <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconadd + '" /></a>\
+        <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
+        </div>\
             ';
         $(htmlshorcuts).appendTo('.tb-window-content').hide();
 
         if ($.isEmptyObject(shortcuts2)) {
             $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
-		').appendTo('.tb-window-content-shortcuts-table');
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        ').appendTo('.tb-window-content-shortcuts-table');
 
         } else {
             $.each(shortcuts2, function (index, value) {
                 shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + unescape(index) + '" name="name"> </td><td> <input type="text" value="' + unescape(value) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
-		<br><br>';
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        <br><br>';
                 //console.log(shortcutinput);
                 $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
             });
@@ -329,22 +329,22 @@ function tbnoti() {
         var htmlmodules = '\
             <div class="tb-window-content-modules">\
             <p>\
-				<label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
-			</p>\
+                <label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '> Enable Mod Button</label>\
-			</p>\
+                <label><input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '> Enable Mod Button</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '> Enable Mod Tools Enhanced</label>\
-			</p>\
+                <label><input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '> Enable Mod Tools Enhanced</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
-			</p>\
+                <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '> Enable Domain Tagger</label>\
-			</p>\
+                <label><input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '> Enable Domain Tagger</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
+                <label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
@@ -353,13 +353,13 @@ function tbnoti() {
                 <label><input type="checkbox" id="banlistEnabled" ' + ((banlistEnabled) ? "checked" : "") + '> Enable Ban List Module</label>\
             </p>\
             <p>\
-				<label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Reddit Metrics Tab</label>\
-			</p>\
+                <label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Reddit Metrics Tab</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Mod Log Matrix</label>\
-			</p>\
-			<div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
-			</div>\
+                <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Mod Log Matrix</label>\
+            </p>\
+            <div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
+            </div>\
             ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
@@ -368,10 +368,10 @@ function tbnoti() {
         var htmlmodtools = '\
             <div class="tb-window-content-modtools">\
             <p>\
-				<label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
-			</p>\
+                <label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
+            </p>\
             <p>\
-				<label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
+                <label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
                 <p>\
                 <label><input type="checkbox" id="removalreasons" ' + ((removalreasons) ? "checked" : "") + '> Enable removal reasons</label>\
                 </p>\
@@ -384,8 +384,8 @@ function tbnoti() {
                 <p>\
                 <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
-			<div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
-			</div>\
+            <div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
+            </div>\
             ';
         if (mteEnabled) {
             $(htmlmodtools).appendTo('.tb-window-content').hide();
@@ -395,15 +395,15 @@ function tbnoti() {
         // Settings for the comment module
         var htmlcomments = '\
             <div class="tb-window-content-comment">\
-			            <p>\
+                        <p>\
                 <label><input type="checkbox" name="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
-			</p>\
-			<p>\
-				Highlight keywords, keywords should entered seperated by a comma without spaces:<br>\
-			<input type="text" name="highlighted" value="' + unescape(highlighted) + '">\
-			</p>\
-			<div class="tb-help-main-content">Settings Toolbox Comments.</div>\
-			</div>\
+            </p>\
+            <p>\
+                Highlight keywords, keywords should entered seperated by a comma without spaces:<br>\
+            <input type="text" name="highlighted" value="' + unescape(highlighted) + '">\
+            </p>\
+            <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
+            </div>\
             ';
         $(htmlcomments).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
@@ -411,43 +411,43 @@ function tbnoti() {
         // Settings for caching
         var htmlcache = '\
             <div class="tb-window-content-cache">\
-    		<p>\
-				Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-				<input type="text" name="longLength" value="' + longLength + '">\
-			</p>\
-        	<p>\
-				Cache subreddit user notes time (in minutes):<br>\
-				<input type="text" name="shortLength" value="' + shortLength + '">\
-			</p>\
-    		<p>\
-				<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.))</label>\
-			</p>\
-			<div class="tb-help-main-content">Settings Toolbox caches.</div>\
-			</div>\
+            <p>\
+                Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                <input type="text" name="longLength" value="' + longLength + '">\
+            </p>\
+            <p>\
+                Cache subreddit user notes time (in minutes):<br>\
+                <input type="text" name="shortLength" value="' + shortLength + '">\
+            </p>\
+            <p>\
+                <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.))</label>\
+            </p>\
+            <div class="tb-help-main-content">Settings Toolbox caches.</div>\
+            </div>\
             ';
         $(htmlcache).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-cache">Cache</a>').appendTo('.tb-window-tabs');
 
         // About page
         var htmlabout = '\
-		<div class="tb-window-content-about">\
-		<h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br>\
+        <div class="tb-window-content-about">\
+        <h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br>\
             made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>, <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a> and <a href="http://www.reddit.com/user/dakta">/u/dakta</a> <br><br>\
-		<h3>Special thanks to:</h3>\
-		  <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br>\
-		<h3>Credits:</h3>\
-		<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
-		<a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a><br><br>\
-		<h3>License:</h3>\
-		<p>Copyright 2014 Toolbox development team. </p>\
-		<p>Licensed under the Apache License, Version 2.0 (the "License"); <br>\
-		you may not use this file except in compliance with the License. <br>\
-		You may obtain a copy of the License at </p>\
-		<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
-		<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>\
-		See the License for the specific language governing permissions and limitations under the License.</p>\
-		<div class="tb-help-main-content">This is a about page!</div>\
-		</div>';
+        <h3>Special thanks to:</h3>\
+          <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br>\
+        <h3>Credits:</h3>\
+        <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
+        <a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a><br><br>\
+        <h3>License:</h3>\
+        <p>Copyright 2014 Toolbox development team. </p>\
+        <p>Licensed under the Apache License, Version 2.0 (the "License"); <br>\
+        you may not use this file except in compliance with the License. <br>\
+        You may obtain a copy of the License at </p>\
+        <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
+        <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>\
+        See the License for the specific language governing permissions and limitations under the License.</p>\
+        <div class="tb-help-main-content">This is a about page!</div>\
+        </div>';
 
         $(htmlabout).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-about">About</a>').appendTo('.tb-window-tabs');
@@ -476,8 +476,8 @@ function tbnoti() {
     // add a shortcut 
     $('body').delegate('.tb-add-shortcuts', 'click', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-		<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
-		').appendTo('.tb-window-content-shortcuts-table');
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        ').appendTo('.tb-window-content-shortcuts-table');
     });
 
     // Save the settings 
@@ -594,15 +594,15 @@ function tbnoti() {
         <!DOCTYPE html>\
         <html>\
         <head>\
-		<style>\
-		body {\
+        <style>\
+        body {\
         font: normal x-small verdana,arial,helvetica,sans-serif;\
         }\
-		</style>\
-		</head>\
+        </style>\
+        </head>\
         <body>\
         <div class="help-content">' + htmlcontent + '</div>\
-		</body>\
+        </body>\
         </html>\
         ';
         helpwindow.document.write(html);

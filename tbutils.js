@@ -31,7 +31,7 @@ function main() {
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-	TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
+    TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
@@ -62,8 +62,8 @@ function main() {
                 ix61k2VA5fJn/9eeeP+/fcOL/wlT7/aRbEDegkf/Vxx/93/xobf/S5c8/u/ecm0eSQYkTX/4f+HBN/8nbX/xf+bul/8Tp9/9r1N0dgnRBgT33QZqfPW/YdXj/42rH//v2vjkv3fHtf9SScceEWWAc8u1/xO2Pv9fsvjB//Il\
                 D4CGPPrvXH/5v2Tksc1EGWBaful/+/on/4sW3gfGxsP/9lUX/ksEH1gj6rqdhSgDlPPO/q9b8fB/5bIH/23LL/wXD9i7kqRAlEo6+b908f3/NiXn/4t57V1EcjRKRB75b1145r+o684FZCUkMb8D/0Uct88euMxEKgYA7Ojr\
                 v4CgE7EAAAAASUVORK5CYII=';
-    			
-	TBUtils.iconadd= 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7b\
+                
+    TBUtils.iconadd= 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7b\
                 lnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMD\
                 vokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXIt\
                 nPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8\
@@ -84,13 +84,13 @@ function main() {
                     a7Nq+PL/d7c8ipf3r+kjH6jhDSkTAjCRoISZmbhNDMLq4S4c+/K8rmu8fzahYu8fvaEwc+dKm5FIZMJIVMSIsXu1ltmhw1nzq6x8/XjeteG+ZVF1q/dRKMhVqBInElG4igoApXxPlEJpo4t8eaF6drgEIPdd6j5g0KoqCYpSRSh\
                     kq0LlZps+ugJZOjWxxEuSQ6zVohETZIh1LTiNqYQGTVmtwQqiUZBjgKVICfVsj0Ll7GwpYvcI1AkOSyUYTkQN4twCjWB0jgryYTAjYhRkIPyH1zVilETOV19QlCSHAQ5bA7GTaEUDuFxZ9EmsCGLOLJyvv5AGmvvstVWlGt/7zNj\
                     Ovevrjy1uST90+8Hz4HBVYkrwfPOYcf5L9lR/9+EMK8xAAAAAElFTkSuQmCC';
-				
+                
     TBUtils.iconCommentRemove = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAG2SURBVDjLrZNJKIRhGMdHxpTtwIUoRRxdlZvcJsuFc\
                     BAHFHGSSBKlbCUZOTgolLKXskyDshwsJWQLYx+DGcaSsWS+5+95Z5jQzJjirf/hfb9+v+d5l08GQPaXyP5NkFGnDuT0cF45cBENJ9KRYKRvdg9vFgmuxujSkZDscxR2AU/8OBaJCHdPhKsHgv6eoLslnJgIh9eEfYMErcEmr+hcEJKYr\
                     4KworYZ68dLBvV3hDOGj28IBx/wzqWELb1N0NC/IgQJDgXnDJ+aPmAjYe/KBm8yvK5zLrBvQbR/xFW1Rgm7DG9fSNhgeE0nBBaroLJ7UQhiHR6ikHwdopu1M8kq/nGI3s6u0fJ5ZR3qLbtIoyrARFoQpuLlGE70oZb0QM2vD4kl2guTGV\
                     3VmVgticXzWBNoWw1zbzGWC6NRk+o/7Qpuah/fFJ08DiX50RPDUCUBZQFAbTiMjXHoUyrIGRzBOeTkirlom1aGv53NbVUwJnndrfc+wJUeO3IAhl5KZTBxTvI9Maj0IrcErVkhcwt5UdCXhcNQ7oWDXA9MJctRn+I77/Zf15wdOtOvVEii\
                     7QGuzPCsWH8HCxz5pzmy7lQAAAAASUVORK5CYII=';
-	
+    
     TBUtils.iconCommentsRemove = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIwSURBVDjLhZHLaxNRGMUjaRDBjQtBxAdZFEQE/wEFUau\
                     rLm1FfEGzENwpturG6qIFrYUKXbUudOODNqIiTWqvFEwXKo1UUVRqS2NM0kmaZPKYPKbJ8XzTiUQxceDH3HvnO+e73xnH8X7fLjJInjbgEekiOwA4/sbBD0Ov5sIqY5SVXiO/Rpospw01HphXrOttZPBMxCkWJ3NltZItq3i2pOKZklrWi\
                     9Z5SMuKwf2GBtJVxJotiqWLKpIqqHCyYO3/Z/A8UyirBDtLcZTi6Y+RdxdHAsnTAy/NM0TerCuRlE2Y9El+YjCWoLBkViyxdL40OpNmLuBo0Gvk12AuYC5gLqB2XAw8A2NBFZzXVHm1YnHq1qQpYs4PjgbmAuYC5gLe0jrnWGLwzZqDi33k\
@@ -580,7 +580,7 @@ function main() {
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
             subreddit = '';
         }
-		
+        
         if (user == '[deleted]') {
             user = '';
         }
@@ -617,7 +617,7 @@ function main() {
         window.setTimeout(doChunk, delay);
     };
     
-	// Reddit API stuff
+    // Reddit API stuff
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
         
         if (isJSON) {
@@ -713,133 +713,133 @@ function main() {
             }
         });
     };
-	
-	TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
-		$.post('/api/flair', {
-			api_type: 'json',
-			link: postLink,
-			text: text,
-			css_class: css,
-			r: subreddit,
-			uh: reddit.modhash
-		})
-		.success(function() {
-			if(typeof callback !== "undefined")
-				callback(true);
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error);
-		});
-	};
-	
-	TBUtils.distinguishThing = function(id, callback) {
-		$.post('/api/distinguish/yes', {
-			id: id,
-			uh: reddit.modhash
-		})
-		.success(function() {
-			if(typeof callback !== "undefined")
-				callback(true);
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error);
-		});
-	};
-	
-	TBUtils.approveThing = function(id, callback) {
-		$.post('/api/approve', {
-            id: id,
-			uh: reddit.modhash
+    
+    TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
+        $.post('/api/flair', {
+            api_type: 'json',
+            link: postLink,
+            text: text,
+            css_class: css,
+            r: subreddit,
+            uh: reddit.modhash
         })
-		.success(function() {
-			if(typeof callback !== "undefined")
-				callback(true);
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error);
-		});
-	};
-	
-	TBUtils.postComment = function(parent, text, callback) {
-		$.post('/api/comment', {
-			parent: parent,
-			uh: reddit.modhash,
-			text: text,
-			api_type: 'json'
-		})
-		.success(function(response) {
-			if(typeof callback !== "undefined")
-				callback(true, response);
-			return;
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error);
-			return;
-		});
-	};
-	
-	TBUtils.postLink = function(link, title, subreddit, callback) {
-		$.post('/api/submit', {
-			kind: 'link',
-			resubmit: 'true',
-			url: link,
-			uh: reddit.modhash,
-			title: title,
-			sr: subreddit,
-			api_type: 'json'
-		})
-		.success(function(response) {
-			if(typeof callback !== "undefined")
-				callback(true, response);
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error);
-		});
-	};
-	
-	TBUtils.sendPM = function(to, subject, text, callback) {
-		$.post('/api/compose', {
-			to: to,
-			uh: reddit.modhash,
-			subject: subject,
-			text: text
-		})
-		.success(function() {
-			if(typeof callback !== "undefined")
-				callback(true);
-		})
-		.error(function(error) {
-			if(typeof callback !== "undefined")
-				callback(false, error.responseText);
-		});
-	};
-	
-	TBUtils.banUser = function(user, subreddit, reason, callback) {
-		$.post('/api/friend', {
-			uh: reddit.modhash,
-			type: 'banned',
-			name: user,
-			r: subreddit,
-			note: (reason == null) ? '' : reason,
-			api_type: 'json'
-		})
-		.done(function(data) {
-			if(typeof callback !== "undefined")
-				callback();
-		});
-	};
-	
-	// Utility methods
-	
-	TBUtils.removeQuotes = function(string) {
+        .success(function() {
+            if(typeof callback !== "undefined")
+                callback(true);
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error);
+        });
+    };
+    
+    TBUtils.distinguishThing = function(id, callback) {
+        $.post('/api/distinguish/yes', {
+            id: id,
+            uh: reddit.modhash
+        })
+        .success(function() {
+            if(typeof callback !== "undefined")
+                callback(true);
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error);
+        });
+    };
+    
+    TBUtils.approveThing = function(id, callback) {
+        $.post('/api/approve', {
+            id: id,
+            uh: reddit.modhash
+        })
+        .success(function() {
+            if(typeof callback !== "undefined")
+                callback(true);
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error);
+        });
+    };
+    
+    TBUtils.postComment = function(parent, text, callback) {
+        $.post('/api/comment', {
+            parent: parent,
+            uh: reddit.modhash,
+            text: text,
+            api_type: 'json'
+        })
+        .success(function(response) {
+            if(typeof callback !== "undefined")
+                callback(true, response);
+            return;
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error);
+            return;
+        });
+    };
+    
+    TBUtils.postLink = function(link, title, subreddit, callback) {
+        $.post('/api/submit', {
+            kind: 'link',
+            resubmit: 'true',
+            url: link,
+            uh: reddit.modhash,
+            title: title,
+            sr: subreddit,
+            api_type: 'json'
+        })
+        .success(function(response) {
+            if(typeof callback !== "undefined")
+                callback(true, response);
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error);
+        });
+    };
+    
+    TBUtils.sendPM = function(to, subject, text, callback) {
+        $.post('/api/compose', {
+            to: to,
+            uh: reddit.modhash,
+            subject: subject,
+            text: text
+        })
+        .success(function() {
+            if(typeof callback !== "undefined")
+                callback(true);
+        })
+        .error(function(error) {
+            if(typeof callback !== "undefined")
+                callback(false, error.responseText);
+        });
+    };
+    
+    TBUtils.banUser = function(user, subreddit, reason, callback) {
+        $.post('/api/friend', {
+            uh: reddit.modhash,
+            type: 'banned',
+            name: user,
+            r: subreddit,
+            note: (reason == null) ? '' : reason,
+            api_type: 'json'
+        })
+        .done(function(data) {
+            if(typeof callback !== "undefined")
+                callback();
+        });
+    };
+    
+    // Utility methods
+    
+    TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');
     }
-	
+    
     // Needs to be replaced. 
     TBUtils.compressHTML = function (src) {
         console.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
@@ -1064,8 +1064,8 @@ function main() {
         });
     })();
 
-	// highlight jquery plugin https://github.com/tankchintan/highlight-js
-	!function($) {
+    // highlight jquery plugin https://github.com/tankchintan/highlight-js
+    !function($) {
         $.fn.highlight = function(pat, ignore) {
                 function replaceDiacritics(str) {
                         var diacritics = [ [ /[\u00c0-\u00c6]/g, 'A' ],
@@ -1144,7 +1144,7 @@ function main() {
                 }).end();
         };
 }(window.jQuery);
-	
+    
 }(TBUtils = window.TBUtils || {}));
 
 }

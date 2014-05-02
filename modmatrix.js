@@ -647,7 +647,7 @@ var modLogMatrix = {
 }
 
 
-if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('ModMatrix', 'enabled', true) || TBUtils.isModmail)  { } else {
+if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('ModMatrix', 'enabled', true) || !location.pathname.match(/\/about\/(?:log)\/?/))  { } else {
 	modLogMatrix.init();
 }
 }

@@ -628,7 +628,6 @@ img.note-close {
 .mod-popup-tabs {
 	border-bottom: 1px solid #A8B5C2;
 	background-color: #C7D6E6;
-	height: 24px;
 }
 
 .mod-popup-content {
@@ -648,8 +647,8 @@ img.note-close {
 .mod-popup-tabs a {
 	background-color: #C7D6E6;
 	border-right: 1px dotted #A8B5C2;
-	line-height: 24px;
-	padding: 6px;
+    display: inline-block;
+	padding: 4px;
 }
 
 .mod-popup-tabs a:hover,

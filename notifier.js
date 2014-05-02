@@ -45,6 +45,7 @@ function tbnoti() {
         betaMode = TBUtils.betaMode,
         consoleShowing = false,
         newLoad = true,
+        now = new Date().getTime(),
         messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.setting('Notifier', 'modmailunreadlink', false);
 
@@ -623,6 +624,11 @@ function tbnoti() {
     // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab. 
     if (TBUtils.isModmailUnread || TBUtils.isModmail) {
         $.log('clearing all unread stuff');
+
+        // We have nothing unread if we're on the mod mail page.
+        TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
+        TBUtils.setting('Notifier', 'modmailcount', '', 0);
+
         $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             $.each(json.data.children, function (i, value) {
 
@@ -642,8 +648,8 @@ function tbnoti() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
         var lastchecked = TBUtils.setting('Notifier', 'lastchecked', -1),
             author = '',
-            body_html = '',
-            now = new Date().getTime();
+            body_html = '';
+            
 
         // Update counters.
         unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0);
@@ -942,12 +948,55 @@ function tbnoti() {
             });
         }
 
+
+        //TBUtils.setting('Notifier', 'lastseenmodmail', null, new Date().getTime());
+        //TBUtils.setting('Notifier', 'modmailcount', null, 0);
+
         //
         // Modmail
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
+        //$.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {  http://www.reddit.com/message/moderator.json
+        $.getJSON('http://www.reddit.com/message/moderator.json', function (json) {
             var count = json.data.children.length || 0;
+            if (count === 0) {
+                TBUtils.setting('Notifier', 'modmailcount', '', count);
+                updateModMailCount(count);
+                return;
+            }
+            
+            var lastSeen = TBUtils.setting('Notifier', 'lastseenmodmail', -1),
+                newIdx = '',
+                title = '',
+                text = '',
+                newCount = 0;
+            
+            for (var i = 0; i < json.data.children.length; i++) {
+                var messageTime = json.data.children[i].data.created_utc * 1000;
+                
+                if (!lastSeen || messageTime > lastSeen) {
+                    newCount++;
+                    if (!newIdx) { newIdx = i; }
+                }
+            }
+            
+            console.log('New messages: ', newCount);
+            
+            if (newCount == 1) {
+                var message = json.data.children[newIdx];
+                title = '/r/' + message.data.subreddit + ': ' + message.data.subject;
+                text = 'From: /u/' + message.data.author + '\n' + message.data.body;
+            } else if (newCount > 1) {
+                title = 'New Mod Mail!';
+                text = 'You have ' + newCount + ' new mod mail thead' + (newCount == 1 ? '': 's');
+            }
+                
+            if (newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
+                TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
+            }
+               
+
+            /*
             if (modmailNotifications && count > modmailCount) {
                 var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');
 
@@ -1018,8 +1067,9 @@ function tbnoti() {
 
 
             }
-            TBUtils.setting('Notifier', 'modmailcount', '', count);
-            updateModMailCount(count);
+            */
+            TBUtils.setting('Notifier', 'modmailcount', '', newCount);
+            updateModMailCount(newCount);
 
         });
     }

@@ -210,7 +210,7 @@ function modbutton() {
         }
  
 
-
+        updateSavedSubs();
         // $(savedSubs).each(function () {
         //     if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
         //         popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
@@ -474,7 +474,7 @@ function modbutton() {
  
     function updateSavedSubs(){
         savedSubs = TBUtils.saneSort(savedSubs);
-        savedSub = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
+        savedSubs = TBUtils.setting('ModButton', 'sublist', null, savedSubs);
 
         //
         // Refresh the settings tab dropdowns
@@ -503,13 +503,13 @@ function modbutton() {
         // Refresh the main tab saved subs list (with checkboxes)
         //
         // move this code in from the two other places it was
-        var $table = $(this).parents('.mod-popup').find('tbody'),
+        var $table = $('body').find('.mod-popup').find('tbody'),
             currentsub = $('#subreddit').text();
 
         $table.html(''); //clear all the current subs.
         
         $(savedSubs).each(function () {
-            if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
+            if (this != currentsub) { //&& ($.inArray(this, TBUtils.mySubs) !== -1)) {
                 $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
             }

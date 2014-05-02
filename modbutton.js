@@ -455,9 +455,9 @@ function modbutton() {
 
         // add our saved subs to the "remove saved subs" dropdown on the setting tab
         // and to the saved subs table on the role tab
-        $.each(savedSubs, function () {
+        $.each(savedSubs, function (i, subreddit) {
             // so something funny is going on, because we have to use valueOf() here otherwise it inexplicably fails
-            if (this.valueOf() != currentsub && ($.inArray(this.valueOf(), TBUtils.mySubs) != -1)) {
+            if (subreddit != currentsub && ($.inArray(subreddit, TBUtils.mySubs) != -1)) {
                 $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
             }
@@ -475,17 +475,17 @@ function modbutton() {
                                    <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select></th></tr>');
         
         // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
-        $.each(TBUtils.mySubs, function () {
+        $.each(TBUtils.mySubs, function (i, subreddit) {
             $('.add-dropdown')
                 .append($('<option>', {
-                        value: this
+                        value: subreddit
                     })
-                    .text('/r/' + this));
+                    .text('/r/' + subreddit));
             $('.' + OTHER)
                 .append($('<option>', {
-                        value: this
+                        value: subreddit
                     })
-                    .text('/r/' + this));
+                    .text('/r/' + subreddit));
         });
     }
     

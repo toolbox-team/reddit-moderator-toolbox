@@ -113,10 +113,10 @@ function modmailpro() {
         // Hide invite spam.
         if (hideInviteSpam && inbox != UNREAD) {
             $('.invitespam').each(function () {
-			    if ($(this).hasClass('new')) { 
-				$(this).find('.entry').click();
-				}
-			
+                if ($(this).hasClass('new')) { 
+                $(this).find('.entry').click();
+                }
+            
                 $(this).hide();
             });
         }
@@ -901,7 +901,7 @@ function settings() {
         addScriptToPage(compose, 'compose');
 
         // Add switch mod mail.		
-		addScriptToPage(modmailSwitch, 'modmailSwitch');
+        addScriptToPage(modmailSwitch, 'modmailSwitch');
         
         // Add settings area
         addScriptToPage(settings, 'settings');

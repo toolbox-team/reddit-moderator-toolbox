@@ -114,7 +114,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
     
     $('body').delegate('.tb-close', 'click', function() {
         $('.tb-settings').remove();
-		$('body').css('overflow','auto');
+        $('body').css('overflow','auto');
     });
     
     $('body').delegate('.edit-domains', 'click', function() {
@@ -224,13 +224,13 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
-				var label = unescape(this.text);
-				if(label.length > 200) {
-					label = label.substring(0,197) + "...";
-				}
-				if(label == "") {
-					label = '<span style="color: #cecece">(no reason)</span>';
-				}
+                var label = unescape(this.text);
+                if(label.length > 200) {
+                    label = label.substring(0,197) + "...";
+                }
+                if(label == "") {
+                    label = '<span style="color: #cecece">(no reason)</span>';
+                }
                 $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
             }); 
             
@@ -239,8 +239,8 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
                 var reasonsNum = $(this).attr('reason');
                 $('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text));
                 $('.edit-area').attr('reason', reasonsNum);
-				$('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText);
-				$('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS);
+                $('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText);
+                $('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS);
             }); 
         }
         
@@ -248,23 +248,23 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
         $(html).delegate('.save', 'click', function() {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
-			var reasonFlairText = $("input[name=flair-text]").val();
-			var reasonFlairCSS = $("input[name=flair-css]").val();
+            var reasonFlairText = $("input[name=flair-text]").val();
+            var reasonFlairCSS = $("input[name=flair-css]").val();
             
             if (reasonsNum) {
                 config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
-				if(reasonFlairText)
-					config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
-				if(reasonFlairCSS)
-					config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+                if(reasonFlairText)
+                    config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
+                if(reasonFlairCSS)
+                    config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
             } else { 
                 var reason = { text: escape(reasonText) };
                 
-				if(reasonFlairText)
-					reason.flairText = reasonFlairText;
-				if(reasonFlairCSS)
-					reason.flairCSS = reasonFlairCSS;
-				
+                if(reasonFlairText)
+                    reason.flairText = reasonFlairText;
+                if(reasonFlairCSS)
+                    reason.flairCSS = reasonFlairCSS;
+                
                 if (!config.removalReasons) {
                     config.removalReasons = {
                         reasons: []
@@ -274,9 +274,9 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
                 config.removalReasons.reasons.push(reason);
             }
             postToWiki('toolbox', config, true);
-			if(TBUtils.configCache[subreddit] !== undefined) {
-				delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-			}
+            if(TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            }
             $(html).remove();
         });
         
@@ -294,45 +294,45 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 \
 \
             <div class="tb-form">\
-			<table>\
-			<tr>\
+            <table>\
+            <tr>\
             <td>\
-			    get reason from /r/:\
-			</td><td>\
-			    <input class="getfrom" type="text" value="'+ (config.removalReasons.getfrom || '') +'"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
-			</tr><tr>\
+                get reason from /r/:\
+            </td><td>\
+                <input class="getfrom" type="text" value="'+ (config.removalReasons.getfrom || '') +'"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+            </tr><tr>\
             <td>\
                 logsub /r/:\
-			</td><td>\
-			    <input class="logsub" type="text" value="'+ (config.removalReasons.logsub || '') +'"/>\
-			</td>\
-			</tr><tr>\
+            </td><td>\
+                <input class="logsub" type="text" value="'+ (config.removalReasons.logsub || '') +'"/>\
+            </td>\
+            </tr><tr>\
             <td>\
                pmsubject:\
-			</td><td>\
-			   <input class="pmsubject" type="text" value="'+ (config.removalReasons.pmsubject ||'') +'"/>\
-			</td>\
-			</tr><tr>\
+            </td><td>\
+               <input class="pmsubject" type="text" value="'+ (config.removalReasons.pmsubject ||'') +'"/>\
+            </td>\
+            </tr><tr>\
             <td>\
                 logtitle:\
-			</td><td>\
-				<input class="logtitle" type="text" value="'+ (config.removalReasons.logtitle || '') +'"/>\
- 			</td>\
-			</tr><tr>\
+            </td><td>\
+                <input class="logtitle" type="text" value="'+ (config.removalReasons.logtitle || '') +'"/>\
+            </td>\
+            </tr><tr>\
             <td>\
-				bantitle:\
-			</td><td>\
-				<input class="bantitle" type="text" value="'+ (config.removalReasons.bantitle || '') +'"/>\
- 			</td>\
-			</tr><tr>\
+                bantitle:\
+            </td><td>\
+                <input class="bantitle" type="text" value="'+ (config.removalReasons.bantitle || '') +'"/>\
+            </td>\
+            </tr><tr>\
             <td>\
-				logreason:\
-			</td><td>\
-				<input class="logreason" type="text" value="'+ (config.removalReasons.logreason || '') +'"/>\
-			</td>\
-			</tr>\
-           	</table>\
-				<span>Header:</span>\
+                logreason:\
+            </td><td>\
+                <input class="logreason" type="text" value="'+ (config.removalReasons.logreason || '') +'"/>\
+            </td>\
+            </tr>\
+            </table>\
+                <span>Header:</span>\
                 <p><textarea class="edit-header" >'+ unescape(config.removalReasons.header || '') +'</textarea></p>\
                 <span>Footer:</span>\
                 <p><textarea class="edit-footer" >'+ unescape(config.removalReasons.footer || '') +'</textarea></p>\
@@ -395,26 +395,26 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 
     $('body').delegate('.tb-config-help', 'click', function() {	
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
-		var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
-		console.log(htmlcontent);
+        var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
+        console.log(htmlcontent);
         var html = '\
         <!DOCTYPE html>\
         <html>\
         <head>\
-		<style>\
-		body {\
+        <style>\
+        body {\
         font: normal x-small verdana,arial,helvetica,sans-serif;\
         }\
-		</style>\
-		</head>\
+        </style>\
+        </head>\
         <body>\
         <div class="help-content">'+htmlcontent+'</div>\
-		</body>\
+        </body>\
         </html>\
         ';
         helpwindow.document.write(html);
         helpwindow.focus();
-	});
+    });
     
     
 

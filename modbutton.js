@@ -97,24 +97,24 @@ function modbutton() {
         // generate the .mod-popup jQuery object
         var popup = $('\
                 <div class="mod-popup">\
-    			    <div class="mod-popup-header">\
+                    <div class="mod-popup-header">\
                         /u/' + user + ' -<label class="action-title"> actions </label>\
                         <span class="close right"><a href="javascript:;">✕</a></span>\
                     </div>\
-					<div class="mod-popup-tabs">\
+                    <div class="mod-popup-tabs">\
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
                         <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
-						<!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
-						<a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
-					</div>\
-					<label id="user" style="display:none">' + user + '</label> \
-					<label id="subreddit" style="display:none">' + currentsub + '</label>\
-					<label id="id" style="display:none">' + id + '</label>\
+                        <!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
+                        <a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
+                    </div>\
+                    <label id="user" style="display:none">' + user + '</label> \
+                    <label id="subreddit" style="display:none">' + currentsub + '</label>\
+                    <label id="id" style="display:none">' + id + '</label>\
                     <div class="mod-popup-tab-role">\
-    					<div class="mod-popup-content">\
-        					<table><tbody class="subs-body" />\
+                        <div class="mod-popup-content">\
+                            <table><tbody class="subs-body" />\
                             </table>\
-        					<input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
+                            <input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
                         </div>\
                         \
                         <div class="mod-popup-footer">\
@@ -159,7 +159,7 @@ function modbutton() {
                         </div>\
                     </div>\
                     <div><span class="status error left">saving...</span></div>\
-				  <div>\
+                  <div>\
                 <div>')
             .appendTo('body')
             .css({

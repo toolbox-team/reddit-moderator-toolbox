@@ -82,7 +82,7 @@ function modbutton() {
         $(benbutton).text('loading...');
  
         var display = (savedSubs.length < 1) ? 'none' : '',
-            showglobal = JSON.parse(TBUtils.setting('ModButton', 'globalbutton', null)),
+            showglobal = TBUtils.setting('ModButton', 'globalbutton', false),
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
             user = info.user,

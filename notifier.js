@@ -948,10 +948,6 @@ function tbnoti() {
             });
         }
 
-
-        //TBUtils.setting('Notifier', 'lastseenmodmail', null, new Date().getTime());
-        //TBUtils.setting('Notifier', 'modmailcount', null, 0);
-
         //
         // Modmail
         //
@@ -982,6 +978,7 @@ function tbnoti() {
             
             console.log('New messages: ', newCount);
             
+            /*
             if (newCount == 1) {
                 var message = json.data.children[newIdx];
                 title = '/r/' + message.data.subreddit + ': ' + message.data.subject;
@@ -990,18 +987,14 @@ function tbnoti() {
                 title = 'New Mod Mail!';
                 text = 'You have ' + newCount + ' new mod mail thead' + (newCount == 1 ? '': 's');
             }
+            */
                 
-            if (newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
-                TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
-            }
-               
-
-            /*
-            if (modmailNotifications && count > modmailCount) {
-                var pushedmodmail = JSON.parse(localStorage['Toolbox.Notifier.modmailpushed'] || '[]');
+            if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
+                //TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
 
                 if (consolidatedMessages) {
-                    var notificationbody, modmailcount = 0;
+                    var notificationbody, messagecount = 0;
+
                     $.each(json.data.children, function (i, value) {
                         if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             invitespamid = value.data.name;
@@ -1011,26 +1004,28 @@ function tbnoti() {
                                 uh: reddit.modhash,
                                 api_type: 'json'
                             });
-                        } else if ($.inArray(value.data.name, pushedmodmail) == -1) {
+                        }
 
-                            var subreddit = value.data.subreddit,
-                                author = value.data.author;
+                        var subreddit = value.data.subreddit,
+                            author = value.data.author;
 
-                            if (!notificationbody) {
-                                notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
-                            } else {
-                                notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
-                            }
-                            modmailcount++;
-                            pushedmodmail.push(value.data.name);
+                        // Prevent changing the message body, since this loops through all messages, again.
+                        // In all honesty, all of this needs to be rewriten...
+                        messagecount++;
+                        if (messagecount > newCount) return false;
+
+                        if (!notificationbody) {
+                            notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
+                        } else {
+                            notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
                         }
                     });
 
-                    if (modmailcount === 1) {
+                    if (newCount === 1) {
                         TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
 
-                    } else if (modmailcount > 1) {
-                        TBUtils.notification(modmailcount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
+                    } else if (newCount > 1) {
+                        TBUtils.notification(newCount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
                     }
                 } else {
                     $.each(json.data.children, function (i, value) {
@@ -1043,31 +1038,19 @@ function tbnoti() {
                                 uh: reddit.modhash,
                                 api_type: 'json'
                             });
-                        } else if ($.inArray(value.data.name, pushedmodmail) == -1) {
-                            var modmailbody = value.data.body;
-                            modmailsubject = value.data.subject;
-                            modmailsubreddit = value.data.subreddit;
-                            modmailpermalink = value.data.id;
-
-                            TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
-                            pushedmodmail.push(value.data.name);
-
-
                         }
 
+                        var modmailbody = value.data.body;
+                        modmailsubject = value.data.subject;
+                        modmailsubreddit = value.data.subreddit;
+                        modmailpermalink = value.data.id;
+
+                        TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
                     });
 
                 }
-
-                if (pushedmodmail.length > 100) {
-                    pushedmodmail.splice(0, 100 - pushedmodmail.length);
-                }
-                TBUtils.setting('Notifier', 'modmailpushed', '', pushedmodmail);
-
-
-
             }
-            */
+            
             TBUtils.setting('Notifier', 'modmailcount', '', newCount);
             updateModMailCount(newCount);
 

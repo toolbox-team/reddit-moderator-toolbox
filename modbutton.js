@@ -22,8 +22,8 @@ function modbutton() {
         BANREASON = "(ban reason)",
         savedSubs = [];
  
-    if (localStorage['Toolbox.ModButton.sublist']) {
-        savedSubs = JSON.parse(localStorage['Toolbox.ModButton.sublist']);
+    if (TBUtils.setting('ModButton', 'sublist', null)) {
+        savedSubs = TBUtils.setting('ModButton', 'sublist', null);
     }
  
     TBUtils.getModSubs(function () {
@@ -82,7 +82,7 @@ function modbutton() {
         $(benbutton).text('loading...');
  
         var display = (savedSubs.length < 1) ? 'none' : '',
-            showglobal = (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")) ? '' : 'none',
+            showglobal = JSON.parse(TBUtils.setting('ModButton', 'globalbutton', null)),
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
             user = info.user,
@@ -127,7 +127,7 @@ function modbutton() {
                                 <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                             </select>\
                             <button class="save">' + saveButton + '</button>\
-                            <button style="display:' + showglobal + '" title="Global Action (perform action on all subs)" class="global-button">Global Action</button>\
+                            ' + (showglobal ? '<button title="Global Action (perform action on all subs)" class="global-button">Global Action</button>' : '') + '\
                         </div>\
                     </div>\
                     \
@@ -428,7 +428,7 @@ function modbutton() {
         updateSavedSubs();
  
         // display global ban button enabled/disabled
-        $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));
+        $('.the-nuclear-option').prop('checked', TBUtils.setting('ModButton', 'globalbutton', null));
     });
     
     /**
@@ -526,8 +526,8 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
   
-        // Enable/diable global ban button.
-        localStorage['Toolbox.ModButton.globalbutton'] = JSON.stringify($('.the-nuclear-option').is(':checked'));
+        // Enable/disable global ban button.
+        TBUtils.setting('ModButton', 'globalbutton', null, $('.the-nuclear-option').is(':checked'));
         
         updateSavedSubs();
     });

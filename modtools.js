@@ -488,7 +488,7 @@ function modtools() {
 		// Flair post if required
 		flairText = flairText.trim();
 		flairCSS = flairCSS.trim();
-		if(flairText != "" || flairCSS != "") {
+		if((flairText != "" || flairCSS != "") && data.kind != "comment") {
 			TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, function(successful, response){
 				if(!successful)
 					status.text(FLAIR_ERROR);

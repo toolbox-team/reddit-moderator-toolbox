@@ -23,7 +23,7 @@ function modbutton() {
         savedSubs = [];
  
     if (TBUtils.setting('ModButton', 'sublist', null)) {
-        savedSubs = TBUtils.setting('ModButton', 'sublist', null);
+        savedSubs = TBUtils.setting('ModButton', 'sublist', '[]');
     }
  
     TBUtils.getModSubs(function () {
@@ -82,7 +82,7 @@ function modbutton() {
         $(benbutton).text('loading...');
  
         var display = (savedSubs.length < 1) ? 'none' : '',
-            showglobal = JSON.parse(TBUtils.setting('ModButton', 'globalbutton', null)),
+            showglobal = JSON.parse(TBUtils.setting('ModButton', 'globalbutton', false)),
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
             user = info.user,
@@ -527,7 +527,7 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
   
         // Enable/disable global ban button.
-        TBUtils.setting('ModButton', 'globalbutton', null, $('.the-nuclear-option').is(':checked'));
+        TBUtils.setting('ModButton', 'globalbutton', false, $('.the-nuclear-option').is(':checked'));
         
         updateSavedSubs();
     });

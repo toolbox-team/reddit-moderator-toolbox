@@ -163,12 +163,8 @@ function modbutton() {
                 display: 'block'
             });
  
-        // We're a mod of the current sub, add it.
-        if (currentsub) {
-            popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + currentsub +
-                '" id="action-' + currentsub + '" checked><label for="action-' + currentsub + '">&nbsp;&nbsp;/r/' + currentsub +
-                ' (current)</label></th></tr>');
-        } else {
+
+        if (!currentsub) {
             // Hide the flair tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
@@ -507,9 +503,16 @@ function modbutton() {
             currentsub = $('#subreddit').text();
 
         $table.html(''); //clear all the current subs.
+
+        // We're a mod of the current sub, add it.
+        if (currentsub) {
+            $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + currentsub +
+                '" id="action-' + currentsub + '" checked><label for="action-' + currentsub + '">&nbsp;&nbsp;/r/' + currentsub +
+                ' (current)</label></th></tr>');
+        }
         
         $(savedSubs).each(function () {
-            if (this != currentsub) { //&& ($.inArray(this, TBUtils.mySubs) !== -1)) {
+            if ($.inArray(this.valueOf(), TBUtils.mySubs) !== -1) {
                 $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
             }

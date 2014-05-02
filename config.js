@@ -56,7 +56,7 @@ function tbconf() {
         
         // No reasons storred in the config.  Check the CSS.
         if (!config.removalReasons) {
-            TBUtils.getReasosnFromCSS(subreddit, function(resp) {
+            TBUtils.getReasonsFromCSS(subreddit, function(resp) {
                 if (resp) {
                     $('.reasons-notice').show();
                     

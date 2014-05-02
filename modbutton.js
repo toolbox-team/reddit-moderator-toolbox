@@ -207,12 +207,6 @@ function modbutton() {
  
 
         updateSavedSubs();
-        // $(savedSubs).each(function () {
-        //     if (this != currentsub && ($.inArray(this, TBUtils.mySubs) !== -1)) {
-        //         popup.find('tbody').append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-        //             '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-        //     }
-        // });
   
         // custom sub changed.
         $('.' + OTHER).change(function () {
@@ -428,25 +422,6 @@ function modbutton() {
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
  
         updateSavedSubs();
-        // // empty the dropdowns out
-        // $('.add-dropdown').find('option').remove();
-        // $('.remove-dropdown').find('option').remove();
-        
-        // // add back in the subreddits
-        //  $(TBUtils.mySubs).each(function () {
-        //     $('.add-dropdown')
-        //         .append($('<option>', {
-        //                 value: this
-        //             })
-        //             .text('/r/' + this));
-        // });
-        // $(savedSubs).each(function () {
-        //     $('.remove-dropdown')
-        //         .append($('<option>', {
-        //                 value: this
-        //             })
-        //             .text('/r/' + this));
-        // });
  
         // display global ban button enabled/disabled
         $('.the-nuclear-option').prop('checked', (JSON.parse(localStorage["Toolbox.ModButton.globalbutton"] || "false")));

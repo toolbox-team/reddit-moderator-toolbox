@@ -717,7 +717,7 @@ function main() {
 	TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
 		$.post('/api/flair', {
 			api_type: 'json',
-			link: data.fullname,
+			link: postLink,
 			text: text,
 			css_class: css,
 			r: subreddit,

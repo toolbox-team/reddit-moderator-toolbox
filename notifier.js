@@ -143,8 +143,8 @@ function tbnoti() {
 
     // Debug mode/console
     if (debugMode) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').prepend('\
-            <span><a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a>&nbsp;&nbsp;&nbsp;</span>\
+        $('#tb-bottombar').find('#tb-toolbarcounters').append('\
+            <span>&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a></span>\
 			');
 
         var $consoleText = $('.tb-debug-console');

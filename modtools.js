@@ -436,11 +436,6 @@ function modtools() {
 		// Generate reason text
 		var reason = '';
 		
-		//// Add header if selected
-		if (popup.find('#include-header').is(':checked')) {
-			reason = header + '\n\n';
-		}
-		
 		//// Add response body
 		var customIndex = 0;
 		markdownReasons.forEach(function (markdownReason) {
@@ -467,6 +462,14 @@ function modtools() {
 				}
 			})
 		});
+
+        // See if any of the reasons actually have text.
+		var reasonlength = reason.trim().length;
+
+	    //// Add header if selected
+		if (popup.find('#include-header').is(':checked')) {
+		    reason = header + '\n\n' + reason;
+		}
 		
 		//// Add footer if selected
 		if (popup.find('#include-footer').is(':checked')) {
@@ -530,9 +533,8 @@ function modtools() {
 		
 		// Function to send PM and comment
 		function sendRemovalMessage(logLink) {
-			// Dunno what this is for. Leaving it in just 'cuz.
-			if (reason.trim() == "")
-				return popup.remove();
+		    // If there is no message to send, don't send one.
+			if (reasonlength < 1) return popup.remove();
 			
 			// Check if a valid notification type is selected
 			if (!notifyBy || (logLink == null && notifyBy == 'none')) {

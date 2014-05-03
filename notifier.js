@@ -992,9 +992,9 @@ function tbnoti() {
                 
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 //TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
+                var notificationbody, messagecount = 0;
 
                 if (consolidatedMessages) {
-                    var notificationbody, messagecount = 0;
 
                     $.each(json.data.children, function (i, value) {
                         if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {

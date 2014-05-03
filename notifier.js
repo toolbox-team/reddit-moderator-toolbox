@@ -438,9 +438,10 @@ function tbnoti() {
           <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br>\
         <h3>Credits:</h3>\
         <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
-        <a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a><br><br>\
+        <a href="http://www.reddit.com/user/DEADB33F">Modtools base code by DEADB33F</a><br>\
+        <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br><br>\
         <h3>License:</h3>\
-        <p>Copyright 2014 Toolbox development team. </p>\
+        <span>Copyright 2014 Toolbox development team. </span>\
         <p>Licensed under the Apache License, Version 2.0 (the "License"); <br>\
         you may not use this file except in compliance with the License. <br>\
         You may obtain a copy of the License at </p>\

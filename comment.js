@@ -52,25 +52,35 @@ function tbcomm() {
     });
 
     if (TBUtils.betaMode) {
-        $('.thing.comment').each(function () {
-            console.log(this);
-            var thing = TBUtils.getThingInfo(this, true);
+        function run () {
+            console.log('run()');
+            $('.thing.comment:not(.approve-buttoned)').each(function () {
+                console.log(this);
+                var thing = TBUtils.getThingInfo(this, true);
+                $(this).addClass('approve-buttoned');
 
-            // only for subreddits we mod
-            // annd for submissions that haven't already been approved
-            if (thing.subreddit
-                && !thing.approved_by) {
-                // and only if there isn't already one
-                if ($(this).find('.buttons .positive').length == 0) {
-                    console.log("found!");
-                    // lifted straight from the "remove" link button
-                    $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
-                        .insertAfter($(this).find('.remove-button').closest('li'));
+                // only for subreddits we mod
+                // and for submissions that haven't already been approved
+                if (thing.subreddit
+                    && !thing.approved_by) {
+                    // and only if there isn't already one
+                    if ($(this).find('.buttons .positive').length == 0) {
+                        console.log("found!");
+                        // lifted straight from the "remove" link button
+                        $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
+                            .insertAfter($(this).find('input[value="removed"]').closest('li'));
 
+                    }
                 }
+            });
+
+        }
+        $('div.content').on('DOMNodeInserted', function (e) {
+            if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
+                run();
             }
         });
-
+        run();
     }
 
   //  $('.thing.comment.spam').click(function () {

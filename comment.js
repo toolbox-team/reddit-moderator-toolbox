@@ -33,7 +33,7 @@ function tbcomm() {
     });
     console.log(removedCounter);
     if (removedCounter == 1) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title"Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[1]</a>');
+        $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[1]</a>');
     } else if (removedCounter > 1) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[' + removedCounter.toString() + ']</a>');
     }
@@ -51,7 +51,27 @@ function tbcomm() {
 
     });
 
+    if (TBUtils.betaMode) {
+        $('.thing.comment').each(function () {
+            console.log(this);
+            var thing = TBUtils.getThingInfo(this, true);
 
+            // only for subreddits we mod
+            // annd for submissions that haven't already been approved
+            if (thing.subreddit
+                && !thing.approved_by) {
+                // and only if there isn't already one
+                if ($(this).find('.buttons .positive').length == 0) {
+                    console.log("found!");
+                    // lifted straight from the "remove" link button
+                    $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
+                        .insertAfter($(this).find('.remove-button').closest('li'));
+
+                }
+            }
+        });
+
+    }
 
   //  $('.thing.comment.spam').click(function () {
   //      var hiddenComment;

@@ -584,13 +584,17 @@ function main() {
         if (user == '[deleted]') {
             user = '';
         }
+
+        var approved_text = $(entry).find('.approval-checkmark').attr('title') || $(thing).find('.approval-checkmark').attr('title') || '';
+        approved_by = approved_text.match(/by\s(.+?)\s/) || '';
         
         return {
             subreddit: subreddit,
             user: user,
             permalink: permalink,
             domain: domain,
-            id: id
+            id: id,
+            approved_by: approved_by
         };
     };
     

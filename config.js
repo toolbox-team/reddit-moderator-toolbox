@@ -75,7 +75,7 @@ function tbconf() {
         var html = '\
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration - /r/'+ subreddit +'<span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
 <div class="tb-form">\
 <div class="tb-window-tabs">\
 <a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\

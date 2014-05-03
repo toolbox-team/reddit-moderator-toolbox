@@ -240,7 +240,7 @@ function tbnoti() {
         var html = '\
             <div class="tb-page-overlay tb-settings">\
             <div class="tb-window-wrapper">\
-            <div class="tb-window-header"> Toolbox configuration <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
+            <div class="tb-window-header"> Toolbox Settings <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
             <div class="tb-window-tabs"></div>\
             <div class="tb-window-content">\
             </div>\

@@ -1041,6 +1041,11 @@ function tbnoti() {
                             });
                         }
 
+                        // Sending 100 messages, since this loops through all messages, again.
+                        // In all honesty, all of this needs to be rewriten...
+                        messagecount++;
+                        if (messagecount > newCount) return false;
+
                         var modmailbody = value.data.body;
                         modmailsubject = value.data.subject;
                         modmailsubreddit = value.data.subreddit;

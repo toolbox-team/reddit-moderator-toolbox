@@ -275,7 +275,7 @@ function usernotes() {
         var popup = $(
             '<div class="utagger-popup">\
                 <div class="utagger-popup-header">\
-                    User tagger for <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>\
+                    User Notes - <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>\
                     <span class="close right"><a href="javascript:;">✕</a></span>\
                 </div>\
                 <div class="utagger-popup-content">\

@@ -98,7 +98,7 @@ function modbutton() {
         var popup = $('\
                 <div class="mod-popup">\
                     <div class="mod-popup-header">\
-                        /u/' + user + ' -<label class="action-title"> actions </label>\
+                        <label class="action-title"> Mod Actions  - /u/'+  user +'</label>\
                         <span class="close right"><a href="javascript:;">✕</a></span>\
                     </div>\
                     <div class="mod-popup-tabs">\

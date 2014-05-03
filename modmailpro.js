@@ -210,8 +210,8 @@ function modmailpro() {
         console.log('MMP init');
         
         // Update the notifier.
-        TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
-        TBUtils.setting('Notifier', 'modmailcount', '', 0);
+        //TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
+        //TBUtils.setting('Notifier', 'modmailcount', '', 0);
 
         var threads = $('.message-parent');
 

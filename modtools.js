@@ -275,7 +275,7 @@ function modtools() {
 			
 			// Render reasons and add to popup
 			$(data.reasons).each(function(index) {
-				var reasonMarkdown = this.text;
+				var reasonMarkdown = this.text + '\n\n';
 				var reasonHtml = parser.render(reasonMarkdown);
 				
 				var tr = $('\

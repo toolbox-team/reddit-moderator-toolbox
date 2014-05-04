@@ -21,8 +21,8 @@ function main() {
         
     // Public variables
     TBUtils.version = 5;  //don't think we need this anymore.
-    TBUtils.toolboxVersion = '2.0.0';
-    TBUtils.shortVersion = 200; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '2.1.0';
+    TBUtils.shortVersion = 210; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
     TBUtils.notesSchema = 3,
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
@@ -130,15 +130,10 @@ function main() {
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
         
-        // Start: ver 2.0 changes.
-        console.log("Running 2.0 changes");
+        // Start: version changes.
+        $.log('Running '+ TBUtils.toolboxVersion +' changes');
 
-        localStorage['Toolbox.DomainTagger.enabled'] = JSON.stringify(false);  // Everyone hates this module.
-        localStorage['Toolbox.CommentsMod.enabled'] = JSON.stringify(true); //Re-enable this for people that disabled it due to bugs.
-        localStorage['Toolbox.Notifier.consolidatedmessages'] = JSON.stringify(true); // Default to consolidated messages.
-        localStorage['Toolbox.CommentsMod.hideRemoved'] = JSON.stringify(false);  // Make sure this is off.
-        localStorage['Toolbox.Notifier.modmailnotifications'] = JSON.stringify(true); // Turn mod mail notifications back on for people that disabled them due to bugs.
-        // End: ver 2.0 changes.
+        // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
         localStorage['Toolbox.Utils.debugMode'] = JSON.stringify(false);

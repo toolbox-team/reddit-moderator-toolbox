@@ -73,10 +73,6 @@ function banlist () {
         };
     })(jQuery);
  
-    // patch Date.now() for old IE
-    if (!Date.now) {
-        Date.now = function() { return new Date().getTime(); };
-    }
     // extracts a url parameter value from a URL string
     // from http://stackoverflow.com/a/15780907/362042
     function getURLParameter(url, name) {

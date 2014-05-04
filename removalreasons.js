@@ -35,12 +35,8 @@ function removal_reasons() {
 	// Cached data
 	var notEnabled = [],
 		//because of the CSS fallback, we can't use TBUtils.noConfig.
-		hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-		ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
 		removalReasons = TBUtils.setting('ModTools', 'removalreasons', true),
-		commentReasons = TBUtils.setting('ModTools', 'commentreasons', false),
-		rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
-		sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+		commentReasons = TBUtils.setting('ModTools', 'commentreasons', false);
 	
 	function getRemovalReasons(subreddit, callback) {
 		$.log('getting config: ' + subreddit);

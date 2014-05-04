@@ -540,7 +540,6 @@ function modbutton() {
  
 // Add script to page
 (function () {
- 
     // Check if we are running as an extension
     if (typeof self.on !== "undefined"
         || (typeof chrome !== "undefined" && chrome.extension)

@@ -481,8 +481,7 @@ You will need to save them to the wiki before you can edit them. &nbsp;Would you
 }
 
 // Add script to page
-(function () {
-    
+(function () {    
     // Check if we are running as an extension
     if (typeof self.on !== "undefined"
         || (typeof chrome !== "undefined" && chrome.extension)

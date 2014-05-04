@@ -862,56 +862,24 @@ function settings() {
 
 // Add script to page
 (function () {
-    
-    // Check if we are running as an extension
-    if (typeof self.on !== "undefined"
-        || (typeof chrome !== "undefined" && chrome.extension)
-        || (typeof safari !== "undefined" && safari.extension)) {
-        init();
-        return;
-    }
-    
-    // Check if TBUtils has been added.
-    if (!window.TBUadded) {
-        window.TBUadded = true;
+    // Add mmp.
+    addScriptToPage(modmailpro, 'modmailpro');
         
-        var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
-        var cssURL = 'http://agentlame.github.io/toolbox/tb.css';
-        $('head').prepend('<script type="text/javascript" src=' + utilsURL + '></script>');
-        $('head').prepend('<link rel="stylesheet" type="text/css" href="'+ cssURL +'"></link>');
-    }
-    
-    // Do not add script to page until TBUtils is added.
-    (function loadLoop() {
-        setTimeout(function () {
-            if (typeof TBUtils !== "undefined") {
-                init();
-            } else {
-                loadLoop();
-            }
-        }, 100);
-    })();
-    
-    function init() {
-        // Add mmp.
-        addScriptToPage(modmailpro, 'modmailpro');
+    // Add realtime mod mail.
+    addScriptToPage(realtimemail, 'realtimemail');
         
-        // Add realtime mod mail.
-        addScriptToPage(realtimemail, 'realtimemail');
-        
-        // Add compose mod mail.
-        addScriptToPage(compose, 'compose');
+    // Add compose mod mail.
+    addScriptToPage(compose, 'compose');
 
-        // Add switch mod mail.		
-        addScriptToPage(modmailSwitch, 'modmailSwitch');
+    // Add switch mod mail.		
+    addScriptToPage(modmailSwitch, 'modmailSwitch');
         
-        // Add settings area
-        addScriptToPage(settings, 'settings');
+    // Add settings area
+    addScriptToPage(settings, 'settings');
         
-        function addScriptToPage(script, name) {
-            var s = document.createElement('script');
-            s.textContent = "(" + script.toString() + ')();';
-            document.head.appendChild(s);
-        }
+    function addScriptToPage(script, name) {
+        var s = document.createElement('script');
+        s.textContent = "(" + script.toString() + ')();';
+        document.head.appendChild(s);
     }
 })();

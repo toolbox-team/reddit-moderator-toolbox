@@ -230,10 +230,12 @@ function domaintagger() {
 (function () {
     
     // Check if we are running as an extension
-    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
+    if (typeof self.on !== "undefined"
+        || (typeof chrome !== "undefined" && chrome.extension)
+        || (typeof safari !== "undefined" && safari.extension)) {
         init();
         return;
-    } 
+    }
     
     // Check if TBUtils has been added.
     if (!window.TBUadded) {

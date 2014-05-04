@@ -1295,9 +1295,11 @@ function modtools() {
 	if (!document.body)
 		return setTimeout(addscript);
 	
-	// Check if we are running as an extension
-	if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
-		init();
+    // Check if we are running as an extension
+    if (typeof self.on !== "undefined"
+        || (typeof chrome !== "undefined" && chrome.extension)
+        || (typeof safari !== "undefined" && safari.extension)) {
+        init();
 		
 		// Workaround for chrome not properly including snuownd
 		var markdownURL = chrome.extension.getURL('snuownd.js');

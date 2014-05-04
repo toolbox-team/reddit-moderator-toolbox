@@ -656,9 +656,7 @@ if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('ModMatrix', '
 (function () {
 
     // Check if we are running as an extension
-    if (typeof self.on !== "undefined"
-        || (typeof chrome !== "undefined" && chrome.extension)
-        || (typeof safari !== "undefined" && safari.extension)) {
+    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
         init();
         return;
     }

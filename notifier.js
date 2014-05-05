@@ -20,49 +20,52 @@ function tbnoti() {
     //
     // preload some generic variables 
     //
-    var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+    var checkInterval = TBUtils.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
         // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
-        modNotifications = TBUtils.setting('Notifier', 'modnotifications', 'on'),  // these need to be converted to booleans.
-        //TODO: change all localStorage methods to use TBUtils.setting().
+        modNotifications = TBUtils.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
         // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
-        messageNotifications = TBUtils.setting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
-        modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
-        modSubreddits = TBUtils.setting('Notifier', 'modsubreddits', 'mod'),
-        unmoderatedSubreddits = TBUtils.setting('Notifier', 'unmoderatedsubreddits', 'mod'),
-        shortcuts = TBUtils.setting('Notifier', 'shortcuts', '-'),
-        shortcuts2 = TBUtils.setting('Notifier', 'shortcuts2', {}),
-        highlighted = TBUtils.setting('CommentsMod', 'highlighted', ''),
-        modbarHidden = TBUtils.setting('Notifier', 'modbarhidden', false),
-        hideRemoved = TBUtils.setting('CommentsMod', 'hideRemoved', false),
-        unmoderatedOn = TBUtils.setting('Notifier', 'unmoderatedon', true),
-        consolidatedMessages = TBUtils.setting('Notifier', 'consolidatedmessages', true),
+        messageNotifications = TBUtils.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
+        modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
+        modSubreddits = TBUtils.getSetting('Notifier', 'modsubreddits', 'mod'),
+        unmoderatedSubreddits = TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
+        shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
+        shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
+        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', ''),
+        modbarHidden = TBUtils.getSetting('Notifier', 'modbarhidden', false),
+        hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
+        unmoderatedOn = TBUtils.getSetting('Notifier', 'unmoderatedon', true),
+        consolidatedMessages = TBUtils.getSetting('Notifier', 'consolidatedmessages', true),
         footer = $('.footer-parent'),
-        unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0),
+        unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
+        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
+        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
         unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),
         //TODO: promote to TBUtils.isUnreadPage
-        modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0),
+        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         consoleShowing = false,
         newLoad = true,
         now = new Date().getTime(),
-        messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TBUtils.setting('Notifier', 'modmailunreadlink', false);
+        messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
+        modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false);
 
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
-    if (modNotifications == 'on') { 
-	modNotifications = true
+    if (modNotifications == 'on') {
+		TBUtils.setSetting('Notifier', 'modnotifications', true);
+		modNotifications = true;
 	} else if (modNotifications == 'off') {
-	modNotifications = false 
+		TBUtils.setSetting('Notifier', 'modnotifications', false);
+		modNotifications = false;
 	} 
 	
-    if (messageNotifications == 'on') { 
-	messageNotifications = true
+    if (messageNotifications == 'on') {
+		TBUtils.setSetting('Notifier', 'messagenotifications', true);
+		messageNotifications = true;
 	} else if (messageNotifications == 'off') {
-	messageNotifications = false 
+		TBUtils.setSetting('Notifier', 'messagenotifications', true);
+		messageNotifications = false;
 	} 
 
     if (messageunreadlink) {
@@ -78,31 +81,31 @@ function tbnoti() {
 
 
     // Module settings.
-    var mmpEnabled = TBUtils.setting('ModMailPro', 'enabled', true),
-        mbEnabled = TBUtils.setting('ModButton', 'enabled', true),
-        mteEnabled = TBUtils.setting('ModTools', 'enabled', true),
-        notesEnabled = TBUtils.setting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.setting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
-        configEnabled = TBUtils.setting('TBConfig', 'enabled', true),
-        stattitEnabled = TBUtils.setting('StattitTab', 'enabled', true),
-        commentsEnabled = TBUtils.setting('CommentsMod', 'enabled', true),
-        banlistEnabled = TBUtils.setting('BanList', 'enabled', true),
-        modmatrixEnabled = TBUtils.setting('ModMatrix', 'enabled', true);
+    var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
+        mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
+        mteEnabled = TBUtils.getSetting('ModTools', 'enabled', true),
+        notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
+        dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
+        configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
+        stattitEnabled = TBUtils.getSetting('StattitTab', 'enabled', true),
+        commentsEnabled = TBUtils.getSetting('CommentsMod', 'enabled', true),
+        banlistEnabled = TBUtils.getSetting('BanList', 'enabled', true),
+        modmatrixEnabled = TBUtils.getSetting('ModMatrix', 'enabled', true);
 
     // Ban list settings.
-    var banlistAutomatic = TBUtils.setting('BanList', 'automatic', false);
+    var banlistAutomatic = TBUtils.getSetting('BanList', 'automatic', false);
 
     // MTE settings.
-    var hideactioneditems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-        ignoreonapprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-        removalreasons = TBUtils.setting('ModTools', 'removalreasons', true),
-        commentreasons = TBUtils.setting('ModTools', 'commentreasons', false),
-        rtscomment = TBUtils.setting('ModTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+    var hideactioneditems = TBUtils.getSetting('ModTools', 'hideactioneditems', false),
+        ignoreonapprove = TBUtils.getSetting('ModTools', 'ignoreonapprove', false),
+        removalreasons = TBUtils.getSetting('ModTools', 'removalreasons', true),
+        commentreasons = TBUtils.getSetting('ModTools', 'commentreasons', false),
+        rtscomment = TBUtils.getSetting('ModTools', 'rtscomment', true),
+        sortmodsubs = TBUtils.getSetting('ModTools', 'sortmodsubs', false);
 
     // cache settings.
-    var shortLength = TBUtils.setting('cache', 'shortlength', 15),
-        longLength = TBUtils.setting('cache', 'longlength', 45);
+    var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
+        longLength = TBUtils.getSetting('cache', 'longlength', 45);
 
 
     //
@@ -192,7 +195,7 @@ function tbnoti() {
             $(modbarhid).hide();
             if (consoleShowing) $console.show();
         }
-        TBUtils.setting('Notifier', 'modbarhidden', '', hidden);
+        TBUtils.setSetting('Notifier', 'modbarhidden', hidden);
     }
     toggleMenuBar(modbarHidden);
 
@@ -515,22 +518,22 @@ function tbnoti() {
         }
 
         modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
-        TBUtils.setting('Notifier', 'modmailnotifications', '', modmailnotificationscheckedsaved);
+        TBUtils.setSetting('Notifier', 'modmailnotifications', modmailnotificationscheckedsaved);
 
         unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
-        TBUtils.setting('Notifier', 'unmoderatedon', '', unmoderatedoncheckedsave);
+        TBUtils.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
         hideRemovedCheckedsave = $("input[name=hideRemoved]").is(':checked');
-        TBUtils.setting('CommentsMod', 'hideRemoved', '', hideRemovedCheckedsave);
+        TBUtils.setSetting('CommentsMod', 'hideRemoved', hideRemovedCheckedsave);
 
         consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
-        TBUtils.setting('Notifier', 'consolidatedmessages', '', consolidatedmessagescheckedsave);
+        TBUtils.setSetting('Notifier', 'consolidatedmessages', consolidatedmessagescheckedsave);
 
         messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
-        TBUtils.setting('Notifier', 'messageunreadlink', '', messageunreadlinkcheckedsave),
+        TBUtils.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
 
         modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
-        TBUtils.setting('Notifier', 'modmailunreadlink', '', modmailunreadlinkcheckedsave);
+        TBUtils.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
 
         shortcuts = escape($("input[name=shortcuts]").val());
         TBUtils.setSetting('Notifier', 'shortcuts', shortcuts);
@@ -539,13 +542,13 @@ function tbnoti() {
         TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
         highlighted = $("input[name=highlighted]").val();
-        TBUtils.setting('CommentsMod', 'highlighted', '', highlighted);
+        TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
-        TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
-        TBUtils.setting('Utils', 'betaMode', '', $("#betaMode").prop('checked'));
+        TBUtils.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
+        TBUtils.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
 
         // Save shortcuts 
         if ($('.tb-window-content-shortcuts-tr').length === 0) {
@@ -566,31 +569,31 @@ function tbnoti() {
         }
 
         // Save which modules are enabled.
-        TBUtils.setting('ModMailPro', 'enabled', '', $("#mmpEnabled").prop('checked'));
-        TBUtils.setting('ModButton', 'enabled', '', $("#mbEnabled").prop('checked'));
-        TBUtils.setting('ModTools', 'enabled', '', $("#mteEnabled").prop('checked'));
-        TBUtils.setting('UserNotes', 'enabled', '', $("#notesEnabled").prop('checked'));
-        TBUtils.setting('DomainTagger', 'enabled', '', $("#dtagEnabled").prop('checked'));
-        TBUtils.setting('TBConfig', 'enabled', '', $("#configEnabled").prop('checked'));
-        TBUtils.setting('CommentsMod', 'enabled', '', $("#commentsEnabled").prop('checked'));
-        TBUtils.setting('BanList', 'enabled', '', $("#banlistEnabled").prop('checked'));
-        TBUtils.setting('StattitTab', 'enabled', '', $("#stattitEnabled").prop('checked'));
-        TBUtils.setting('ModMatrix', 'enabled', '', $("#modmatrixEnabled").prop('checked'));
+        TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
+        TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));
+        TBUtils.setSetting('ModTools', 'enabled', $("#mteEnabled").prop('checked'));
+        TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
+        TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
+        TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));
+        TBUtils.setSetting('CommentsMod', 'enabled', $("#commentsEnabled").prop('checked'));
+        TBUtils.setSetting('BanList', 'enabled', $("#banlistEnabled").prop('checked'));
+        TBUtils.setSetting('StattitTab', 'enabled', $("#stattitEnabled").prop('checked'));
+        TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
 
         // Ban list settings
-        TBUtils.setting('BanList', 'automatic', '', $("#banlistAutomatic").prop('checked'));
+        TBUtils.setSetting('BanList', 'automatic', $("#banlistAutomatic").prop('checked'));
 
         // Save MTE settings.
-        TBUtils.setting('ModTools', 'hideactioneditems', '', $("#hideactioneditems").prop('checked'));
-        TBUtils.setting('ModTools', 'ignoreonapprove', '', $("#ignoreonapprove").prop('checked'));
-        TBUtils.setting('ModTools', 'removalreasons', '', $("#removalreasons").prop('checked'));
-        TBUtils.setting('ModTools', 'commentreasons', '', $("#commentreasons").prop('checked'));
-        TBUtils.setting('ModTools', 'rtscomment', '', $("#rtscomment").prop('checked'));
-        TBUtils.setting('ModTools', 'sortmodsubs', '', $("#sortmodsubs").prop('checked'));
+        TBUtils.setSetting('ModTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
+        TBUtils.setSetting('ModTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
+        TBUtils.setSetting('ModTools', 'removalreasons', $("#removalreasons").prop('checked'));
+        TBUtils.setSetting('ModTools', 'commentreasons', $("#commentreasons").prop('checked'));
+        TBUtils.setSetting('ModTools', 'rtscomment', $("#rtscomment").prop('checked'));
+        TBUtils.setSetting('ModTools', 'sortmodsubs', $("#sortmodsubs").prop('checked'));
 
         // save cache settings.
-        TBUtils.setting('cache', 'longlength', '', $("input[name=longLength]").val());
-        TBUtils.setting('cache', 'shortlength', '', $("input[name=shortLength]").val());
+        TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());
+        TBUtils.setSetting('cache', 'shortlength', $("input[name=shortLength]").val());
 
         if ($("#clearcache").prop('checked')) {
             TBUtils.clearCache();
@@ -643,8 +646,8 @@ function tbnoti() {
         $.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
-        TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
-        TBUtils.setting('Notifier', 'modmailcount', '', 0);
+        TBUtils.setSetting('Notifier', 'lastseenmodmail', now);
+        TBUtils.setSetting('Notifier', 'modmailcount', 0);
 
         $.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {
             $.each(json.data.children, function (i, value) {
@@ -663,16 +666,16 @@ function tbnoti() {
 
     function getmessages() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-        var lastchecked = TBUtils.setting('Notifier', 'lastchecked', -1),
+        var lastchecked = TBUtils.getSetting('Notifier', 'lastchecked', -1),
             author = '',
             body_html = '';
             
 
         // Update counters.
-        unreadMessageCount = TBUtils.setting('Notifier', 'unreadmessagecount', 0);
-        modqueueCount = TBUtils.setting('Notifier', 'modqueuecount', 0);
-        unmoderatedCount = TBUtils.setting('Notifier', 'unmoderatedcount', 0);
-        modmailCount = TBUtils.setting('Notifier', 'modmailcount', 0);
+        unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0);
+        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0);
+        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0);
+        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
 
         // 
         // Update methods
@@ -743,7 +746,7 @@ function tbnoti() {
 
         //$.log('updating totals');
         // We're checking now.
-        TBUtils.setting('Notifier', 'lastchecked', '', now);
+        TBUtils.setSetting('Notifier', 'lastchecked', now);
 
         //
         // Messages
@@ -761,7 +764,7 @@ function tbnoti() {
         // getting unread messages
         $.getJSON('http://www.reddit.com/message/unread.json', function (json) {
             var count = json.data.children.length || 0;
-            TBUtils.setting('Notifier', 'unreadmessagecount', '', count);
+            TBUtils.setSetting('Notifier', 'unreadmessagecount', count);
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
@@ -844,7 +847,7 @@ function tbnoti() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                TBUtils.setting('Notifier', 'unreadpushed', '', pushedunread);
+                TBUtils.setSetting('Notifier', 'unreadpushed', pushedunread);
 
 
             }
@@ -945,11 +948,11 @@ function tbnoti() {
                 if (pusheditems.length > 100) {
                     pusheditems.splice(0, 100 - pusheditems.length);
                 }
-                TBUtils.setting('Notifier', 'modqueuepushed', '', pusheditems);
+                TBUtils.setSetting('Notifier', 'modqueuepushed', pusheditems);
 
 
             }
-            TBUtils.setting('Notifier', 'modqueuecount', '', count);
+            TBUtils.setSetting('Notifier', 'modqueuecount', count);
         });
 
         //
@@ -960,7 +963,7 @@ function tbnoti() {
             $.getJSON('http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100', function (json) {
                 var count = json.data.children.length || 0;
 
-                TBUtils.setting('Notifier', 'unmoderatedcount', '', count);
+                TBUtils.setSetting('Notifier', 'unmoderatedcount', count);
                 updateUnmodCount(count);
             });
         }
@@ -973,12 +976,12 @@ function tbnoti() {
         $.getJSON('http://www.reddit.com/message/moderator.json', function (json) {
             var count = json.data.children.length || 0;
             if (count === 0) {
-                TBUtils.setting('Notifier', 'modmailcount', '', count);
+                TBUtils.setSetting('Notifier', 'modmailcount', count);
                 updateModMailCount(count);
                 return;
             }
             
-            var lastSeen = TBUtils.setting('Notifier', 'lastseenmodmail', -1),
+            var lastSeen = TBUtils.getSetting('Notifier', 'lastseenmodmail', -1),
                 newIdx = '',
                 title = '',
                 text = '',
@@ -1013,7 +1016,7 @@ function tbnoti() {
                 if (consolidatedMessages) {
 
                     $.each(json.data.children, function (i, value) {
-                        if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             invitespamid = value.data.name;
 
                             $.post('/api/read_message', {
@@ -1047,7 +1050,7 @@ function tbnoti() {
                 } else {
                     $.each(json.data.children, function (i, value) {
 
-                        if (TBUtils.setting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             invitespamid = value.data.name;
 
                             $.post('/api/read_message', {
@@ -1073,7 +1076,7 @@ function tbnoti() {
                 }
             }
             
-            TBUtils.setting('Notifier', 'modmailcount', '', newCount);
+            TBUtils.setSetting('Notifier', 'modmailcount', newCount);
             updateModMailCount(newCount);
 
         });

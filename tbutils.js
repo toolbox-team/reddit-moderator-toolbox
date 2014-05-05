@@ -206,7 +206,17 @@ function main() {
         var storageKey = 'Toolbox.' + module + '.' + setting;
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
-        return (localStorage[storageKey] !== undefined) ? JSON.parse(localStorage[storageKey]) : defaultVal;
+        if (localStorage[storageKey] === undefined) { 
+			return defaultVal; 
+		} else { 
+			var storageString = localStorage[storageKey];
+			try { 
+				result = JSON.parse(storageString) 
+			} catch(e) { 
+				result =  storageString; 
+			}
+			return result;
+		}  
     };
     
     TBUtils.getTypeInfo = function (warningType) {

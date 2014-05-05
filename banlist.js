@@ -224,7 +224,7 @@ function banlist () {
                     || (banlist_last_update + time_to_update) <= Date.now())
             ) {
                 banlist_updating = true;
-                debug.info("Updating now")
+                $.log("Updating now")
                 // clean up
                 $('.banned-table table tbody').empty();
                 pages_back = 0;

@@ -182,18 +182,13 @@ function main() {
     };
     
     TBUtils.setting = function (module, setting, defaultVal, value) {
-        $.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
+        console.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
 
         if (value !== undefined) {
             return TBUtils.setSetting(module, setting, value);
         } else {
             return TBUtils.getSetting(module, setting, defaultVal);
         }
-        
-        var keyVal = localStorage[storageKey];
-        if (keyVal === undefined && defaultVal !== undefined) return defaultVal;
-        
-        return JSON.parse(keyVal);
     };
     TBUtils.setSetting = function (module, setting, value) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
@@ -211,7 +206,7 @@ function main() {
 		} else { 
 			var storageString = localStorage[storageKey];
 			try { 
-				result = JSON.parse(storageString) 
+				result = JSON.parse(storageString);
 			} catch(e) { 
 				result =  storageString; 
 			}

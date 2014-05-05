@@ -21,14 +21,16 @@ function tbnoti() {
     // preload some generic variables 
     //
     var checkInterval = TBUtils.setting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
-        modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
+        // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
+        modNotifications = TBUtils.setting('Notifier', 'modnotifications', 'on'),  // these need to be converted to booleans.
         //TODO: change all localStorage methods to use TBUtils.setting().
-        messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
+        // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
+        messageNotifications = TBUtils.setting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
         modmailNotifications = TBUtils.setting('Notifier', 'modmailnotifications', true),
-        modSubreddits = localStorage['Toolbox.Notifier.modsubreddits'] || 'mod',
-        unmoderatedSubreddits = localStorage['Toolbox.Notifier.unmoderatedsubreddits'] || 'mod',
-        shortcuts = localStorage['Toolbox.Notifier.shortcuts'] || '-',
-        shortcuts2 = JSON.parse(localStorage['Toolbox.Notifier.shortcuts2'] || '{}'),
+        modSubreddits = TBUtils.setting('Notifier', 'modsubreddits', 'mod'),
+        unmoderatedSubreddits = TBUtils.setting('Notifier', 'unmoderatedsubreddits', 'mod'),
+        shortcuts = TBUtils.setting('Notifier', 'shortcuts', '-'),
+        shortcuts2 = TBUtils.setting('Notifier', 'shortcuts2', {}),
         highlighted = TBUtils.setting('CommentsMod', 'highlighted', ''),
         modbarHidden = TBUtils.setting('Notifier', 'modbarhidden', false),
         hideRemoved = TBUtils.setting('CommentsMod', 'hideRemoved', false),
@@ -48,6 +50,12 @@ function tbnoti() {
         now = new Date().getTime(),
         messageunreadlink = TBUtils.setting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.setting('Notifier', 'modmailunreadlink', false);
+
+    // convert some settings values
+    // TODO: add a fixer in the first run function for next release and drop this section
+    modNotifications = (modNotifications == 'on' ? true : false);
+    messageNotifications = (messageNotifications == 'on' ? true : false);
+
 
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
@@ -486,16 +494,16 @@ function tbnoti() {
     $('body').delegate('.tb-save', 'click', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
         if (messagenotificationssave === true) {
-            localStorage['Toolbox.Notifier.messagenotifications'] = 'on';
+            TBUtils.setSetting('Notifier', 'messagenotifications', true);
         } else {
-            localStorage['Toolbox.Notifier.messagenotifications'] = 'off';
+            TBUtils.setSetting('Notifier', 'messagenotifications', false);
         }
 
         var modnotificationscheckedsave = $("input[name=modnotifications]").is(':checked');
         if (modnotificationscheckedsave === true) {
-            localStorage['Toolbox.Notifier.modnotifications'] = 'on';
+            TBUtils.setSetting('Notifier', 'modnotifications', true);
         } else {
-            localStorage['Toolbox.Notifier.modnotifications'] = 'off';
+            TBUtils.setSetting('Notifier', 'modnotifications', false);
         }
 
         modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
@@ -517,23 +525,23 @@ function tbnoti() {
         TBUtils.setting('Notifier', 'modmailunreadlink', '', modmailunreadlinkcheckedsave);
 
         shortcuts = escape($("input[name=shortcuts]").val());
-        localStorage['Toolbox.Notifier.shortcuts'] = shortcuts;
+        TBUtils.setSetting('Notifier', 'shortcuts', shortcuts);
 
         modSubreddits = $("input[name=modsubreddits]").val();
-        localStorage['Toolbox.Notifier.modsubreddits'] = modSubreddits;
+        TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
         highlighted = $("input[name=highlighted]").val();
         TBUtils.setting('CommentsMod', 'highlighted', '', highlighted);
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
-        localStorage['Toolbox.Notifier.unmoderatedsubreddits'] = unmoderatedSubreddits;
+        TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
         TBUtils.setting('Utils', 'debugMode', '', $("#debugMode").prop('checked'));
         TBUtils.setting('Utils', 'betaMode', '', $("#betaMode").prop('checked'));
 
         // Save shortcuts 
         if ($('.tb-window-content-shortcuts-tr').length === 0) {
-            localStorage['Toolbox.Notifier.shortcuts2'] = JSON.stringify('{}');
+            TBUtils.setSetting('Notifier', 'shortcuts2', {});
         } else {
             shortcuts2 = {};
 
@@ -546,7 +554,7 @@ function tbnoti() {
                 }
             });
 
-            localStorage['Toolbox.Notifier.shortcuts2'] = JSON.stringify(shortcuts2);
+            TBUtils.setSetting('Notifier', 'shortcuts2', shortcuts2);
         }
 
         // Save which modules are enabled.
@@ -754,7 +762,7 @@ function tbnoti() {
 
                 // set up an array in which we will load the last 100 messages that have been displayed. 
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
-                var pushedunread = JSON.parse(localStorage['Toolbox.Notifier.unreadpushed'] || '[]');
+                var pushedunread = TBUtils.getSetting('Notifier', 'unreadpushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     var notificationbody, messagecount = 0;
@@ -859,7 +867,7 @@ function tbnoti() {
                 //$.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed. 
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
-                var pusheditems = JSON.parse(localStorage['Toolbox.Notifier.modqueuepushed'] || '[]');
+                var pusheditems = TBUtils.setSetting('Notifier', 'modqueuepushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     //$.log('here we go!');

@@ -181,16 +181,31 @@ function main() {
     };
     
     TBUtils.setting = function (module, setting, defaultVal, value) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
-        
+        $.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
+
         if (value !== undefined) {
-            localStorage[storageKey] = JSON.stringify(value);
+            return TBUtils.setSetting(module, setting, value);
+        } else {
+            return TBUtils.getSetting(module, setting, defaultVal);
         }
         
         var keyVal = localStorage[storageKey];
         if (keyVal === undefined && defaultVal !== undefined) return defaultVal;
         
         return JSON.parse(keyVal);
+    };
+    TBUtils.setSetting = function (module, setting, value) {
+        var storageKey = 'Toolbox.' + module + '.' + setting;
+
+        localStorage[storageKey] = JSON.stringify(value);
+
+        return TBUtils.getSetting(module, setting);
+    };
+    TBUtils.getSetting = function (module, setting, defaultVal) {
+        var storageKey = 'Toolbox.' + module + '.' + setting;
+        defaultVal = (defaultVal === undefined) ? defaultVal : null;
+
+        return (localStorage[storageKey] !== undefined) ? JSON.parse(localStorage[storageKey]) : defaultVal;
     };
     
     TBUtils.getTypeInfo = function (warningType) {

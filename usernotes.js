@@ -19,7 +19,9 @@ function usernotes() {
         run();
     });
     
-    var PERMA_TO_THING_ID = /\/(\w+)\/\w+\/?$/;
+    // Compatibility with Sweden
+    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/;
+    var MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/;
     
     var ConstManager = function(init_pools) {
         return {
@@ -38,13 +40,35 @@ function usernotes() {
         };
     }
     
-    function permaToThingID(permalink) {
-        var linkMatches = permalink.match(PERMA_TO_THING_ID);
-        if(linkMatches.length > 1) {
-            return linkMatches[1];
+    function squashPermalink(permalink) {
+        var linkMatches = permalink.match(COMMENTS_LINK_RE);
+        var modMailMatches = permalink.match(MODMAIL_LINK_RE);
+        if(linkMatches) {
+            var squashed = "l," + linkMatches[1];
+            if(linkMatches[3] !== undefined)
+                squashed += "," + linkMatches[3];
+            return squashed
+        } else if(modMailMatches) {
+            return "m," + modMailMatches[1];
         } else {
             return "";
         }
+    }
+    
+    function unsquashPermalink(subreddit, permalink) {
+        var linkParams = permalink.split(/,/g);
+        var link = "http://www.reddit.com/r/" + subreddit + "/";
+        
+        if(linkParams[0] == "l") {
+            link += "comments/" + linkParams[1] + "/";
+            if(linkParams.length > 2)
+                link += "a/" + linkParams[2] + "/";
+        } else if(linkParams[0] == "m") {
+            link += "message/messages/" + linkParams [1];
+        } else {
+            return "";
+        }
+        return link;
     }
 
     function postToWiki(sub, json) {
@@ -163,8 +187,7 @@ function usernotes() {
             notes.users.forEach(function(user) {
                 user.notes.forEach(function(note) {
                     if(note.link && note.link.trim()) {
-                        // get just the link ID
-                        note.link = permaToThingID(note.link);
+                        note.link = squashPermalink(note.link);
                     }
                 });
             });
@@ -245,7 +268,9 @@ function usernotes() {
             return {
                 "name": mgr.get("users", user.u),
                 "notes": user.ns.map(function(note) {
-                    return inflateNote(mgr, note);
+                    var note = inflateNote(mgr, note);
+                    if(note.link) note.link = "l," + note.link;
+                    return note;
                 })
             };
         });
@@ -320,7 +345,7 @@ function usernotes() {
             info = TBUtils.getThingInfo(thing),
             subreddit = info.subreddit,
             user = info.user,
-            link = permaToThingID(info.permalink);
+            link = squashPermalink(info.permalink);
 
         // Make box & add subreddit radio buttons
         var popup = $(
@@ -391,7 +416,7 @@ function usernotes() {
                     
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + this.note + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');
                     if (this.link) {
-                        popup.find('#utagger-date-' + i).wrap('<a href="http://redd.it/' + encodeURIComponent(this.link) + '">');
+                        popup.find('#utagger-date-' + i).wrap('<a href="' + unsquashPermalink(subreddit, this.link) + '">');
                     }
                     i++;
                 });

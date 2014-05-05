@@ -24,7 +24,8 @@ function main() {
     TBUtils.toolboxVersion = '2.1.0';
     TBUtils.shortVersion = 210; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
-    TBUtils.notesSchema = 3,
+    TBUtils.notesSchema = 4,
+    TBUtils.minNotesSchema = 0,
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -688,9 +689,26 @@ function main() {
         });
     };
 
-    TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
+    // reddit HTML encodes all of their JSON responses, we need to HTMLdecode
+    // them before parsing.
+    TBUtils.unescapeJSON = function(val) {
+        if(typeof(val) == "string") {
+            val = val.replace(/&quot;/g, '"')
+                .replace(/&gt;/g, ">").replace(/&lt;/g, "<")
+                .replace(/&amp;/g, "&");
+        }
+        return val;
+    }
 
-        $.getJSON('http://www.reddit.com/r/' + subreddit + '/wiki/' + page + '.json', function (json) {
+    TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
+        // We need to demangle the JSON ourselves, so we have to go about it this way :(
+        $.ajax('http://www.reddit.com/r/' + subreddit + '/wiki/' + page + '.json', {
+            dataType: "json",
+            dataFilter: function(data, type) {
+                return TBUtils.unescapeJSON(data);
+            }
+        })
+        .done(function (json) {
             var wikiData = json.data.content_md;
 
             if (!wikiData) {
@@ -710,9 +728,9 @@ function main() {
             
             // We have valid data, but it's not JSON.
             callback(wikiData);
-            return;
             
-        }).error(function (e) {
+        })
+        .fail(function (jqXHR, textStatus, e) {
             if (!e.responseText) {
                 callback(TBUtils.WIKI_PAGE_UNKNOWN);
                 return;

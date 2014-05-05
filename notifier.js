@@ -402,7 +402,7 @@ function tbnoti() {
                 <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar accoriding to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
+                <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar according to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
             <div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
             </div>\

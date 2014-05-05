@@ -1259,7 +1259,7 @@ function modtools() {
 		$('.subscription-box a.title').each(function () {
 			var elem = $(this),
 				sr = elem.text(),
-				data = JSON.parse(TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, '')) || [0, 0];
+				data = TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, '') || [0, 0];
 			modSubs.push(sr);
 
 			// Update count and re-cache data if more than an hour old.

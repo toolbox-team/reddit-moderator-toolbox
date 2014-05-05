@@ -136,8 +136,30 @@ function usernotes() {
     
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes) {
-        // ver 2 is pretty close to the in-memory format.
+        function decodeNoteText(notes) {
+            // We stopped using encode()d notes in v4
+            notes.users.forEach(function(user) {
+                user.notes.forEach(function(note) {
+                    note.note = unescape(note.note);
+                });
+            });
+            return notes;
+        }
+        
+        function keyOnUsername(notes) {
+            // we have to rebuild .users to be an object keyed on .name
+            var users = {};
+            notes.users.forEach(function(user){
+                users[user.name] = {
+                    "notes": user.notes
+                }
+            });
+            notes.users = users;
+            return notes;
+        }
+        
         if(notes.ver <= 2) {
+            //TODO: v2 support drops next version
             notes.users.forEach(function(user) {
                 user.notes.forEach(function(note) {
                     if(note.link && note.link.trim()) {
@@ -147,9 +169,12 @@ function usernotes() {
                 });
             });
             notes.ver = TBUtils.notesSchema;
+            return keyOnUsername(decodeNoteText(notes));
+        } else if(notes.ver == 3) {
+            notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes)));
+            notes.ver = TBUtils.notesSchema;
             return notes;
-        }
-        else if(notes.ver == 3) {
+        } else if(notes.ver == 4) {
             return inflateNotes(notes);
         }
         
@@ -160,6 +185,7 @@ function usernotes() {
     function deflateNotes(notes) {
         var deflated = {
             ver: TBUtils.notesSchema,
+            users: {},
             constants: {
                 users: [],
                 warnings: []
@@ -168,9 +194,8 @@ function usernotes() {
         
         var mgr = new ConstManager(deflated.constants);
         
-        deflated.users = notes.users.map(function(user) {
-            return {
-                "u": mgr.create("users", user.name),
+        $.each(notes.users, function(name, user) {
+            deflated.users[name] = {
                 "ns": user.notes.map(function(note) {
                     return {
                         "n": note.note,
@@ -190,6 +215,27 @@ function usernotes() {
     function inflateNotes(deflated) {
         var notes = {
             ver: TBUtils.notesSchema,
+            users: {}
+        };
+        
+        var mgr = new ConstManager(deflated.constants);
+        
+        $.each(deflated.users, function(name, user) {
+            notes.users[name] = {
+                "name": name,
+                "notes": user.ns.map(function(note) {
+                    return inflateNote(mgr, note);
+                })
+            };
+        });
+        
+        return notes;
+    }
+    
+    // Decompress notes from the database into a more useful format (MIGRATION ONLY)
+    function inflateNotesV3(deflated) {
+        var notes = {
+            ver: 3,
             users: []
         };
         
@@ -199,19 +245,26 @@ function usernotes() {
             return {
                 "name": mgr.get("users", user.u),
                 "notes": user.ns.map(function(note) {
-                    return {
-                        "note": note.n,
-                        "time": note.t,
-                        "mod": mgr.get("users", note.m),
-                        "link": note.l,
-                        "type": mgr.get("warnings", note.w),
-                    };
+                    return inflateNote(mgr, note);
                 })
             };
         });
         
         return notes;
     }
+    
+    // Inflates a single note
+    function inflateNote(mgr, note) {
+        return {
+            "note": note.n,
+            "time": note.t,
+            "mod": mgr.get("users", note.m),
+            "link": note.l,
+            "type": mgr.get("warnings", note.w),
+        };
+    }
+    
+    
 
     function setNotes(notes, subreddit) {
         $.log("notes = " + notes);
@@ -233,26 +286,24 @@ function usernotes() {
         TBUtils.forEachChunked(things, 25, 250, function (thing) {
             var user = TBUtils.getThingInfo(thing).user;
 
-            $.grep(notes.users, function (u) {
+            var u = notes.users[user];
+            var usertag = $(thing).find('.add-user-tag-' + subreddit);
+            
+            // Only happens if you delete the last note.
+            if (u === undefined || u.notes.length < 1) {
+                $(usertag).css('color', '');
+                $(usertag).text('N');
+                return;
+            }
+            
+            note = u.notes[0].note.substring(0, 50);
+            $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
-                if (u.name == user) {
-                    var usertag = $(thing).find('.add-user-tag-' + subreddit);
+            var type = u.notes[0].type;
+            if (!type) type = 'none';
 
-                    // Only happens if you delete the last note.
-                    if (u.notes.length < 1) {
-                        $(usertag).css('color', '');
-                        $(usertag).text('N');
-                        return;
-                    }
-                    note = unescape(u.notes[0].note).substring(0, 50);
-                    $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
-
-                    var type = u.notes[0].type;
-                    if (!type) type = 'none';
-
-                    $(usertag).css('color', TBUtils.getTypeInfo(type).color);
-                }
-            });
+            $(usertag).css('color', TBUtils.getTypeInfo(type).color);
+            
         });
     }
 
@@ -314,7 +365,7 @@ function usernotes() {
 
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
-                TBUtils.noNotes.push(currsub);
+                TBUtils.noNotes.push(subreddit);
                 return;
             }
             
@@ -322,29 +373,29 @@ function usernotes() {
             
             TBUtils.noteCache[subreddit] = resp;
 
-            $.grep(resp.users, function (u) {
-                if (u.name == user) {
-                    popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
+            
+            var u = resp.users[user];
+            if(u !== undefined) {
+                popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
+                
+                var i = 0;
+                $(u.notes).each(function () {
+                    if (!this.type) this.type = 'none';
+
+                    var info = TBUtils.getTypeInfo(this.type);
+                    var typeSpan = '';
+
+                    if (info.name) {
+                        typeSpan = '<span style="color: ' + info.color + ';">[' + TBUtils.htmlEncode(info.name) + ']</span> ';
+                    }
                     
-                    var i = 0;
-                    $(u.notes).each(function () {
-                        if (!this.type) this.type = 'none';
-
-                        var info = TBUtils.getTypeInfo(this.type);
-                        var typeSpan = '';
-
-                        if (info.name) {
-                            typeSpan = '<span style="color: ' + TBUtils.htmlEncode(info.color) + ';">[' + TBUtils.htmlEncode(info.name) + ']</span> ';
-                        }
-                        
-                        popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + unescape(this.note) + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');
-                        if (this.link) {
-                            popup.find('#utagger-date-' + i).wrap('<a href="http://redd.it/' + encodeURIComponent(this.link) + '">');
-                        }
-                        i++;
-                    });
-                }
-            });
+                    popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' + new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + this.note + '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBUtils.iconclose + '" /></td></tr>');
+                    if (this.link) {
+                        popup.find('#utagger-date-' + i).wrap('<a href="http://redd.it/' + encodeURIComponent(this.link) + '">');
+                    }
+                    i++;
+                });
+            }
         });
     });
 
@@ -373,7 +424,7 @@ function usernotes() {
         if ((!user || !subreddit || !noteText) && !deleteNote) return;
 
         note = {
-            note: escape(noteText),
+            note: noteText,
             time: new Date().getTime(),
             mod: reddit.logged,
             link: link,
@@ -381,13 +432,18 @@ function usernotes() {
         };
 
         var userNotes = {
-            name: user,
             notes: []
         };
 
         userNotes.notes.push(note);
 
         $(popup).remove();
+        
+        var noteSkel = {
+            "ver": TBUtils.notesSchema,
+            "constants": {},
+            "users":{}
+        };
 
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -395,7 +451,8 @@ function usernotes() {
             }
 
             if (resp === TBUtils.NO_WIKI_PAGE) {
-                notes.users.push(userNotes);
+                notes = noteSkel;
+                notes.users[user] = userNotes;
                 postToWiki(subreddit, notes);
                 return;
             }
@@ -404,36 +461,37 @@ function usernotes() {
             notes = resp = convertNotes(resp);
 
             if (notes) {
-                var results = $.grep(notes.users, function (u) {
-                    if (u.name == user) {
+                var userFound = (user in notes.users);
+                if(userFound) {
+                    var u = notes.users[user];
+                    // Delete. 
+                    if (deleteNote) {
+                        $(u.notes).each(function (idx) {
 
-                        // Delete. 
-                        if (deleteNote) {
-                            $(u.notes).each(function (idx) {
-
-                                if (this.time == noteid) {
-                                    u.notes.splice(idx, 1);
-                                }
-                            });
-
-                            postToWiki(subreddit, notes);
-                            return true;
-
-                            // Add.
-                        } else {
-                            u.notes.unshift(note);
-                            postToWiki(subreddit, notes);
-                            return u;
+                            if (this.time == noteid) {
+                                u.notes.splice(idx, 1);
+                            }
+                        });
+                        
+                        if(u.notes.length < 1) {
+                            delete notes.users[user];
                         }
-                    }
-                });
 
-                if ((!results || results.length < 1) && !deleteNote) {
-                    notes.users.push(userNotes);
+                        postToWiki(subreddit, notes);
+                    // Add.
+                    } else {
+                        u.notes.unshift(note);
+                        postToWiki(subreddit, notes);
+                    }
+                
+                // Adding a note for previously unknown user
+                } else if (!userFound && !deleteNote) {
+                    notes.users[user] = userNotes;
                     postToWiki(subreddit, notes);
                 }
             } else {
-                notes.users.push(userNotes);
+                notes = noteSkel;
+                notes.users[user] = userNotes;
                 postToWiki(subreddit, notes);
             }
         });

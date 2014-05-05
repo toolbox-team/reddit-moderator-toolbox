@@ -526,6 +526,7 @@ function usernotes() {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
+
 }
 
 // Add script to page

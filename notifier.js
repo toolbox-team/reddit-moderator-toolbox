@@ -257,15 +257,15 @@ function tbnoti() {
 
         // The window in which all settings will be showed. 
         var html = '\
-            <div class="tb-page-overlay tb-settings">\
-            <div class="tb-window-wrapper">\
-            <div class="tb-window-header"> Toolbox Settings <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
-            <div class="tb-window-tabs"></div>\
-            <div class="tb-window-content">\
-            </div>\
-            <div class="tb-window-footer" comment="for the looks"><input class="tb-save" type="button" value="save"></div>\
-            </div>\
-            </div>\
+            <div class="tb-page-overlay tb-settings"><div class="tb-window-wrapper">\
+                <div class="tb-window-header">\
+                    Toolbox Settings\
+                    <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a> - <a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
+                </div>\
+                <div class="tb-window-tabs"></div>\
+                <div class="tb-window-content"></div>\
+                <div class="tb-window-footer" comment="for the looks"><input class="tb-save" type="button" value="save"></div>\
+            </div></div>\
             ';
         $(html).appendTo('body').show();
         $('body').css('overflow', 'hidden');

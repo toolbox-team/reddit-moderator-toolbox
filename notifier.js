@@ -53,9 +53,17 @@ function tbnoti() {
 
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
-    modNotifications = (modNotifications == 'on' ? true : false);
-    messageNotifications = (messageNotifications == 'on' ? true : false);
-
+    if (modNotifications == 'on') { 
+	modNotifications = true
+	} else if (modNotifications == 'off') {
+	modNotifications = false 
+	} 
+	
+    if (messageNotifications == 'on') { 
+	messageNotifications = true
+	} else if (messageNotifications == 'off') {
+	messageNotifications = false 
+	} 
 
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
@@ -225,10 +233,10 @@ function tbnoti() {
         if (modmailunreadlink) {
             modmailunreadlinkchecked = 'checked';
         }
-        if (modNotifications == 'on') {
+        if (modNotifications) {
             modnotificationschecked = 'checked';
         }
-        if (messageNotifications == 'on') {
+        if (messageNotifications) {
             messagenotificationschecked = 'checked';
         }
         if (modmailNotifications) {
@@ -757,7 +765,7 @@ function tbnoti() {
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
-            if (messageNotifications == 'on' && count > unreadMessageCount) {
+            if (messageNotifications && count > unreadMessageCount) {
 
 
                 // set up an array in which we will load the last 100 messages that have been displayed. 
@@ -862,7 +870,7 @@ function tbnoti() {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
             //$.log(modNotifications);
-            if (modNotifications == 'on' && count > modqueueCount) {
+            if (modNotifications && count > modqueueCount) {
                 // Ok let's have a look and see if there are actually new items to display 
                 //$.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed. 

@@ -741,12 +741,12 @@ function main() {
             
         })
         .fail(function (jqXHR, textStatus, e) {
-            if (!e.responseText) {
+            if (!jqXHR.responseText) {
                 callback(TBUtils.WIKI_PAGE_UNKNOWN);
                 return;
             }
             
-            var reason = JSON.parse(e.responseText).reason || '';
+            var reason = JSON.parse(jqXHR.responseText).reason || '';
             if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
                 callback(TBUtils.NO_WIKI_PAGE);
             } else {

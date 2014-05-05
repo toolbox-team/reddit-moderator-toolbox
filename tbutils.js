@@ -204,7 +204,7 @@ function main() {
     };
     TBUtils.getSetting = function (module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        defaultVal = (defaultVal === undefined) ? defaultVal : null;
+        defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
         return (localStorage[storageKey] !== undefined) ? JSON.parse(localStorage[storageKey]) : defaultVal;
     };

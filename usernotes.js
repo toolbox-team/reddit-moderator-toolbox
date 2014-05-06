@@ -40,6 +40,13 @@ function usernotes() {
         };
     }
     
+    function getUser(users, name) {
+        if(users.hasOwnProperty(name)) {
+            return users[name];
+        }
+        return undefined;
+    }
+    
     function squashPermalink(permalink) {
         var linkMatches = permalink.match(COMMENTS_LINK_RE);
         var modMailMatches = permalink.match(MODMAIL_LINK_RE);
@@ -318,7 +325,7 @@ function usernotes() {
         TBUtils.forEachChunked(things, 25, 250, function (thing) {
             var user = TBUtils.getThingInfo(thing).user;
 
-            var u = notes.users[user];
+            var u = getUser(notes.users, user);
             var usertag = $(thing).find('.add-user-tag-' + subreddit);
             
             // Only happens if you delete the last note.
@@ -408,7 +415,7 @@ function usernotes() {
             TBUtils.noteCache[subreddit] = resp;
 
             
-            var u = resp.users[user];
+            var u = getUser(resp.users, user);
             if(u !== undefined) {
                 popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
                 
@@ -500,7 +507,7 @@ function usernotes() {
             }
             
             if (notes) {
-                var u = notes.users[user];
+                var u = getUser(notes.users, user);
                 if(u !== undefined) {
                     // Delete. 
                     if (deleteNote) {

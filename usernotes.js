@@ -298,8 +298,6 @@ function usernotes() {
         };
     }
     
-    
-
     function setNotes(notes, subreddit) {
         $.log("notes = " + notes);
         $.log("notes.ver = " + notes.ver);
@@ -330,7 +328,9 @@ function usernotes() {
                 return;
             }
             
-            note = u.notes[0].note.substring(0, 50);
+            note = u.notes[0].note;
+			if(note.length > 53)
+				note = note.substring(0, 50)+"...";
             $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
             var type = u.notes[0].type;

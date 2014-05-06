@@ -574,7 +574,10 @@ function main() {
             
             //This is a weird palce to go about this, and the conditions are strange,
             //but if we're going to assume we're us, we better make damned well sure that is likely the case.
-            if ($(entry).find('.remove-button').text() === '') {
+            // if ($(entry).find('.remove-button').text() === '') {
+            // The previous check would mistakenly catch removed modmail messages as the user's messages.
+            // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
+            if (user === '') {
                 user = reddit.logged;
                 
                 if (!subreddit) {

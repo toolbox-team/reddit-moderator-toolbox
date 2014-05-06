@@ -500,9 +500,8 @@ function usernotes() {
             }
             
             if (notes) {
-                var userFound = (user in notes.users);
-                if(userFound) {
-                    var u = notes.users[user];
+                var u = notes.users[user];
+                if(u !== undefined) {
                     // Delete. 
                     if (deleteNote) {
                         $(u.notes).each(function (idx) {
@@ -524,7 +523,7 @@ function usernotes() {
                     }
                 
                 // Adding a note for previously unknown user
-                } else if (!userFound && !deleteNote) {
+                } else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
                     postToWiki(subreddit, notes);
                 }

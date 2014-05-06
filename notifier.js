@@ -83,7 +83,8 @@ function tbnoti() {
     // Module settings.
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
-        mteEnabled = TBUtils.getSetting('ModTools', 'enabled', true),
+        rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
+		qtEnabled = TBUtils.setting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
@@ -355,7 +356,10 @@ function tbnoti() {
                 <label><input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '> Enable Mod Button</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="mteEnabled" ' + ((mteEnabled) ? "checked" : "") + '> Enable Mod Tools Enhanced</label>\
+                <label><input type="checkbox" id="rrEnabled" ' + ((rrEnabled) ? "checked" : "") + '> Enable Removal Reasons</label>\
+            </p>\
+			<p>\
+                <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
@@ -407,7 +411,7 @@ function tbnoti() {
             <div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
             </div>\
             ';
-        if (mteEnabled) {
+        if (qtEnabled) {
             $(htmlmodtools).appendTo('.tb-window-content').hide();
             $('<a href="javascript:;" class="tb-window-content-modtools">Mod Tools</a>').appendTo('.tb-window-tabs');
         }
@@ -571,7 +575,8 @@ function tbnoti() {
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));
-        TBUtils.setSetting('ModTools', 'enabled', $("#mteEnabled").prop('checked'));
+		TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
+		TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));

@@ -7,10 +7,7 @@
 // ==/UserScript==
 
 function queueTools() {
-	//if (!reddit.logged || !TBUtils.setting('QueueTools', 'enabled', true))
-	//	return;
-	
-	//}
+	if (!reddit.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
 	
 	// Cached data
 	var notEnabled = [],

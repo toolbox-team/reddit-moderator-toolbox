@@ -183,15 +183,24 @@ function usernotes() {
         }
         
         if(notes.ver <= 2) {
+        var newUsers = [];
+        var corruptedNotes = false;
             //TODO: v2 support drops next version
             notes.users.forEach(function(user) {
+                if(!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) { 
+                    corruptedNotes = true;
+                } else {
                 user.notes.forEach(function(note) {
-                    if(note.link && note.link.trim()) {
+                   if(note.link && note.link.trim()) {
                         note.link = squashPermalink(note.link);
                     }
                 });
+                newUsers.push(user);
+                }
             });
+            notes.users = newUsers;
             notes.ver = TBUtils.notesSchema;
+            notes.corrupted = corruptedNotes;
             return keyOnUsername(decodeNoteText(notes));
         } else if(notes.ver == 3) {
             notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes)));
@@ -483,8 +492,13 @@ function usernotes() {
             }
 
             // if we got this far, we have valid JSON
+            
             notes = resp = convertNotes(resp);
 
+            if (notes.corrupted) {
+                TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+            }
+            
             if (notes) {
                 var userFound = (user in notes.users);
                 if(userFound) {

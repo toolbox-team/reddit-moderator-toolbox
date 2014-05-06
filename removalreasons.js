@@ -34,8 +34,8 @@ function removal_reasons() {
 	// Cached data
 	var notEnabled = [],
 		//because of the CSS fallback, we can't use TBUtils.noConfig.
-		removalReasons = TBUtils.setting('ModTools', 'removalreasons', true),
-		commentReasons = TBUtils.setting('ModTools', 'commentreasons', false);
+		removalReasons = TBUtils.setting('RemovalReasons', 'removalreasons', true),
+		commentReasons = TBUtils.setting('RemovalReasons', 'commentreasons', false);
 	
 	function getRemovalReasons(subreddit, callback) {
 		$.log('getting config: ' + subreddit);
@@ -178,7 +178,7 @@ function removal_reasons() {
 				headerDisplay = data.header ? '' : 'none',
 				footerDisplay = data.footer ? '' : 'none';
 			
-			var reasonType = TBUtils.setting('modtools', 'reason-type', 'none');
+			var reasonType = TBUtils.setting('RemovalReasons', 'reason-type', 'none');
 			
 			// Set up markdown renderer
 			SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -277,7 +277,7 @@ function removal_reasons() {
 			// Pre-fill reason input elements which have IDs.
 			popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
 				this.id = 'reason-input-' + data.subreddit + '-' + this.id;
-				this.value = TBUtils.setting('modtools', this.id, this.value);
+				this.value = TBUtils.setting('RemovalReasons', this.id, this.value);
 			});
 		}
 		
@@ -324,7 +324,7 @@ function removal_reasons() {
 	
 	// Toggle PM/reply/both notification method
 	$('body').delegate('.reason-type', 'click', function () {
-		TBUtils.setting('modtools', 'reason-type', null, this.value);
+		TBUtils.setting('RemovalReasons', 'reason-type', null, this.value);
 	});
 	
 	// 'no reason' button clicked
@@ -573,7 +573,7 @@ function removal_reasons() {
 	
 	// Reason textarea/input/select changed
 	$('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
-		TBUtils.setting('modtools', this.id, null, this.selectedIndex || this.value);
+		TBUtils.setting('RemovalReasons', this.id, null, this.selectedIndex || this.value);
 	});
 }
 

@@ -22,7 +22,7 @@
     {
       "matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
       "css": ["toolbox.css"],
-      "js": ["jquery-1.9.0.js", "jquery-migrate-1.2.1.js", "jquery-plugins.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "comment.js", "config.js", "modmatrix.js", "banlist.js"]
+      "js": ["jquery-1.9.0.js", "jquery-migrate-1.2.1.js", "jquery-plugins.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "comment.js", "config.js", "modmatrix.js", "banlist.js", "removalreasons.js", "queuetools.js"]
     }
   ],
   "web_accessible_resources": [

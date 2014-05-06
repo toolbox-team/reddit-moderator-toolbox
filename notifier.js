@@ -408,12 +408,12 @@ function tbnoti() {
                 <p>\
                 <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar according to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
                 </p>\
-            <div class="tb-help-main-content">Settings for Mod Tools Enhanced.</div>\
+            <div class="tb-help-main-content">Settings for Queue Tools.</div>\
             </div>\
             ';
         if (qtEnabled) {
             $(htmlmodtools).appendTo('.tb-window-content').hide();
-            $('<a href="javascript:;" class="tb-window-content-modtools">Mod Tools</a>').appendTo('.tb-window-tabs');
+            $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
         }
 
         // Settings for the comment module

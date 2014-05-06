@@ -336,7 +336,7 @@ function usernotes() {
             }
             
             note = u.notes[0].note;
-			if(note.length > 53)
+			if (note.length > 53)
 				note = note.substring(0, 50)+"...";
             $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 

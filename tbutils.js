@@ -554,8 +554,10 @@ function main() {
     };
 
     TBUtils.getThingInfo = function (sender, modCheck) {
-        var entry = $(sender).closest('.entry') || sender,
-            thing = $(sender).closest('.thing') || sender,
+        // If we were passed in a .thing, we may have to walk down the tree to
+        // find the associated .entry
+        var entry = $($(sender).closest('.entry')[0] || $(sender).find('.entry')[0] || sender),
+            thing = $($(sender).closest('.thing')[0] || sender),
             user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
             subreddit = reddit.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),

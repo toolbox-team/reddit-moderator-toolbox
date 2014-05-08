@@ -413,9 +413,9 @@ function usernotes() {
             resp = convertNotes(resp);
             
             TBUtils.noteCache[subreddit] = resp;
-
             
             var u = getUser(resp.users, user);
+            // User has notes
             if(u !== undefined) {
                 popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
                 
@@ -436,6 +436,10 @@ function usernotes() {
                     }
                     i++;
                 });
+            }
+            // No notes on user
+            else {
+                popup.find("#utagger-user-note-input").focus();
             }
         });
     });

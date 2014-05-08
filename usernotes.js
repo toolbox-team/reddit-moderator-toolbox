@@ -336,8 +336,8 @@ function usernotes() {
             }
             
             note = u.notes[0].note;
-			if (note.length > 53)
-				note = note.substring(0, 50)+"...";
+            if (note.length > 53)
+                note = note.substring(0, 50)+"...";
             $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
             var type = u.notes[0].type;
@@ -382,12 +382,12 @@ function usernotes() {
                     </tr>\
                     </tbody></table>\
                     <span>\
-                        <input type="text" placeholder="something about the user..." class="utagger-user-note" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+                        <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
                         <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
                     </span>\
                 </div>\
                 <div class="utagger-popup-footer">\
-                        <input type="button" class="utagger-save-user" value="save for /r/' + subreddit + '">\
+                        <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '">\
                 </div>\
                 </div>'
         )
@@ -546,7 +546,14 @@ function usernotes() {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
-
+    
+    $('body').delegate('.utagger-user-note', 'keyup', function (event) {
+        if(event.keyCode == 13) {
+            console.log("Enter pressed!");
+            var popup = $(this).closest('.utagger-popup');
+            popup.find('.utagger-save-user').click();
+        }
+    });
 }
 
 // Add script to page

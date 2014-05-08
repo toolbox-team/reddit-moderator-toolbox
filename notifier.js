@@ -13,9 +13,8 @@
 
 
 function tbnoti() {
-    if (!reddit.logged) return;
-
-
+    if (!reddit.logged || TBUtils.isToolbarPage) return;
+    
     $('body').addClass('mod-toolbox');
     //
     // preload some generic variables 
@@ -53,20 +52,20 @@ function tbnoti() {
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
     if (modNotifications == 'on') {
-		TBUtils.setSetting('Notifier', 'modnotifications', true);
-		modNotifications = true;
-	} else if (modNotifications == 'off') {
-		TBUtils.setSetting('Notifier', 'modnotifications', false);
-		modNotifications = false;
-	} 
-	
+        TBUtils.setSetting('Notifier', 'modnotifications', true);
+        modNotifications = true;
+    } else if (modNotifications == 'off') {
+        TBUtils.setSetting('Notifier', 'modnotifications', false);
+        modNotifications = false;
+    } 
+    
     if (messageNotifications == 'on') {
-		TBUtils.setSetting('Notifier', 'messagenotifications', true);
-		messageNotifications = true;
-	} else if (messageNotifications == 'off') {
-		TBUtils.setSetting('Notifier', 'messagenotifications', true);
-		messageNotifications = false;
-	} 
+        TBUtils.setSetting('Notifier', 'messagenotifications', true);
+        messageNotifications = true;
+    } else if (messageNotifications == 'off') {
+        TBUtils.setSetting('Notifier', 'messagenotifications', true);
+        messageNotifications = false;
+    } 
 
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
@@ -84,7 +83,7 @@ function tbnoti() {
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
-		qtEnabled = TBUtils.setting('QueueTools', 'enabled', true),
+        qtEnabled = TBUtils.setting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
@@ -147,7 +146,7 @@ function tbnoti() {
         ');
 
     $console.appendTo('body').hide();
-
+    
     $('body').append(modbar);
 
     // if mod counters are on we append them to the rest of the counters here. 
@@ -358,7 +357,7 @@ function tbnoti() {
             <p>\
                 <label><input type="checkbox" id="rrEnabled" ' + ((rrEnabled) ? "checked" : "") + '> Enable Removal Reasons</label>\
             </p>\
-			<p>\
+            <p>\
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
@@ -575,8 +574,8 @@ function tbnoti() {
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));
-		TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
-		TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
+        TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));

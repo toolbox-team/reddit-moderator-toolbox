@@ -33,6 +33,7 @@ function main() {
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
     TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
+    TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
@@ -202,16 +203,16 @@ function main() {
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
         if (localStorage[storageKey] === undefined) { 
-			return defaultVal; 
-		} else { 
-			var storageString = localStorage[storageKey];
-			try { 
-				result = JSON.parse(storageString);
-			} catch(e) { 
-				result =  storageString; 
-			}
-			return result;
-		}  
+            return defaultVal; 
+        } else { 
+            var storageString = localStorage[storageKey];
+            try { 
+                result = JSON.parse(storageString);
+            } catch(e) { 
+                result =  storageString; 
+            }
+            return result;
+        }  
     };
     
     TBUtils.getTypeInfo = function (warningType) {

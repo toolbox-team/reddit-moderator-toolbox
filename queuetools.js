@@ -681,36 +681,36 @@ function queueTools() {
 			var link = 'http://www.reddit.com/user/' + author,
 				title = 'Overview for ' + author;
 			
-			TBUtils.postLink(link, title, 'reportthespammers', function (successful, response) {
-				if(!successful) {
-					rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-				}
-				else {
-					if (submission.json.errors.length) {
-						rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
-						if (submission.json.errors[0][0] == 'ALREADY_SUB')
-							rtsLink.href = 'http://www.reddit.com/r/reportthespammers/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
-						return;
-					}
+			TBUtils.postLink(link, title, 'reportthespammers', function (successful, submission) {
+			    if (!successful) {
+			        rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
+			    }
+			    else {
+			        if (submission.json.errors.length) {
+			            rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
+			            if (submission.json.errors[0][0] == 'ALREADY_SUB')
+			                rtsLink.href = 'http://www.reddit.com/r/reportthespammers/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+			            return;
+			        }
 
-					// Post stats as a comment.
-					if (!commentbody.length || !rtsComment)
-						return;
-					
-					TBUtils.postComment(submission.json.data.name, commentbody, function (successful, response) {
-						if(!successful) {
-							rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-						}
-						else {
-							if (comment.json.errors.length)
-								return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
-							rtsLink.textContent = 'reported';
-							rtsLink.href = submission.json.data.url;
-							rtsLink.className = '';
-						};
-					});
-				}
-			})
+			        // Post stats as a comment.
+			        if (!commentbody.length || !rtsComment)
+			            return;
+
+			        TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
+			            if (!successful) {
+			                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
+			            }
+			            else {
+			                if (comment.json.errors.length)
+			                    return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
+			                rtsLink.textContent = 'reported';
+			                rtsLink.href = submission.json.data.url;
+			                rtsLink.className = '';
+			            };
+			        });
+			    }
+			});
 		});
 	}
 

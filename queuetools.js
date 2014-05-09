@@ -767,46 +767,7 @@ function queueTools() {
     if (!document.body)
         return setTimeout(addscript);
     
-    // Check if we are running as an extension
-    if (typeof self.on !== "undefined" || (typeof chrome !== "undefined" && chrome.extension)) {
-        init();
-        
-        // Workaround for chrome not properly including snuownd
-        var markdownURL = chrome.extension.getURL('snuownd.js');
-        $('head').prepend('<script type="text/javascript" src="' + markdownURL + '"></script>');
-        
-        return;
-    }
-    
-    // Check if TBUtils has been added.
-    if (!window.TBUadded) {
-        window.TBUadded = true;
-        
-        //CHANGE AFTER DEV
-        //var utilsURL = 'http://agentlame.github.io/toolbox/tbutils.js';
-        var utilsURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/tbutils.js';
-        //var cssURL = 'http://agentlame.github.io/toolbox/toolbox.css';
-        var cssURL = 'https://dl.dropboxusercontent.com/u/1240253/reddit/r/toolbox/test_js/toolbox.css';
-        $('head').prepend('<script type="text/javascript" src="' + utilsURL + '"></script>');
-        $('head').prepend('<link rel="stylesheet" type="text/css" href="' + cssURL + '"></link>');
-    }
-    
-    // Do not add script to page until TBUtils is added.
-    (function loadLoop() {
-        setTimeout(function () {
-            if (typeof TBUtils !== "undefined") {
-                init();
-            }
-            else {
-                loadLoop();
-            }
-        }, 100);
-    })();
-
-    function init() {
-        console.log("Adding queue tools script");
-        var s = document.createElement('script');
-        s.textContent = "(" + queueTools.toString() + ')();';
-        document.head.appendChild(s);
-    }
+    var s = document.createElement('script');
+    s.textContent = "(" + queueTools.toString() + ')();';
+    document.head.appendChild(s);
 })();

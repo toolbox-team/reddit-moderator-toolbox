@@ -95,8 +95,8 @@ function tbconf() {
                     <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
                 </div>\
                 <div class="reasons-notice" style="display:none;">\
-                    <br><br>
-                    <p>
+                    <br><br>\
+                    <p>\
                         Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
                         You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
                         <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
@@ -106,7 +106,7 @@ function tbconf() {
             <div class="tb-window-footer" >\
                 <div class="wiki-edit-area" style="display: none;">\
                     <input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
-                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>
+                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>\
                 </div>\
             </div>\
         </div>\

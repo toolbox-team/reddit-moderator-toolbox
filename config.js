@@ -74,38 +74,44 @@ function tbconf() {
         
         var html = '\
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
-<div class="tb-window-wrapper" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Toolbox Configuration - /r/'+ subreddit +'<span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="tb-close" href="javascript:;">X</a></span></div>\
-<div class="tb-form">\
-<div class="tb-window-tabs">\
-<a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\
-<a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
-<a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
-<a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
-<span class="tb-window-spacer">&nbsp;</span>\
-<a class="reason-settings" href="javascript:;">removal reason settings</a><a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
-<a class="edit-domains" href="javascript:;">domain tags</a>\
-<!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
-</div>\
-<div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
-\
-\
-<div class="wiki-edit-area" style="display: none;">\
-<textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-</div>\
-<div class="reasons-notice" style="display:none;">\
-<br><br><p>Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
-You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
-<a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)</p>\
-</div>\
-\
-\
-</div>\
-<div class="tb-window-footer" ><div class="wiki-edit-area" style="display: none;"><input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
-<input class="cancel-wiki-data" type="button" value="Cancel"></input></div></div>\
-</div>\
-<div class="tb-help-config-content">Choose what you want to edit.</div>\
-</div>\
+    <div class="tb-window-wrapper" comment="the window itself">\
+        <div class="tb-window-header" comment="This will contain the name of the window">\
+            Toolbox Configuration - /r/'+ subreddit +'\
+            <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;" title="Toolbox Configuration Help">?</a> - <a class="tb-close" title="Close Toolbox Configuration" href="javascript:;">✕</a></span>\
+        </div>\
+        <div class="tb-form">\
+            <div class="tb-window-tabs">\
+                <a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\
+                <a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
+                <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
+                <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
+                <span class="tb-window-spacer">&nbsp;</span>\
+                <a class="reason-settings" href="javascript:;">removal reason settings</a><a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
+                <a class="edit-domains" href="javascript:;">domain tags</a>\
+                <!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
+            </div>\
+            <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
+                <div class="wiki-edit-area" style="display: none;">\
+                    <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
+                </div>\
+                <div class="reasons-notice" style="display:none;">\
+                    <br><br>
+                    <p>
+                        Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
+                        You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
+                        <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
+                    </p>\
+                </div>\
+            </div>\
+            <div class="tb-window-footer" >\
+                <div class="wiki-edit-area" style="display: none;">\
+                    <input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
+                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>
+                </div>\
+            </div>\
+        </div>\
+        <div class="tb-help-config-content">Choose what you want to edit.</div>\
+    </div>\
 </div>\
         ';
         $(html).appendTo('body').show();

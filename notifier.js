@@ -38,8 +38,7 @@ function tbnoti() {
         unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-        unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),
-        //TODO: promote to TBUtils.isUnreadPage
+        //unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  now: TBUtils.isUnreadPage but I can't find this used anywhere.
         modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,

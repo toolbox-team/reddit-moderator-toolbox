@@ -12,26 +12,26 @@
 // ==/UserScript==
 
 function modmailpro() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
-        inbox = localStorage["Toolbox.ModMailPro.inboxstyle"] || PRIORITY,
+        inbox = TBUtils.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
         now = new Date().getTime(),
         buffer = 5 * 60000, // 5mins
-        lastVisited = JSON.parse(localStorage['Toolbox.ModMailPro.lastvisited'] || now),
-        visitedBuffer = JSON.parse(localStorage['Toolbox.ModMailPro.visitedbuffer'] || -1),
+        lastVisited = TBUtils.getSetting('ModMailPro', 'lastvisited', now),
+        visitedBuffer = TBUtils.getSetting('ModMailPro', 'visitedbuffer', -1), // I think this may be broken.
         newCount = 0,
-        collapsed = JSON.parse(localStorage["Toolbox.ModMailPro.defaultcollapse"] || "false"), //wrapped?,
-        expandReplies = JSON.parse(localStorage["Toolbox.ModMailPro.expandreplies"] || "false"),
-        noRedModmail = JSON.parse(localStorage["Toolbox.ModMailPro.noredmodmail"] || "true"),
-        hideInviteSpam = JSON.parse(localStorage["Toolbox.ModMailPro.hideinvitespam"] || "false"),
-        highlightNew = JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true"),
-        unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/),
+        collapsed = TBUtils.getSetting('ModMailPro', 'defaultcollapse', false), 
+        expandReplies = TBUtils.getSetting('ModMailPro', 'expandreplies', false),
+        noRedModmail = TBUtils.getSetting('ModMailPro', 'noredmodmail', true),
+        hideInviteSpam = TBUtils.getSetting('ModMailPro', 'hideinvitespam', false),
+        highlightNew = TBUtils.getSetting('ModMailPro', 'highlightnew', true),
+        unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
-        newLoadedMessages = 0; //Because flowwit is a doesn't respect your reddit prefs. (TODO: nake use of flowwit's callback.)
+        newLoadedMessages = 0; //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -85,8 +85,9 @@ function modmailpro() {
     });
 
     function setView() {
-        var a = []; //hacky-hack for 'all' view.
-        //console.log()
+        var a = [], //hacky-hack for 'all' view.
+            filteredSubs = getFilteredSubs();
+
         // Neither a switch nor === will work correctly.
         if (inbox == ALL) {
             $(allLink).closest('li').addClass('selected');
@@ -95,11 +96,11 @@ function modmailpro() {
 
         } else if (inbox == PRIORITY) {
             $(priorityLink).closest('li').addClass('selected');
-            hideThreads(getFilteredSubs());
+            hideThreads(filteredSubs);
 
         } else if (inbox == FILTERED) {
             $(filteredLink).closest('li').addClass('selected');
-            showThreads(getFilteredSubs());
+            showThreads(filteredSubs);
 
         } else if (inbox == REPLIED) {
             $(repliedLink).closest('li').addClass('selected');
@@ -223,8 +224,8 @@ function modmailpro() {
             // Update time stamps, but only if it has been more than five minutes since the last update.
             //console.log(now > visitedBuffer);
             if (now > visitedBuffer) {
-                localStorage['Toolbox.ModMailPro.lastvisited'] = now;
-                localStorage['Toolbox.ModMailPro.visitedbuffer'] = now + buffer;
+                TBUtils.setSetting('ModMailPro', 'lastvisited', now);
+                TBUtils.setSetting('ModMailPro', 'visitedbuffer', now + buffer);
             }
 
             // If set collapse all threads on load.
@@ -391,7 +392,7 @@ function modmailpro() {
         }
 
         // Save new filter list.
-        localStorage['Toolbox.ModMailPro.filteredsubs'] = JSON.stringify(filtersubs);
+        TBUtils.setSetting('ModMailPro', 'filteredsubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -410,19 +411,11 @@ function modmailpro() {
     }
 
     function getFilteredSubs() {
-        var retval = [];
-        if (localStorage['Toolbox.ModMailPro.filteredsubs']) {
-            retval = JSON.parse(localStorage['Toolbox.ModMailPro.filteredsubs']);
-        }
-        return retval;
+        return TBUtils.getSetting('ModMailPro', 'filteredsubs', []);
     }
 
     function getRepliedThreads() {
-        var retval = [];
-        if (localStorage['Toolbox.ModMailPro.replied']) {
-            retval = JSON.parse(localStorage['Toolbox.ModMailPro.replied']);
-        }
-        return retval;
+        return TBUtils.getSetting('ModMailPro', 'replied', []);
     }
 
     function showThreads(items, byID) {
@@ -502,13 +495,13 @@ function modmailpro() {
 }
 
 function realtimemail() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)) return;
 
-    var realtime = localStorage.getItem('realtime'),
-        delay = 1 * 60000, // Default 1 min delay between requests.
+    //var realtime = localStorage.getItem('realtime'), //huh?
+    var delay = 1 * 60000, // Default 1 min delay between requests.
         refreshLimit = 10, // Default ten items per request.
         sitetable = $('#siteTable').css('top', 0),
         sitePos = sitetable.css('position'),
@@ -532,7 +525,7 @@ function realtimemail() {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.realtime"] || "false")) {
+    if (TBUtils.getSetting('ModMailPro', 'realtime', false)) {
         setInterval(function () {
             getNewThings(true);
         }, delay);
@@ -614,7 +607,7 @@ function realtimemail() {
 }
 
 function compose() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var COMPOSE = "compose-message",
         //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
@@ -647,7 +640,7 @@ function compose() {
 
 
 function modmailSwitch() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
         switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
         
@@ -676,14 +669,14 @@ function modmailSwitch() {
     }
 }
 function settings() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.setting('ModMailPro', 'enabled', true)) return; 
+    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var VERSION = '3.1',
-        filteredsubs = [],
+        filteredsubs = TBUtils.getSetting('ModMailPro', 'filteredsubs', []),
         showing = false,
-        inbox = localStorage["Toolbox.ModMailPro.inboxstyle"] || PRIORITY,
-        firstrun = JSON.parse(localStorage["Toolbox.ModMailPro.firstrun"] || true),
+        inbox = TBUtils.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
+        firstrun = TBUtils.getSetting('ModMailPro', 'firstrun', true),
         menulist = $('.menuarea ul.flat-list:first');
 
     // Create setting elements 
@@ -735,32 +728,32 @@ function settings() {
     // Get settings/Set UI.
     $(inboxstyle).val(inbox);
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.defaultcollapse"] || "false")) {
+    if (TBUtils.getSetting('ModMailPro', 'defaultcollapse', false)) {
         $(autocollapse).addClass('true');
         $(autocollapse).css(selectedCSS);
     }
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.noredmodmail"] || "true")) {
+    if (TBUtils.getSetting('ModMailPro', 'noredmodmail', true)) {
         $(redmodmail).addClass('true');
         $(redmodmail).css(selectedCSS);
     }
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.highlightnew"] || "true")) {
+    if (TBUtils.getSetting('ModMailPro', 'highlightnew', true)) {
         $(highlight).addClass('true');
         $(highlight).css(selectedCSS);
     }
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.expandreplies"] || "false")) {
+    if (TBUtils.getSetting('ModMailPro', 'expandreplies', false)) {
         $(autoexpand).addClass('true');
         $(autoexpand).css(selectedCSS);
     }
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.hideinvitespam"] || "false")) {
+    if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false)) {
         $(hideinvitespam).addClass('true');
         $(hideinvitespam).css(selectedCSS);
     }
 
-    if (JSON.parse(localStorage["Toolbox.ModMailPro.realtime"] || "false")) {
+    if (TBUtils.getSetting('ModMailPro', 'realtime', false)) {
         $(realtime).addClass('true');
         $(realtime).css(selectedCSS);
     }
@@ -785,8 +778,7 @@ function settings() {
     $(about).appendTo('.mmp-menu');
 
     // Get filtered subs.
-    if (localStorage['Toolbox.ModMailPro.filteredsubs']) {
-        filteredsubs = JSON.parse(localStorage['Toolbox.ModMailPro.filteredsubs']);
+    if (filteredsubs) {
         $('.filter-count').attr('title', filteredsubs.join(', '));
     }
 
@@ -828,13 +820,13 @@ function settings() {
 
     // Reset filter, reload page.
     $('body').delegate('.reset-filter-link', 'click', function (e) {
-        localStorage.removeItem('Toolbox.ModMailPro.filteredsubs');
+        TBUtils.setSetting('ModMailPro', 'filteredsubs', []);
         window.location.reload();
     });
 
     // Save default inbox.
     $(inboxstyle).change(function () {
-        localStorage['Toolbox.ModMailPro.inboxstyle'] = $(this).val();
+        TBUtils.setSetting('ModMailPro', 'inboxstyle', $(this).val());
     });
 
     // Settings have been changed.
@@ -851,12 +843,12 @@ function settings() {
         }
 
         // Save settings.
-        localStorage['Toolbox.ModMailPro.defaultcollapse'] = JSON.stringify($(autocollapse).hasClass('true'));
-        localStorage['Toolbox.ModMailPro.noredmodmail'] = JSON.stringify($(redmodmail).hasClass('true'));
-        localStorage['Toolbox.ModMailPro.highlightnew'] = JSON.stringify($(highlight).hasClass('true'));
-        localStorage['Toolbox.ModMailPro.expandreplies'] = JSON.stringify($(autoexpand).hasClass('true'));
-        localStorage['Toolbox.ModMailPro.hideinvitespam'] = JSON.stringify($(hideinvitespam).hasClass('true'));
-        localStorage['Toolbox.ModMailPro.realtime'] = JSON.stringify($(realtime).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'defaultcollapse', $(autocollapse).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'noredmodmail', $(redmodmail).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'highlightnew', $(highlight).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'expandreplies', $(autoexpand).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'hideinvitespam', $(hideinvitespam).hasClass('true'));
+        TBUtils.setSetting('ModMailPro', 'realtime', $(realtime).hasClass('true'));
     });
 }
 

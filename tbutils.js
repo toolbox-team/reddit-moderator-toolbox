@@ -34,6 +34,7 @@ function main() {
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
     TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
+    TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
@@ -183,7 +184,7 @@ function main() {
     };
     
     TBUtils.setting = function (module, setting, defaultVal, value) {
-        console.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
+        $.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
 
         if (value !== undefined) {
             return TBUtils.setSetting(module, setting, value);
@@ -885,7 +886,7 @@ function main() {
     
     // Needs to be replaced. 
     TBUtils.compressHTML = function (src) {
-        console.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
+        $.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
         return TBUtils.htmlDecode(src);
     };
 
@@ -901,7 +902,7 @@ function main() {
     };
 
     TBUtils.clearCache = function () {
-        console.log('TBUtils.clearCache()');
+        $.log('TBUtils.clearCache()');
 
         TBUtils.noteCache = {};
         TBUtils.configCache = {};

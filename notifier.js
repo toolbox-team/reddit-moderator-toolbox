@@ -979,7 +979,6 @@ function tbnoti() {
         // Modmail
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        //$.getJSON('http://www.reddit.com/message/moderator/unread.json', function (json) {  http://www.reddit.com/message/moderator.json
         $.getJSON('http://www.reddit.com/message/moderator.json', function (json) {
             var count = json.data.children.length || 0;
             if (count === 0) {
@@ -1003,21 +1002,9 @@ function tbnoti() {
                 }
             }
             
-            console.log('New messages: ', newCount);
-            
-            /*
-            if (newCount == 1) {
-                var message = json.data.children[newIdx];
-                title = '/r/' + message.data.subreddit + ': ' + message.data.subject;
-                text = 'From: /u/' + message.data.author + '\n' + message.data.body;
-            } else if (newCount > 1) {
-                title = 'New Mod Mail!';
-                text = 'You have ' + newCount + ' new mod mail thead' + (newCount == 1 ? '': 's');
-            }
-            */
+            $.log('New messages: ', newCount);
                 
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
-                //TBUtils.notification(title, text, 'http://www.reddit.com/message/moderator');
                 var notificationbody, messagecount = 0;
 
                 if (consolidatedMessages) {
@@ -1049,10 +1036,10 @@ function tbnoti() {
                     });
 
                     if (newCount === 1) {
-                        TBUtils.notification('One new modmail thread!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
+                        TBUtils.notification('One new modmail!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
 
                     } else if (newCount > 1) {
-                        TBUtils.notification(newCount.toString() + ' new modmail threads!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
+                        TBUtils.notification(newCount.toString() + ' new modmail!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
                     }
                 } else {
                     $.each(json.data.children, function (i, value) {

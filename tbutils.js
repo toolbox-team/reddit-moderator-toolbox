@@ -35,6 +35,7 @@ function main() {
     TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
+    TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
     TBUtils.isExtension = (extension || false);
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');

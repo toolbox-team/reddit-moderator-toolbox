@@ -79,7 +79,7 @@ function modmailpro() {
             replied.push(id);
         }
 
-        localStorage['Toolbox.ModMailPro.replied'] = JSON.stringify(replied);
+        TBUtils.setSetting('ModMailPro', 'replied', replied);
 
         setReplied();
     });
@@ -794,7 +794,7 @@ function settings() {
         if (firstrun) {
             $('.first-run').hide();
             $('.settings-link').css('color', '');
-            localStorage["Toolbox.ModMailPro.firstrun"] = JSON.stringify(false);
+            TBUtils.setSetting('ModMailPro', 'firstrun', false);
         }
 
         if (!showing) {

@@ -10,6 +10,8 @@
 // @copyright  2013+, LowSociety
 // ==/UserScript==
 
+function stattitTabWrapper() {
+
 var stattitTab = {
     
     getSectionFromUrl : function(url) {
@@ -53,7 +55,16 @@ var stattitTab = {
 }
 
 if (document.body) {
-  if (JSON.parse(localStorage['Toolbox.StattitTab.enabled'] || 'true')) {
+    if (TBUtils.setting('ModMatrix', 'enabled', true)) {
       stattitTab.init();  
   }
 }
+
+}
+
+// Add script to page
+(function () {
+    var s = document.createElement('script');
+    s.textContent = "(" + stattitTabWrapper.toString() + ')();';
+    document.head.appendChild(s);
+})();

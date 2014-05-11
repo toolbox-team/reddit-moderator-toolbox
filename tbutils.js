@@ -19,7 +19,8 @@
         //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
-        getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
+        getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
+        usebrowserstorage = false;
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
         
@@ -202,7 +203,7 @@
     TBUtils.setSetting = function (module, setting, value) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
         
-        if (TBUtils.debugMode && TBUtils.browser == CHROME) {
+        if (usebrowserstorage && TBUtils.browser == CHROME) {
             var json = {};
             json[storageKey] = JSON.stringify(value);
             chrome.storage.local.set(json, function (result) {
@@ -221,7 +222,7 @@
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
         // Just another javascript sucks issue.
-        if (TBUtils.debugMode && TBUtils.browser == CHROME) {
+        if (usebrowserstorage && TBUtils.browser == CHROME) {
             chrome.storage.local.get(storageKey, function (result) {
                 val = result[storageKey];
                 console.log(storageKey);

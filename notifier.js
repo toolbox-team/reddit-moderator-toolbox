@@ -179,7 +179,7 @@
 
     // Append shortcuts
     $.each(shortcuts2, function (index, value) {
-        var shortcut = $('<span>- <a href="' + unescape(value) + '">' + unescape(index) + '</a> </span>');
+        var shortcut = $('<span>- <a href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
 
         $(shortcut).appendTo('#tb-toolbarshortcuts');
     });
@@ -290,14 +290,14 @@
             </p>\
             <p>\
                 Multireddit of subs you want displayed in the modqueue counter:<br>\
-                <input type="text" name="modsubreddits" value="' + unescape(modSubreddits) + '">\
+                <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
             </p>\
             <p>\
                 <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '>Show counter for unmoderated.</label>\
             </p>\
             <p>\
                 Multireddit of subs you want displayed in the unmoderated counter:<br>\
-                <input type="text" name="unmoderatedsubreddits" value="' + unescape(unmoderatedSubreddits) + '">\
+                <input type="text" name="unmoderatedsubreddits" value="' + TBUtils.htmlEncode(unescape(unmoderatedSubreddits)) + '">\
             </p>\
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
@@ -336,7 +336,7 @@
 
         } else {
             $.each(shortcuts2, function (index, value) {
-                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + unescape(index) + '" name="name"> </td><td> <input type="text" value="' + unescape(value) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
+                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
         <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
         <br><br>';
                 //console.log(shortcutinput);
@@ -424,7 +424,7 @@
             </p>\
             <p>\
                 Highlight keywords, keywords should entered seperated by a comma without spaces:<br>\
-            <input type="text" name="highlighted" value="' + unescape(highlighted) + '">\
+            <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '">\
             </p>\
             <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
             </div>\

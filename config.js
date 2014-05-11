@@ -232,11 +232,13 @@
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
                 var label = unescape(this.text);
-                if(label.length > 200) {
-                    label = label.substring(0,197) + "...";
-                }
                 if(label == "") {
                     label = '<span style="color: #cecece">(no reason)</span>';
+                } else {
+                    if(label.length > 200) {
+                        label = label.substring(0,197) + "...";
+                    }
+                    label = TBUtils.htmlEncode(label);
                 }
                 $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
             }); 
@@ -340,9 +342,9 @@
             </tr>\
             </table>\
                 <span>Header:</span>\
-                <p><textarea class="edit-header" >'+ unescape(config.removalReasons.header || '') +'</textarea></p>\
+                <p><textarea class="edit-header" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) +'</textarea></p>\
                 <span>Footer:</span>\
-                <p><textarea class="edit-footer" >'+ unescape(config.removalReasons.footer || '') +'</textarea></p>\
+                <p><textarea class="edit-footer" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) +'</textarea></p>\
             </div>\
 \
 \

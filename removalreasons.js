@@ -110,6 +110,7 @@
         // Get link/comment attributes
         var button = $(this),
             thing = button.closest('.thing'),
+            yes = button.find('.yes'),
             info = TBUtils.getThingInfo(button),
             data = {
                 subreddit: info.subreddit,
@@ -123,6 +124,9 @@
                 domain: info.domain
             };
         
+        // Causes recursion loop.
+        button.removeClass('remove-button');
+
         if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1)
             return;
         
@@ -130,7 +134,7 @@
         var popup = $('#reason-popup-' + data.subreddit);
         if (popup.length) {
             // Click yes on the removal
-            button.find('.yes').click();
+            yes[0].click();
             
             openPopup();
             
@@ -150,7 +154,7 @@
             // FUCKED: now loops forever until jquery overflows.  
             // The reason is the 'yes' button has the class remove-button
             // Which has never fucking changed.  
-            button.find('.yes').click();
+            yes[0].click();
             
             
             // Get PM subject line

@@ -155,7 +155,7 @@
 
             //Show all comments
             if (expandReplies) {
-                parent.find('.expand-btn:first').click();
+                parent.find('.expand-btn:first')[0].click();
             }
         }
     });
@@ -210,11 +210,7 @@
     });
 
     function initialize() {
-        console.log('MMP init');
-        
-        // Update the notifier.
-        //TBUtils.setting('Notifier', 'lastseenmodmail', '', now);
-        //TBUtils.setting('Notifier', 'modmailcount', '', 0);
+        $.log('MMP init');
 
         var threads = $('.message-parent');
 
@@ -487,7 +483,7 @@
             $(thread).find('.expand-btn').show();
 
             if (expandReplies) {
-                $(thread).find('.expand-btn:first').click();
+                $(thread).find('.expand-btn:first')[0].click();
             }
         });
 

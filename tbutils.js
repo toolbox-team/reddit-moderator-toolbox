@@ -2,6 +2,11 @@ function main() {
     var extension = true;  //only the extensions use this loading method for utils.
 
 (function (TBUtils) {
+
+    // We need these before we can do anything.
+    TBUtils.modhash = $("form.logout input[name=uh]").val();
+    TBUtils.logged = (TBUtils.modhash !== undefined);
+
     //Private variables
     //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
@@ -15,9 +20,11 @@ function main() {
         lastVersion = JSON.parse(localStorage['Toolbox.Utils.lastversion'] || 0),
         //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
         id = Math.floor(Math.random() * 9999),
-        newLogin = (cacheName != reddit.logged),
+        newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
+
+    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
         
     // Public variables
     TBUtils.version = 5;  //don't think we need this anymore.
@@ -40,7 +47,7 @@ function main() {
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
     TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
-    TBUtils.browser = 'unknown';
+    TBUtils.browser = UNKOWN_BROWSER;
     TBUtils.firstRun = false;
     
     // Icons 
@@ -121,20 +128,12 @@ function main() {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
     
-    // Get browser type
-    // From http://stackoverflow.com/a/16938481
-    function getBrowser() {
-        var N = navigator.appName,
-            ua = navigator.userAgent,
-            tem;
-        var M = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-        if (M && (tem = ua.match(/version\/([\.\d]+)/i)) != null)
-            M[2]= tem[1];
-        M = M ? [M[1], M[2]]: [N, navigator.appVersion, '-?'];
-        return M[0].toLowerCase();
+    // Get our browser.  TODO: Opera check.
+    if (typeof (InstallTrigger) !== "undefined") {
+        TBUtils.browser = FIREFOX;
+    } else if (typeof(chrome) !== "undefined") {
+        TBUtils.browser = CHROME;
     }
-    
-    TBUtils.browser = getBrowser();
     
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
@@ -206,6 +205,16 @@ function main() {
         var storageKey = 'Toolbox.' + module + '.' + setting;
 
         localStorage[storageKey] = JSON.stringify(value);
+
+        /*
+        if (TBUtils.debugMode && TBUtils.browser == CHROME) {
+            chrome.storage.local.set({ storageKey: value }, function (result) {
+                chrome.storage.local.get(storageKey, function (result) {
+                    alert(storageKey.result);
+                });
+            });
+        }
+        */
 
         return TBUtils.getSetting(module, setting);
     };
@@ -316,16 +325,13 @@ function main() {
         }
         
         
-        //platform check.  
+        //platform check.  TODO: support opera.
         switch (note.platform) {
         case 'firefox':
-            if (TBUtils.browser == 'firefox' && TBUtils.isExtension) show();
+            if (TBUtils.browser == FIREFOX && TBUtils.isExtension) show();
             break;
         case 'chrome':
-            if (TBUtils.browser == 'chrome' && TBUtils.isExtension) show();
-            break;
-        case 'opera':
-            if (TBUtils.browser == 'opera' && TBUtils.isExtension) show();
+            if (TBUtils.browser == CHROME && TBUtils.isExtension) show();
             break;
         case 'script':
             if (!TBUtils.isExtension) show();

@@ -14,7 +14,8 @@
 
 (function () {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
-    
+    $.log('Loading Notifier Module');
+
     $('body').addClass('mod-toolbox');
     //
     // preload some generic variables 

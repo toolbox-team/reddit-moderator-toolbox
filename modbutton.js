@@ -12,6 +12,7 @@
  
 (function () {
     if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
+    $.log('Loading Mod Button Module');
  
     var buttonName = 'mod',
         saveButton = 'Save',

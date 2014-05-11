@@ -12,6 +12,7 @@
 
 (function () {
     if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
+    $.log('Loading Configuration Module');
                 
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,' + TBUtils.icon + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',

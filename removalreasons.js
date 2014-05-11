@@ -15,6 +15,7 @@
         return setTimeout(removalreasons);
 
     if (!TBUtils.logged || !TBUtils.getSetting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
+    $.log('Loading Removal Reasons Module');
     
     // The CSS that was supposed to be added but wasn't actually being added by the old version looked weird.
     // So I disabled it for now.

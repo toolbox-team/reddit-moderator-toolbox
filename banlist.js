@@ -17,7 +17,7 @@
         || !TBUtils.getSetting('BanList', 'enabled', true)
         || !location.pathname.match(/\/about\/(?:banned)\/?/)
     ) return;
-
+    $.log('Loading Banlist Module');
 
     // extracts a url parameter value from a URL string
     // from http://stackoverflow.com/a/15780907/362042

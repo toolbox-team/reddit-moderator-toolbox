@@ -14,6 +14,7 @@
         return setTimeout(queuetools);
 
     if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
+    $.log('Loading Queue Tools Module');
     
     // Cached data
     var notEnabled = [],

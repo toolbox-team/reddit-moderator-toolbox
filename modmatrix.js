@@ -647,5 +647,6 @@ var modLogMatrix = {
 
 
 if (TBUtils.logged && $('.moderator').length && TBUtils.getSetting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
+    $.log('Loading Mod Matrix Module');
     modLogMatrix.init();
 }

@@ -54,6 +54,7 @@ var stattitTab = {
 
 if (document.body) {
     if (TBUtils.getSetting('ModMatrix', 'enabled', true)) {
+        $.log('Loading Stattit Tab Module');
       stattitTab.init();  
   }
 }

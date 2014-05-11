@@ -12,6 +12,7 @@
 
 (function () {
     if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
+    $.log('Loading User Notes Module');
 
     var subs = [];
 

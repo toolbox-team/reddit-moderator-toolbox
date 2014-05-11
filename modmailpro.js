@@ -13,6 +13,8 @@
 
 (function modmailpro() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    $.log('Loading MMP Module');
+
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var INVITE = "moderator invited",

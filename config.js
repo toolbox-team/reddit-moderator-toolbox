@@ -10,7 +10,7 @@
 // @version     1.3
 // ==/UserScript==
 
-function tbconf() {   
+(function () {
     if (!TBUtils.logged || !TBUtils.setting('TBConfig', 'enabled', true)) return;
                 
     var toolbox = $('#moderation_tools').find('.content'),
@@ -484,11 +484,4 @@ function tbconf() {
         // so they don't need to be re-strinified.
         postToWiki(page, text, false, updateAM);
     });
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + tbconf.toString() + ')();';
-    document.head.appendChild(s);
 })();

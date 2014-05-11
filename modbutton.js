@@ -10,7 +10,7 @@
 // @version     1.13
 // ==/UserScript==
  
-function modbutton() {
+(function () {
     if (!TBUtils.logged || !TBUtils.setting('ModButton', 'enabled', true)) return;
  
     var buttonName = 'mod',
@@ -536,11 +536,4 @@ function modbutton() {
         // re-render the lists
         updateSavedSubs();
     });
-}
- 
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + modbutton.toString() + ')();';
-    document.head.appendChild(s);
 })();

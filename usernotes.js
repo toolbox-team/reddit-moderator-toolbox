@@ -10,7 +10,7 @@
 // @version     1.5.0
 // ==/UserScript==
 
-function usernotes() {
+(function () {
     if (!TBUtils.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
@@ -558,11 +558,5 @@ function usernotes() {
             popup.find('.utagger-save-user').click();
         }
     });
-}
 
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + usernotes.toString() + ')();';
-    document.head.appendChild(s);
 })();

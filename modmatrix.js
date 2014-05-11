@@ -6,7 +6,6 @@
 // @version	1.1
 // ==/UserScript==
 
-function modMatrixWrapper() {
 
 var modLogMatrix = {
 
@@ -650,11 +649,3 @@ var modLogMatrix = {
 if (TBUtils.logged && $('.moderator').length && TBUtils.setting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
     modLogMatrix.init();
 }
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + modMatrixWrapper.toString() + ')();';
-    document.head.appendChild(s);
-})();

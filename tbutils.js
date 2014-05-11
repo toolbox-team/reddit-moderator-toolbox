@@ -1,6 +1,3 @@
-function main() {
-    var extension = true;  //only the extensions use this loading method for utils.
-
 (function (TBUtils) {
 
     // We need these before we can do anything.
@@ -44,7 +41,7 @@ function main() {
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
-    TBUtils.isExtension = (extension || false);
+    TBUtils.isExtension = true;
     TBUtils.log = [];
     TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
     TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
@@ -1040,11 +1037,3 @@ function main() {
     })();
     
 }(TBUtils = window.TBUtils || {}));
-
-}
-
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + main.toString() + ')();';
-    document.head.appendChild(s);
-})();

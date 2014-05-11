@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 
-function tbnoti() {
+(function () {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     
     $('body').addClass('mod-toolbox');
@@ -1077,12 +1077,5 @@ function tbnoti() {
     // How often we check for new messages, this will later be adjustable in the settings. 
     setInterval(getmessages, checkInterval);
     getmessages();
-}
 
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + tbnoti.toString() + ')();';
-    document.head.appendChild(s);
 })();

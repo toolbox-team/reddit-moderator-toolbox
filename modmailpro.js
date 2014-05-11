@@ -11,7 +11,7 @@
 // @version     3.1
 // ==/UserScript==
 
-function modmailpro() {
+(function modmailpro() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
@@ -492,9 +492,9 @@ function modmailpro() {
         $(link).text('collapse all');
         $('.collapse-link').text('[-]');
     }
-}
+})();
 
-function realtimemail() {
+(function realtimemail() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
@@ -604,9 +604,9 @@ function realtimemail() {
         if (window.flowwit)
             for (i in window.flowwit) window.flowwit[i](things.filter('.thing'));
     }
-}
+})();
 
-function compose() {
+(function compose() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var COMPOSE = "compose-message",
         //mySubs = [],
@@ -636,10 +636,10 @@ function compose() {
             }
         });
     }
-}
+})();
 
 
-function modmailSwitch() {
+(function modmailSwitch() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
         switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
@@ -667,8 +667,9 @@ function modmailSwitch() {
             }
         });
     }
-}
-function settings() {
+})();
+
+(function settings() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
@@ -850,28 +851,4 @@ function settings() {
         TBUtils.setSetting('ModMailPro', 'hideinvitespam', $(hideinvitespam).hasClass('true'));
         TBUtils.setSetting('ModMailPro', 'realtime', $(realtime).hasClass('true'));
     });
-}
-
-// Add script to page
-(function () {
-    // Add mmp.
-    addScriptToPage(modmailpro, 'modmailpro');
-        
-    // Add realtime mod mail.
-    addScriptToPage(realtimemail, 'realtimemail');
-        
-    // Add compose mod mail.
-    addScriptToPage(compose, 'compose');
-
-    // Add switch mod mail.		
-    addScriptToPage(modmailSwitch, 'modmailSwitch');
-        
-    // Add settings area
-    addScriptToPage(settings, 'settings');
-        
-    function addScriptToPage(script, name) {
-        var s = document.createElement('script');
-        s.textContent = "(" + script.toString() + ')();';
-        document.head.appendChild(s);
-    }
 })();

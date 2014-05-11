@@ -15,7 +15,7 @@
 // ==/UserScript==
 
 
-function domaintagger() {
+(function () {
     if (!TBUtils.logged || !TBUtils.setting('DomainTagger', 'enabled', true)) return;
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';
@@ -224,11 +224,4 @@ function domaintagger() {
     });
 
 
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + domaintagger.toString() + ')();';
-    document.head.appendChild(s);
 })();

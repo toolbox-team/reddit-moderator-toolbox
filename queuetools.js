@@ -6,7 +6,13 @@
 // @run-at document-start
 // ==/UserScript==
 
-function queueTools() {
+(function queuetools() {
+    // I don't actually know why this works the way it does, but without them modtools doesn't load.
+    if (!document.head)
+        return setTimeout(queuetools);
+    if (!document.body)
+        return setTimeout(queuetools);
+
     if (!TBUtils.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
     
     // Cached data
@@ -757,17 +763,5 @@ function queueTools() {
             });
         }
     }
-}
 
-// Add script to the page
-(function addscript() {
-    // I don't actually know why this works the way it does, but without them modtools doesn't load.
-    if (!document.head)
-        return setTimeout(addscript);
-    if (!document.body)
-        return setTimeout(addscript);
-    
-    var s = document.createElement('script');
-    s.textContent = "(" + queueTools.toString() + ')();';
-    document.head.appendChild(s);
 })();

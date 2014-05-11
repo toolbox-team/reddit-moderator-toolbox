@@ -10,8 +10,6 @@
 // @copyright  2013+, LowSociety
 // ==/UserScript==
 
-function stattitTabWrapper() {
-
 var stattitTab = {
     
     getSectionFromUrl : function(url) {
@@ -59,12 +57,3 @@ if (document.body) {
       stattitTab.init();  
   }
 }
-
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + stattitTabWrapper.toString() + ')();';
-    document.head.appendChild(s);
-})();

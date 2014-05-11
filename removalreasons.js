@@ -6,7 +6,14 @@
 // @run-at	document-start
 // ==/UserScript==
 
-function removal_reasons() {
+// Add script to the page
+(function removalreasons() {
+    // I don't actually know why this works the way it does, but without them modtools doesn't load.
+    if (!document.head)
+        return setTimeout(removalreasons);
+    if (!document.body)
+        return setTimeout(removalreasons);
+
     if (!TBUtils.logged || !TBUtils.setting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
     
     // The CSS that was supposed to be added but wasn't actually being added by the old version looked weird.
@@ -570,17 +577,4 @@ function removal_reasons() {
     $('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
         TBUtils.setting('RemovalReasons', this.id, null, this.selectedIndex || this.value);
     });
-}
-
-// Add script to the page
-(function addscript() {
-    // I don't actually know why this works the way it does, but without them modtools doesn't load.
-    if (!document.head)
-        return setTimeout(addscript);
-    if (!document.body)
-        return setTimeout(addscript);
-
-    var s = document.createElement('script');
-    s.textContent = "(" + removal_reasons.toString() + ')();';
-    document.head.appendChild(s);
 })();

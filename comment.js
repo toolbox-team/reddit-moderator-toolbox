@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 
-function tbcomm() {
+(function () {
     if (!TBUtils.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
 
     //
@@ -111,11 +111,4 @@ function tbcomm() {
 
         $('.md p').highlight(highlighted);
     }
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + tbcomm.toString() + ')();';
-    document.head.appendChild(s);
 })();

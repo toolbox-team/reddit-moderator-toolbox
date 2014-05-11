@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 
-function banlist () {
+(function () {
     if (
         !TBUtils.logged
         || !TBUtils.setting('BanList', 'enabled', true)
@@ -208,11 +208,4 @@ function banlist () {
             $(this).remove();
         });
     }
-}
- 
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + banlist.toString() + ')();';
-    document.head.appendChild(s);
 })();

@@ -24,7 +24,7 @@
 /**
 @module SnuOwnd
 */
-function snuWrap() {
+
 
 (function(exports){
 	function _isspace(c) {return c == ' ' || c == '\n';}
@@ -3833,10 +3833,3 @@ function snuWrap() {
 		define('snuownd', [], exports);
 	}
 })(typeof(exports)!=='undefined'?exports:typeof(window)!=='undefined'?window.SnuOwnd={}:{});
-}
-
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + snuWrap.toString() + ')();';
-    document.head.appendChild(s);
-})();

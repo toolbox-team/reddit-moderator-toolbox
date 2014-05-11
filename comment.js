@@ -12,7 +12,7 @@
 
 
 function tbcomm() {
-    if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
+    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
 
     //
     // preload some generic variables 

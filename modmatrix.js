@@ -647,7 +647,7 @@ var modLogMatrix = {
 }
 
 
-if (reddit.logged && $('.moderator').length && TBUtils.setting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
+if (TBUtils.logged && $('.moderator').length && TBUtils.setting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
     modLogMatrix.init();
 }
 }

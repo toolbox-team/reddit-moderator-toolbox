@@ -13,7 +13,7 @@
 
 
 function tbnoti() {
-    if (!reddit.logged || TBUtils.isToolbarPage) return;
+    if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     
     $('body').addClass('mod-toolbox');
     //
@@ -659,7 +659,7 @@ function tbnoti() {
 
                 $.post('/api/read_message', {
                     id: unreadmessageid,
-                    uh: reddit.modhash,
+                    uh: TBUtils.modhash,
                     api_type: 'json'
                 });
             });
@@ -1014,7 +1014,7 @@ function tbnoti() {
 
                             $.post('/api/read_message', {
                                 id: invitespamid,
-                                uh: reddit.modhash,
+                                uh: TBUtils.modhash,
                                 api_type: 'json'
                             });
                         }
@@ -1048,7 +1048,7 @@ function tbnoti() {
 
                             $.post('/api/read_message', {
                                 id: invitespamid,
-                                uh: reddit.modhash,
+                                uh: TBUtils.modhash,
                                 api_type: 'json'
                             });
                         }

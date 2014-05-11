@@ -7,7 +7,7 @@
 // ==/UserScript==
 
 function removal_reasons() {
-    if (!reddit.logged || !TBUtils.setting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
+    if (!TBUtils.logged || !TBUtils.setting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
     
     // The CSS that was supposed to be added but wasn't actually being added by the old version looked weird.
     // So I disabled it for now.
@@ -109,7 +109,7 @@ function removal_reasons() {
                 author: info.user,
                 title: thing.find('a.title').length ? '"' + thing.find('a.title').text() + '"' : '',
                 kind: thing.hasClass('link') ? 'submission' : 'comment',
-                mod: reddit.logged,
+                mod: TBUtils.logged,
                 url: info.permalink,
                 link: thing.find('a.title').attr('href'),
                 domain: info.domain

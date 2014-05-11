@@ -6,6 +6,7 @@ function main() {
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
     TBUtils.logged = (TBUtils.modhash !== undefined);
+    TBUtils.post_site = $('.redditname a:first').html();  
 
     //Private variables
     //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.
@@ -49,6 +50,11 @@ function main() {
     TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
     TBUtils.browser = UNKOWN_BROWSER;
     TBUtils.firstRun = false;
+
+    // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
+    if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site) {
+        TBUtils.post_site = '';
+    }
     
     // Icons 
     TBUtils.icon = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -117,7 +123,7 @@ function main() {
     
     // Update cache vars as needed.
     if (newLogin) {
-        localStorage['Toolbox.cache.cachename'] = reddit.logged;
+        localStorage['Toolbox.cache.cachename'] = TBUtils.logged;
     }
     
     if (getnewLong) {
@@ -580,7 +586,7 @@ function main() {
         var entry = $($(sender).closest('.entry')[0] || $(sender).find('.entry')[0] || sender),
             thing = $($(sender).closest('.thing')[0] || sender),
             user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
-            subreddit = reddit.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
+            subreddit = TBUtils.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname');
@@ -601,7 +607,7 @@ function main() {
             // The previous check would mistakenly catch removed modmail messages as the user's messages.
             // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
             if (user === '') {
-                user = reddit.logged;
+                user = TBUtils.logged;
                 
                 if (!subreddit) {
                     // Find a better way, I double dog dare ya!
@@ -675,7 +681,7 @@ function main() {
             content: data,
             page: page,
             reason: 'updated via toolbox config',
-            uh: reddit.modhash
+            uh: TBUtils.modhash
         })
         
         .error(function (err) {
@@ -689,7 +695,7 @@ function main() {
             if (updateAM) {
                 $.post('/api/compose', {
                     to: 'automoderator',
-                    uh: reddit.modhash,
+                    uh: TBUtils.modhash,
                     subject: subreddit,
                     text: 'update'
                 })
@@ -707,7 +713,7 @@ function main() {
                 // Set page access to 'mod only'.
                 $.post('/r/' + subreddit + '/wiki/settings/' + page, {
                     permlevel: 2,
-                    uh: reddit.modhash
+                    uh: TBUtils.modhash
                 })
                 
                 // Super extra double-secret secure, just to be safe.
@@ -784,7 +790,7 @@ function main() {
             text: text,
             css_class: css,
             r: subreddit,
-            uh: reddit.modhash
+            uh: TBUtils.modhash
         })
         .success(function() {
             if(typeof callback !== "undefined")
@@ -799,7 +805,7 @@ function main() {
     TBUtils.distinguishThing = function(id, callback) {
         $.post('/api/distinguish/yes', {
             id: id,
-            uh: reddit.modhash
+            uh: TBUtils.modhash
         })
         .success(function() {
             if(typeof callback !== "undefined")
@@ -814,7 +820,7 @@ function main() {
     TBUtils.approveThing = function(id, callback) {
         $.post('/api/approve', {
             id: id,
-            uh: reddit.modhash
+            uh: TBUtils.modhash
         })
         .success(function() {
             if(typeof callback !== "undefined")
@@ -829,7 +835,7 @@ function main() {
     TBUtils.postComment = function(parent, text, callback) {
         $.post('/api/comment', {
             parent: parent,
-            uh: reddit.modhash,
+            uh: TBUtils.modhash,
             text: text,
             api_type: 'json'
         })
@@ -850,7 +856,7 @@ function main() {
             kind: 'link',
             resubmit: 'true',
             url: link,
-            uh: reddit.modhash,
+            uh: TBUtils.modhash,
             title: title,
             sr: subreddit,
             api_type: 'json'
@@ -868,7 +874,7 @@ function main() {
     TBUtils.sendPM = function(to, subject, text, callback) {
         $.post('/api/compose', {
             to: to,
-            uh: reddit.modhash,
+            uh: TBUtils.modhash,
             subject: subject,
             text: text
         })
@@ -884,7 +890,7 @@ function main() {
     
     TBUtils.banUser = function(user, subreddit, reason, callback) {
         $.post('/api/friend', {
-            uh: reddit.modhash,
+            uh: TBUtils.modhash,
             type: 'banned',
             name: user,
             r: subreddit,

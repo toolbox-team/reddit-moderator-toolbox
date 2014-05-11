@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 function usernotes() {
-    if (!reddit.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
 
@@ -471,7 +471,7 @@ function usernotes() {
         note = {
             note: noteText,
             time: new Date().getTime(),
-            mod: reddit.logged,
+            mod: TBUtils.logged,
             link: link,
             type: type
         };

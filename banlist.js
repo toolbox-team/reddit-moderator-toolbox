@@ -13,7 +13,7 @@
 
 function banlist () {
     if (
-        !reddit.logged
+        !TBUtils.logged
         || !TBUtils.setting('BanList', 'enabled', true)
         || !location.pathname.match(/\/about\/(?:banned)\/?/)
     ) return;

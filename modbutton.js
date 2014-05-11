@@ -11,7 +11,7 @@
 // ==/UserScript==
  
 function modbutton() {
-    if (!reddit.logged || !TBUtils.setting('ModButton', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.setting('ModButton', 'enabled', true)) return;
  
     var buttonName = 'mod',
         saveButton = 'Save',
@@ -297,7 +297,7 @@ function modbutton() {
             status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
  
             $.post('/api/' + api, {
-                uh: reddit.modhash,
+                uh: TBUtils.modhash,
                 type: action,
                 name: user,
                 r: sub,
@@ -363,7 +363,7 @@ function modbutton() {
                         api_type: 'json',
                         name: user,
                         r: subreddit,
-                        uh: reddit.modhash
+                        uh: TBUtils.modhash
                     })
                     
                     .error(function (err) {
@@ -387,7 +387,7 @@ function modbutton() {
                     text: text,
                     css_class: css_class,
                     r: subreddit,
-                    uh: reddit.modhash
+                    uh: TBUtils.modhash
                 })
  
                 .error(function (err) {

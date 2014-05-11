@@ -7,7 +7,7 @@
 // ==/UserScript==
 
 function queueTools() {
-    if (!reddit.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
     
     // Cached data
     var notEnabled = [],
@@ -112,7 +112,7 @@ function queueTools() {
                         <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a> \
                         <a class="choice" href="javascript:;" type="removed">[ removed ]</a> \
                         <a class="choice" href="javascript:;" type="approved">[ approved ]</a>\
-                        ' + (reddit.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
+                        ' + (TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
                         <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>\
                         <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
                         <a class="choice" href="javascript:;" type="user">user...</a> \
@@ -128,7 +128,7 @@ function queueTools() {
                     <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
                     <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
                     <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
-                    ' + (reddit.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
+                    ' + (TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
                 </span> \
                 <span class="dropdown-title lightdrop" style="float:right"> sort: \
                     <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
@@ -266,7 +266,7 @@ function queueTools() {
             // Apply action
             $('.thing:visible>input:checked').parent().each(function () {
                 $.post('/api/' + type, {
-                    uh: reddit.modhash,
+                    uh: TBUtils.modhash,
                     spam: spam,
                     id: $(this).thing_id()
                 });
@@ -717,7 +717,7 @@ function queueTools() {
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage)
         addModtools();
-    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!reddit.post_site || $('body.moderator').length))
+    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length))
         $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
 
     // Check if we're viewing an /r/mod/ fakereddit page
@@ -731,7 +731,7 @@ function queueTools() {
         $('.subscription-box a.title').each(function () {
             var elem = $(this),
                 sr = elem.text(),
-                data = JSON.parse(TBUtils.getSetting('modtools', 'mq-' + reddit.logged + '-' + sr, '[0,0]'));
+                data = JSON.parse(TBUtils.getSetting('modtools', 'mq-' + TBUtils.logged + '-' + sr, '[0,0]'));
             modSubs.push(sr);
 
             // Update count and re-cache data if more than an hour old.
@@ -739,7 +739,7 @@ function queueTools() {
             if (now > data[1] + 3600000)
                 setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
         });
-        TBUtils.setting('modtools', 'mod-' + reddit.logged, null, JSON.stringify(modSubs));
+        TBUtils.setting('modtools', 'mod-' + TBUtils.logged, null, JSON.stringify(modSubs));
 
         function sortSubreddits() {
             var subs = $('.subscription-box li').sort(function (a, b) {
@@ -751,7 +751,7 @@ function queueTools() {
 
         function updateModqueueCount(sr) {
             $.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-                TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, null, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                TBUtils.setting('modtools', 'mq-' + TBUtils.logged + '-' + sr, null, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
                 $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
                 sortSubreddits();
             });

@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 function modmailpro() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var INVITE = "moderator invited",
@@ -495,7 +495,7 @@ function modmailpro() {
 }
 
 function realtimemail() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)) return;
@@ -607,7 +607,7 @@ function realtimemail() {
 }
 
 function compose() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var COMPOSE = "compose-message",
         //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
@@ -640,7 +640,7 @@ function compose() {
 
 
 function modmailSwitch() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
         switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
         
@@ -669,7 +669,7 @@ function modmailSwitch() {
     }
 }
 function settings() {
-    if (!TBUtils.isModmail || !reddit.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
     var VERSION = '3.1',

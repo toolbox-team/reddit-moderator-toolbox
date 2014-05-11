@@ -11,11 +11,11 @@
 // ==/UserScript==
 
 function tbconf() {   
-    if (!reddit.logged || !TBUtils.setting('TBConfig', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.setting('TBConfig', 'enabled', true)) return;
                 
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,' + TBUtils.icon + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
-        subreddit = reddit.post_site || $('.titlebox h1.redditname a').text(),
+        subreddit = TBUtils.post_site,
         config = TBUtils.config;
     
     if (!subreddit) return;

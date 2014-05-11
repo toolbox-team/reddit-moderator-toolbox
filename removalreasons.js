@@ -108,17 +108,17 @@
         
         // Get link/comment attributes
         var button = $(this),
-            thing = button.thing(),
-            info = TBUtils.getThingInfo(thing),
+            thing = button.closest('.thing'),
+            info = TBUtils.getThingInfo(button),
             data = {
                 subreddit: info.subreddit,
-                fullname: thing.thing_id(),
+                fullname: info.id,
                 author: info.user,
-                title: thing.find('a.title').length ? '"' + thing.find('a.title').text() + '"' : '',
-                kind: thing.hasClass('link') ? 'submission' : 'comment',
+                title: info.title,
+                kind: info.kind,
                 mod: TBUtils.logged,
                 url: info.permalink,
-                link: thing.find('a.title').attr('href'),
+                link: info.postlink,
                 domain: info.domain
             };
         
@@ -145,7 +145,12 @@
             }
             
             // Click yes on the removal
+
+            // FUCKED: now loops forever until jquery overflows.  
+            // The reason is the 'yes' button has the class remove-button
+            // Which has never fucking changed.  
             button.find('.yes').click();
+            
             
             // Get PM subject line
             data.subject = response.pmsubject || 'Your {kind} was removed from {subreddit}';

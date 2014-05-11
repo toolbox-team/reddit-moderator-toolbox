@@ -17,10 +17,10 @@
     
     // Cached data
     var notEnabled = [],
-        hideActionedItems = TBUtils.getSetting('ModTools', 'hideactioneditems', false),
-        ignoreOnApprove = TBUtils.getSetting('ModTools', 'ignoreonapprove', false),
-        rtsComment = TBUtils.getSetting('ModTools', 'rtscomment', true),
-        sortModSubs = TBUtils.getSetting('ModTools', 'sortmodsubs', false);
+        hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
+        ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
+        rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
+        sortModSubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false);
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated

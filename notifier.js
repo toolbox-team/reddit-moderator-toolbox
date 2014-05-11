@@ -95,12 +95,12 @@
     var banlistAutomatic = TBUtils.getSetting('BanList', 'automatic', false);
 
     // MTE settings.
-    var hideactioneditems = TBUtils.getSetting('ModTools', 'hideactioneditems', false),
-        ignoreonapprove = TBUtils.getSetting('ModTools', 'ignoreonapprove', false),
-        removalreasons = TBUtils.getSetting('ModTools', 'removalreasons', true),
-        commentreasons = TBUtils.getSetting('ModTools', 'commentreasons', false),
-        rtscomment = TBUtils.getSetting('ModTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.getSetting('ModTools', 'sortmodsubs', false);
+    var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
+        ignoreonapprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
+        removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
+        commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false),
+        rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
+        sortmodsubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false);
 
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
@@ -587,12 +587,12 @@
         TBUtils.setSetting('BanList', 'automatic', $("#banlistAutomatic").prop('checked'));
 
         // Save MTE settings.
-        TBUtils.setSetting('ModTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
-        TBUtils.setSetting('ModTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
-        TBUtils.setSetting('ModTools', 'removalreasons', $("#removalreasons").prop('checked'));
-        TBUtils.setSetting('ModTools', 'commentreasons', $("#commentreasons").prop('checked'));
-        TBUtils.setSetting('ModTools', 'rtscomment', $("#rtscomment").prop('checked'));
-        TBUtils.setSetting('ModTools', 'sortmodsubs', $("#sortmodsubs").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
+        TBUtils.setSetting('RemovalReasons', 'removalreasons', $("#removalreasons").prop('checked'));
+        TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'sortmodsubs', $("#sortmodsubs").prop('checked'));
 
         // save cache settings.
         TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());

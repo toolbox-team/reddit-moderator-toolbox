@@ -17,7 +17,6 @@
         seenNotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
         lastVersion = JSON.parse(localStorage['Toolbox.Utils.lastversion'] || 0),
         //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
-        id = Math.floor(Math.random() * 9999),
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin);
@@ -189,10 +188,6 @@
         domainTags: '',
         removalReasons: '',
         modMacros: '',
-    };
-    
-    TBUtils.getID = function (callback) {
-        callback(id);
     };
     
     TBUtils.setting = function (module, setting, defaultVal, value) {
@@ -586,9 +581,12 @@
             subreddit = TBUtils.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', ''),
-            id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname');
+            id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname'),
 
-        //console.log(id);
+            // These need some fall backs, but only removal reasons use them for now.
+            title = thing.find('a.title').length ? thing.find('a.title').text() : '',
+            kind = thing.hasClass('link') ? 'submission' : 'comment',
+            postlink = thing.find('a.title').attr('href');
         
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
@@ -639,7 +637,10 @@
             permalink: permalink,
             domain: domain,
             id: id,
-            approved_by: approved_by
+            approved_by: approved_by,
+            title: title,
+            kind: kind,
+            postlink: postlink
         };
     };
     

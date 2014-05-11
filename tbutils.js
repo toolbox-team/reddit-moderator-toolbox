@@ -131,15 +131,17 @@
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
     
-    // Get our browser.
+    // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
     if (typeof (InstallTrigger) !== "undefined") {
         TBUtils.browser = FIREFOX;
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = CHROME;
         
-        if (window.opera !== "undefined") { // always check after Chrome
+        if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
             TBUtils.browser = OPERA;
         }
+    } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
+        TBUtils.browser = SAFARI;
     }
     
     // First run changes.
@@ -359,6 +361,9 @@
             break;
         case 'opera':
             if (TBUtils.browser == OPERA && TBUtils.isExtension) show();
+            break;
+        case 'safari':
+            if (TBUtils.browser == SAFARI && TBUtils.isExtension) show();
             break;
         case 'script':
             if (!TBUtils.isExtension) show();

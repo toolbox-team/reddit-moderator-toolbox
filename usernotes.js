@@ -298,7 +298,7 @@
     // Inflates a single note
     function inflateNote(mgr, note) {
         return {
-            "note": note.n,
+            "note": TBUtils.htmlDecode(note.n),
             "time": note.t,
             "mod": mgr.get("users", note.m),
             "link": note.l,

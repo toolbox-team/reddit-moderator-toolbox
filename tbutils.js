@@ -769,7 +769,12 @@
         $.ajax('http://www.reddit.com/r/' + subreddit + '/wiki/' + page + '.json', {
             dataType: "json",
             dataFilter: function(data, type) {
-                return TBUtils.unescapeJSON(data);
+                //TODO: right now a lot of functions implicitly rely on reddit
+                //returning escaped JSON to operate safely. add this back in once
+                //everything's been audited.
+                
+                //return TBUtils.unescapeJSON(data);
+                return data;
             }
         })
         .done(function (json) {

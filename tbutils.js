@@ -340,10 +340,10 @@
             if ($.inArray(note.id, seenNotes) === -1) {
                 TBUtils.getSetting('Utils', 'notelastshown', '', now);
                 
-                TBUtils.alert(TBUtils.htmlDecode(note.text), function (resp) {
+                TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
                     TBUtils.getSetting('Utils', 'seennotes', '', seenNotes);
-                    if (note.link && resp) window.open(note.link);
+                    if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }
         }

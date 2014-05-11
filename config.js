@@ -432,8 +432,8 @@
         var page = $(e.target).attr('page'),
             textArea = $('body').find('.edit-wikidata'),
             saveButton = $('body').find('.save-wiki-data'),
-            editArea = $('body').find('.wiki-edit-area'),
-            isAM = (page === 'automoderator');
+            editArea = $('body').find('.wiki-edit-area')
+            ;
         
         // load the text area, but not the save button.
         $(editArea).show();
@@ -452,10 +452,7 @@
                 return;
             }
             
-            // Fix < and > for AM config.
-            if (isAM) {
-                resp = resp.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-            }
+            resp = TBUtils.unescapeJSON(resp);
             
             // Found it, show it.
             $(textArea).val(resp);

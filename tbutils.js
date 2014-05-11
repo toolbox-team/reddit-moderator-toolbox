@@ -131,11 +131,15 @@
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
     
-    // Get our browser.  TODO: Opera check.
+    // Get our browser.
     if (typeof (InstallTrigger) !== "undefined") {
         TBUtils.browser = FIREFOX;
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = CHROME;
+        
+        if (window.opera !== "undefined") { // always check after Chrome
+            TBUtils.browser = OPERA;
+        }
     }
     
     // First run changes.
@@ -345,13 +349,16 @@
         }
         
         
-        //platform check.  TODO: support opera.
+        //platform check.
         switch (note.platform) {
         case 'firefox':
             if (TBUtils.browser == FIREFOX && TBUtils.isExtension) show();
             break;
         case 'chrome':
             if (TBUtils.browser == CHROME && TBUtils.isExtension) show();
+            break;
+        case 'opera':
+            if (TBUtils.browser == OPERA && TBUtils.isExtension) show();
             break;
         case 'script':
             if (!TBUtils.isExtension) show();

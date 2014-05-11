@@ -121,12 +121,21 @@ function main() {
         localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
     }
     
-    if (typeof (InstallTrigger) !== "undefined") {
-        TBUtils.browser = 'firefox';
-    } else if (typeof(chrome) !== "undefined") {
-        TBUtils.browser = 'chrome';
+    // Get browser type
+    // From http://stackoverflow.com/a/16938481
+    function getBrowser() {
+        var N = navigator.appName,
+            ua = navigator.userAgent,
+            tem;
+        var M = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
+        if (M && (tem = ua.match(/version\/([\.\d]+)/i)) != null)
+            M[2]= tem[1];
+        M = M ? [M[1], M[2]]: [N, navigator.appVersion, '-?'];
+        return M[0].toLowerCase();
     }
-
+    
+    TBUtils.browser = getBrowser();
+    
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
@@ -315,12 +324,15 @@ function main() {
         case 'chrome':
             if (TBUtils.browser == 'chrome' && TBUtils.isExtension) show();
             break;
+        case 'opera':
+            if (TBUtils.browser == 'opera' && TBUtils.isExtension) show();
+            break;
         case 'script':
             if (!TBUtils.isExtension) show();
             break;
         case 'all':
-                show();
-                break;
+            show();
+            break;
         default:
             show();
         }

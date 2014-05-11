@@ -946,10 +946,9 @@
         return string.replace(/['"]/g, '');
     }
     
-    // Needs to be replaced. 
+    // Added back for MMP's live mod mail. 
     TBUtils.compressHTML = function (src) {
-        $.log('TBUtils.compressHTML() is deprcated.  Use TBUtils.htmlDecode()');
-        return TBUtils.htmlDecode(src);
+        return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" >  False/, 'child">');
     };
 
     // easy way to simulate the php html encode and decode functions

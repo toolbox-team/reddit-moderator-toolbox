@@ -48,6 +48,7 @@
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false);
 
+
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
     if (modNotifications == 'on') {

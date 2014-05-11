@@ -13,14 +13,14 @@
     if (!document.body)
         return setTimeout(queuetools);
 
-    if (!TBUtils.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
     
     // Cached data
     var notEnabled = [],
-        hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-        ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-        rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
-        sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+        hideActionedItems = TBUtils.getSetting('ModTools', 'hideactioneditems', false),
+        ignoreOnApprove = TBUtils.getSetting('ModTools', 'ignoreonapprove', false),
+        rtsComment = TBUtils.getSetting('ModTools', 'rtscomment', true),
+        sortModSubs = TBUtils.getSetting('ModTools', 'sortmodsubs', false);
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
@@ -81,9 +81,9 @@
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = TBUtils.setting('modtools', 'reports-threshold', 1),
-            listingOrder = TBUtils.setting('modtools', 'reports-order', 'age'),
-            sortAscending = (TBUtils.setting('modtools', 'reports-ascending', 'false') == 'true'),
+            reportsThreshold = TBUtils.getSetting('modtools', 'reports-threshold', 1),
+            listingOrder = TBUtils.getSetting('modtools', 'reports-order', 'age'),
+            sortAscending = (TBUtils.getSetting('modtools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
             viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -181,8 +181,8 @@
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            TBUtils.setting('modtools', 'reports-ascending', null, sortAscending);
-            TBUtils.setting('modtools', 'reports-order', null, order);
+            TBUtils.setSetting('modtools', 'reports-ascending', sortAscending);
+            TBUtils.setSetting('modtools', 'reports-order', order);
 
             $('.sortorder').text(order);
             sortThings(order, sortAscending);
@@ -335,12 +335,12 @@
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            TBUtils.setting('modtools', 'reports-threshold', null, threshold);
+            TBUtils.setSetting('modtools', 'reports-threshold', threshold);
             setThreshold($('.thing'));
         });
 
         function setThreshold(things) {
-            var threshold = TBUtils.setting('modtools', 'reports-threshold', 1);
+            var threshold = TBUtils.getSetting('modtools', 'reports-threshold', 1);
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
                     $(this).thing().hide();
@@ -745,7 +745,7 @@
             if (now > data[1] + 3600000)
                 setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
         });
-        TBUtils.setting('modtools', 'mod-' + TBUtils.logged, null, JSON.stringify(modSubs));
+        TBUtils.setSetting('modtools', 'mod-' + TBUtils.logged, modSubs);
 
         function sortSubreddits() {
             var subs = $('.subscription-box li').sort(function (a, b) {
@@ -757,7 +757,7 @@
 
         function updateModqueueCount(sr) {
             $.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-                TBUtils.setting('modtools', 'mq-' + TBUtils.logged + '-' + sr, null, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                TBUtils.setSetting('modtools', 'mq-' + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
                 $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
                 sortSubreddits();
             });

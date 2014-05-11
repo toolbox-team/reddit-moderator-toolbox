@@ -82,7 +82,7 @@
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
-        qtEnabled = TBUtils.setting('QueueTools', 'enabled', true),
+        qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),

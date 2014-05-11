@@ -12,13 +12,13 @@
 
 
 (function () {
-    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
+    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
 
     //
     // preload some generic variables 
     //
-    var hideRemoved = TBUtils.setting('commentsMod', 'hideRemoved', false),
-        highlighted = TBUtils.setting('commentsMod', 'highlighted', '');
+    var hideRemoved = TBUtils.getSetting('commentsMod', 'hideRemoved', false),
+        highlighted = TBUtils.getSetting('commentsMod', 'highlighted', '');
 
 
     //

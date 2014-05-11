@@ -11,7 +11,7 @@
 // ==/UserScript==
  
 (function () {
-    if (!TBUtils.logged || !TBUtils.setting('ModButton', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
  
     var buttonName = 'mod',
         saveButton = 'Save',
@@ -20,11 +20,7 @@
     /////// Don't edit beyond this line. ///////
     var OTHER = 'other-sub',
         BANREASON = "(ban reason)",
-        savedSubs = [];
- 
-    if (TBUtils.setting('ModButton', 'sublist', [])) {
-        savedSubs = TBUtils.setting('ModButton', 'sublist', []);
-    }
+        savedSubs = TBUtils.getSetting('ModButton', 'sublist', []);
  
     TBUtils.getModSubs(function () {
         savedSubs = TBUtils.saneSort(savedSubs);
@@ -82,7 +78,7 @@
         $(benbutton).text('loading...');
  
         var display = (savedSubs.length < 1) ? 'none' : '',
-            showglobal = TBUtils.setting('ModButton', 'globalbutton', false),
+            showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false),
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
             user = info.user,
@@ -426,7 +422,7 @@
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
   
         // display global ban button enabled/disabled
-        $('.the-nuclear-option').prop('checked', TBUtils.setting('ModButton', 'globalbutton', false));
+        $('.the-nuclear-option').prop('checked', TBUtils.getSetting('ModButton', 'globalbutton', false));
     });
     
     /**
@@ -520,10 +516,10 @@
         $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
   
         // Enable/disable global ban button.
-        TBUtils.setting('ModButton', 'globalbutton', false, $('.the-nuclear-option').is(':checked'));
+        TBUtils.setSetting('ModButton', 'globalbutton', $('.the-nuclear-option').is(':checked'));
 
         // show the global-button in the footer, if enabled
-        if (TBUtils.setting('ModButton', 'globalbutton', false)) {
+        if (TBUtils.getSetting('ModButton', 'globalbutton', false)) {
             $('.mod-popup .global-button').show();
         } else {
             // disabled? Make sure it's not shown
@@ -531,7 +527,7 @@
         }
 
         savedSubs = TBUtils.saneSort(savedSubs);
-        savedSubs = TBUtils.setting('ModButton', 'sublist', false, savedSubs);
+        savedSubs = TBUtils.setSetting('ModButton', 'sublist', savedSubs);
 
         // re-render the lists
         updateSavedSubs();

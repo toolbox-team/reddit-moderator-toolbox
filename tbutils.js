@@ -317,11 +317,11 @@
         
         function show(){
             if ($.inArray(note.id, seenNotes) === -1) {
-                TBUtils.setting('Utils', 'notelastshown', '', now);
+                TBUtils.getSetting('Utils', 'notelastshown', '', now);
                 
                 TBUtils.alert(TBUtils.htmlDecode(note.text), function (resp) {
                     seenNotes.push(note.id);
-                    TBUtils.setting('Utils', 'seennotes', '', seenNotes); 
+                    TBUtils.getSetting('Utils', 'seennotes', '', seenNotes);
                     if (note.link && resp) window.open(note.link);
                 });
             }

@@ -646,6 +646,6 @@ var modLogMatrix = {
 }
 
 
-if (TBUtils.logged && $('.moderator').length && TBUtils.setting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
+if (TBUtils.logged && $('.moderator').length && TBUtils.getSetting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
     modLogMatrix.init();
 }

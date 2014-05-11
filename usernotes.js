@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 (function () {
-    if (!TBUtils.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
 
     var subs = [];
 

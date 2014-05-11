@@ -53,7 +53,7 @@ var stattitTab = {
 }
 
 if (document.body) {
-    if (TBUtils.setting('ModMatrix', 'enabled', true)) {
+    if (TBUtils.getSetting('ModMatrix', 'enabled', true)) {
       stattitTab.init();  
   }
 }

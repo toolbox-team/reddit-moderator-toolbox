@@ -14,7 +14,7 @@
     if (!document.body)
         return setTimeout(removalreasons);
 
-    if (!TBUtils.logged || !TBUtils.setting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('RemovalReasons', 'enabled', true) || TBUtils.isModmail) return;
     
     // The CSS that was supposed to be added but wasn't actually being added by the old version looked weird.
     // So I disabled it for now.
@@ -41,7 +41,7 @@
     // Cached data
     var notEnabled = [],
         //because of the CSS fallback, we can't use TBUtils.noConfig.
-        commentsEnabled = TBUtils.setting('RemovalReasons', 'commentreasons', false);
+        commentsEnabled = TBUtils.getSetting('RemovalReasons', 'commentreasons', false);
     
     function getRemovalReasons(subreddit, callback) {
         $.log('getting config: ' + subreddit);
@@ -180,7 +180,7 @@
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
             
-            var reasonType = TBUtils.setting('RemovalReasons', 'reason-type', 'none');
+            var reasonType = TBUtils.getSetting('RemovalReasons', 'reason-type', 'none');
             
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -279,7 +279,7 @@
             // Pre-fill reason input elements which have IDs.
             popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
                 this.id = 'reason-input-' + data.subreddit + '-' + this.id;
-                this.value = TBUtils.setting('RemovalReasons', this.id, this.value);
+                this.value = TBUtils.getSetting('RemovalReasons', this.id, this.value);
             });
         }
         
@@ -326,7 +326,7 @@
     
     // Toggle PM/reply/both notification method
     $('body').delegate('.reason-type', 'click', function () {
-        TBUtils.setting('RemovalReasons', 'reason-type', null, this.value);
+        TBUtils.setSetting('RemovalReasons', 'reason-type', this.value);
     });
     
     // 'no reason' button clicked
@@ -575,6 +575,6 @@
     
     // Reason textarea/input/select changed
     $('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
-        TBUtils.setting('RemovalReasons', this.id, null, this.selectedIndex || this.value);
+        TBUtils.setSetting('RemovalReasons', this.id, this.selectedIndex || this.value);
     });
 })();

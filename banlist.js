@@ -14,7 +14,7 @@
 (function () {
     if (
         !TBUtils.logged
-        || !TBUtils.setting('BanList', 'enabled', true)
+        || !TBUtils.getSetting('BanList', 'enabled', true)
         || !location.pathname.match(/\/about\/(?:banned)\/?/)
     ) return;
 
@@ -198,7 +198,7 @@
         $('input#user').keyup();
     }
 
-    if (TBUtils.setting('BanList', 'automatic', false)) {
+    if (TBUtils.getSetting('BanList', 'automatic', false)) {
         liveFilter();
     } else {
         $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');

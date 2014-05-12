@@ -43,7 +43,7 @@
         modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
-        consoleShowing = false,
+        consoleShowing = TBUtils.getSetting('Notifier', 'consoleshowing', false),
         newLoad = true,
         now = new Date().getTime(),
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
@@ -138,7 +138,7 @@
 
     var $console = $('\
     <div class="tb-debug-window">\
-            <div class="tb-debug-header"> Debug console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
+            <div class="tb-debug-header"> Debug Console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
             <div class="tb-debug-content">\
                 <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
             </div>\
@@ -175,6 +175,10 @@
                 consoleLoop();
             }, 500);
         })();
+
+        if (consoleShowing) {
+            $console.show();
+        }
     }
 
     // Append shortcuts
@@ -221,6 +225,7 @@
         }
 
         consoleShowing = !consoleShowing;
+        TBUtils.setSetting('Notifier', 'consoleshowing', consoleShowing)
     });
 
     // Settings menu	

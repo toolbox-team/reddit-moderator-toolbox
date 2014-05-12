@@ -646,7 +646,7 @@
             if (user === '') {
                 user = TBUtils.logged;
                 
-                if (!subreddit) {
+                if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $(thing).closest('.message-parent').find('.correspondent.reddit.rounded a').text()
                 }

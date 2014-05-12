@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name         Toolbox Frame Module
 // @namespace    http://www.reddit.com/r/toolbox
 // @author       agentlame
@@ -27,6 +27,32 @@
     $('body').delegate('#tb-launch-fame', 'click', function () {
         // Need to fix centering, etc.
         $html = $('\
+            <div class="tb-page-overlay tb-frame-module">\
+                <div class="tb-window-wrapper">\
+                    <div class="tb-window-header">\
+                        TITLE\
+                        <span class="tb-window-header-options">\
+                            <a class="tb-close" href="javascript:;" title="Close">✕</a>\
+                        </span>\
+                    </div>\
+                    <div class="tb-window-tabs">\
+                        <a href="javascript:;" title="View Mod Mail" class="tb-frame-modmail">Mod Mail</a>\
+                        <a href="javascript:;" title="View Messages" class="tb-frame-messages">Messages</a>\
+                        <a href="javascript:;" title="View Mod Queue" class="tb-frame-modqueue">Mod Queue</a>\
+                        <a href="javascript:;" title="View Unmoderated" class="tb-frame-unmoderated">Unmoderated</a>\
+                    </div>\
+                    <div class="tb-window-content">\
+                    Select a tab\
+                    </div>\
+                    <div class="tb-window-footer">\
+                        <input class="tb-save" type="button" value="save">\
+                    </div>\
+                </div>\
+            </div>\
+        ').appendTo('body').show();
+
+        /*
+        $html = $('\
             <div class="mod-popup tb-page-overlay tb-settings">\
                 <div class="mod-popup-header">\
                     Tool Box Frame\
@@ -49,6 +75,7 @@
                 </div>\
             </div>\
         ').appendTo('body').show();
+        */
     });
 
     $('body').delegate('.tb-frame-modmail', 'click', function () {
@@ -68,7 +95,7 @@
     });
 
     function update(URL) {
-        $html.find('.mod-popup-content').html('Updating');
+        $html.find('.tb-window-content').html('Updating');
         $.get(URL, function (resp) {
             if (!resp) return;
 
@@ -76,7 +103,7 @@
             var $sitetable = $(resp).find('#siteTable');
 
             if ($sitetable) {
-                $html.find('.mod-popup-content').html('').append($sitetable);
+                $html.find('.tb-window-content').html('').append($sitetable);
             }
         });
     }

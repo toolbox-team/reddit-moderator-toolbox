@@ -1323,7 +1323,7 @@ body.mod-page .thing {
     height: 100%;
 }
  
-.mod-toolbox .tb-window-wrapper {
+.mod-toolbox .tb-frame-module .tb-window-wrapper {
     position: absolute !important;
     bottom: 10px;
     left: 10px;

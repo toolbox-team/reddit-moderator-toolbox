@@ -44,8 +44,8 @@
             return;
         }
  
-        var things = $('div.thing .entry:not(.mod-button)');
-        TBUtils.forEachChunked(things, 15, 500, processThing);
+        var $things = $('div.thing .entry:not(.mod-button)');
+        TBUtils.forEachChunked($things, 15, 500, processThing);
     }
  
     // Add mod button to all users
@@ -103,7 +103,7 @@
         }
  
         // generate the .mod-popup jQuery object
-        var popup = $('\
+        var $popup = $('\
                 <div class="mod-popup">\
                     <div class="mod-popup-header">\
                         <label class="action-title"> Mod Actions  - /u/'+  user +'</label>\
@@ -181,15 +181,15 @@
             // Hide the flair tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
-            popup.find('.edit-user-flair').remove();
+            $popup.find('.edit-user-flair').remove();
 
             // We can oly nuke comments in subs we mod.
-            popup.find('.nuke-comment-chain').remove();
+            $popup.find('.nuke-comment-chain').remove();
         }
  
         if (TBUtils.isModmail || TBUtils.isModpage) {
             // Nothing to nuke in mod mail or on mod pages.
-            popup.find('.nuke-comment-chain').remove();
+            $popup.find('.nuke-comment-chain').remove();
         }
 
         // Show if current user is banned, and why. - thanks /u/LowSociety
@@ -197,7 +197,7 @@
             var banned = data.data.children;
             for (var i = 0; i < banned.length; i++) {
                 if (banned[i].name.toLowerCase() == user.toLowerCase()) {
-                    popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
+                    $popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
                     $("#ban-note").val(banned[i].note);
                     $('.action-title').css('color', 'red');
                     break;
@@ -209,11 +209,11 @@
         // if we're on the mod page, it's likely we want to mod them to another sub.
         // unselect current, change action to 'mod'.
         if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {
-            popup.find("select.mod-action option[data-api=friend][data-action=moderator]").attr("selected", "selected");
+            $popup.find("select.mod-action option[data-api=friend][data-action=moderator]").attr("selected", "selected");
             $('.ban-note').hide();
             $('.action-sub:checkbox:checked').removeAttr('checked');
         } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
-            popup.find("select.mod-action option[data-api=friend][data-action=contributor]").attr("selected", "selected");
+            $popup.find("select.mod-action option[data-api=friend][data-action=contributor]").attr("selected", "selected");
             $('.ban-note').hide();
             $('.action-sub:checkbox:checked').removeAttr('checked');
         }
@@ -228,13 +228,13 @@
  
         // show/hide ban reason text feild.
         $('.mod-action').change(function () {
-            var banNote = $('.ban-note');
+            var $banNote = $('.ban-note');
             if ($(this).val() == 'ban') {
-                $(banNote).show();
+                $banNote.show();
             } else {
-                $(banNote).hide();
+                $banNote.hide();
             }
-            $(banNote).val(BANREASON);
+            $banNote.val(BANREASON);
         });
  
         // removal reason focus.
@@ -260,21 +260,21 @@
     $('body').delegate('.mod-popup .save, .global-button', 'click', function () {
  
         var button = $(this),
-            popup = button.parents('.mod-popup'),
-            selected = popup.find('.mod-action :selected'),
-            api = selected.attr('data-api'),
-            action = selected.attr('data-action'),
-            actionName = selected.val(),
-            status = popup.find('.status').show(),
-            banReason = popup.find('.ban-note').val(),
+            $popup = $button.parents('.mod-popup'),
+            $selected = $popup.find('.mod-action :selected'),
+            api = $selected.attr('data-api'),
+            action = $selected.attr('data-action'),
+            actionName = $selected.val(),
+            $status = $popup.find('.status').show(),
+            banReason = $popup.find('.ban-note').val(),
             subreddits = [],
-            user = popup.find('#user').text(),
+            user = $popup.find('#user').text(),
             actionCount = 0;
  
         if (!$(this).hasClass('global-button')) {
  
             // Get dem ban subs.
-            popup.find('.action-sub:checkbox:checked').each(function () {
+            $popup.find('.action-sub:checkbox:checked').each(function () {
                 if ($(this).val() !== OTHER) {
                     subreddits.push($(this).val());
                 } else {
@@ -296,13 +296,13 @@
  
         // Check dem values.
         if (subreddits.length < 1) return status.text('error, no subreddits selected');
-        if (!api) return status.text('error, no action selected');
+        if (!api) return $status.text('error, no action selected');
  
         // Ban dem trolls.
         var id = setInterval(function () {
             var sub = $(subreddits).get(actionCount);
  
-            status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
+            $status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
  
             $.post('/api/' + api, {
                 uh: TBUtils.modhash,
@@ -329,41 +329,41 @@
     });
 
     $('body').delegate('.nuke-comment-chain', 'click', function () {
-        var popup = $(this).parents('.mod-popup'),
-            id = popup.find('#id').text();
+        var $popup = $(this).parents('.mod-popup'),
+            id = $popup.find('#id').text();
 
         $.log(id);
     });
  
     $('body').delegate('.edit-user-flair', 'click', function () {
-        var popup = $(this).parents('.mod-popup'),
-            user = popup.find('#user').text(),
-            subreddit = popup.find('#subreddit').text(),
-            textinput = popup.find('.flair-text'),
-            classinput = popup.find('.flair-class');
+        var $popup = $(this).parents('.mod-popup'),
+            user = $popup.find('#user').text(),
+            subreddit = $popup.find('#subreddit').text(),
+            $textinput = $popup.find('.flair-text'),
+            $classinput = $popup.find('.flair-class');
  
         if (!user || !subreddit) return;
  
         // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
         $(this).addClass('active');
-        $(this).parents('.mod-popup').find('.user-role').removeClass('active');
+        $popup.find('.user-role').removeClass('active');
         $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
 
-        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').show();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
+        $popup.find('.mod-popup-tab-settings').hide();
+        $popup.find('.mod-popup-tab-flair').show();
+        $popup.find('.mod-popup-tab-role').hide();
  
 
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
  
-            $(textinput).val(resp.users[0].flair_text);
-            $(classinput).val(resp.users[0].flair_css_class);
+            $textinput.val(resp.users[0].flair_text);
+            $classinput.val(resp.users[0].flair_css_class);
             $('.flair-save').click(saveflair);
  
             function saveflair() {
-                var text = $(textinput).val();
-                var css_class = $(classinput).val();
+                var text = $textinput.val();
+                var css_class = $classinput.val();
  
                 /*
                 if (!text && !css_class) {
@@ -376,12 +376,12 @@
                     
                     .error(function (err) {
                         console.log(err.responseText);
-                        popup.remove();
+                        $popup.remove();
                         return;
                     })
                     
                     .success(function () {
-                        popup.remove();
+                        $popup.remove();
                         return;
                     });
                     
@@ -400,11 +400,11 @@
  
                 .error(function (err) {
                     $.log(err.responseText, true);
-                    popup.remove();
+                    $popup.remove();
                 })
  
                 .success(function () {
-                    popup.remove();
+                    $popup.remove();
                 });
             }
         });
@@ -412,29 +412,31 @@
  
     // settings button clicked
     $('body').delegate('.user-role', 'click', function () {
+        var $popup = $(this).parents('.mod-popup');
         // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
+        $popup.find('.edit-user-flair').removeClass('active');
         $(this).addClass('active');
-        $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
+        $popup.find('.edit-modbutton-settings').removeClass('active');
 
-        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
+        $popup.find('.mod-popup-tab-settings').hide();
+        $popup.find('.mod-popup-tab-flair').hide();
+        $popup.find('.mod-popup-tab-role').show();
     });
 
     // settings button clicked
     $('body').delegate('.edit-modbutton-settings', 'click', function () {
+        var $popup = $(this).parents('.mod-popup');
         // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
-        $(this).parents('.mod-popup').find('.user-role').removeClass('active');
+        $popup.find('.edit-user-flair').removeClass('active');
+        $popup.find('.user-role').removeClass('active');
         $(this).addClass('active');
 
-        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').show();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-role').hide();
   
         // display global ban button enabled/disabled
         $('.the-nuclear-option').prop('checked', TBUtils.getSetting('ModButton', 'globalbutton', false));
+        $popup.find('.mod-popup-tab-settings').show();
+        $popup.find('.mod-popup-tab-flair').hide();
+        $popup.find('.mod-popup-tab-role').hide();
     });
     
     /**
@@ -444,12 +446,13 @@
         //
         // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
         //
-        var $table = $('body').find('.mod-popup').find('tbody'),
+        var $popup = $('body').find('.mod-popup'),
+            $table = $popup.find('tbody'),
             currentsub = $('#subreddit').text();
 
         // clear out the current stuff
-        $('.add-dropdown').find('option').remove();
-        $('.remove-dropdown').find('option').remove();
+        $popup.find('.add-dropdown').find('option').remove();
+        $popup.find('.remove-dropdown').find('option').remove();
         $table.html('');
 
  
@@ -483,12 +486,12 @@
         
         // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
         $.each(TBUtils.mySubs, function (i, subreddit) {
-            $('.add-dropdown')
+            $popup.find('.add-dropdown')
                 .append($('<option>', {
                         value: subreddit
                     })
                     .text('/r/' + subreddit));
-            $('.' + OTHER)
+            $popup.find('.' + OTHER)
                 .append($('<option>', {
                         value: subreddit
                     })
@@ -516,16 +519,7 @@
     // Edit save button clicked.
     $('body').delegate('.settingSave', 'click', function () {
         var $popup = $(this).parents('.mod-popup'),
-            $table = $(this).parents('.mod-popup').find('tbody');
-
-        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-        $(this).parents('.mod-popup').find('.edit-user-flair').removeClass('active');
-        $(this).parents('.mod-popup').find('.user-role').addClass('active');
-        $(this).parents('.mod-popup').find('.edit-modbutton-settings').removeClass('active');
-
-        $(this).parents('.mod-popup').find('.mod-popup-tab-settings').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-flair').hide();
-        $(this).parents('.mod-popup').find('.mod-popup-tab-role').show();
+            $table = $popup.find('tbody');
   
         // Enable/disable global ban button.
         TBUtils.setSetting('ModButton', 'globalbutton', $('.the-nuclear-option').is(':checked'));
@@ -543,5 +537,14 @@
 
         // re-render the lists
         updateSavedSubs();
+
+        // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
+        $popup.find('.edit-user-flair').removeClass('active');
+        $popup.find('.user-role').addClass('active');
+        $popup.find('.edit-modbutton-settings').removeClass('active');
+
+        $popup.find('.mod-popup-tab-settings').hide();
+        $popup.find('.mod-popup-tab-flair').hide();
+        $popup.find('.mod-popup-tab-role').show();
     });
 })();

@@ -132,10 +132,10 @@
 
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
-        if ($(userattrs).html() !== null) {
+        if ($(userattrs).length > 0) {
             $(userattrs).after(tag);
         } else {
-            $(thing).find('.head').after(tag);
+            $(thing).find('.head').append(tag);
         }
 
         if ($.inArray(subreddit, subs) == -1) {

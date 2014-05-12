@@ -24,10 +24,12 @@
             if (!TBUtils.debugMode) return;
             
             if (skip) {
-                console.log('TB [' + arguments.callee.caller.name + ']: ' + message);
+                console.log('TB [' + arguments.callee.caller.name + ']: ');
+                console.log(message);
                 return;
             }
             if (typeof message === 'object') {
+                var obj = message;
                 if (message instanceof jQuery) {
                     message = 'jQuery object:\n' + $('<div>').append($(message).clone()).html();
                 } else {
@@ -35,7 +37,7 @@
                         message = 'Object:\n' + JSON.stringify(message);
                     } catch (e) {
                         console.log('TB Console could not convert: ');
-                        console.log(message);
+                        console.log(obj);
                         message = String(message) + ' (error converting object see broswer console)\nError Message: ' + e.message;
                     }
                 }
@@ -56,7 +58,7 @@
 
     (function($) {
         $.fn.tooltip = function (message, sender) {
-            if ($('body').find('#tb-tooltip').length) return; // don't show more then one, ever.
+            if ($('body').find('#tb-tooltip').length) return; // don't show more than one, ever.
             var posX = sender.clientX,
                 posY = sender.clientY;
                 $sender = $(sender.target);

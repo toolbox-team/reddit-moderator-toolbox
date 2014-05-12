@@ -17,12 +17,7 @@
 
     $.log('Loading Frame Module');
 
-    var $html,
-        limit = 10,
-        unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
+    var $html, limit = 10;
 
     // Hijack modbar.
     $('#tb-bottombar').find('#tb-toolbarcounters').append('\
@@ -30,6 +25,11 @@
             ');
 
     $('body').delegate('#tb-launch-fame', 'click', function () {
+        var unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
+            modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
+            unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
+            modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
+
         // Need to fix centering, etc.
         $html = $('\
             <div class="tb-page-overlay tb-frame-module">\

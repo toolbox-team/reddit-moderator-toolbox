@@ -632,15 +632,17 @@
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
         }
         
+        
         // If we still don't have a sub, we're in mod mail, or PMs.
-        if (TBUtils.isModmail) {
+        if (TBUtils.isModmail || $(sender).closest('.message-parent')[0] !== undefined) {
             subreddit = (subreddit) ? subreddit : ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text());
-            
+
             //This is a weird palce to go about this, and the conditions are strange,
             //but if we're going to assume we're us, we better make damned well sure that is likely the case.
             // if ($(entry).find('.remove-button').text() === '') {
             // The previous check would mistakenly catch removed modmail messages as the user's messages.
             // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
+            // The '.message-parent' check fixes reddit.com/message/messages/, wich contains mod mail and PMs.
             if (user === '') {
                 user = TBUtils.logged;
                 
@@ -660,7 +662,7 @@
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
             subreddit = '';
         }
-        
+
         if (user == '[deleted]') {
             user = '';
         }

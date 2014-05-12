@@ -156,7 +156,7 @@
                                 <select class="add-dropdown left"></select><button class="add-save right">add</button>\
                                 <p style="clear:both">\
                                     <label class="global-label" for="the-nuclear-option">\
-                                        <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option">\
+                                        <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option" ' + (showglobal ? 'checked' : '' ) + '>\
                                         &nbsp;enable Global Action button.\
                                     </label>\
                                 </p>\
@@ -431,9 +431,6 @@
         $popup.find('.user-role').removeClass('active');
         $(this).addClass('active');
 
-  
-        // display global ban button enabled/disabled
-        $('.the-nuclear-option').prop('checked', TBUtils.getSetting('ModButton', 'globalbutton', false));
         $popup.find('.mod-popup-tab-settings').show();
         $popup.find('.mod-popup-tab-flair').hide();
         $popup.find('.mod-popup-tab-role').hide();

@@ -155,6 +155,9 @@
         // Start: version changes.
         $.log('Running '+ TBUtils.toolboxVersion +' changes');
 
+        localStorage['Toolbox.Utils.seennotes'] = JSON.stringify([]); //bug fix.
+        // 2.1 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
@@ -162,7 +165,6 @@
         localStorage['Toolbox.Utils.betaMode'] = JSON.stringify(false);
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
-               
     }
     
     if (TBUtils.debugMode) {
@@ -344,11 +346,11 @@
         
         function show(){
             if ($.inArray(note.id, seenNotes) === -1) {
-                TBUtils.getSetting('Utils', 'notelastshown', '', now);
+                TBUtils.getSetting('Utils', 'notelastshown', '', now);  // is this used?
                 
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
-                    TBUtils.getSetting('Utils', 'seennotes', '', seenNotes);
+                    TBUtils.setSetting('Utils', 'seennotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }

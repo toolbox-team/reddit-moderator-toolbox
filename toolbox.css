@@ -1286,3 +1286,50 @@ body.mod-page .thing {
     -webkit-transform: rotate(-90.0deg);
     transform: rotate(-90.0deg);
 }
+/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */ 
+ 
+/* Font size fixes, probably more will be needed */ 
+.mod-toolbox .tb-frame-module .md {
+    font-size: inherit;
+    max-width: 95%;
+}
+.mod-toolbox .tb-frame-module .flat-list.buttons a {
+    font-size: 9px;
+}
+ 
+.mod-toolbox .tb-frame-module #siteTable {
+    font-size: 10px   
+    
+}
+ 
+/* Make the damn thing scrollable */
+.mod-toolbox .tb-frame-module .tb-window-footer {
+    position: absolute;
+    bottom: 0px;
+}
+.mod-toolbox .tb-frame-module .tb-window-content {
+    height: auto;
+    overflow: auto;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 31px;      
+}
+ 
+.mod-toolbox .tb-page-overlay.tb-frame-module {
+    bottom: 0px;
+    height: 100%;
+}
+ 
+.mod-toolbox .tb-window-wrapper {
+    position: absolute !important;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    margin-right: auto !important;
+}
+ 
+.mod-toolbox .tb-page-overlay.tb-frame-module {
+    padding: 0 !important;
+}

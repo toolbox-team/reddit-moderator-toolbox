@@ -108,7 +108,7 @@
         // Get link/comment attributes
         var button = $(this),
             thing = button.closest('.thing'),
-            yes = button.find('.yes'),
+            yes = button.find('.yes')[0],
             info = TBUtils.getThingInfo(button),
             data = {
                 subreddit: info.subreddit,
@@ -132,7 +132,7 @@
         var popup = $('#reason-popup-' + data.subreddit);
         if (popup.length) {
             // Click yes on the removal
-            yes[0].click();
+            if (yes) yes.click();
             
             openPopup();
             
@@ -152,7 +152,7 @@
             // FUCKED: now loops forever until jquery overflows.  
             // The reason is the 'yes' button has the class remove-button
             // Which has never fucking changed.  
-            yes[0].click();
+            if (yes) yes.click();
             
             
             // Get PM subject line

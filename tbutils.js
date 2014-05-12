@@ -2,7 +2,7 @@
 
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
-    TBUtils.logged = (TBUtils.modhash !== undefined);
+    TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
     TBUtils.post_site = $('.redditname a:first').html();  
 
     //Private variables
@@ -20,6 +20,7 @@
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
+        settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]')
         usebrowserstorage = false;
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
@@ -208,7 +209,8 @@
     };
     TBUtils.setSetting = function (module, setting, value) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        
+        registerSetting(module, setting);
+
         if (usebrowserstorage && TBUtils.browser == CHROME) {
             var json = {};
             json[storageKey] = JSON.stringify(value);
@@ -225,6 +227,8 @@
     };
     TBUtils.getSetting = function (module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
+        registerSetting(module, setting);
+
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
         // Just another javascript sucks issue.
@@ -1031,6 +1035,20 @@
             callback(false);
         });
     };
+
+    // Private functions
+    function registerSetting(module, setting) {
+        // First parse out any of the ones we never want to save.
+        if (module === 'cache' || module === 'modtools') return;
+
+        var keyName = module + '.' + setting;
+
+        if ($.inArray(keyName, settings) === -1) {
+            settings.push(keyName);
+
+            localStorage['Toolbox.Utils.settings'] = JSON.stringify(TBUtils.saneSort(settings));
+        }
+    }
 
     window.onbeforeunload = function () {
         

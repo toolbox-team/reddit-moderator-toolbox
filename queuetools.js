@@ -82,9 +82,9 @@
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = TBUtils.getSetting('modtools', 'reports-threshold', 1),
-            listingOrder = TBUtils.getSetting('modtools', 'reports-order', 'age'),
-            sortAscending = (TBUtils.getSetting('modtools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
+            reportsThreshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1),
+            listingOrder = TBUtils.getSetting('QueueTools', 'reports-order', 'age'),
+            sortAscending = (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
             viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -182,8 +182,8 @@
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            TBUtils.setSetting('modtools', 'reports-ascending', sortAscending);
-            TBUtils.setSetting('modtools', 'reports-order', order);
+            TBUtils.setSetting('QueueTools', 'reports-ascending', sortAscending);
+            TBUtils.setSetting('QueueTools', 'reports-order', order);
 
             $('.sortorder').text(order);
             sortThings(order, sortAscending);
@@ -336,12 +336,12 @@
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            TBUtils.setSetting('modtools', 'reports-threshold', threshold);
+            TBUtils.setSetting('QueueTools', 'reports-threshold', threshold);
             setThreshold($('.thing'));
         });
 
         function setThreshold(things) {
-            var threshold = TBUtils.getSetting('modtools', 'reports-threshold', 1);
+            var threshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1);
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
                     $(this).thing().hide();
@@ -746,7 +746,7 @@
             if (now > data[1] + 3600000)
                 setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
         });
-        TBUtils.setSetting('modtools', 'mod-' + TBUtils.logged, modSubs);
+        TBUtils.setSetting('QueueTools', 'mod-' + TBUtils.logged, modSubs);
 
         function sortSubreddits() {
             var subs = $('.subscription-box li').sort(function (a, b) {

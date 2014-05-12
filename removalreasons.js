@@ -99,9 +99,7 @@
     }
 
     // Open reason drop-down when we remove something as ham.
-    $('.big-mod-buttons>span>.pretty-button.neutral, .remove-button').live('click', openRemovalPopup);
-    
-    function openRemovalPopup(event) {
+    $('body').delegate('.big-mod-buttons > span > .pretty-button.neutral, .remove-button', 'click', function() {
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
         if (thingclasses.match(/\bcomment\b/) && !commentsEnabled)
@@ -308,7 +306,7 @@
             });*/
             popup.show();
         }
-    }
+    });
     
     // Popup events
     

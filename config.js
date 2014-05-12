@@ -44,7 +44,7 @@
         TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
             $.log("save succ = " + succ);
             if (!succ) {
-                console.log(err.responseText)
+                $.log(err.responseText, true)
             }
             else {
                 $.log("clearing cache");
@@ -405,7 +405,7 @@
     $('body').delegate('.tb-config-help', 'click', function() {	
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
-        console.log(htmlcontent);
+        $.log(htmlcontent, true);
         var html = '\
         <!DOCTYPE html>\
         <html>\

@@ -218,7 +218,7 @@
             json[storageKey] = JSON.stringify(value);
             chrome.storage.local.set(json, function (result) {
                 chrome.storage.local.get(storageKey, function (result) {
-                    console.log(result[storageKey]);
+                    $.log(result[storageKey], true);
                     return result[storageKey];
                 });
             });
@@ -237,10 +237,10 @@
         if (usebrowserstorage && TBUtils.browser == CHROME) {
             chrome.storage.local.get(storageKey, function (result) {
                 val = result[storageKey];
-                console.log(storageKey);
-                console.log(result[storageKey]);
+                $.log(storageKey, true);
+                $.log(result[storageKey],true);
                 if (val === undefined) {
-                    console.log(defaultVal);
+                    $.log(defaultVal, true);
                     return defaultVal;
                 } else {
                     try {
@@ -647,7 +647,6 @@
                 if (!subreddit) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $(thing).closest('.message-parent').find('.correspondent.reddit.rounded a').text()
-                        .replace('/r/', '').replace('[-]', '').replace('[+]', '').trim();
                 }
             }
         }
@@ -655,10 +654,8 @@
         // A recent reddit change makes subreddit names sometimes start with "/r/".
         // Mod mail subreddit names additionally end with "/".
         // reddit pls, need consistency
-        if (subreddit.charAt(0) == '/') {
-            subreddit = subreddit.replace('/r/', '').replace('/', '').trim();
-        }
-        
+        subreddit = subreddit.replace('/r/', '').replace('/', '').replace('[-]', '').replace('[+]', '').trim();
+
         // Not a mod, reset current sub.
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
             subreddit = '';
@@ -671,7 +668,7 @@
         var approved_text = $(entry).find('.approval-checkmark').attr('title') || $(thing).find('.approval-checkmark').attr('title') || '';
         approved_by = approved_text.match(/by\s(.+?)\s/) || '';
         
-        return {
+        var info = {
             subreddit: subreddit,
             user: user,
             permalink: permalink,
@@ -682,6 +679,8 @@
             kind: kind,
             postlink: postlink
         };
+        //$.log(info);
+        return info;
     };
     
     // Prevent page lock while parsing things.  (stolen from RES)

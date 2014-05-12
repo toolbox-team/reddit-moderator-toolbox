@@ -33,7 +33,7 @@
             if (succ) {
                 run();
             } else {
-                console.log(err.responseText);
+                $.log(err.responseText, true);
             }
         });
     }

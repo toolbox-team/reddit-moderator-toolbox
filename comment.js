@@ -32,7 +32,7 @@
         $(this).addClass('tb-comment-spam');
         removedCounter = removedCounter + 1;
     });
-    console.log(removedCounter);
+    $.log(removedCounter, true);
     if (removedCounter == 1) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[1]</a>');
     } else if (removedCounter > 1) {

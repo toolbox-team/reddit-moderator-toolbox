@@ -1071,6 +1071,7 @@ body .thing.flaired {
     padding: 2px !important;
     white-space: pre-wrap;
     word-wrap: break-word;
+    z-index: 10001;
 }
 
 /* various reddit css fixes for mods */ 

@@ -58,6 +58,15 @@
             $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + buttonName + '</a></li>');
         }
     }
+
+    // Frame support.
+    $('body').on('DOMNodeInserted', function (e) {
+        if (e.target.className != 'sitetable linklisting') return;
+        setTimeout(function () {
+            run();
+        }, 1000);
+    });
+    
  
     // RES NER support.
     $('div.content').on('DOMNodeInserted', function (e) {
@@ -84,6 +93,8 @@
             currentsub = info.subreddit,
             user = info.user,
             id = info.id;
+
+        //$.log('modbutton ' + currentsub, true);
  
         if (!user) {
             $(benbutton).text('error');
@@ -388,7 +399,7 @@
                 })
  
                 .error(function (err) {
-                    console.log(err.responseText);
+                    $.log(err.responseText, true);
                     popup.remove();
                 })
  

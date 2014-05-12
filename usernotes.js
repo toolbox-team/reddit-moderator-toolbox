@@ -87,10 +87,17 @@
             if (succ) {
                 run();
             } else {
-                console.log(err.responseText);
+                $.log(err.responseText, true);
             }
         });
     }
+
+    $('body').on('DOMNodeInserted', function (e) {
+        if (e.target.className != 'sitetable linklisting') return;
+        setTimeout(function () {
+            run();
+        }, 1000);
+    });
 
     // RES NER support.
     $('div.content').on('DOMNodeInserted', function (e) {
@@ -554,7 +561,7 @@
     
     $('body').delegate('.utagger-user-note', 'keyup', function (event) {
         if(event.keyCode == 13) {
-            console.log("Enter pressed!");
+            $.log("Enter pressed!", true);
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }

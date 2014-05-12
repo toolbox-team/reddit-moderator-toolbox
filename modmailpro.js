@@ -175,14 +175,14 @@
             var attrib = $(sender).attr('data-fullname');
             if (attrib) {
                 setTimeout(function () {
-                    console.log('realtime go');
+                    $.log('realtime go');
                     processThread($('[data-fullname="' + attrib + '"]'));
                 }, 500);
             }
             return;
         } else if ($.inArray($(sender).attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
             setTimeout(function () {
-                console.log('LMC go');
+                $.log('LMC go');
                 processThread(sender);
             }, 500);
             return;
@@ -194,7 +194,7 @@
             if (newLoadedMessages === 25) {
                 newLoadedMessages = 0;
                 setTimeout(function () {
-                    console.log('flowitt go');
+                    $.log('flowitt go');
                     initialize();
                 }, 500);
             }
@@ -202,7 +202,7 @@
 
         } else if (name === 'NERPageMarker') { //is res.
             setTimeout(function () {
-                console.log('RES NER go');
+                $.log('RES NER go');
                 initialize();
             }, 500);
             return;
@@ -544,7 +544,7 @@
 
         // Seems rather unlikely you'd get more than
         $.get(url).success(function (response) {
-            console.log('checking for new mod mail: ' + url);
+            $.log('checking for new mod mail: ' + url, true);
 
             // Get list of thing ids of elements already on the page
             var ids = [];

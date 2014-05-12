@@ -275,7 +275,7 @@
                 $.post('/api/' + type, {
                     uh: TBUtils.modhash,
                     spam: spam,
-                    id: $(this).thing_id()
+                    id: $(this).attr('data-fullname') //getThingInfo seems like overkill.
                 });
             }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
         });

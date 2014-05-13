@@ -329,7 +329,7 @@
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
                         $popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
                         $popup.find(".ban-note").val(banned[i].note);
-                        $popup.find('.action-title').css('color', 'red');
+                        $popup.find('.mod-popup-title').css('color', 'red');
                         break;
                     }
                 }
@@ -570,7 +570,7 @@
     /**
      *  updates the current savedsubs' listings in the mod button
      */
-    function updateSavedSubs(){
+    function updateSavedSubs() {
         //
         // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
         //

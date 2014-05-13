@@ -267,7 +267,7 @@
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
     $('body').delegate('.mod-popup .save, .global-button', 'click', function () {
  
-        var button = $(this),
+        var $button = $(this),
             $popup = $button.parents('.mod-popup'),
             $selected = $popup.find('.mod-action :selected'),
             api = $selected.attr('data-api'),

@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function notifier() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     $.log('Loading Notifier Module');
 
@@ -172,6 +172,8 @@
         (function consoleLoop() {
             setTimeout(function () {
                 $consoleText.val(TBUtils.log.join('\n'));
+                // TODO: add option to lock to bottom.
+                //$consoleText.scrollTop($consoleText[0].scrollHeight);
                 consoleLoop();
             }, 500);
         })();

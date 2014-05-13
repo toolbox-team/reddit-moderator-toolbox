@@ -10,7 +10,7 @@
 // @version     1.13
 // ==/UserScript==
  
-(function () {
+(function modbutton() {
     if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
     $.log('Loading Mod Button Module');
  
@@ -117,27 +117,9 @@
     }
 
 
-    // Frame support.
-    $('body').on('DOMNodeInserted', function (e) {
-        if (e.target.className != 'sitetable linklisting') return;
-        setTimeout(function () {
-            run();
-        }, 1000);
-    });
-    
- 
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-            run();
-        }
- 
-        // Fixes expanding bug in mod mail.
-        if ($(e.target).hasClass('clearleft')) {
-            setTimeout(function () {
-                run();
-            }, 1000);
-        }
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        run();
     });
 
 
@@ -408,7 +390,7 @@
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
     $('body').delegate('.mod-popup .save, .global-button', 'click', function () {
  
-        var button = $(this),
+        var $button = $(this),
             $popup = $button.parents('.mod-popup'),
             $selected = $popup.find('.mod-action :selected'),
             api = $selected.attr('data-api'),

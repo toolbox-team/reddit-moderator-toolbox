@@ -166,6 +166,7 @@
     $('div.content').on('DOMNodeInserted', function (e) {
         var sender = e.target;
         var name = sender.className;
+        var event = new CustomEvent("TBNewThings");
 
         if (name !== 'NERPageMarker' && !$(sender).hasClass('message-parent') && !$(sender).hasClass('realtime-new')) {
             return; //not RES, not flowwit, not load more comments, not realtime.
@@ -177,6 +178,7 @@
                 setTimeout(function () {
                     $.log('realtime go');
                     processThread($('[data-fullname="' + attrib + '"]'));
+                    window.dispatchEvent(event);
                 }, 500);
             }
             return;
@@ -184,6 +186,7 @@
             setTimeout(function () {
                 $.log('LMC go');
                 processThread(sender);
+                window.dispatchEvent(event);
             }, 500);
             return;
 
@@ -196,6 +199,7 @@
                 setTimeout(function () {
                     $.log('flowitt go');
                     initialize();
+                    window.dispatchEvent(event);
                 }, 500);
             }
             return;
@@ -204,6 +208,7 @@
             setTimeout(function () {
                 $.log('RES NER go');
                 initialize();
+                window.dispatchEvent(event);
             }, 500);
             return;
         }

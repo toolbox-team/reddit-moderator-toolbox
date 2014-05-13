@@ -15,7 +15,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function domaintagger() {
     if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', true)) return;
     $.log('Loading Domain Tagger Module');
 
@@ -38,17 +38,9 @@
         });
     }
 
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        // Not RES.
-        if (e.target.className !== 'NERPageMarker') {
-            return;
-        }
-
-        // Wait for content to load.
-        setTimeout(function () {
-            run();
-        }, 1000);
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        run();
     });
 
     function run() {

@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function comments() {
     if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
     $.log('Loading Comments Module');
 
@@ -75,10 +75,9 @@
             });
 
         }
-        $('div.content').on('DOMNodeInserted', function (e) {
-            if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-                run();
-            }
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            run();
         });
         run();
     }

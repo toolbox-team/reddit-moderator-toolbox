@@ -672,7 +672,6 @@ img.note-close {
 }
 
 .mod-popup .status {
-    display: none;
 }
 
 .mod-popup .add-sub-link {
@@ -686,6 +685,11 @@ img.note-close {
 .mod-popup .global-button {
     text-decoration: none;
     color: red;
+}
+
+.mod-popup .current-sub {
+    padding: 5px;
+    border-bottom: 1px dotted gray;
 }
 
 .mod-popup tbody tr {

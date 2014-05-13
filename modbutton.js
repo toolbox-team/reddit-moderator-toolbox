@@ -111,14 +111,14 @@
         // generate the .mod-popup jQuery object
         var $popup = $('\
                 <div class="mod-popup">\
+                    <div class="meta" style="display:none">\
+                        <label class="user">' + user + '</label> \
+                        <label class="subreddit">' + currentsub + '</label>\
+                        <label class="thing_id">' + thing_id + '</label>\
+                    </div>\
                     <div class="mod-popup-header">\
-                        <label class="action-title"> Mod Actions  - /u/'+  user +'</label>\
-                        <span class="close right"><a href="javascript:;">✕</a></span>\
-                        <div class="meta" style="display:none">\
-                            <label class="user">' + user + '</label> \
-                            <label class="subreddit">' + currentsub + '</label>\
-                            <label class="thing_id">' + thing_id + '</label>\
-                        </div>\
+                        <div class="mod-popup-title">Mod Actions  - /u/'+  user +'</div>\
+                        <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
                     </div>\
                     <div class="mod-popup-tabs">\
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\

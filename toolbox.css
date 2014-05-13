@@ -662,6 +662,7 @@ img.note-close {
     border-right: 1px dotted #A8B5C2;
     display: inline-block;
     padding: 4px;
+    cursor: pointer;
 }
 
 .mod-popup-tabs a:hover,

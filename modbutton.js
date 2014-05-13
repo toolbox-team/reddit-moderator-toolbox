@@ -59,6 +59,12 @@
         }
     }
 
+    // Popup HTML generator
+    function toolboxPopup(title, meta, tabs) {
+        // tabs = [{title:"", help}]
+
+    }
+
     // Frame support.
     $('body').on('DOMNodeInserted', function (e) {
         if (e.target.className != 'sitetable linklisting') return;

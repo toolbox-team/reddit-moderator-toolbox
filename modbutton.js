@@ -188,8 +188,8 @@
                     \
                     <div class="mod-popup-tab-flair" style="display:none;">\
                         <div class="mod-popup-content">\
-                            <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
-                            <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>\
+                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-flair-text-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
+                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-flair-text-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>\
                         </div>\
                         <div class="mod-popup-footer">\
                             <div><span class="status error left"></span></div>\
@@ -270,8 +270,8 @@
                     title: "User Flair",
                     tooltip: "Edit User Flair.",
                     content: '\
-                        <p style="clear:both;">Text:&nbsp;&nbsp;<input id="flair-text" class="flair-text" type="text"></input></p>\
-                        <p style="clear:both;">Class:&nbsp;<input id="flair-class" class="flair-class" type="text"></input></p>',
+                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
+                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
                     footer: '\
                         <span class="status error left"></span>\
                         <button class="flair-save">Save Flair</button>'

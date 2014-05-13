@@ -641,6 +641,15 @@ img.note-close {
     padding: 5px !important;
 }
 
+.mod-popup-flair-label {
+    display: inline-block;
+    min-width: 35px;
+}
+
+.mod-popup-flair-input {
+    padding: 3px;
+}
+
 .utagger-popup-content {
     overflow: auto;
     left: 0px;

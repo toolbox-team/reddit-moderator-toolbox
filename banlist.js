@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function banlist() {
     if (
         !TBUtils.logged
         || !TBUtils.getSetting('BanList', 'enabled', true)

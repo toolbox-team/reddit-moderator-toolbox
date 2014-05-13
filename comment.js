@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function comments() {
     if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
     $.log('Loading Comments Module');
 

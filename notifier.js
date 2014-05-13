@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function notifier() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     $.log('Loading Notifier Module');
 

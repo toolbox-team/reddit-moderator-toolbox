@@ -10,7 +10,7 @@
 // @version     1.3
 // ==/UserScript==
 
-(function () {
+(function tbconfig() {
     if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
     $.log('Loading Configuration Module');
                 

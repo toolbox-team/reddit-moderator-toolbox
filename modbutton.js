@@ -10,7 +10,7 @@
 // @version     1.13
 // ==/UserScript==
  
-(function () {
+(function modbutton() {
     if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
     $.log('Loading Mod Button Module');
  

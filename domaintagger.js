@@ -15,7 +15,7 @@
 // ==/UserScript==
 
 
-(function () {
+(function domaintagger() {
     if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', true)) return;
     $.log('Loading Domain Tagger Module');
 

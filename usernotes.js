@@ -10,7 +10,7 @@
 // @version     1.5.0
 // ==/UserScript==
 
-(function () {
+(function usernotes() {
     if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
     $.log('Loading User Notes Module');
 

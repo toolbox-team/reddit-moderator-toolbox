@@ -958,6 +958,25 @@
         return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" >  False/, 'child">');
     };
 
+    TBUtils.addToSiteTaable = function (URL, callback) {
+        if (!URL || !callback) callback(null);
+
+        $.get(URL, function (resp) {
+            if (!resp) callback(null);
+
+            resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
+            var $sitetable = $(resp).find('#siteTable');
+            $sitetable.find('.nextprev').remove();
+
+            if ($sitetable) {
+                callback($sitetable);
+            } else {
+                callback(null);
+            }
+
+        });
+    }
+
     // easy way to simulate the php html encode and decode functions
     TBUtils.htmlEncode = function (value) {
         //create a in-memory div, set it's inner text(which jQuery automatically encodes)

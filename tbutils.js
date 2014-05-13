@@ -1053,6 +1053,17 @@
         }
     }
 
+    // NER, load more comments, and mod frame support.
+    $('div.content').on('DOMNodeInserted', function (e) {
+        if (e.target.className != 'sitetable linklisting' && e.target.parentNode.className !== 'morecomments') return;
+
+        // Wait a sec for stuff to laod.
+        setTimeout(function () {
+            var event = new CustomEvent("TBNewThings");
+            window.dispatchEvent(event);
+        }, 1000);
+    });
+
     window.onbeforeunload = function () {
         
         // Cache data.

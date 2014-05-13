@@ -75,10 +75,9 @@
             });
 
         }
-        $('div.content').on('DOMNodeInserted', function (e) {
-            if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-                run();
-            }
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            run();
         });
         run();
     }

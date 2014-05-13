@@ -92,25 +92,9 @@
         });
     }
 
-    $('body').on('DOMNodeInserted', function (e) {
-        if (e.target.className != 'sitetable linklisting') return;
-        setTimeout(function () {
-            run();
-        }, 1000);
-    });
-
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-            run();
-        }
-
-        // Fixes expanding bug in mod mail.
-        if ($(e.target).hasClass('clearleft')) {
-            setTimeout(function () {
-                run();
-            }, 1000);
-        }
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        run();
     });
 
     function processThing(thing) {

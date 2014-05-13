@@ -124,7 +124,7 @@
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
                         <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
                         <!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
-                        <a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
+                        <a href="javascript:;" title="Edit Mod Button Settings" class="edit-modbutton-settings right">Settings</a>\
                     </div>\
                     <div class="mod-popup-tab-role">\
                         <div class="mod-popup-content">\

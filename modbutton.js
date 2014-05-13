@@ -144,92 +144,6 @@
         }
  
         // generate the .mod-popup jQuery object
-        var $popup = $('\
-                <div class="mod-popup">\
-                    <div class="meta" style="display:none">\
-                        <label class="user">' + user + '</label> \
-                        <label class="subreddit">' + subreddit + '</label>\
-                        <label class="thing_id">' + thing_id + '</label>\
-                    </div>\
-                    <div class="mod-popup-header">\
-                        <div class="mod-popup-title">Mod Actions  - /u/'+  user +'</div>\
-                        <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
-                    </div>\
-                    <div class="mod-popup-tabs">\
-                        <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
-                        <a href="javascript:;" title="Edit user flair" class="edit-user-flair">User Flair</a>\
-                        <!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
-                        <a href="javascript:;" title="Edit Mod Button Settings" class="edit-modbutton-settings right">Settings</a>\
-                    </div>\
-                    <div class="mod-popup-tab-role">\
-                        <div class="mod-popup-content">\
-                            <input type="checkbox" class="action-sub" name="action-sub" value="' + subreddit + '" id="action-' + subreddit + '" checked>\
-                            <label for="action-' + subreddit + '">&nbsp;&nbsp;/r/' + subreddit + ' (current)</label>\
-                            \
-                            <table><tbody class="subs-body" />\
-                            </table>\
-                            <input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>\
-                        </div>\
-                        \
-                        <div class="mod-popup-footer">\
-                            <div><span class="status error left"></span></div>\
-                            <select class="mod-action">\
-                                <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
-                                <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                                <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
-                                <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
-                                <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
-                                <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
-                            </select>\
-                            <button class="save">' + saveButton + '</button>\
-                            <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>\
-                        </div>\
-                    </div>\
-                    \
-                    <div class="mod-popup-tab-flair" style="display:none;">\
-                        <div class="mod-popup-content">\
-                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-flair-text-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
-                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-flair-text-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>\
-                        </div>\
-                        <div class="mod-popup-footer">\
-                            <div><span class="status error left"></span></div>\
-                             <button class="flair-save">Save Flair</button>\
-                        </div>\
-                    </div>\
-                    \
-                    <div class="mod-popup-tab-settings" style="display:none;">\
-                        <div class="mod-popup-content">\
-                            <div class="edit-subreddits">\
-                                <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
-                                <select class="add-dropdown left"></select><button class="add-save right">add</button>\
-                                <p style="clear:both">\
-                                    <label class="global-label" for="the-nuclear-option">\
-                                        <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option" ' + (showglobal ? 'checked' : '' ) + '>\
-                                        &nbsp;enable Global Action button.\
-                                    </label>\
-                                </p>\
-                            </div>\
-                        </div>\
-                        <div class="mod-popup-footer">\
-                            <div><span class="status error left"></span></div>\
-                            <button class="setting-save">Save</button>\
-                        </div>\
-                    </div>\
-                  <div>\
-                <div>');
-            // .appendTo('body')
-            // .css({
-            //     left: event.pageX - 50,
-            //     top: event.pageY - 10,
-            //     display: 'block'
-            // });
-
-
-// <input type="checkbox" class="action-sub" name="action-sub" value="' + subreddit + '" id="action-' + subreddit + '" checked>\
-// <label for="action-' + subreddit + '">&nbsp;&nbsp;/r/' + subreddit + ' (current)</label>\
-// \
-
-
         $popup = toolboxPopup(
             'Mod Actions  - /u/' + user,
             [
@@ -246,13 +160,13 @@
                         </div>'
                             : ''
                         ) + '\
-                        <table><tbody class="subs-body" />\
-                        </table>\
+                        <div class="saved-subs">\
+                        </div>\
                         <div class="other-sub">\
                             <input type="checkbox" class="action-sub ' + OTHER + '-checkbox name="action-sub" value="' + OTHER + '">\
                             <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select>\
                         </div>\
-                        <input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></p>',
+                        <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></div>',
                     footer: '\
                         <span class="status error left"></span>\
                         <select class="mod-action">\
@@ -574,37 +488,46 @@
         //
         // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
         //
-        var $popup = $('body').find('.mod-popup'),
-            $table = $popup.find('tbody');
+        var $popups = $('body').find('.mod-popup'),
+            $savedSubsLists = $popups.find('.saved-subs');
 
         // clear out the current stuff
-        $popup.find('.add-dropdown').find('option').remove();
-        $popup.find('.remove-dropdown').find('option').remove();
-        $table.html('');
+        $popups.find('.add-dropdown').find('option').remove();
+        $popups.find('.remove-dropdown').find('option').remove();
+        $savedSubsLists.html('');
 
         // add our saved subs to the "remove saved subs" dropdown on the setting tab
-        // and to the saved subs table on the role tab
-        $.each(savedSubs, function (i, subreddit) {
-            // only subs we moderate
-            if ($.inArray(subreddit, TBUtils.mySubs) != -1) {
-                $table.append('<tr><th><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></th></tr>');
-            }
-            $('.remove-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
+        // and to the saved subs savedSubsList on the role tab
+        $popups.each(function () {
+            var $popup = $(this),
+                $savedSubsList = $popup.find('.saved-subs'),
+                currentSub = $popup.find('.subreddit').text();
+
+            $.each(savedSubs, function (i, subreddit) {
+                // only subs we moderate
+                // and not the current sub
+                if ($.inArray(subreddit, TBUtils.mySubs) != -1
+                    && subreddit != currentSub
+                ) {
+                    $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                        '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
+                }
+                $('.remove-dropdown')
+                    .append($('<option>', {
+                            value: this
+                        })
+                        .text('/r/' + this));
+            });
         });
         
         // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
         $.each(TBUtils.mySubs, function (i, subreddit) {
-            $popup.find('.add-dropdown')
+            $popups.find('.add-dropdown')
                 .append($('<option>', {
                         value: subreddit
                     })
                     .text('/r/' + subreddit));
-            $popup.find('.' + OTHER)
+            $popups.find('.' + OTHER)
                 .append($('<option>', {
                         value: subreddit
                     })
@@ -632,7 +555,7 @@
     // Edit save button clicked.
     $('body').delegate('.setting-save', 'click', function () {
         var $popup = $(this).parents('.mod-popup'),
-            $table = $popup.find('tbody'),
+            $savedSubsList = $popup.find('.saved-subs'),
             $status = $popup.find('.status');
 
         $status.text('saving settings...');

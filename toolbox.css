@@ -620,6 +620,9 @@ img.note-close {
     font-size: small;
     border-bottom: solid 1px #A8B5C2;
 }
+.mod-popup-header .mod-popup-title {
+    margin: 0 14px;
+}
 
 .mod-toolbox .mod-popup .mod-popup-header .buttons,
 .mod-toolbox .utagger-popup .close.right {
@@ -633,6 +636,20 @@ img.note-close {
     border-bottom: 1px solid #A8B5C2;
     background-color: #C7D6E6;
 }
+
+.mod-popup-tabs a {
+    background-color: #C7D6E6;
+    border-right: 1px dotted #A8B5C2;
+    display: inline-block;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.mod-popup-tabs a:hover,
+.mod-popup-tabs a.active {
+    background-color: #9FBAD6;
+}
+
 
 .mod-popup-content {
     overflow: auto;
@@ -657,19 +674,6 @@ img.note-close {
     padding: 5px !important;
 }
 
-.mod-popup-tabs a {
-    background-color: #C7D6E6;
-    border-right: 1px dotted #A8B5C2;
-    display: inline-block;
-    padding: 4px;
-    cursor: pointer;
-}
-
-.mod-popup-tabs a:hover,
-.mod-popup-tabs a.active {
-    background-color: #9FBAD6;
-}
-
 .mod-popup-footer, .utagger-popup-footer {
     width: 100%;
     height: 30px;
@@ -678,7 +682,6 @@ img.note-close {
     background-color: #CEE3F8;
     text-align: center;
     border-top: solid 1px #A8B5C2;
-    margin-top: 3px;
 }
 
 .mod-popup .status {
@@ -697,21 +700,25 @@ img.note-close {
     color: red;
 }
 
-.mod-popup .current-sub {
-    padding: 5px;
-    border-bottom: 1px dotted gray;
-}
-
-.mod-popup tbody tr {
+.mod-popup .current-sub,
+.mod-popup .saved-subs div,
+.mod-popup div.other-sub,
+.mod-popup .ban-note-container {
     width: 225px;
-    vertical-align: top;
-    border-bottom: 1px solid gray;
-    display: block;
+    border-bottom: 1px dotted gray;
     padding: 5px;
 }
 
-.mod-popup th {
-    padding-right: 10px;
+.mod-popup .current-sub {
+    border-bottom: 1px solid gray;
+}
+
+.mod-popup .ban-note-container {
+    border: none;
+}
+
+.mod-popup .ban-note {
+    width: 100%;
 }
 
 .mod-popup .edit-subreddits {
@@ -720,11 +727,6 @@ img.note-close {
 
 .mod-popup .edit-dropdown {
     width: 190px;
-}
-
-.mod-popup .ban-note {
-    margin-top: 3px;
-    width: 98%;
 }
 
 .mod-action-positive {

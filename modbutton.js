@@ -92,7 +92,7 @@
             info = TBUtils.getThingInfo(this, true),
             currentsub = info.subreddit,
             user = info.user,
-            id = info.id;
+            thing_id = info.id;
 
         //$.log('modbutton ' + currentsub, true);
  
@@ -108,6 +108,11 @@
                     <div class="mod-popup-header">\
                         <label class="action-title"> Mod Actions  - /u/'+  user +'</label>\
                         <span class="close right"><a href="javascript:;">✕</a></span>\
+                        <div class="meta" style="display:none">\
+                            <label class="user">' + user + '</label> \
+                            <label class="subreddit">' + currentsub + '</label>\
+                            <label class="thing_id">' + thing_id + '</label>\
+                        </div>\
                     </div>\
                     <div class="mod-popup-tabs">\
                         <a href="javascript:;" title="Add or remove user from subreddit ban, contributor, and moderator lists." class="user-role active">Role</a>\
@@ -115,9 +120,6 @@
                         <!--a href="javascript:;" title="Nuke chain" class="nuke-comment-chain">Nuke Chain</a-->\
                         <a href="javascript:;" title="Settings" class="edit-modbutton-settings right">Settings</a>\
                     </div>\
-                    <label id="user" style="display:none">' + user + '</label> \
-                    <label id="subreddit" style="display:none">' + currentsub + '</label>\
-                    <label id="id" style="display:none">' + id + '</label>\
                     <div class="mod-popup-tab-role">\
                         <div class="mod-popup-content">\
                             <table><tbody class="subs-body" />\
@@ -268,7 +270,7 @@
             $status = $popup.find('.status').show(),
             banReason = $popup.find('.ban-note').val(),
             subreddits = [],
-            user = $popup.find('#user').text(),
+            user = $popup.find('.user').text(),
             actionCount = 0;
  
         if (!$(this).hasClass('global-button')) {
@@ -330,15 +332,15 @@
 
     $('body').delegate('.nuke-comment-chain', 'click', function () {
         var $popup = $(this).parents('.mod-popup'),
-            id = $popup.find('#id').text();
+            thing_id = $popup.find('.thing_id').text();
 
-        $.log(id);
+        $.log(thing_id);
     });
  
     $('body').delegate('.edit-user-flair', 'click', function () {
         var $popup = $(this).parents('.mod-popup'),
-            user = $popup.find('#user').text(),
-            subreddit = $popup.find('#subreddit').text(),
+            user = $popup.find('.user').text(),
+            subreddit = $popup.find('.subreddit').text(),
             $textinput = $popup.find('.flair-text'),
             $classinput = $popup.find('.flair-class');
  
@@ -445,7 +447,7 @@
         //
         var $popup = $('body').find('.mod-popup'),
             $table = $popup.find('tbody'),
-            currentsub = $('#subreddit').text();
+            currentsub = $('.subreddit').text();
 
         // clear out the current stuff
         $popup.find('.add-dropdown').find('option').remove();

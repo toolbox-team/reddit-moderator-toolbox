@@ -422,6 +422,7 @@
 
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
+            $.log("proc new things 2");
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
@@ -440,10 +441,29 @@
             processNewThings(things);
         });
 
-        // NER support.
-        window.addEventListener("TBNewThings", function () {
-            run();
+        //RES NER support.
+        $('div.content').on('DOMNodeInserted', function (e) {
+
+            // Not RES.
+            if (e.target.className !== 'NERPageMarker') {
+                return;
+            }
+
+            // Wait for content to load.
+            setTimeout(function () {
+                var things = $(".thing").not(".mte-processed");
+                processNewThings(things);
+            }, 1000);
         });
+
+        /*
+        // NER support. TODO: why doesn't this work?
+        window.addEventListener("TBNewThings", function () {
+            $.log("proc new things");
+            var things = $(".thing").not(".mte-processed");
+            processNewThings(things);
+        });
+        */
 
         // Remove rate limit for expandos,removing,approving
         var rate_limit = window.rate_limit;
@@ -689,8 +709,13 @@
                     }
 
                     // Post stats as a comment.
-                    if (!commentbody.length || !rtsComment)
+                    if (!commentbody.length || !rtsComment) {
+                        rtsLink.textContent = 'reported';
+                        rtsLink.href = submission.json.data.url;
+                        rtsLink.className = '';
                         return;
+                    }
+                        
 
                     TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                         if (!successful) {

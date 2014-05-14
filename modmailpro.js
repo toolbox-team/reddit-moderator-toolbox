@@ -527,7 +527,8 @@
     // Add refresh buttion.
     $(refreshLink).click(function () {
         $(refreshLink).css(selectedCSS);
-        TBUtils.setSetting('Notifier', 'lastchecked', new Date().getTime());
+        TBUtils.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
+        TBUtils.setSetting('Notifier', 'modmailcount', 0);
         getNewThings(refreshLimit);
 
     });

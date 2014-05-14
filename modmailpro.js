@@ -33,7 +33,8 @@
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
-        newLoadedMessages = 0; //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
+        newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
+        unprocessedThreads = $('.message-parent:not(.mmp-processed)');
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -162,16 +163,22 @@
 
     initialize();
 
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        initialize();
+    });
+
+
     // RES NER support.
     $('div.content').on('DOMNodeInserted', function (e) {
         var sender = e.target;
         var name = sender.className;
         var event = new CustomEvent("TBNewThings");
 
-        if (name !== 'NERPageMarker' && !$(sender).hasClass('message-parent') && !$(sender).hasClass('realtime-new')) {
+        if (!$(sender).hasClass('message-parent') && !$(sender).hasClass('realtime-new')) {
             return; //not RES, not flowwit, not load more comments, not realtime.
         }
-
+        
         if ($(sender).hasClass('realtime-new')) { //new thread
             var attrib = $(sender).attr('data-fullname');
             if (attrib) {
@@ -183,7 +190,7 @@
                         return
                     } else {
                         processThread(thread);
-                        window.dispatchEvent(event);
+                        //window.dispatchEvent(event);
                     }
                 }, 500);
             }
@@ -205,28 +212,22 @@
                 setTimeout(function () {
                     $.log('flowitt go');
                     initialize();
-                    window.dispatchEvent(event);
+                    //window.dispatchEvent(event);
                 }, 500);
             }
             return;
-
-        } else if (name === 'NERPageMarker') { //is res.
-            setTimeout(function () {
-                $.log('RES NER go');
-                initialize();
-                window.dispatchEvent(event);
-            }, 500);
-            return;
-        }
+        } 
     });
 
     function initialize() {
         $.log('MMP init');
 
-        var threads = $('.message-parent');
+        unprocessedThreads = $('.message-parent:not(.mmp-processed)');
+        $.log(unprocessedThreads.length);
 
         // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(threads, 35, 250, function (thread) {
+        TBUtils.forEachChunked(unprocessedThreads, 25, 350, function (thread) {
+            //$.log('running batch');
             processThread(thread);
         }, function complete() {
 
@@ -239,7 +240,7 @@
 
             // If set collapse all threads on load.
             if (collapsed) {
-                collapseall();
+                collapseall(unprocessedThreads);
             }
             
             // If we're on the unread page, don't filter anything.
@@ -253,42 +254,43 @@
             }
 
             // Set views.
-            setFilterLinks();
-            setReplied();
+            setFilterLinks(unprocessedThreads);
+            setReplied(unprocessedThreads);
             setView();
         });
     }
 
     function processThread(thread) {
-        if ($(thread).hasClass('mmp-processed')) {
+        var $thread = $(thread);
+        if ($thread.hasClass('mmp-processed')) {
             return;
         }
 
         // Set-up MMP info area.
-        $(thread).addClass('mmp-processed');
+        $thread.addClass('mmp-processed');
 
-        var threadID = $(thread).attr('data-fullname'),
-            entries = $(thread).find('.entry'),
+        var threadID = $thread.attr('data-fullname'),
+            entries = $thread.find('.entry'),
             count = (entries.length - 1),
             subreddit = getSubname(thread),
-            newThread = $(thread).hasClass('realtime-new');
+            newThread = $thread.hasClass('realtime-new');
 
-        $('<span class="info-area correspondent"></span>').insertAfter($(thread).find('.correspondent:first'));
+        $('<span class="info-area correspondent"></span>').insertAfter($thread.find('.correspondent:first'));
 
         // Only one feature needs thread, so disable it because it's costly.
         if (hideInviteSpam) {
-            $(thread).find('.subject:first').contents().filter(function () {
+            $thread.find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
             }).wrap('<span class="message-title">');
         }
 
-        var infoArea = $(thread).find('.info-area');
+        var infoArea = $thread.find('.info-area');
         var spacer = '<span> </span>';
 
         $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a> <span>').appendTo(infoArea);
 
         if (count > 0) {
-            if ($(thread).hasClass('moremessages')) {
+            if ($thread.hasClass('moremessages')) {
                 count = count + '+';
                 moreCommentThreads.push(threadID);
             }
@@ -296,21 +298,21 @@
 
             // Only hide invite spam with no replies.    
         } else if (hideInviteSpam) {
-            var title = $(thread).find('.message-title').text().trim();
+            var title = $thread.find('.message-title').text().trim();
             if (title === INVITE || title === ADDED) {
-                $(thread).addClass('invitespam');
+                $thread.addClass('invitespam');
             }
         }
 
         $('<span class="replied-tag"></span>' + spacer).appendTo(infoArea);
 
-        $(thread).find('.correspondent.reddit.rounded a').parent().prepend(
+        $thread.find('.correspondent.reddit.rounded a').parent().prepend(
             '<a href="javascript:;" class="collapse-link">[-]</a> ');
 
         if (noRedModmail) {
-            if ($(thread).hasClass('spam')) {
-                $(thread).css('background-color', 'transparent');
-                $(thread).find('.subject').css('color', 'red');
+            if ($thread.hasClass('spam')) {
+                $thread.css('background-color', 'transparent');
+                $thread.find('.subject').css('color', 'red');
             }
         }
 
@@ -349,24 +351,27 @@
 
         // Deal with realtime threads.
         if (newThread) {
-            $(thread).removeClass('realtime-new');
+            $thread.removeClass('realtime-new');
             $(infoArea).css('background-color', 'yellow');
-            setView();
-            setFilterLinks();
+            setView($thread);
+            setFilterLinks($thread);
 
             if (collapsed) {
-                $(thread).find('.entry').hide();
-                $(thread).find('.expand-btn').hide();
-                $(thread).find('.collapse-link').text('[+]');
+                $thread.find('.entry').hide();
+                $thread.find('.expand-btn').hide();
+                $thread.find('.collapse-link').text('[+]');
             }
-            $(thread).fadeIn("slow");
+            $thread.fadeIn("slow");
         }
     }
 
-    function setFilterLinks() {
+    function setFilterLinks(threads) {
+        if (threads === undefined) {
+            threads = $('.message-parent');
+        }
 
         // I think I could do this by just locating .filter-sub-link.
-        $('.message-parent').each(function () {
+        threads.each(function () {
             var subname = getSubname(this);
             var linktext = 'F';
 
@@ -378,8 +383,12 @@
         });
     }
 
-    function setReplied() {
-        $('.message-parent').each(function () {
+    function setReplied(threads) {
+        if (threads === undefined) {
+            threads = $('.message-parent');
+        }
+
+        threads.each(function () {
             var id = $(this).attr('data-fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
@@ -460,7 +469,8 @@
         });
     }
 
-    function collapseall() {
+    function collapseall(threads) {
+        $.log('collapsing all');
         collapsed = true;
         var link = ('.collapse-all-link');
 
@@ -468,7 +478,9 @@
         $(link).css(selectedCSS);
 
         // Hide threads.
-        var threads = $('.message-parent');
+        if (threads === undefined) {
+            threads = $('.message-parent');
+        }
 
         TBUtils.forEachChunked(threads, 35, 250, function (thread) {
             $(thread).find('.entry').hide();
@@ -527,8 +539,6 @@
     // Add refresh buttion.
     $(refreshLink).click(function () {
         $(refreshLink).css(selectedCSS);
-        TBUtils.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
-        TBUtils.setSetting('Notifier', 'modmailcount', 0);
         getNewThings(refreshLimit);
 
     });
@@ -547,6 +557,9 @@
 
     // Add new things
     function getNewThings(limit) {
+        TBUtils.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
+        TBUtils.setSetting('Notifier', 'modmailcount', 0);
+
         $.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {
             if (!resp) return;

@@ -172,7 +172,7 @@
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
         $('.thing .entry').live('click', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
-            $(this).thing().find('input[type=checkbox]:first').click();
+            $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
 
         // Change sort order

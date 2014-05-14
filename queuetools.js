@@ -347,8 +347,21 @@
         }
         setThreshold($('.thing'));
 
+        // NER support. TODO: why doesn't this work?
+        window.addEventListener("TBNewThings", function () {
+            $.log("proc new things");
+            var things = $(".thing").not(".mte-processed");
+            processNewThings(things);
+        });
+
+        // Add callbacks for flowwit script
+        window.flowwit = window.flowwit || [];
+        window.flowwit.push(function (things) {
+            processNewThings(things);
+        });
+        
         function sortThings(order, asc) {
-            var pagination = $('#siteTable .nextprev');
+            var $sitetable = $('#siteTable');
             var things = $('#siteTable .thing').sort(function (a, b) {
                 (asc) ? (A = a, B = b) : (A = b, B = a);
 
@@ -367,9 +380,11 @@
                     return reportsA - reportsB;
                 }
             });
-            $('#siteTable').empty().append(things).append(pagination);
+            $sitetable.find('.thing').remove();
+            $sitetable.append(things);
         }
         sortThings(listingOrder, sortAscending);
+        
 
         // Toggle all expando boxes
         var expandosOpen = false;
@@ -434,36 +449,14 @@
             if (!viewingspam)
                 setThreshold(things);
         }
-
-        // Add callbacks for flowwit script
-        window.flowwit = window.flowwit || [];
-        window.flowwit.push(function (things) {
-            processNewThings(things);
-        });
-
-        //RES NER support.
-        $('div.content').on('DOMNodeInserted', function (e) {
-
-            // Not RES.
-            if (e.target.className !== 'NERPageMarker') {
-                return;
-            }
-
-            // Wait for content to load.
-            setTimeout(function () {
-                var things = $(".thing").not(".mte-processed");
-                processNewThings(things);
-            }, 1000);
-        });
-
-        /*
+        
         // NER support. TODO: why doesn't this work?
         window.addEventListener("TBNewThings", function () {
             $.log("proc new things");
             var things = $(".thing").not(".mte-processed");
             processNewThings(things);
         });
-        */
+        
 
         // Remove rate limit for expandos,removing,approving
         var rate_limit = window.rate_limit;

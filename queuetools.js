@@ -309,9 +309,6 @@
                 $(thing).removeClass('spammed');
                 $(thing).addClass('approved');
             }
-
-
-
         });
 
         // Open reason dropdown when we remove something as ham.
@@ -324,7 +321,8 @@
             ignoreOnApproveset = true;
 
             if ($(thing).find('.reported-stamp').length) {
-                $(thing).find('a:contains("ignore reports")').click();
+                var ignore = $(thing).find('a:contains("ignore reports")')
+                if (ignore) ignore[0].click();
             }
         });
 
@@ -442,19 +440,9 @@
             processNewThings(things);
         });
 
-        //RES NER support.
-        $('div.content').on('DOMNodeInserted', function (e) {
-
-            // Not RES.
-            if (e.target.className !== 'NERPageMarker') {
-                return;
-            }
-
-            // Wait for content to load.
-            setTimeout(function () {
-                var things = $(".thing").not(".mte-processed");
-                processNewThings(things);
-            }, 1000);
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            run();
         });
 
         // Remove rate limit for expandos,removing,approving

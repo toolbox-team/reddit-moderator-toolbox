@@ -298,8 +298,8 @@
     }
     
     function setNotes(notes, subreddit) {
-        $.log("notes = " + notes);
-        $.log("notes.ver = " + notes.ver);
+        //$.log("notes = " + notes);
+        //$.log("notes.ver = " + notes.ver);
         
         // schema check.
         if (notes.ver > TBUtils.notesSchema) {

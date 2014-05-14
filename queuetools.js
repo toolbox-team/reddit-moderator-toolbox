@@ -352,13 +352,7 @@
             $.log("proc new things");
             var things = $(".thing").not(".mte-processed");
             processNewThings(things);
-        });
-
-        // Add callbacks for flowwit script
-        window.flowwit = window.flowwit || [];
-        window.flowwit.push(function (things) {
-            processNewThings(things);
-        });
+        });        
         
         function sortThings(order, asc) {
             var $sitetable = $('#siteTable');
@@ -381,7 +375,7 @@
                 }
             });
             $sitetable.find('.thing').remove();
-            $sitetable.append(things);
+            $sitetable.prepend(things);
         }
         sortThings(listingOrder, sortAscending);
         

@@ -171,22 +171,21 @@
 
     // RES NER support.
     $('div.content').on('DOMNodeInserted', function (e) {
-        var sender = e.target;
-        var name = sender.className;
+        var $sender = $(e.target);
         var event = new CustomEvent("TBNewThings");
 
-        if (!$(sender).hasClass('message-parent') && !$(sender).hasClass('realtime-new')) {
+        if (!$sender.hasClass('message-parent')) {
             return; //not RES, not flowwit, not load more comments, not realtime.
         }
         
-        if ($(sender).hasClass('realtime-new')) { //new thread
-            var attrib = $(sender).attr('data-fullname');
+        if ($sender.hasClass('realtime-new')) { //new thread
+            var attrib = $sender.attr('data-fullname');
             if (attrib) {
                 setTimeout(function () {
                     $.log('realtime go');
                     var thread = $(".message-parent[data-fullname='" + attrib + "']");
                     if (thread.length > 1) {
-                        $(sender).remove();
+                        $sender.remove();
                         return
                     } else {
                         processThread(thread);
@@ -195,28 +194,14 @@
                 }, 500);
             }
             return;
-        } else if ($.inArray($(sender).attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
+        } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
             setTimeout(function () {
                 $.log('LMC go');
                 processThread(sender);
                 window.dispatchEvent(event);
             }, 500);
             return;
-
-        } else if ($(sender).hasClass('message-parent')) { //likely flowitt
-            newLoadedMessages++;
-
-            // flowwit is hard-coded to load 25 entries at a time, so we need to count them.
-            if (newLoadedMessages === 25) {
-                newLoadedMessages = 0;
-                setTimeout(function () {
-                    $.log('flowitt go');
-                    initialize();
-                    //window.dispatchEvent(event);
-                }, 500);
-            }
-            return;
-        } 
+        }
     });
 
     function initialize() {

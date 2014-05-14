@@ -1074,9 +1074,9 @@
 
     // NER, load more comments, and mod frame support.
     $('div.content').on('DOMNodeInserted', function (e) {
-        if (e.target.className != 'sitetable linklisting' && e.target.parentNode.className !== 'morecomments') return;
-        $.log("TBNewThings firing");
-
+        if (e.target.className != 'sitetable linklisting' && e.target.parentNode.className !== 'morecomments' && !$(e.target).hasClass('flowwit')) return;
+        $.log("TBNewThings firing" + ($(e.target).hasClass('flowwit')) ? ' (flowitt)' : '');
+        
         // Wait a sec for stuff to laod.
         setTimeout(function () {
             var event = new CustomEvent("TBNewThings");

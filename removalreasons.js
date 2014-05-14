@@ -188,7 +188,7 @@
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
             
-            var reasonType = TBUtils.getSetting('RemovalReasons', 'reason-type', 'none');
+            var reasonType = TBUtils.getSetting('cache', 'reason-type', 'none');
             
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -287,7 +287,7 @@
             // Pre-fill reason input elements which have IDs.
             popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
                 this.id = 'reason-input-' + data.subreddit + '-' + this.id;
-                this.value = TBUtils.getSetting('RemovalReasons', this.id, this.value);
+                this.value = TBUtils.getSetting('cache', this.id, this.value);
             });
         }
         
@@ -334,7 +334,7 @@
     
     // Toggle PM/reply/both notification method
     $('body').delegate('.reason-type', 'click', function () {
-        TBUtils.setSetting('RemovalReasons', 'reason-type', this.value);
+        TBUtils.setSetting('cache', 'reason-type', this.value);
     });
     
     // 'no reason' button clicked
@@ -583,6 +583,6 @@
     
     // Reason textarea/input/select changed
     $('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
-        TBUtils.setSetting('RemovalReasons', this.id, this.selectedIndex || this.value);
+        TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
 })();

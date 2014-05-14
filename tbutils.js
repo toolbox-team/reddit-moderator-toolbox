@@ -1061,7 +1061,7 @@
     // Private functions
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
-        if (module === 'cache' || module === 'modtools') return;
+        if (module === 'cache') return;
 
         var keyName = module + '.' + setting;
 

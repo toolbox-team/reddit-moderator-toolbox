@@ -751,7 +751,7 @@
         $('.subscription-box a.title').each(function () {
             var elem = $(this),
                 sr = elem.text(),
-                data = JSON.parse(TBUtils.getSetting('modtools', 'mq-' + TBUtils.logged + '-' + sr, '[0,0]'));
+                data = JSON.parse(TBUtils.getSetting('cache', 'mq-' + TBUtils.logged + '-' + sr, '[0,0]'));
             modSubs.push(sr);
 
             // Update count and re-cache data if more than an hour old.
@@ -771,7 +771,7 @@
 
         function updateModqueueCount(sr) {
             $.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-                TBUtils.setSetting('modtools', 'mq-' + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                TBUtils.setSetting('cache', 'mq-' + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
                 $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
                 sortSubreddits();
             });

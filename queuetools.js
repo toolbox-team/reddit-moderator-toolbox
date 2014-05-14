@@ -674,8 +674,8 @@
             }
 
             var confirmban = confirm("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?");
-            var reason = prompt("What is the reason for banning this user? (leave blank for none)", "");
             if (confirmban) {
+                var reason = prompt("What is the reason for banning this user? (leave blank for none)", "");
                 postbanlog(currentsub, user, reason);
                 TBUtils.banUser(user, currentsub, reason, function() {
                     alert(user + " has been banned from /r/" + currentsub);

@@ -353,33 +353,7 @@
             $.log("proc new things");
             var things = $(".thing").not(".mte-processed");
             processNewThings(things);
-        });        
-        
-        function sortThings(order, asc) {
-            var $sitetable = $('#siteTable');
-            var things = $('#siteTable .thing').sort(function (a, b) {
-                (asc) ? (A = a, B = b) : (A = b, B = a);
-
-                switch (order) {
-                case 'age':
-                    var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
-                        timeB = new Date($(B).find('time:first').attr('datetime')).getTime();
-                    return timeA - timeB;
-                case 'score':
-                    var scoreA = $(A).find('.score:visible').text().match(numberRX),
-                        scoreB = $(B).find('.score:visible').text().match(numberRX);
-                    return scoreA - scoreB;
-                case 'reports':
-                    var reportsA = $(A).find('.reported-stamp').text().match(numberRX),
-                        reportsB = $(B).find('.reported-stamp').text().match(numberRX);
-                    return reportsA - reportsB;
-                }
-            });
-            $sitetable.find('.thing').remove();
-            $sitetable.prepend(things);
-        }
-        sortThings(listingOrder, sortAscending);
-        
+        });
 
         // Toggle all expando boxes
         var expandosOpen = false;
@@ -444,14 +418,6 @@
             if (!viewingspam)
                 setThreshold(things);
         }
-        
-        // NER support. TODO: why doesn't this work?
-        window.addEventListener("TBNewThings", function () {
-            $.log("proc new things");
-            var things = $(".thing").not(".mte-processed");
-            processNewThings(things);
-        });
-        
 
         // Remove rate limit for expandos,removing,approving
         var rate_limit = window.rate_limit;
@@ -719,6 +685,32 @@
                 }
             });
         });
+
+        // This method is evil and breaks shit if it's called too early.
+        function sortThings(order, asc) {
+            var $sitetable = $('#siteTable');
+            var things = $('#siteTable .thing').sort(function (a, b) {
+                (asc) ? (A = a, B = b) : (A = b, B = a);
+
+                switch (order) {
+                    case 'age':
+                        var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
+                            timeB = new Date($(B).find('time:first').attr('datetime')).getTime();
+                        return timeA - timeB;
+                    case 'score':
+                        var scoreA = $(A).find('.score:visible').text().match(numberRX),
+                            scoreB = $(B).find('.score:visible').text().match(numberRX);
+                        return scoreA - scoreB;
+                    case 'reports':
+                        var reportsA = $(A).find('.reported-stamp').text().match(numberRX),
+                            reportsB = $(B).find('.reported-stamp').text().match(numberRX);
+                        return reportsA - reportsB;
+                }
+            });
+            $sitetable.find('.thing').remove();
+            $sitetable.prepend(things);
+        }
+        sortThings(listingOrder, sortAscending);
     }
 
     // Add mod tools or mod tools toggle button if applicable

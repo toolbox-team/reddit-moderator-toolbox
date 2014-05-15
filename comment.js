@@ -18,8 +18,8 @@
     //
     // preload some generic variables 
     //
-    var hideRemoved = TBUtils.getSetting('commentsMod', 'hideRemoved', false),
-        highlighted = TBUtils.getSetting('commentsMod', 'highlighted', '');
+    var hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
+        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', '');
 
 
     //

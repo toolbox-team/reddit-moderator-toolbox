@@ -323,7 +323,6 @@
 
         // Regardless, update the text.  It doen't matter if you pass text for destory.
         $('.tb-overlay-label').text(text);
-
     };
     
     TBUtils.alert = function (message, callback) {

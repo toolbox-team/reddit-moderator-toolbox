@@ -313,8 +313,7 @@
             $status = $popup.find('.status'),
             banReason = $popup.find('.ban-note').val(),
             subreddits = [],
-            user = $popup.find('.user').text(),
-            actionCount = 0;
+            user = $popup.find('.user').text();
  
         if (!$(this).hasClass('global-button')) {
  
@@ -326,14 +325,18 @@
                     var subname = $('.' + OTHER + ' option:selected').val();
                     if (subname !== OTHER) {
                         subreddits.push(subname);
+                        
                     }
                 }
             });
+
+            // Ban
+            massAction(subreddits);
  
         } else {
             var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");
             if (confirmban) {
-                subreddits = TBUtils.mySubs;
+                massAction(TBUtils.mySubs);
             } else {
                 return;
             }
@@ -342,30 +345,85 @@
         // Check dem values.
         if (subreddits.length < 1) return $status.text('error, no subreddits selected');
         if (!api) return $status.text('error, no action selected');
- 
-        // Ban dem trolls.
-        var id = setInterval(function () {
-            var sub = $(subreddits).get(actionCount);
- 
-            $status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
- 
-            $.post('/api/' + api, {
-                uh: TBUtils.modhash,
-                type: action,
-                name: user,
-                r: sub,
-                note: (banReason == BANREASON) ? '' : banReason,
-                api_type: 'json'
-            });
- 
-            actionCount++;
- 
-            if (actionCount === subreddits.length) {
-                clearInterval(id);
+
+
+        var $timer;
+        function completeCheck(failedSubs) {
+            $timer.stop();
+            TBUtils.pageOverlay(null, false);
+            if (failedSubs.length > 0) {
+                var retry = confirm(failedSubs.length + " failed.  Would you like to retry them?");
+                if (retry) {
+                    $.log('retrying');
+                    console.log(failedSubs);
+                    massAction(failedSubs);
+                } else {
+                    $.log('fuck it');
+                    $('.mod-popup').remove();
+                    return;
+                }
+            } else {
+                $.log('winrar');
                 $('.mod-popup').remove();
             }
- 
-        }, 1000); //ban tax.
+        }
+
+        function rateLimit(seconds) {
+            var delay = seconds * 1000;
+            $status.text("API ratelimit sleeping for: " + seconds + " seconds");
+            TBUtils.pageOverlay("API ratelimit sleeping for: " + seconds + " seconds");
+            setTimeout(function () {
+                $.log('resuming');
+                $timer.play();
+            }, delay);
+        }
+
+        function massAction(subs) {
+            $('.mod-popup').hide();
+            var failedSubs = [];
+            var actionCount = 0;
+            // Ban dem trolls.
+            console.log(failedSubs);
+            console.log(subs);
+            console.log(actionCount);
+            TBUtils.pageOverlay("hi", true);
+            $timer = $.timer(function () {
+                var sub = $(subs).get(actionCount);
+
+                $status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
+                TBUtils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
+                $.log('banning from: ' + sub, false);
+                $.post('/api/' + api, {
+                    uh: TBUtils.modhash,
+                    type: action,
+                    name: user,
+                    r: sub,
+                    note: (banReason == BANREASON) ? '' : banReason,
+                    api_type: 'json'
+                })
+                .success(function (resp) {
+                    if (resp.json.errors !== undefined && resp.json.errors[0][0] === 'RATELIMIT') {
+                        $timer.pause();
+                        $.log('ratelimited');
+                        rateLimit(resp.json.ratelimit);
+                    }
+                })
+                .error(function (error, more) {
+                    $.log('missed one');
+                    console.log(error);
+                    console.log(more);
+                    failedSubs.push(sub);
+                });
+
+                actionCount++;
+
+                if (actionCount === subs.length) {
+                    $.log('completed ban round');
+                    completeCheck(failedSubs);
+                }
+
+            }, 250, true); //ban tax.
+        }
     });
  
     // 'cancel' button clicked

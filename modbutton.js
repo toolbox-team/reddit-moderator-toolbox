@@ -355,15 +355,14 @@
                 var retry = confirm(failedSubs.length + " failed.  Would you like to retry them?");
                 if (retry) {
                     $.log('retrying');
-                    console.log(failedSubs);
                     massAction(failedSubs);
                 } else {
-                    $.log('fuck it');
+                    $.log('not retrying');
                     $('.mod-popup').remove();
                     return;
                 }
             } else {
-                $.log('winrar');
+                $.log('complete');
                 $('.mod-popup').remove();
             }
         }
@@ -382,17 +381,16 @@
             $('.mod-popup').hide();
             var failedSubs = [];
             var actionCount = 0;
+
             // Ban dem trolls.
-            console.log(failedSubs);
-            console.log(subs);
-            console.log(actionCount);
-            TBUtils.pageOverlay("hi", true);
+            TBUtils.pageOverlay("", true);
             $timer = $.timer(function () {
                 var sub = $(subs).get(actionCount);
 
                 $status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
                 TBUtils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
-                $.log('banning from: ' + sub, false);
+
+                $.log('banning from: ' + sub);
                 $.post('/api/' + api, {
                     uh: TBUtils.modhash,
                     type: action,
@@ -410,8 +408,6 @@
                 })
                 .error(function (error, more) {
                     $.log('missed one');
-                    console.log(error);
-                    console.log(more);
                     failedSubs.push(sub);
                 });
 

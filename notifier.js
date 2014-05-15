@@ -1003,9 +1003,16 @@
                 newCount = 0;
             
             for (var i = 0; i < json.data.children.length; i++) {
-                var messageTime = json.data.children[i].data.created_utc * 1000;
-                
-                if (!lastSeen || messageTime > lastSeen) {
+                var messageTime = json.data.children[i].data.created_utc * 1000,
+                    messageAuthor = json.data.children[i].data.author;
+                    
+                var isInviteSpam = false;                        
+                if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
+                    isInviteSpam = true;
+                    console.log("we have invite spam boys!");
+                }
+                        
+                if ((!lastSeen || messageTime > lastSeen) && messageAuthor !== TBUtils.logged && !isInviteSpam) {
                     newCount++;
                     if (!newIdx) { newIdx = i; }
                 }
@@ -1016,17 +1023,13 @@
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 var notificationbody, messagecount = 0;
 
-                if (consolidatedMessages || newCount>6) {
+                if (consolidatedMessages || newCount>5) {
 
                     $.each(json.data.children, function (i, value) {
+                        
+                        var isInviteSpam = false;                        
                         if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
-                            invitespamid = value.data.name;
-
-                            $.post('/api/read_message', {
-                                id: invitespamid,
-                                uh: TBUtils.modhash,
-                                api_type: 'json'
-                            });
+                            isInviteSpam = true;
                         }
 
                         var subreddit = value.data.subreddit,
@@ -1034,13 +1037,15 @@
 
                         // Prevent changing the message body, since this loops through all messages, again.
                         // In all honesty, all of this needs to be rewriten...
-                        messagecount++;
-                        if (messagecount > newCount) return false;
+                        if (author !== TBUtils.logged && !isInviteSpam) {                        
+                            messagecount++;
+                            if (messagecount > newCount) return false;
 
-                        if (!notificationbody) {
-                            notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
-                        } else {
-                            notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
+                            if (!notificationbody) {
+                                notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
+                            } else {
+                                notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
+                            }
                         }
                     });
 
@@ -1053,16 +1058,14 @@
                 } else {
                     $.each(json.data.children, function (i, value) {
 
+                        var isInviteSpam = false;                        
                         if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
-                            invitespamid = value.data.name;
-
-                            $.post('/api/read_message', {
-                                id: invitespamid,
-                                uh: TBUtils.modhash,
-                                api_type: 'json'
-                            });
+                            isInviteSpam = true;
                         }
-
+                        
+                        var author = value.data.author;
+                        
+                        if (author !== TBUtils.logged && !isInviteSpam) {
                         // Sending 100 messages, since this loops through all messages, again.
                         // In all honesty, all of this needs to be rewriten...
                         messagecount++;
@@ -1074,6 +1077,7 @@
                         modmailpermalink = value.data.id;
 
                         TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
+                        }
                     });
 
                 }

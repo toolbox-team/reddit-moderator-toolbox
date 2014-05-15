@@ -826,7 +826,38 @@
             }
         });
     };
-    
+
+    TBUtils.redditLogin = function (uname, pass, remeber, callback) {
+        $.post('/api/login', {
+            api_type: 'json',
+            passwd: pass,
+            user: uname,
+            rem: remeber
+        })
+        .success(function () {
+            if (typeof callback !== "undefined")
+                callback(true);
+        })
+        .error(function (error) {
+            $.log(error, true);
+            if (typeof callback !== "undefined")
+                callback(false, error);
+        });
+    };
+
+    TBUtils.getBanState = function (subreddit, user, callback) {
+        $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user: user }, function (data) {
+            var banned = data.data.children;
+
+            // If it's over or under exactly one item they are not banned or that is not their full name.
+            if (banned.length !== 1) {
+                return callback(false);
+            }
+
+            callback(true, banned[0].note, banned[0].date, banned[0].name);
+        });
+    };
+
     TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
         $.post('/api/flair', {
             api_type: 'json',

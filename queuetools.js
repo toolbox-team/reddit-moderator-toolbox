@@ -21,7 +21,8 @@
         hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
         ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
         rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
-        sortModSubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false);
+        sortModSubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false),
+        spamReportSub = 'reportthespammers';
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
@@ -682,7 +683,7 @@
             var link = 'http://www.reddit.com/user/' + author,
                 title = 'Overview for ' + author;
             
-            TBUtils.postLink(link, title, 'reportthespammers', function (successful, submission) {
+            TBUtils.postLink(link, title, spamReportSub, function (successful, submission) {
                 if (!successful) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
                 }

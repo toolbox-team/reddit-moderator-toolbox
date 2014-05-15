@@ -33,7 +33,7 @@
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
-        newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
+        //newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
         unprocessedThreads = $('.message-parent:not(.mmp-processed)');
 
     var separator = '<span class="separator">|</span>',
@@ -197,7 +197,7 @@
         } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
             setTimeout(function () {
                 $.log('LMC go');
-                processThread(sender);
+                processThread($sender);
                 window.dispatchEvent(event);
             }, 500);
             return;

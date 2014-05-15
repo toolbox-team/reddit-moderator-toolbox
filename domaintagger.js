@@ -16,7 +16,7 @@
 
 
 (function domaintagger() {
-    if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false)) return;
     $.log('Loading Domain Tagger Module');
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';

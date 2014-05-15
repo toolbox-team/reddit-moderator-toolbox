@@ -1016,7 +1016,7 @@
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 var notificationbody, messagecount = 0;
 
-                if (consolidatedMessages) {
+                if (consolidatedMessages || newCount>6) {
 
                     $.each(json.data.children, function (i, value) {
                         if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {

@@ -343,7 +343,7 @@
             var threshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1);
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
-                    $(this).thing().hide();
+                    $(this).closest('.thing').hide();
             });
         }
         setThreshold($('.thing'));

@@ -181,7 +181,7 @@
                 $consoleText.scrollTop($consoleText[0].scrollHeight);
             }
             //$.log('hi')  //spam console to test.
-            consoleLoop();
+            // consoleLoop();
         }, 500);
 
         if (consoleShowing) {

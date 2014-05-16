@@ -44,6 +44,7 @@
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         consoleShowing = TBUtils.getSetting('Notifier', 'consoleshowing', false),
+        lockscroll = TBUtils.getSetting('Notifier', 'lockscroll', false),
         newLoad = true,
         now = new Date().getTime(),
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
@@ -142,7 +143,11 @@
             <div class="tb-debug-content">\
                 <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
             </div>\
-            <div class="tb-debug-footer" comment="for the looks">&nbsp;</div>\
+            <div class="tb-debug-footer" comment="for the looks">\
+                <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
+                <!--input class="tb-console-copy" type="button" value="copy text"-->\
+                <input class="tb-console-clear" type="button" value="clear console">\
+            </div>\
     </div>\
         ');
 
@@ -169,14 +174,15 @@
             ');
 
         var $consoleText = $('.tb-debug-console');
-        (function consoleLoop() {
-            setTimeout(function () {
-                $consoleText.val(TBUtils.log.join('\n'));
-                // TODO: add option to lock to bottom.
-                //$consoleText.scrollTop($consoleText[0].scrollHeight);
-                consoleLoop();
-            }, 500);
-        })();
+
+        setInterval(function () {
+            $consoleText.val(TBUtils.log.join('\n'));
+            if (lockscroll) {
+                $consoleText.scrollTop($consoleText[0].scrollHeight);
+            }
+            $.log('hi')
+            consoleLoop();
+        }, 500);
 
         if (consoleShowing) {
             $console.show();
@@ -218,6 +224,7 @@
         $.tooltip(hoverString, e);
     });
 
+    /// Console stuff
     // Show/hide console
     $('body').delegate('#tb-toggle-console, #tb-debug-hide', 'click', function () {
         if (!consoleShowing) {
@@ -227,12 +234,31 @@
         }
 
         consoleShowing = !consoleShowing;
-        TBUtils.setSetting('Notifier', 'consoleshowing', consoleShowing)
+        TBUtils.setSetting('Notifier', 'consoleshowing', consoleShowing);
     });
 
-    // Settings menu	
+    // Set console scroll
+    $('body').delegate('#tb-console-lockscroll', 'click', function () {
+        lockscroll = !lockscroll;
+        TBUtils.setSetting('Notifier', 'lockscroll', lockscroll);
+    });
+
+    /*
+    // Console copy... needs work
+    $('body').delegate('#tb-console-copy', 'click', function () {
+        lockscroll = !lockscroll;
+        TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
+    });
+    */
+
+    // Console clear
+    $('body').delegate('.tb-console-clear', 'click', function () {
+        TBUtils.log = [];
+    });
+    /// End console stuff
 
 
+    // Settings menu
     function showSettings() {
 
         // I probably should have stored "checked" instead of "on" will have to change that later. 

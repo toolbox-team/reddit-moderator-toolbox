@@ -180,7 +180,7 @@
             if (lockscroll) {
                 $consoleText.scrollTop($consoleText[0].scrollHeight);
             }
-            $.log('hi')
+            //$.log('hi')  //spam console to test.
             consoleLoop();
         }, 500);
 

@@ -171,7 +171,7 @@
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
-        $('body').on('click', '.thing .entry', function () {
+        $('body').on('click', '.thing .entry', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });

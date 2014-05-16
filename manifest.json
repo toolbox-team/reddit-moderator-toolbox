@@ -1,31 +1,29 @@
 {
-  "manifest_version": 2,
-
-  "name": "reddit Moderator Toolbox",
-  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "2.1.0",
-
-  "permissions": [
-    "https://*.reddit.com/",
-    "http://*.reddit.com/",
-    "notifications",
-    "tabs",
-    "storage",
-    "unlimitedStorage"
-  ],
-  "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
-      "css": ["toolbox.css"],
-      "js": ["jquery-1.9.0.js", "jquery-migrate-1.2.1.js", "jquery-plugins.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "comment.js", "config.js", "modmatrix.js", "banlist.js", "removalreasons.js", "queuetools.js", "ace.js", "mode-css.js", "syntax.js"]
-    }
-  ],
-  "web_accessible_resources": [
-	"jquery.js", "snuownd.js"
-  ]
+	"manifest_version": 2,
+	
+	"name": "reddit Moderator Toolbox",
+	"description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+	"version": "2.1.0",
+	
+	"permissions": [
+		"https://*.reddit.com/",
+		"http://*.reddit.com/",
+		"notifications",
+		"tabs",
+		"storage",
+		"unlimitedStorage"
+	],
+	"icons": {
+		"16": "icon16.png",
+		"48": "icon48.png",
+		"128": "icon128.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
+			"css": ["toolbox.css"],
+			"js": ["jquery-1.9.0.js", "jquery-migrate-1.2.1.js", "jquery-plugins.js", "snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "comment.js", "config.js", "modmatrix.js", "banlist.js", "removalreasons.js", "queuetools.js", "ace.js", "mode-css.js", "syntax.js"]
+		}
+	],
+	"web_accessible_resources": ["jquery.js", "snuownd.js"]
 }

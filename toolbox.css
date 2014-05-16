@@ -1353,3 +1353,10 @@ body.mod-page .thing {
 .mod-toolbox .tb-page-overlay.tb-frame-module {
     padding: 0 !important;
 }
+
+
+/* For css syntax highlighting */
+#stylesheet_contents_div {
+height: 500px;
+border: solid 1px #E4E4E4;
+}

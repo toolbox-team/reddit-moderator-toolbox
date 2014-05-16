@@ -43,7 +43,7 @@
         $('.tb-comment-spam').hide();
     }
 
-    $('body').delegate('#tb-toggle-removed', 'click', function () {
+    $('body').on('click', '#tb-toggle-removed', function () {
         if ($('.tb-comment-spam').is(':visible')) {
             $('.tb-comment-spam').hide();
         } else {

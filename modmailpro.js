@@ -72,7 +72,7 @@
 
     menuList.after(mmpMenu);
 
-    $('body').delegate('.save', 'click', function (e) {
+    $('body').on('click', '.save', function (e) {
         var parent = $(e.target).closest('.message-parent'),
             id = $(parent).attr('data-fullname'),
             replied = getRepliedThreads();
@@ -126,7 +126,7 @@
         }
     }
 
-    $('body').delegate('.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink', 'click', function (e) {
+    $('body').on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink', function (e) {
         // Just unselect all, then select the caller.
         $(menuList).find('li').removeClass('selected');
 
@@ -135,7 +135,7 @@
         setView();
     });
 
-    $('body').delegate('.collapse-all-link', 'click', function () {
+    $('body').on('click', '.collapse-all-link', function () {
         if (collapsed) {
             expandall();
         } else {
@@ -143,7 +143,7 @@
         }
     });
 
-    $('body').delegate('.collapse-link', 'click', function () {
+    $('body').on('click', '.collapse-link', function () {
         var parent = $(this).closest('.message-parent');
         if ($(this).text() === '[-]') {
             parent.find('.entry').hide();
@@ -383,7 +383,7 @@
         });
     }
 
-    $('body').delegate('.filter-sub-link', 'click', function (e) {
+    $('body').on('click', '.filter-sub-link', function (e) {
         var subname = getSubname($(e.target).closest('.message-parent'));
         var filtersubs = getFilteredSubs();
 
@@ -743,7 +743,7 @@
     // Set filtered sub count.
     $('.filter-count').text(filteredsubs.length);
 
-    $('body').delegate('.settings-link', 'click', function (e) {
+    $('body').on('click', '.settings-link', function (e) {
         if (firstrun) {
             $('.first-run').hide();
             $('.settings-link').css('color', '');
@@ -772,7 +772,7 @@
     });
 
     // Reset filter, reload page.
-    $('body').delegate('.reset-filter-link', 'click', function (e) {
+    $('body').on('click', '.reset-filter-link', function (e) {
         TBUtils.setSetting('ModMailPro', 'filteredsubs', []);
         window.location.reload();
     });
@@ -783,7 +783,7 @@
     });
 
     // Settings have been changed.
-    $('body').delegate('.autocollapse, .redmodmail, .highlight, .autoexpand, .hideinvitespam, .autoload', 'click', function (e) {
+    $('body').on('click', '.autocollapse, .redmodmail, .highlight, .autoexpand, .hideinvitespam, .autoload', function (e) {
         var sender = e.target;
 
         // Change link style.

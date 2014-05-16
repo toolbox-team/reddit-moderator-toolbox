@@ -213,7 +213,7 @@
     toggleMenuBar(modbarHidden);
 
     // Show/hide menubar
-    $('body').delegate('.tb-bottombar-unhide, .tb-bottombar-hide', 'click', function () {
+    $('body').on('click', '.tb-bottombar-unhide, .tb-bottombar-hide', function () {
         toggleMenuBar($(this).hasClass('tb-bottombar-hide'));
     });
 
@@ -226,7 +226,7 @@
 
     /// Console stuff
     // Show/hide console
-    $('body').delegate('#tb-toggle-console, #tb-debug-hide', 'click', function () {
+    $('body').on('click', '#tb-toggle-console, #tb-debug-hide', function () {
         if (!consoleShowing) {
             $console.show();
         } else {
@@ -238,21 +238,21 @@
     });
 
     // Set console scroll
-    $('body').delegate('#tb-console-lockscroll', 'click', function () {
+    $('body').on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll);
     });
 
     /*
     // Console copy... needs work
-    $('body').delegate('#tb-console-copy', 'click', function () {
+    $('body').on('click', '#tb-console-copy', function () {
         lockscroll = !lockscroll;
         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
     });
     */
 
     // Console clear
-    $('body').delegate('.tb-console-clear', 'click', function () {
+    $('body').on('click', '.tb-console-clear', function () {
         TBUtils.log = [];
     });
     /// End console stuff
@@ -515,12 +515,12 @@
     }
 
     // Open the settings
-    $('body').delegate('.tb-toolbarsettings', 'click', function () {
+    $('body').on('click', '.tb-toolbarsettings', function () {
         showSettings();
     });
 
     // change tabs 
-    $('body').delegate('.tb-window-tabs a', 'click', function () {
+    $('body').on('click', '.tb-window-tabs a', function () {
         var tab = $(this).attr('class');
         $('.tb-help-main').attr('currentpage', tab);
         $('.tb-window-content').children().hide();
@@ -528,19 +528,19 @@
     });
 
     // remove a shortcut
-    $('body').delegate('.tb-remove-shortcuts', 'click', function () {
+    $('body').on('click', '.tb-remove-shortcuts', function () {
         $(this).closest('.tb-window-content-shortcuts-tr').remove();
     });
 
     // add a shortcut 
-    $('body').delegate('.tb-add-shortcuts', 'click', function () {
+    $('body').on('click', '.tb-add-shortcuts', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
         <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
     });
 
     // Save the settings 
-    $('body').delegate('.tb-save', 'click', function () {
+    $('body').on('click', '.tb-save', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
         if (messagenotificationssave === true) {
             TBUtils.setSetting('Notifier', 'messagenotifications', true);
@@ -645,7 +645,7 @@
     });
 
 
-    $('body').delegate('.tb-help-main', 'click', function () {
+    $('body').on('click', '.tb-help-main', function () {
         var tab = $(this).attr('currentpage');
         tab = '.' + tab;
         var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
@@ -670,7 +670,7 @@
     });
 
     // Close the Settings menu
-    $('body').delegate('.tb-close', 'click', function () {
+    $('body').on('click', '.tb-close', function () {
         $('.tb-settings').remove();
         $('body').css('overflow', 'auto');
     });

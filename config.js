@@ -35,7 +35,7 @@
         $(toolbox).append(configLink);
     }
     
-    $('body').delegate('.toolbox-edit', 'click', function() {
+    $('body').on('click', '.toolbox-edit', function() {
         showSettings();
     });    
     
@@ -119,12 +119,12 @@
         $('body').css('overflow','hidden');
     }
     
-    $('body').delegate('.tb-close', 'click', function() {
+    $('body').on('click', '.tb-close', function() {
         $('.tb-settings').remove();
         $('body').css('overflow','auto');
     });
     
-    $('body').delegate('.edit-domains', 'click', function() {
+    $('body').on('click', '.edit-domains', function() {
         
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
@@ -147,7 +147,7 @@
         $(html).appendTo('body').show();
 
         
-        $(html).delegate('.import', 'click', function() {
+        $(html).on('click', '.import', function() {
             
             $.getJSON('http://www.reddit.com/r/'+ $('.importfrom').val() +'/wiki/toolbox.json', function(json) {
                 
@@ -163,12 +163,12 @@
             });
         });
         
-        $(html).delegate('.cancel', 'click', function() {
+        $(html).on('click', '.cancel', function() {
             $(html).remove();
         }); 
     });
     
-    $('body').delegate('.edit-reasons', 'click', function() {
+    $('body').on('click', '.edit-reasons', function() {
         
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
@@ -254,7 +254,7 @@
         }
         
         // Do things about stuff.
-        $(html).delegate('.save', 'click', function() {
+        $(html).on('click', '.save', function() {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
             var reasonFlairText = $("input[name=flair-text]").val();
@@ -289,12 +289,12 @@
             $(html).remove();
         });
         
-        $(html).delegate('.cancel', 'click', function() {
+        $(html).on('click', '.cancel', function() {
             $(html).remove();
         });        
     });
     
-    $('body').delegate('.reason-settings', 'click', function() {
+    $('body').on('click', '.reason-settings', function() {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -377,7 +377,7 @@
         $(html).appendTo('body').show();
         
         
-        $('.reason-setting-form').delegate('.save', 'click', function() {
+        $('.reason-setting-form').on('click', '.save', function() {
             
             
             config.removalReasons = {
@@ -397,12 +397,12 @@
             $('.reason-setting-form').remove();
         });
         
-        $('.reason-setting-form').delegate('.cancel', 'click', function() {
+        $('.reason-setting-form').on('click', '.cancel', function() {
             $('.reason-setting-form').remove();
         });
     });
 
-    $('body').delegate('.tb-config-help', 'click', function() {	
+    $('body').on('click', '.tb-config-help', function() {	
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
         $.log(htmlcontent, true);
@@ -428,7 +428,7 @@
     
 
 
-    $('body').delegate('.edit-wiki-page', 'click', function(e) {
+    $('body').on('click', '.edit-wiki-page', function(e) {
         var page = $(e.target).attr('page'),
             textArea = $('body').find('.edit-wikidata'),
             saveButton = $('body').find('.save-wiki-data'),
@@ -462,7 +462,7 @@
     });
     
     
-    $('body').delegate('.save-wiki-data, .cancel-wiki-data', 'click', function(e) {
+    $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function(e) {
         var button = e.target,
             editArea = $('.wiki-edit-area'),
             page = $(button).attr('page'),

@@ -348,7 +348,7 @@
         });
     }
 
-    $('body').delegate('#add-user-tag', 'click', function (e) {
+    $('body').on('click', '#add-user-tag', function (e) {
         var thing = $(e.target).closest('.thing .entry'),
             info = TBUtils.getThingInfo(thing),
             subreddit = info.subreddit,
@@ -437,11 +437,11 @@
     });
 
     // 'cancel' button clicked
-    $('body').delegate('.utagger-popup .close', 'click', function () {
+    $('body').on('click', '.utagger-popup .close', function () {
         $(this).parents('.utagger-popup').remove();
     });
 
-    $('body').delegate('.utagger-save-user, .utagger-remove-note', 'click', function (e) {
+    $('body').on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
         var popup = $(this).closest('.utagger-popup'),
             unote = popup.find('.utagger-user-note'),
             subreddit = unote.attr('data-subreddit'),
@@ -538,12 +538,12 @@
         });
     });
 
-    $('body').delegate('.utagger-cancel-user', 'click', function () {
+    $('body').on('click', '.utagger-cancel-user', function () {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
     
-    $('body').delegate('.utagger-user-note', 'keyup', function (event) {
+    $('body').on('keyup', '.utagger-user-note', function (event) {
         if(event.keyCode == 13) {
             $.log("Enter pressed!", true);
             var popup = $(this).closest('.utagger-popup');

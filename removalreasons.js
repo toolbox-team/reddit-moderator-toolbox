@@ -99,7 +99,7 @@
     }
 
     // Open reason drop-down when we remove something as ham.
-    $('body').delegate('.big-mod-buttons > span > .pretty-button.neutral, .remove-button', 'click', function() {
+    $('body').on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function() {
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
         if (thingclasses.match(/\bcomment\b/) && !commentsEnabled)
@@ -310,12 +310,12 @@
     
     // Popup events
     
-    $('body').delegate('.reason-popup', 'click', function (e) {
+    $('body').on('click', '.reason-popup', function (e) {
         e.stopPropagation();
     });
     
     // Selection/deselection of removal reasons
-    $('body').delegate('.selectable-reason', 'click', function (e) {
+    $('body').on('click', '.selectable-reason', function (e) {
         var checkBox = $(this).find('.reason-check'),
             isChecked = checkBox.is(':checked'),
             targetIsCheckBox = $(e.target).is('.reason-check');
@@ -333,17 +333,17 @@
     });
     
     // Toggle PM/reply/both notification method
-    $('body').delegate('.reason-type', 'click', function () {
+    $('body').on('click', '.reason-type', function () {
         TBUtils.setSetting('cache', 'reason-type', this.value);
     });
     
     // 'no reason' button clicked
-    $('body').delegate('.reason-popup .no-reason', 'click', function () {
+    $('body').on('click', '.reason-popup .no-reason', function () {
         $(this).parents('.reason-popup').hide();
     });
     
     // 'cancel' button clicked
-    $('body').delegate('.reason-popup .cancel', 'click', function () {
+    $('body').on('click', '.reason-popup .cancel', function () {
         var popup = $(this).parents('.reason-popup'),
             status = popup.find('.status'),
             attrs = popup.find('attrs');
@@ -357,7 +357,7 @@
     });
     
     // 'save' button clicked
-    $('body').delegate('.reason-popup .save', 'click', function () {
+    $('body').on('click', '.reason-popup .save', function () {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
             checked = popup.find('.reason-check:checked'),
@@ -582,7 +582,7 @@
     });
     
     // Reason textarea/input/select changed
-    $('body').delegate('.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', 'change', function () {
+    $('body').on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
         TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
 })();

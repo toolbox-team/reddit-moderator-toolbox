@@ -124,7 +124,7 @@
 
 
     // Mod button clicked
-    $('body').delegate('.global-mod-button', 'click', function (event) {
+    $('body').on('click', '.global-mod-button', function (event) {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
  
@@ -302,7 +302,7 @@
     });
  
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
-    $('body').delegate('.mod-popup .save, .global-button', 'click', function () {
+    $('body').on('click', '.mod-popup .save, .global-button', function () {
  
         var $button = $(this),
             $popup = $button.parents('.mod-popup'),
@@ -423,18 +423,18 @@
     });
  
     // 'cancel' button clicked
-    $('body').delegate('.mod-popup .close', 'click', function () {
+    $('body').on('click', '.mod-popup .close', function () {
         $(this).parents('.mod-popup').remove();
     });
 
-    $('body').delegate('.nuke-comment-chain', 'click', function () {
+    $('body').on('click', '.nuke-comment-chain', function () {
         var $popup = $(this).parents('.mod-popup'),
             thing_id = $popup.find('.thing_id').text();
 
         $.log(thing_id);
     });
  
-    $('body').delegate('.mod-popup-tabs .user_flair', 'click', function () {
+    $('body').on('click', '.mod-popup-tabs .user_flair', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
             user = $popup.find('.user').text(),
@@ -454,7 +454,7 @@
  
 
     // Edit save button clicked.
-    $('body').delegate('.flair-save', 'click', function () {
+    $('body').on('click', '.flair-save', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
             user = $popup.find('.user').text(),
@@ -510,7 +510,7 @@
 
 
     // // settings button clicked
-    // $('body').delegate('.user-role', 'click', function () {
+    // $('body').on('click', '.user-role', function () {
     //     var $popup = $(this).parents('.mod-popup');
     //     // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
     //     $popup.find('.edit-user-flair').removeClass('active');
@@ -523,7 +523,7 @@
     // });
 
     // // settings button clicked
-    // $('body').delegate('.edit-modbutton-settings', 'click', function () {
+    // $('body').on('click', '.edit-modbutton-settings', function () {
     //     var $popup = $(this).parents('.mod-popup');
     //     // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
     //     $popup.find('.edit-user-flair').removeClass('active');
@@ -589,14 +589,14 @@
         });
     }
     
-    $('body').delegate('.remove-save', 'click', function () {
+    $('body').on('click', '.remove-save', function () {
         var subname = $('.remove-dropdown option:selected').val();
         
         savedSubs.splice(savedSubs.indexOf(subname), 1);
         $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
     });
     
-    $('body').delegate('.add-save', 'click', function () {
+    $('body').on('click', '.add-save', function () {
         var subname = $('.add-dropdown option:selected').val();
         
         // Don't add the sub twice.
@@ -607,7 +607,7 @@
     });
  
     // Edit save button clicked.
-    $('body').delegate('.setting-save', 'click', function () {
+    $('body').on('click', '.setting-save', function () {
         var $popup = $(this).parents('.mod-popup'),
             $savedSubsList = $popup.find('.saved-subs'),
             $status = $popup.find('.status');

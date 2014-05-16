@@ -171,7 +171,7 @@
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
-        $('body').delegate('.thing .entry', 'click', function () {
+        $('body').on('click', '.thing .entry', function () {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
@@ -199,7 +199,7 @@
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
         });
-        $('body').delegate('.thing input[type=checkbox]', 'click', function () {
+        $('body').on('click', '.thing input[type=checkbox]', function () {
             $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
@@ -290,7 +290,7 @@
 
         var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
-        $('body').delegate('.pretty-button', 'click', function (e) {
+        $('body').on('click', '.pretty-button', function (e) {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideActionedItems) {
@@ -313,7 +313,7 @@
         });
 
         // Open reason dropdown when we remove something as ham.
-        $('body').delegate('.big-mod-buttons > span > .pretty-button.positive', 'click', function () {
+        $('body').on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             $(thing).removeClass('removed');
@@ -375,7 +375,7 @@
         $('.inline-content').click(function (e) {
             e.stopPropagation();
         });
-        $('body').delegate('a.context', 'click', function (e) {
+        $('body').on('click', 'a.context', function (e) {
             $('html').one('click', function () {
                 $('.inline-content').hide();
             });
@@ -428,7 +428,7 @@
 
         //User history button pressed
         var gettingUserdata = false;
-        $('body').delegate('.user-history-button', 'click', function () {
+        $('body').on('click', '.user-history-button', function () {
             $('html').one('click', function () {
                 $('.inline-content').hide();
                 gettingUserdata = false;
@@ -614,7 +614,7 @@
             });
         }
 
-        $('body').delegate('.user-ban-button', 'click', function (e) {
+        $('body').on('click', '.user-ban-button', function (e) {
             var banbutton = e.target,
                 info = TBUtils.getThingInfo($(this).closest('.entry')),
                 currentsub = info.subreddit,
@@ -637,7 +637,7 @@
         });
 
         // RTS button pressed
-        $('.inline-content').delegate('.rts-report', 'click', function () {
+        $('.inline-content').on('click', '.rts-report', function () {
             var rtsLink = this,
                 author = rtsLink.getAttribute('data-author'),
                 commentbody = rtsLink.getAttribute('data-commentbody');

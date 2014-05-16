@@ -38,7 +38,7 @@
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-    TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod/);
+    TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/);
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);

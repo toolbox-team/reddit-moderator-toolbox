@@ -171,7 +171,7 @@
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
-        $('.thing .entry').live('click', function (e) {
+        $('body').delegate('.thing .entry', 'click', function () {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
@@ -199,7 +199,7 @@
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
         });
-        $('.thing input[type=checkbox]').live('click', function () {
+        $('body').delegate('.thing input[type=checkbox]', 'click', function () {
             $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
@@ -290,7 +290,7 @@
 
         var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
-        $('.pretty-button').live('click', function (e) {
+        $('body').delegate('.pretty-button', 'click', function (e) {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideActionedItems) {
@@ -313,7 +313,7 @@
         });
 
         // Open reason dropdown when we remove something as ham.
-        $('.big-mod-buttons>span>.pretty-button.positive').live('click', function () {
+        $('body').delegate('.big-mod-buttons > span > .pretty-button.positive', 'click', function () {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             $(thing).removeClass('removed');
@@ -375,7 +375,7 @@
         $('.inline-content').click(function (e) {
             e.stopPropagation();
         });
-        $('a.context').live('click', function (e) {
+        $('body').delegate('a.context', 'click', function (e) {
             $('html').one('click', function () {
                 $('.inline-content').hide();
             });
@@ -428,7 +428,7 @@
 
         //User history button pressed
         var gettingUserdata = false;
-        $('.user-history-button').live('click', function () {
+        $('body').delegate('.user-history-button', 'click', function () {
             $('html').one('click', function () {
                 $('.inline-content').hide();
                 gettingUserdata = false;
@@ -614,7 +614,7 @@
             });
         }
 
-        $('.user-ban-button').live('click', function (e) {
+        $('body').delegate('.user-ban-button', 'click', function (e) {
             var banbutton = e.target,
                 info = TBUtils.getThingInfo($(this).closest('.entry')),
                 currentsub = info.subreddit,

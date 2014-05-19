@@ -504,7 +504,7 @@
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
-    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)) return;
+    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
 
     var delay = 30000, // Default .5 min delay between requests.
         refreshLimit = 15, // Default five items per request.

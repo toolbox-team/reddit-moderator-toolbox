@@ -937,10 +937,21 @@
             api_type: 'json'
         })
         .success(function(response) {
+            if(response.json.hasOwnProperty("errors")) {
+                $.log("Failed to post link to /r/"+subreddit);
+                $.log(response.json.errors);
+                if(typeof callback !== "undefined")
+                    callback(false, response.json.errors);
+                return;
+            }
+            
+            $.log("Successfully posted link to /r/"+subreddit);
             if(typeof callback !== "undefined")
                 callback(true, response);
         })
         .error(function(error) {
+            $.log("Failed to post link to /r/"+subreddit);
+            $.log(error);
             if(typeof callback !== "undefined")
                 callback(false, error);
         });

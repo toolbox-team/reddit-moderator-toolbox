@@ -15,9 +15,19 @@ Toolbox = {
         for (m in this.modules) {
             var module = this.modules[m];
 
+            // Don't do anything with beta modules unless beta mode is enabled
+            // Need Toolbox.setting() call for non-module settings
+            // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
+            if (!Toolbox.utils.getSetting('Utils', 'betaMode', false) && module.setting('betamode')) {
+                // skip this module entirely
+                continue;
+            }
+
+            // lock 'n load
             if (module.setting('enabled')) {
                 module.init();
             }
+
         }
     },
 

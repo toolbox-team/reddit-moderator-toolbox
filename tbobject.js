@@ -134,8 +134,6 @@ Toolbox.TBModule = function (name, version) {
     this.init = function () {
         // pass
     }
-
-
 }
 
 

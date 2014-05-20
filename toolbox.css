@@ -1038,6 +1038,7 @@ body .thing.flaired {
     background-color: #FFF;
     border: solid 1px #808080;
     box-shadow: 0px 1px 3px 1px #D6D6D6;
+    z-index: 10001;
 }
 
 .mod-toolbox .tb-debug-header {
@@ -1090,7 +1091,6 @@ body .thing.flaired {
     padding: 2px !important;
     white-space: pre-wrap;
     word-wrap: break-word;
-    z-index: 10001;
 }
 
 /* various reddit css fixes for mods */ 

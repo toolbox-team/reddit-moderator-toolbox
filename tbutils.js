@@ -3,7 +3,7 @@
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
     TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
-    TBUtils.post_site = $('.redditname a:first').html();  
+    TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();
 
     //Private variables
     //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.

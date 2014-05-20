@@ -133,12 +133,14 @@
         
         // Set attributes and open reason box if one already exists for this subreddit
         var popup = $('#reason-popup-' + data.subreddit);
+        // If the popup already exists, open it
         if (popup.length) {
             // Click yes on the removal
             if (yes) yes.click();
             
             openPopup();
         }
+        // Otherwise create the popup and open it
         else {
             // Get removal reasons.
             getRemovalReasons(data.subreddit, function (response) {
@@ -156,7 +158,7 @@
 
                 // Add additional data that is found in the wiki JSON.  
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                data.logReason = response.logReason || '';
+                data.logReason = response.logreason || '';
                 data.header = unescape(response.header || '');
                 data.footer = unescape(response.footer || '');
                 data.logSub = response.logsub || '';

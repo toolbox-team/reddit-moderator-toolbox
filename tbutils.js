@@ -915,11 +915,22 @@
             api_type: 'json'
         })
         .success(function(response) {
+            if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
+                $.log("Failed to post comment to on "+parent);
+                $.log(response.json.errors);
+                if(typeof callback !== "undefined")
+                    callback(false, response.json.errors);
+                return;
+            }
+            
+            $.log("Successfully posted comment on "+parent);
             if(typeof callback !== "undefined")
                 callback(true, response);
             return;
         })
         .error(function(error) {
+            $.log("Failed to post link to on"+parent);
+            $.log(error);
             if(typeof callback !== "undefined")
                 callback(false, error);
             return;
@@ -937,7 +948,7 @@
             api_type: 'json'
         })
         .success(function(response) {
-            if(response.json.hasOwnProperty("errors")) {
+            if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
                 $.log("Failed to post link to /r/"+subreddit);
                 $.log(response.json.errors);
                 if(typeof callback !== "undefined")

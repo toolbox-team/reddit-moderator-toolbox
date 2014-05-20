@@ -28,8 +28,8 @@
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
         
     // Public variables
-    TBUtils.version = 5;  //don't think we need this anymore.
-    TBUtils.toolboxVersion = '2.1.0';
+    //TBUtils.version = 5;  // NIU
+    TBUtils.toolboxVersion = '2.1.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 210; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
     TBUtils.notesSchema = 4,
@@ -171,7 +171,6 @@
     
     if (TBUtils.debugMode) {
         var consoleText = 'Toolbox version: ' + TBUtils.toolboxVersion +
-                          ', TBUtils version: ' + TBUtils.version +
                           ', Browser: ' + TBUtils.browser +
                           ', Extension: ' + TBUtils.isExtension + 
                           ', Beta features: ' + TBUtils.betaMode +

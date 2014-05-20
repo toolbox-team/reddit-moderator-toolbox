@@ -37,14 +37,19 @@
     
     // Default texts
     var DEFAULT_LOG_TITLE	= "Removed: {kind} by /u/{author} to /r/{subreddit}",
-        DEFAULT_BAN_TITLE	= "/u/{author} has been {title} from /r/{subreddit} for {reason}";
+        DEFAULT_BAN_TITLE	= "/u/{author} has been banned from /r/{subreddit} for {reason}";
     
     // Cached data
     var notEnabled = [],
-        //because of the CSS fallback, we can't use TBUtils.noConfig.
         commentsEnabled = TBUtils.getSetting('RemovalReasons', 'commentreasons', false);
     
     function getRemovalReasons(subreddit, callback) {
+        // Nothing to do if no toolbox config
+        if (TBUtils.noConfig.indexOf(subreddit) != -1) {
+            callback(false);
+            return;
+        }
+        
         $.log('getting config: ' + subreddit);
         var reasons = '';
         
@@ -122,9 +127,7 @@
                 domain: info.domain
             };
         
-        // Causes recursion loop.
-        button.removeClass('remove-button');
-
+        // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
         if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1)
             return;
         
@@ -135,56 +138,52 @@
             if (yes) yes.click();
             
             openPopup();
-            
-            return false;
+        }
+        else {
+            // Get removal reasons.
+            getRemovalReasons(data.subreddit, function (response) {
+                // Removal reasons not enabled
+                if (!response || response.reasons.length < 1) {
+                    notEnabled.push(data.subreddit);
+                    return;
+                }
+                
+                // Click yes on the removal
+                if (yes) yes.click();
+                
+                // Get PM subject line
+                data.subject = response.pmsubject || 'Your {kind} was removed from {subreddit}';
+
+                // Add additional data that is found in the wiki JSON.  
+                // Any HTML needs to me unescaped, because we store it escaped in the wiki.
+                data.logReason = response.logReason || '';
+                data.header = unescape(response.header || '');
+                data.footer = unescape(response.footer || '');
+                data.logSub = response.logsub || '';
+                data.logTitle = response.logtitle || DEFAULT_LOG_TITLE;
+                data.banTitle = response.bantitle || DEFAULT_BAN_TITLE;
+
+                // Loop through the reasons... unescaping each.
+                data.reasons = [];
+                $(response.reasons).each(function () {
+                    data.reasons.push({
+                        text : unescape(this.text),
+                        flairText : this.flairText,
+                        flairCSS : this.flairCSS
+                    });
+                });
+                
+                // Open popup
+                createPopup();
+                openPopup();
+            });
         }
         
-        // Get removal reasons.
-        getRemovalReasons(data.subreddit, function (response) {
-            // Removal reasons not enabled
-            if (!response || response.reasons.length < 1) {
-                notEnabled.push(data.subreddit);
-                return;
-            }
-            
-            // Click yes on the removal
-
-            // FUCKED: now loops forever until jquery overflows.  
-            // The reason is the 'yes' button has the class remove-button
-            // Which has never fucking changed.  
-            if (yes) yes.click();
-            
-            
-            // Get PM subject line
-            data.subject = response.pmsubject || 'Your {kind} was removed from {subreddit}';
-
-            // Add additional data that is found in the wiki JSON.  
-            // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-            data.logreason = response.logreason || '';
-            data.header = unescape(response.header || '');
-            data.footer = unescape(response.footer || '');
-            data.logsub = response.logsub || '';
-            data.logtitle = response.logtitle || DEFAULT_LOG_TITLE;
-            data.bantitle = response.bantitle || DEFAULT_BAN_TITLE;
-
-            // Loop through the reasons... unescaping each.
-            data.reasons = [];
-            $(response.reasons).each(function () {
-                data.reasons.push({
-                    text : unescape(this.text),
-                    flairText : this.flairText,
-                    flairCSS : this.flairCSS
-                });
-            });
-            
-            // Open popup
-            createPopup();
-            openPopup();
-        });
-        
         function createPopup() {
+            $.log("Creating removal reason popup");
+            
             // Options
-            var logDisplay = data.logsub ? '' : 'none',
+            var logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none',
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
             
@@ -238,10 +237,10 @@
                             </div> \
                             <div id="log-reason" style="display:' + logDisplay + '"> \
                                 <p>Log Reason(s): \
-                                    <input id="log-reason-input" type="text" name="logreason" value="' + data.logreason + '" /> \
+                                    <input id="log-reason-input" type="text" name="logReason" value="' + data.logReason + '" /> \
                                 </p> \
                                 <p> \
-                                    (Used for posting a log to /r/' + data.logsub + '. Will only be used when "send" is clicked.) </label> \
+                                    (Used for posting a log to /r/' + data.logSub + '. Will only be used when "send" is clicked.) </label> \
                                 </p> \
                             </div> \
                         </div> \
@@ -364,10 +363,10 @@
             status = popup.find('.status'),
             attrs = popup.find('attrs'),
             subject = attrs.attr('subject'),
-            logtitle = attrs.attr('logtitle'),
+            logTitle = attrs.attr('logTitle'),
             header = attrs.attr('header'),
             footer = attrs.attr('footer'),
-            logreason = popup.find('#log-reason-input').val(),
+            logReason = popup.find('#log-reason-input').val(),
             data = {
                 subreddit: '',
                 fullname: '',
@@ -378,7 +377,7 @@
                 url: '',
                 link: '',
                 domain: '',
-                logsub: ''
+                logSub: ''
             };
         
         // Update status
@@ -466,7 +465,7 @@
             data[i] = attrs.attr(i);
             reason = reason.replace(pattern, data[i]);
             subject = subject.replace(pattern, data[i]);
-            logtitle = logtitle.replace(pattern, data[i]);
+            logTitle = logTitle.replace(pattern, data[i]);
         }
         
         //// Clean up reason
@@ -482,19 +481,22 @@
             });
         }
         
-        // If logsub is not empty, log the removal and send a PM/comment
-        if (data.logsub) {
-            // Check if a log reason is selected
-            if (!logreason) {
-                popup.find('#log-reason-input').addClass('error-highlight');
-                return status.text(LOG_REASON_MISSING_ERROR);
+        // If logSub is not empty, log the removal and send a PM/comment
+        if (data.logSub) {
+            // Finalize log reasons
+            if (logTitle.indexOf('{reason}') >= 0) {
+                // Check if a log reason is selected
+                if (!logReason) {
+                    popup.find('#log-reason-input').addClass('error-highlight');
+                    return status.text(LOG_REASON_MISSING_ERROR);
+                }
+                
+                // Set log reason to entered reason
+                logTitle = logTitle.replace('{reason}', logReason);
             }
             
-            // Set log reason to entered reason
-            logtitle = logtitle.replace('{reason}', logreason);
-            
             // Submit log post
-            TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logtitle), data.logsub, function(successful, response) {
+            TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, function(successful, response) {
                 if(successful) {
                     var logLink = response.json.data.url;
                     

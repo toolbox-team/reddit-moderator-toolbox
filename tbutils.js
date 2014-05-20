@@ -28,8 +28,8 @@
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
         
     // Public variables
-    TBUtils.version = 5;  //don't think we need this anymore.
-    TBUtils.toolboxVersion = '2.1.0';
+    //TBUtils.version = 5;  // NIU
+    TBUtils.toolboxVersion = '2.1.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 210; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
     TBUtils.notesSchema = 4,
@@ -171,7 +171,6 @@
     
     if (TBUtils.debugMode) {
         var consoleText = 'Toolbox version: ' + TBUtils.toolboxVersion +
-                          ', TBUtils version: ' + TBUtils.version +
                           ', Browser: ' + TBUtils.browser +
                           ', Extension: ' + TBUtils.isExtension + 
                           ', Beta features: ' + TBUtils.betaMode +
@@ -916,11 +915,22 @@
             api_type: 'json'
         })
         .success(function(response) {
+            if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
+                $.log("Failed to post comment to on "+parent);
+                $.log(response.json.errors);
+                if(typeof callback !== "undefined")
+                    callback(false, response.json.errors);
+                return;
+            }
+            
+            $.log("Successfully posted comment on "+parent);
             if(typeof callback !== "undefined")
                 callback(true, response);
             return;
         })
         .error(function(error) {
+            $.log("Failed to post link to on"+parent);
+            $.log(error);
             if(typeof callback !== "undefined")
                 callback(false, error);
             return;
@@ -938,10 +948,21 @@
             api_type: 'json'
         })
         .success(function(response) {
+            if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
+                $.log("Failed to post link to /r/"+subreddit);
+                $.log(response.json.errors);
+                if(typeof callback !== "undefined")
+                    callback(false, response.json.errors);
+                return;
+            }
+            
+            $.log("Successfully posted link to /r/"+subreddit);
             if(typeof callback !== "undefined")
                 callback(true, response);
         })
         .error(function(error) {
+            $.log("Failed to post link to /r/"+subreddit);
+            $.log(error);
             if(typeof callback !== "undefined")
                 callback(false, error);
         });

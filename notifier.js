@@ -482,6 +482,7 @@ function tbnoti() {
     // Open the settings
     $('body').delegate('.tb-toolbarsettings', 'click', function () {
         showSettings();
+        Toolbox.injectSettings();
     });
 
     // change tabs 

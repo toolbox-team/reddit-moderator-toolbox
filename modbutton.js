@@ -14,7 +14,12 @@ function modButtonWrapper() {
 
 
 var modButton = new Toolbox.TBModule('Mod Button', '0.1');
-modButton.setting('enabled', true);
+
+modButton.settings['sublist'] = {
+    "type": "text",
+    "default": '',
+    "title": "Saved subreddits that are shown on the \"Action\" tab. Separate with commas."
+};
 
 modButton.run = function () {
     // do it differently on the about mod page.
@@ -40,7 +45,7 @@ modButton.processThing = function (thing) {
     if (!$(thing).hasClass('mod-button')) {
         // Add the class so we don't add buttons twice.
         $(thing).addClass('mod-button');
-        console.log(this);
+
         // Defer info gathering until button is clicked.
         $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + this.buttonName + '</a></li>');
     }
@@ -114,9 +119,6 @@ modButton.init = function() {
      
     this.OTHER = 'other-sub',
     this.BANREASON = "(ban reason)",
-    this.savedSubs = []; 
-
-    this.settings_defaults['sublist'] = [];
     this.savedSubs = this.setting('sublist');
 
     Toolbox.utils.getModSubs(function () {

@@ -55,9 +55,6 @@ stattitTab.init = function() {
     tabList.appendChild(listItem);
 };
 
-stattitTab.settings_defaults['enabled'] = true;    
-
-
 Toolbox.register_module(stattitTab);
 
 } // end of stattitTabWrapper()

@@ -11,13 +11,13 @@
 // ==/UserScript==
 
 
-function banlist () {
+(function banlist() {
     if (
-        !reddit.logged
-        || !TBUtils.setting('BanList', 'enabled', true)
+        !TBUtils.logged
+        || !TBUtils.getSetting('BanList', 'enabled', true)
         || !location.pathname.match(/\/about\/(?:banned)\/?/)
     ) return;
-
+    $.log('Loading Banlist Module');
 
     // extracts a url parameter value from a URL string
     // from http://stackoverflow.com/a/15780907/362042
@@ -198,7 +198,7 @@ function banlist () {
         $('input#user').keyup();
     }
 
-    if (TBUtils.setting('BanList', 'automatic', false)) {
+    if (TBUtils.getSetting('BanList', 'automatic', false)) {
         liveFilter();
     } else {
         $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
@@ -208,11 +208,4 @@ function banlist () {
             $(this).remove();
         });
     }
-}
- 
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + banlist.toString() + ')();';
-    document.head.appendChild(s);
 })();

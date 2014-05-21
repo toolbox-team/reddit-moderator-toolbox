@@ -10,12 +10,13 @@
 // @version     1.3
 // ==/UserScript==
 
-function tbconf() {   
-    if (!reddit.logged || !TBUtils.setting('TBConfig', 'enabled', true)) return;
+(function tbconfig() {
+    if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
+    $.log('Loading Configuration Module');
                 
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,' + TBUtils.icon + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
-        subreddit = reddit.post_site || $('.titlebox h1.redditname a').text(),
+        subreddit = TBUtils.post_site,
         config = TBUtils.config;
     
     if (!subreddit) return;
@@ -34,7 +35,7 @@ function tbconf() {
         $(toolbox).append(configLink);
     }
     
-    $('body').delegate('.toolbox-edit', 'click', function() {
+    $('body').on('click', '.toolbox-edit', function() {
         showSettings();
     });    
     
@@ -43,7 +44,7 @@ function tbconf() {
         TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
             $.log("save succ = " + succ);
             if (!succ) {
-                console.log(err.responseText)
+                $.log(err.responseText, true)
             }
             else {
                 $.log("clearing cache");
@@ -95,8 +96,8 @@ function tbconf() {
                     <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
                 </div>\
                 <div class="reasons-notice" style="display:none;">\
-                    <br><br>
-                    <p>
+                    <br><br>\
+                    <p>\
                         Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
                         You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
                         <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
@@ -106,7 +107,7 @@ function tbconf() {
             <div class="tb-window-footer" >\
                 <div class="wiki-edit-area" style="display: none;">\
                     <input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
-                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>
+                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>\
                 </div>\
             </div>\
         </div>\
@@ -118,12 +119,12 @@ function tbconf() {
         $('body').css('overflow','hidden');
     }
     
-    $('body').delegate('.tb-close', 'click', function() {
+    $('body').on('click', '.tb-close', function() {
         $('.tb-settings').remove();
         $('body').css('overflow','auto');
     });
     
-    $('body').delegate('.edit-domains', 'click', function() {
+    $('body').on('click', '.edit-domains', function() {
         
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
@@ -146,7 +147,7 @@ function tbconf() {
         $(html).appendTo('body').show();
 
         
-        $(html).delegate('.import', 'click', function() {
+        $(html).on('click', '.import', function() {
             
             $.getJSON('http://www.reddit.com/r/'+ $('.importfrom').val() +'/wiki/toolbox.json', function(json) {
                 
@@ -162,12 +163,12 @@ function tbconf() {
             });
         });
         
-        $(html).delegate('.cancel', 'click', function() {
+        $(html).on('click', '.cancel', function() {
             $(html).remove();
         }); 
     });
     
-    $('body').delegate('.edit-reasons', 'click', function() {
+    $('body').on('click', '.edit-reasons', function() {
         
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
@@ -231,11 +232,13 @@ function tbconf() {
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
                 var label = unescape(this.text);
-                if(label.length > 200) {
-                    label = label.substring(0,197) + "...";
-                }
                 if(label == "") {
                     label = '<span style="color: #cecece">(no reason)</span>';
+                } else {
+                    if(label.length > 200) {
+                        label = label.substring(0,197) + "...";
+                    }
+                    label = TBUtils.htmlEncode(label);
                 }
                 $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
             }); 
@@ -251,7 +254,7 @@ function tbconf() {
         }
         
         // Do things about stuff.
-        $(html).delegate('.save', 'click', function() {
+        $(html).on('click', '.save', function() {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
             var reasonFlairText = $("input[name=flair-text]").val();
@@ -286,12 +289,12 @@ function tbconf() {
             $(html).remove();
         });
         
-        $(html).delegate('.cancel', 'click', function() {
+        $(html).on('click', '.cancel', function() {
             $(html).remove();
         });        
     });
     
-    $('body').delegate('.reason-settings', 'click', function() {
+    $('body').on('click', '.reason-settings', function() {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -339,9 +342,9 @@ function tbconf() {
             </tr>\
             </table>\
                 <span>Header:</span>\
-                <p><textarea class="edit-header" >'+ unescape(config.removalReasons.header || '') +'</textarea></p>\
+                <p><textarea class="edit-header" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) +'</textarea></p>\
                 <span>Footer:</span>\
-                <p><textarea class="edit-footer" >'+ unescape(config.removalReasons.footer || '') +'</textarea></p>\
+                <p><textarea class="edit-footer" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) +'</textarea></p>\
             </div>\
 \
 \
@@ -374,7 +377,7 @@ function tbconf() {
         $(html).appendTo('body').show();
         
         
-        $('.reason-setting-form').delegate('.save', 'click', function() {
+        $('.reason-setting-form').on('click', '.save', function() {
             
             
             config.removalReasons = {
@@ -394,15 +397,15 @@ function tbconf() {
             $('.reason-setting-form').remove();
         });
         
-        $('.reason-setting-form').delegate('.cancel', 'click', function() {
+        $('.reason-setting-form').on('click', '.cancel', function() {
             $('.reason-setting-form').remove();
         });
     });
 
-    $('body').delegate('.tb-config-help', 'click', function() {	
+    $('body').on('click', '.tb-config-help', function() {	
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
-        console.log(htmlcontent);
+        $.log(htmlcontent, true);
         var html = '\
         <!DOCTYPE html>\
         <html>\
@@ -425,12 +428,12 @@ function tbconf() {
     
 
 
-    $('body').delegate('.edit-wiki-page', 'click', function(e) {
+    $('body').on('click', '.edit-wiki-page', function(e) {
         var page = $(e.target).attr('page'),
             textArea = $('body').find('.edit-wikidata'),
             saveButton = $('body').find('.save-wiki-data'),
-            editArea = $('body').find('.wiki-edit-area'),
-            isAM = (page === 'automoderator');
+            editArea = $('body').find('.wiki-edit-area')
+            ;
         
         // load the text area, but not the save button.
         $(editArea).show();
@@ -449,10 +452,7 @@ function tbconf() {
                 return;
             }
             
-            // Fix < and > for AM config.
-            if (isAM) {
-                resp = resp.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-            }
+            resp = TBUtils.unescapeJSON(resp);
             
             // Found it, show it.
             $(textArea).val(resp);
@@ -462,7 +462,7 @@ function tbconf() {
     });
     
     
-    $('body').delegate('.save-wiki-data, .cancel-wiki-data', 'click', function(e) {
+    $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function(e) {
         var button = e.target,
             editArea = $('.wiki-edit-area'),
             page = $(button).attr('page'),
@@ -484,11 +484,4 @@ function tbconf() {
         // so they don't need to be re-strinified.
         postToWiki(page, text, false, updateAM);
     });
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + tbconf.toString() + ')();';
-    document.head.appendChild(s);
 })();

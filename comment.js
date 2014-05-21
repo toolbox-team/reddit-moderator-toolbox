@@ -11,14 +11,15 @@
 // ==/UserScript==
 
 
-function tbcomm() {
-    if (!reddit.logged || !$('.moderator').length || !TBUtils.setting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
+(function comments() {
+    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
+    $.log('Loading Comments Module');
 
     //
     // preload some generic variables 
     //
-    var hideRemoved = TBUtils.setting('commentsMod', 'hideRemoved', false),
-        highlighted = TBUtils.setting('commentsMod', 'highlighted', '');
+    var hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
+        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', '');
 
 
     //
@@ -31,7 +32,7 @@ function tbcomm() {
         $(this).addClass('tb-comment-spam');
         removedCounter = removedCounter + 1;
     });
-    console.log(removedCounter);
+    $.log(removedCounter, true);
     if (removedCounter == 1) {
         $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconCommentsRemove + '" />[1]</a>');
     } else if (removedCounter > 1) {
@@ -42,7 +43,7 @@ function tbcomm() {
         $('.tb-comment-spam').hide();
     }
 
-    $('body').delegate('#tb-toggle-removed', 'click', function () {
+    $('body').on('click', '#tb-toggle-removed', function () {
         if ($('.tb-comment-spam').is(':visible')) {
             $('.tb-comment-spam').hide();
         } else {
@@ -74,10 +75,9 @@ function tbcomm() {
             });
 
         }
-        $('div.content').on('DOMNodeInserted', function (e) {
-            if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-                run();
-            }
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            run();
         });
         run();
     }
@@ -111,11 +111,4 @@ function tbcomm() {
 
         $('.md p').highlight(highlighted);
     }
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + tbcomm.toString() + ')();';
-    document.head.appendChild(s);
 })();

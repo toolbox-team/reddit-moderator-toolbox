@@ -10,8 +10,9 @@
 // @version     1.5.0
 // ==/UserScript==
 
-function usernotes() {
-    if (!reddit.logged || !TBUtils.setting('UserNotes', 'enabled', true)) return;
+(function usernotes() {
+    if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
+    $.log('Loading User Notes Module');
 
     var subs = [];
 
@@ -86,23 +87,14 @@ function usernotes() {
             if (succ) {
                 run();
             } else {
-                console.log(err.responseText);
+                $.log(err.responseText, true);
             }
         });
     }
 
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        if (e.target.parentNode.id && e.target.parentNode.id === 'siteTable' && e.target.className.match(/sitetable/)) {
-            run();
-        }
-
-        // Fixes expanding bug in mod mail.
-        if ($(e.target).hasClass('clearleft')) {
-            setTimeout(function () {
-                run();
-            }, 1000);
-        }
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        run();
     });
 
     function processThing(thing) {
@@ -124,10 +116,10 @@ function usernotes() {
 
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
-        if ($(userattrs).html() !== null) {
+        if ($(userattrs).length > 0) {
             $(userattrs).after(tag);
         } else {
-            $(thing).find('.head').after(tag);
+            $(thing).find('.head').append(tag);
         }
 
         if ($.inArray(subreddit, subs) == -1) {
@@ -297,7 +289,7 @@ function usernotes() {
     // Inflates a single note
     function inflateNote(mgr, note) {
         return {
-            "note": note.n,
+            "note": TBUtils.htmlDecode(note.n),
             "time": note.t,
             "mod": mgr.get("users", note.m),
             "link": note.l,
@@ -306,8 +298,8 @@ function usernotes() {
     }
     
     function setNotes(notes, subreddit) {
-        $.log("notes = " + notes);
-        $.log("notes.ver = " + notes.ver);
+        //$.log("notes = " + notes);
+        //$.log("notes.ver = " + notes.ver);
         
         // schema check.
         if (notes.ver > TBUtils.notesSchema) {
@@ -356,7 +348,7 @@ function usernotes() {
         });
     }
 
-    $('body').delegate('#add-user-tag', 'click', function (e) {
+    $('body').on('click', '#add-user-tag', function (e) {
         var thing = $(e.target).closest('.thing .entry'),
             info = TBUtils.getThingInfo(thing),
             subreddit = info.subreddit,
@@ -445,11 +437,11 @@ function usernotes() {
     });
 
     // 'cancel' button clicked
-    $('body').delegate('.utagger-popup .close', 'click', function () {
+    $('body').on('click', '.utagger-popup .close', function () {
         $(this).parents('.utagger-popup').remove();
     });
 
-    $('body').delegate('.utagger-save-user, .utagger-remove-note', 'click', function (e) {
+    $('body').on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
         var popup = $(this).closest('.utagger-popup'),
             unote = popup.find('.utagger-user-note'),
             subreddit = unote.attr('data-subreddit'),
@@ -471,7 +463,7 @@ function usernotes() {
         note = {
             note: noteText,
             time: new Date().getTime(),
-            mod: reddit.logged,
+            mod: TBUtils.logged,
             link: link,
             type: type
         };
@@ -546,23 +538,17 @@ function usernotes() {
         });
     });
 
-    $('body').delegate('.utagger-cancel-user', 'click', function () {
+    $('body').on('click', '.utagger-cancel-user', function () {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
     
-    $('body').delegate('.utagger-user-note', 'keyup', function (event) {
+    $('body').on('keyup', '.utagger-user-note', function (event) {
         if(event.keyCode == 13) {
-            console.log("Enter pressed!");
+            $.log("Enter pressed!", true);
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }
     });
-}
 
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + usernotes.toString() + ')();';
-    document.head.appendChild(s);
 })();

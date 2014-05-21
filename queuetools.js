@@ -6,15 +6,23 @@
 // @run-at document-start
 // ==/UserScript==
 
-function queueTools() {
-    if (!reddit.logged || !TBUtils.setting('QueueTools', 'enabled', true)) return;
+(function queuetools() {
+    // I don't actually know why this works the way it does, but without them modtools doesn't load.
+    if (!document.head)
+        return setTimeout(queuetools);
+    if (!document.body)
+        return setTimeout(queuetools);
+
+    if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
+    $.log('Loading Queue Tools Module');
     
     // Cached data
     var notEnabled = [],
-        hideActionedItems = TBUtils.setting('ModTools', 'hideactioneditems', false),
-        ignoreOnApprove = TBUtils.setting('ModTools', 'ignoreonapprove', false),
-        rtsComment = TBUtils.setting('ModTools', 'rtscomment', true),
-        sortModSubs = TBUtils.setting('ModTools', 'sortmodsubs', false);
+        hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
+        ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
+        rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
+        sortModSubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false),
+        spamReportSub = 'reportthespammers';
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
@@ -75,9 +83,9 @@ function queueTools() {
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = TBUtils.setting('modtools', 'reports-threshold', 1),
-            listingOrder = TBUtils.setting('modtools', 'reports-order', 'age'),
-            sortAscending = (TBUtils.setting('modtools', 'reports-ascending', 'false') == 'true'),
+            reportsThreshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1),
+            listingOrder = TBUtils.getSetting('QueueTools', 'reports-order', 'age'),
+            sortAscending = (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
             viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -112,7 +120,7 @@ function queueTools() {
                         <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a> \
                         <a class="choice" href="javascript:;" type="removed">[ removed ]</a> \
                         <a class="choice" href="javascript:;" type="approved">[ approved ]</a>\
-                        ' + (reddit.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
+                        ' + (TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
                         <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>\
                         <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
                         <a class="choice" href="javascript:;" type="user">user...</a> \
@@ -128,7 +136,7 @@ function queueTools() {
                     <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
                     <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
                     <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
-                    ' + (reddit.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
+                    ' + (TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
                 </span> \
                 <span class="dropdown-title lightdrop" style="float:right"> sort: \
                     <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
@@ -163,9 +171,9 @@ function queueTools() {
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
-        $('.thing .entry').live('click', function (e) {
+        $('body').on('click', '.thing .entry', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
-            $(this).thing().find('input[type=checkbox]:first').click();
+            $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
 
         // Change sort order
@@ -175,8 +183,8 @@ function queueTools() {
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            TBUtils.setting('modtools', 'reports-ascending', null, sortAscending);
-            TBUtils.setting('modtools', 'reports-order', null, order);
+            TBUtils.setSetting('QueueTools', 'reports-ascending', sortAscending);
+            TBUtils.setSetting('QueueTools', 'reports-order', order);
 
             $('.sortorder').text(order);
             sortThings(order, sortAscending);
@@ -191,7 +199,7 @@ function queueTools() {
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
         });
-        $('.thing input[type=checkbox]').live('click', function () {
+        $('body').on('click', '.thing input[type=checkbox]', function () {
             $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
@@ -266,9 +274,9 @@ function queueTools() {
             // Apply action
             $('.thing:visible>input:checked').parent().each(function () {
                 $.post('/api/' + type, {
-                    uh: reddit.modhash,
+                    uh: TBUtils.modhash,
                     spam: spam,
-                    id: $(this).thing_id()
+                    id: $(this).attr('data-fullname') //getThingInfo seems like overkill.
                 });
             }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
         });
@@ -282,7 +290,7 @@ function queueTools() {
 
         var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
-        $('.pretty-button').live('click', function (e) {
+        $('body').on('click', '.pretty-button', function (e) {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideActionedItems) {
@@ -302,13 +310,10 @@ function queueTools() {
                 $(thing).removeClass('spammed');
                 $(thing).addClass('approved');
             }
-
-
-
         });
 
         // Open reason dropdown when we remove something as ham.
-        $('.big-mod-buttons>span>.pretty-button.positive').live('click', function () {
+        $('body').on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             $(thing).removeClass('removed');
@@ -317,7 +322,8 @@ function queueTools() {
             ignoreOnApproveset = true;
 
             if ($(thing).find('.reported-stamp').length) {
-                $(thing).find('a:contains("ignore reports")').click();
+                var ignore = $(thing).find('a:contains("ignore reports")')
+                if (ignore) ignore[0].click();
             }
         });
 
@@ -329,42 +335,25 @@ function queueTools() {
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            TBUtils.setting('modtools', 'reports-threshold', null, threshold);
+            TBUtils.setSetting('QueueTools', 'reports-threshold', threshold);
             setThreshold($('.thing'));
         });
 
         function setThreshold(things) {
-            var threshold = TBUtils.setting('modtools', 'reports-threshold', 1);
+            var threshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1);
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
-                    $(this).thing().hide();
+                    $(this).closest('.thing').hide();
             });
         }
         setThreshold($('.thing'));
 
-        function sortThings(order, asc) {
-            var pagination = $('#siteTable .nextprev');
-            var things = $('#siteTable .thing').sort(function (a, b) {
-                (asc) ? (A = a, B = b) : (A = b, B = a);
-
-                switch (order) {
-                case 'age':
-                    var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
-                        timeB = new Date($(B).find('time:first').attr('datetime')).getTime();
-                    return timeA - timeB;
-                case 'score':
-                    var scoreA = $(A).find('.score:visible').text().match(numberRX),
-                        scoreB = $(B).find('.score:visible').text().match(numberRX);
-                    return scoreA - scoreB;
-                case 'reports':
-                    var reportsA = $(A).find('.reported-stamp').text().match(numberRX),
-                        reportsB = $(B).find('.reported-stamp').text().match(numberRX);
-                    return reportsA - reportsB;
-                }
-            });
-            $('#siteTable').empty().append(things).append(pagination);
-        }
-        sortThings(listingOrder, sortAscending);
+        // NER support. TODO: why doesn't this work?
+        window.addEventListener("TBNewThings", function () {
+            $.log("proc new things");
+            var things = $(".thing").not(".mte-processed");
+            processNewThings(things);
+        });
 
         // Toggle all expando boxes
         var expandosOpen = false;
@@ -386,7 +375,7 @@ function queueTools() {
         $('.inline-content').click(function (e) {
             e.stopPropagation();
         });
-        $('a.context').live('click', function (e) {
+        $('body').on('click', 'a.context', function (e) {
             $('html').one('click', function () {
                 $('.inline-content').hide();
             });
@@ -417,6 +406,7 @@ function queueTools() {
 
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
+            $.log("proc new things 2");
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
@@ -429,27 +419,6 @@ function queueTools() {
                 setThreshold(things);
         }
 
-        // Add callbacks for flowwit script
-        window.flowwit = window.flowwit || [];
-        window.flowwit.push(function (things) {
-            processNewThings(things);
-        });
-
-        //RES NER support.
-        $('div.content').on('DOMNodeInserted', function (e) {
-
-            // Not RES.
-            if (e.target.className !== 'NERPageMarker') {
-                return;
-            }
-
-            // Wait for content to load.
-            setTimeout(function () {
-                var things = $(".thing").not(".mte-processed");
-                processNewThings(things);
-            }, 1000);
-        });
-
         // Remove rate limit for expandos,removing,approving
         var rate_limit = window.rate_limit;
         window.rate_limit = function (action) {
@@ -459,7 +428,7 @@ function queueTools() {
 
         //User history button pressed
         var gettingUserdata = false;
-        $('.user-history-button').live('click', function () {
+        $('body').on('click', '.user-history-button', function () {
             $('html').one('click', function () {
                 $('.inline-content').hide();
                 gettingUserdata = false;
@@ -645,7 +614,7 @@ function queueTools() {
             });
         }
 
-        $('.user-ban-button').live('click', function (e) {
+        $('body').on('click', '.user-ban-button', function (e) {
             var banbutton = e.target,
                 info = TBUtils.getThingInfo($(this).closest('.entry')),
                 currentsub = info.subreddit,
@@ -658,9 +627,8 @@ function queueTools() {
                 return;
             }
 
-            var confirmban = confirm("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?");
-            var reason = prompt("What is the reason for banning this user? (leave blank for none)", "");
-            if (confirmban) {
+            var reason = prompt("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?\n\nBan reason: (optional)", ""); 
+            if( reason != null){ 
                 postbanlog(currentsub, user, reason);
                 TBUtils.banUser(user, currentsub, reason, function() {
                     alert(user + " has been banned from /r/" + currentsub);
@@ -669,7 +637,7 @@ function queueTools() {
         });
 
         // RTS button pressed
-        $('.inline-content').delegate('.rts-report', 'click', function () {
+        $('.inline-content').on('click', '.rts-report', function () {
             var rtsLink = this,
                 author = rtsLink.getAttribute('data-author'),
                 commentbody = rtsLink.getAttribute('data-commentbody');
@@ -681,7 +649,7 @@ function queueTools() {
             var link = 'http://www.reddit.com/user/' + author,
                 title = 'Overview for ' + author;
             
-            TBUtils.postLink(link, title, 'reportthespammers', function (successful, submission) {
+            TBUtils.postLink(link, title, spamReportSub, function (successful, submission) {
                 if (!successful) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
                 }
@@ -694,8 +662,13 @@ function queueTools() {
                     }
 
                     // Post stats as a comment.
-                    if (!commentbody.length || !rtsComment)
+                    if (!commentbody.length || !rtsComment) {
+                        rtsLink.textContent = 'reported';
+                        rtsLink.href = submission.json.data.url;
+                        rtsLink.className = '';
                         return;
+                    }
+                        
 
                     TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                         if (!successful) {
@@ -712,12 +685,38 @@ function queueTools() {
                 }
             });
         });
+
+        // This method is evil and breaks shit if it's called too early.
+        function sortThings(order, asc) {
+            var $sitetable = $('#siteTable');
+            var things = $('#siteTable .thing').sort(function (a, b) {
+                (asc) ? (A = a, B = b) : (A = b, B = a);
+
+                switch (order) {
+                    case 'age':
+                        var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
+                            timeB = new Date($(B).find('time:first').attr('datetime')).getTime();
+                        return timeA - timeB;
+                    case 'score':
+                        var scoreA = $(A).find('.score:visible').text().match(numberRX),
+                            scoreB = $(B).find('.score:visible').text().match(numberRX);
+                        return scoreA - scoreB;
+                    case 'reports':
+                        var reportsA = $(A).find('.reported-stamp').text().match(numberRX),
+                            reportsB = $(B).find('.reported-stamp').text().match(numberRX);
+                        return reportsA - reportsB;
+                }
+            });
+            $sitetable.find('.thing').remove();
+            $sitetable.prepend(things);
+        }
+        sortThings(listingOrder, sortAscending);
     }
 
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage)
         addModtools();
-    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!reddit.post_site || $('body.moderator').length))
+    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length))
         $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
 
     // Check if we're viewing an /r/mod/ fakereddit page
@@ -731,7 +730,7 @@ function queueTools() {
         $('.subscription-box a.title').each(function () {
             var elem = $(this),
                 sr = elem.text(),
-                data = JSON.parse(TBUtils.getSetting('modtools', 'mq-' + reddit.logged + '-' + sr, '[0,0]'));
+                data = JSON.parse(TBUtils.getSetting('cache', 'mq-' + TBUtils.logged + '-' + sr, '[0,0]'));
             modSubs.push(sr);
 
             // Update count and re-cache data if more than an hour old.
@@ -739,7 +738,7 @@ function queueTools() {
             if (now > data[1] + 3600000)
                 setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
         });
-        TBUtils.setting('modtools', 'mod-' + reddit.logged, null, JSON.stringify(modSubs));
+        TBUtils.setSetting('QueueTools', 'mod-' + TBUtils.logged, modSubs);
 
         function sortSubreddits() {
             var subs = $('.subscription-box li').sort(function (a, b) {
@@ -751,23 +750,11 @@ function queueTools() {
 
         function updateModqueueCount(sr) {
             $.get('/r/' + sr + '/about/modqueue.json?limit=100').success(function (d) {
-                TBUtils.setting('modtools', 'mq-' + reddit.logged + '-' + sr, null, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                TBUtils.setSetting('cache', 'mq-' + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
                 $('.subscription-box a[href$="/r/' + sr + '/about/modqueue"]').text(d.data.children.length).attr('count', d.data.children.length);
                 sortSubreddits();
             });
         }
     }
-}
 
-// Add script to the page
-(function addscript() {
-    // I don't actually know why this works the way it does, but without them modtools doesn't load.
-    if (!document.head)
-        return setTimeout(addscript);
-    if (!document.body)
-        return setTimeout(addscript);
-    
-    var s = document.createElement('script');
-    s.textContent = "(" + queueTools.toString() + ')();';
-    document.head.appendChild(s);
 })();

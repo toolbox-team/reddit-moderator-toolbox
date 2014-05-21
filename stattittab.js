@@ -10,7 +10,6 @@
 // @copyright  2013+, LowSociety
 // ==/UserScript==
 
-function stattitTabWrapper() {
 
 var stattitTab = new Toolbox.TBModule('Stattit Tab', '0.1');
     
@@ -56,18 +55,3 @@ stattitTab.init = function() {
 };
 
 Toolbox.register_module(stattitTab);
-
-} // end of stattitTabWrapper()
-
-// if (document.body) {
-//   if (JSON.parse(localStorage['Toolbox.StattitTab.enabled'] || 'true')) {
-//       stattitTab.init();  
-//   }
-// }
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + stattitTabWrapper.toString() + ')();';
-    document.head.appendChild(s);
-})();

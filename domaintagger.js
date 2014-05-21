@@ -15,8 +15,9 @@
 // ==/UserScript==
 
 
-function domaintagger() {
-    if (!reddit.logged || !TBUtils.setting('DomainTagger', 'enabled', true)) return;
+(function domaintagger() {
+    if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false)) return;
+    $.log('Loading Domain Tagger Module');
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';
     var subs = [];
@@ -32,22 +33,14 @@ function domaintagger() {
             if (succ) {
                 run();
             } else {
-                console.log(err.responseText);
+                $.log(err.responseText, true);
             }
         });
     }
 
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        // Not RES.
-        if (e.target.className !== 'NERPageMarker') {
-            return;
-        }
-
-        // Wait for content to load.
-        setTimeout(function () {
-            run();
-        }, 1000);
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        run();
     });
 
     function run() {
@@ -126,7 +119,7 @@ function domaintagger() {
         });
     }
 
-    $('body').delegate('.add-domain-tag', 'click', function (e) {
+    $('body').on('click', '.add-domain-tag', function (e) {
         // TODO: This should use getThingInfo(), but I don't want to introduce any bugs for 2.0 by messing with it.
         var thing = $(e.target).closest('.thing');
         var domain = $(thing).find('span.domain:first').text().replace('(', '').replace(')', '').toLocaleLowerCase();
@@ -161,7 +154,7 @@ function domaintagger() {
             });
     });
 
-    $('body').delegate('.save-domain', 'click', function () {
+    $('body').on('click', '.save-domain', function () {
         var popup = $(this).closest('.dtagger-popup'),
             subreddit = popup.find('.domain-name').attr('subreddit');
 
@@ -219,16 +212,9 @@ function domaintagger() {
 
     });
 
-    $('body').delegate('.dtagger-popup .close', 'click', function () {
+    $('body').on('click', '.dtagger-popup .close', function () {
         $(this).parents('.dtagger-popup').remove();
     });
 
 
-}
-
-// Add script to page
-(function () {
-    var s = document.createElement('script');
-    s.textContent = "(" + domaintagger.toString() + ')();';
-    document.head.appendChild(s);
 })();

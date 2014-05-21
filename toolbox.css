@@ -1357,6 +1357,14 @@ body.mod-page .thing {
 
 /* For css syntax highlighting */
 #stylesheet_contents_div {
-height: 500px;
-border: solid 1px #E4E4E4;
+    height: 500px;
+    border: solid 1px #E4E4E4;
+}
+
+.mod-toolbox .ace_searchbtn {
+    margin: 0px;
+}
+
+.mod-toolbox .ace_search_field {
+    border: 0px !important;
 }

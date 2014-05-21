@@ -111,10 +111,8 @@ Toolbox.TBModule = function (name, version) {
 
     // PUBLIC: settings interface
     this.setting = function (name, value) {
-        value = (value !== undefined) ? value : null;
-
         // are we setting or getting?
-        if (value) {
+        if (value !== undefined) {
             // setting
             return Toolbox.utils.setSetting(this.shortname, name, value);
         } else {

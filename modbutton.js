@@ -581,7 +581,7 @@
                         value: subreddit
                     })
                     .text('/r/' + subreddit));
-            $popups.find('.' + OTHER)
+            $popups.find('select.' + OTHER)
                 .append($('<option>', {
                         value: subreddit
                     })

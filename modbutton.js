@@ -162,7 +162,7 @@
                         ) + '\
                         <div class="saved-subs">\
                         </div>\
-                        <div class="other-sub">\
+                        <div class="other-subs">\
                             <input type="checkbox" class="action-sub ' + OTHER + '-checkbox name="action-sub" value="' + OTHER + '">\
                             <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select>\
                         </div>\
@@ -254,11 +254,11 @@
         // if we're on the mod page, it's likely we want to mod them to another sub.
         // unselect current, change action to 'mod'.
         if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {
-            $popup.find("select.mod-action option[data-api=friend][data-action=moderator]").attr("selected", "selected");
+            $popup.find('select.mod-action option[data-api=friend][data-action=moderator]').attr('selected', 'selected');
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
         } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
-            $popup.find("select.mod-action option[data-api=friend][data-action=contributor]").attr("selected", "selected");
+            $popup.find('select.mod-action option[data-api=friend][data-action=contributor]').attr('selected', 'selected');
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
         }

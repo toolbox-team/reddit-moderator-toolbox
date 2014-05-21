@@ -135,7 +135,7 @@
     }
     
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
-    if (typeof (InstallTrigger) !== "undefined") {
+    if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
         TBUtils.browser = FIREFOX;
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = CHROME;

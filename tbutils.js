@@ -249,7 +249,7 @@
                     } catch (e) {
                         result = val;
                     }
-                    return val;
+                    return result;
                 }
             });
         } else {

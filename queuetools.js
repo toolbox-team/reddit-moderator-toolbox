@@ -109,7 +109,7 @@
                 <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
                 <span>\
                     <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">&lt;/&gt;</a> \
-                    <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
+                    <!--a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a--> \
                     <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
                         <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
                     </div>\
@@ -209,52 +209,52 @@
                 selector;
 
             switch (this.type) {
-            case 'banned':
-                selector = '.banned-user';
-                break;
-            case 'filtered':
-                selector = '.spam:not(.banned-user)';
-                break;
-            case 'reported':
-                selector = ':has(.reported-stamp)';
-                break;
-            case 'spammed':
-                selector = '.spammed,:has(.pretty-button.negative.pressed),:has(.remove-button:contains(spammed))';
-                break;
-            case 'removed':
-                selector = '.removed,:has(.pretty-button.neutral.pressed),:has(.remove-button:contains(removed))';
-                break;
-            case 'approved':
-                selector = '.approved,:has(.approval-checkmark,.pretty-button.positive.pressed),:has(.approve-button:contains(approved))';
-                break;
-            case 'flaired':
-                selector = '.flaired';
-                break;
-            case 'actioned':
-                selector = '.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),\
+                case 'banned':
+                    selector = '.banned-user';
+                    break;
+                case 'filtered':
+                    selector = '.spam:not(.banned-user)';
+                    break;
+                case 'reported':
+                    selector = ':has(.reported-stamp)';
+                    break;
+                case 'spammed':
+                    selector = '.spammed,:has(.pretty-button.negative.pressed),:has(.remove-button:contains(spammed))';
+                    break;
+                case 'removed':
+                    selector = '.removed,:has(.pretty-button.neutral.pressed),:has(.remove-button:contains(removed))';
+                    break;
+                case 'approved':
+                    selector = '.approved,:has(.approval-checkmark,.pretty-button.positive.pressed),:has(.approve-button:contains(approved))';
+                    break;
+                case 'flaired':
+                    selector = '.flaired';
+                    break;
+                case 'actioned':
+                    selector = '.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),\
                                     :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))';
-                break;
-            case 'domain':
-                selector = ':has(.domain:contains(' + prompt('domain contains:', '').toLowerCase() + '))';
-                break;
-            case 'user':
-                selector = ':has(.author:contains(' + prompt('username contains:\n(case sensitive)', '') + '))';
-                break;
-            case 'title':
-                selector = ':has(a.title:contains(' + prompt('title contains:\n(case sensitive)', '') + '))';
-                break;
-            case 'comments':
-                selector = '.comment';
-                break;
-            case 'links':
-                selector = '.link';
-                break;
-            case 'self':
-                selector = '.self';
-                break;
-            case 'flair':
-                selector = ':has(.linkflair)';
-                break;
+                    break;
+                case 'domain':
+                    selector = ':has(.domain:contains(' + prompt('domain contains:', '').toLowerCase() + '))';
+                    break;
+                case 'user':
+                    selector = ':has(.author:contains(' + prompt('username contains:\n(case sensitive)', '') + '))';
+                    break;
+                case 'title':
+                    selector = ':has(a.title:contains(' + prompt('title contains:\n(case sensitive)', '') + '))';
+                    break;
+                case 'comments':
+                    selector = '.comment';
+                    break;
+                case 'links':
+                    selector = '.link';
+                    break;
+                case 'self':
+                    selector = '.self';
+                    break;
+                case 'flair':
+                    selector = ':has(.linkflair)';
+                    break;
             }
             things.filter(selector).find('input[type=checkbox]').attr('checked', true);
         });
@@ -355,21 +355,29 @@
             processNewThings(things);
         });
 
+        /*  Disabled for 2.1 final release.  Causes huge issue because reddit does a postback to get the expando content.
         // Toggle all expando boxes
         var expandosOpen = false;
-        $('.open-expandos').toggle(
+        $('.open-expandos').on('click', function () {
 
-        function () {
-            $('.open-expandos').text('[-]');
-            $('.expando-button.collapsed').click();
-            expandosOpen = true;
-        },
-
-        function () {
-            $('.open-expandos').text('[+]');
-            $('.expando-button.expanded').click();
-            expandosOpen = false;
+            
+            if (!expandosOpen) {
+                $('.open-expandos').text('[-]');
+                $('.expando-button.collapsed').each(function (index) {
+                    var button = this;
+                    setTimeout(function () { $(button).click(); }, index * 1000);
+                });
+                expandosOpen = true;
+            } else {
+                $('.open-expandos').text('[+]');
+                $('.expando-button.expanded').each(function () {
+                    $(this).click();
+                });
+                expandosOpen = false;
+            }
+            
         });
+        */
 
         // Open inline context
         $('.inline-content').click(function (e) {

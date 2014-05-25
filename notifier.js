@@ -232,13 +232,15 @@
         $.tooltip(hoverString, e);
     });
 
-    $(modbarhid)
-      .mouseenter(function () {
-          $('#tb-bottombar-image').show();
-      })
-      .mouseleave(function () {
-          $('#tb-bottombar-image').hide();
-      });
+    if (compactHide) {
+        $(modbarhid)
+          .mouseenter(function () {
+              $('#tb-bottombar-image').show();
+          })
+          .mouseleave(function () {
+              $('#tb-bottombar-image').hide();
+          });
+    }
 
     /// Console stuff
     // Show/hide console

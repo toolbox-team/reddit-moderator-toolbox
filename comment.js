@@ -19,7 +19,8 @@
     // preload some generic variables 
     //
     var hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
-        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', '');
+        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', ''),
+        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false);
 
 
     //
@@ -52,8 +53,8 @@
 
     });
 
-    if (TBUtils.betaMode) {
-        function run () {
+    if (approveComments) {
+        function run() {
             $('.thing.comment').each(function () {
                 if (!$(this).hasClass('.approve-buttoned')) {
                     $(this).addClass('approve-buttoned');
@@ -81,6 +82,7 @@
         });
         run();
     }
+
 
   //  $('.thing.comment.spam').click(function () {
   //      var hiddenComment;

@@ -21,7 +21,7 @@
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'),
-        betaRelease = true;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';

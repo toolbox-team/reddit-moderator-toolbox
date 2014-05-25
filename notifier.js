@@ -49,7 +49,8 @@
         newLoad = true,
         now = new Date().getTime(),
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false);
+        modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
+        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false);
 
 
     // convert some settings values
@@ -339,7 +340,7 @@
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
             </p>\
-            <p>\
+            <p'+ ((!betaMode) ? ' style="display:none"' : '' ) +'>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
             </p>\
             <p>\
@@ -486,8 +487,11 @@
         // Settings for the comment module
         var htmlcomments = '\
             <div class="tb-window-content-comment">\
-                        <p>\
+            <p>\
                 <label><input type="checkbox" name="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
+            </p>\
+            <p>\
+            <label><input type="checkbox" id="approveComments" ' + ((approveComments) ? "checked" : "") + '> Show approve button on all comments</label>\
             </p>\
             <p>\
                 Highlight keywords, keywords should entered seperated by a comma without spaces:<br>\
@@ -618,6 +622,8 @@
 
         highlighted = $("input[name=highlighted]").val();
         TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
+
+        TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);

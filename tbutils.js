@@ -21,7 +21,6 @@
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'),
-        usebrowserstorage = false,
         betaRelease = true;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 
 
@@ -214,19 +213,8 @@
         var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
 
-        if (usebrowserstorage && TBUtils.browser == CHROME) {
-            var json = {};
-            json[storageKey] = JSON.stringify(value);
-            chrome.storage.local.set(json, function (result) {
-                chrome.storage.local.get(storageKey, function (result) {
-                    $.log(result[storageKey], true);
-                    return result[storageKey];
-                });
-            });
-        } else {
-            localStorage[storageKey] = JSON.stringify(value);
-            return TBUtils.getSetting(module, setting);
-        }
+        localStorage[storageKey] = JSON.stringify(value);
+        return TBUtils.getSetting(module, setting);
     };
     TBUtils.getSetting = function (module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
@@ -234,38 +222,18 @@
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
-        // Just another javascript sucks issue.
-        if (usebrowserstorage && TBUtils.browser == CHROME) {
-            chrome.storage.local.get(storageKey, function (result) {
-                val = result[storageKey];
-                $.log(storageKey, true);
-                $.log(result[storageKey],true);
-                if (val === undefined) {
-                    $.log(defaultVal, true);
-                    return defaultVal;
-                } else {
-                    try {
-                        result = JSON.parse(val);
-                    } catch (e) {
-                        result = val;
-                    }
-                    return result;
-                }
-            });
+        if (localStorage[storageKey] === undefined) {
+            return defaultVal;
         } else {
-
-            if (localStorage[storageKey] === undefined) {
-                return defaultVal;
-            } else {
-                var storageString = localStorage[storageKey];
-                try {
-                    result = JSON.parse(storageString);
-                } catch (e) {
-                    result = storageString;
-                }
-                return result;
+            var storageString = localStorage[storageKey];
+            try {
+                result = JSON.parse(storageString);
+            } catch (e) {
+                result = storageString;
             }
+            return result;
         }
+        
     };
     
     TBUtils.getTypeInfo = function (warningType) {

@@ -28,6 +28,7 @@
         modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
         modSubreddits = TBUtils.getSetting('Notifier', 'modsubreddits', 'mod'),
         unmoderatedSubreddits = TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
+        notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
         shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
         shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
         highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', ''),
@@ -219,6 +220,7 @@
 
     // Show counts on hover
     $(modbarhid).hover(function modbarHover(e) {
+        if (!notifierEnabled) return;
         var hoverString = 'New Messages: ' + unreadMessageCount + '<br>Mod Queue: ' + modqueueCount + '<br>Unmoderated Queue: ' + unmoderatedCount + '<br>New Mod Mail: ' + modmailCount;
 
         $.tooltip(hoverString, e);
@@ -414,6 +416,9 @@
             </p>\
             <p>\
                 <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Mod Log Matrix</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" id="notifierEnabled" ' + ((notifierEnabled) ? "checked" : "") + '> Enable Notifier (queue counts and desktop notifications)</label>\
             </p>\
             <div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
             </div>\
@@ -619,6 +624,7 @@
         TBUtils.setSetting('BanList', 'enabled', $("#banlistEnabled").prop('checked'));
         TBUtils.setSetting('StattitTab', 'enabled', $("#stattitEnabled").prop('checked'));
         TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
+        TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
         // Ban list settings
         TBUtils.setSetting('BanList', 'automatic', $("#banlistAutomatic").prop('checked'));
@@ -1116,7 +1122,14 @@
         });
     }
     // How often we check for new messages, this will later be adjustable in the settings. 
-    setInterval(getmessages, checkInterval);
-    getmessages();
+    if (notifierEnabled) {
+        setInterval(getmessages, checkInterval);
+        getmessages();
+    } else { //this is a temp hack until 2.2
+        TBUtils.setSetting('Notifier', 'unreadmessagecount', 0);
+        TBUtils.setSetting('Notifier', 'modqueuecount', 0);
+        TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);
+        TBUtils.setSetting('Notifier', 'modmailcount', 0);
+    }
 
 })();

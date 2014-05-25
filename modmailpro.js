@@ -530,7 +530,7 @@
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (TBUtils.getSetting('ModMailPro', 'autoload', false)) {
+    if (TBUtils.getSetting('ModMailPro', 'autoload', false) && TBUtils.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
             var count = TBUtils.getSetting('Notifier', 'modmailcount', 0);
             if (count > 0) {
@@ -709,6 +709,10 @@
     if (TBUtils.getSetting('ModMailPro', 'autoload', false)) {
         $(autoload).addClass('true');
         $(autoload).css(selectedCSS);
+    }
+
+    if (!TBUtils.getSetting('Notifier', 'enabled', true)) {
+        autoload.hide();
     }
 
     // add settings button

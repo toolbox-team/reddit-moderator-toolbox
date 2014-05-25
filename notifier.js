@@ -324,29 +324,15 @@
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
             <p>\
-                <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
-            </p>\
-            <p>\
-                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
-                <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
-            </p>\
-            <p>\
-                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
-                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
-            </p>\
-            <p>\
                 Multireddit of subs you want displayed in the modqueue counter:<br>\
                 <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
             </p>\
             <p>\
-                <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '>Show counter for unmoderated.</label>\
-            </p>\
-            <p>\
                 Multireddit of subs you want displayed in the unmoderated counter:<br>\
                 <input type="text" name="unmoderatedsubreddits" value="' + TBUtils.htmlEncode(unescape(unmoderatedSubreddits)) + '">\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
@@ -363,9 +349,33 @@
             <div class="tb-help-main-content">Edit toolbar stuff</div>\
             </div>\
             ';
+
+        var notifierSettings = $('<div class="tb-notifiersettings">\
+            <p>\
+                <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+                <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
+                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
+            </p></div>').hide();
+
         $(htmltoolbar).appendTo('.tb-window-content');
+
+        // Add notifier settings, show them if not enabled.
+        $('.tb-window-content-toolbar').prepend(notifierSettings);
+        if (notifierEnabled) $(notifierSettings).show();
+
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
+
+
 
         //$("input[name=modsubreddits]").val(unescape(modSubreddits));
         //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));

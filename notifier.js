@@ -33,6 +33,7 @@
         shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
         highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', ''),
         modbarHidden = TBUtils.getSetting('Notifier', 'modbarhidden', false),
+        compactHide = TBUtils.getSetting('Notifier', 'compacthide', false),
         hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
         unmoderatedOn = TBUtils.getSetting('Notifier', 'unmoderatedon', true),
         consolidatedMessages = TBUtils.getSetting('Notifier', 'consolidatedmessages', true),
@@ -40,7 +41,6 @@
         unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-        //unreadPage = location.pathname.match(/\/message\/(?:unread)\/?/),  now: TBUtils.isUnreadPage but I can't find this used anywhere.
         modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
@@ -135,7 +135,7 @@
 
     var modbarhid = $('\
     <div id="tb-bottombar-hidden" class="tb-toolbar">\
-       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconshow + '" /></a>\
+       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,' + ((compactHide) ? TBUtils.iconGripper : TBUtils.iconshow) + '" /></a>\
     </div>');
 
     var $console = $('\
@@ -199,6 +199,12 @@
 
     $(footer).prepend(modbarhid);
 
+    // Always default to hidden.
+    if (compactHide) {
+        modbarHidden = true;
+        $('#tb-bottombar-image').hide();
+    }
+
     function toggleMenuBar(hidden) {
         if (hidden) {
             $(modbar).hide();
@@ -220,11 +226,19 @@
 
     // Show counts on hover
     $(modbarhid).hover(function modbarHover(e) {
-        if (!notifierEnabled) return;
+        if (!notifierEnabled || compactHide) return;
         var hoverString = 'New Messages: ' + unreadMessageCount + '<br>Mod Queue: ' + modqueueCount + '<br>Unmoderated Queue: ' + unmoderatedCount + '<br>New Mod Mail: ' + modmailCount;
 
         $.tooltip(hoverString, e);
     });
+
+    $(modbarhid)
+      .mouseenter(function () {
+          $('#tb-bottombar-image').show();
+      })
+      .mouseleave(function () {
+          $('#tb-bottombar-image').hide();
+      });
 
     /// Console stuff
     // Show/hide console
@@ -336,6 +350,9 @@
             </p>\
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
@@ -467,8 +484,10 @@
             <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
             </div>\
             ';
-        $(htmlcomments).appendTo('.tb-window-content').hide();
-        $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
+        if (commentsEnabled) {
+            $(htmlcomments).appendTo('.tb-window-content').hide();
+            $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
+        }
 
         // Settings for caching
         var htmlcache = '\
@@ -590,6 +609,8 @@
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
+
+        TBUtils.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
 
         TBUtils.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TBUtils.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));

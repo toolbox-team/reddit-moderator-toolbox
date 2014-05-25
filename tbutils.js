@@ -21,15 +21,15 @@
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'),
-        betaRelease = false;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
         
     // Public variables
     //TBUtils.version = 5;  // NIU
-    TBUtils.toolboxVersion = '2.1.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 210; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '2.2.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 220; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
     TBUtils.notesSchema = 4,
     TBUtils.minNotesSchema = 0,

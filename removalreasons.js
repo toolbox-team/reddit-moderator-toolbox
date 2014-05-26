@@ -501,12 +501,12 @@
             TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, function(successful, response) {
                 if(successful) {
                     var logLink = response.json.data.url;
-                    
+                    var loglinkToken = response.json.data.url;
                     logLink = logLink.match(/https?:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
                     logLink = 't3_' + logLink[1];
                     TBUtils.approveThing(logLink);
                     
-                    sendRemovalMessage(logLink);
+                    sendRemovalMessage(loglinkToken);
                 }
                 else {
                     status.text(LOG_POST_ERROR);

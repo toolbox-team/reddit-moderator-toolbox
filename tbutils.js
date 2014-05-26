@@ -161,7 +161,19 @@
         $.log('Running '+ TBUtils.toolboxVersion +' changes');
 
         localStorage['Toolbox.Utils.seennotes'] = JSON.stringify([]); //bug fix.
-        // 2.1 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
+        // 2.1.1 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
+        var highlighted = localStorage['Toolbox.CommentsMod.highlighted'];  //bug fix.
+        $.log(highlighted);
+        if (highlighted === undefined || highlighted === 'undefined' || highlighted === "\"undefined\"") {
+            localStorage['Toolbox.CommentsMod.highlighted'] = JSON.stringify('');
+        }
+
+        highlighted = JSON.stringify(localStorage['Toolbox.CommentsMod.highlighted']);
+        if (highlighted.substr(highlighted.length - 1) === ',') {
+            highlighted = highlighted.slice(0, -1);
+            localStorage['Toolbox.CommentsMod.highlighted'] = JSON.stringify(highlighted);
+        }
+        localStorage.removeItem('Toolbox.CommentsMod.enabled');
 
         // End: version changes.
 

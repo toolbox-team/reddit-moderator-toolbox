@@ -479,8 +479,9 @@
             <div class="tb-help-main-content">Settings for Queue Tools.</div>\
             </div>\
             ';
+
+        $(htmlmodtools).appendTo('.tb-window-content').hide();
         if (qtEnabled) {
-            $(htmlmodtools).appendTo('.tb-window-content').hide();
             $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
         }
 
@@ -500,8 +501,9 @@
             <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
             </div>\
             ';
+
+        $(htmlcomments).appendTo('.tb-window-content').hide();
         if (commentsEnabled) {
-            $(htmlcomments).appendTo('.tb-window-content').hide();
             $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
         }
 
@@ -621,6 +623,11 @@
         TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
         highlighted = $("input[name=highlighted]").val();
+
+        if (highlighted.substr(highlighted.length - 1) === ',') {
+            highlighted = highlighted.slice(0, -1);
+        }
+
         TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
 
         TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));

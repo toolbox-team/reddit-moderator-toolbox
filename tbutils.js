@@ -115,6 +115,8 @@
 
     TBUtils.iconGripper = 'iVBORw0KGgoAAAANSUhEUgAAAAYAAAAOCAIAAACD/fpyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVChTY/iPAXAL1c3bD0QQNm4hZDBkzPr/HwBeT+1tHhuGywAAAABJRU5ErkJggg==';
     
+    TBUtils.logo64 = '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'
+    
     // Get cached info.
     TBUtils.noteCache = (getnewShort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
     TBUtils.configCache = (getnewLong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
@@ -458,77 +460,65 @@
             }
         };
         
-        if (!window.Notification && !window.webkitNotifications) {
+               
+        if (!('Notification' in window)) {
             // fallback on a javascript notification 
-            //console.log('boring old rickety browser, falling back on jquery based notifications');
+            $.log('boring old rickety browser, falling back on jquery based notifications');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
-            
-        } else if (window.Notification && navigator.userAgent.indexOf("Firefox") !== -1) {
-            // Do some stuff with window notification for firefox versions that support notifications
-            
-            // Let's check if the user has granted us permission and if not ask it. 
-            window.Notification.requestPermission(function (perm) {
-                if (perm == 'granted') {
-                    // if everything checks out we can finally show the notification
-                    // create the notification    
-                    new window.Notification(title, {
+
+        } else if (Notification.permission === 'granted') {
+
+            var notification = new Notification(title, {
+                dir: "auto",
+                body: body,
+                icon: "data:image/png;base64," + TBUtils.logo64
+            });
+            notification.onshow = setTimeout(function () {
+                notification.close()
+            }, timeout);
+
+
+
+            notification.onclick = function () {
+                // Open the page
+              $.log('notification clicked');
+                open(url);
+                // Remove notification
+                this.close();
+            }
+
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+
+                // Whatever the user answers, we make sure we store the information
+                if (!('permission' in Notification)) {
+                    Notification.permission = permission;
+                }
+
+                // If the user is okay, let's create a notification
+                if (permission === 'granted') {
+                    var notification = new Notification(title, {
                         dir: "auto",
                         body: body,
-                        icon: "http://creesch.github.io/reddit-declutter/reddit-icon.png",
-                        onshow: function () {
-                            if (timeout) setTimeout(this.close(), timeout);
-                        },
-                        onclick: function () {
-                            // Open the page
-                            window.open(url);
-                            // Remove notification
-                            this.cancel();
-                        }
+                        icon: "data:image/png;base64," + TBUtils.logo64
                     });
+                    notification.onshow = setTimeout(function () {
+                        notification.close()
+                    }, timeout);
+
+
+
+                    notification.onclick = function () {
+                        // Open the page
+                        $.log('notification clicked');
+                        open(url);
+                        // Remove notification
+                        this.close();
+                    }
                 }
             });
-        } else if (window.webkitNotifications) {
-            // use the webkit variant for chrome based browsers
-            
-            if (window.webkitNotifications.checkPermission() === 0) {
-                // if everything checks out we can finally show the notification
-                
-                // create the notification    
-                var toolboxnotification = window.webkitNotifications.createNotification('http://creesch.github.io/reddit-declutter/reddit-icon.png', title, body);
-                
-                // Auto-hide after a while
-                toolboxnotification.ondisplay = function (event) {
-                    if (timeout) {
-                        setTimeout(function () {
-                            event.currentTarget.cancel();
-                        }, timeout);
-                    }
-                };
-                
-                // Define what happens when the notification is clicked. 
-                toolboxnotification.onclick = function () {
-                    // Open the page
-                    window.open(url);
-                    // Remove notification
-                    this.cancel();
-                };
-                // Remove notification
-                toolboxnotification.show();
-                
-            } else if (window.webkitNotifications.checkPermission() == 2) {
-                // fallback on a javascript notification if permission is not given. 
-                //console.log('User will not let us use notifications, fall back on internal version');
-                $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
-                
-            } else {
-                // Ask for permission. 
-                var message = 'Toolbox would like to use native desktop notifications. Click here to allow or deny this, when denied it will use build in notifications <br>Note: notifications can be disabled in preferences.';
-                TBUtils.alert(message, function () {
-                    window.webkitNotifications.requestPermission();
-                    // We could build in a function to show the notifcation that prompted this whole function, but since it is likely a one time occurence I thought it would be a bit over the top.
-                });
-            }
         }
+       
     };
     
     TBUtils.getModSubs = function (callback) {

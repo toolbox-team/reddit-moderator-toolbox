@@ -1360,11 +1360,15 @@ body.mod-page .thing {
     height: 500px;
     border: solid 1px #E4E4E4;
 }
+.mod-toolbox .ace_searchbtn, .mod-toolbox .ace_replacebtn  {
 
-.mod-toolbox .ace_searchbtn {
     margin: 0px;
 }
 
 .mod-toolbox .ace_search_field {
     border: 0px !important;
+}
+
+.mod-toolbox .ace_print-margin {
+    display: none;
 }

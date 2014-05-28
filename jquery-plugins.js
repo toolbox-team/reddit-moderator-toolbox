@@ -328,6 +328,39 @@
     })(jQuery);
 
 
+
+    (function ($) {
+        $.getSetting = function (module, setting) {
+            var storageKey = 'Toolbox.' + module + '.' + setting;
+
+            if (localStorage[storageKey] === undefined) {
+                return undefined;
+            } else {
+                var storageString = localStorage[storageKey];
+                try {
+                    result = JSON.parse(storageString);
+                } catch (e) {
+                    result = storageString;
+                }
+                return result;
+            }
+        };
+    })(jQuery);
+
+    (function ($) {
+        $.setSetting = function (module, setting, value) {
+            var storageKey = 'Toolbox.' + module + '.' + setting;
+
+            localStorage[storageKey] = JSON.stringify(value);
+            return $.getSetting(module, setting);
+        };
+        $.tooltip = function (message, sender) {
+            $.fn.tooltip(message, sender);
+        };
+    })(jQuery);
+
+
+
 // (function () {
 //     // add spinner icon script
 //     var s = document.createElement('script');

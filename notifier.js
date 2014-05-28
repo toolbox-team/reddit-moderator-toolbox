@@ -182,8 +182,6 @@
             if (lockscroll) {
                 $consoleText.scrollTop($consoleText[0].scrollHeight);
             }
-            //$.log('hi')  //spam console to test.
-            // consoleLoop();
         }, 500);
 
         if (consoleShowing) {
@@ -340,7 +338,7 @@
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
             </p>\
-            <p'+ ((!betaMode) ? ' style="display:none"' : '' ) +'>\
+            <p>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
             </p>\
             <p>\

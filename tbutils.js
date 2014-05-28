@@ -158,26 +158,14 @@
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
         
         // Start: version changes.
-        $.log('Running '+ TBUtils.toolboxVersion +' changes');
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes');
 
-        localStorage['Toolbox.Utils.seennotes'] = JSON.stringify([]); //bug fix.
-        // 2.1.1 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
-        var highlighted = localStorage['Toolbox.CommentsMod.highlighted'];  //bug fix.
-        $.log(highlighted);
-        if (highlighted === undefined || highlighted === 'undefined' || highlighted === "\"undefined\"") {
-            localStorage['Toolbox.CommentsMod.highlighted'] = JSON.stringify('');
-        }
-
-        highlighted = JSON.stringify(localStorage['Toolbox.CommentsMod.highlighted']);
-        if (highlighted.substr(highlighted.length - 1) === ',') {
-            highlighted = highlighted.slice(0, -1);
-            localStorage['Toolbox.CommentsMod.highlighted'] = JSON.stringify(highlighted);
-        }
-        localStorage.removeItem('Toolbox.CommentsMod.enabled');
+        // 2.2.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
+        localStorage['Toolbox.Notifier.lastseenmodmail'] = JSON.stringify(now); // don't spam 100 new mod mails on first install.
         localStorage['Toolbox.Utils.debugMode'] = JSON.stringify(false);
         localStorage['Toolbox.Utils.betaMode'] = JSON.stringify(false);
         TBUtils.debugMode = false;
@@ -216,40 +204,20 @@
         modMacros: '',
     };
     
-    TBUtils.setting = function (module, setting, defaultVal, value) {
-        $.log("TBUtils.setting() is deprecated, use TBUtils.getSetting and TBUtils.setSetting() instead.");
-
-        if (value !== undefined) {
-            return TBUtils.setSetting(module, setting, value);
-        } else {
-            return TBUtils.getSetting(module, setting, defaultVal);
-        }
-    };
     TBUtils.setSetting = function (module, setting, value) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
-
-        localStorage[storageKey] = JSON.stringify(value);
-        return TBUtils.getSetting(module, setting);
+        return $.setSetting(module, setting, value);
     };
+
     TBUtils.getSetting = function (module, setting, defaultVal) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
+        ret = $.getSetting(module, setting);
 
-        defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-
-        if (localStorage[storageKey] === undefined) {
+        if (ret === undefined) {
             return defaultVal;
-        } else {
-            var storageString = localStorage[storageKey];
-            try {
-                result = JSON.parse(storageString);
-            } catch (e) {
-                result = storageString;
-            }
-            return result;
-        }
-        
+        } 
+
+        return ret;        
     };
     
     TBUtils.getTypeInfo = function (warningType) {

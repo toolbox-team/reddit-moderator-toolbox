@@ -22,147 +22,6 @@ modButton.settings['sublist'] = {
     "title": "Saved subreddits that are shown on the \"Action\" tab. Separate with commas."
 };
 
-modButton.run = function () {
-    // do it differently on the about mod page.
-    if (Toolbox.utils.isEditUserPage) {
-        $('span.user').each(function () {
-            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></span>');
-        });
-
-        return;
-    }
-
-    // Not a mod, don't bother.
-    if (Toolbox.utils.mySubs.length < 1) {
-        return;
-    }
-
-    var things = $('div.thing .entry:not(.mod-button)');
-    Toolbox.utils.forEachChunked(things, 15, 500, function (thing) { modButton.processThing(thing); });
-};
-
-// Add mod button to all users
-modButton.processThing = function (thing) {
-    if (!$(thing).hasClass('mod-button')) {
-        // Add the class so we don't add buttons twice.
-        $(thing).addClass('mod-button');
-
-        // Defer info gathering until button is clicked.
-        $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + this.buttonName + '</a></li>');
-    }
-}
-
-/**
- *  updates the current savedsubs' listings in the mod button
- */
-modButton.updateSavedSubs = function () {
-    //
-    // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
-    //
-    var $popups = $('body').find('.mod-popup'),
-        $savedSubsLists = $popups.find('.saved-subs');
-
-    // clear out the current stuff
-    $popups.find('.add-dropdown').find('option').remove();
-    $popups.find('.remove-dropdown').find('option').remove();
-    $savedSubsLists.html('');
-
-    // add our saved subs to the "remove saved subs" dropdown on the setting tab
-    // and to the saved subs savedSubsList on the role tab
-    $popups.each(function () {
-        var $popup = $(this),
-            $savedSubsList = $popup.find('.saved-subs'),
-            currentSub = $popup.find('.subreddit').text();
-
-        $.each(modButton.savedSubs, function (i, subreddit) {
-            // only subs we moderate
-            // and not the current sub
-            if ($.inArray(subreddit, TBUtils.mySubs) != -1
-                && subreddit != currentSub
-            ) {
-                $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
-            }
-            $('.remove-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
-        });
-    });
-    
-    // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
-    $.each(TBUtils.mySubs, function (i, subreddit) {
-        $popups.find('.add-dropdown')
-            .append($('<option>', {
-                    value: subreddit
-                })
-                .text('/r/' + subreddit));
-        $popups.find('.' + modButton.OTHER)
-            .append($('<option>', {
-                    value: subreddit
-                })
-                .text('/r/' + subreddit));
-    });
-}
-
-// Popup HTML generator
-modButton.toolboxPopup = function (title, tabs, meta) {
-    meta = (meta !== undefined) ? meta : null;
-
-    // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-    var $popup = $('\
-<div class="mod-popup">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
-<div class="mod-popup-header">\
-    <div class="mod-popup-title">' + title + '</div>\
-    <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
-</div>\
-<div>');
-    if (tabs.length == 1) {
-        $popup.append($('<div class="mod-popup-content">' + tabs[0].content + '</div>'));
-        $popup.append($('<div class="mod-popup-footer">' + tabs[0].footer + '</div>'));
-    } else if (tabs.length > 1) {
-        $popup.append($('<div class="mod-popup-tabs"></div>'));
-
-        for (var i=0; i<tabs.length; i++) {
-            var tab = tabs[i];
-            if (tab.id === "undefined" || !tab.id) { tab.id = tab.title.trim().toLowerCase().replace(' ', '_'); }
-            
-            var $button = $('<a'+(tab.tooltip ? ' title="'+tab.tooltip+'"' : '')+' class="'+tab.id+'">'+tab.title+'</a>');
-            $button.click({tab: tab}, function (e) {
-                var tab = e.data.tab;
-
-                // hide others
-                $popup.find('.mod-popup-tabs a').removeClass('active');
-                $popup.find('.mod-popup-tab').hide();
-
-                // show current
-                $popup.find('.mod-popup-tab.'+tab.id).show();
-                $(this).addClass('active');
-
-                e.preventDefault();
-            });
-
-            // default first tab is active tab
-            if (i==0) { $button.addClass('active'); }
-
-            $button.appendTo($popup.find('.mod-popup-tabs'));
-
-
-            var $tab = $('<div class="mod-popup-tab '+tab.id+'"></div>');
-            $tab.append($('<div class="mod-popup-content">'+tab.content+'</div>'));
-            $tab.append($('<div class="mod-popup-footer">'+tab.footer+'</div>'));
-
-            // default first tab is visible; hide others
-            if (i==0) { $tab.show(); } else { $tab.hide(); }
-
-            $tab.appendTo($popup);
-        }
-    }
-
-    return $popup;
-}
-
 
 modButton.init = function() { 
     this.buttonName = 'mod';
@@ -588,6 +447,149 @@ modButton.init = function() {
         modButton.updateSavedSubs();
     });
 };
+
+modButton.run = function () {
+    // do it differently on the about mod page.
+    if (Toolbox.utils.isEditUserPage) {
+        $('span.user').each(function () {
+            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></span>');
+        });
+
+        return;
+    }
+
+    // Not a mod, don't bother.
+    if (Toolbox.utils.mySubs.length < 1) {
+        return;
+    }
+
+    var things = $('div.thing .entry:not(.mod-button)');
+    Toolbox.utils.forEachChunked(things, 15, 500, function (thing) { modButton.processThing(thing); });
+};
+
+// Add mod button to all users
+modButton.processThing = function (thing) {
+    if (!$(thing).hasClass('mod-button')) {
+        // Add the class so we don't add buttons twice.
+        $(thing).addClass('mod-button');
+
+        // Defer info gathering until button is clicked.
+        $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + this.buttonName + '</a></li>');
+    }
+}
+
+/**
+ *  updates the current savedsubs' listings in the mod button
+ */
+modButton.updateSavedSubs = function () {
+    //
+    // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
+    //
+    var $popups = $('body').find('.mod-popup'),
+        $savedSubsLists = $popups.find('.saved-subs');
+
+    // clear out the current stuff
+    $popups.find('.add-dropdown').find('option').remove();
+    $popups.find('.remove-dropdown').find('option').remove();
+    $savedSubsLists.html('');
+
+    // add our saved subs to the "remove saved subs" dropdown on the setting tab
+    // and to the saved subs savedSubsList on the role tab
+    $popups.each(function () {
+        var $popup = $(this),
+            $savedSubsList = $popup.find('.saved-subs'),
+            currentSub = $popup.find('.subreddit').text();
+
+        $.each(modButton.savedSubs, function (i, subreddit) {
+            // only subs we moderate
+            // and not the current sub
+            if ($.inArray(subreddit, TBUtils.mySubs) != -1
+                && subreddit != currentSub
+            ) {
+                $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
+            }
+            $('.remove-dropdown')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+        });
+    });
+    
+    // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
+    $.each(TBUtils.mySubs, function (i, subreddit) {
+        $popups.find('.add-dropdown')
+            .append($('<option>', {
+                    value: subreddit
+                })
+                .text('/r/' + subreddit));
+        $popups.find('.' + modButton.OTHER)
+            .append($('<option>', {
+                    value: subreddit
+                })
+                .text('/r/' + subreddit));
+    });
+}
+
+// Popup HTML generator
+modButton.toolboxPopup = function (title, tabs, meta) {
+    meta = (meta !== undefined) ? meta : null;
+
+    // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
+    var $popup = $('\
+<div class="mod-popup">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+<div class="mod-popup-header">\
+    <div class="mod-popup-title">' + title + '</div>\
+    <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
+</div>\
+<div>');
+    if (tabs.length == 1) {
+        $popup.append($('<div class="mod-popup-content">' + tabs[0].content + '</div>'));
+        $popup.append($('<div class="mod-popup-footer">' + tabs[0].footer + '</div>'));
+    } else if (tabs.length > 1) {
+        $popup.append($('<div class="mod-popup-tabs"></div>'));
+
+        for (var i=0; i<tabs.length; i++) {
+            var tab = tabs[i];
+            if (tab.id === "undefined" || !tab.id) { tab.id = tab.title.trim().toLowerCase().replace(' ', '_'); }
+            
+            var $button = $('<a'+(tab.tooltip ? ' title="'+tab.tooltip+'"' : '')+' class="'+tab.id+'">'+tab.title+'</a>');
+            $button.click({tab: tab}, function (e) {
+                var tab = e.data.tab;
+
+                // hide others
+                $popup.find('.mod-popup-tabs a').removeClass('active');
+                $popup.find('.mod-popup-tab').hide();
+
+                // show current
+                $popup.find('.mod-popup-tab.'+tab.id).show();
+                $(this).addClass('active');
+
+                e.preventDefault();
+            });
+
+            // default first tab is active tab
+            if (i==0) { $button.addClass('active'); }
+
+            $button.appendTo($popup.find('.mod-popup-tabs'));
+
+
+            var $tab = $('<div class="mod-popup-tab '+tab.id+'"></div>');
+            $tab.append($('<div class="mod-popup-content">'+tab.content+'</div>'));
+            $tab.append($('<div class="mod-popup-footer">'+tab.footer+'</div>'));
+
+            // default first tab is visible; hide others
+            if (i==0) { $tab.show(); } else { $tab.hide(); }
+
+            $tab.appendTo($popup);
+        }
+    }
+
+    return $popup;
+}
+
+
 
 Toolbox.register_module(modButton);
 

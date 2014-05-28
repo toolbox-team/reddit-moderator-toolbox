@@ -9,18 +9,18 @@
     //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
-        lastgetLong = JSON.parse(localStorage['Toolbox.cache.lastgetlong'] || -1),
-        lastgetShort = JSON.parse(localStorage['Toolbox.cache.lastgetshort'] || -1),
-        shortLength = JSON.parse(localStorage['Toolbox.cache.shortlength'] || 15),
-        longLength = JSON.parse(localStorage['Toolbox.cache.longlength'] || 45),
-        cacheName = localStorage['Toolbox.cache.cachename'] || '',
-        seenNotes = JSON.parse(localStorage['Toolbox.Utils.seennotes'] || '[]'),
-        lastVersion = JSON.parse(localStorage['Toolbox.Utils.lastversion'] || 0),
-        //noteLastShown = JSON.parse(localStorage['Toolbox.Utils.notelastshown'] || -1), //TODO: add
+        echo = 'echo';
+        lastgetLong = $.getSetting('cache', 'lastgetlong') || -1,
+        lastgetShort = $.getSetting('cache', 'lastgetshort') || -1,
+        shortLength = $.getSetting('cache', 'shortlength') || 15, 
+        longLength = $.getSetting('cache', 'longlength') || 45,
+        cacheName = $.getSetting('cache', 'longlength') || '',
+        seenNotes = $.getSetting('Utils', 'seennotes') || [],
+        lastVersion = $.getSetting('Utils', 'lastversion') || 0,
+        settings = $.getSetting('Utils', 'settings') || [],
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'),
         betaRelease = true;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 
 
@@ -45,8 +45,8 @@
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
     TBUtils.isExtension = true;
     TBUtils.log = [];
-    TBUtils.debugMode = JSON.parse(localStorage['Toolbox.Utils.debugMode'] || 'false');
-    TBUtils.betaMode = JSON.parse(localStorage['Toolbox.Utils.betaMode'] || 'false');
+    TBUtils.debugMode = $.getSetting('Utils', 'debugMode') || false, 
+    TBUtils.betaMode = $.getSetting('Utils', 'betaMode') || false,
     TBUtils.browser = UNKOWN_BROWSER;
     TBUtils.firstRun = false;
 
@@ -117,24 +117,31 @@
     
     TBUtils.logo64 = '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'
     
+    // Do settings echo before anything else.  If it fails, exit toolbox.
+    var ret = $.setSetting('Utils', 'echotest', echo);
+    if (ret !== echo) {
+        alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
+        return;
+    }
+
     // Get cached info.
-    TBUtils.noteCache = (getnewShort) ? {} : JSON.parse(localStorage['Toolbox.cache.notecache'] || '{}');
-    TBUtils.configCache = (getnewLong) ? {} : JSON.parse(localStorage['Toolbox.cache.configcache'] || '{}');
-    TBUtils.noConfig = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.noconfig'] || '[]');
-    TBUtils.noNotes = (getnewShort) ? [] : JSON.parse(localStorage['Toolbox.cache.nonotes'] || '[]');
-    TBUtils.mySubs = (getnewLong) ? [] : JSON.parse(localStorage['Toolbox.cache.moderatedsubs'] || '[]');
+    TBUtils.noteCache = (getnewShort) ? {} : $.getSetting('cache', 'notecache') || {};
+    TBUtils.configCache = (getnewLong) ? {} : $.getSetting('cache', 'configcache') || {};
+    TBUtils.noConfig = (getnewShort) ? [] : $.getSetting('cache', 'noconfig') || [];
+    TBUtils.noNotes = (getnewShort) ? [] : $.getSetting('cache', 'nonotes') || [];
+    TBUtils.mySubs = (getnewLong) ? [] : $.getSetting('cache', 'moderatedsubs') || [];
     
     // Update cache vars as needed.
     if (newLogin) {
-        localStorage['Toolbox.cache.cachename'] = TBUtils.logged;
+        $.setSetting('cache', 'cachename', TBUtils.logged);
     }
     
     if (getnewLong) {
-        localStorage['Toolbox.cache.lastgetlong'] = JSON.stringify(now);
+        $.setSetting('cache', 'lastgetlong', now);
     }
     
     if (getnewShort) {
-        localStorage['Toolbox.cache.lastgetshort'] = JSON.stringify(now);
+        $.setSetting('cache', 'lastgetshort', now);
     }
     
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
@@ -153,7 +160,7 @@
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
-        localStorage['Toolbox.Utils.lastversion'] = JSON.stringify(TBUtils.shortVersion); //set last sersin to this version.
+        $.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last sersin to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
         
@@ -165,9 +172,9 @@
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        localStorage['Toolbox.Notifier.lastseenmodmail'] = JSON.stringify(now); // don't spam 100 new mod mails on first install.
-        localStorage['Toolbox.Utils.debugMode'] = JSON.stringify(false);
-        localStorage['Toolbox.Utils.betaMode'] = JSON.stringify(false);
+        $.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
+        $.setSetting('Utils', 'debugMode', false);
+        $.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
     }
@@ -298,11 +305,11 @@
         
         function show(){
             if ($.inArray(note.id, seenNotes) === -1) {
-                TBUtils.getSetting('Utils', 'notelastshown', '', now);  // is this used?
+                $.setSetting('Utils', 'notelastshown', now);
                 
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
-                    TBUtils.setSetting('Utils', 'seennotes', seenNotes);
+                    $.setSetting('Utils', 'seennotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }
@@ -535,7 +542,7 @@
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
                 
                 // Update the cache.
-                localStorage['Toolbox.cache.moderatedsubs'] = JSON.stringify(TBUtils.mySubs);
+                $.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
                 
                 // Go!
                 callback();
@@ -941,7 +948,6 @@
     };
     
     // Utility methods
-    
     TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');
     }
@@ -1061,7 +1067,7 @@
         if ($.inArray(keyName, settings) === -1) {
             settings.push(keyName);
 
-            localStorage['Toolbox.Utils.settings'] = JSON.stringify(TBUtils.saneSort(settings));
+            $.setSetting('Utils', 'settings', TBUtils.saneSort(settings));
         }
     }
 
@@ -1080,11 +1086,11 @@
     window.onbeforeunload = function () {
         
         // Cache data.
-        localStorage['Toolbox.cache.configcache'] = JSON.stringify(TBUtils.configCache);
-        localStorage['Toolbox.cache.notecache'] = JSON.stringify(TBUtils.noteCache);
-        localStorage['Toolbox.cache.noconfig'] = JSON.stringify(TBUtils.noConfig);
-        localStorage['Toolbox.cache.nonotes'] = JSON.stringify(TBUtils.noNotes);
-        localStorage['Toolbox.cache.moderatedsubs'] = JSON.stringify(TBUtils.mySubs);
+        $.setSetting('cache', 'configcache', TBUtils.configCache);
+        $.setSetting('cache', 'notecache', TBUtils.noteCache);
+        $.setSetting('cache', 'noconfig', TBUtils.noConfig);
+        $.setSetting('cache', 'nonotes', TBUtils.nonotes);
+        $.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
         
     };
 

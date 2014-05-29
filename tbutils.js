@@ -14,7 +14,7 @@
         lastgetShort = getSetting('cache', 'lastgetshort', -1),
         shortLength = getSetting('cache', 'shortlength', 15), 
         longLength = getSetting('cache', 'longlength', 45),
-        cacheName = getSetting('cache', 'longlength', ''),
+        cacheName = getSetting('cache', 'cachename', ''),
         seenNotes = getSetting('Utils', 'seennotes', []),
         lastVersion = getSetting('Utils', 'lastversion', 0),
         newLogin = (cacheName != TBUtils.logged),
@@ -133,6 +133,12 @@
     TBUtils.noNotes = (getnewShort) ? [] : getSetting('cache', 'nonotes', []);
     TBUtils.mySubs = (getnewLong) ? [] : getSetting('cache', 'moderatedsubs', []);
     
+    //$.log(TBUtils.noteCache, true);
+    //$.log(TBUtils.configCache, true);
+    $.log(TBUtils.noConfig, true);
+    $.log(TBUtils.noNotes, true);
+    //$.log(TBUtils.mySubs, true);
+
     // Update cache vars as needed.
     if (newLogin) {
         setSetting('cache', 'cachename', TBUtils.logged);
@@ -502,10 +508,20 @@
        
     };
     
+    // Because normal .sort() is case sensitive.
+    TBUtils.saneSort = function (arr) {
+        return arr.sort(function (a, b) {
+            if (a.toLowerCase() < b.toLowerCase()) return -1;
+            if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        });
+    };
+
     TBUtils.getModSubs = function (callback) {
         
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1) {
+            $.log('getting new subs.');
             TBUtils.mySubs = []; //reset list.
             getSubs(modMineURL);
         } else {
@@ -542,15 +558,6 @@
                 callback();
             }
         }
-    };
-
-    // Because normal .sort() is case sensitive.
-    TBUtils.saneSort = function (arr) {
-        return arr.sort(function (a, b) {
-            if (a.toLowerCase() < b.toLowerCase()) return -1;
-            if (a.toLowerCase() > b.toLowerCase()) return 1;
-            return 0;
-        });
     };
 
     TBUtils.getThingInfo = function (sender, modCheck) {
@@ -1145,7 +1152,7 @@
         setSetting('cache', 'configcache', TBUtils.configCache);
         setSetting('cache', 'notecache', TBUtils.noteCache);
         setSetting('cache', 'noconfig', TBUtils.noConfig);
-        setSetting('cache', 'nonotes', TBUtils.nonotes);
+        setSetting('cache', 'nonotes', TBUtils.noNotes);
         setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
         
     };

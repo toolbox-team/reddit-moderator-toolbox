@@ -22,9 +22,10 @@
         };
         $.log = function (message, skip) {
             if (!TBUtils.debugMode) return;
-            
+            var caller = arguments.callee.caller.name || 'anonymous function';
+
             if (skip) {
-                console.log('TB [' + arguments.callee.caller.name + ']: ');
+                console.log(' [' + caller + ']: ');
                 console.log(message);
                 return;
             }
@@ -51,7 +52,7 @@
                 lines = '';
             }
             
-            var msg = lines + ' [' + (arguments.callee.caller.name || 'anonymous function') + ']: ' + message;
+            var msg = lines + ' [' + caller + ']: ' + message;
             return $.fn.log(msg);
         };
     })(jQuery);

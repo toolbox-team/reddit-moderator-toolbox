@@ -22,7 +22,19 @@
         ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
         rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
         sortModSubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false),
-        spamReportSub = 'reportthespammers';
+        linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
+
+    var SPAM_REPORT_SUB = 'reportthespammers', QUEUE_URL = '';
+
+    if (linkToQueues) {
+        if (TBUtils.isModQueuePage) {
+            QUEUE_URL = 'about/modqueue/';
+        } else if (TBUtils.isUnmoderatedPage) {
+            QUEUE_URL = 'about/unmoderated/';
+        }
+    }
+
+       
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
@@ -348,6 +360,16 @@
         }
         setThreshold($('.thing'));
 
+
+        function replaceSubLinks() {
+            $this = $(this).find('a.subreddit');
+            var href = $this.attr('href') + QUEUE_URL;
+            $this.attr('href', href);
+        }
+        if (linkToQueues && QUEUE_URL) {
+            $('.thing').each(replaceSubLinks);
+        }
+
         // NER support. TODO: why doesn't this work?
         window.addEventListener("TBNewThings", function () {
             $.log("proc new things");
@@ -657,7 +679,7 @@
             var link = 'http://www.reddit.com/user/' + author,
                 title = 'Overview for ' + author;
             
-            TBUtils.postLink(link, title, spamReportSub, function (successful, submission) {
+            TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
                 if (!successful) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
                 }

@@ -43,6 +43,8 @@
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
+    TBUtils.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
+    TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isExtension = true;
     TBUtils.log = [];
     TBUtils.debugMode = getSetting('Utils', 'debugMode', false), 

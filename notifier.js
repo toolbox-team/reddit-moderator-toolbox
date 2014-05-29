@@ -106,7 +106,8 @@
         removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
         commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false),
         rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false);
+        sortmodsubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false),
+        linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
 
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
@@ -464,11 +465,15 @@
         // Settings to toggle the modules 
         var htmlmodtools = '\
             <div class="tb-window-content-modtools">\
-            <p>\
+                <p>\
                 <label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
-            </p>\
-            <p>\
+                </p>\
+                <p>\
                 <label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
+                </p>\
+                <p>\
+                <label><input type="checkbox" id="linktoqueues" ' + ((linkToQueues) ? "checked" : "") + '> Link to subreddit queue on mod pages</label>\
+                </p>\
                 <p>\
                 <label><input type="checkbox" id="removalreasons" ' + ((removalreasons) ? "checked" : "") + '> Enable removal reasons</label>\
                 </p>\
@@ -538,6 +543,8 @@
         <h3>About:</h3>	<a href="http://www.reddit.com/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br>\
             made and maintained by: <a href="http://www.reddit.com/user/creesch/">/u/creesch</a>, <a href="http://www.reddit.com/user/agentlame">/u/agentlame</a>, <a href="http://www.reddit.com/user/LowSociety">/u/LowSociety</a>,\
             <a href="http://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="http://www.reddit.com/user/dakta">/u/dakta</a> and <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> <br><br>\
+        <h3>Documentation by:</h3>\
+          <a href="http://www.reddit.com/user/psdtwk">/u/psdtwk</a><br><br>\
         <!--h3>Special thanks to:</h3>\
           <a href="http://www.reddit.com/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br-->\
         <h3>Credits:</h3>\
@@ -709,6 +716,7 @@
         TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
         TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
         TBUtils.setSetting('QueueTools', 'sortmodsubs', $("#sortmodsubs").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));
 
         // save cache settings.
         TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());

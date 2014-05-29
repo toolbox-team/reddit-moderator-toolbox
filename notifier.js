@@ -50,7 +50,8 @@
         now = new Date().getTime(),
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
-        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false);
+        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
+        settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
 
 
     // convert some settings values
@@ -324,6 +325,12 @@
         // Settings for the tool bar. 
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
+            <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
+                Import/export toolbox settings:<br>\
+                <input type="text" name="settingssub" value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+                <input class="tb-settings-import" type="button" value="import">\
+                <input class="tb-settings-export" type="button" value="export">\
+            </p>\
             <p>\
                 Multireddit of subs you want displayed in the modqueue counter:<br>\
                 <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
@@ -554,6 +561,28 @@
 
         //	$("input[name=shortcuts]").val(unescape(shortcuts));
     }
+
+    $('body').on('click', '.tb-settings-import, .tb-settings-export', function (e) {
+        var sub = $("input[name=settingssub]").val();
+        if (!sub) return;
+        
+        // Just to be safe.
+        sub = sub.replace('/r/', '').replace('/', '');
+
+        // Save the sub, firest.
+        TBUtils.setSetting('Utils', 'settingsub', sub);
+
+        if ($(e.target).hasClass('tb-settings-import')) {
+            TBUtils.importSettings(sub, function () {
+                window.location.reload();
+            });
+        }
+        else {
+            TBUtils.exportSettings(sub, function () {
+                window.location.reload();
+            });
+        }
+    });
 
     // Open the settings
     $('body').on('click', '.tb-toolbarsettings', function () {

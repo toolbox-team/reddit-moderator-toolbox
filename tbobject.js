@@ -56,17 +56,30 @@ Toolbox = {
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
                 for (setting in module.settings) {
+                    var options = module.settings[setting];
+
                     // "enabled" will eventually be special, but for now it just shows up like any other setting
                     // if (setting == "enabled") {
                     //     continue;
                     // }
 
-                    var options = module.settings[setting];
-
                     // if (!options.visible) {
                     //     // don't show hidden settings
                     //     continue;
                     // }
+
+                    if (options.hasOwnProperty("betamode")
+                        && !Toolbox.utils.getSetting('Utils', 'betaMode', false) && options["betamode"]) {
+                        console.log("Beta Setting!");
+                        continue;
+                    }
+
+                    if (options.hasOwnProperty("hidden")
+                        && options["hidden"]) {
+                        console.log("Hidden Setting!");
+                        continue;
+                    }
+
 
                     var $setting = $('<p></p>');
 
@@ -141,9 +154,11 @@ Toolbox.TBModule = function (name, version) {
     });
 
     this.settings = {
-        "enabled": {
+        "enabled": { // this one serves as an example as well as the absolute minimum setting that every module has
             "type": "boolean", 
             "default": false,
+            "betamode": false, // optional
+            "hidden": false, // optional
             "title": "Enable " + this.name + "."
         }
     };

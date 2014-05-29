@@ -231,6 +231,11 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     font-size: 12px !important;
 }
 
+.mod-toolbox .tb-window-content input {
+    padding: 2px;
+    margin: 2px;
+}
+
 .tb-window-footer {
     width: 100%;
     height: 30px;

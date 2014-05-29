@@ -313,10 +313,11 @@
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
             <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
-                Import/export toolbox settings:<br>\
-                <input type="text" name="settingssub" value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+                Import/export toolbox settings to a wiki page:<br>\
+                <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
                 <input class="tb-settings-import" type="button" value="import">\
                 <input class="tb-settings-export" type="button" value="export">\
+                <b> Important:</b> This will reload the page without saving!\
             </p>\
             <p>\
                 Multireddit of subs you want displayed in the modqueue counter:<br>\

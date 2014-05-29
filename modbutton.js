@@ -17,7 +17,7 @@
 var modButton = new Toolbox.TBModule('Mod Button', '0.1');
 
 modButton.settings['sublist'] = {
-    "type": "text",
+    "type": 'list',
     "default": '',
     "title": "Saved subreddits that are shown on the \"Action\" tab. Separate with commas."
 };

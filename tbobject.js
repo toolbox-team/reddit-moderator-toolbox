@@ -33,60 +33,99 @@ Toolbox = {
 
     injectSettings: function () {
         for (m in this.modules) {
-            var module = this.modules[m];
+            self = this;
+            (function () {
+                // wrap each iteration in a self-executing anonymous function, to preserve scope for bindFirst()
+                // otherwise, we get the bindFirst callback having var module refer to the last time it was set
+                // becausde we're in for loop not a special scope, d'oh.
 
-            // Don't do anything with beta modules unless beta mode is enabled
-            // Need Toolbox.setting() call for non-module settings
-            // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
-            if (!Toolbox.utils.getSetting('Utils', 'betaMode', false) && module.setting('betamode')) {
-                // skip this module entirely
-                continue;
-            }
+                var module = self.modules[m];
 
-            // build and inject our settings tab
-
-            var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
-                $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
-
-            for (setting in module.settings) {
-                if (setting == "enabled") {
-                    // enabled is special
-                    continue;
+                // Don't do anything with beta modules unless beta mode is enabled
+                // Need Toolbox.setting() call for non-module settings
+                // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
+                if (!Toolbox.utils.getSetting('Utils', 'betaMode', false) && module.setting('betamode')) {
+                    // skip this module entirely
+                    // continue;
+                    return false;
                 }
 
-                var options = module.settings[setting];
+                // build and inject our settings tab
 
-                // if (!options.visible) {
-                //     // don't show hidden settings
-                //     continue;
-                // }
+                var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
+                    $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
-                var $setting = $('<p></p>');
+                for (setting in module.settings) {
+                    // "enabled" will eventually be special, but for now it just shows up like any other setting
+                    // if (setting == "enabled") {
+                    //     continue;
+                    // }
 
-                switch (options.type) {
-                    case "boolean":
-                        $setting.append($('<label><input type="checkbox" name="'+module.shortname+'-'+setting+'"'+(module.setting(setting) ? ' checked="checked"' : '')+'>'+options.title+'</label>'));
-                        break;
-                    case "text":
-                        $setting.append(options.title+':<br />');
-                        $setting.append($('<input type="'+options.type+'" value="'+module.setting(setting)+'">'));
-                        break;
-                    case "number":
-                        $setting.append(options.title+': <input type="'+options.type+'" value="'+module.setting(setting)+'">');
-                        break;
-                    default:
-                        // what in the world would we do here?
-                        break;
+                    var options = module.settings[setting];
+
+                    // if (!options.visible) {
+                    //     // don't show hidden settings
+                    //     continue;
+                    // }
+
+                    var $setting = $('<p></p>');
+
+                    // automagical handling of input ypes
+                    switch (options.type) {
+                        case "boolean":
+                            $setting.append($('<label><input type="checkbox" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
+                            break;
+                        case "text":
+                        case "list":
+                            $setting.append(options.title+'<br />');
+                            $setting.append($('<input type="text" value="'+module.setting(setting)+'">'));
+                            break;
+                        case "number":
+                            $setting.append(options.title+': <input type="number" value="'+module.setting(setting)+'">');
+                            break;
+                        default:
+                            // what in the world would we do here?
+                            break;
+                    }
+                    $setting.attr('id', 'tb-'+module.shortname+'-'+setting);
+                    $setting.find('input').data('module', module.shortname);
+                    $setting.find('input').data('setting', setting);
+
+                    $settings.append($setting);
                 }
 
-                $settings.append($setting);
+                $('.tb-settings .tb-window-tabs').append($tab);
+                $('.tb-settings .tb-window-content').append($settings);
 
-            }
+                // we use a jQuery hack to stick this bind call at the top of the queue,
+                // so that it runs before the bind call in notifier.js
+                // this way we don't have to touch notifier.js to make it work.
+                // 
+                // We get one additional click handler for each setting that gets injected.
+                $('body').bindFirst('click', '.tb-save', function (event) {
+                    var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
 
-            console.log($tab);
-            console.log($settings);
-            $('.tb-settings .tb-window-tabs').append($tab);
-            $('.tb-settings .tb-window-content').append($settings);
+                    $settings_page.find('input').each(function () {
+                        var $this = $(this),
+                            value = '';
+
+                        // automagically parse input types
+                        switch (module.settings[$this.data('setting')].type) {
+                            case 'boolean':
+                                value = $this.prop('checked');
+                                break;
+                            case 'list':
+                                value = $this.val().split(',').map(function (str) { return str.trim(); });
+                                break;
+                            default:
+                                value = JSON.parse($this.val());
+                                break;
+                        }
+
+                        module.setting($this.data('setting'), value);
+                    });
+                });
+            }());
         }
     }
 };
@@ -103,9 +142,9 @@ Toolbox.TBModule = function (name, version) {
 
     this.settings = {
         "enabled": {
-            "type": "checkbox", // just an example, "enabled" is a special setting
+            "type": "boolean", 
             "default": false,
-            "title": "Enable this module." // just an example
+            "title": "Enable " + this.name + "."
         }
     };
 

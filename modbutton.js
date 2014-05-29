@@ -1,15 +1,3 @@
-// ==UserScript==
-// @name        Mod Button
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch, LowSociety
-// @description Universal moderator action button.
-// @include     http://www.reddit.com/*
-// @include     http://reddit.com/*
-// @include     http://*.reddit.com/*
-// @downloadURL http://userscripts.org/scripts/source/167236.user.js
-// @version     1.13
-// ==/UserScript==
- 
 (function modbutton() {
     if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
     $.log('Loading Mod Button Module');

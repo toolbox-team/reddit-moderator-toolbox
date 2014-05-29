@@ -6,7 +6,6 @@
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
     //Private variables
-    //NOTE: neither TBUtils.setting, nor $.log have been initialized.  Don't use either.
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.

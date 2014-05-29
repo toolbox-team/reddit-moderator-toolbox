@@ -1,17 +1,3 @@
-// ==UserScript==
-// @name         Toolbox Notifier
-// @namespace    http://www.reddit.com/r/toolbox
-// @author       creesch, agentlame
-// @description  notifications of messages
-// @include      http://reddit.com/*
-// @include      https://reddit.com/*
-// @include      http://*.reddit.com/*
-// @include      https://*.reddit.com/*
-// @downloadURL  http://userscripts.org/scripts/source/172111.user.js
-// @version 1.13
-// ==/UserScript==
-
-
 (function notifier() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     $.log('Loading Notifier Module');

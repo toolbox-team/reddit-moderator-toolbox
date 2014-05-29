@@ -1,17 +1,4 @@
-﻿// ==UserScript==
-// @name         Toolbox Frame Module
-// @namespace    http://www.reddit.com/r/toolbox
-// @author       agentlame
-// @description  notifications of messages
-// @include      http://reddit.com/*
-// @include      https://reddit.com/*
-// @include      http://*.reddit.com/*
-// @include      https://*.reddit.com/*
-// @version 1.0
-// ==/UserScript==
-
-
-(function frame() {
+﻿(function frame() {
     if (!TBUtils.logged || !TBUtils.getSetting('FrameMod', 'enabled', false)) return;
     if (!$('#tb-bottombar')) return setTimeout(frame);
 

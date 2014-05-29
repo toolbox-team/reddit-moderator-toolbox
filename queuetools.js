@@ -1,11 +1,3 @@
-// ==UserScript==
-// @name	Toolbox - Queue Tools
-// @include	http://reddit.com/*
-// @include	http://*.reddit.com/*
-// @version	1.0
-// @run-at document-start
-// ==/UserScript==
-
 (function queuetools() {
     // I don't actually know why this works the way it does, but without them modtools doesn't load.
     if (!document.head)
@@ -33,8 +25,6 @@
             QUEUE_URL = 'about/unmoderated/';
         }
     }
-
-       
     
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated

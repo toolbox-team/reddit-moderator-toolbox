@@ -1,11 +1,3 @@
-// ==UserScript==
-// @name	Reddit moderation log matrix
-// @namespace	reddit.com/user/LowSociety
-// @description	Get a nice matrix of mod actions on reddit.
-// @match	*://*.reddit.com/r/*/about/log*
-// @version	1.1
-// ==/UserScript==
-
 (function modmatrix() {
     var modLogMatrix = {
 

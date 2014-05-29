@@ -1,16 +1,3 @@
-// ==UserScript==
-// @name        Mod Mail Lite
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch, DEADB33F, gavin19
-// @description Filter subs from mod mail.
-// @match       *://*.reddit.com/message/moderator/*
-// @match       *://*.reddit.com/r/*/message/moderator/*
-// @include     *://*.reddit.com/message/moderator/*
-// @include     *://*.reddit.com/r/*/message/moderator/*
-// @version     0.1
-// ==/UserScript==
-
-
 (function modmaillite() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailLite', 'enabled', false)) return;
 

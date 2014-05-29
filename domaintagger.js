@@ -1,20 +1,3 @@
-// ==UserScript==
-// @name        Mod Domain Tagger
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch
-// @description Highlight domains for easier moderation
-// @include     http://www.reddit.com/r/*/about/unmoderated*
-// @include     http://*.reddit.com/r/*/about/unmoderated*
-// @include     http://reddit.com/r/*/about/unmoderated*
-// @include     http://www.reddit.com/r/*/about/modqueue*
-// @include     http://*.reddit.com/r/*/about/modqueue*
-// @include     http://reddit.com/r/*/about/modqueue*
-// @include     *://*.reddit.com/r/*
-// @downloadURL http://userscripts.org/scripts/source/168936.user.js
-// @version     2.7
-// ==/UserScript==
-
-
 (function domaintagger() {
     if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false)) return;
     $.log('Loading Domain Tagger Module');

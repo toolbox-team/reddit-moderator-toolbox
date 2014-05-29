@@ -1,15 +1,3 @@
-// ==UserScript==
-// @name        Toolbox Config
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch
-// @description Edit toolbox configuration settings.
-// @include     http://www.reddit.com/*
-// @include     http://reddit.com/*
-// @include     http://*.reddit.com/*
-// @downloadURL http://userscripts.org/scripts/source/170952.user.js
-// @version     1.3
-// ==/UserScript==
-
 (function tbconfig() {
     if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
     $.log('Loading Configuration Module');

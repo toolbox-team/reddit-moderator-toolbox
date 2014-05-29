@@ -1,15 +1,3 @@
-// ==UserScript==
-// @name        Mod User Notes
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch
-// @description Create and display user notes for mods.
-// @include     *://www.reddit.com/*
-// @include     *://reddit.com/*
-// @include     *://*.reddit.com/*
-// @downloadURL http://userscripts.org/scripts/source/170091.user.js
-// @version     1.5.0
-// ==/UserScript==
-
 (function usernotes() {
     if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
     $.log('Loading User Notes Module');

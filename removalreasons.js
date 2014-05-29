@@ -1,12 +1,3 @@
-// ==UserScript==
-// @name	Toolbox - Removal Reasons
-// @include	http://reddit.com/*
-// @include	http://*.reddit.com/*
-// @version	1.0
-// @run-at	document-start
-// ==/UserScript==
-
-// Add script to the page
 (function removalreasons() {
     // I don't actually know why this works the way it does, but without them modtools doesn't load.
     if (!document.head)

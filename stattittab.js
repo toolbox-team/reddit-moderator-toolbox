@@ -1,15 +1,4 @@
-// ==UserScript==
-// @name       Stattit tab
-// @namespace  http://reddit.com/user/LowSociety
-// @version    1.0
-// @description  Adds a Stattit tab to Reddit user profiles and subreddits.
-// @match	http://*.reddit.com/user/*
-// @match	https://*.reddit.com/user/*
-// @match	http://*.reddit.com/r/*
-// @match	https://*.reddit.com/r/*
 // @copyright  2013+, LowSociety
-// ==/UserScript==
-
 (function stattittab() {
     var stattitTab = {
 

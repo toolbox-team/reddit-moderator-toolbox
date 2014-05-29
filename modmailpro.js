@@ -1,16 +1,3 @@
-// ==UserScript==
-// @name        Mod Mail Pro
-// @namespace   http://www.reddit.com/r/toolbox
-// @author      agentlame, creesch, DEADB33F, gavin19
-// @description Filter subs from mod mail.
-// @match       *://*.reddit.com/message/moderator/*
-// @match       *://*.reddit.com/r/*/message/moderator/*
-// @include     *://*.reddit.com/message/moderator/*
-// @include     *://*.reddit.com/r/*/message/moderator/*
-// @downloadURL http://userscripts.org/scripts/source/167234.user.js
-// @version     3.2
-// ==/UserScript==
-
 (function modmailpro() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     $.log('Loading MMP Module');

@@ -225,6 +225,7 @@
         // only works if we're a mod of the sub in question
         if (subreddit) {
             // Show if current user is banned, and why. - thanks /u/LowSociety
+            // TODO: Display *when* they were banned, along with ban note. #194
             $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user : user }, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {

@@ -795,7 +795,10 @@
         var settingsObject = {};
         $(settings).each(function () {
             var key = this.split(".");
-            settingsObject[this] = getSetting(key[0], key[1], null);
+            var setting = getSetting(key[0], key[1], null);
+            if (setting && setting !== undefined) {
+                settingsObject[this] = setting;
+            }
 
         });
         TBUtils.postToWiki('tbsettings', subreddit, settingsObject, true, false, function () {
@@ -820,38 +823,42 @@
     };
     //TBUtils.importSettings('al_dev');
 
-    // Import export methods
-    TBUtils.settingsToObject = function (callback) {
-        return;
-        var settingsObject = {};
-        $(settings).each(function () {
-            var key = this.split(".");
-            settingsObject[this] = getSetting(key[0], key[1], null);
 
+    TBUtils.settingsToObject = function (callback) {
+        var settingsObject = {};
+        Object.keys(localStorage)
+        .forEach(function (fullKey) {
+            if (/^(Toolbox.)/.test(fullKey)) {
+                var key = fullKey.split(".");
+                setting = getSetting(key[1], key[2], null);
+                //$.log(fullKey, true);
+                if (setting && setting !== undefined) {
+                    settingsObject[fullKey] = setting;
+                }
+            }
         });
-        TBUtils.postToWiki('tbsettings', subreddit, settingsObject, true, false, function () {
-            callback();
-        });
+        callback(settingsObject);
     };
-    //TBUtils.exportSettings('al_dev');
 
     TBUtils.objectToSettings = function (object, callback) {
-        return;
-        TBUtils.readFromWiki(subreddit, 'tbsettings', true, function (resp) {
-            if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                return;
-            }
-
-            $.each(resp, function (fullKey, value) {
-                var key = fullKey.split(".");
-                setSetting(key[0], key[1], value);
-            });
-
-            callback();
+        $.each(object, function (fullKey, value) {
+            var key = fullKey.split(".");
+            //$.log(key[1] + '.' + key[2] + ': ' + value, true);
+            setSetting(key[1], key[2], value);
         });
+
+        callback();
     };
-    //TBUtils.importSettings('al_dev');
-    
+
+    /*
+    TBUtils.settingsToObject(function (sObject) {
+        $.log(sObject, true);
+        TBUtils.objectToSettings(sObject, function () {
+            $.log('done', true);
+        });
+    });
+    */
+
     // Utility methods
     TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');

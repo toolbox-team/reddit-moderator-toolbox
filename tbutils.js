@@ -26,7 +26,6 @@
         ECHO = 'echo', TB_KEY = 'Toolbox.';
         
     // Public variables
-    //TBUtils.version = 5;  // NIU
     TBUtils.toolboxVersion = '2.2.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 220; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1,
@@ -281,114 +280,19 @@
     
     TBUtils.notification = function (title, body, url, timeout) {
         if (timeout === undefined) timeout = 15000;
-        
+
         var toolboxnotificationenabled = true;
-        
+
         // check if notifications are enabled. When they are not we simply abort the function. 
         if (toolboxnotificationenabled === false) {
             //console.log('notifications disabled, stopping function');
             return;
         }
-        
-        // fallback notifications if the browser does not support notifications or the users does not allow them. 
-        // Adapted from Sticky v1.0 by Daniel Raftery
-        // http://thrivingkings.com/sticky
-        
-        // Using it without an object
-        $.sticky = function (note, options, callback) {
-            return $.fn.sticky(note, options, callback);
-        };
-        
-        $.fn.sticky = function (note, options, callback) {
-            // Default settings
-            var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
-            
-            var settings = {
-                'speed': 'fast', // animations: fast, slow, or integer
-                'duplicates': true, // true or false
-                'autoclose': timeout // integer or false
-            };
-            
-            // Passing in the object instead of specifying a note
-            if (!note) {
-                note = this.html();
-            }
-            
-            if (options) {
-                $.extend(settings, options);
-            }
-            
-            // Variables
-            var display = true,
-                duplicate = 'no',
-                uniqID = Math.floor(Math.random() * 99999);
-            
-            // Handling duplicate notes and IDs
-            $('.sticky-note').each(function () {
-                if ($(this).html() == note && $(this).is(':visible')) {
-                    duplicate = 'yes';
-                    if (!settings.duplicates) {
-                        display = false;
-                    }
-                }
-                if ($(this).attr('id') == uniqID) {
-                    uniqID = Math.floor(Math.random() * 9999999);
-                }
-            });
-            
-            // Make sure the sticky queue exists
-            if (!$('body').find('.sticky-queue').html()) {
-                $('body').append('<div class="sticky-queue ' + position + '"></div>');
-            }
-            
-            // Can it be displayed?
-            if (display) {
-                // Building and inserting sticky note
-                $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
-                $('#' + uniqID).append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="sticky-close" rel="' + uniqID + '" title="Close" />');
-                $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
-                
-                // Smoother animation
-                var height = $('#' + uniqID).height();
-                $('#' + uniqID).css('height', height);
-                
-                $('#' + uniqID).slideDown(settings.speed);
-                display = true;
-            }
-            
-            // Listeners
-            $('.sticky').ready(function () {
-                // If 'autoclose' is enabled, set a timer to close the sticky
-                if (settings.autoclose) {
-                    $('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
-                }
-            });
-            // Closing a sticky
-            $('.sticky-close').click(function () {
-                $('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
-            });
-            
-            // Callback data
-            var response = {
-                'id': uniqID,
-                'duplicate': duplicate,
-                'displayed': display,
-                'position': position
-            };
-            
-            // Callback function?
-            if (callback) {
-                callback(response);
-            } else {
-                return (response);
-            }
-        };
-        
-               
+
         if (!('Notification' in window)) {
             // fallback on a javascript notification 
             $.log('boring old rickety browser, falling back on jquery based notifications');
-            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>');
+            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
 
         } else if (Notification.permission === 'granted') {
 
@@ -401,11 +305,9 @@
                 notification.close()
             }, timeout);
 
-
-
             notification.onclick = function () {
                 // Open the page
-              $.log('notification clicked');
+                $.log('notification clicked');
                 open(url);
                 // Remove notification
                 this.close();
@@ -441,8 +343,10 @@
                     }
                 }
             });
+        } else {
+            // They have the option enabled, but won't grant permissions, so fall back.
+            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
         }
-       
     };
     
     // Because normal .sort() is case sensitive.

@@ -97,17 +97,17 @@
 })(jQuery);
 
     
-    /*
-     * credit: https://gist.github.com/its-florida/1290439/
-     * You can now create a spinner using any of the variants below:
-     *
-     * $("#el").spin(); // Produces default Spinner using the text color of #el.
-     * $("#el").spin("small"); // Produces a 'small' Spinner using the text color of #el.
-     * $("#el").spin("large", "white"); // Produces a 'large' Spinner in white (or any valid CSS color).
-     * $("#el").spin({ ... }); // Produces a Spinner using your custom settings.
-     *
-     * $("#el").spin(false); // Kills the spinner.
-    */
+/*
+    * credit: https://gist.github.com/its-florida/1290439/
+    * You can now create a spinner using any of the variants below:
+    *
+    * $("#el").spin(); // Produces default Spinner using the text color of #el.
+    * $("#el").spin("small"); // Produces a 'small' Spinner using the text color of #el.
+    * $("#el").spin("large", "white"); // Produces a 'large' Spinner in white (or any valid CSS color).
+    * $("#el").spin({ ... }); // Produces a Spinner using your custom settings.
+    *
+    * $("#el").spin(false); // Kills the spinner.
+*/
 (function ($) {
     $.fn.spin = function (opts, color) {
         var presets = {
@@ -144,7 +144,7 @@
     };
 })(jQuery);
 
-    // highlight jquery plugin https://github.com/tankchintan/highlight-js
+// highlight jquery plugin https://github.com/tankchintan/highlight-js
 !function ($) {
     $.fn.highlight = function (pat, ignore) {
         function replaceDiacritics(str) {
@@ -225,11 +225,107 @@
     };
 }(window.jQuery);
 
+
+// fallback notifications if the browser does not support notifications or the users does not allow them. 
+// Adapted from Sticky v1.0 by Daniel Raftery
+// http://thrivingkings.com/sticky
+(function ($) {
+
+    // Using it without an object
+    $.sticky = function (note, options, callback) {
+        return $.fn.sticky(note, options, callback);
+    };
+
+    $.fn.sticky = function (note, options, callback) {
+        // Default settings
+        var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
+
+        var settings = {
+            'speed': 'fast', // animations: fast, slow, or integer
+            'duplicates': true, // true or false
+            'autoclose': false // integer or false
+        };
+
+        // Passing in the object instead of specifying a note
+        if (!note) {
+            note = this.html();
+        }
+
+        if (options) {
+            $.extend(settings, options);
+        }
+
+        // Variables
+        var display = true,
+            duplicate = 'no',
+            uniqID = Math.floor(Math.random() * 99999);
+
+        // Handling duplicate notes and IDs
+        $('.sticky-note').each(function () {
+            if ($(this).html() == note && $(this).is(':visible')) {
+                duplicate = 'yes';
+                if (!settings.duplicates) {
+                    display = false;
+                }
+            }
+            if ($(this).attr('id') == uniqID) {
+                uniqID = Math.floor(Math.random() * 9999999);
+            }
+        });
+
+        // Make sure the sticky queue exists
+        if (!$('body').find('.sticky-queue').html()) {
+            $('body').append('<div class="sticky-queue ' + position + '"></div>');
+        }
+
+        // Can it be displayed?
+        if (display) {
+            // Building and inserting sticky note
+            $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
+            $('#' + uniqID).append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="sticky-close" rel="' + uniqID + '" title="Close" />');
+            $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
+
+            // Smoother animation
+            var height = $('#' + uniqID).height();
+            $('#' + uniqID).css('height', height);
+
+            $('#' + uniqID).slideDown(settings.speed);
+            display = true;
+        }
+
+        // Listeners
+        $('.sticky').ready(function () {
+            // If 'autoclose' is enabled, set a timer to close the sticky
+            if (settings.autoclose) {
+                $('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
+            }
+        });
+        // Closing a sticky
+        $('.sticky-close').click(function () {
+            $('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
+        });
+
+        // Callback data
+        var response = {
+            'id': uniqID,
+            'duplicate': duplicate,
+            'displayed': display,
+            'position': position
+        };
+
+        // Callback function?
+        if (callback) {
+            callback(response);
+        } else {
+            return (response);
+        }
+    };
+})(jQuery);
+
 // jquery.timer.js
 // 
 // Copyright (c) 2011 Jason Chavannes <jason.chavannes@gmail.com>
 // http://jchavannes.com/jquery-timer (MIT License)
-
 (function ($) {
     $.timer = function (func, time, autostart) {
         this.set = function (func, time, autostart) {

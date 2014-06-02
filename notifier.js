@@ -107,8 +107,8 @@
     // toolbar, this will display all counters, quick links and other settings for the toolbox
     var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
-        <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconhide + '" /></a>&nbsp;&nbsp;\
-        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconBox + '" title="toolbox settings"/></a>\
+        <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
+        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconBox + '" title="toolbox settings"/></a>\
         <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
@@ -124,7 +124,7 @@
 
     var modbarhid = $('\
     <div id="tb-bottombar-hidden" class="tb-toolbar">\
-       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,' + ((compactHide) ? TBUtils.iconGripper : TBUtils.iconshow) + '" /></a>\
+       <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,' + ((compactHide) ? TBui.iconGripper : TBui.iconShow) + '" /></a>\
     </div>');
 
     var $console = $('\
@@ -160,7 +160,7 @@
     // Debug mode/console
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').append('\
-            <span>&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBUtils.iconConsole + '" /></a></span>\
+            <span>&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a></span>\
             ');
 
         var $consoleText = $('.tb-debug-console');
@@ -381,7 +381,7 @@
         <div class="tb-window-content-shortcuts">\
         <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
         </table>\
-        <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconadd + '" /></a>\
+        <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a>\
         <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
         </div>\
             ';
@@ -389,13 +389,13 @@
 
         if ($.isEmptyObject(shortcuts2)) {
             $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
 
         } else {
             $.each(shortcuts2, function (index, value) {
                 shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
-        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         <br><br>';
                 //console.log(shortcutinput);
                 $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
@@ -599,7 +599,7 @@
     // add a shortcut 
     $('body').on('click', '.tb-add-shortcuts', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBUtils.iconclose + '" /></a></td></tr>\
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
     });
 

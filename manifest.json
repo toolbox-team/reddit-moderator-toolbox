@@ -22,7 +22,30 @@
 		{
 			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
 			"css": ["toolbox.css"],
-			"js": ["libs/jquery-2.1.1.min.js", "jquery-plugins.js", "libs/snuownd.js", "tbutils.js", "notifier.js", "domaintagger.js", "usernotes.js", "modbutton.js", "modmailpro.js", "stattittab.js", "comment.js", "config.js", "modmatrix.js", "banlist.js", "removalreasons.js", "queuetools.js", "libs/ace.js", "libs/mode-css.js", "syntax.js", "frame.js", "modmaillite.js"]
+			"js": [
+				"libs/jquery-2.1.1.min.js", 
+				"libs/snuownd.js", 
+				"libs/ace.js", 
+				"libs/mode-css.js", 
+				"tbui.js", 
+				"jquery-plugins.js", 
+				"tbutils.js", 
+				"notifier.js", 
+				"domaintagger.js", 
+				"usernotes.js", 
+				"modbutton.js", 
+				"modmailpro.js", 
+				"stattittab.js", 
+				"comment.js", 
+				"config.js", 
+				"modmatrix.js", 
+				"banlist.js", 
+				"removalreasons.js", 
+				"queuetools.js", 
+				"syntax.js", 
+				"frame.js", 
+				"modmaillite.js"
+			]
 		}
 	],
 	"web_accessible_resources": ["libs/jquery-2.1.1.min.js", "libs/snuownd.js"]

@@ -51,7 +51,7 @@
         $sender = $(sender.target);
         //$('body').find('#tb-tooltip').remove(); // remove any old tooltips.
         var $tooltip = $('<div id="tb-tooltip">' + message + '</div>').appendTo('body');
-        $tooltip.append('<img src="http://creesch.github.io/reddit-declutter/close.png" class="note-close" title="Close" />');
+        $tooltip.append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="note-close" title="Close" />');
         $tooltip.delegate('.note-close', 'click', function (e) {
             $tooltip.remove();
         });

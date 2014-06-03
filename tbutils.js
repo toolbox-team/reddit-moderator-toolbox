@@ -1,4 +1,14 @@
 (function (TBUtils) {
+    var TBInterval = window.setInterval(function () {
+        if (TBStorage.isLoaded === false) {
+            console.log('TBStorage not loaded');
+            return;
+        }
+        window.clearInterval(TBInterval);
+        TBInterval = null;
+    }, 50);
+
+    console.log('TBUtils loading');
 
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
@@ -68,12 +78,6 @@
     TBUtils.noConfig = (getnewShort) ? [] : getSetting('cache', 'noconfig', []);
     TBUtils.noNotes = (getnewShort) ? [] : getSetting('cache', 'nonotes', []);
     TBUtils.mySubs = (getnewLong) ? [] : getSetting('cache', 'moderatedsubs', []);
-    
-    //$.log(TBUtils.noteCache, true);
-    //$.log(TBUtils.configCache, true);
-    $.log(TBUtils.noConfig, true);
-    $.log(TBUtils.noNotes, true);
-    //$.log(TBUtils.mySubs, true);
 
     // Update cache vars as needed.
     if (newLogin) {
@@ -156,11 +160,11 @@
     };
     
     TBUtils.setSetting = function (module, setting, value) {
-        return setSetting(module, setting, value);
+        return TBStorage.setSetting(module, setting, value);
     };
 
     TBUtils.getSetting = function (module, setting, defaultVal) {
-        return getSetting(module, setting, defaultVal);
+        return TBStorage.getSetting(module, setting, defaultVal);
     };
     
     TBUtils.getTypeInfo = function (warningType) {

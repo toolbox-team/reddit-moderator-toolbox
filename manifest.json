@@ -27,6 +27,7 @@
 				"libs/snuownd.js", 
 				"libs/ace.js", 
 				"libs/mode-css.js", 
+				"storage.js", 
 				"tbui.js", 
 				"jquery-plugins.js", 
 				"tbutils.js", 

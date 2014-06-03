@@ -761,21 +761,3 @@
     return Spinner
 
 }));
-
-// This is here because we load even before TBUtils.
-
-//Reset toolbox settings support
-(function () {
-    if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') > -1) {
-        var r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
-        if (r == true) {
-            Object.keys(localStorage)
-                .forEach(function (key) {
-                    if (/^(Toolbox.)/.test(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
-            window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
-        }
-    }
-})();

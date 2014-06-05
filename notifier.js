@@ -12,6 +12,7 @@
         // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
         messageNotifications = TBUtils.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
         modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
+        unmoderatedNotifications = TBUtils.getSetting('Notifier', 'unmoderatednotifications', false),
         modSubreddits = TBUtils.getSetting('Notifier', 'modsubreddits', 'mod'),
         unmoderatedSubreddits = TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
         notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
@@ -267,7 +268,7 @@
     function showSettings() {
 
         // I probably should have stored "checked" instead of "on" will have to change that later. 
-        var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, hideRemovedChecked;
+        var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked, hideRemovedChecked;
 
         if (messageunreadlink) {
             messageunreadlinkchecked = 'checked';
@@ -286,6 +287,9 @@
         }
         if (unmoderatedOn) {
             unmoderatedonchecked = 'checked';
+        }
+        if (unmoderatedNotifications) {
+            unmoderatednotificationschecked = 'checked';
         }
         if (consolidatedMessages) {
             consolidatedmessageschecked = 'checked';
@@ -360,6 +364,9 @@
             </p>\
             <p>\
                 <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="unmoderatednotifications" ' + unmoderatednotificationschecked + '> Get unmoderated queue notifications</label>\
             </p></div>').hide();
 
         $(htmltoolbar).appendTo('.tb-window-content');
@@ -622,6 +629,9 @@
         modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
         TBUtils.setSetting('Notifier', 'modmailnotifications', modmailnotificationscheckedsaved);
 
+        unmoderatednotificationscheckedsaved = $("input[name=unmoderatednotifications]").is(':checked');
+        TBUtils.setSetting('Notifier', 'unmoderatednotifications', unmoderatednotificationscheckedsaved);
+
         unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
         TBUtils.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
@@ -654,6 +664,10 @@
         TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
+        if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
+            TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);
+            TBUtils.setSetting('Notifier', 'lastseenunmoderated', -1);
+        }
         TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
         TBUtils.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
@@ -1075,13 +1089,59 @@
         //
         // Unmoderated
         //
-        // getting unmoderated, for now only a counter, otherwise it might be to much with the notifications
-        if (unmoderatedOn) {
+        // getting unmoderated queue
+        if (unmoderatedOn || unmoderatedNotifications) {
             $.getJSON('http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100', function (json) {
                 var count = json.data.children.length || 0;
 
+                if (unmoderatedNotifications && count > unmoderatedCount) {
+                    var lastSeen = TBUtils.getSetting('Notifier', 'lastseenunmoderated', -1);
+
+                    if (consolidatedMessages) {
+                        var notificationbody, queuecount = 0;
+
+                        $.each(json.data.children, function (i, value) {
+                            if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
+                                var subreddit = value.data.subreddit
+                                  , author    = value.data.author;
+
+                                if (!notificationbody) {
+                                      notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
+                                } else {
+                                      notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
+                                }
+
+                                queuecount++;
+
+                            }
+                        });
+
+                        if (queuecount === 1) {
+                            TBUtils.notification('One new unmoderated item!', notificationbody, 'http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated');
+                        } else {
+                            TBUtils.notification(queuecount.toString() + ' new unmoderated items!', notificationbody, 'http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated');
+                        }
+                    } else {
+                        $.each(json.data.children, function (i, value) {
+                            if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
+                                var uqpermalink = value.data.permalink,
+                                    uqtitle = value.data.title,
+                                    uqauthor = value.data.author,
+                                    uqsubreddit = value.data.subreddit;
+
+                                TBUtils.notification('Unmoderated: /r/' + uqsubreddit + ' - post', uqtitle + ' By: ' + uqauthor, 'http://www.reddit.com' + uqpermalink);
+                            }
+                        });
+                    }
+
+                    TBUtils.setSetting('Notifier', 'lastseenunmoderated', now);
+                }
+
                 TBUtils.setSetting('Notifier', 'unmoderatedcount', count);
-                updateUnmodCount(count);
+
+                if (unmoderatedOn) {
+                    updateUnmodCount(count);
+                }
             });
         }
 

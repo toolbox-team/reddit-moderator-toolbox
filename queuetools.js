@@ -677,7 +677,7 @@
                     if (submission.json.errors.length) {
                         rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
                         if (submission.json.errors[0][0] == 'ALREADY_SUB')
-                            rtsLink.href = 'http://www.reddit.com/r/spam/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                            rtsLink.href = 'http://www.reddit.com/r/'+SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
                         return;
                     }
 

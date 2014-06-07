@@ -77,7 +77,7 @@
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false), //seriously, no one likes this feature.
+        dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
         stattitEnabled = TBUtils.getSetting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.getSetting('CommentsMod', 'enabled', true),
@@ -93,7 +93,8 @@
         removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
         commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false),
         rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
-        sortmodsubs = TBUtils.getSetting('QueueTools', 'sortmodsubs', false),
+        sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
+        sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
 
     // cache settings.
@@ -478,7 +479,10 @@
                 <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="sortmodsubs" ' + ((sortmodsubs) ? "checked" : "") + '> Sort subreddits in /r/mod sidebar according to mod queue count (warning: slows page loading if you mod more than a few subs)</label>\
+                <label><input type="checkbox" id="sortmodqueue" ' + ((sortmodqueue) ? "checked" : "") + '> Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)</label>\
+                </p>\
+                <p>\
+                <label><input type="checkbox" id="sortunmoderated" ' + ((sortunmoderated) ? "checked" : "") + '> Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)</label>\
                 </p>\
             <div class="tb-help-main-content">Settings for Queue Tools.</div>\
             </div>\
@@ -716,7 +720,8 @@
         TBUtils.setSetting('RemovalReasons', 'removalreasons', $("#removalreasons").prop('checked'));
         TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
         TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'sortmodsubs', $("#sortmodsubs").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'sortmodqueue', $("#sortmodqueue").prop('checked'));
+        TBUtils.setSetting('QueueTools', 'sortunmoderated', $("#sortunmoderated").prop('checked'));
         TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));
 
         // save cache settings.

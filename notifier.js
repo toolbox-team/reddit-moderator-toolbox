@@ -527,7 +527,7 @@
                 <input type="text" name="shortLength" value="' + shortLength + '">\
             </p>\
             <p>\
-                <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.))</label>\
+                <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
             </p>\
             <div class="tb-help-main-content">Settings Toolbox caches.</div>\
             </div>\

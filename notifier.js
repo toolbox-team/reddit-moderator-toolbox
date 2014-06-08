@@ -503,7 +503,7 @@
             <label><input type="checkbox" id="approveComments" ' + ((approveComments) ? "checked" : "") + '> Show approve button on all comments</label>\
             </p>\
             <p>\
-                Highlight keywords, keywords should entered seperated by a comma without spaces:<br>\
+                Highlight keywords, keywords should entered separated by a comma without spaces:<br>\
             <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '">\
             </p>\
             <div class="tb-help-main-content">Settings Toolbox Comments.</div>\

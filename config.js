@@ -250,17 +250,13 @@
             
             if (reasonsNum) {
                 config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
-                if(reasonFlairText)
-                    config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
-                if(reasonFlairCSS)
-                    config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+                config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
+                config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
             } else { 
                 var reason = { text: escape(reasonText) };
                 
-                if(reasonFlairText)
-                    reason.flairText = reasonFlairText;
-                if(reasonFlairCSS)
-                    reason.flairCSS = reasonFlairCSS;
+                reason.flairText = reasonFlairText;
+                reason.flairCSS = reasonFlairCSS;
                 
                 if (!config.removalReasons) {
                     config.removalReasons = {

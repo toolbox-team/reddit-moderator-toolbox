@@ -145,7 +145,7 @@
                 if (yes) yes.click();
                 
                 // Get PM subject line
-                data.subject = response.pmsubject || 'Your {kind} was removed from {subreddit}';
+                data.subject = response.pmsubject || 'Your {kind} was removed from /r/{subreddit}';
 
                 // Add additional data that is found in the wiki JSON.  
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
@@ -530,6 +530,7 @@
             
             // Reply to submission/comment
             if (notifyByReply) {
+                $.log("Sending removal message by comment reply.");
                 TBUtils.postComment(data.fullname, reason, function(successful, response) {
                     if(successful) {
                         // Check if reddit actually returned an error
@@ -563,6 +564,7 @@
             // Send PM the user
             function sendPM() {
                 if (notifyByPM) {
+                    $.log("Sending removal message by PM.");
                     TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
                         if(successful) {
                             popup.remove();

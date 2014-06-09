@@ -411,7 +411,7 @@
         var entry = $($(sender).closest('.entry')[0] || $(sender).find('.entry')[0] || sender),
             thing = $($(sender).closest('.thing')[0] || sender),
             user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
-            subreddit = TBUtils.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text(),
+            subreddit = TBUtils.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text() || $(entry).find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
             permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
             domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname'),

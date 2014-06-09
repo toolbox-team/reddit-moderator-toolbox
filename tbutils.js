@@ -912,6 +912,13 @@
         TBUtils.noNotes = [];
         TBUtils.mySubs = [];
 
+        Object.keys(localStorage)
+        .forEach(function (key) {
+            if (/^(Toolbox.cache.)/.test(key)) {
+                localStorage.removeItem(key);
+            }
+        });
+
         //window.location.reload(); //casues way too many issues with callbacks and timouts.
     };
 

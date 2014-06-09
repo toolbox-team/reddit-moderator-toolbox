@@ -734,6 +734,15 @@
         sortThings(listingOrder, sortAscending);
     }
 
+    // Add mod tools or mod tools toggle button if applicable
+    if (TBUtils.isModpage) {
+        addModtools();
+    }
+
+    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
+        $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
+    }
+
     if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
         var prefix = '', page = '', type = '';
         if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
@@ -785,11 +794,5 @@
             });
         }
     }
-
-    // Add mod tools or mod tools toggle button if applicable
-    if (TBUtils.isModpage)
-        addModtools();
-    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length))
-        $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
 
 })();

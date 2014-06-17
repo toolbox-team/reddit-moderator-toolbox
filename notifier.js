@@ -38,6 +38,8 @@
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
         approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
+        spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
+        hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false),
         settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
 
 
@@ -503,6 +505,12 @@
             <label><input type="checkbox" id="approveComments" ' + ((approveComments) ? "checked" : "") + '> Show approve button on all comments</label>\
             </p>\
             <p>\
+            <label><input type="checkbox" id="spamRemoved" ' + ((spamRemoved) ? "checked" : "") + '> Show spam button on comments removed as ham</label>\
+            </p>\
+            <p>\
+            <label><input type="checkbox" id="hamSpammed" ' + ((hamSpammed) ? "checked" : "") + '> Show remove (not spam) button on comments removed as spam</label>\
+            </p>\
+            <p>\
                 Highlight keywords, keywords should entered separated by a comma without spaces:<br>\
             <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '">\
             </p>\
@@ -666,6 +674,8 @@
         TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
 
         TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));
+        TBUtils.setSetting('CommentsMod', 'spamremoved', $("#spamRemoved").prop('checked'));
+        TBUtils.setSetting('CommentsMod', 'hamspammed', $("#hamSpammed").prop('checked'));
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {

@@ -420,6 +420,12 @@
             title = thing.find('a.title').length ? thing.find('a.title').text() : '',
             kind = thing.hasClass('link') ? 'submission' : 'comment',
             postlink = thing.find('a.title').attr('href');
+
+        // removed? spam or ham?
+        var removal = (entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [],
+            banned_by = removal[1] || '',
+            spam = ( (removal[2] == 'spam' || removal[2] == 'confirm spam') ? true : false),
+            ham = (removal[2] == 'remove not spam' ? true : false);
         
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
@@ -472,7 +478,10 @@
             approved_by: approved_by,
             title: title,
             kind: kind,
-            postlink: postlink
+            postlink: postlink,
+            banned_by: banned_by,
+            spam: spam,
+            ham: ham
         };
         //$.log(info);
         return info;

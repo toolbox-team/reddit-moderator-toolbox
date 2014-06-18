@@ -420,7 +420,7 @@
                 $(this).addClass('ban-button');
 
                 // Add button.
-                $(this).append('[<a href="javascript:void(0)" class="user-ban-button">B</a>]');
+                $(this).append('[<a href="javascript:void(0)" title="ban user" class="user-ban-button">B</a>]');
             }
         }
         $('.thing .entry .userattrs').each(addUserBanLink);

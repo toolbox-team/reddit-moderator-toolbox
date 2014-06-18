@@ -43,6 +43,7 @@
 				"banlist.js", 
 				"removalreasons.js", 
 				"queuetools.js", 
+				"historybutton.js", 
 				"syntax.js", 
 				"frame.js", 
 				"modmaillite.js"

@@ -79,6 +79,7 @@
         mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
+        historyButtonEnabled = TBUtils.getSetting('HistoryButton', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
@@ -435,6 +436,9 @@
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
+                <label><input type="checkbox" id="historyButtonEnabled" ' + ((historyButtonEnabled) ? "checked" : "") + '> Enable History Button</label>\
+            </p>\
+            <p>\
                 <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
             </p>\
             <p>\
@@ -724,6 +728,7 @@
         TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));
         TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
+        TBUtils.setSetting('HistoryButton', 'enabled', $("#historyButtonEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));

@@ -329,6 +329,9 @@
 
         TBUtils.setSetting('ModButton', 'lastaction', actionName);
  
+        // Check dem values.
+        if (!api) return $status.text('error, no action selected');
+
         if (!$(this).hasClass('global-button')) {
  
             // Get dem ban subs.
@@ -347,6 +350,8 @@
             // Ban
             massAction(subreddits);
  
+            // Check dem values.
+            if (subreddits.length < 1) return $status.text('error, no subreddits selected');
         } else {
             var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");
             if (confirmban) {
@@ -355,11 +360,6 @@
                 return;
             }
         }
- 
-        // Check dem values.
-        if (subreddits.length < 1) return $status.text('error, no subreddits selected');
-        if (!api) return $status.text('error, no action selected');
-
 
         var $timer;
         function completeCheck(failedSubs) {

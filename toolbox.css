@@ -526,6 +526,7 @@ img.note-close {
 
 .add-domain-tag:hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .utagger-popup .right {

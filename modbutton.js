@@ -118,6 +118,7 @@
  
         var display = (savedSubs.length < 1) ? 'none' : '',
             showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false),
+            lastaction = TBUtils.getSetting('ModButton', 'lastaction', 'ban'),
             info = TBUtils.getThingInfo(this, true),
             subreddit = info.subreddit,
             user = info.user,
@@ -205,6 +206,7 @@
             display: 'block'
         });
 
+        $popup.find('select.mod-action').val(lastaction);
  
         // Remove options that only apply to subs we mod
         if (!subreddit) {
@@ -324,6 +326,8 @@
             banReason = $popup.find('.ban-note').val(),
             subreddits = [],
             user = $popup.find('.user').text();
+
+        TBUtils.setSetting('ModButton', 'lastaction', actionName);
  
         if (!$(this).hasClass('global-button')) {
  

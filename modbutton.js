@@ -34,6 +34,10 @@
  
         var $things = $('div.thing .entry:not(.mod-button)');
         TBUtils.forEachChunked($things, 15, 500, processThing);
+
+        // WIP selector for adding modbutton for #207
+        // lifted from RES, with modifications. thanks /u/honestbleeps
+        // $('div.md a[href^="/u/"]:not([href*="/m/"]), div.md a[href*="reddit.com/u/"]:not([href*="/m/"]), div.wiki-page-content .author');
     }
  
     // Add mod button to all users

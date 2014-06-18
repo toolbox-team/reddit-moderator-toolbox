@@ -347,11 +347,18 @@
                 }
             });
 
-            // Ban
-            massAction(subreddits);
- 
             // Check dem values.
             if (subreddits.length < 1) return $status.text('error, no subreddits selected');
+
+            if (subreddits.length > 1) {
+                var confirmban = confirm("This will " + actionName + " /u/" + user + " from " + subreddits.join(', ') + ".   Are you sure?");
+                if (confirmban) {
+                    // Ban
+                    massAction(subreddits);
+                } else {
+                    return;
+                }
+            }
         } else {
             var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");
             if (confirmban) {

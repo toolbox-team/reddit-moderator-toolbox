@@ -142,6 +142,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     font: normal x-small verdana,arial,helvetica,sans-serif !important;
 }
 
+.mod-toolbox ul.inline-list { display: inline; }
 .mod-toolbox ul.inline-list li { display: inline; }
 .mod-toolbox ul.inline-list li:after { content: ','; }
 .mod-toolbox ul.inline-list li:last-child:after { content: ''; }

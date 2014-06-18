@@ -224,15 +224,36 @@
 
         // only works if we're a mod of the sub in question
         if (subreddit) {
+            var user_fullname = ''; // type t2_xxx
+
             // Show if current user is banned, and why. - thanks /u/LowSociety
             // TODO: Display *when* they were banned, along with ban note. #194
             $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user : user }, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
+                        user_fullname = banned[i].id; // we need this to extract data from the modlog
+
+                        var timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
+
+                        $popup.find(".current-sub").append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
+                        $popup.find(".current-sub .already-banned").append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
+
                         $popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
                         $popup.find(".ban-note").val(banned[i].note);
                         $popup.find('.mod-popup-title').css('color', 'red');
+
+                        // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
+                        $.get("http://www.reddit.com/r/" + subreddit + "/about/log/.json", { type: 'banuser', limit: '1000' }, function (data) {
+                            var logged = data.data.children;
+                            for (var i = 0; i < logged.length; i++) {
+                                if (logged[i].data.target_fullname == user_fullname) {
+                                    $popup.find(".current-sub .already-banned a").attr('href', '/u/'+logged[i].data.mod).text(logged[i].data.mod);
+                                    break;
+                                }
+                            }
+                        });
+
                         break;
                     }
                 }

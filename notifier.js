@@ -135,7 +135,7 @@
 
     var $console = $('\
     <div class="tb-debug-window">\
-            <div class="tb-debug-header"> Debug Console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">X</a></span></div>\
+            <div class="tb-debug-header"> Debug Console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
             <div class="tb-debug-content">\
                 <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
             </div>\

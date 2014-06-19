@@ -117,7 +117,7 @@
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit domains <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">✕</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -161,7 +161,7 @@
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Edit reasons <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">✕</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
@@ -282,7 +282,7 @@
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
-<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">X</a></span></div>\
+<div class="tb-window-header" comment="This will contain the name of the window"> Reason settings <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">✕</a></span></div>\
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \

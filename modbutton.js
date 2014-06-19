@@ -319,7 +319,7 @@
  
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
     $('body').on('click', '.mod-popup .save, .global-button', function () {
- 
+
         var $button = $(this),
             $popup = $button.parents('.mod-popup'),
             $selected = $popup.find('.mod-action :selected'),
@@ -337,7 +337,7 @@
         if (!api) return $status.text('error, no action selected');
 
         if (!$(this).hasClass('global-button')) {
- 
+
             // Get dem ban subs.
             $popup.find('.action-sub:checkbox:checked').each(function () {
                 if ($(this).val() !== OTHER) {
@@ -355,6 +355,7 @@
             if (subreddits.length < 1) return $status.text('error, no subreddits selected');
 
             if (subreddits.length > 1) {
+                // require confirmation on all multi-sub actions
                 var confirmban = confirm("This will " + actionName + " /u/" + user + " from " + subreddits.join(', ') + ".   Are you sure?");
                 if (confirmban) {
                     // Ban
@@ -362,6 +363,9 @@
                 } else {
                     return;
                 }
+            } else {
+                // must be only one sub selected, no need to confirm
+                massAction(subreddits);
             }
         } else {
             var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");

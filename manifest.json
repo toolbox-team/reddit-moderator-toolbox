@@ -26,7 +26,10 @@
 				"libs/jquery-2.1.1.js", 
 				"libs/snuownd.js", 
 				"libs/ace.js", 
-				"libs/mode-css.js", 
+				"libs/mode-css.js",
+				"libs/mode-json.js",
+				"libs/mode-yaml.js",
+				"libs/ace-themes.js",
 				"storage.js", 
 				"tbui.js", 
 				"jquery-plugins.js", 
@@ -45,7 +48,7 @@
 				"queuetools.js", 
 				"historybutton.js", 
 				"syntax.js", 
-				"frame.js", 
+				"frame.js",
 				"modmaillite.js"
 			]
 		}

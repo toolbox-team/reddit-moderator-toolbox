@@ -92,6 +92,15 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     background-repeat: no-repeat;
 }
 
+.mod-toolbox .articleFrame {
+border: solid 1px #808080;
+position: relative;
+width: 70%;
+margin-left: 60px;
+resize: both;
+display: none;
+}
+
 .mod-toolbox #tb-modqueue {
     background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
     background-position: -102px -595px;
@@ -1368,7 +1377,7 @@ body.mod-page .thing {
 
 
 /* For css syntax highlighting */
-#stylesheet_contents_div {
+#stylesheet_contents_div, #json_contents_div {
     height: 500px;
     border: solid 1px #E4E4E4;
 }

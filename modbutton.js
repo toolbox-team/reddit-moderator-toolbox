@@ -210,7 +210,9 @@
             display: 'block'
         });
 
-        $popup.find('select.mod-action').val(lastaction);
+        if (TBUtils.getSetting('ModButton', 'rememberlastaction', false) {
+            $popup.find('select.mod-action').val(lastaction);
+        }
  
         // Remove options that only apply to subs we mod
         if (!subreddit) {

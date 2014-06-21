@@ -91,6 +91,9 @@
     // Ban list settings.
     var banlistAutomatic = TBUtils.getSetting('BanList', 'automatic', false);
 
+    // Mod Button settings.
+    var modButtonRememberAction = TBUtils.getSetting('ModButton', 'rememberlastaction', false);
+
     // MTE settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
         ignoreonapprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
@@ -345,6 +348,9 @@
             </p>\
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" id="modButtonRememberAction" ' + ((modButtonRememberAction) ? "checked" : "") + '> Remember last Mod Button action </label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
@@ -740,6 +746,9 @@
 
         // Ban list settings
         TBUtils.setSetting('BanList', 'automatic', $("#banlistAutomatic").prop('checked'));
+
+        // Mod Button settings
+        TBUtils.setSetting('ModButton', 'rememberlastaction', $("#modButtonRememberAction").prop('checked'));
 
         // Save MTE settings.
         TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));

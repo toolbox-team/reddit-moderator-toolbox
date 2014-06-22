@@ -210,7 +210,7 @@
             display: 'block'
         });
 
-        if (TBUtils.getSetting('ModButton', 'rememberlastaction', false) {
+        if (TBUtils.getSetting('ModButton', 'rememberlastaction', false)) {
             $popup.find('select.mod-action').val(lastaction);
         }
  

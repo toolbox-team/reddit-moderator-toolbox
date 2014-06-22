@@ -44,7 +44,7 @@
     function showSettings() {
         
         // No reasons storred in the config.  Check the CSS.
-        if (!config.removalReasons) {
+        if (!config.removalReasons || config.removalReasons.reasons.length < 1) {
             TBUtils.getReasonsFromCSS(subreddit, function(resp) {
                 if (resp) {
                     $('.reasons-notice').show();
@@ -173,7 +173,7 @@
 \
 \
 </div>\
-<div class="tb-window-footer" ><input class="save" type="button" value="new"/></div>\
+<div class="tb-window-footer" ><input class="save" type="button" value="new"/><input class="delete" style="display:none" type="button" value="delete"/></div>\
 <div class="tb-help-config-content">\
 <h2>Input options:</h2>\
 <p>\
@@ -233,6 +233,8 @@
             
             $('th input[type=radio]').change(function(){
                 $(html).find('.save').val('save');
+                $(html).find('.delete').show();
+
                 var reasonsNum = $(this).attr('reason');
                 $('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text));
                 $('.edit-area').attr('reason', reasonsNum);
@@ -268,6 +270,23 @@
             }
             postToWiki('toolbox', config, true);
             if(TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            }
+            $(html).remove();
+        });
+
+        // Do things about stuff.
+        $(html).on('click', '.delete', function () {
+            var reasonsNum = $('.edit-area').attr('reason');
+
+            if (reasonsNum) {
+                config.removalReasons.reasons.splice(reasonsNum, 1);
+                //config.removalReasons.reasons[reasonsNum].remove();
+            } else {
+                return;
+            }
+            postToWiki('toolbox', config, true);
+            if (TBUtils.configCache[subreddit] !== undefined) {
                 delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
             $(html).remove();

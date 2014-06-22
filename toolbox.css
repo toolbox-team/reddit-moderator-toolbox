@@ -1116,12 +1116,23 @@ body .thing.flaired {
 
 /* various reddit css fixes for mods */ 
 
-.moderator-table tr:hover, .moderator-table tr:nth-child(even):hover, .banned-table tr:hover, .banned-table tr:nth-child(even):hover, .contributor-table tr:hover, .contributor-table tr:nth-child(even):hover {
-    background-color: #CEE3F8;
+.moderator-table tr:hover, 
+.moderator-table tr:nth-child(even):hover, 
+.banned-table tr:hover, .banned-table tr:nth-child(even):hover, 
+.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover, 
+.modactionlisting .generic-table tr:hover, 
+.modactionlisting .generic-table tr:nth-child(even):hover,
+.wikirevisionlisting .generic-table tr:hover, 
+.wikirevisionlisting .generic-table tr:nth-child(even):hover{
+    background-color: #CEE3F8 !important;
 }
 
-.moderator-table tr:nth-child(even), .banned-table tr:nth-child(even), .contributor-table tr:nth-child(even) {
-    background: #F5F5F5;
+.moderator-table tr:nth-child(even), 
+.banned-table tr:nth-child(even), 
+.contributor-table tr:nth-child(even), 
+.wikirevisionlisting .generic-table tr:nth-child(even),
+.modactionlisting .generic-table tr:nth-child(even) {
+    background: #F5F5F5 !important;
 }
 
 /* css fix for banlist module */

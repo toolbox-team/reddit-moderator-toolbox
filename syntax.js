@@ -1,6 +1,6 @@
 (function syntax() {
 
-if (!location.pathname.match(/\/about\/stylesheet\/?/)) return;
+if (!location.pathname.match(/\/about\/stylesheet\/?/) || !TBUtils.getSetting('syntaxHighlighter', 'enabled', true)) return;
 
 $('.sheets .col').prepend('<div id="stylesheet_contents_div"></div>');
 

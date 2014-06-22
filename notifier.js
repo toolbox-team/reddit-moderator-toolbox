@@ -104,6 +104,9 @@
         sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
+    
+    // Syntax Highlight settings.
+    var selectedTheme = TBUtils.getSetting('syntaxHighlighter', 'selectedTheme', 'monokai');
 
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
@@ -542,6 +545,86 @@
             $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
         }
 
+        // Settings for the syntax highlighter 
+        var htmlsyntaxHighlighter = '\
+            <div class="tb-window-content-syntax">\
+            <p>\
+                Syntax highlight theme selection:<br>\
+                <select id="setting_theme_selector">\
+                    <option value="ambiance">ambiance</option>\
+                    <option value="chaos">chaos</option>\
+                    <option value="chrome">chrome</option>\
+                    <option value="cloud9_day">cloud9_day</option>\
+                    <option value="cloud9_night">cloud9_night</option>\
+                    <option value="cloud9_night_low_color">cloud9_night_low_color</option>\
+                    <option value="clouds">clouds</option>\
+                    <option value="clouds_midnight">clouds_midnight</option>\
+                    <option value="cobalt">cobalt</option>\
+                    <option value="crimson_editor">crimson_editor</option>\
+                    <option value="dawn">dawn</option>\
+                    <option value="dreamweaver">dreamweaver</option>\
+                    <option value="eclipse">eclipse</option>\
+                    <option value="github">github</option>\
+                    <option value="idle_fingers">idle_fingers</option>\
+                    <option value="katzenmilch">katzenmilch</option>\
+                    <option value="kuroir">kuroir</option>\
+                    <option value="merbivore">merbivore</option>\
+                    <option value="merbivore_soft">merbivore_soft</option>\
+                    <option value="monokai">monokai</option>\
+                    <option value="mono_industrial">mono_industrial</option>\
+                    <option value="pastel_on_dark">pastel_on_dark</option>\
+                    <option value="solarized_dark">solarized_dark</option>\
+                    <option value="solarized_light">solarized_light</option>\
+                    <option value="terminal">terminal</option>\
+                    <option value="textmate">textmate</option>\
+                    <option value="tomorrow">tomorrow</option>\
+                    <option value="tomorrow_night">tomorrow_night</option>\
+                    <option value="tomorrow_night_blue">tomorrow_night_blue</option>\
+                    <option value="tomorrow_night_bright">tomorrow_night_bright</option>\
+                    <option value="tomorrow_night_eighties">tomorrow_night_eighties</option>\
+                    <option value="twilight">twilight</option>\
+                    <option value="vibrant_ink">vibrant_ink</option>\
+                    <option value="xcode">xcode</option>\
+                </select> \
+<pre id="syntax_setting_css">\
+    /* This is just some example code*/\n\
+    body {\n\
+        font-family: sans-serif, "Helvetica Neue", Arial;\n\
+        font-weight: normal;\n\
+    }\n\
+    \n\
+    .md h3, .commentarea h3 {\n\
+        font-size: 1em;\n\
+    }\n\
+    \n\
+    #header {\n\
+        border-bottom: 1px solid #9A9A9A; \n\
+        box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
+    }\n\
+</pre>\
+            </p>\
+            <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
+            </div>\
+            ';
+
+        $(htmlsyntaxHighlighter).appendTo('.tb-window-content').hide();
+        
+        if (syntaxHighlighterEnabled) {
+            // Syntax highlighter selection stuff
+
+        var editorSettings = ace.edit("syntax_setting_css");
+        editorSettings.setTheme("ace/theme/"+selectedTheme);
+        editorSettings.getSession().setMode("ace/mode/css");
+
+        $('#setting_theme_selector').val(selectedTheme);        
+        $('body').on('change', '#setting_theme_selector', function() {
+            var themeName = $(this).val();
+            editorSettings.setTheme("ace/theme/"+themeName);
+        });
+
+            $('<a href="javascript:;" class="tb-window-content-syntax">Syntax Highlighter</a>').appendTo('.tb-window-tabs');
+        }
+        
         // Settings for caching
         var htmlcache = '\
             <div class="tb-window-content-cache">\
@@ -640,7 +723,7 @@
         <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
     });
-
+    
     // Save the settings 
     $('body').on('click', '.tb-save', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
@@ -733,6 +816,11 @@
             TBUtils.setSetting('Notifier', 'shortcuts2', shortcuts2);
         }
 
+        // Save syntax highlighting settings   
+        var newThemeSelection = $('#setting_theme_selector').val();
+        TBUtils.setSetting('syntaxHighlighter', 'selectedTheme', newThemeSelection);
+        
+        
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));

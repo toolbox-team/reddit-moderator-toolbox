@@ -4,9 +4,10 @@ if (!location.pathname.match(/\/about\/stylesheet\/?/) || !TBUtils.getSetting('s
 
 $('.sheets .col').prepend('<div id="stylesheet_contents_div"></div>');
 
-var editor = ace.edit("stylesheet_contents_div");
-var textarea = $('textarea[name="stylesheet_contents"]').hide();
-editor.setTheme("ace/theme/monokai");
+var editor = ace.edit("stylesheet_contents_div"),
+    selectedTheme = TBUtils.getSetting('syntaxHighlighter', 'selectedTheme', 'monokai');
+    textarea = $('textarea[name="stylesheet_contents"]').hide();
+editor.setTheme("ace/theme/"+selectedTheme);
 
 editor.getSession().setMode("ace/mode/css");
 
@@ -53,6 +54,7 @@ $('#stylesheet_contents_div').before('<select id="theme_selector">\
 <option value="xcode">xcode</option>\
 </select>');
 
+$('#theme_selector').val(selectedTheme);
 
 $('body').on('change', '#theme_selector', function() {
 

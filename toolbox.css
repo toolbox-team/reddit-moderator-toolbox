@@ -1393,3 +1393,9 @@ body.mod-page .thing {
 .mod-toolbox .ace_print-margin {
     display: none;
 }
+
+.mod-toolbox #syntax_setting_css { 
+display: block;
+width: 98%;
+height: 300px;
+}

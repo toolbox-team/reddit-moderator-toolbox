@@ -9,7 +9,9 @@
     /////// Don't edit beyond this line. ///////
     var OTHER = 'other-sub',
         BANREASON = "(ban reason)",
-        savedSubs = TBUtils.getSetting('ModButton', 'sublist', []);
+        savedSubs = TBUtils.getSetting('ModButton', 'sublist', []),
+        rememberLastAction = TBUtils.getSetting('ModButton', 'rememberlastaction', false),
+        showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false);
  
     TBUtils.getModSubs(function () {
         savedSubs = TBUtils.saneSort(savedSubs);
@@ -121,7 +123,6 @@
         $(benbutton).text('loading...');
  
         var display = (savedSubs.length < 1) ? 'none' : '',
-            showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false),
             lastaction = TBUtils.getSetting('ModButton', 'lastaction', 'ban'),
             info = TBUtils.getThingInfo(this, true),
             subreddit = info.subreddit,
@@ -194,6 +195,10 @@
                                 <label class="global-label" for="the-nuclear-option">\
                                     <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option" ' + (showglobal ? 'checked' : '' ) + '>\
                                     &nbsp;enable Global Action button.\
+                                </label><br />\
+                                <label class="last-action-label" for="remember-last-action">\
+                                    <input class="remember-last-action" type="checkbox" id="remember-last-action" name="remember-last-action" ' + (rememberLastAction ? 'checked' : '') + '>\
+                                    &nbsp;remember last Mod Button action.\
                                 </label>\
                             </p>\
                         </div>',
@@ -210,7 +215,7 @@
             display: 'block'
         });
 
-        if (TBUtils.getSetting('ModButton', 'rememberlastaction', false)) {
+        if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
         }
  
@@ -646,7 +651,10 @@
         $status.text('saving settings...');
 
         // Enable/disable global ban button.
-        TBUtils.setSetting('ModButton', 'globalbutton', $('.the-nuclear-option').is(':checked'));
+        showglobal = TBUtils.setSetting('ModButton', 'globalbutton', $('.the-nuclear-option').is(':checked'));
+
+        // Enable/disable remember last action
+        rememberLastAction = TBUtils.setSetting('ModButton', 'rememberlastaction', $('.remember-last-action').is(':checked'));
 
         // show the global-button in the footer, if enabled
         if (TBUtils.getSetting('ModButton', 'globalbutton', false)) {

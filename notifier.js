@@ -353,9 +353,9 @@
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
             </p>\
-            <p>\
+            <!--p>\
                 <label><input type="checkbox" id="modButtonRememberAction" ' + ((modButtonRememberAction) ? "checked" : "") + '> Remember last Mod Button action </label>\
-            </p>\
+            </p--!>\
             <p>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
             </p>\

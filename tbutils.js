@@ -29,8 +29,8 @@
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true;  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+		longLoadArray = [];
     
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
@@ -200,31 +200,62 @@
         return typeInfo;
     };
 
+	
+	TBUtils.longLoadSpinner = function (createOrDestroy) {
+		if (createOrDestroy !== undefined) {
+
+			 // if requested and the element is not present yet
+			 if (createOrDestroy && longLoadArray.length == 0) {
+
+				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '5px');
+				$('.footer-parent').append('<div id="tb-loading"></div>');
+				longLoadArray.push('load');
+
+			 // if requested and the element is already present
+			} else 	if (createOrDestroy && longLoadArray.length > 0) {
+				longLoadArray.push('load');
+	
+			 // if done and the only instance	
+			} else if (!createOrDestroy && longLoadArray.length == 1) {
+				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
+				$('#tb-loading').remove();
+				longLoadArray.pop();
+
+			// if done but other process still running		
+			} else if (!createOrDestroy && longLoadArray.length > 1) {
+				longLoadArray.pop();
+
+			}
+		}
+    };
+
+
     TBUtils.pageOverlay = function (text, createOrDestroy) {
         if (createOrDestroy !== undefined) {
 
             // Create the overlay
             if (createOrDestroy) {
                 var html = '\
-            <div class="mod-toolbox tb-page-overlay">\
-            <div class="mod-toolbox tb-overlay-label"></div></div>\
+            <div class="tb-internal-overlay">\
+            <div class="tb-overlay-label"></div></div>\
             ';
-
-                $(html).appendTo('body').show();
-                $('body').css('overflow', 'hidden');
+			TBUtils.longLoadSpinner(true);
+                $('body').find('.mod-popup-tabs').after(html);
             }
 
                 // Destory the overlay
             else {
-                $('.tb-page-overlay').remove();
-                $('body').css('overflow', 'auto');
+                $('body').find('.tb-internal-overlay').remove();
+				TBUtils.longLoadSpinner(false);
             }
         }
 
-        // Regardless, update the text.  It doen't matter if you pass text for destory.
-        $('.tb-overlay-label').text(text);
+        // Regardless, update the text.  It doen't matter if you pass text for destroy.
+        $('body').find('.tb-overlay-label').html(text);
+
     };
     
+
     TBUtils.alert = function (message, callback) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
         $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="note-close" title="Close" />');
@@ -1047,7 +1078,9 @@
     });
 
     window.onbeforeunload = function () {
-        
+		if (longLoadArray.length > 0) {
+			return 'Toolbox is still busy!';
+		}
         // Cache data.
         setSetting('cache', 'configcache', TBUtils.configCache);
         setSetting('cache', 'notecache', TBUtils.noteCache);

@@ -1384,7 +1384,7 @@ body.mod-page .thing {
 
 
 /* For css syntax highlighting */
-#stylesheet_contents_div, #json_contents_div {
+#stylesheet_contents_div, #json_contents_div, #wiki_contents_div {
     height: 500px;
     border: solid 1px #E4E4E4;
 }

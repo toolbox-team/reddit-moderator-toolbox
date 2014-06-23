@@ -185,7 +185,7 @@ Toolbox.TBModule = function (name, version) {
     // PUBLIC: placeholder init(), just in case
     this.init = function () {
         // pass
-    }
+    };
 }
 
 

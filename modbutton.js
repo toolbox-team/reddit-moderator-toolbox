@@ -414,7 +414,7 @@
         }
 
         function massAction(subs) {
-            $('.mod-popup').hide();
+            //$('.mod-popup').hide();
             var failedSubs = [];
             var actionCount = 0;
 
@@ -423,7 +423,6 @@
             $timer = $.timer(function () {
                 var sub = $(subs).get(actionCount);
 
-                $status.text(actionName + 'ning /u/' + user + ' from /r/' + sub);
                 TBUtils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
 
                 $.log('banning from: ' + sub);
@@ -437,9 +436,9 @@
                 })
                 .success(function (resp) {
                     if (resp.json.errors !== undefined && resp.json.errors[0][0] === 'RATELIMIT') {
-                        $timer.pause();
-                        $.log('ratelimited');
-                        rateLimit(resp.json.ratelimit);
+                       $timer.pause();
+                       $.log('ratelimited');
+                       rateLimit(resp.json.ratelimit);
                     }
                 })
                 .error(function (error, more) {

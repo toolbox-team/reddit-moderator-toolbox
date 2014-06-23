@@ -2,5 +2,5 @@
 // There's no super-clever way to trigger it automatically
 
 (function TBOBjectInit () {
-	Toolbox.init();
+	TB.init();
 })();

@@ -698,7 +698,7 @@
     // Open the settings
     $('body').on('click', '.tb-toolbarsettings', function () {
         showSettings();
-        Toolbox.injectSettings();
+        TB.injectSettings();
     });
 
     // change tabs 

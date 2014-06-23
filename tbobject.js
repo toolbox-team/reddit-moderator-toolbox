@@ -1,8 +1,7 @@
 (function tbobject() {
 
-Toolbox = {
+TB = {
     utils: TBUtils,
-    version: '2.2.0', // jeez, another place to reference the current version
 
     modules: {},
 
@@ -16,9 +15,9 @@ Toolbox = {
             var module = this.modules[m];
 
             // Don't do anything with beta modules unless beta mode is enabled
-            // Need Toolbox.setting() call for non-module settings
-            // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
-            if (!Toolbox.utils.getSetting('Utils', 'betaMode', false)
+            // Need TB.setting() call for non-module settings
+            // if (!TB.setting('betamode') && module.setting('betamode')) {
+            if (!TB.utils.getSetting('Utils', 'betaMode', false)
                 && module.setting('betamode')
             ) {
                 // skip this module entirely
@@ -43,9 +42,9 @@ Toolbox = {
                 var module = self.modules[m];
 
                 // Don't do anything with beta modules unless beta mode is enabled
-                // Need Toolbox.setting() call for non-module settings
-                // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
-                if (!Toolbox.utils.getSetting('Utils', 'betaMode', false)
+                // Need TB.setting() call for non-module settings
+                // if (!TB.setting('betamode') && module.setting('betamode')) {
+                if (!TB.utils.getSetting('Utils', 'betaMode', false)
                     && module.setting('betamode')
                 ) {
                     // skip this module entirely
@@ -71,7 +70,7 @@ Toolbox = {
 
                     // hide beta stuff unless beta mode enabled
                     if (options.hasOwnProperty("betamode")
-                        && !Toolbox.utils.getSetting('Utils', 'betaMode', false)
+                        && !TB.utils.getSetting('Utils', 'betaMode', false)
                         && options["betamode"]
                     ) {
                         $.log("Beta Setting!");
@@ -151,10 +150,9 @@ Toolbox = {
 };
 
 // Prototype for all Toolbox modules
-Toolbox.TBModule = function (name, version) {
+TB.Module = function (name) {
     // PUBLIC: Module Metadata
     this.name = name;
-    this.version = version;
     this.__defineGetter__('shortname', function () {
         // return name.trim().toLowerCase().replace(' ', '_');
         return name.trim().replace(' ', '');
@@ -175,7 +173,7 @@ Toolbox.TBModule = function (name, version) {
         // are we setting or getting?
         if (typeof value !== "undefined") {
             // setting
-            return Toolbox.utils.setSetting(this.shortname, name, value);
+            return TB.utils.setSetting(this.shortname, name, value);
         } else {
             // getting
             // do we have a default?
@@ -183,10 +181,10 @@ Toolbox.TBModule = function (name, version) {
                 && this.settings[name].hasOwnProperty("default")
             ) {
                 // we know what the default should be
-                return Toolbox.utils.getSetting(this.shortname, name, this.settings[name]["default"])
+                return TB.utils.getSetting(this.shortname, name, this.settings[name]["default"])
             } else {
                 // getSetting defaults to null for default value, no need to pass it explicitly
-                return Toolbox.utils.getSetting(this.shortname, name);
+                return TB.utils.getSetting(this.shortname, name);
             }
         }
     };
@@ -199,6 +197,6 @@ Toolbox.TBModule = function (name, version) {
 
 
 // This needs to be called last. There's probably some clever way to do it, but I haven't figured it out.
-// Toolbox.init();
+// TB.init();
 
 })();

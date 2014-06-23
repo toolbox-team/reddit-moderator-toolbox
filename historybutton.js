@@ -1,4 +1,4 @@
-var historyButton = new Toolbox.TBModule('History Button', '0.1');
+var historyButton = new TB.Module('History Button');
 
 // Add history button to all users. 
 historyButton.addUserHistoryLink = function() {
@@ -200,4 +200,4 @@ historyButton.init = function() {
     });
 };
 
-Toolbox.register_module(historyButton);
+TB.register_module(historyButton);

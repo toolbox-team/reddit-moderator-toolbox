@@ -1,6 +1,6 @@
 // @copyright  2013+, LowSociety, dakta
 
-var stattitTab = new Toolbox.TBModule('Stattit Tab', '0.1');
+var stattitTab = new TB.Module('Stattit Tab');
     
 stattitTab.getSectionFromUrl = function(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
@@ -43,4 +43,4 @@ stattitTab.init = function() {
     tabList.appendChild(listItem);
 };
 
-Toolbox.register_module(stattitTab);
+TB.register_module(stattitTab);

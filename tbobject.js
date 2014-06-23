@@ -2,7 +2,7 @@
 
 Toolbox = {
     utils: TBUtils,
-    version: '2.0.1',
+    version: '2.2.0', // jeez, another place to reference the current version
 
     modules: {},
 

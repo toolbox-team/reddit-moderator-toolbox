@@ -18,7 +18,9 @@ Toolbox = {
             // Don't do anything with beta modules unless beta mode is enabled
             // Need Toolbox.setting() call for non-module settings
             // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
-            if (!Toolbox.utils.getSetting('Utils', 'betaMode', false) && module.setting('betamode')) {
+            if (!Toolbox.utils.getSetting('Utils', 'betaMode', false)
+                && module.setting('betamode')
+            ) {
                 // skip this module entirely
                 continue;
             }
@@ -33,24 +35,27 @@ Toolbox = {
 
     injectSettings: function () {
         for (m in this.modules) {
-            self = this;
+            var self = this;
             (function () {
                 // wrap each iteration in a self-executing anonymous function, to preserve scope for bindFirst()
-                // otherwise, we get the bindFirst callback having var module refer to the last time it was set
+                // otherwise, we get the bindFirst callback having `var module` refer to the last time it was set
                 // becausde we're in for loop not a special scope, d'oh.
-
                 var module = self.modules[m];
 
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need Toolbox.setting() call for non-module settings
                 // if (!Toolbox.setting('betamode') && module.setting('betamode')) {
-                if (!Toolbox.utils.getSetting('Utils', 'betaMode', false) && module.setting('betamode')) {
+                if (!Toolbox.utils.getSetting('Utils', 'betaMode', false)
+                    && module.setting('betamode')
+                ) {
                     // skip this module entirely
-                    // continue;
+                    // use `return false` because we're in a self-executing anonymous function
                     return false;
                 }
 
+                //
                 // build and inject our settings tab
+                //
 
                 var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
@@ -64,11 +69,7 @@ Toolbox = {
                         continue;
                     }
 
-                    // if (options.hidden) {
-                    //     // don't show hidden settings
-                    //     continue;
-                    // }
-
+                    // hide beta stuff unless beta mode enabled
                     if (options.hasOwnProperty("betamode")
                         && !Toolbox.utils.getSetting('Utils', 'betaMode', false)
                         && options["betamode"]
@@ -77,6 +78,7 @@ Toolbox = {
                         continue;
                     }
 
+                    // hide hidden settings, ofc
                     if (options.hasOwnProperty("hidden")
                         && options["hidden"]
                     ) {
@@ -84,7 +86,7 @@ Toolbox = {
                         continue;
                     }
 
-
+                    // blank slate
                     var $setting = $('<p></p>');
 
                     // automagical handling of input ypes
@@ -111,6 +113,7 @@ Toolbox = {
                     $settings.append($setting);
                 }
 
+                // attach tab and content
                 $('.tb-settings .tb-window-tabs').append($tab);
                 $('.tb-settings .tb-window-content').append($settings);
 
@@ -170,17 +173,19 @@ Toolbox.TBModule = function (name, version) {
     // PUBLIC: settings interface
     this.setting = function (name, value) {
         // are we setting or getting?
-        if (value !== undefined) {
+        if (typeof value !== "undefined") {
             // setting
             return Toolbox.utils.setSetting(this.shortname, name, value);
         } else {
             // getting
             // do we have a default?
-            if (this.settings.hasOwnProperty(name)) {
+            if (this.settings.hasOwnProperty(name)
+                && this.settings[name].hasOwnProperty("default")
+            ) {
                 // we know what the default should be
                 return Toolbox.utils.getSetting(this.shortname, name, this.settings[name]["default"])
             } else {
-                // getSetting defaults to null for default value
+                // getSetting defaults to null for default value, no need to pass it explicitly
                 return Toolbox.utils.getSetting(this.shortname, name);
             }
         }

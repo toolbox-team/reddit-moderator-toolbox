@@ -76,7 +76,6 @@
 
     // Module settings.
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
-        mbEnabled = TBUtils.getSetting('ModButton', 'enabled', true),
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
         historyButtonEnabled = TBUtils.getSetting('HistoryButton', 'enabled', true),
@@ -437,9 +436,6 @@
                 <label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="mbEnabled" ' + ((mbEnabled) ? "checked" : "") + '> Enable Mod Button</label>\
-            </p>\
-            <p>\
                 <label><input type="checkbox" id="rrEnabled" ' + ((rrEnabled) ? "checked" : "") + '> Enable Removal Reasons</label>\
             </p>\
             <p>\
@@ -702,6 +698,7 @@
     // Open the settings
     $('body').on('click', '.tb-toolbarsettings', function () {
         showSettings();
+        Toolbox.injectSettings();
     });
 
     // change tabs 
@@ -823,7 +820,6 @@
         
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
-        TBUtils.setSetting('ModButton', 'enabled', $("#mbEnabled").prop('checked'));
         TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('HistoryButton', 'enabled', $("#historyButtonEnabled").prop('checked'));

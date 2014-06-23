@@ -33,7 +33,8 @@
 				"storage.js", 
 				"tbui.js", 
 				"jquery-plugins.js", 
-				"tbutils.js", 
+				"tbutils.js",
+				"tbobject.js", // goes before any modules
 				"notifier.js", 
 				"domaintagger.js", 
 				"usernotes.js", 
@@ -49,7 +50,8 @@
 				"historybutton.js", 
 				"syntax.js", 
 				"frame.js",
-				"modmaillite.js"
+				"modmaillite.js",
+				"tbobjectinit.js" // this one always goes last
 			]
 		}
 	],

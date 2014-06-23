@@ -607,7 +607,7 @@
         
         if (syntaxHighlighterEnabled) {
             // Syntax highlighter selection stuff
-
+        $('body').addClass('mod-toolbox-ace');
         var editorSettings = ace.edit("syntax_setting_css");
         editorSettings.setTheme("ace/theme/"+selectedTheme);
         editorSettings.getSession().setMode("ace/mode/css");

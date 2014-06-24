@@ -1,7 +1,9 @@
-(function modbutton() {
-    if (!TBUtils.logged || !TBUtils.getSetting('ModButton', 'enabled', true)) return;
-    $.log('Loading Mod Button Module');
- 
+// @copyright 2014 Toolbox Devs, dakta
+
+var modButton = new TB.Module('Mod Button');
+
+modButton.init = function init() {
+
     var buttonName = 'mod',
         saveButton = 'Save',
         cancelButton = 'Close';
@@ -680,4 +682,7 @@
         // $popup.find('.mod-popup-tab-flair').hide();
         // $popup.find('.mod-popup-tab-role').show();
     });
-})();
+};
+
+TB.register_module(modButton);
+

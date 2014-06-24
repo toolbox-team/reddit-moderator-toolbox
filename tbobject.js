@@ -4,15 +4,17 @@ TB = {
     utils: TBUtils,
 
     modules: {},
+    moduleList: [],
 
     register_module: function(module) {
+        this.moduleList.push(module.shortname);
         this.modules[module.shortname] = module;
     },
 
     init: function () {
         // call every module's init() method on page load
-        for (m in this.modules) {
-            var module = this.modules[m];
+        for (var i=0; i < this.moduleList.length; i++) {
+            var module = this.modules[this.moduleList[i]];
 
             // Don't do anything with beta modules unless beta mode is enabled
             // Need TB.setting() call for non-module settings
@@ -33,13 +35,16 @@ TB = {
     },
 
     injectSettings: function () {
-        for (m in this.modules) {
-            var self = this;
+        for (var i=0; i < this.moduleList.length; i++) {
+            var idx = i,
+                self = this;
+
             (function () {
                 // wrap each iteration in a self-executing anonymous function, to preserve scope for bindFirst()
                 // otherwise, we get the bindFirst callback having `var module` refer to the last time it was set
                 // becausde we're in for loop not a special scope, d'oh.
-                var module = self.modules[m];
+                var module = self.modules[self.moduleList[idx]];
+                console.log(self.moduleList[idx]);
 
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
@@ -59,8 +64,9 @@ TB = {
                 var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
-                for (setting in module.settings) {
-                    var options = module.settings[setting];
+                for (var i=0; i < module.settingsList.length; i++) {
+                    var setting = module.settingsList[i],
+                        options = module.settings[setting];
 
                     // "enabled" will eventually be special, but for now it just shows up like any other setting
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
@@ -158,15 +164,22 @@ TB.Module = function (name) {
         return name.trim().replace(' ', '');
     });
 
-    this.settings = {
-        "enabled": { // this one serves as an example as well as the absolute minimum setting that every module has
+    this.settings = {};
+    this.settingsList = [];
+
+    this.register_setting = function (name, setting) {
+        this.settingsList.push(name);
+        this.settings[name] = setting;
+    };
+
+    this.register_setting(
+        "enabled", { // this one serves as an example as well as the absolute minimum setting that every module has
             "type": "boolean", 
             "default": false,
             "betamode": false, // optional
             "hidden": false, // optional
             "title": "Enable " + this.name + "."
-        }
-    };
+        });
 
     // PUBLIC: settings interface
     this.setting = function (name, value) {

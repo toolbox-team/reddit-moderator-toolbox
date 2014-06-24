@@ -119,9 +119,14 @@ TB = {
                     $settings.append($setting);
                 }
 
-                // attach tab and content
-                $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
-                $('.tb-settings .tb-window-content').append($settings);
+                if ($settings.find('input').length > 0) {
+                    // attach tab and content
+                    $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
+                    $('.tb-settings .tb-window-content').append($settings);
+                } else {
+                    // module has no settings, for now don't inject a tab
+                }
+
 
                 // we use a jQuery hack to stick this bind call at the top of the queue,
                 // so that it runs before the bind call in notifier.js

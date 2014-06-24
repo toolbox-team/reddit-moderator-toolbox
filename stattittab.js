@@ -2,7 +2,7 @@
 
 var stattitTab = new TB.Module('Stattit Tab');
     
-stattitTab.getSectionFromUrl = function(url) {
+stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
     var matches = regex.exec(url);
     
@@ -13,7 +13,7 @@ stattitTab.getSectionFromUrl = function(url) {
     }
 };
     
-stattitTab.init = function() {
+stattitTab.init = function init() {
     var page = this.getSectionFromUrl(window.location.href);
         
     if(page == null) {

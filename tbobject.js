@@ -6,12 +6,12 @@ TB = {
     modules: {},
     moduleList: [],
 
-    register_module: function(module) {
+    register_module: function register_module(module) {
         this.moduleList.push(module.shortname);
         this.modules[module.shortname] = module;
     },
 
-    init: function () {
+    init: function init() {
         // call every module's init() method on page load
         for (var i=0; i < this.moduleList.length; i++) {
             var module = this.modules[this.moduleList[i]];
@@ -28,13 +28,14 @@ TB = {
 
             // lock 'n load
             if (module.setting('enabled')) {
+                $.log('Loading ' + module.name + ' module.');
                 module.init();
             }
 
         }
     },
 
-    injectSettings: function () {
+    injectSettings: function injectSettings() {
         for (var i=0; i < this.moduleList.length; i++) {
             var idx = i,
                 self = this;
@@ -156,7 +157,7 @@ TB = {
 };
 
 // Prototype for all Toolbox modules
-TB.Module = function (name) {
+TB.Module = function Module(name) {
     // PUBLIC: Module Metadata
     this.name = name;
     this.__defineGetter__('shortname', function () {
@@ -167,7 +168,7 @@ TB.Module = function (name) {
     this.settings = {};
     this.settingsList = [];
 
-    this.register_setting = function (name, setting) {
+    this.register_setting = function register_setting(name, setting) {
         this.settingsList.push(name);
         this.settings[name] = setting;
     };
@@ -182,7 +183,7 @@ TB.Module = function (name) {
         });
 
     // PUBLIC: settings interface
-    this.setting = function (name, value) {
+    this.setting = function setting(name, value) {
         // are we setting or getting?
         if (typeof value !== "undefined") {
             // setting
@@ -203,7 +204,7 @@ TB.Module = function (name) {
     };
 
     // PUBLIC: placeholder init(), just in case
-    this.init = function () {
+    this.init = function init() {
         // pass
     };
 }

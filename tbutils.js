@@ -200,6 +200,36 @@
         return typeInfo;
     };
 
+    
+
+    // convert unix epoch timestamps to ISO format
+    TBUtils.timeConverterISO = function(UNIX_timestamp) {
+        var a = new Date(UNIX_timestamp * 1000);
+        var year = a.getFullYear();
+        var month = ('0' + (a.getUTCMonth() + 1)).slice(-2);
+        var date = ('0' + a.getUTCDate()).slice(-2);
+        var hour = ('0' + a.getUTCHours()).slice(-2);
+        var min = ('0' + a.getUTCMinutes()).slice(-2);
+        var sec = ('0' + a.getUTCSeconds()).slice(-2);
+        var time = year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
+        return time;
+
+    }
+
+    // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
+    TBUtils.timeConverterRead = function(UNIX_timestamp) {
+        var a = new Date(UNIX_timestamp * 1000);
+        var year = a.getFullYear();
+        var month = ('0' + (a.getUTCMonth() + 1)).slice(-2);
+        var date = ('0' + a.getUTCDate()).slice(-2);
+        var hour = ('0' + a.getUTCHours()).slice(-2);
+        var min = ('0' + a.getUTCMinutes()).slice(-2);
+        var sec = ('0' + a.getUTCSeconds()).slice(-2);
+        var time = date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
+        return time;
+
+
+    }
 	
 	TBUtils.longLoadSpinner = function (createOrDestroy) {
 		if (createOrDestroy !== undefined) {
@@ -389,6 +419,14 @@
         return arr.sort(function (a, b) {
             if (a.toLowerCase() < b.toLowerCase()) return -1;
             if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        });
+    };
+    
+    TBUtils.saneSortAs = function (arr) {
+        return arr.sort(function (a, b) {
+            if (a.toLowerCase() > b.toLowerCase()) return -1;
+            if (a.toLowerCase() < b.toLowerCase()) return 1;
             return 0;
         });
     };

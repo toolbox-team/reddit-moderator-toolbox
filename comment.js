@@ -23,9 +23,6 @@
         spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
         hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false);
 
-
-
-
     $('body').on('click', '#tb-toggle-removed', function () {
         if ($('.tb-comment-spam').is(':visible')) {
             $('.tb-comment-spam').hide();
@@ -132,6 +129,155 @@
 
 
 
+$(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
+    $("body").on("click", ".loadFlat", function () {
+        var flatListing = {},
+        idListing = [];
 
+        function parseComments(object) {
+            switch (object.kind) {
+                case "Listing":
+                    for (var i = 0; i < object.data.children.length; i++) {
+
+                        parseComments(object.data.children[i]);
+                    }
+                    break;
+                case "t1":
+                    flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
+                    idListing.push(object.data.id);
+
+                    // if we have replies
+                    if (flatListing[object.data.id].hasOwnProperty('replies') && flatListing[object.data.id].replies && typeof flatListing[object.data.id].replies === "object") {
+                        delete flatListing[object.data.id].replies; // remove them from the flat object
+                        parseComments(object.data.replies); // parse them too
+                    }
+                    break;
+                default:
+
+                    break;
+            }
+
+        }
+        var htmlCommentView = '';
+        var fullId = $('.thing.link').attr('data-fullname');
+        var smallId = fullId.substring(3);
+
+        var siteTable = "#siteTable_" + fullId;
+        $(siteTable).empty();
+        TBUtils.longLoadSpinner(true);
+
+
+        var jsonurl = $('.entry a.comments').attr('href');
+
+        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
+            parseComments(data[1]);
+            idListing = TBUtils.saneSortAs(idListing);
+            var linkAuthor = data[0].data.children[0].data.author,
+                threadPermalink = data[0].data.children[0].data.permalink;
+
+            $.each(idListing, function (index, value) {
+
+                var approvedBy = flatListing[value].approved_by,
+                    author = flatListing[value].author,
+                    authorFlairCssClass = flatListing[value].author_flair_css_class,
+                    authorFlairText = flatListing[value].author_flair_text,
+                    bannedBy = flatListing[value].banned_by,
+                    bodyHtml = flatListing[value].body_html,
+                    createdUTC = flatListing[value].created_utc,
+                    distinguished = flatListing[value].distinguished,
+                    commentID = flatListing[value].id,
+                    linkId = flatListing[value].link_id,
+                    name = flatListing[value].name,
+                    numReports = flatListing[value].num_reports,
+                    parentId = flatListing[value].parent_id,
+                    score = flatListing[value].score,
+                    scoreHidden = flatListing[value].score_hidden,
+                    subreddit = flatListing[value].subreddit;
+
+                var authorClass = 'author';
+                if (distinguished === 'moderator') {
+                    authorClass = authorClass + ' moderator';
+                }
+
+                if (linkAuthor === author) {
+                    authorClass = authorClass + ' submitter';
+                }
+                createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
+
+                permaLinkComment = threadPermalink + commentID;
+
+
+                var thingClasses = name;
+
+                if (bannedBy) {
+
+                    bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
+                    thingClasses = thingClasses + ' spam';
+                } else {
+                    bannedBy = '';
+                }
+
+                var modButtons = '';
+                if ($('body').hasClass('moderator')) { 
+                modButtons = '\
+				<li>\
+                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                </li>\
+				<li>\
+                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                </li>\
+                ';
+                }
+                
+                htmlComment = '\
+<div class="thing comment id-' + thingClasses + '" onclick="click_thing(this)" data-fullname="' + name + '">\
+	<div class="entry mod-button" subreddit="' + subreddit + '">\
+		<div class="noncollapsed">\
+			<p class="tagline">\
+				<a href="http://www.reddit.com/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
+				<span class="score">' + score + ' points</span>\
+				<time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
+			</p>\
+			<div class="usertext-body">\
+			' + TBUtils.htmlDecode(bodyHtml) + '\
+			</div>\
+			<ul class="flat-list buttons">\
+				<li class="first">\
+                    <a href="' + permaLinkComment + '" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+                </li>\
+				<li>\
+                    <a href="' + permaLinkComment + '/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+                </li> \
+				<li>\
+                    <a href="' + threadPermalink + '" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+                </li> \
+                ' + bannedBy + '\
+                ' + modButtons + '\
+				<li>\
+                    <a href="javascript:;" class="global-mod-button">mod</a>\
+                </li>\
+				<li>\
+                    <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
+			</ul>\
+		</div>\
+	</div>\
+	<div class="child"></div>\
+</div>';
+
+
+                htmlCommentView = htmlCommentView + htmlComment;
+            });
+
+            TBUtils.longLoadSpinner(false);
+
+            $(siteTable).append(htmlCommentView);
+
+            $("time.timeago").timeago();
+
+        });
+
+
+
+    });
 
 })();

@@ -113,7 +113,7 @@ TB = {
                 }
 
                 // attach tab and content
-                $('.tb-settings .tb-window-tabs').append($tab);
+                $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
                 $('.tb-settings .tb-window-content').append($settings);
 
                 // we use a jQuery hack to stick this bind call at the top of the queue,

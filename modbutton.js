@@ -2,57 +2,144 @@
 
 var modButton = new TB.Module('Mod Button');
 
-modButton.init = function init() {
+modButton.register_setting(
+    "sublist", {
+        "type": "list", 
+        "default": [],
+        "betamode": false,
+        "hidden": false,
+        "title": "Saved subs (for quick access)."
+    });
+modButton.register_setting(
+    "rememberlastaction", {
+        "type": "boolean", 
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Remember last action."
+    });
+modButton.register_setting(
+    "lastaction", {
+        "type": "text",
+        "default": "ban",
+        "betamode": false,
+        "hidden": true,
+    });
+modButton.register_setting(
+    "globalbutton", {
+        "type": "boolean", 
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Enable Global Action button."
+    });
 
-    var buttonName = 'mod',
-        saveButton = 'Save',
-        cancelButton = 'Close';
+
+// Add mod button to all users
+modButton.processThing = function processThing(thing) {
+    if (!$(thing).hasClass('mod-button')) {
+        // Add the class so we don't add buttons twice.
+        $(thing).addClass('mod-button');
+
+        // Defer info gathering until button is clicked.
+        $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
+    }
+}
+
+// need this for RES NER support
+modButton.run = function run() {
+    // do it differently on the about mod page.
+    if (TB.utils.isEditUserPage) {
+
+        $('span.user').each(function () {
+            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></span>');
+        });
+
+        return;
+    }
+
+    // Not a mod, don't bother.
+    if (TB.utils.mySubs.length < 1) {
+        return;
+    }
+
+    var $things = $('div.thing .entry:not(.mod-button)');
+    TB.utils.forEachChunked($things, 15, 500, modButton.processThing);
+
+    // WIP selector for adding modbutton for #207
+    // lifted from RES, with modifications. thanks /u/honestbleeps
+    // $('div.md a[href^="/u/"]:not([href*="/m/"]), div.md a[href*="reddit.com/u/"]:not([href*="/m/"]), div.wiki-page-content .author');
+};
+
+/**
+ *  updates the current savedsubs' listings in the mod button
+ */
+modButton.updateSavedSubs = function updateSavedSubs() {
+    //
+    // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
+    //
+    var $popups = $('body').find('.mod-popup'),
+        $savedSubsLists = $popups.find('.saved-subs');
+
+    // clear out the current stuff
+    $popups.find('.add-dropdown').find('option').remove();
+    $popups.find('.remove-dropdown').find('option').remove();
+    $savedSubsLists.html('');
+
+    // add our saved subs to the "remove saved subs" dropdown on the setting tab
+    // and to the saved subs savedSubsList on the role tab
+    $popups.each(function () {
+        var $popup = $(this),
+            $savedSubsList = $popup.find('.saved-subs'),
+            currentSub = $popup.find('.subreddit').text();
+
+        $.each(modButton.savedSubs, function (i, subreddit) {
+            // only subs we moderate
+            // and not the current sub
+            if ($.inArray(subreddit, TB.utils.mySubs) != -1
+                && subreddit != currentSub
+            ) {
+                $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
+                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
+            }
+            $('.remove-dropdown')
+                .append($('<option>', {
+                        value: this
+                    })
+                    .text('/r/' + this));
+        });
+    });
+    
+    // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
+    $.each(TB.utils.mySubs, function (i, subreddit) {
+        $popups.find('.add-dropdown')
+            .append($('<option>', {
+                    value: subreddit
+                })
+                .text('/r/' + subreddit));
+        $popups.find('select.' + modButton.OTHER)
+            .append($('<option>', {
+                    value: subreddit
+                })
+                .text('/r/' + subreddit));
+    });
+}
+
+modButton.init = function init() {
+    modButton.buttonName = 'mod';
+    modButton.saveButton = 'Save';
+    modButton.OTHER = 'other-sub';
+
+    modButton.savedSubs = modButton.setting('sublist');
+
+    var rememberLastAction = modButton.setting('rememberlastaction'),
+        showglobal = modButton.setting('globalbutton');
  
-    /////// Don't edit beyond this line. ///////
-    var OTHER = 'other-sub',
-        savedSubs = TBUtils.getSetting('ModButton', 'sublist', []),
-        rememberLastAction = TBUtils.getSetting('ModButton', 'rememberlastaction', false),
-        showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false);
- 
-    TBUtils.getModSubs(function () {
-        savedSubs = TBUtils.saneSort(savedSubs);
-        run();
+    TB.utils.getModSubs(function () {
+        modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
+        modButton.run();
     });
  
-    function run() {
-        // do it differently on the about mod page.
-        if (TBUtils.isEditUserPage) {
- 
-            $('span.user').each(function () {
-                $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + buttonName + '</a></span>');
-            });
- 
-            return;
-        }
- 
-        // Not a mod, don't bother.
-        if (TBUtils.mySubs.length < 1) {
-            return;
-        }
- 
-        var $things = $('div.thing .entry:not(.mod-button)');
-        TBUtils.forEachChunked($things, 15, 500, processThing);
-
-        // WIP selector for adding modbutton for #207
-        // lifted from RES, with modifications. thanks /u/honestbleeps
-        // $('div.md a[href^="/u/"]:not([href*="/m/"]), div.md a[href*="reddit.com/u/"]:not([href*="/m/"]), div.wiki-page-content .author');
-    }
- 
-    // Add mod button to all users
-    function processThing(thing) {
-        if (!$(thing).hasClass('mod-button')) {
-            // Add the class so we don't add buttons twice.
-            $(thing).addClass('mod-button');
- 
-            // Defer info gathering until button is clicked.
-            $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + buttonName + '</a></li>');
-        }
-    }
 
     // Popup HTML generator
     function toolboxPopup(title, tabs, meta) {
@@ -114,7 +201,7 @@ modButton.init = function init() {
 
     // NER support.
     window.addEventListener("TBNewThings", function () {
-        run();
+        modButton.run();
     });
 
 
@@ -123,18 +210,20 @@ modButton.init = function init() {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
  
-        var display = (savedSubs.length < 1) ? 'none' : '',
-            lastaction = TBUtils.getSetting('ModButton', 'lastaction', 'ban'),
-            info = TBUtils.getThingInfo(this, true),
+        var display = (modButton.savedSubs.length < 1) ? 'none' : '',
+            lastaction = modButton.setting('lastaction'),
+            info = TB.utils.getThingInfo(this, true),
             subreddit = info.subreddit,
             user = info.user,
             thing_id = info.id;
 
         //$.log('modbutton ' + subreddit, true);
  
+        // no user?
         if (!user) {
             $(benbutton).text('error');
             $(benbutton).css('color', 'red');
+            // abort
             return;
         }
  
@@ -158,8 +247,8 @@ modButton.init = function init() {
                         <div class="saved-subs">\
                         </div>\
                         <div class="other-subs">\
-                            <input type="checkbox" class="action-sub ' + OTHER + '-checkbox name="action-sub" value="' + OTHER + '">\
-                            <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select>\
+                            <input type="checkbox" class="action-sub ' + modButton.OTHER + '-checkbox name="action-sub" value="' + modButton.OTHER + '">\
+                            <select class="' + modButton.OTHER + '" for="action-' + modButton.OTHER + '"><option value="' + modButton.OTHER + '">(select subreddit)</option></select>\
                         </div>\
                         <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)"></input></div>',
                     footer: '\
@@ -172,7 +261,7 @@ modButton.init = function init() {
                             <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                             <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                         </select>\
-                        <button class="save">' + saveButton + '</button>\
+                        <button class="save">' + modButton.saveButton + '</button>\
                         <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
@@ -231,7 +320,7 @@ modButton.init = function init() {
             $popup.find('.mod-popup-tabs .nuke_comment_chain').remove();
         }
  
-        if (TBUtils.isModmail || TBUtils.isModpage) {
+        if (TB.utils.isModmail || TB.utils.isModpage) {
             // Nothing to nuke in mod mail or on mod pages.
             $popup.find('.nuke_comment_chain').remove();
         }
@@ -288,11 +377,11 @@ modButton.init = function init() {
         }
  
         // render the saved subs lists
-        updateSavedSubs();
+        modButton.updateSavedSubs();
   
         // custom sub changed.
-        $popup.find('select.' + OTHER).change(function () {
-            $popup.find('.' + OTHER + '-checkbox').prop('checked', ($(this).val() !== OTHER));
+        $popup.find('select.' + modButton.OTHER).change(function () {
+            $popup.find('.' + modButton.OTHER + '-checkbox').prop('checked', ($(this).val() !== modButton.OTHER));
         });
  
         // show/hide ban reason text feild.
@@ -304,9 +393,9 @@ modButton.init = function init() {
                 $banNote.hide();
             }
         });
- 
+  
         // reset button name.
-        $(benbutton).text(buttonName);
+        $(benbutton).text(modButton.buttonName);
  
         return false;
     });
@@ -325,7 +414,7 @@ modButton.init = function init() {
             subreddits = [],
             user = $popup.find('.user').text();
 
-        TBUtils.setSetting('ModButton', 'lastaction', actionName);
+        modButton.setting('lastaction', actionName);
  
         // Check dem values.
         if (!api) return $status.text('error, no action selected');
@@ -334,11 +423,11 @@ modButton.init = function init() {
 
             // Get dem ban subs.
             $popup.find('.action-sub:checkbox:checked').each(function () {
-                if ($(this).val() !== OTHER) {
+                if ($(this).val() !== modButton.OTHER) {
                     subreddits.push($(this).val());
                 } else {
-                    var subname = $('.' + OTHER + ' option:selected').val();
-                    if (subname !== OTHER) {
+                    var subname = $('.' + modButton.OTHER + ' option:selected').val();
+                    if (subname !== modButton.OTHER) {
                         subreddits.push(subname);
                         
                     }
@@ -364,7 +453,7 @@ modButton.init = function init() {
         } else {
             var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");
             if (confirmban) {
-                massAction(TBUtils.mySubs);
+                massAction(TB.utils.mySubs);
             } else {
                 return;
             }
@@ -373,7 +462,7 @@ modButton.init = function init() {
         var $timer;
         function completeCheck(failedSubs) {
             $timer.stop();
-            TBUtils.pageOverlay(null, false);
+            TB.utils.pageOverlay(null, false);
             if (failedSubs.length > 0) {
                 var retry = confirm(failedSubs.length + " failed.  Would you like to retry them?");
                 if (retry) {
@@ -393,7 +482,7 @@ modButton.init = function init() {
         function rateLimit(seconds) {
             var delay = seconds * 1000;
             $status.text("API ratelimit sleeping for: " + seconds + " seconds");
-            TBUtils.pageOverlay("API ratelimit sleeping for: " + seconds + " seconds");
+            TB.utils.pageOverlay("API ratelimit sleeping for: " + seconds + " seconds");
             setTimeout(function () {
                 $.log('resuming');
                 $timer.play();
@@ -406,15 +495,15 @@ modButton.init = function init() {
             var actionCount = 0;
 
             // Ban dem trolls.
-            TBUtils.pageOverlay("", true);
+            TB.utils.pageOverlay("", true);
             $timer = $.timer(function () {
                 var sub = $(subs).get(actionCount);
 
-                TBUtils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
+                TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
 
                 $.log('banning from: ' + sub);
                 $.post('/api/' + api, {
-                    uh: TBUtils.modhash,
+                    uh: TB.utils.modhash,
                     type: action,
                     name: user,
                     r: sub,
@@ -492,7 +581,7 @@ modButton.init = function init() {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
-                uh: TBUtils.modhash
+                uh: TB.utils.modhash
             })
             
             .error(function (err) {
@@ -516,7 +605,7 @@ modButton.init = function init() {
             text: text,
             css_class: css_class,
             r: subreddit,
-            uh: TBUtils.modhash
+            uh: TB.utils.modhash
         })
         .done(function () {
             $status.text("saved user flair");
@@ -557,64 +646,11 @@ modButton.init = function init() {
     //     $popup.find('.mod-popup-tab-role').hide();
     // });
     
-    /**
-     *  updates the current savedsubs' listings in the mod button
-     */
-    function updateSavedSubs() {
-        //
-        // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
-        //
-        var $popups = $('body').find('.mod-popup'),
-            $savedSubsLists = $popups.find('.saved-subs');
-
-        // clear out the current stuff
-        $popups.find('.add-dropdown').find('option').remove();
-        $popups.find('.remove-dropdown').find('option').remove();
-        $savedSubsLists.html('');
-
-        // add our saved subs to the "remove saved subs" dropdown on the setting tab
-        // and to the saved subs savedSubsList on the role tab
-        $popups.each(function () {
-            var $popup = $(this),
-                $savedSubsList = $popup.find('.saved-subs'),
-                currentSub = $popup.find('.subreddit').text();
-
-            $.each(savedSubs, function (i, subreddit) {
-                // only subs we moderate
-                // and not the current sub
-                if ($.inArray(subreddit, TBUtils.mySubs) != -1
-                    && subreddit != currentSub
-                ) {
-                    $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                        '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
-                }
-                $('.remove-dropdown')
-                    .append($('<option>', {
-                            value: this
-                        })
-                        .text('/r/' + this));
-            });
-        });
-        
-        // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
-        $.each(TBUtils.mySubs, function (i, subreddit) {
-            $popups.find('.add-dropdown')
-                .append($('<option>', {
-                        value: subreddit
-                    })
-                    .text('/r/' + subreddit));
-            $popups.find('select.' + OTHER)
-                .append($('<option>', {
-                        value: subreddit
-                    })
-                    .text('/r/' + subreddit));
-        });
-    }
     
     $('body').on('click', '.remove-save', function () {
         var subname = $('.remove-dropdown option:selected').val();
         
-        savedSubs.splice(savedSubs.indexOf(subname), 1);
+        modButton.savedSubs.splice(modButton.savedSubs.indexOf(subname), 1);
         $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
     });
     
@@ -622,8 +658,8 @@ modButton.init = function init() {
         var subname = $('.add-dropdown option:selected').val();
         
         // Don't add the sub twice.
-        if ($.inArray(subname, savedSubs) === -1) {
-            savedSubs.push(subname);
+        if ($.inArray(subname, modButton.savedSubs) === -1) {
+            modButton.savedSubs.push(subname);
             $('.remove-dropdown').append($('<option>', { value: subname }).text('/r/' + subname));
         }
     });
@@ -637,24 +673,24 @@ modButton.init = function init() {
         $status.text('saving settings...');
 
         // Enable/disable global ban button.
-        showglobal = TBUtils.setSetting('ModButton', 'globalbutton', $('.the-nuclear-option').is(':checked'));
+        showglobal = modButton.setting('globalbutton', $('.the-nuclear-option').is(':checked'));
 
         // Enable/disable remember last action
-        rememberLastAction = TBUtils.setSetting('ModButton', 'rememberlastaction', $('.remember-last-action').is(':checked'));
+        rememberLastAction = modButton.setting('rememberlastaction', $('.remember-last-action').is(':checked'));
 
         // show the global-button in the footer, if enabled
-        if (TBUtils.getSetting('ModButton', 'globalbutton', false)) {
+        if (modButton.setting('globalbutton')) {
             $('.mod-popup .global-button').show();
         } else {
             // disabled? Make sure it's not shown
             $('.mod-popup .global-button').hide();
         }
 
-        savedSubs = TBUtils.saneSort(savedSubs);
-        savedSubs = TBUtils.setSetting('ModButton', 'sublist', savedSubs);
+        modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
+        modButton.savedSubs = modButton.setting('sublist', modButton.savedSubs);
 
         // re-render the lists
-        updateSavedSubs();
+        modButton.updateSavedSubs();
 
         $status.text('settings saved');
 

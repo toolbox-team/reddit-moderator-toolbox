@@ -9,13 +9,12 @@
 
     if (!subreddit) return;
 
-    $.getJSON('http://www.reddit.com/r/'+ subreddit +'/wiki/toolbox.json', function(json) {
-        if (json.data.content_md)
-        {
+    $.getJSON('http://www.reddit.com/r/' + subreddit + '/wiki/toolbox.json', function (json) {
+        if (json.data.content_md) {
             config = JSON.parse(json.data.content_md);
         }
         init();
-    }).error(function() {
+    }).error(function () {
         init();
     });
 
@@ -23,7 +22,7 @@
         $(toolbox).append(configLink);
     }
 
-    $('body').on('click', '.toolbox-edit', function() {
+    $('body').on('click', '.toolbox-edit', function () {
         showSettings();
     });
 
@@ -33,8 +32,7 @@
             $.log("save succ = " + succ);
             if (!succ) {
                 $.log(err.responseText, true)
-            }
-            else {
+            } else {
                 $.log("clearing cache");
                 TBUtils.clearCache();
             }
@@ -45,12 +43,12 @@
 
         // No reasons storred in the config.  Check the CSS.
         if (!config.removalReasons || config.removalReasons.reasons.length < 1) {
-            TBUtils.getReasonsFromCSS(subreddit, function(resp) {
+            TBUtils.getReasonsFromCSS(subreddit, function (resp) {
                 if (resp) {
                     $('.reasons-notice').show();
 
                     // Save old removal reasosns when clicked.
-                    $('.update-reasons').click(function() {
+                    $('.update-reasons').click(function () {
                         config.removalReasons = resp;
 
                         postToWiki('toolbox', config, true);
@@ -65,12 +63,12 @@
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
     <div class="tb-window-wrapper" comment="the window itself">\
         <div class="tb-window-header" comment="This will contain the name of the window">\
-            Toolbox Configuration - /r/'+ subreddit +'\
+            Toolbox Configuration - /r/' + subreddit + '\
             <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;" title="Toolbox Configuration Help">?</a> - <a class="tb-close" title="Close Toolbox Configuration" href="javascript:;">✕</a></span>\
         </div>\
         <div class="tb-form">\
             <div class="tb-window-tabs">\
-                <a target="_blank" href="http://www.reddit.com/r/'+ subreddit +'/wiki/pages" >wiki page listing</a>\
+                <a target="_blank" href="http://www.reddit.com/r/' + subreddit + '/wiki/pages" >wiki page listing</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
@@ -81,7 +79,8 @@
             </div>\
             <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
                 <div class="wiki-edit-area" style="display: none;">\
-                    <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
+                    <textarea class="edit-wikidata" rows="20" cols="20" style="display: none;"></textarea><br>\
+					<div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
                 </div>\
                 <div class="reasons-notice" style="display:none;">\
                     <br><br>\
@@ -104,15 +103,15 @@
 </div>\
         ';
         $(html).appendTo('body').show();
-        $('body').css('overflow','hidden');
+        $('body').css('overflow', 'hidden');
     }
 
-    $('body').on('click', '.tb-close', function() {
+    $('body').on('click', '.tb-close', function () {
         $('.tb-settings').remove();
-        $('body').css('overflow','auto');
+        $('body').css('overflow', 'auto');
     });
 
-    $('body').on('click', '.edit-domains', function() {
+    $('body').on('click', '.edit-domains', function () {
 
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
@@ -135,12 +134,11 @@
         $(html).appendTo('body').show();
 
 
-        $(html).on('click', '.import', function() {
+        $(html).on('click', '.import', function () {
 
-            $.getJSON('http://www.reddit.com/r/'+ $('.importfrom').val() +'/wiki/toolbox.json', function(json) {
+            $.getJSON('http://www.reddit.com/r/' + $('.importfrom').val() + '/wiki/toolbox.json', function (json) {
 
-                if (json.data.content_md)
-                {
+                if (json.data.content_md) {
                     var tags = JSON.parse(json.data.content_md).domainTags;
                     if (tags) {
                         config.domainTags = tags;
@@ -151,12 +149,12 @@
             });
         });
 
-        $(html).on('click', '.cancel', function() {
+        $(html).on('click', '.cancel', function () {
             $(html).remove();
         });
     });
 
-    $('body').on('click', '.edit-reasons', function() {
+    $('body').on('click', '.edit-reasons', function () {
 
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
@@ -220,18 +218,18 @@
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
                 var label = unescape(this.text);
-                if(label == "") {
+                if (label == "") {
                     label = '<span style="color: #cecece">(no reason)</span>';
                 } else {
-                    if(label.length > 200) {
-                        label = label.substring(0,197) + "...";
+                    if (label.length > 200) {
+                        label = label.substring(0, 197) + "...";
                     }
                     label = TBUtils.htmlEncode(label);
                 }
-                $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
+                $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="' + i + '"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
             });
 
-            $('th input[type=radio]').change(function(){
+            $('th input[type=radio]').change(function () {
                 $(html).find('.save').val('save');
                 $(html).find('.delete').show();
 
@@ -244,7 +242,7 @@
         }
 
         // Do things about stuff.
-        $(html).on('click', '.save', function() {
+        $(html).on('click', '.save', function () {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
             var reasonFlairText = $("input[name=flair-text]").val();
@@ -255,7 +253,9 @@
                 config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
                 config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
             } else {
-                var reason = { text: escape(reasonText) };
+                var reason = {
+                    text: escape(reasonText)
+                };
 
                 reason.flairText = reasonFlairText;
                 reason.flairCSS = reasonFlairCSS;
@@ -269,8 +269,8 @@
                 config.removalReasons.reasons.push(reason);
             }
             postToWiki('toolbox', config, true);
-            if(TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            if (TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
             $(html).remove();
         });
@@ -287,17 +287,17 @@
             }
             postToWiki('toolbox', config, true);
             if (TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit];  // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
             $(html).remove();
         });
 
-        $(html).on('click', '.cancel', function() {
+        $(html).on('click', '.cancel', function () {
             $(html).remove();
         });
     });
 
-    $('body').on('click', '.reason-settings', function() {
+    $('body').on('click', '.reason-settings', function () {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -311,43 +311,43 @@
             <td>\
                 get reason from /r/:\
             </td><td>\
-                <input class="getfrom" type="text" value="'+ (config.removalReasons.getfrom || '') +'"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+                <input class="getfrom" type="text" value="' + (config.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
             </tr><tr>\
             <td>\
                 logsub /r/:\
             </td><td>\
-                <input class="logsub" type="text" value="'+ (config.removalReasons.logsub || '') +'"/>\
+                <input class="logsub" type="text" value="' + (config.removalReasons.logsub || '') + '"/>\
             </td>\
             </tr><tr>\
             <td>\
                pmsubject:\
             </td><td>\
-               <input class="pmsubject" type="text" value="'+ (config.removalReasons.pmsubject ||'') +'"/>\
+               <input class="pmsubject" type="text" value="' + (config.removalReasons.pmsubject || '') + '"/>\
             </td>\
             </tr><tr>\
             <td>\
                 logtitle:\
             </td><td>\
-                <input class="logtitle" type="text" value="'+ (config.removalReasons.logtitle || '') +'"/>\
+                <input class="logtitle" type="text" value="' + (config.removalReasons.logtitle || '') + '"/>\
             </td>\
             </tr><tr>\
             <td>\
                 bantitle:\
             </td><td>\
-                <input class="bantitle" type="text" value="'+ (config.removalReasons.bantitle || '') +'"/>\
+                <input class="bantitle" type="text" value="' + (config.removalReasons.bantitle || '') + '"/>\
             </td>\
             </tr><tr>\
             <td>\
                 logreason:\
             </td><td>\
-                <input class="logreason" type="text" value="'+ (config.removalReasons.logreason || '') +'"/>\
+                <input class="logreason" type="text" value="' + (config.removalReasons.logreason || '') + '"/>\
             </td>\
             </tr>\
             </table>\
                 <span>Header:</span>\
-                <p><textarea class="edit-header" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) +'</textarea></p>\
+                <p><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) + '</textarea></p>\
                 <span>Footer:</span>\
-                <p><textarea class="edit-footer" >'+ TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) +'</textarea></p>\
+                <p><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) + '</textarea></p>\
             </div>\
 \
 \
@@ -380,7 +380,7 @@
         $(html).appendTo('body').show();
 
 
-        $('.reason-setting-form').on('click', '.save', function() {
+        $('.reason-setting-form').on('click', '.save', function () {
 
 
             config.removalReasons = {
@@ -400,13 +400,13 @@
             $('.reason-setting-form').remove();
         });
 
-        $('.reason-setting-form').on('click', '.cancel', function() {
+        $('.reason-setting-form').on('click', '.cancel', function () {
             $('.reason-setting-form').remove();
         });
     });
 
-    $('body').on('click', '.tb-config-help', function() {
-        var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
+    $('body').on('click', '.tb-config-help', function () {
+        var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
         $.log(htmlcontent, true);
         var html = '\
@@ -420,7 +420,7 @@
         </style>\
         </head>\
         <body>\
-        <div class="help-content">'+htmlcontent+'</div>\
+        <div class="help-content">' + htmlcontent + '</div>\
         </body>\
         </html>\
         ';
@@ -431,41 +431,93 @@
 
 
 
-    $('body').on('click', '.edit-wiki-page', function(e) {
+    $('body').on('click', '.edit-wiki-page', function (e) {
         var page = $(e.target).attr('page'),
             textArea = $('body').find('.edit-wikidata'),
+            textAreaDiv = $('body').find('#edit-wikidata-div'),
             saveButton = $('body').find('.save-wiki-data'),
-            editArea = $('body').find('.wiki-edit-area')
-            ;
+            editArea = $('body').find('.wiki-edit-area');
 
-        // load the text area, but not the save button.
-        $(editArea).show();
-        $(textArea).val('getting wiki data...');
+        if (TBUtils.getSetting('syntaxHighlighter', 'enabled', true)) {
+            $('body').addClass('mod-toolbox-ace');
+            $(editArea).show();
+            $(textAreaDiv).show();
 
-        TBUtils.readFromWiki(subreddit, page, false, function (resp) {
-            if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                $(textArea).val('error getting wiki data.');
-                return;
+            var selectedTheme = TBUtils.getSetting('syntaxHighlighter', 'selectedTheme', 'monokai'),
+                configEditor = ace.edit('edit-wikidata-div');
+
+            configEditor.setTheme("ace/theme/" + selectedTheme);
+
+            if (page === 'automoderator') {
+                configEditor.getSession().setMode("ace/mode/yaml");
+            } else {
+                configEditor.getSession().setMode("ace/mode/json");
             }
 
-            if (resp === TBUtils.NO_WIKI_PAGE) {
-                $(textArea).val('');
+            $(textArea).val('getting wiki data...');
+            configEditor.getSession().setValue('getting wiki data...');
+
+            configEditor.getSession().on('change', function () {
+                textArea.val(configEditor.getSession().getValue());
+            });
+
+
+
+
+            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+                if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                    $(textArea).val('error getting wiki data.');
+                    configEditor.getSession().setValue('error getting wiki data.');
+                    return;
+                }
+
+                if (resp === TBUtils.NO_WIKI_PAGE) {
+                    $(textArea).val('');
+                    configEditor.getSession().setValue('');
+                    $(saveButton).show();
+                    $(saveButton).attr('page', page);
+                    return;
+                }
+
+                resp = TBUtils.unescapeJSON(resp);
+
+                // Found it, show it.
+                $(textArea).val(resp);
+                configEditor.getSession().setValue(resp);
                 $(saveButton).show();
                 $(saveButton).attr('page', page);
-                return;
-            }
+            });
+        } else {
+            // load the text area, but not the save button.
+            $(editArea).show();
+            $(textArea).show();
+            $(textArea).val('getting wiki data...');
 
-            resp = TBUtils.unescapeJSON(resp);
+            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+                if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                    $(textArea).val('error getting wiki data.');
+                    return;
+                }
 
-            // Found it, show it.
-            $(textArea).val(resp);
-            $(saveButton).show();
-            $(saveButton).attr('page', page);
-        });
+                if (resp === TBUtils.NO_WIKI_PAGE) {
+                    $(textArea).val('');
+                    $(saveButton).show();
+                    $(saveButton).attr('page', page);
+                    return;
+                }
+
+                resp = TBUtils.unescapeJSON(resp);
+
+                // Found it, show it.
+                $(textArea).val(resp);
+                $(saveButton).show();
+                $(saveButton).attr('page', page);
+            });
+        }
     });
 
 
-    $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function(e) {
+    $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function (e) {
         var button = e.target,
             editArea = $('.wiki-edit-area'),
             page = $(button).attr('page'),
@@ -474,7 +526,7 @@
             updateAM = (page === 'automoderator'),
             cancel = (e.target.className == 'cancel-wiki-data')
 
-        $(button).removeAttr('page');
+            $(button).removeAttr('page');
         $(textArea).val('');
         $(editArea).hide();
 

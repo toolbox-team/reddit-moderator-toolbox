@@ -7,7 +7,7 @@
 
     if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
     $.log('Loading Queue Tools Module');
-    
+
     // Cached data
     var notEnabled = [],
         hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
@@ -26,13 +26,13 @@
             QUEUE_URL = 'about/unmoderated/';
         }
     }
-    
+
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
     function getRemovalReasons(subreddit, callback) {
         $.log('getting config: ' + subreddit);
         var reasons = '';
-        
+
         // See if we have the reasons in the cache.
         if (TBUtils.configCache[subreddit] !== undefined) {
             reasons = TBUtils.configCache[subreddit].removalReasons;
@@ -82,7 +82,7 @@
             return;
         });
     }
-    
+
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
@@ -92,7 +92,7 @@
             viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
-            
+
         if (viewingspam && listingOrder == 'reports')
             listingOrder = 'age';
 
@@ -165,7 +165,7 @@
         if(tabmenu.length == 0)
             tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>')
         $('.tabmenu').append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
-        
+
         $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
         $('.buttons .pretty-button').attr('tabindex', '2');
 
@@ -380,7 +380,7 @@
         var expandosOpen = false;
         $('.open-expandos').on('click', function () {
 
-            
+
             if (!expandosOpen) {
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
@@ -395,7 +395,7 @@
                 });
                 expandosOpen = false;
             }
-            
+
         });
         */
 
@@ -417,7 +417,7 @@
             historyButton.init();
         }
 
-        // // Add history button to all users. 
+        // // Add history button to all users.
         // function addUserHistoryLink() {
         //     var userhistory = '<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>';
 
@@ -425,7 +425,7 @@
         // }
         // $('.thing .entry .userattrs').each(addUserHistoryLink);
 
-        // Add ban button to all users. 
+        // Add ban button to all users.
         function addUserBanLink() {
             if (!$(this).hasClass('ban-button')) {
 
@@ -582,7 +582,7 @@
         //     return false;
         // });
 
-        // User ban button pressed. 
+        // User ban button pressed.
         function postbanlog(subreddit, author, reason) {
             var data = {
                 subreddit: subreddit,
@@ -607,7 +607,7 @@
                 // Get PM subject line
                 data.subject = resp.pmsubject || 'Your {kind} was removed from {subreddit}';
 
-                // Add additional data that is found in the wiki JSON.  
+                // Add additional data that is found in the wiki JSON.
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
                 data.logreason = resp.logreason || '';
                 data.header = unescape(resp.header || '');
@@ -635,7 +635,7 @@
                     data.bantitle = data.bantitle.replace('{title}', data.title);
                     data.bantitle = data.bantitle.replace('{author}', data.author);
                     data.bantitle = data.bantitle.replace('{subreddit}', data.subreddit);
-                    
+
                     TBUtils.postLink(data.url, TBUtils.removeQuotes(data.bantitle), data.logsub, function(successful) {
                         var removalId = data.json.data.url;
                         removalId = removalId.match(/http:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
@@ -661,8 +661,8 @@
                 return;
             }
 
-            var reason = prompt("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?\n\nBan reason: (optional)", ""); 
-            if( reason != null){ 
+            var reason = prompt("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?\n\nBan reason: (optional)", "");
+            if( reason != null){
                 postbanlog(currentsub, user, reason);
                 TBUtils.banUser(user, currentsub, reason, function() {
                     alert(user + " has been banned from /r/" + currentsub);
@@ -678,11 +678,11 @@
 
         //     rtsLink.textContent = 'submitting...';
         //     rtsLink.className = '.rts-report-clicked';
-            
+
         //     //Submit to RTS
         //     var link = 'http://www.reddit.com/user/' + author,
         //         title = 'Overview for ' + author;
-            
+
         //     TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
         //         if (!successful) {
         //             rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
@@ -702,7 +702,7 @@
         //                 rtsLink.className = '';
         //                 return;
         //             }
-                        
+
 
         //             TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
         //                 if (!successful) {
@@ -771,7 +771,7 @@
         } else {
             return;
         }
-        
+
         var now = new Date().valueOf(),
             subs = {},
             delay = 0;

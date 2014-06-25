@@ -54,14 +54,14 @@
             $thread.appendTo($div).hide();
             divs.push($div);
         } else {
-            
+
             //var sel = String("." + info.subreddit + "");
             //$.log(sel)
             //document.getElementsByClassName(subreddit);
             $thread.appendTo($(document.getElementsByClassName(info.subreddit)));
             //$thread.appendTo("" + sel + "");
         }
-        
+
 
         /*
         var threadID = $(thread).attr('data-fullname'),
@@ -99,7 +99,7 @@
         lastVisited = TBUtils.getSetting('ModMailPro', 'lastvisited', now),
         visitedBuffer = TBUtils.getSetting('ModMailPro', 'visitedbuffer', -1), // I think this may be broken.
         newCount = 0,
-        collapsed = TBUtils.getSetting('ModMailPro', 'defaultcollapse', false), 
+        collapsed = TBUtils.getSetting('ModMailPro', 'defaultcollapse', false),
         expandReplies = TBUtils.getSetting('ModMailPro', 'expandreplies', false),
         noRedModmail = TBUtils.getSetting('ModMailPro', 'noredmodmail', true),
         hideInviteSpam = TBUtils.getSetting('ModMailPro', 'hideinvitespam', false),
@@ -119,7 +119,7 @@
         collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
-        
+
     // TODO: promote to TBUtils.
     var selectedCSS = {
         "color": "orangered",
@@ -190,10 +190,10 @@
         // Hide invite spam.
         if (hideInviteSpam && inbox != UNREAD) {
             $('.invitespam').each(function () {
-                if ($(this).hasClass('new')) { 
+                if ($(this).hasClass('new')) {
                 $(this).find('.entry').click();
                 }
-            
+
                 $(this).hide();
             });
         }
@@ -304,7 +304,7 @@
             if (collapsed) {
                 collapseall();
             }
-            
+
             // If we're on the unread page, don't filter anything.
             if (unreadPage) {
                 var entries = $('.entry');
@@ -357,7 +357,7 @@
             }
             $('<span class="message-count">' + count + ' </span>' + spacer).appendTo(infoArea);
 
-            // Only hide invite spam with no replies.    
+            // Only hide invite spam with no replies.
         } else if (hideInviteSpam) {
             var title = $(thread).find('.message-title').text().trim();
             if (title === INVITE || title === ADDED) {
@@ -568,7 +568,7 @@
 
 (function realtimemail() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
-    
+
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/)) return;
 
@@ -715,7 +715,7 @@
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
         switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
-        
+
 
     TBUtils.getModSubs(function () {
         populateSwitch();
@@ -752,7 +752,7 @@
         firstrun = TBUtils.getSetting('ModMailPro', 'firstrun', true),
         menulist = $('.menuarea ul.flat-list:first');
 
-    // Create setting elements 
+    // Create setting elements
     var settingsDiv = $('<div class="mmp-settings">'),
         separator = '<span style="color:gray"> | </span>',
         settingsToggle = $('<li><a style="color:gray" href="javascript:;" class="settings-link">' + String.fromCharCode(9660) + '</a><label class="first-run" style="display: none;">\

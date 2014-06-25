@@ -1,6 +1,6 @@
 var historyButton = new TB.Module('History Button');
 
-// Add history button to all users. 
+// Add history button to all users.
 historyButton.addUserHistoryLink = function() {
     $(this).append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
 };
@@ -157,11 +157,11 @@ historyButton.init = function() {
 
         rtsLink.textContent = 'submitting...';
         rtsLink.className = '.rts-report-clicked';
-        
+
         //Submit to RTS
         var link = 'http://www.reddit.com/user/' + author,
             title = 'Overview for ' + author;
-        
+
         TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
                 rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
@@ -181,7 +181,7 @@ historyButton.init = function() {
                     rtsLink.className = '';
                     return;
                 }
-                    
+
 
                 TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                     if (!successful) {

@@ -7,11 +7,11 @@
     TBUtils.getModSubs(function () {
         run();
     });
-    
+
     // Compatibility with Sweden
     var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/;
     var MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/;
-    
+
     var ConstManager = function(init_pools) {
         return {
             _pools: init_pools,
@@ -28,14 +28,14 @@
             }
         };
     }
-    
+
     function getUser(users, name) {
         if(users.hasOwnProperty(name)) {
             return users[name];
         }
         return undefined;
     }
-    
+
     function squashPermalink(permalink) {
         var linkMatches = permalink.match(COMMENTS_LINK_RE);
         var modMailMatches = permalink.match(MODMAIL_LINK_RE);
@@ -50,11 +50,11 @@
             return "";
         }
     }
-    
+
     function unsquashPermalink(subreddit, permalink) {
         var linkParams = permalink.split(/,/g);
         var link = "http://www.reddit.com/r/" + subreddit + "/";
-        
+
         if(linkParams[0] == "l") {
             link += "comments/" + linkParams[1] + "/";
             if(linkParams.length > 2)
@@ -137,14 +137,14 @@
                 TBUtils.noNotes.push(currsub);
                 return;
             }
-            
+
             resp = convertNotes(resp);
-            
+
             TBUtils.noteCache[currsub] = resp;
             setNotes(resp, currsub);
         });
     }
-    
+
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes) {
         function decodeNoteText(notes) {
@@ -156,7 +156,7 @@
             });
             return notes;
         }
-        
+
         function keyOnUsername(notes) {
             // we have to rebuild .users to be an object keyed on .name
             var users = {};
@@ -168,13 +168,13 @@
             notes.users = users;
             return notes;
         }
-        
+
         if(notes.ver <= 2) {
         var newUsers = [];
         var corruptedNotes = false;
             //TODO: v2 support drops next version
             notes.users.forEach(function(user) {
-                if(!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) { 
+                if(!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) {
                     corruptedNotes = true;
                 } else {
                 user.notes.forEach(function(note) {
@@ -196,10 +196,10 @@
         } else if(notes.ver == 4) {
             return inflateNotes(notes);
         }
-        
+
         //TODO: throw an error if unrecognized version?
     }
-    
+
     // Compress notes so they'll store well in the database.
     function deflateNotes(notes) {
         var deflated = {
@@ -210,9 +210,9 @@
                 warnings: []
             }
         };
-        
+
         var mgr = new ConstManager(deflated.constants);
-        
+
         $.each(notes.users, function(name, user) {
             deflated.users[name] = {
                 "ns": user.notes.map(function(note) {
@@ -226,19 +226,19 @@
                 })
             };
         });
-        
+
         return deflated;
     }
-    
+
     // Decompress notes from the database into a more useful format
     function inflateNotes(deflated) {
         var notes = {
             ver: TBUtils.notesSchema,
             users: {}
         };
-        
+
         var mgr = new ConstManager(deflated.constants);
-        
+
         $.each(deflated.users, function(name, user) {
             notes.users[name] = {
                 "name": name,
@@ -247,19 +247,19 @@
                 })
             };
         });
-        
+
         return notes;
     }
-    
+
     // Decompress notes from the database into a more useful format (MIGRATION ONLY)
     function inflateNotesV3(deflated) {
         var notes = {
             ver: 3,
             users: []
         };
-        
+
         var mgr = new ConstManager(deflated.constants);
-        
+
         notes.users = deflated.users.map(function(user) {
             return {
                 "name": mgr.get("users", user.u),
@@ -270,10 +270,10 @@
                 })
             };
         });
-        
+
         return notes;
     }
-    
+
     // Inflates a single note
     function inflateNote(mgr, note) {
         return {
@@ -284,17 +284,17 @@
             "type": mgr.get("warnings", note.w),
         };
     }
-    
+
     function setNotes(notes, subreddit) {
         //$.log("notes = " + notes);
         //$.log("notes.ver = " + notes.ver);
-        
+
         // schema check.
         if (notes.ver > TBUtils.notesSchema) {
-          
+
           // Remove the option to add notes.
           $('.usernote-span-' + subreddit).remove();
-          
+
             TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function(clicked) {
                 if (clicked) window.open("http://www.reddit.com/r/toolbox/wiki/download");
             });
@@ -307,14 +307,14 @@
 
             var u = getUser(notes.users, user);
             var usertag = $(thing).find('.add-user-tag-' + subreddit);
-            
+
             // Only happens if you delete the last note.
             if (u === undefined || u.notes.length < 1) {
                 $(usertag).css('color', '');
                 $(usertag).text('N');
                 return;
             }
-            
+
             note = u.notes[0].note;
             if (note.length > 53)
                 note = note.substring(0, 50)+"...";
@@ -324,7 +324,7 @@
             if (!type) type = 'none';
 
             $(usertag).css('color', TBUtils.getTypeInfo(type).color);
-            
+
         });
     }
 
@@ -389,16 +389,16 @@
                 TBUtils.noNotes.push(subreddit);
                 return;
             }
-            
+
             resp = convertNotes(resp);
-            
+
             TBUtils.noteCache[subreddit] = resp;
-            
+
             var u = getUser(resp.users, user);
             // User has notes
             if(u !== undefined) {
                 popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
-                
+
                 var i = 0;
                 $(u.notes).each(function () {
                     if (!this.type) this.type = 'none';
@@ -409,7 +409,7 @@
                     if (info.name) {
                         typeSpan = '<span style="color: ' + info.color + ';">[' + TBUtils.htmlEncode(info.name) + ']</span> ';
                     }
-                    
+
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
                         new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + this.note +
                         '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconClose + '" /></td></tr>');
@@ -465,7 +465,7 @@
         userNotes.notes.push(note);
 
         $(popup).remove();
-        
+
         var noteSkel = {
             "ver": TBUtils.notesSchema,
             "constants": {},
@@ -485,17 +485,17 @@
             }
 
             // if we got this far, we have valid JSON
-            
+
             notes = resp = convertNotes(resp);
 
             if (notes.corrupted) {
                 TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
             }
-            
+
             if (notes) {
                 var u = getUser(notes.users, user);
                 if(u !== undefined) {
-                    // Delete. 
+                    // Delete.
                     if (deleteNote) {
                         $(u.notes).each(function (idx) {
 
@@ -503,7 +503,7 @@
                                 u.notes.splice(idx, 1);
                             }
                         });
-                        
+
                         if(u.notes.length < 1) {
                             delete notes.users[user];
                         }
@@ -514,7 +514,7 @@
                         u.notes.unshift(note);
                         postToWiki(subreddit, notes);
                     }
-                
+
                 // Adding a note for previously unknown user
                 } else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
@@ -532,7 +532,7 @@
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
-    
+
     $('body').on('keyup', '.utagger-user-note', function (event) {
         if(event.keyCode == 13) {
             $.log("Enter pressed!", true);

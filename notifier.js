@@ -4,7 +4,7 @@
 
     $('body').addClass('mod-toolbox');
     //
-    // preload some generic variables 
+    // preload some generic variables
     //
     var checkInterval = TBUtils.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
         // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
@@ -52,15 +52,15 @@
     } else if (modNotifications == 'off') {
         TBUtils.setSetting('Notifier', 'modnotifications', false);
         modNotifications = false;
-    } 
-    
+    }
+
     if (messageNotifications == 'on') {
         TBUtils.setSetting('Notifier', 'messagenotifications', true);
         messageNotifications = true;
     } else if (messageNotifications == 'off') {
         TBUtils.setSetting('Notifier', 'messagenotifications', true);
         messageNotifications = false;
-    } 
+    }
 
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
@@ -103,7 +103,7 @@
         sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
-    
+
     // Syntax Highlight settings.
     var selectedTheme = TBUtils.getSetting('syntaxHighlighter', 'selectedTheme', 'monokai');
 
@@ -113,7 +113,7 @@
 
 
     //
-    // UI elements 
+    // UI elements
     //
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
@@ -154,10 +154,10 @@
         ');
 
     $console.appendTo('body').hide();
-    
+
     $('body').append(modbar);
 
-    // if mod counters are on we append them to the rest of the counters here. 
+    // if mod counters are on we append them to the rest of the counters here.
     if (unmoderatedOn) {
         $('#tb-bottombar').find('#tb-toolbarcounters').append('\
             <a title="unmoderated" href="http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
@@ -278,7 +278,7 @@
     // Settings menu
     function showSettings() {
 
-        // I probably should have stored "checked" instead of "on" will have to change that later. 
+        // I probably should have stored "checked" instead of "on" will have to change that later.
         var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked, hideRemovedChecked;
 
         if (messageunreadlink) {
@@ -309,7 +309,7 @@
             hideRemovedChecked = 'checked';
         }
 
-        // The window in which all settings will be showed. 
+        // The window in which all settings will be showed.
         var html = '\
             <div class="tb-page-overlay tb-settings"><div class="tb-window-wrapper">\
                 <div class="tb-window-header">\
@@ -324,7 +324,7 @@
         $(html).appendTo('body').show();
         $('body').css('overflow', 'hidden');
 
-        // Settings for the tool bar. 
+        // Settings for the tool bar.
         var htmltoolbar = '\
             <div class="tb-window-content-toolbar">\
             <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
@@ -429,7 +429,7 @@
 
         $('<a href="javascript:;" class="tb-window-content-shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
 
-        // Settings to toggle the modules 
+        // Settings to toggle the modules
         var htmlmodules = '\
             <div class="tb-window-content-modules">\
             <p>\
@@ -477,7 +477,7 @@
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
-        // Settings to toggle the modules 
+        // Settings to toggle the modules
         var htmlmodtools = '\
             <div class="tb-window-content-modtools">\
                 <p>\
@@ -541,7 +541,7 @@
             $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
         }
 
-        // Settings for the syntax highlighter 
+        // Settings for the syntax highlighter
         var htmlsyntaxHighlighter = '\
             <div class="tb-window-content-syntax">\
             <p>\
@@ -604,7 +604,7 @@
             ';
 
         $(htmlsyntaxHighlighter).appendTo('.tb-window-content').hide();
-        
+
         if (syntaxHighlighterEnabled) {
             // Syntax highlighter selection stuff
         $('body').addClass('mod-toolbox-ace');
@@ -612,7 +612,7 @@
         editorSettings.setTheme("ace/theme/"+selectedTheme);
         editorSettings.getSession().setMode("ace/mode/css");
 
-        $('#setting_theme_selector').val(selectedTheme);        
+        $('#setting_theme_selector').val(selectedTheme);
         $('body').on('change', '#setting_theme_selector', function() {
             var themeName = $(this).val();
             editorSettings.setTheme("ace/theme/"+themeName);
@@ -620,7 +620,7 @@
 
             $('<a href="javascript:;" class="tb-window-content-syntax">Syntax Highlighter</a>').appendTo('.tb-window-tabs');
         }
-        
+
         // Settings for caching
         var htmlcache = '\
             <div class="tb-window-content-cache">\
@@ -676,7 +676,7 @@
     $('body').on('click', '.tb-settings-import, .tb-settings-export', function (e) {
         var sub = $("input[name=settingssub]").val();
         if (!sub) return;
-        
+
         // Just to be safe.
         sub = sub.replace('/r/', '').replace('/', '');
 
@@ -701,7 +701,7 @@
         TB.injectSettings();
     });
 
-    // change tabs 
+    // change tabs
     $('body').on('click', '.tb-window-tabs a', function () {
         var tab = $(this).attr('class');
         $('.tb-help-main').attr('currentpage', tab);
@@ -714,14 +714,14 @@
         $(this).closest('.tb-window-content-shortcuts-tr').remove();
     });
 
-    // add a shortcut 
+    // add a shortcut
     $('body').on('click', '.tb-add-shortcuts', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
         <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
     });
-    
-    // Save the settings 
+
+    // Save the settings
     $('body').on('click', '.tb-save', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
         if (messagenotificationssave === true) {
@@ -795,7 +795,7 @@
         TBUtils.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TBUtils.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
 
-        // Save shortcuts 
+        // Save shortcuts
         if ($('.tb-window-content-shortcuts-tr').length === 0) {
             TBUtils.setSetting('Notifier', 'shortcuts2', {});
         } else {
@@ -813,11 +813,11 @@
             TBUtils.setSetting('Notifier', 'shortcuts2', shortcuts2);
         }
 
-        // Save syntax highlighting settings   
+        // Save syntax highlighting settings
         var newThemeSelection = $('#setting_theme_selector').val();
         TBUtils.setSetting('syntaxHighlighter', 'selectedTheme', newThemeSelection);
-        
-        
+
+
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
@@ -895,11 +895,11 @@
     });
 
     //
-    // Counters and notifications 
+    // Counters and notifications
     //
 
     // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
-    // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab. 
+    // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
     if (TBUtils.isModmailUnread || TBUtils.isModmail) {
         $.log('clearing all unread stuff');
 
@@ -930,7 +930,7 @@
 
         // Update now.
         now = new Date().getTime();
-            
+
 
         // Update counters.
         unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0);
@@ -938,7 +938,7 @@
         unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0);
         modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
 
-        // 
+        //
         // Update methods
         //
 
@@ -1012,7 +1012,7 @@
         //
         // Messages
         //
-        // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes: 
+        // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes:
         // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
 
         function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
@@ -1032,8 +1032,8 @@
             if (messageNotifications && count > unreadMessageCount) {
 
 
-                // set up an array in which we will load the last 100 messages that have been displayed. 
-                // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                // set up an array in which we will load the last 100 messages that have been displayed.
+                // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 var pushedunread = TBUtils.getSetting('Notifier', 'unreadpushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
@@ -1052,7 +1052,7 @@
                             }
                             messagecount++;
                             pushedunread.push(value.data.name);
-                            // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
+                            // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                         } else if ($.inArray(value.data.name, pushedunread) == -1) {
                             var subject = value.data.subject,
                                 author = value.data.author;
@@ -1093,7 +1093,7 @@
                             getcommentitle(subreddit, contexturl, context, author, body_html);
                             pushedunread.push(value.data.name);
 
-                            // if it is a personal message, or some other unknown idea(future proof!)  we use this code block        
+                            // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                         } else if ($.inArray(value.data.name, pushedunread) == -1) {
                             var author = value.data.author,
                                 body_html = TBUtils.htmlDecode(value.data.body_html),
@@ -1135,10 +1135,10 @@
             updateModqueueCount(count);
             //$.log(modNotifications);
             if (modNotifications && count > modqueueCount) {
-                // Ok let's have a look and see if there are actually new items to display 
+                // Ok let's have a look and see if there are actually new items to display
                 //$.log('test');
-                // set up an array in which we will load the last 100 items that have been displayed. 
-                // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.								
+                // set up an array in which we will load the last 100 items that have been displayed.
+                // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 var pusheditems = TBUtils.setSetting('Notifier', 'modqueuepushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
@@ -1286,39 +1286,39 @@
                 updateModMailCount(count);
                 return;
             }
-            
+
             var lastSeen = TBUtils.getSetting('Notifier', 'lastseenmodmail', -1),
                 newIdx = '',
                 title = '',
                 text = '',
                 newCount = 0;
-            
+
             for (var i = 0; i < json.data.children.length; i++) {
                 var messageTime = json.data.children[i].data.created_utc * 1000,
                     messageAuthor = json.data.children[i].data.author;
-                    
-                var isInviteSpam = false;                        
+
+                var isInviteSpam = false;
                 if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
                     isInviteSpam = true;
                     console.log("we have invite spam boys!");
                 }
-                        
+
                 if ((!lastSeen || messageTime > lastSeen) && messageAuthor !== TBUtils.logged && !isInviteSpam) {
                     newCount++;
                     if (!newIdx) { newIdx = i; }
                 }
             }
-            
+
             $.log('New messages: ', newCount);
-                
+
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 var notificationbody, messagecount = 0;
 
                 if (consolidatedMessages || newCount>5) {
 
                     $.each(json.data.children, function (i, value) {
-                        
-                        var isInviteSpam = false;                        
+
+                        var isInviteSpam = false;
                         if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
@@ -1328,7 +1328,7 @@
 
                         // Prevent changing the message body, since this loops through all messages, again.
                         // In all honesty, all of this needs to be rewriten...
-                        if (author !== TBUtils.logged && !isInviteSpam) {                        
+                        if (author !== TBUtils.logged && !isInviteSpam) {
                             messagecount++;
                             if (messagecount > newCount) return false;
 
@@ -1349,13 +1349,13 @@
                 } else {
                     $.each(json.data.children, function (i, value) {
 
-                        var isInviteSpam = false;                        
+                        var isInviteSpam = false;
                         if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
-                        
+
                         var author = value.data.author;
-                        
+
                         if (author !== TBUtils.logged && !isInviteSpam) {
                         // Sending 100 messages, since this loops through all messages, again.
                         // In all honesty, all of this needs to be rewriten...
@@ -1373,13 +1373,13 @@
 
                 }
             }
-            
+
             TBUtils.setSetting('Notifier', 'modmailcount', newCount);
             updateModMailCount(newCount);
 
         });
     }
-    // How often we check for new messages, this will later be adjustable in the settings. 
+    // How often we check for new messages, this will later be adjustable in the settings.
     if (notifierEnabled) {
         setInterval(getmessages, checkInterval);
         getmessages();

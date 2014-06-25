@@ -1110,22 +1110,22 @@ body .thing.flaired {
     word-wrap: break-word;
 }
 
-/* various reddit css fixes for mods */ 
+/* various reddit css fixes for mods */
 
-.moderator-table tr:hover, 
-.moderator-table tr:nth-child(even):hover, 
-.banned-table tr:hover, .banned-table tr:nth-child(even):hover, 
-.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover, 
-.modactionlisting .generic-table tr:hover, 
+.moderator-table tr:hover,
+.moderator-table tr:nth-child(even):hover,
+.banned-table tr:hover, .banned-table tr:nth-child(even):hover,
+.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover,
+.modactionlisting .generic-table tr:hover,
 .modactionlisting .generic-table tr:nth-child(even):hover,
-.wikirevisionlisting .generic-table tr:hover, 
+.wikirevisionlisting .generic-table tr:hover,
 .wikirevisionlisting .generic-table tr:nth-child(even):hover{
     background-color: #CEE3F8 !important;
 }
 
-.moderator-table tr:nth-child(even), 
-.banned-table tr:nth-child(even), 
-.contributor-table tr:nth-child(even), 
+.moderator-table tr:nth-child(even),
+.banned-table tr:nth-child(even),
+.contributor-table tr:nth-child(even),
 .wikirevisionlisting .generic-table tr:nth-child(even),
 .modactionlisting .generic-table tr:nth-child(even) {
     background: #F5F5F5 !important;
@@ -1334,9 +1334,9 @@ body.mod-page .thing {
     -webkit-transform: rotate(-90.0deg);
     transform: rotate(-90.0deg);
 }
-/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */ 
- 
-/* Font size fixes, probably more will be needed */ 
+/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */
+
+/* Font size fixes, probably more will be needed */
 .mod-toolbox .tb-frame-module .md {
     font-size: inherit;
     max-width: 95%;
@@ -1344,12 +1344,12 @@ body.mod-page .thing {
 .mod-toolbox .tb-frame-module .flat-list.buttons a {
     font-size: 9px;
 }
- 
+
 .mod-toolbox .tb-frame-module #siteTable {
-    font-size: 10px   
-    
+    font-size: 10px
+
 }
- 
+
 /* Make the damn thing scrollable */
 .mod-toolbox .tb-frame-module .tb-window-footer {
     position: absolute;
@@ -1362,14 +1362,14 @@ body.mod-page .thing {
     top: 60px;
     left: 0;
     right: 0;
-    bottom: 31px;      
+    bottom: 31px;
 }
- 
+
 .mod-toolbox .tb-page-overlay.tb-frame-module {
     bottom: 0px;
     height: 100%;
 }
- 
+
 .mod-toolbox .tb-frame-module .tb-window-wrapper {
     position: absolute !important;
     bottom: 10px;
@@ -1377,7 +1377,7 @@ body.mod-page .thing {
     right: 10px;
     margin-right: auto !important;
 }
- 
+
 .mod-toolbox .tb-page-overlay.tb-frame-module {
     padding: 0 !important;
 }
@@ -1401,7 +1401,7 @@ body.mod-page .thing {
     display: none;
 }
 
-.mod-toolbox #syntax_setting_css { 
+.mod-toolbox #syntax_setting_css {
 display: block;
 width: 98%;
 height: 300px;

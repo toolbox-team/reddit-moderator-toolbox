@@ -96,7 +96,7 @@
     };
 })(jQuery);
 
-    
+
 /*
     * credit: https://gist.github.com/its-florida/1290439/
     * You can now create a spinner using any of the variants below:
@@ -226,7 +226,7 @@
 }(window.jQuery);
 
 
-// fallback notifications if the browser does not support notifications or the users does not allow them. 
+// fallback notifications if the browser does not support notifications or the users does not allow them.
 // Adapted from Sticky v1.0 by Daniel Raftery
 // http://thrivingkings.com/sticky
 (function ($) {
@@ -238,7 +238,7 @@
 
     $.fn.sticky = function (note, options, callback) {
         // Default settings
-        var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right 
+        var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right
 
         var settings = {
             'speed': 'fast', // animations: fast, slow, or integer
@@ -323,7 +323,7 @@
 })(jQuery);
 
 // jquery.timer.js
-// 
+//
 // Copyright (c) 2011 Jason Chavannes <jason.chavannes@gmail.com>
 // http://jchavannes.com/jquery-timer (MIT License)
 (function ($) {
@@ -980,7 +980,7 @@
 
 
 (function ($) {
-    // [name] is the name of the event "click", "mouseover", .. 
+    // [name] is the name of the event "click", "mouseover", ..
     // same as you'd pass it to bind()
     // [fn] is the handler function
     $.fn.bindFirst = function(name, selector, fn) {

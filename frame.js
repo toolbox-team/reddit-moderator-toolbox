@@ -30,7 +30,7 @@
             unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
             modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
 
-        
+
         msgGet = (unreadMessageCount <= limit && unreadMessageCount > 0) ? unreadMessageCount : limit;
         $.log(msgGet);
         mmGet = (modmailCount <= limit && modmailCount > 0) ? modmailCount : limit;
@@ -64,8 +64,8 @@
             </div>\
         ').appendTo('body').show();
         $('body').css('overflow', 'hidden');
-        
-        switch (e.target.id) { 
+
+        switch (e.target.id) {
             case 'tb-mailCount':
                 update('http://www.reddit.com/message/inbox/?limit=' + msgGet);
                 break;

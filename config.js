@@ -1,32 +1,32 @@
 (function tbconfig() {
     if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
     $.log('Loading Configuration Module');
-                
+
     var toolbox = $('#moderation_tools').find('.content'),
         configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
         subreddit = TBUtils.post_site,
         config = TBUtils.config;
-    
+
     if (!subreddit) return;
-    
+
     $.getJSON('http://www.reddit.com/r/'+ subreddit +'/wiki/toolbox.json', function(json) {
         if (json.data.content_md)
         {
             config = JSON.parse(json.data.content_md);
-        } 
+        }
         init();
     }).error(function() {
         init();
     });
-    
-    function init() {    
+
+    function init() {
         $(toolbox).append(configLink);
     }
-    
+
     $('body').on('click', '.toolbox-edit', function() {
         showSettings();
-    });    
-    
+    });
+
     function postToWiki(page, data, isJSON, updateAM) {
         $.log("posting to wiki");
         TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
@@ -40,27 +40,27 @@
             }
         });
     }
-    
+
     function showSettings() {
-        
+
         // No reasons storred in the config.  Check the CSS.
         if (!config.removalReasons || config.removalReasons.reasons.length < 1) {
             TBUtils.getReasonsFromCSS(subreddit, function(resp) {
                 if (resp) {
                     $('.reasons-notice').show();
-                    
+
                     // Save old removal reasosns when clicked.
                     $('.update-reasons').click(function() {
                         config.removalReasons = resp;
-                        
+
                         postToWiki('toolbox', config, true);
-                        
+
                         $('.reasons-notice').hide();
                     });
                 }
             });
-        }           
-        
+        }
+
         var html = '\
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
     <div class="tb-window-wrapper" comment="the window itself">\
@@ -106,14 +106,14 @@
         $(html).appendTo('body').show();
         $('body').css('overflow','hidden');
     }
-    
+
     $('body').on('click', '.tb-close', function() {
         $('.tb-settings').remove();
         $('body').css('overflow','auto');
     });
-    
+
     $('body').on('click', '.edit-domains', function() {
-        
+
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -134,11 +134,11 @@
 ');
         $(html).appendTo('body').show();
 
-        
+
         $(html).on('click', '.import', function() {
-            
+
             $.getJSON('http://www.reddit.com/r/'+ $('.importfrom').val() +'/wiki/toolbox.json', function(json) {
-                
+
                 if (json.data.content_md)
                 {
                     var tags = JSON.parse(json.data.content_md).domainTags;
@@ -150,14 +150,14 @@
                 }
             });
         });
-        
+
         $(html).on('click', '.cancel', function() {
             $(html).remove();
-        }); 
+        });
     });
-    
+
     $('body').on('click', '.edit-reasons', function() {
-        
+
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -213,10 +213,10 @@
 </div>\
 ');
         $(html).appendTo('body').show();
-        
+
         // No reasons storred in the config, don't populate list.
         if (config.removalReasons && config.removalReasons.reasons.length > 0) {
-        
+
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
                 var label = unescape(this.text);
@@ -229,8 +229,8 @@
                     label = TBUtils.htmlEncode(label);
                 }
                 $(html).find('tbody').append('<tr class="removal-reason"><th><input type="radio" style="display:none;" reason="'+ i +'"name="reason-' + subreddit + '" id="reason-' + subreddit + '-' + i + '"></th><td><label style="padding: 1em; display: block;" for="reason-' + subreddit + '-' + (i++) + '">' + label + '</label></td></tr>');
-            }); 
-            
+            });
+
             $('th input[type=radio]').change(function(){
                 $(html).find('.save').val('save');
                 $(html).find('.delete').show();
@@ -240,32 +240,32 @@
                 $('.edit-area').attr('reason', reasonsNum);
                 $('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText);
                 $('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS);
-            }); 
+            });
         }
-        
+
         // Do things about stuff.
         $(html).on('click', '.save', function() {
             var reasonsNum = $('.edit-area').attr('reason');
             var reasonText = $('.edit-area').val();
             var reasonFlairText = $("input[name=flair-text]").val();
             var reasonFlairCSS = $("input[name=flair-css]").val();
-            
+
             if (reasonsNum) {
                 config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
                 config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
                 config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
-            } else { 
+            } else {
                 var reason = { text: escape(reasonText) };
-                
+
                 reason.flairText = reasonFlairText;
                 reason.flairCSS = reasonFlairCSS;
-                
+
                 if (!config.removalReasons) {
                     config.removalReasons = {
                         reasons: []
                     };
                 }
-                
+
                 config.removalReasons.reasons.push(reason);
             }
             postToWiki('toolbox', config, true);
@@ -291,12 +291,12 @@
             }
             $(html).remove();
         });
-        
+
         $(html).on('click', '.cancel', function() {
             $(html).remove();
-        });        
+        });
     });
-    
+
     $('body').on('click', '.reason-settings', function() {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
@@ -378,11 +378,11 @@
 </div>\
         ';
         $(html).appendTo('body').show();
-        
-        
+
+
         $('.reason-setting-form').on('click', '.save', function() {
-            
-            
+
+
             config.removalReasons = {
                 pmsubject: $('.pmsubject').val(),
                 logreason: $('.logreason').val(),
@@ -394,18 +394,18 @@
                 getfrom: $('.getfrom').val(),
                 reasons: config.removalReasons.reasons || []
             };
-            
+
             postToWiki('toolbox', config, true);
-            
+
             $('.reason-setting-form').remove();
         });
-        
+
         $('.reason-setting-form').on('click', '.cancel', function() {
             $('.reason-setting-form').remove();
         });
     });
 
-    $('body').on('click', '.tb-config-help', function() {	
+    $('body').on('click', '.tb-config-help', function() {
         var helpwindow=window.open('','','width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
         $.log(htmlcontent, true);
@@ -427,8 +427,8 @@
         helpwindow.document.write(html);
         helpwindow.focus();
     });
-    
-    
+
+
 
 
     $('body').on('click', '.edit-wiki-page', function(e) {
@@ -437,11 +437,11 @@
             saveButton = $('body').find('.save-wiki-data'),
             editArea = $('body').find('.wiki-edit-area')
             ;
-        
+
         // load the text area, but not the save button.
         $(editArea).show();
         $(textArea).val('getting wiki data...');
-        
+
         TBUtils.readFromWiki(subreddit, page, false, function (resp) {
             if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                 $(textArea).val('error getting wiki data.');
@@ -454,17 +454,17 @@
                 $(saveButton).attr('page', page);
                 return;
             }
-            
+
             resp = TBUtils.unescapeJSON(resp);
-            
+
             // Found it, show it.
             $(textArea).val(resp);
             $(saveButton).show();
             $(saveButton).attr('page', page);
         });
     });
-    
-    
+
+
     $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function(e) {
         var button = e.target,
             editArea = $('.wiki-edit-area'),
@@ -477,11 +477,11 @@
         $(button).removeAttr('page');
         $(textArea).val('');
         $(editArea).hide();
-        
+
         // not really needed, the cancel button doesn't have a page attrib.
         if (!page || cancel) return;
-        
-        
+
+
         // save the data, and blank the text area.
         // also, yes some of the pages are in JSON, but they aren't JSON objects,
         // so they don't need to be re-strinified.

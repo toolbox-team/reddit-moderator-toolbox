@@ -21,7 +21,7 @@
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
         lastgetLong = getSetting('cache', 'lastgetlong', -1),
         lastgetShort = getSetting('cache', 'lastgetshort', -1),
-        shortLength = getSetting('cache', 'shortlength', 15), 
+        shortLength = getSetting('cache', 'shortlength', 15),
         longLength = getSetting('cache', 'longlength', 45),
         cacheName = getSetting('cache', 'cachename', ''),
         seenNotes = getSetting('Utils', 'seennotes', []),
@@ -31,10 +31,10 @@
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
 		longLoadArray = [];
-    
+
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
-        
+
     // Public variables
     TBUtils.toolboxVersion = '2.2.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 220; //don't forget to change this one!  This is used for the 'new version' notification.
@@ -55,7 +55,7 @@
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isExtension = true;
     TBUtils.log = [];
-    TBUtils.debugMode = getSetting('Utils', 'debugMode', false), 
+    TBUtils.debugMode = getSetting('Utils', 'debugMode', false),
     TBUtils.betaMode = getSetting('Utils', 'betaMode', false),
     TBUtils.browser = UNKOWN_BROWSER;
     TBUtils.firstRun = false;
@@ -83,35 +83,35 @@
     if (newLogin) {
         setSetting('cache', 'cachename', TBUtils.logged);
     }
-    
+
     if (getnewLong) {
         setSetting('cache', 'lastgetlong', now);
     }
-    
+
     if (getnewShort) {
         setSetting('cache', 'lastgetshort', now);
     }
-    
+
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
     if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
         TBUtils.browser = FIREFOX;
     } else if (typeof(chrome) !== "undefined") {
         TBUtils.browser = CHROME;
-        
+
         if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
             TBUtils.browser = OPERA;
         }
     } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
         TBUtils.browser = SAFARI;
     }
-    
+
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
         setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last sersin to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
-        
+
         // Start: version changes.
         $.log('Running ' + TBUtils.toolboxVersion + ' changes');
 
@@ -126,22 +126,22 @@
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
     }
-    
+
     if (TBUtils.debugMode) {
         var consoleText = 'Toolbox version: ' + TBUtils.toolboxVersion +
                           ', Browser: ' + TBUtils.browser +
-                          ', Extension: ' + TBUtils.isExtension + 
+                          ', Extension: ' + TBUtils.isExtension +
                           ', Beta features: ' + TBUtils.betaMode +
                           '\n';
-        
+
         TBUtils.log.push(consoleText);
     }
-    
+
     TBUtils.usernotes = {
         ver: TBUtils.notesSchema,
         users: [] //typeof userNotes
     };
-    
+
     TBUtils.note = {
         note: '',
         time: '',
@@ -151,14 +151,14 @@
     };
 
     TBUtils.warningType = ['spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
-    
+
     TBUtils.config = {
         ver: TBUtils.configSchema,
         domainTags: '',
         removalReasons: '',
         modMacros: '',
     };
-    
+
     TBUtils.setSetting = function (module, setting, value) {
         return TBStorage.setSetting(module, setting, value);
     };
@@ -166,14 +166,14 @@
     TBUtils.getSetting = function (module, setting, defaultVal) {
         return TBStorage.getSetting(module, setting, defaultVal);
     };
-    
+
     TBUtils.getTypeInfo = function (warningType) {
         var typeInfo = {
             name: '',
             color: '',
             text: ''
         };
-        
+
         switch (String(warningType)) { //not sure why it gets passed as an array.
         case 'spamwatch':
             typeInfo = { color: 'fuchsia', name: 'Watching', text: 'Spam Watch' };
@@ -196,11 +196,11 @@
         default:
             typeInfo = { color: '', name: '', text: 'none' };
         }
-        
+
         return typeInfo;
     };
 
-    
+
 
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function(UNIX_timestamp) {
@@ -230,7 +230,7 @@
 
 
     }
-	
+
 	TBUtils.longLoadSpinner = function (createOrDestroy) {
 		if (createOrDestroy !== undefined) {
 
@@ -244,14 +244,14 @@
 			 // if requested and the element is already present
 			} else 	if (createOrDestroy && longLoadArray.length > 0) {
 				longLoadArray.push('load');
-	
-			 // if done and the only instance	
+
+			 // if done and the only instance
 			} else if (!createOrDestroy && longLoadArray.length == 1) {
 				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
 				$('#tb-loading').remove();
 				longLoadArray.pop();
 
-			// if done but other process still running		
+			// if done but other process still running
 			} else if (!createOrDestroy && longLoadArray.length > 1) {
 				longLoadArray.pop();
 
@@ -284,30 +284,30 @@
         $('body').find('.tb-overlay-label').html(text);
 
     };
-    
+
 
     TBUtils.alert = function (message, callback) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
         $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="note-close" title="Close" />');
         $noteDiv.appendTo('body');
-        
+
         $noteDiv.click(function (e) {
             $noteDiv.remove();
             if (e.target.className === 'note-close') {
                 callback(false);
                 return;
-            } 
+            }
             callback(true);
         });
     };
-    
+
     TBUtils.showNote = function (note) {
         if (!note.id || !note.text) return;
-        
+
         function show(){
             if ($.inArray(note.id, seenNotes) === -1) {
                 setSetting('Utils', 'notelastshown', now);
-                
+
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
                     setSetting('Utils', 'seennotes', seenNotes);
@@ -315,8 +315,8 @@
                 });
             }
         }
-        
-        
+
+
         //platform check.
         switch (note.platform) {
         case 'firefox':
@@ -340,22 +340,22 @@
         default:
             show();
         }
-        
+
     };
-    
+
     TBUtils.notification = function (title, body, url, timeout) {
         if (timeout === undefined) timeout = 15000;
 
         var toolboxnotificationenabled = true;
 
-        // check if notifications are enabled. When they are not we simply abort the function. 
+        // check if notifications are enabled. When they are not we simply abort the function.
         if (toolboxnotificationenabled === false) {
             //console.log('notifications disabled, stopping function');
             return;
         }
 
         if (!('Notification' in window)) {
-            // fallback on a javascript notification 
+            // fallback on a javascript notification
             $.log('boring old rickety browser, falling back on jquery based notifications');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
 
@@ -413,7 +413,7 @@
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
         }
     };
-    
+
     // Because normal .sort() is case sensitive.
     TBUtils.saneSort = function (arr) {
         return arr.sort(function (a, b) {
@@ -422,7 +422,7 @@
             return 0;
         });
     };
-    
+
     TBUtils.saneSortAs = function (arr) {
         return arr.sort(function (a, b) {
             if (a.toLowerCase() > b.toLowerCase()) return -1;
@@ -432,7 +432,7 @@
     };
 
     TBUtils.getModSubs = function (callback) {
-        
+
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1) {
             $.log('getting new subs.');
@@ -440,17 +440,17 @@
             getSubs(modMineURL);
         } else {
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-            
+
             // Go!
             callback();
         }
-        
+
         function getSubs(URL) {
             $.getJSON(URL, function (json) {
                 getSubsResult(json.data.children, json.data.after);
             });
         }
-        
+
         // Callback because reddits/mod/mine is paginated.
         function getSubsResult(subs, after) {
             $(subs).each(function () {
@@ -458,16 +458,16 @@
                 if ($.inArray(sub, TBUtils.mySubs) === -1)
                     TBUtils.mySubs.push(sub);
             });
-            
+
             if (after) {
                 var URL = modMineURL + '&after=' + after;
                 getSubs(URL);
             } else {
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-                
+
                 // Update the cache.
                 setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-                
+
                 // Go!
                 callback();
             }
@@ -495,12 +495,12 @@
             banned_by = removal[1] || '',
             spam = ( (removal[2] == 'spam' || removal[2] == 'confirm spam') ? true : false),
             ham = (removal[2] == 'remove not spam' ? true : false);
-        
+
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
         }
-        
-        
+
+
         // If we still don't have a sub, we're in mod mail, or PMs.
         if (TBUtils.isModmail || $(sender).closest('.message-parent')[0] !== undefined) {
             subreddit = (subreddit) ? subreddit : ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text());
@@ -513,14 +513,14 @@
             // The '.message-parent' check fixes reddit.com/message/messages/, wich contains mod mail and PMs.
             if (user === '') {
                 user = TBUtils.logged;
-                
+
                 if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
                     subreddit = $(thing).closest('.message-parent').find('.correspondent.reddit.rounded a').text()
                 }
             }
         }
-        
+
         // A recent reddit change makes subreddit names sometimes start with "/r/".
         // Mod mail subreddit names additionally end with "/".
         // reddit pls, need consistency
@@ -537,7 +537,7 @@
 
         var approved_text = $(entry).find('.approval-checkmark').attr('title') || $(thing).find('.approval-checkmark').attr('title') || '';
         approved_by = approved_text.match(/by\s(.+?)\s/) || '';
-        
+
         var info = {
             subreddit: subreddit,
             user: user,
@@ -555,7 +555,7 @@
         //$.log(info);
         return info;
     };
-    
+
     // Prevent page lock while parsing things.  (stolen from RES)
     TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
         if (array === null) return;
@@ -564,7 +564,7 @@
         if (call === null) return;
         var counter = 0;
         //var length = array.length;
-        
+
         function doChunk() {
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
@@ -578,30 +578,30 @@
         }
         window.setTimeout(doChunk, delay);
     };
-    
+
     // Reddit API stuff
     TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
-        
+
         if (isJSON) {
             // Not indenting saves precious bytes.
             data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
         }
-        
+
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
             reason: 'updated via toolbox config',
             uh: TBUtils.modhash
         })
-        
+
         .error(function (err) {
             callback(false, err.responseText);
         })
-        
+
         .success(function () {
             // Callback regardless of what happens next.  We wrote to the page.
             callback(true);
-            
+
             if (updateAM) {
                 $.post('/api/compose', {
                     to: 'automoderator',
@@ -617,21 +617,21 @@
                         window.location = 'http://www.reddit.com/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
                     });
             }
-            
+
             setTimeout(function () {
-                
+
                 // Set page access to 'mod only'.
                 $.post('/r/' + subreddit + '/wiki/settings/' + page, {
                     permlevel: 2,
                     uh: TBUtils.modhash
                 })
-                
+
                 // Super extra double-secret secure, just to be safe.
                 .error(function (err) {
                     alert('error setting wiki page to mod only access');
                     window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                 });
-                
+
             }, 500);
         });
     };
@@ -655,7 +655,7 @@
                 //TODO: right now a lot of functions implicitly rely on reddit
                 //returning escaped JSON to operate safely. add this back in once
                 //everything's been audited.
-                
+
                 //return TBUtils.unescapeJSON(data);
                 return data;
             }
@@ -667,7 +667,7 @@
                 callback(TBUtils.NO_WIKI_PAGE);
                 return;
             }
-            
+
             if (isJSON) {
                 wikiData = JSON.parse(wikiData);
                 if (wikiData) {
@@ -677,17 +677,17 @@
                 }
                 return;
             }
-            
+
             // We have valid data, but it's not JSON.
             callback(wikiData);
-            
+
         })
         .fail(function (jqXHR, textStatus, e) {
             if (!jqXHR.responseText) {
                 callback(TBUtils.WIKI_PAGE_UNKNOWN);
                 return;
             }
-            
+
             var reason = JSON.parse(jqXHR.responseText).reason || '';
             if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
                 callback(TBUtils.NO_WIKI_PAGE);
@@ -747,7 +747,7 @@
                 callback(false, error);
         });
     };
-    
+
     TBUtils.distinguishThing = function(id, callback) {
         $.post('/api/distinguish/yes', {
             id: id,
@@ -762,7 +762,7 @@
                 callback(false, error);
         });
     };
-    
+
     TBUtils.approveThing = function(id, callback) {
         $.post('/api/approve', {
             id: id,
@@ -777,7 +777,7 @@
                 callback(false, error);
         });
     };
-    
+
     TBUtils.postComment = function(parent, text, callback) {
         $.post('/api/comment', {
             parent: parent,
@@ -793,7 +793,7 @@
                     callback(false, response.json.errors);
                 return;
             }
-            
+
             $.log("Successfully posted comment on "+parent);
             if(typeof callback !== "undefined")
                 callback(true, response);
@@ -807,7 +807,7 @@
             return;
         });
     };
-    
+
     TBUtils.postLink = function(link, title, subreddit, callback) {
         $.post('/api/submit', {
             kind: 'link',
@@ -826,7 +826,7 @@
                     callback(false, response.json.errors);
                 return;
             }
-            
+
             $.log("Successfully posted link to /r/"+subreddit);
             if(typeof callback !== "undefined")
                 callback(true, response);
@@ -838,7 +838,7 @@
                 callback(false, error);
         });
     };
-    
+
     TBUtils.sendPM = function(to, subject, text, callback) {
         $.post('/api/compose', {
             to: to,
@@ -855,7 +855,7 @@
                 callback(false, error.responseText);
         });
     };
-    
+
     TBUtils.banUser = function(user, subreddit, reason, callback) {
         $.post('/api/friend', {
             uh: TBUtils.modhash,
@@ -894,7 +894,7 @@
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
                 return;
             }
-            
+
             $.each(resp, function (fullKey, value) {
                 var key = fullKey.split(".");
                 setSetting(key[0], key[1], value);
@@ -945,8 +945,8 @@
     TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');
     }
-    
-    // Added back for MMP's live mod mail. 
+
+    // Added back for MMP's live mod mail.
     TBUtils.compressHTML = function (src) {
         return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" >  False/, 'child">');
     };
@@ -1014,7 +1014,7 @@
                 .replace(/&lt;/g, '<')
                 .replace(/&gt;/g, '>')
                 .match(/<removereasons2>.+<\/removereasons2>/i);
-                
+
             // Try falling back to <removalreasons>
             if (!match) {
                 match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
@@ -1022,24 +1022,24 @@
                     .replace(/&gt;/g, '>')
                     .match(/<removereasons>.+<\/removereasons>/i);
             }
-            
-            // Neither can be found.    
+
+            // Neither can be found.
             if (!match) {
                 callback(false);
                 return;
             }
-            
+
             // Create valid XML from parsed string and convert it to a JSON object.
             var XML = $(match[0]);
             var reasons = [];
-            
+
             XML.find('reason').each(function () {
                 var reason = {
                     text: escape(this.innerHTML)
                 };
                 reasons.push(reason);
             });
-            
+
             var oldReasons = {
                 pmsubject: XML.find('pmsubject').text() || '',
                 logreason: XML.find('logreason').text() || '',
@@ -1051,7 +1051,7 @@
                 getfrom: XML.find('getfrom').text() || '',
                 reasons: reasons
             };
-            
+
             callback(oldReasons);
         }).error(function () {
             callback(false);
@@ -1102,12 +1102,12 @@
         return getSetting(module, setting);
     }
 
-    
+
     // NER, load more comments, and mod frame support.
     $('div.content').on('DOMNodeInserted', function (e) {
         if (e.target.className != 'sitetable linklisting' && e.target.parentNode.className !== 'morecomments' && !$(e.target).hasClass('flowwit')) return;
         $.log("TBNewThings firing" + ($(e.target).hasClass('flowwit')) ? ' (flowitt)' : '');
-        
+
         // Wait a sec for stuff to laod.
         setTimeout(function () {
             var event = new CustomEvent("TBNewThings");
@@ -1125,7 +1125,7 @@
         setSetting('cache', 'noconfig', TBUtils.noConfig);
         setSetting('cache', 'nonotes', TBUtils.noNotes);
         setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-        
+
     };
 
 
@@ -1152,7 +1152,7 @@
                 });
             });
         }
-        
+
         //check dev sub, if debugMode
         if (TBUtils.debugMode) {
             TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
@@ -1169,5 +1169,5 @@
             });
         }
     })();
-    
+
 }(TBUtils = window.TBUtils || {}));

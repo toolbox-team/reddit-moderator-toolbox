@@ -24,26 +24,26 @@
     function getURLParameter(url, name) {
         return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
      }
- 
+
     banlist_updating = false;
     banlist_last_update = 0;
     last_request = 0;
     time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
     pages_back = 0;
-    
+
     function _get_next_ban_page(after, pages_back) {
 
         // default parameter value handling
         after      = typeof after      !== 'undefined' ? after      : '';
         pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
- 
+
         $.log("_get_next_ban_page("+after+")");
- 
+
         var parameters = {'limit': 1000, 'after': after};
- 
+
         // make sure we have the loading icon
         $loading.show();
- 
+
         after = null;
         last_request = Date.now();
 
@@ -113,9 +113,9 @@
                 }
             }
         });
- 
+
     }
- 
+
     function filter_banlist(banlist, value, ignore_last) {
         $.log('filter('+value+')');
         last_value = typeof last_value !== 'undefined' ? last_value : '';
@@ -137,7 +137,7 @@
             // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
             $("tr .indexColumn:contains('" + value + "')", banlist).parent().show().addClass('visible');
         }
-        $("tr", banlist).removeClass('even');        
+        $("tr", banlist).removeClass('even');
         $("tr.visible:even", banlist).addClass('even');
 
         // update last value
@@ -153,7 +153,7 @@
         // counter for number of bans
         $num_bans = $('<span id="ban_count"></span>');
         $num_bans.appendTo($('#user').parent());
-        
+
         $('#user').prop('placeholder', 'Begin typing to live filter the ban list.');
 
         $('.banned-table').addClass('filtered');
@@ -193,7 +193,7 @@
             _filter($('input#user').val().toLowerCase());
             e.preventDefault();
         });
-     
+
         // we want to populate the table immediately on load.
         $('input#user').keyup();
     }

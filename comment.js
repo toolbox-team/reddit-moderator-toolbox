@@ -16,7 +16,7 @@
     $.log('Loading Comments Module');
 
     //
-    // preload some generic variables 
+    // preload some generic variables
     //
     var hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
         approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
@@ -218,7 +218,7 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
                 }
 
                 var modButtons = '';
-                if ($('body').hasClass('moderator')) { 
+                if ($('body').hasClass('moderator')) {
                 modButtons = '\
 				<li>\
                     <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
@@ -228,7 +228,7 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
                 </li>\
                 ';
                 }
-                
+
                 htmlComment = '\
 <div class="thing comment id-' + thingClasses + '" onclick="click_thing(this)" data-fullname="' + name + '">\
 	<div class="entry mod-button" subreddit="' + subreddit + '">\

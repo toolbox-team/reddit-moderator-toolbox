@@ -131,7 +131,7 @@ TB = {
                 // we use a jQuery hack to stick this bind call at the top of the queue,
                 // so that it runs before the bind call in notifier.js
                 // this way we don't have to touch notifier.js to make it work.
-                // 
+                //
                 // We get one additional click handler for each setting that gets injected.
                 $('body').bindFirst('click', '.tb-save', function (event) {
                     var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
@@ -180,7 +180,7 @@ TB.Module = function Module(name) {
 
     this.register_setting(
         "enabled", { // this one serves as an example as well as the absolute minimum setting that every module has
-            "type": "boolean", 
+            "type": "boolean",
             "default": false,
             "betamode": false, // optional
             "hidden": false, // optional

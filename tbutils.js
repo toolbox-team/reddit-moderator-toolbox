@@ -373,6 +373,16 @@
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
+				if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
+					var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
+					readCommentId = 't1_'+readCommentId[1];
+				    $.post('/api/read_message', {
+						id: readCommentId,
+						uh: TBUtils.modhash,
+						api_type: 'json'
+					});
+				}
+				
                 open(url);
                 // Remove notification
                 this.close();
@@ -402,6 +412,15 @@
                     notification.onclick = function () {
                         // Open the page
                         $.log('notification clicked');
+						if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
+							var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
+							readCommentId = 't1_'+readCommentId[1];
+							$.post('/api/read_message', {
+								id: readCommentId,
+								uh: TBUtils.modhash,
+								api_type: 'json'
+							});
+						}
                         open(url);
                         // Remove notification
                         this.close();

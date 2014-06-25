@@ -4,7 +4,7 @@ var modButton = new TB.Module('Mod Button');
 
 modButton.register_setting(
     "sublist", {
-        "type": "list", 
+        "type": "list",
         "default": [],
         "betamode": false,
         "hidden": false,
@@ -12,7 +12,7 @@ modButton.register_setting(
     });
 modButton.register_setting(
     "rememberlastaction", {
-        "type": "boolean", 
+        "type": "boolean",
         "default": false,
         "betamode": false,
         "hidden": false,
@@ -27,7 +27,7 @@ modButton.register_setting(
     });
 modButton.register_setting(
     "globalbutton", {
-        "type": "boolean", 
+        "type": "boolean",
         "default": false,
         "betamode": false,
         "hidden": false,
@@ -109,7 +109,7 @@ modButton.updateSavedSubs = function updateSavedSubs() {
                     .text('/r/' + this));
         });
     });
-    
+
     // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
     $.each(TB.utils.mySubs, function (i, subreddit) {
         $popups.find('.add-dropdown')
@@ -134,12 +134,12 @@ modButton.init = function init() {
 
     var rememberLastAction = modButton.setting('rememberlastaction'),
         showglobal = modButton.setting('globalbutton');
- 
+
     TB.utils.getModSubs(function () {
         modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
         modButton.run();
     });
- 
+
 
     // Popup HTML generator
     function toolboxPopup(title, tabs, meta) {
@@ -162,7 +162,7 @@ modButton.init = function init() {
             for (var i=0; i<tabs.length; i++) {
                 var tab = tabs[i];
                 if (tab.id === "undefined" || !tab.id) { tab.id = tab.title.trim().toLowerCase().replace(' ', '_'); }
-                
+
                 var $button = $('<a'+(tab.tooltip ? ' title="'+tab.tooltip+'"' : '')+' class="'+tab.id+'">'+tab.title+'</a>');
                 $button.click({tab: tab}, function (e) {
                     var tab = e.data.tab;
@@ -209,7 +209,7 @@ modButton.init = function init() {
     $('body').on('click', '.global-mod-button', function (event) {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
- 
+
         var display = (modButton.savedSubs.length < 1) ? 'none' : '',
             lastaction = modButton.setting('lastaction'),
             info = TB.utils.getThingInfo(this, true),
@@ -218,7 +218,7 @@ modButton.init = function init() {
             thing_id = info.id;
 
         //$.log('modbutton ' + subreddit, true);
- 
+
         // no user?
         if (!user) {
             $(benbutton).text('error');
@@ -226,7 +226,7 @@ modButton.init = function init() {
             // abort
             return;
         }
- 
+
         // generate the .mod-popup jQuery object
         $popup = toolboxPopup(
             'Mod Actions  - /u/' + user,
@@ -235,7 +235,7 @@ modButton.init = function init() {
                     title: "Role",
                     id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
-                    content: 
+                    content:
                         (subreddit
                             ? '\
                         <div class="current-sub">\
@@ -308,7 +308,7 @@ modButton.init = function init() {
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
         }
- 
+
         // Remove options that only apply to subs we mod
         if (!subreddit) {
             // Hide the flair tab
@@ -319,7 +319,7 @@ modButton.init = function init() {
             // We can oly nuke comments in subs we mod.
             $popup.find('.mod-popup-tabs .nuke_comment_chain').remove();
         }
- 
+
         if (TB.utils.isModmail || TB.utils.isModpage) {
             // Nothing to nuke in mod mail or on mod pages.
             $popup.find('.nuke_comment_chain').remove();
@@ -375,15 +375,15 @@ modButton.init = function init() {
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
         }
- 
+
         // render the saved subs lists
         modButton.updateSavedSubs();
-  
+
         // custom sub changed.
         $popup.find('select.' + modButton.OTHER).change(function () {
             $popup.find('.' + modButton.OTHER + '-checkbox').prop('checked', ($(this).val() !== modButton.OTHER));
         });
- 
+
         // show/hide ban reason text feild.
         $popup.find('.mod-action').change(function () {
             var $banNote = $popup.find('.ban-note');
@@ -393,13 +393,13 @@ modButton.init = function init() {
                 $banNote.hide();
             }
         });
-  
+
         // reset button name.
         $(benbutton).text(modButton.buttonName);
- 
+
         return false;
     });
- 
+
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
     $('body').on('click', '.mod-popup .save, .global-button', function () {
 
@@ -415,7 +415,7 @@ modButton.init = function init() {
             user = $popup.find('.user').text();
 
         modButton.setting('lastaction', actionName);
- 
+
         // Check dem values.
         if (!api) return $status.text('error, no action selected');
 
@@ -429,7 +429,7 @@ modButton.init = function init() {
                     var subname = $('.' + modButton.OTHER + ' option:selected').val();
                     if (subname !== modButton.OTHER) {
                         subreddits.push(subname);
-                        
+
                     }
                 }
             });
@@ -532,7 +532,7 @@ modButton.init = function init() {
             }, 250, true); //ban tax.
         }
     });
- 
+
     // 'cancel' button clicked
     $('body').on('click', '.mod-popup .close', function () {
         $(this).parents('.mod-popup').remove();
@@ -544,7 +544,7 @@ modButton.init = function init() {
 
         $.log(thing_id);
     });
- 
+
     $('body').on('click', '.mod-popup-tabs .user_flair', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
@@ -553,16 +553,16 @@ modButton.init = function init() {
             $textinput = $popup.find('.flair-text'),
             $classinput = $popup.find('.flair-class');
 
-        if (!user || !subreddit) return; 
+        if (!user || !subreddit) return;
 
         $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
- 
+
             $textinput.val(resp.users[0].flair_text);
             $classinput.val(resp.users[0].flair_css_class);
         });
     });
- 
+
 
     // Edit save button clicked.
     $('body').on('click', '.flair-save', function () {
@@ -583,18 +583,18 @@ modButton.init = function init() {
                 r: subreddit,
                 uh: TB.utils.modhash
             })
-            
+
             .error(function (err) {
                 console.log(err.responseText);
                 $popup.remove();
                 return;
             })
-            
+
             .success(function () {
                 $popup.remove();
                 return;
             });
-            
+
             return;
         }
         */
@@ -645,25 +645,25 @@ modButton.init = function init() {
     //     $popup.find('.mod-popup-tab-flair').hide();
     //     $popup.find('.mod-popup-tab-role').hide();
     // });
-    
-    
+
+
     $('body').on('click', '.remove-save', function () {
         var subname = $('.remove-dropdown option:selected').val();
-        
+
         modButton.savedSubs.splice(modButton.savedSubs.indexOf(subname), 1);
         $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
     });
-    
+
     $('body').on('click', '.add-save', function () {
         var subname = $('.add-dropdown option:selected').val();
-        
+
         // Don't add the sub twice.
         if ($.inArray(subname, modButton.savedSubs) === -1) {
             modButton.savedSubs.push(subname);
             $('.remove-dropdown').append($('<option>', { value: subname }).text('/r/' + subname));
         }
     });
- 
+
     // Edit save button clicked.
     $('body').on('click', '.setting-save', function () {
         var $popup = $(this).parents('.mod-popup'),

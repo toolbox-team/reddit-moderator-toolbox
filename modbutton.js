@@ -10,7 +10,6 @@ modButton.init = function init() {
  
     /////// Don't edit beyond this line. ///////
     var OTHER = 'other-sub',
-        BANREASON = "(ban reason)",
         savedSubs = TBUtils.getSetting('ModButton', 'sublist', []),
         rememberLastAction = TBUtils.getSetting('ModButton', 'rememberlastaction', false),
         showglobal = TBUtils.getSetting('ModButton', 'globalbutton', false);
@@ -162,7 +161,7 @@ modButton.init = function init() {
                             <input type="checkbox" class="action-sub ' + OTHER + '-checkbox name="action-sub" value="' + OTHER + '">\
                             <select class="' + OTHER + '" for="action-' + OTHER + '"><option value="' + OTHER + '">(select subreddit)</option></select>\
                         </div>\
-                        <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" value="' + BANREASON + '"></input></div>',
+                        <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)"></input></div>',
                     footer: '\
                         <span class="status error left"></span>\
                         <select class="mod-action">\
@@ -304,20 +303,6 @@ modButton.init = function init() {
             } else {
                 $banNote.hide();
             }
-            $banNote.val(BANREASON);
-        });
- 
-        // removal reason focus.
-        // TODO: use a proper placeholder property with CSS
-        $popup.find('.ban-note').focus(function () {
-            if ($(this).val() == BANREASON) {
-                $(this).val('');
-            }
-        });
-        $popup.find('.ban-note').focusout(function () {
-            if ($(this).val() === '') {
-                $(this).val(BANREASON);
-            }
         });
  
         // reset button name.
@@ -433,7 +418,7 @@ modButton.init = function init() {
                     type: action,
                     name: user,
                     r: sub,
-                    note: (banReason == BANREASON) ? '' : banReason,
+                    note: banReason,
                     api_type: 'json'
                 })
                 .success(function (resp) {

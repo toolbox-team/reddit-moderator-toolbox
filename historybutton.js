@@ -5,8 +5,13 @@ historyButton.addUserHistoryLink = function() {
     $(this).append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
 };
 
+// This should be a setting, methinks.
+historyButton.SPAM_REPORT_SUB = 'spam';
+
 historyButton.init = function() {
     var self = this;
+
+    var rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true);
 
     // Add context & history stuff
     $('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
@@ -162,15 +167,15 @@ historyButton.init = function() {
         var link = 'http://www.reddit.com/user/' + author,
             title = 'Overview for ' + author;
 
-        TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
+        TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
                 rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-            }
-            else {
+            } else {
                 if (submission.json.errors.length) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
-                    if (submission.json.errors[0][0] == 'ALREADY_SUB')
-                        rtsLink.href = 'http://www.reddit.com/r/'+SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                    if (submission.json.errors[0][0] == 'ALREADY_SUB') {
+                        rtsLink.href = 'http://www.reddit.com/r/'+historyButton.SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                    }
                     return;
                 }
 

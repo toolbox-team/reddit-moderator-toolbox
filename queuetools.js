@@ -12,12 +12,12 @@
     var notEnabled = [],
         hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
         ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
         sortModQueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortUnmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
 
-    var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
+    // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
+    var QUEUE_URL = '';
 
     if (linkToQueues) {
         if (TBUtils.isModQueuePage) {

@@ -21,7 +21,7 @@ TB = {
             // Need TB.setting() call for non-module settings
             // if (!TB.setting('betamode') && module.setting('betamode')) {
             if (!TB.utils.getSetting('Utils', 'betaMode', false)
-                && module.setting('betamode')
+                && module.config['betamode']
             ) {
                 // skip this module entirely
                 continue;
@@ -30,7 +30,7 @@ TB = {
             // Need TB.setting() call for non-module settings
             // if (!TB.setting('betamode') && module.setting('betamode')) {
             if (!TB.utils.getSetting('Utils', 'debugMode', false)
-                && module.setting('devmode')
+                && module.config['devmode']
             ) {
                 // skip this module entirely
                 continue;
@@ -60,7 +60,7 @@ TB = {
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
                 if (!TB.utils.getSetting('Utils', 'betaMode', false)
-                    && module.setting('betamode')
+                    && module.config['betamode']
                 ) {
                     // skip this module entirely
                     // use `return false` because we're in a self-executing anonymous function
@@ -70,7 +70,7 @@ TB = {
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
                 if (!TB.utils.getSetting('Utils', 'debugMode', false)
-                    && module.setting('devmode')
+                    && module.config['devmode']
                 ) {
                     // skip this module entirely
                     // use `return false` because we're in a self-executing anonymous function
@@ -211,6 +211,11 @@ TB.Module = function Module(name) {
         return name.trim().replace(' ', '');
     });
 
+    this.config = {
+        "betamode": true,
+        "devmode": false
+    }
+
     this.settings = {};
     this.settingsList = [];
 
@@ -226,18 +231,6 @@ TB.Module = function Module(name) {
             "betamode": false, // optional
             "hidden": false, // optional
             "title": "Enable " + this.name + "."
-        });
-    this.register_setting(
-        "betamode", {
-            "type": "boolean",
-            "default": true,
-            "hidden": true
-        });
-    this.register_setting(
-        "devmode", {
-            "type": "boolean",
-            "default": false,
-            "hidden": true
         });
 
     // PUBLIC: settings interface

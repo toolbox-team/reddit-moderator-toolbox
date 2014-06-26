@@ -2,6 +2,8 @@
 
 var stattitTab = new TB.Module('Stattit Tab');
 
+stattitTab.config["betamode"] = false;
+
 stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
     var matches = regex.exec(url);

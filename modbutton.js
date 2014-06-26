@@ -2,6 +2,8 @@
 
 var modButton = new TB.Module('Mod Button');
 
+modButton.config["betamode"] = false;
+
 modButton.register_setting(
     "sublist", {
         "type": "list",

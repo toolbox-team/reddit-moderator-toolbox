@@ -738,6 +738,16 @@ img.note-close {
     width: 100%;
 }
 
+.mod-popup .ban-message {
+	padding: 1px;
+	width: 100%;
+}
+
+.mod-popup .ban-duration {
+	padding: 2px;
+	width: 82px;
+}
+
 .mod-popup .edit-subreddits {
     width: 260px;
 }

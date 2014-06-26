@@ -51,6 +51,7 @@
 				"syntax.js",
 				"frame.js",
 				"modmaillite.js",
+				"devtools.js",
 				"tbobjectinit.js" // this one always goes last
 			]
 		}

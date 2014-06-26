@@ -532,7 +532,7 @@ modButton.init = function init() {
                     api_type: 'json'
                 })
                 .success(function (resp) {
-                    if (resp.json.errors !== undefined && resp.json.errors[0][0] === 'RATELIMIT') {
+                    if (!$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
                        $timer.pause();
                        $.log('ratelimited');
                        rateLimit(resp.json.ratelimit);

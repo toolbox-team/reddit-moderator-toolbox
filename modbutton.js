@@ -252,7 +252,7 @@ modButton.init = function init() {
                         </div>\
                         <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
 						<textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
-						<input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> Include in message <input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time">\
+						<input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <span class="ban-span-include-time">Include in message <input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"></span>\
 						</div>',
                     footer: '\
                         <span class="status error left"></span>\
@@ -391,15 +391,18 @@ modButton.init = function init() {
         $popup.find('.mod-action').change(function () {
             var $banNote = $popup.find('.ban-note'),
 				$banMessage = $popup.find('textarea.ban-message'),
-				$banDuration = $popup.find('.ban-duration');
+				$banDuration = $popup.find('.ban-duration'),
+				$banIncludeTime = $popup.find('.ban-span-include-time');
             if ($(this).val() == 'ban') {
                 $banNote.show();
 				$banMessage.show();
 				$banDuration.show();
+				$banIncludeTime.show();
             } else {
                 $banNote.hide();
 				$banMessage.hide();
 				$banDuration.hide();
+				$banIncludeTime.hide();
             }
         });
 

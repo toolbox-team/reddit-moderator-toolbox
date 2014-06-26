@@ -369,12 +369,15 @@ modButton.init = function init() {
 			banDuration = $popup.find('.ban-duration').val(),
             subreddits = [],
             user = $popup.find('.user').text();
-
-			if ($popup.find('.ban-include-time').is(':checked')) {
-			
-			banMessage = banMessage + '  \n \n\
-*You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
+            
+            if (isNaN(banDuration)) {
+                banDuration = '';
+            } else if($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
+                $.log('Including time in ban message', true);
+                banMessage = banMessage + '  \n \n\
+                *You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
 			}
+            
         modButton.setting('lastaction', actionName);
 
         // Check dem values.
@@ -474,7 +477,8 @@ modButton.init = function init() {
                     api_type: 'json'
                 })
                 .success(function (resp) {
-                    if (!$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
+                    
+                    if (!$.isEmptyObject(resp) && !$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
                        $timer.pause();
                        $.log('ratelimited');
                        rateLimit(resp.json.ratelimit);

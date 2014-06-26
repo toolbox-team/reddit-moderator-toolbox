@@ -433,6 +433,26 @@
         }
     };
 
+	TBUtils.humaniseDays = function  (diff) {
+	  var str = '';
+	  var values = {
+		' year': 365, 
+		' month': 30,
+		' week': 7,  
+		' day': 1
+	  };
+
+	  for (var x in values) {
+		var amount = Math.floor(diff / values[x]);
+		
+		if (amount >= 1) {
+		   str += amount + x + (amount > 1 ? 's' : '') + ' ';
+		   diff -= amount * values[x];
+		}
+	  }
+	  str = str.slice(0, - 1);
+	  return str
+	}
     // Because normal .sort() is case sensitive.
     TBUtils.saneSort = function (arr) {
         return arr.sort(function (a, b) {

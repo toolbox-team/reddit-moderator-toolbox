@@ -45,7 +45,6 @@ TB = {
                 // otherwise, we get the bindFirst callback having `var module` refer to the last time it was set
                 // becausde we're in for loop not a special scope, d'oh.
                 var module = self.modules[self.moduleList[idx]];
-                console.log(self.moduleList[idx]);
 
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
@@ -70,8 +69,19 @@ TB = {
                         options = module.settings[setting];
 
                     // "enabled" will eventually be special, but for now it just shows up like any other setting
+                    // if (setting == "enabled") {
+                    //     continue;
+                    // }
+
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting == "enabled") {
+                        // blank slate
+                        var $setting = $('<p></p>');
+                        $setting.append($('<label><input type="checkbox" id="'+module.shortname+'Enabled" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
+
+                        $('.tb-window-content .tb-window-content-modules').append($setting);
+
+                        // don't need this on the module's tab, too
                         continue;
                     }
 
@@ -80,7 +90,6 @@ TB = {
                         && !TB.utils.getSetting('Utils', 'betaMode', false)
                         && options["betamode"]
                     ) {
-                        $.log("Beta Setting!");
                         continue;
                     }
 
@@ -88,7 +97,6 @@ TB = {
                     if (options.hasOwnProperty("hidden")
                         && options["hidden"]
                     ) {
-                        $.log("Hidden Setting!");
                         continue;
                     }
 
@@ -132,8 +140,13 @@ TB = {
                 // so that it runs before the bind call in notifier.js
                 // this way we don't have to touch notifier.js to make it work.
                 //
-                // We get one additional click handler for each setting that gets injected.
+                // We get one additional click handler for each module that gets injected.
                 $('body').bindFirst('click', '.tb-save', function (event) {
+                    // handle module enable/disable on Toggle Modules first
+                    var $moduleEnabled = $('.tb-window-content .tb-window-content-modules #'+module.shortname+'Enabled').prop('checked');
+                    module.setting('enabled', $moduleEnabled);
+
+                    // handle the regular settings tab
                     var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
 
                     $settings_page.find('input').each(function () {

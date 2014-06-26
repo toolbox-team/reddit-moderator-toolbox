@@ -78,11 +78,9 @@
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
-        historyButtonEnabled = TBUtils.getSetting('HistoryButton', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
-        stattitEnabled = TBUtils.getSetting('StattitTab', 'enabled', true),
         commentsEnabled = TBUtils.getSetting('CommentsMod', 'enabled', true),
         banlistEnabled = TBUtils.getSetting('BanList', 'enabled', true),
         syntaxHighlighterEnabled = TBUtils.getSetting('syntaxHighlighter', 'enabled', true),
@@ -90,9 +88,6 @@
 
     // Ban list settings.
     var banlistAutomatic = TBUtils.getSetting('BanList', 'automatic', false);
-
-    // Mod Button settings.
-    var modButtonRememberAction = TBUtils.getSetting('ModButton', 'rememberlastaction', false);
 
     // MTE settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
@@ -352,9 +347,6 @@
             <p>\
                 <label><input type="checkbox" id="banlistAutomatic" ' + ((banlistAutomatic) ? "checked" : "") + '> Automatically load the whole ban list </label>\
             </p>\
-            <!--p>\
-                <label><input type="checkbox" id="modButtonRememberAction" ' + ((modButtonRememberAction) ? "checked" : "") + '> Remember last Mod Button action </label>\
-            </p--!>\
             <p>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
             </p>\
@@ -442,9 +434,6 @@
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="historyButtonEnabled" ' + ((historyButtonEnabled) ? "checked" : "") + '> Enable History Button</label>\
-            </p>\
-            <p>\
                 <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
             </p>\
             <p>\
@@ -461,9 +450,6 @@
             </p>\
             <p>\
                 <label><input type="checkbox" id="syntaxHighlighterEnabled" ' + ((syntaxHighlighterEnabled) ? "checked" : "") + '> Enable Syntax Highlighter Module</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="stattitEnabled" ' + ((stattitEnabled) ? "checked" : "") + '> Enable Reddit Metrics Tab</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Mod Log Matrix</label>\
@@ -822,22 +808,17 @@
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
-        TBUtils.setSetting('HistoryButton', 'enabled', $("#historyButtonEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));
         TBUtils.setSetting('CommentsMod', 'enabled', $("#commentsEnabled").prop('checked'));
         TBUtils.setSetting('BanList', 'enabled', $("#banlistEnabled").prop('checked'));
         TBUtils.setSetting('syntaxHighlighter', 'enabled', $("#syntaxHighlighterEnabled").prop('checked'));
-        TBUtils.setSetting('StattitTab', 'enabled', $("#stattitEnabled").prop('checked'));
         TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
         // Ban list settings
         TBUtils.setSetting('BanList', 'automatic', $("#banlistAutomatic").prop('checked'));
-
-        // Mod Button settings
-        TBUtils.setSetting('ModButton', 'rememberlastaction', $("#modButtonRememberAction").prop('checked'));
 
         // Save MTE settings.
         TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));

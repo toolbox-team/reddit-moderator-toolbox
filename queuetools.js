@@ -100,14 +100,18 @@
         $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
         // remove stuff we can't moderate.
-        $('.thing .tagline .subreddit').each(function() {
-            // Just to be safe.
-            var sub = $(this).text().replace('/r/', '').replace('/', '');
+        TBUtils.getModSubs(function () {
+            $('.thing .subreddit').each(function () {
+                // Just to be safe.
+                var sub = $(this).text().replace('/r/', '').replace('/', '');
 
-            if ($.inArray(sub, TBUtils.mySubs) === -1) {
-                $(this).parents('.thing').remove();
-            }
+
+                if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                    $(this).parents('.thing').remove();
+                }
+            });
         });
+
         $('.modtools-on').parent().remove();
 
         // Make visible any collapsed things (stuff below /prefs/ threshold)

@@ -26,6 +26,15 @@ TB = {
                 // skip this module entirely
                 continue;
             }
+            // Don't do anything with dev modules unless debug mode is enabled
+            // Need TB.setting() call for non-module settings
+            // if (!TB.setting('betamode') && module.setting('betamode')) {
+            if (!TB.utils.getSetting('Utils', 'debugMode', false)
+                && module.setting('devmode')
+            ) {
+                // skip this module entirely
+                continue;
+            }
 
             // lock 'n load
             if (module.setting('enabled')) {
@@ -57,6 +66,17 @@ TB = {
                     // use `return false` because we're in a self-executing anonymous function
                     return false;
                 }
+                // Don't do anything with dev modules unless debug mode is enabled
+                // Need TB.setting() call for non-module settings
+                // if (!TB.setting('betamode') && module.setting('betamode')) {
+                if (!TB.utils.getSetting('Utils', 'debugMode', false)
+                    && module.setting('devmode')
+                ) {
+                    // skip this module entirely
+                    // use `return false` because we're in a self-executing anonymous function
+                    return false;
+                }
+
 
                 //
                 // build and inject our settings tab
@@ -90,6 +110,13 @@ TB = {
                     if (options.hasOwnProperty("betamode")
                         && !TB.utils.getSetting('Utils', 'betaMode', false)
                         && options["betamode"]
+                    ) {
+                        continue;
+                    }
+                    // hide dev stuff unless debug mode enabled
+                    if (options.hasOwnProperty("devmode")
+                        && !TB.utils.getSetting('Utils', 'debugMode', false)
+                        && options["devmode"]
                     ) {
                         continue;
                     }
@@ -199,6 +226,18 @@ TB.Module = function Module(name) {
             "betamode": false, // optional
             "hidden": false, // optional
             "title": "Enable " + this.name + "."
+        });
+    this.register_setting(
+        "betamode", {
+            "type": "boolean",
+            "default": true,
+            "hidden": true
+        });
+    this.register_setting(
+        "devmode", {
+            "type": "boolean",
+            "default": false,
+            "hidden": true
         });
 
     // PUBLIC: settings interface

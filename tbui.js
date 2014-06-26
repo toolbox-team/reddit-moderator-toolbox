@@ -84,4 +84,62 @@
                 xkJAQMZhNOtycvvPB/INIptTIC2BKSoogSO3t7WWlfGapCrigb5vM399fdF79pKk+iYyMFGVPnDjRbjssICBA70bo+1YAh35IPlvnoCgzFB2nNNngVvmSJUtEueTkZJ33y8rKkLJCLvNPJRSg5C9GPhLMiK8v5OfnixBWjt05GCJ/DklJSbB+/XoIppw/PT1dUOB85I7TZWcKhFJTU2H//v\
                 2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII='
 
+    // Popup HTML generator
+    TBui.popup = function popup(title, tabs, meta) {
+        meta = (typeof meta !== "undefined") ? meta : null;
+
+        // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
+        var $popup = $('\
+<div class="mod-popup">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+    <div class="mod-popup-header">\
+        <div class="mod-popup-title">' + title + '</div>\
+        <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
+    </div>\
+<div>');
+        if (tabs.length == 1) {
+            $popup.append($('<div class="mod-popup-content">' + tabs[0].content + '</div>'));
+            $popup.append($('<div class="mod-popup-footer">' + tabs[0].footer + '</div>'));
+        } else if (tabs.length > 1) {
+            $popup.append($('<div class="mod-popup-tabs"></div>'));
+
+            for (var i=0; i<tabs.length; i++) {
+                var tab = tabs[i];
+                if (tab.id === "undefined" || !tab.id) { tab.id = tab.title.trim().toLowerCase().replace(' ', '_'); }
+
+                var $button = $('<a'+(tab.tooltip ? ' title="'+tab.tooltip+'"' : '')+' class="'+tab.id+'">'+tab.title+'</a>');
+                $button.click({tab: tab}, function (e) {
+                    var tab = e.data.tab;
+
+                    // hide others
+                    $popup.find('.mod-popup-tabs a').removeClass('active');
+                    $popup.find('.mod-popup-tab').hide();
+
+                    // show current
+                    $popup.find('.mod-popup-tab.'+tab.id).show();
+                    $(this).addClass('active');
+
+                    e.preventDefault();
+                });
+
+                // default first tab is active tab
+                if (i==0) { $button.addClass('active'); }
+
+                $button.appendTo($popup.find('.mod-popup-tabs'));
+
+
+                var $tab = $('<div class="mod-popup-tab '+tab.id+'"></div>');
+                $tab.append($('<div class="mod-popup-content">'+tab.content+'</div>'));
+                $tab.append($('<div class="mod-popup-footer">'+tab.footer+'</div>'));
+
+                // default first tab is visible; hide others
+                if (i==0) { $tab.show(); } else { $tab.hide(); }
+
+                $tab.appendTo($popup);
+            }
+        }
+
+        return $popup;
+    }
+
+
 }(TBui = window.TBui || {}));

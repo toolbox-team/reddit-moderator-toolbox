@@ -2,6 +2,7 @@
 
 TB = {
     utils: TBUtils,
+    ui: TBui,
 
     modules: {},
     moduleList: [],

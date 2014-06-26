@@ -375,7 +375,7 @@ modButton.init = function init() {
             } else if($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
                 $.log('Including time in ban message', true);
                 banMessage = banMessage + '  \n \n\
-                *You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
+*You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
 			}
             
         modButton.setting('lastaction', actionName);

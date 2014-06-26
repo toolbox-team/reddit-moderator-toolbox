@@ -3,6 +3,7 @@
 var modButton = new TB.Module('Mod Button');
 
 modButton.config["betamode"] = false;
+modButton.config["needs_mod_subs"] = true;
 
 modButton.register_setting(
     "sublist", {
@@ -137,11 +138,9 @@ modButton.init = function init() {
     var rememberLastAction = modButton.setting('rememberlastaction'),
         showglobal = modButton.setting('globalbutton');
 
-    TB.utils.getModSubs(function () {
-        modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
-        modButton.run();
-    });
-
+    modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
+    
+    modButton.run();
 
     // NER support.
     window.addEventListener("TBNewThings", function () {

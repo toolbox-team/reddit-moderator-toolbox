@@ -39,7 +39,13 @@ TB = {
             // lock 'n load
             if (module.setting('enabled')) {
                 $.log('Loading ' + module.name + ' module.');
-                module.init();
+                if (module.config["needs_mod_subs"]) {
+                    TB.utils.getModSubs(function () {
+                        module.init();
+                    });
+                } else {
+                    module.init();
+                }
             }
 
         }
@@ -213,7 +219,8 @@ TB.Module = function Module(name) {
 
     this.config = {
         "betamode": true,
-        "devmode": false
+        "devmode": false,
+        "needs_mod_subs": false
     }
 
     this.settings = {};

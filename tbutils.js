@@ -237,7 +237,7 @@
 			 // if requested and the element is not present yet
 			 if (createOrDestroy && longLoadArray.length == 0) {
 
-				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '5px');
+				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
 				$('.footer-parent').append('<div id="tb-loading"></div>');
 				longLoadArray.push('load');
 

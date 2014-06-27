@@ -655,8 +655,7 @@ $('.content .menuarea').append('<div class="spacer"><span id="ratelimit-counter"
 function getComments() {
     $('.modactionlisting table tr.modactions').each(function () {
         var $this = $(this);
-        var isComment = $this.find('.description').text();
-        if (isComment.indexOf("removed comment by") >= 0) {
+        if ($this.find('.button a').hasClass("removecomment")) {
             var removedUrl = $this.find('.description a').attr('href');
             var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
             commentID = commentID[1];
@@ -711,18 +710,17 @@ function addComments(ratelimit, ratelimitReset) {
     } else {
         TBUtils.longLoadSpinner(true);
         $('.modactionlisting table tr.modactions').each(function () {
-        
             var $this = $(this);
-            var isComment = $this.find('.description').text();
-            var removedUrl = $this.find('.description a').attr('href');
-            var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
-            commentID = commentID[1];
-            if (isComment.indexOf("removed comment by") >= 0 && !$this.find('.description').attr('id')) {
-                commentCount = commentCount + 1;
+            if ($this.find('.button a').hasClass("removecomment")) {
+                var removedUrl = $this.find('.description a').attr('href');
+                var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
+                commentID = commentID[1];
+                if (!$this.find('.description').attr('id')) {
+                    commentCount = commentCount + 1;
+                }
+                $.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
+                // lets add a little buffer just to be sure
             }
-            $.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
-            // lets add a little buffer just to be sure
-
         });
 
         commentCount = commentCount + 10;

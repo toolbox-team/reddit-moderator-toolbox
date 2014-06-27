@@ -992,19 +992,33 @@ body .thing.flaired {
     outline: blue solid 1px;
 }
 
+.user-history div.table.domain-table {
+    display: inline-block;
+    width: 300px;
+}
+.user-history div.table.subreddit-table {
+    display: inline-block;
+    width: 300px;
+}
+.user-history div.mod-popup-content {
+    width: 650px;  };
+}
+
 .user-history {
-    padding: 10px !important;
+    padding: 0px !important;
 }
 
 .user-history td {
     border: 1px dotted lightgray;
     border-bottom: none;
+    word-wrap: break-word;
 }
 
 .user-history th {
     border: 1px solid lightgray;
     border-top: none;
     font-weight: bold;
+    word-wrap: break-word;
 }
 
 .user-history th,.user-history td {
@@ -1019,10 +1033,10 @@ body .thing.flaired {
 .user-history .table {
     margin: 10px;
     max-height: 300px;
+    max-width: 300px;
     overflow-x: hidden;
     overflow-y: scroll;
     border-bottom: 1px dotted lightgray;
-    border-top: 1px solid lightgray;
 }
 
 .user-history .table .error {
@@ -1657,28 +1671,28 @@ div.sticky {
     box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-popup-header, .utagger-popup-header {
+.mod-toolbox.res-nightmode .mod-popup-header, .utagger-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.mod-popup-tabs {
+.mod-toolbox.res-nightmode .mod-popup-tabs {
     border-bottom: 1px solid #39526b;
     background-color: #828B96;
 }
 
-.mod-popup-tabs a {
+.mod-toolbox.res-nightmode .mod-popup-tabs a {
     background-color: #828B96;
     border-right: 1px dotted #39526b;
     color: #393E44;
 }
 
-.mod-popup-tabs a:hover,
-.mod-popup-tabs a.active {
+.mod-toolbox.res-nightmode .mod-popup-tabs a:hover,
+.mod-toolbox.res-nightmode .mod-popup-tabs a.active {
     background-color: #5D7186;
 }
 
-.mod-popup-footer, .utagger-popup-footer {
+.mod-toolbox.res-nightmode .mod-popup-footer, .utagger-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -1688,40 +1702,40 @@ div.sticky {
     border-top: solid 1px #39526b;
 }
 
-.mod-popup .status {
+.mod-toolbox.res-nightmode .mod-popup .status {
 }
 
-.mod-popup .add-sub-link {
+.mod-toolbox.res-nightmode .mod-popup .add-sub-link {
     text-decoration: none;
 }
 
-.mod-popup .remove-sub-link {
+.mod-toolbox.res-nightmode .mod-popup .remove-sub-link {
     text-decoration: none;
 }
 
-.mod-popup .global-button {
+.mod-toolbox.res-nightmode .mod-popup .global-button {
     color: red;
 }
 
-.mod-popup .current-sub,
-.mod-popup .saved-subs div,
-.mod-popup div.other-sub,
-.mod-popup .ban-note-container {
+.mod-toolbox.res-nightmode .mod-popup .current-sub,
+.mod-toolbox.res-nightmode .mod-popup .saved-subs div,
+.mod-toolbox.res-nightmode .mod-popup div.other-sub,
+.mod-toolbox.res-nightmode .mod-popup .ban-note-container {
     width: 225px;
     border-bottom: 1px dotted gray;
     padding: 5px;
 }
 
-.mod-popup .current-sub {
+.mod-toolbox.res-nightmode .mod-popup .current-sub {
     border-bottom: 1px solid gray;
 }
 
 
-.mod-action-positive {
+.mod-toolbox.res-nightmode .mod-action-positive {
     background-color: #E5F0E1;
 }
 
-.mod-action-negative {
+.mod-toolbox.res-nightmode .mod-action-negative {
     background-color: #FA8072;
 }
 

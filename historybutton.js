@@ -6,7 +6,7 @@ historyButton.addUserHistoryLink = function() {
 };
 
 // This should be a setting, methinks.
-historyButton.SPAM_REPORT_SUB = 'spam';
+historyButton.SPAM_REPORT_SUB = 'creesch';
 
 historyButton.init = function() {
     var self = this;
@@ -14,16 +14,16 @@ historyButton.init = function() {
     var rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true);
 
     // Add context & history stuff
-    $('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
+    $('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
     $('.thing .entry .userattrs').each(self.addUserHistoryLink);
 
     // Open inline context
     $('.inline-content').click(function (e) {
-        e.stopPropagation();
+      //  e.stopPropagation();
     });
     $('body').on('click', 'a.context', function (e) {
-        $('html').one('click', function () {
+        $('body').on('click', '.user-history-close', function () {
             $('.inline-content').hide();
         });
         $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
@@ -34,7 +34,7 @@ historyButton.init = function() {
     //User history button pressed
     var gettingUserdata = false;
     $('body').on('click', '.user-history-button', function () {
-        $('html').one('click', function () {
+        $('body').on('click', '.user-history-close',  function () {
             $('.inline-content').hide();
             gettingUserdata = false;
         });
@@ -42,7 +42,27 @@ historyButton.init = function() {
 
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
-            contentBox = $('.inline-content').show().offset($(this).offset()).html('<div class="user-history"><a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Report Spammer</a><div><br /><b>Submission history:</b></div><div class="table domain-table"><table><thead><tr><th>domain submitted from</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div><div class="table subreddit-table"><table><thead><tr><th>subreddit submitted to</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div></div>'),
+            contentBox = $('.inline-content').show().offset($(this).offset()).html('\
+            <div class="mod-popup user-history">\
+            <div class="mod-popup-header">\
+                <div class="mod-popup-title">User history for ' + author + '\</div>\
+                <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
+            </div>\
+            <div class=" mod-popup-content">\
+            <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Report Spammer</a>\
+            <div><br /><b>Submission history:</b></div>\
+            <div class="table domain-table">\
+            <table><thead>\
+            <tr><th>domain submitted from</th><th>count</th><th>%</th></tr></thead>\
+            <tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
+            </table>\
+            </div><div class="table subreddit-table">\
+            <table><thead><tr><th>subreddit submitted to</th><th>count</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
+            </div></div>\
+                <div class="mod-popup-footer">\
+                </div>\
+            </div>\
+            '),
 
             domains = {},
             domainslist = [],
@@ -60,46 +80,35 @@ historyButton.init = function() {
 
         // Get user's domain & subreddit submission history
         (function populateHistory(after) {
+        TBUtils.longLoadSpinner(true);
             $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
                 contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
             }).success(function (d) {
-
+            
                 if (!gettingUserdata) return;
                 if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
 
                 var after = d.data.after,
-                    commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
+                    commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
                 for (i in d.data.children) {
                     var data = d.data.children[i].data;
 
                     if (!domains[data.domain]) {
                         domains[data.domain] = {
-                            ups: 0,
-                            downs: 0,
-                            score: 0,
                             count: 0
                         };
                         domainslist.push(data.domain);
                     }
 
-                    domains[data.domain].ups += data.ups;
-                    domains[data.domain].downs += data.downs;
-                    domains[data.domain].score += data.score;
                     domains[data.domain].count++;
 
                     if (!subreddits[data.subreddit]) {
                         subreddits[data.subreddit] = {
-                            ups: 0,
-                            downs: 0,
-                            score: 0,
                             count: 0
                         };
                         subredditlist.push(data.subreddit);
                     }
-                    subreddits[data.subreddit].ups += data.ups;
-                    subreddits[data.subreddit].downs += data.downs;
-                    subreddits[data.subreddit].score += data.score;
                     subreddits[data.subreddit].count++;
                 }
 
@@ -111,43 +120,56 @@ historyButton.init = function() {
                 for (i in domainslist) {
                     var dom = domainslist[i],
                         n = domains[dom].count,
-                        u = domains[dom].ups,
-                        d = domains[dom].downs,
-                        s = domains[dom].score,
                         url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
                         match = dom.match(/^self.(\w+)$/);
-
+                        
+                        var subTotal = 0;                        
+                        for (x in domains) {
+                        subTotal = subTotal+domains[x].count;
+                        }
+                 
+                        var percentage = Math.round(n / subTotal * 100); 
                     if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
-                    domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
+                    domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>'+ percentage + '%</td></tr>');
 
-                    if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
+                    if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|'+ percentage + '%';
                 }
                 if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
 
-                commentbody += '\n\nsubreddit submitted to|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
+                commentbody += '\n\nsubreddit submitted to|count|%\n:-|-:|-:';
 
                 subredditlist.sort(function (a, b) {
                     return subreddits[b].count - subreddits[a].count;
                 });
                 subreddittable.empty();
+                
+                
                 for (i in subredditlist) {
                     var sr = subredditlist[i],
-                        n = subreddits[sr].count,
-                        u = subreddits[sr].ups,
-                        d = subreddits[sr].downs,
-                        s = subreddits[sr].score,
+                        n = subreddits[sr].count,                       
                         url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
+                        
+                        var subTotal = 0;                        
+                        for (x in subreddits) {
+                        subTotal = subTotal+subreddits[x].count;
+                        }
+                 
+                        var percentage = Math.round(n / subTotal * 100); 
+                    subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>'+ percentage + '%</td></tr>');
 
-                    subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
-
-                    if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
+                    if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage +'%';
                 }
                 if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
 
                 $('.rts-report').attr('data-commentbody', commentbody);
 
-                if (after) populateHistory(after);
-                else gettingUserdata = false;
+                if (after) {                
+                populateHistory(after);
+                TBUtils.longLoadSpinner(false);
+                } else {
+                gettingUserdata = false;
+                TBUtils.longLoadSpinner(false);
+                }
             });
         })();
         return false;

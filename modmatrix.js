@@ -642,4 +642,134 @@
         $.log('Loading Mod Matrix Module');
         modLogMatrix.init();
     }
+    
+    
+if (!location.pathname.match(/\/about\/(?:log)\/?/) || !TBUtils.betaMode) return;
+
+var commentLoadActive = false,
+    ratelimitRemaining = 200,
+    ratelimitReset;
+$('.content .menuarea').append('<div class="spacer"><span id="ratelimit-counter"></span><span style="float:right;">&nbsp;<a href="javascript:;" class="activate-comment-load" >Load text of removed comments.</a>  &nbsp; &nbsp;</span></div>');
+
+
+function getComments() {
+    $('.modactionlisting table tr.modactions').each(function () {
+        var $this = $(this);
+        var isComment = $this.find('.description').text();
+        if (isComment.indexOf("removed comment by") >= 0) {
+            var removedUrl = $this.find('.description a').attr('href');
+            var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
+            commentID = commentID[1];
+            removedUrl = removedUrl + '.json';
+
+
+            if (!$this.find('.description').attr('id')) {
+                $this.find('.description').attr('id', commentID);
+
+                $.getJSON(removedUrl).done(function (data, status, jqxhr) {
+
+                    $('body').find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
+                    $('body').find('.activate-comment-load').attr('data-reset', ratelimitReset);
+
+                    var approved = data[1].data.children[0].data.approved_by;
+                    var commentBody = data[1].data.children[0].data.body_html;
+                    var commentID = data[1].data.children[0].data.id;
+
+                    if (approved !== null) {
+                        approved = '<br><b>Already approved by ' + approved + '</b>';
+                    } else {
+                        approved = '';
+                    }
+
+                    $('#' + commentID).append('<div id="removed_comment_text">' + TBUtils.htmlDecode(commentBody) + approved + '</div>');
+                    
+                });
+
+            }
+        }
+    });
+    TBUtils.longLoadSpinner(false);
+    
+
+}
+
+
+function getRatelimit() {    
+    $.getJSON('http://www.reddit.com/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
+        var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
+        var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+        addComments(ratelimitRemaining, ratelimitReset);
+    });
+
+}
+
+function addComments(ratelimit, ratelimitReset) {
+    commentLoadActive = true;    
+    var commentCount = 0;
+    if (ratelimit === undefined) {
+        getRatelimit();
+    } else {
+        TBUtils.longLoadSpinner(true);
+        $('.modactionlisting table tr.modactions').each(function () {
+        
+            var $this = $(this);
+            var isComment = $this.find('.description').text();
+            var removedUrl = $this.find('.description a').attr('href');
+            var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
+            commentID = commentID[1];
+            if (isComment.indexOf("removed comment by") >= 0 && !$this.find('.description').attr('id')) {
+                commentCount = commentCount + 1;
+            }
+            $.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
+            // lets add a little buffer just to be sure
+
+        });
+
+        commentCount = commentCount + 10;
+        if (parseInt(ratelimit) < commentCount) {
+            $('body').find('#ratelimit-counter').show();
+            var count = parseInt(ratelimitReset);
+            var counter = setInterval(timer, 1000);
+
+            function timer() {
+
+                count = count - 1;
+                if (count <= 0) {
+                    clearInterval(counter);
+                    $('body').find('#ratelimit-counter').empty();
+                    $('body').find('#ratelimit-counter').hide();
+                    getComments();
+                    return;
+                }
+
+                var minutes = Math.floor(count / 60);
+                var seconds = count - minutes * 60;
+
+                $('body').find('#ratelimit-counter').html('<b>Oh dear, it seems we have hit a limit, waiting for ' + minutes + ' minutes and ' + seconds + ' seconds </b>\
+                <br><br>\
+                <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimit + ' requests</i>. We are currently trying to load <i>'+ parseInt(commentCount-10) + ' comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+                ');
+                
+            }
+
+
+        } else {
+            getComments();
+        }
+    }
+
+}
+
+
+$('body').on('click', '.activate-comment-load', function () {
+    addComments();
+});
+// NER support.
+window.addEventListener("TBNewThings", function () {
+    if (commentLoadActive) {
+        addComments();
+    }
+});
+    
+    
 })();

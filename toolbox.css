@@ -1217,7 +1217,6 @@ body.mod-page .thing {
 
 #mod-matrix-wrapper a {
     cursor: pointer;
-    color: #fff;
 }
 
 #mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {

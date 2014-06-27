@@ -139,7 +139,8 @@ modButton.init = function init() {
         showglobal = modButton.setting('globalbutton');
 
     modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
-    
+
+    // it's Go Time™!
     modButton.run();
 
     // NER support.
@@ -243,7 +244,8 @@ modButton.init = function init() {
                         <button class="setting-save">Save Settings</button>'
                 }
             ],
-            '<label class="user">' + user + '</label><label class="subreddit">' + subreddit + '</label><label class="thing_id">' + thing_id + '</label>'
+            '<label class="user">' + user + '</label><label class="subreddit">' + subreddit + '</label><label class="thing_id">' + thing_id + '</label>',
+            'mod-popup' // class
         ).appendTo('body')
         .css({
             left: event.pageX - 50,
@@ -260,10 +262,10 @@ modButton.init = function init() {
             // Hide the flair tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
-            $popup.find('.mod-popup-tabs .user_flair').remove();
+            $popup.find('.tb-popup-tabs .user_flair').remove();
 
             // We can oly nuke comments in subs we mod.
-            $popup.find('.mod-popup-tabs .nuke_comment_chain').remove();
+            $popup.find('.tb-popup-tabs .nuke_comment_chain').remove();
         }
 
         if (TB.utils.isModmail || TB.utils.isModpage) {
@@ -290,7 +292,7 @@ modButton.init = function init() {
 
                         $popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
                         $popup.find(".ban-note").val(banned[i].note);
-                        $popup.find('.mod-popup-title').css('color', 'red');
+                        $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
                         $.get("http://www.reddit.com/r/" + subreddit + "/about/log/.json", { type: 'banuser', limit: '1000' }, function (data) {
@@ -370,7 +372,7 @@ modButton.init = function init() {
 			banDuration = $popup.find('.ban-duration').val(),
             subreddits = [],
             user = $popup.find('.user').text();
-            
+
             if (isNaN(banDuration)) {
                 banDuration = '';
             } else if($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
@@ -378,7 +380,7 @@ modButton.init = function init() {
                 banMessage = banMessage + '  \n \n\
 *You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
 			}
-            
+
         modButton.setting('lastaction', actionName);
 
         // Check dem values.
@@ -478,7 +480,7 @@ modButton.init = function init() {
                     api_type: 'json'
                 })
                 .success(function (resp) {
-                    
+
                     if (!$.isEmptyObject(resp) && !$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
                        $timer.pause();
                        $.log('ratelimited');
@@ -513,7 +515,7 @@ modButton.init = function init() {
         $.log(thing_id);
     });
 
-    $('body').on('click', '.mod-popup-tabs .user_flair', function () {
+    $('body').on('click', '.tb-popup-tabs .user_flair', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
             user = $popup.find('.user').text(),

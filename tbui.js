@@ -85,22 +85,23 @@
                 2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII='
 
     // Popup HTML generator
-    TBui.popup = function popup(title, tabs, meta) {
+    TBui.popup = function popup(title, tabs, meta, css_class) {
         meta = (typeof meta !== "undefined") ? meta : null;
+        css_class = (typeof css_class !== "undefined") ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         var $popup = $('\
-<div class="mod-popup">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
-    <div class="mod-popup-header">\
-        <div class="mod-popup-title">' + title + '</div>\
+<div class="tb-popup'+(css_class ? ' '+css_class : '')+'">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+    <div class="tb-popup-header">\
+        <div class="tb-popup-title">' + title + '</div>\
         <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
     </div>\
 <div>');
         if (tabs.length == 1) {
-            $popup.append($('<div class="mod-popup-content">' + tabs[0].content + '</div>'));
-            $popup.append($('<div class="mod-popup-footer">' + tabs[0].footer + '</div>'));
+            $popup.append($('<div class="tb-popup-content">' + tabs[0].content + '</div>'));
+            $popup.append($('<div class="tb-popup-footer">' + tabs[0].footer + '</div>'));
         } else if (tabs.length > 1) {
-            $popup.append($('<div class="mod-popup-tabs"></div>'));
+            $popup.append($('<div class="tb-popup-tabs"></div>'));
 
             for (var i=0; i<tabs.length; i++) {
                 var tab = tabs[i];
@@ -111,11 +112,11 @@
                     var tab = e.data.tab;
 
                     // hide others
-                    $popup.find('.mod-popup-tabs a').removeClass('active');
-                    $popup.find('.mod-popup-tab').hide();
+                    $popup.find('.tb-popup-tabs a').removeClass('active');
+                    $popup.find('.tb-popup-tab').hide();
 
                     // show current
-                    $popup.find('.mod-popup-tab.'+tab.id).show();
+                    $popup.find('.tb-popup-tab.'+tab.id).show();
                     $(this).addClass('active');
 
                     e.preventDefault();
@@ -124,12 +125,12 @@
                 // default first tab is active tab
                 if (i==0) { $button.addClass('active'); }
 
-                $button.appendTo($popup.find('.mod-popup-tabs'));
+                $button.appendTo($popup.find('.tb-popup-tabs'));
 
 
-                var $tab = $('<div class="mod-popup-tab '+tab.id+'"></div>');
-                $tab.append($('<div class="mod-popup-content">'+tab.content+'</div>'));
-                $tab.append($('<div class="mod-popup-footer">'+tab.footer+'</div>'));
+                var $tab = $('<div class="tb-popup-tab '+tab.id+'"></div>');
+                $tab.append($('<div class="tb-popup-content">'+tab.content+'</div>'));
+                $tab.append($('<div class="tb-popup-footer">'+tab.footer+'</div>'));
 
                 // default first tab is visible; hide others
                 if (i==0) { $tab.show(); } else { $tab.hide(); }

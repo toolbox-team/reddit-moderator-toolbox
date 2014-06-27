@@ -548,14 +548,6 @@ img.note-close {
     float: left;
 }
 
-.utagger-popup .status {
-    display: none;
-}
-
-.utagger-popup .buttons {
-    padding-top: 10px !important;
-}
-
 .add-user-tag:hover {
     text-decoration: underline;
 }
@@ -614,7 +606,7 @@ img.note-close {
     cursor: pointer;
 }
 
-.mod-toolbox .mod-popup, .mod-toolbox .utagger-popup {
+.mod-toolbox .tb-popup {
     font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
     font-size: small;
     max-width: 1000px;
@@ -626,7 +618,7 @@ img.note-close {
     z-index: 10000;
 }
 
-.mod-popup-header, .utagger-popup-header {
+.tb-popup-header {
     right: 0px;
     left: 0px;
     display: block;
@@ -637,24 +629,22 @@ img.note-close {
     font-size: small;
     border-bottom: solid 1px #A8B5C2;
 }
-.mod-popup-header .mod-popup-title {
+.tb-popup-header .tb-popup-title {
     margin: 0 14px;
 }
 
-.mod-toolbox .mod-popup .mod-popup-header .buttons,
-.mod-toolbox .utagger-popup .close.right {
-    float: right;
+.mod-toolbox .tb-popup .tb-popup-header .buttons {
     position: absolute;
     top: 4px;
     right: 4px;
 }
 
-.mod-popup-tabs {
+.tb-popup-tabs {
     border-bottom: 1px solid #A8B5C2;
     background-color: #C7D6E6;
 }
 
-.mod-popup-tabs a {
+.tb-popup-tabs a {
     background-color: #C7D6E6;
     border-right: 1px dotted #A8B5C2;
     display: inline-block;
@@ -662,13 +652,13 @@ img.note-close {
     cursor: pointer;
 }
 
-.mod-popup-tabs a:hover,
-.mod-popup-tabs a.active {
+.tb-popup-tabs a:hover,
+.tb-popup-tabs a.active {
     background-color: #9FBAD6;
 }
 
 
-.mod-popup-content {
+.tb-popup-content {
     overflow: auto;
     left: 0px;
     right: 0px;
@@ -684,14 +674,7 @@ img.note-close {
     padding: 3px;
 }
 
-.utagger-popup-content {
-    overflow: auto;
-    left: 0px;
-    right: 0px;
-    padding: 5px !important;
-}
-
-.mod-popup-footer, .utagger-popup-footer {
+.tb-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -701,7 +684,7 @@ img.note-close {
     border-top: solid 1px #A8B5C2;
 }
 
-.mod-popup .status {
+.tb-popup .status {
 }
 
 .mod-popup .add-sub-link {

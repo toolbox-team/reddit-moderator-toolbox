@@ -344,13 +344,38 @@
             link = squashPermalink(info.permalink);
 
         // Make box & add subreddit radio buttons
-        var popup = $(
-            '<div class="utagger-popup">\
-                <div class="utagger-popup-header">\
-                    User Notes - <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>\
-                    <span class="close right"><a href="javascript:;">✕</a></span>\
-                </div>\
-                <div class="utagger-popup-content">\
+        // var popup = $(
+        //     '<div class="utagger-popup">\
+        //         <div class="utagger-popup-header">\
+        //             User Notes - <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>\
+        //             <span class="close right"><a href="javascript:;">✕</a></span>\
+        //         </div>\
+        //         <div class="utagger-popup-content">\
+        //             <table class="utagger-notes"><tbody><tr>\
+        //                 <td class="utagger-notes-td1">Author</td>\
+        //                 <td class="utagger-notes-td2">Note</td>\
+        //                 <td class="utagger-notes-td3"></td>\
+        //             </tr></tbody></table>\
+        //             <table class="utagger-type"><tbody>\
+        //             <tr>\
+        //             <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
+        //             </tr>\
+        //             </tbody></table>\
+        //             <span>\
+        //                 <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+        //                 <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
+        //             </span>\
+        //         </div>\
+        //         <div class="utagger-popup-footer">\
+        //                 <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '">\
+        //         </div>\
+        //         </div>'
+        // )
+        var popup = TB.ui.popup(
+            'User Notes - <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>',
+            [
+                {
+                    content: '\
                     <table class="utagger-notes"><tbody><tr>\
                         <td class="utagger-notes-td1">Author</td>\
                         <td class="utagger-notes-td2">Note</td>\
@@ -364,12 +389,13 @@
                     <span>\
                         <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
                         <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
-                    </span>\
-                </div>\
-                <div class="utagger-popup-footer">\
-                        <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '">\
-                </div>\
-                </div>'
+                    </span>',
+                    footer: '\
+                        <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '">'
+                }
+            ],
+            '', // meta to inject in popup header; just a placeholder
+            'utagger-popup' // class
         )
             .appendTo('body')
             .css({

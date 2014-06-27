@@ -983,8 +983,8 @@ body .thing.flaired {
     display: inline-block;
     width: 300px;
 }
-.user-history div.mod-popup-content {
-    width: 650px;  };
+.user-history div.tb-popup-content {
+    width: 650px;  
 }
 
 .user-history {
@@ -1131,7 +1131,6 @@ body .thing.flaired {
 }
 
 .moderator-table tr:nth-child(even),
-.banned-table tr:nth-child(odd),
 .contributor-table tr:nth-child(even),
 .wikirevisionlisting .generic-table tr:nth-child(even),
 .modactionlisting .generic-table tr:nth-child(even) {
@@ -1144,7 +1143,7 @@ body .thing.flaired {
 }
 
 .moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
-    background: #F5F5F5;
+    background: #F5F5F5 !important;
 }
 
 
@@ -1852,15 +1851,14 @@ div.sticky {
 .res-nightmode .modactionlisting .generic-table tr:nth-child(even):hover,
 .res-nightmode .wikirevisionlisting .generic-table tr:hover,
 .res-nightmode .wikirevisionlisting .generic-table tr:nth-child(even):hover{
-    background-color: #34383C !important;
+    background-color: #34383C;
 }
 
 .res-nightmode .moderator-table tr:nth-child(even),
-.banned-table tr:nth-child(odd),
 .contributor-table tr:nth-child(even),
 .res-nightmode .wikirevisionlisting .generic-table tr:nth-child(even),
 .res-nightmode .modactionlisting .generic-table tr:nth-child(even) {
-    background: #303030 !important;
+    background: #303030  !important;
 }
 
 /* css fix for banlist module */

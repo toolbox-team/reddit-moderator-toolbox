@@ -983,7 +983,7 @@ body .thing.flaired {
     display: inline-block;
     width: 300px;
 }
-.user-history div.mod-popup-content {
+.user-history div.tb-popup-content {
     width: 650px;  };
 }
 
@@ -1648,34 +1648,34 @@ div.sticky {
     border-top: 1px dotted #C1BFBF;
 }
 
-.mod-toolbox.res-nightmode .mod-popup, .mod-toolbox.res-nightmode .utagger-popup {
+.mod-toolbox.res-nightmode .tb-popup, .mod-toolbox.res-nightmode .utagger-popup {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode .mod-popup-header, .utagger-popup-header {
+.mod-toolbox.res-nightmode .tb-popup-header, .utagger-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs {
+.mod-toolbox.res-nightmode .tb-popup-tabs {
     border-bottom: 1px solid #39526b;
     background-color: #828B96;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs a {
+.mod-toolbox.res-nightmode .tb-popup-tabs a {
     background-color: #828B96;
     border-right: 1px dotted #39526b;
     color: #393E44;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs a:hover,
-.mod-toolbox.res-nightmode .mod-popup-tabs a.active {
+.mod-toolbox.res-nightmode .tb-popup-tabs a:hover,
+.mod-toolbox.res-nightmode .tb-popup-tabs a.active {
     background-color: #5D7186;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-footer, .utagger-popup-footer {
+.mod-toolbox.res-nightmode .tb-popup-footer, .utagger-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -1685,31 +1685,31 @@ div.sticky {
     border-top: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .status {
+.mod-toolbox.res-nightmode .tb-popup .status {
 }
 
-.mod-toolbox.res-nightmode .mod-popup .add-sub-link {
+.mod-toolbox.res-nightmode .tb-popup .add-sub-link {
     text-decoration: none;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .remove-sub-link {
+.mod-toolbox.res-nightmode .tb-popup .remove-sub-link {
     text-decoration: none;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .global-button {
+.mod-toolbox.res-nightmode .tb-popup .global-button {
     color: red;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .current-sub,
-.mod-toolbox.res-nightmode .mod-popup .saved-subs div,
-.mod-toolbox.res-nightmode .mod-popup div.other-sub,
-.mod-toolbox.res-nightmode .mod-popup .ban-note-container {
+.mod-toolbox.res-nightmode .tb-popup .current-sub,
+.mod-toolbox.res-nightmode .tb-popup .saved-subs div,
+.mod-toolbox.res-nightmode .tb-popup div.other-sub,
+.mod-toolbox.res-nightmode .tb-popup .ban-note-container {
     width: 225px;
     border-bottom: 1px dotted gray;
     padding: 5px;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .current-sub {
+.mod-toolbox.res-nightmode .tb-popup .current-sub {
     border-bottom: 1px solid gray;
 }
 
@@ -1813,7 +1813,6 @@ div.sticky {
 
 .user-history .table {
     border-bottom: 1px dotted lightgray;
-    border-top: 1px solid lightgray;
 }
 
 .edit-wikidata {

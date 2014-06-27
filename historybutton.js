@@ -43,12 +43,12 @@ historyButton.init = function() {
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
             contentBox = $('.inline-content').show().offset($(this).offset()).html('\
-            <div class="mod-popup user-history">\
-            <div class="mod-popup-header">\
-                <div class="mod-popup-title">User history for ' + author + '\</div>\
+            <div class="tb-popup user-history">\
+            <div class="tb-popup-header">\
+                <div class="tb-popup-title">User history for ' + author + '\</div>\
                 <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
             </div>\
-            <div class=" mod-popup-content">\
+            <div class=" tb-popup-content">\
             <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Report Spammer</a>\
             <div><br /><b>Submission history:</b></div>\
             <div class="table domain-table">\
@@ -59,7 +59,7 @@ historyButton.init = function() {
             </div><div class="table subreddit-table">\
             <table><thead><tr><th>subreddit submitted to</th><th>count</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
             </div></div>\
-                <div class="mod-popup-footer">\
+                <div class="tb-popup-footer">\
                 </div>\
             </div>\
             '),

@@ -6,7 +6,7 @@ historyButton.addUserHistoryLink = function() {
 };
 
 // This should be a setting, methinks.
-historyButton.SPAM_REPORT_SUB = 'creesch';
+historyButton.SPAM_REPORT_SUB = 'spam';
 
 historyButton.init = function() {
     var self = this;

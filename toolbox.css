@@ -1127,14 +1127,14 @@ body .thing.flaired {
 .modactionlisting .generic-table tr:nth-child(even):hover,
 .wikirevisionlisting .generic-table tr:hover,
 .wikirevisionlisting .generic-table tr:nth-child(even):hover{
-    background-color: #CEE3F8 !important;
+    background-color: rgba(80, 123, 167, 0.2) !important;
 }
 
 .moderator-table tr:nth-child(even),
 .contributor-table tr:nth-child(even),
 .wikirevisionlisting .generic-table tr:nth-child(even),
 .modactionlisting .generic-table tr:nth-child(even) {
-    background: #F5F5F5 !important;
+    background: rgba(162, 162, 162, 0.2) !important;
 }
 
 /* css fix for banlist module */
@@ -1143,8 +1143,13 @@ body .thing.flaired {
 }
 
 .moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
-    background: #F5F5F5 !important;
+    background: rgba(162, 162, 162, 0.2) !important;
 }
+
+.moderator-table.filtered tr.visible.even:hover , .banned-table.filtered tr.visible.even:hover, .contributor-table.filtered tr.visible.even:hover {
+    background-color: rgba(80, 123, 167, 0.2)  !important;
+}
+
 
 
 /* Modtools mod page-only CSS */

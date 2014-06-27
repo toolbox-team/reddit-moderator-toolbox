@@ -1214,8 +1214,10 @@ body.mod-page .thing {
 }
 
 /* mod log matrix */
+
 #mod-matrix-wrapper a {
     cursor: pointer;
+    color: #fff;
 }
 
 #mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {
@@ -1845,34 +1847,6 @@ div.sticky {
     border-top: solid 1px #39526b;
 }
 
-/* various reddit css fixes for mods */
-
-.res-nightmode .moderator-table tr:hover,
-.res-nightmode .moderator-table tr:nth-child(even):hover,
-.res-nightmode .banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.res-nightmode .contributor-table tr:hover,
-.res-nightmode .contributor-table tr:nth-child(even):hover,
-.res-nightmode .modactionlisting .generic-table tr:hover,
-.res-nightmode .modactionlisting .generic-table tr:nth-child(even):hover,
-.res-nightmode .wikirevisionlisting .generic-table tr:hover,
-.res-nightmode .wikirevisionlisting .generic-table tr:nth-child(even):hover{
-    background-color: #34383C;
-}
-
-.res-nightmode .moderator-table tr:nth-child(even),
-.contributor-table tr:nth-child(even),
-.res-nightmode .wikirevisionlisting .generic-table tr:nth-child(even),
-.res-nightmode .modactionlisting .generic-table tr:nth-child(even) {
-    background: #303030  !important;
-}
-
-/* css fix for banlist module */
-
-.res-nightmode .moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
-    background: #303030;
-}
-
-
 /* Modtools mod page-only CSS */
 
 body.res-nightmode.mod-page .subscription-box .option.add {
@@ -1905,7 +1879,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 .res-nightmode #mod-matrix .action-number {
-    color: #000;
+    color: #CECECE;
 }
 
 .res-nightmode #mod-matrix .zero a, .res-nightmode #mod-matrix .zero span {
@@ -1917,21 +1891,9 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 
-/* For css syntax highlighting */
-#stylesheet_contents_div, #json_contents_div, #wiki_contents_div {
-    height: 500px;
-    border: solid 1px #E4E4E4;
-}
-
 .res-nightmode .tb-internal-overlay {
-    display: block;
-    position: absolute;
     background-color: rgba(255, 255, 255, 0.82);
-    top: 24px;
-    bottom: 31px;
-    z-index: 9999999;
-    left: 0px;
-    right: 0px;
+
 }
 
 

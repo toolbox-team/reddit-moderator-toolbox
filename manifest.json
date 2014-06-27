@@ -30,7 +30,7 @@
 				"libs/mode-json.js",
 				"libs/mode-yaml.js",
 				"libs/ace-themes.js",
-				"storage.js",
+				"tbstorage.js",
 				"tbui.js",
 				"jquery-plugins.js",
 				"tbutils.js",

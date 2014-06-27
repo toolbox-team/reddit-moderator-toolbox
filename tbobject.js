@@ -3,6 +3,7 @@
 TB = {
     utils: TBUtils,
     ui: TBui,
+	storage: TBStorage,
 
     modules: {},
     moduleList: [],

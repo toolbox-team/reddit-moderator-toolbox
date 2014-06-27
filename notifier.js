@@ -30,6 +30,7 @@
         modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
         modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
+        straightToInbox = TBUtils.getSetting('Notifier', 'straightToInbox', false),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         consoleShowing = TBUtils.getSetting('Notifier', 'consoleshowing', false),
@@ -372,6 +373,9 @@
             <p>\
                 <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
                 <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailSubreddits + '/about/message/moderator/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+            <label><input type="checkbox" id="straightToInbox" ' + ((straightToInbox) ? "checked" : "") + '> When clicking a comment notification go to the inbox.</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
@@ -753,6 +757,9 @@
         TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
         highlighted = $("input[name=highlighted]").val();
+        
+        TBUtils.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
+        
 
         if (highlighted.substr(highlighted.length - 1) === ',') {
             highlighted = highlighted.slice(0, -1);
@@ -1002,7 +1009,13 @@
         function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
             $.getJSON(unreadcontexturl, function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
+                if(straightToInbox && messageunreadlink) {
+                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/unread/');
+                } else if (straightToInbox) {
+                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/inbox/');
+                } else {
                 TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com' + unreadcontext);
+                }
             });
         }
 

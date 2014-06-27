@@ -41,6 +41,7 @@
         approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
         spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
         hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false),
+        highlightTitles = TBUtils.getSetting('CommentsMod', 'highlightTitles', true),
         settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
 
 
@@ -516,7 +517,8 @@
             </p>\
             <p>\
                 Highlight keywords, keywords should entered separated by a comma without spaces:<br>\
-            <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '">\
+            <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '"><br>\
+            <label><input type="checkbox" id="highlightTitles" ' + ((highlightTitles) ? "checked" : "") + '> Also highlight titles of submissions.</label>\
             </p>\
             <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
             </div>\
@@ -761,7 +763,8 @@
         TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));
         TBUtils.setSetting('CommentsMod', 'spamremoved', $("#spamRemoved").prop('checked'));
         TBUtils.setSetting('CommentsMod', 'hamspammed', $("#hamSpammed").prop('checked'));
-
+        TBUtils.setSetting('CommentsMod', 'highlightTitles', $("#highlightTitles").prop('checked'));
+        
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
             TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);

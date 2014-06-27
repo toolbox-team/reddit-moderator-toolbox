@@ -117,6 +117,10 @@
             highlighted = highlighted.split(',');
 
             $('.md p').highlight(highlighted);
+            
+            if (TBUtils.getSetting('CommentsMod', 'highlightTitles', true)) {     
+                $('a.title').highlight(highlighted);
+            }
         }
     }
     // NER support.

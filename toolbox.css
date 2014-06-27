@@ -1416,7 +1416,7 @@ height: 300px;
 
 
 .ace_editor {
-   resize:both;    
+   resize:both;
       -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
@@ -1424,7 +1424,7 @@ height: 300px;
 }
 
 .ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar {
-   resize: none;    
+   resize: none;
 }
 
 
@@ -1845,7 +1845,7 @@ div.sticky {
 .res-nightmode .moderator-table tr:hover,
 .res-nightmode .moderator-table tr:nth-child(even):hover,
 .res-nightmode .banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.res-nightmode .contributor-table tr:hover, 
+.res-nightmode .contributor-table tr:hover,
 .res-nightmode .contributor-table tr:nth-child(even):hover,
 .res-nightmode .modactionlisting .generic-table tr:hover,
 .res-nightmode .modactionlisting .generic-table tr:nth-child(even):hover,

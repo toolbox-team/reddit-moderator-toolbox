@@ -1214,9 +1214,7 @@ body.mod-page .thing {
     cursor: pointer;
 }
 
-#mod-matrix thead th, #mod-matrix tfoot td,
-#mod-matrix tbody td.action-total,
-#mod-matrix tbody td.action-percentage {
+#mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {
     font-weight: bold;
 }
 
@@ -1281,8 +1279,7 @@ body.mod-page .thing {
     color: #f00;
 }
 
-#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered,
-#mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
+#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered, #mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
     display: none;
 }
 
@@ -1344,8 +1341,7 @@ body.mod-page .thing {
     -webkit-transform: rotate(-90.0deg);
     transform: rotate(-90.0deg);
 }
-/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please 
- * yell at creesch to make a template for this specific use case */
+/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */
 
 /* Font size fixes, probably more will be needed */
 .mod-toolbox .tb-frame-module .md {
@@ -1420,7 +1416,7 @@ height: 300px;
 
 
 .ace_editor {
-   resize:both;
+   resize:both;    
       -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
@@ -1428,7 +1424,7 @@ height: 300px;
 }
 
 .ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar {
-   resize: none;
+   resize: none;    
 }
 
 
@@ -1849,7 +1845,7 @@ div.sticky {
 .res-nightmode .moderator-table tr:hover,
 .res-nightmode .moderator-table tr:nth-child(even):hover,
 .res-nightmode .banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.res-nightmode .contributor-table tr:hover,
+.res-nightmode .contributor-table tr:hover, 
 .res-nightmode .contributor-table tr:nth-child(even):hover,
 .res-nightmode .modactionlisting .generic-table tr:hover,
 .res-nightmode .modactionlisting .generic-table tr:nth-child(even):hover,

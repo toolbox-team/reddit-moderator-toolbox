@@ -452,7 +452,7 @@
                 <label><input type="checkbox" id="syntaxHighlighterEnabled" ' + ((syntaxHighlighterEnabled) ? "checked" : "") + '> Enable Syntax Highlighter Module</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Thursday Buttermilk Colonoscopy</label>\
+                <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Modlog Utilities</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="notifierEnabled" ' + ((notifierEnabled) ? "checked" : "") + '> Enable Notifier (queue counts and desktop notifications)</label>\

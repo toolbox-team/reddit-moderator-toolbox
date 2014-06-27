@@ -106,4 +106,10 @@
 
 
 
+$('.ace_editor').on("webkitTransitionEnd transitionend oTransitionEnd", function () {
+   editor.resize();
+});
+
+   
+
 })();

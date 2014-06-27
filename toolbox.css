@@ -1417,6 +1417,20 @@ width: 98%;
 height: 300px;
 }
 
+
+.ace_editor {
+   resize:both;    
+      -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+   -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+   -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+   transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+}
+
+.ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar {
+   resize:none;    
+}
+
+
 /* toolbox loading */
 #tb-loading {
     left:0px;

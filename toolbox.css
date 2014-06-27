@@ -1214,7 +1214,9 @@ body.mod-page .thing {
     cursor: pointer;
 }
 
-#mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {
+#mod-matrix thead th, #mod-matrix tfoot td,
+#mod-matrix tbody td.action-total,
+#mod-matrix tbody td.action-percentage {
     font-weight: bold;
 }
 
@@ -1279,7 +1281,8 @@ body.mod-page .thing {
     color: #f00;
 }
 
-#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered, #mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
+#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered,
+#mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
     display: none;
 }
 
@@ -1341,7 +1344,8 @@ body.mod-page .thing {
     -webkit-transform: rotate(-90.0deg);
     transform: rotate(-90.0deg);
 }
-/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */
+/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please 
+ * yell at creesch to make a template for this specific use case */
 
 /* Font size fixes, probably more will be needed */
 .mod-toolbox .tb-frame-module .md {
@@ -1416,7 +1420,7 @@ height: 300px;
 
 
 .ace_editor {
-   resize:both;    
+   resize:both;
       -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
@@ -1424,7 +1428,7 @@ height: 300px;
 }
 
 .ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar {
-   resize:none;    
+   resize: none;
 }
 
 
@@ -1543,7 +1547,8 @@ border: solid 1px #808080;
     box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode .tb-window-wrapper a:hover, .mod-toolbox.res-nightmode .tb-window-tabs a:hover {
+.mod-toolbox.res-nightmode .tb-window-wrapper a:hover,
+.mod-toolbox.res-nightmode .tb-window-tabs a:hover {
     color: #000 !important;
 }
 
@@ -1552,7 +1557,9 @@ border: solid 1px #808080;
     border-bottom: solid 1px #111;
 }
 
-.mod-toolbox.res-nightmode .tb-window-header-options a, .mod-toolbox.res-nightmode .buttons a,  .mod-toolbox.res-nightmode .utagger-popup-header a, .mod-toolbox.res-nightmode .tb-debug-header a {
+.mod-toolbox.res-nightmode .tb-window-header-options a,
+.mod-toolbox.res-nightmode .buttons a,
+.mod-toolbox.res-nightmode .tb-debug-header a {
     color: #393E44;
 }
 
@@ -1648,13 +1655,13 @@ div.sticky {
     border-top: 1px dotted #C1BFBF;
 }
 
-.mod-toolbox.res-nightmode .mod-popup, .mod-toolbox.res-nightmode .utagger-popup {
+.mod-toolbox.res-nightmode .mod-popup {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode .mod-popup-header, .utagger-popup-header {
+.mod-toolbox.res-nightmode .mod-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
@@ -1675,7 +1682,7 @@ div.sticky {
     background-color: #5D7186;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-footer, .utagger-popup-footer {
+.mod-toolbox.res-nightmode .mod-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -1842,7 +1849,7 @@ div.sticky {
 .res-nightmode .moderator-table tr:hover,
 .res-nightmode .moderator-table tr:nth-child(even):hover,
 .res-nightmode .banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.res-nightmode .contributor-table tr:hover, 
+.res-nightmode .contributor-table tr:hover,
 .res-nightmode .contributor-table tr:nth-child(even):hover,
 .res-nightmode .modactionlisting .generic-table tr:hover,
 .res-nightmode .modactionlisting .generic-table tr:nth-child(even):hover,

@@ -154,6 +154,23 @@
 
     $('body').append(modbar);
 
+    if(TBUtils.betaMode) {    
+        $('body').append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1><table></table>');
+        $('body').find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
+        
+        $(TBUtils.mySubs).each(function () {
+            $('body').find('#tb-my-subreddits table').append('\
+            <tr><td><a href="/r/'+ this +'" target="_blank">/r/'+ this +'</a></td> \
+            <td><a title="/r/'+ this +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this +'/about/message/moderator" class="generic-mail"></a>\
+            <a title="/r/'+ this +' modqueue" target="_blank" href="http://www.reddit.com/r/'+ this +'/about/modqueue" class="generic-modqueue"></a>\
+            <a title="/r/'+ this +' unmoderated" target="_blank" href="http://www.reddit.com/r/'+ this +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
+            ');
+        });
+        
+        $('body').on('click', '#tb-toolbar-mysubs', function() {
+            $('body').find('#tb-my-subreddits').toggle();
+        });
+    }
     // if mod counters are on we append them to the rest of the counters here.
     if (unmoderatedOn) {
         $('#tb-bottombar').find('#tb-toolbarcounters').append('\

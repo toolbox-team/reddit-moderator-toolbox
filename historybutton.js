@@ -90,6 +90,7 @@ historyButton.init = function () {
             }).done(function (d) {
                 if ($.isEmptyObject(d.data.children)) {
                     TBUtils.longLoadSpinner(false);
+                    $('body').find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
                     gettingUserdata = false;
 
                 }
@@ -175,6 +176,7 @@ historyButton.init = function () {
                     populateHistory(after);
                 } else {
                     TBUtils.longLoadSpinner(false);
+                    $('body').find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
                     gettingUserdata = false;
                 }
 
@@ -186,7 +188,12 @@ historyButton.init = function () {
         return false;
     });
 
-
+    // Markdown button pressed
+    $('.inline-content').on('click', '.markdown-report', function () {
+    var markdownReport = $('body').find('.rts-report').attr('data-commentbody');
+        $('body').find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
+        
+    });
     // RTS button pressed
     $('.inline-content').on('click', '.rts-report', function () {
         var rtsLink = this,

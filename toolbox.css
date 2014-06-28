@@ -1015,20 +1015,31 @@ body .thing.flaired {
 
 .user-history .table {
     margin: 10px;
-    max-height: 300px;
+    height: 300px;
     max-width: 300px;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-bottom: 1px dotted lightgray;
+}
+
+.user-history #submission-markdown-text {
+    width: 97% !important;
+    min-height: 100px;
+}
+
+.user-history .submission-markdown {
+    margin: 0px 10px;
 }
 
 .user-history .table .error {
     text-align: center;
 }
 
-.rts-report,.rts-report-clicked {
+.rts-report,.rts-report-clicked, .markdown-report {
     font-weight: bold;
     font-size: x-small;
+    padding: 0px 5px 0px 5px;
+    border-left: solid 1px #369;
     float: right;
 }
 

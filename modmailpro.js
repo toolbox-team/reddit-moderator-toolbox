@@ -104,11 +104,12 @@
         // Hide invite spam.
         if (hideInviteSpam && inbox != UNREAD) {
             $('.invitespam').each(function () {
-                if ($(this).hasClass('new')) {
-                $(this).find('.entry').click();
+                var $this = $(this);
+                if ($this.hasClass('new')) {
+                $this.find('.entry').click();
                 }
 
-                $(this).hide();
+                $this.hide();
             });
         }
     }
@@ -131,15 +132,16 @@
     });
 
     $('body').on('click', '.collapse-link', function () {
-        var parent = $(this).closest('.message-parent');
-        if ($(this).text() === '[-]') {
+        var $this = $(this),
+            parent = $this.closest('.message-parent');
+        if ($this.text() === '[-]') {
             parent.find('.entry').hide();
             parent.find('.expand-btn').hide();
-            $(this).text('[+]');
+            $this.text('[+]');
         } else {
             parent.find('.entry').show();
             parent.find('.expand-btn').show();
-            $(this).text('[-]');
+            $this.text('[-]');
 
             //Show all comments
             if (expandReplies) {
@@ -361,11 +363,12 @@
         }
 
         threads.each(function () {
-            var id = $(this).attr('data-fullname');
+            var $this = $(this),
+                id = $this.attr('data-fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
-                $(this).find('.replied-tag').text('R');
-                $(this).removeClass('invitespam'); //it's not spam if we replied.
+                $this.find('.replied-tag').text('R');
+                $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });
     }
@@ -410,20 +413,21 @@
 
     function showThreads(items, byID) {
         $('.message-parent').each(function () {
-            $(this).hide();
+            var $this = $(this);
+            $this.hide();
 
             if (!byID) {
                 var subname = getSubname(this);
 
                 if ($.inArray(subname, items) !== -1) {
-                    $(this).show();
+                    $this.show();
                 }
 
             } else {
-                var id = $(this).attr('data-fullname');
+                var id = $this.attr('data-fullname');
 
                 if ($.inArray(id, items) !== -1) {
-                    $(this).show();
+                    $this.show();
                 }
             }
         });
@@ -432,11 +436,11 @@
     function hideThreads(subs) {
         $('.message-parent').each(function () {
             var subname = getSubname(this);
-
-            $(this).show();
+            var $this = $(this);
+            $this.show();
 
             if ($.inArray(subname, subs) !== -1) {
-                $(this).hide();
+                $this.hide();
             }
         });
     }
@@ -567,9 +571,10 @@
         });
 
         $('.compose-mail').change(function () {
-            var sub = $(this).val();
+            var $this = $(this);
+            var sub = $this.val();
             if (sub !== COMPOSE) {
-                window.open(composeURL + $(this).val());
+                window.open(composeURL + $this.val());
                 $(composeSelect).val(COMPOSE);
             }
         });
@@ -601,7 +606,7 @@
         $('.switch-mail').change(function () {
             var sub = $(this).val();
             if (sub !== 'modmailswitch') {
-                window.open('http://www.reddit.com/r/' + $(this).val() + '/message/moderator/inbox');
+                window.open('http://www.reddit.com/r/' + sub + '/message/moderator/inbox');
                 $(switchSelect).val('modmailswtich');
             }
         });

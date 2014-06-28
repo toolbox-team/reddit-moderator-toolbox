@@ -798,8 +798,9 @@
             shortcuts2 = {};
 
             $('.tb-window-content-shortcuts-tr').each(function () {
-                var name = $(this).find('input[name=name]').val(),
-                    url = $(this).find('input[name=url]').val();
+                var $this = $(this),
+                    name = $this.find('input[name=name]').val(),
+                    url = $this.find('input[name=url]').val();
 
                 if (name.trim() !== '' || url.trim() !== '') {
                     shortcuts2[escape(name)] = escape(url);

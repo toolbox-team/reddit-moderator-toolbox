@@ -1,14 +1,14 @@
 var historyButton = new TB.Module('History Button');
 
 // Add history button to all users.
-historyButton.addUserHistoryLink = function() {
+historyButton.addUserHistoryLink = function () {
     $(this).append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
 };
 
 // This should be a setting, methinks.
 historyButton.SPAM_REPORT_SUB = 'spam';
 
-historyButton.init = function() {
+historyButton.init = function () {
     var self = this;
 
     var rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true);
@@ -20,7 +20,7 @@ historyButton.init = function() {
 
     // Open inline context
     $('.inline-content').click(function (e) {
-      //  e.stopPropagation();
+        //  e.stopPropagation();
     });
     $('body').on('click', 'a.context', function (e) {
         $('body').on('click', '.user-history-close', function () {
@@ -34,7 +34,7 @@ historyButton.init = function() {
     //User history button pressed
     var gettingUserdata = false;
     $('body').on('click', '.user-history-button', function () {
-        $('body').on('click', '.user-history-close',  function () {
+        $('body').on('click', '.user-history-close', function () {
             $('.inline-content').hide();
             gettingUserdata = false;
         });
@@ -53,11 +53,11 @@ historyButton.init = function() {
             <div><br /><b>Submission history:</b></div>\
             <div class="table domain-table">\
             <table><thead>\
-            <tr><th>domain submitted from</th><th>count</th><th>%</th></tr></thead>\
+            <tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
             <tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
             </table>\
             </div><div class="table subreddit-table">\
-            <table><thead><tr><th>subreddit submitted to</th><th>count</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
+            <table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
             </div></div>\
                 <div class="tb-popup-footer">\
                 </div>\
@@ -79,17 +79,25 @@ historyButton.init = function() {
         });
 
         // Get user's domain & subreddit submission history
+
         (function populateHistory(after) {
-        TBUtils.longLoadSpinner(true);
+            if (typeof after === 'undefined') {
+                TBUtils.longLoadSpinner(true);
+            }
             $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
                 contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
-            }).success(function (d) {
-            
+                TBUtils.longLoadSpinner(false);
+            }).done(function (d) {
+                if ($.isEmptyObject(d.data.children)) {
+                    TBUtils.longLoadSpinner(false);
+                    gettingUserdata = false;
+
+                }
                 if (!gettingUserdata) return;
                 if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
-
-                var after = d.data.after,
-                    commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
+                var after = '';
+                after = d.data.after,
+                commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
                 for (i in d.data.children) {
                     var data = d.data.children[i].data;
@@ -122,17 +130,17 @@ historyButton.init = function() {
                         n = domains[dom].count,
                         url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
                         match = dom.match(/^self.(\w+)$/);
-                        
-                        var subTotal = 0;                        
-                        for (x in domains) {
-                        subTotal = subTotal+domains[x].count;
-                        }
-                 
-                        var percentage = Math.round(n / subTotal * 100); 
-                    if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
-                    domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>'+ percentage + '%</td></tr>');
 
-                    if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|'+ percentage + '%';
+                    var subTotal = 0;
+                    for (x in domains) {
+                        subTotal = subTotal + domains[x].count;
+                    }
+
+                    var percentage = Math.round(n / subTotal * 100);
+                    if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
+                    domaintable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+
+                    if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + percentage + '%';
                 }
                 if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
 
@@ -142,36 +150,39 @@ historyButton.init = function() {
                     return subreddits[b].count - subreddits[a].count;
                 });
                 subreddittable.empty();
-                
-                
+
+
                 for (i in subredditlist) {
                     var sr = subredditlist[i],
-                        n = subreddits[sr].count,                       
+                        n = subreddits[sr].count,
                         url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
-                        
-                        var subTotal = 0;                        
-                        for (x in subreddits) {
-                        subTotal = subTotal+subreddits[x].count;
-                        }
-                 
-                        var percentage = Math.round(n / subTotal * 100); 
-                    subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>'+ percentage + '%</td></tr>');
 
-                    if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage +'%';
+                    var subTotal = 0;
+                    for (x in subreddits) {
+                        subTotal = subTotal + subreddits[x].count;
+                    }
+
+                    var percentage = Math.round(n / subTotal * 100);
+                    subreddittable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+
+                    if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage + '%';
                 }
                 if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
 
                 $('.rts-report').attr('data-commentbody', commentbody);
 
-                if (after) {                
-                populateHistory(after);
-                TBUtils.longLoadSpinner(false);
+                if (after) {
+                    populateHistory(after);
                 } else {
-                gettingUserdata = false;
-                TBUtils.longLoadSpinner(false);
+                    TBUtils.longLoadSpinner(false);
+                    gettingUserdata = false;
                 }
+
+
             });
+
         })();
+
         return false;
     });
 
@@ -196,7 +207,7 @@ historyButton.init = function() {
                 if (submission.json.errors.length) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
                     if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                        rtsLink.href = 'http://www.reddit.com/r/'+historyButton.SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                        rtsLink.href = 'http://www.reddit.com/r/' + historyButton.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
                     }
                     return;
                 }
@@ -213,10 +224,8 @@ historyButton.init = function() {
                 TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                     if (!successful) {
                         rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-                    }
-                    else {
-                        if (comment.json.errors.length)
-                            return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
+                    } else {
+                        if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
                         rtsLink.textContent = 'reported';
                         rtsLink.href = submission.json.data.url;
                         rtsLink.className = '';

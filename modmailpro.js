@@ -695,7 +695,7 @@
 
     if (TBUtils.getSetting('ModMailPro', 'autoload', false)) {
         $(autoload).addClass('true');
-        $(autoload).css(selectedCSS);
+        $(autoload).css(selectedCSS); 
     }
 
     if (!TBUtils.getSetting('Notifier', 'enabled', true)) {

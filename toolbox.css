@@ -10,7 +10,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     background-color: #ffff16;
 }
 
-.mod-toolbox #tb-bottombar {
+.mod-toolbox #tb-bottombar { 
     bottom: 0px;
     z-index: 6000;
     position: fixed;
@@ -1816,6 +1816,15 @@ div.sticky {
     border-bottom: none;
 }
 
+.user-history td.count-td,.user-history td.percentage-td {
+    min-width: 30px !important;
+}
+
+.user-history td.url-td {
+    max-width: 186px !important;
+    word-wrap: break-word;
+}
+
 .user-history th {
     border: 1px solid lightgray;
 }
@@ -1894,8 +1903,3 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     background-color: rgba(255, 255, 255, 0.82);
 
 }
-
-
-
-
-

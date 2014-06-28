@@ -78,6 +78,7 @@
     TBUtils.noConfig = (getnewShort) ? [] : getSetting('cache', 'noconfig', []);
     TBUtils.noNotes = (getnewShort) ? [] : getSetting('cache', 'nonotes', []);
     TBUtils.mySubs = (getnewLong) ? [] : getSetting('cache', 'moderatedsubs', []);
+    TBUtils.mySubsData = (getnewLong) ? [] : getSetting('cache', 'moderatedsubsdata', []);
 
     // Update cache vars as needed.
     if (newLogin) {
@@ -453,6 +454,15 @@
 	  str = str.slice(0, - 1);
 	  return str
 	}
+    
+    TBUtils.sortBy = function (arr, prop) {
+    return arr.sort(function (a, b) {
+        if (a[prop] < b[prop]) return 1;
+        if (a[prop] > b[prop]) return -1;
+        return 0;
+    });
+    };
+    
     // Because normal .sort() is case sensitive.
     TBUtils.saneSort = function (arr) {
         return arr.sort(function (a, b) {
@@ -461,7 +471,7 @@
             return 0;
         });
     };
-
+    
     TBUtils.saneSortAs = function (arr) {
         return arr.sort(function (a, b) {
             if (a.toLowerCase() > b.toLowerCase()) return -1;
@@ -473,13 +483,14 @@
     TBUtils.getModSubs = function (callback) {
 
         // If it has been more than ten minutes, refresh mod cache.
-        if (TBUtils.mySubs.length < 1) {
+        if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
             $.log('getting new subs.');
             TBUtils.mySubs = []; //reset list.
+            TBUtils.mySubsData = [];
             getSubs(modMineURL);
         } else {
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-
+            TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
             // Go!
             callback();
         }
@@ -494,8 +505,31 @@
         function getSubsResult(subs, after) {
             $(subs).each(function () {
                 var sub = this.data.display_name.trim();
-                if ($.inArray(sub, TBUtils.mySubs) === -1)
+                if ($.inArray(sub, TBUtils.mySubs) === -1) {
                     TBUtils.mySubs.push(sub);
+                }
+                
+                
+                var isinthere = false;
+                $(TBUtils.mySubsData).each(function() { 
+                    if (this.subreddit === sub) {
+                        isinthere = true
+                    }
+                });
+                
+                if (!isinthere) {
+                
+                    var subredditData = {
+                    "subreddit": sub,
+                    "subscribers": this.data.subscribers,
+                    "over18": this.data.over18,
+                    "created_utc": this.data.created_utc,
+                    "subreddit_type": this.data.subreddit_type,
+                    "submission_type": this.data.submission_type                 
+                    };
+                    
+                    TBUtils.mySubsData.push(subredditData);
+                }
             });
 
             if (after) {
@@ -503,10 +537,10 @@
                 getSubs(URL);
             } else {
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
-
+                TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
                 // Update the cache.
                 setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-
+                setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
                 // Go!
                 callback();
             }
@@ -1028,6 +1062,7 @@
         TBUtils.noConfig = [];
         TBUtils.noNotes = [];
         TBUtils.mySubs = [];
+        TBUtils.mySubsData = [];
 
         Object.keys(localStorage)
         .forEach(function (key) {
@@ -1164,6 +1199,7 @@
         setSetting('cache', 'noconfig', TBUtils.noConfig);
         setSetting('cache', 'nonotes', TBUtils.noNotes);
         setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+        setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
     };
 

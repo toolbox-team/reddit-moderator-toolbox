@@ -8,7 +8,7 @@
     };
     $.log = function (message, skip) {
         if (!TBUtils.debugMode) return;
-        var caller = arguments.callee.caller.name || 'anonymous function';
+        var caller = (arguments.callee.caller.name === undefined) ? arguments.callee.caller.name : 'anonymous function';
 
         if (skip) {
             console.log(' [' + caller + ']: ');

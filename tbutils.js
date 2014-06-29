@@ -1,12 +1,18 @@
 (function (TBUtils) {
-    var TBInterval = window.setInterval(function () {
-        if (TBStorage.isLoaded === false) {
-            console.log('TBStorage not loaded');
-            return;
-        }
-        window.clearInterval(TBInterval);
-        TBInterval = null;
-    }, 50);
+    
+    function initLoop() {
+        setTimeout(function () {
+            if (TBStorage.isLoaded === true) {
+                console.log("loaded storage, starting tbutils");
+                //return;
+            } else {
+                console.log("no storage, looping (tbu)");
+                initLoop();
+            }
+        }, 50);
+    };
+    
+    if (!TBStorage.isLoaded) initLoop();
 
     console.log('TBUtils loading');
 

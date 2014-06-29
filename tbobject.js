@@ -3,7 +3,7 @@
 TB = {
     utils: TBUtils,
     ui: TBui,
-	storage: TBStorage,
+    storage: TBStorage,
 
     modules: {},
     moduleList: [],
@@ -14,42 +14,52 @@ TB = {
     },
 
     init: function init() {
-        // call every module's init() method on page load
-        for (var i=0; i < this.moduleList.length; i++) {
-            var module = this.modules[this.moduleList[i]];
+        console.log("storage loaded: " + TB.storage.isLoaded);
+        initLoop();
 
-            // Don't do anything with beta modules unless beta mode is enabled
-            // Need TB.setting() call for non-module settings
-            // if (!TB.setting('betamode') && module.setting('betamode')) {
-            if (!TB.utils.getSetting('Utils', 'betaMode', false)
-                && module.config['betamode']
-            ) {
-                // skip this module entirely
-                continue;
-            }
-            // Don't do anything with dev modules unless debug mode is enabled
-            // Need TB.setting() call for non-module settings
-            // if (!TB.setting('betamode') && module.setting('betamode')) {
-            if (!TB.utils.getSetting('Utils', 'debugMode', false)
-                && module.config['devmode']
-            ) {
-                // skip this module entirely
-                continue;
-            }
+        function initLoop() {
+            setTimeout(function () {
+                if (TB.storage.isLoaded === true) {
+                    console.log("loaded storage, starting init");
+                    // call every module's init() method on page load
+                    for (var i = 0; i < TB.moduleList.length; i++) {
+                        var module = TB.modules[TB.moduleList[i]];
 
-            // lock 'n load
-            if (module.setting('enabled')) {
-                $.log('Loading ' + module.name + ' module.');
-                if (module.config["needs_mod_subs"]) {
-                    TB.utils.getModSubs(function () {
-                        module.init();
-                    });
+                        // Don't do anything with beta modules unless beta mode is enabled
+                        // Need TB.setting() call for non-module settings
+                        // if (!TB.setting('betamode') && module.setting('betamode')) {
+                        if (!TB.utils.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
+                            // skip this module entirely
+                            continue;
+                        }
+
+                        // Don't do anything with dev modules unless debug mode is enabled
+                        // Need TB.setting() call for non-module settings
+                        // if (!TB.setting('betamode') && module.setting('betamode')) {
+                        if (!TB.utils.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
+                            // skip this module entirely
+                            continue;
+                        }
+
+                        // lock 'n load
+                        if (module.setting('enabled')) {
+                            console.log('Loading ' + module.name + ' module');
+                            if (module.config["needs_mod_subs"]) {
+                                TB.utils.getModSubs(function () {
+                                    module.init();
+                                });
+                            } else {
+                                module.init();
+                            }
+                        }
+
+                    }
                 } else {
-                    module.init();
+                    console.log("no storage, looping", true);
+                    initLoop();
                 }
-            }
-
-        }
+            }, 50);
+        };
     },
 
     injectSettings: function injectSettings() {

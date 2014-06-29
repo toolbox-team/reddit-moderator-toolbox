@@ -52,6 +52,14 @@
         });
     } else {
         TBStorage.isLoaded = true;
+
+        // uncomment to test wait loops.  (nope, don't bother.  JS is shit and this doesn't fucking work.)
+        /*
+        TBStorage.isLoaded = false;
+        setTimeout(function () {
+            TBStorage.isLoaded = true;
+        }, 9000);
+       */
     }
 
 

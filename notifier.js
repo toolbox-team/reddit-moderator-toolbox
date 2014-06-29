@@ -714,6 +714,10 @@
     $('body').on('click', '.tb-window-tabs a', function () {
         var tab = $(this).attr('class');
         $('.tb-help-main').attr('currentpage', tab);
+        // if we have module name, give that to the help button
+        if ($(this).data('module')) {
+            $('.tb-help-main').data('module', $(this).data('module'));
+        }
         $('.tb-window-content').children().hide();
         $('div.' + tab).show();
     });
@@ -874,10 +878,25 @@
 
 
     $('body').on('click', '.tb-help-main', function () {
-        var tab = $(this).attr('currentpage');
-        tab = '.' + tab;
+        var $this = $(this),
+            tab = $(this).attr('currentpage'),
+            module = $this.data('module');
+
+        $tab = $('.' + tab);
+
         var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-        var htmlcontent = $(tab).find('.tb-help-main-content').html();
+
+        if (module) {
+            // we do fancy stuff here
+            var htmlcontent = 'Loading...';
+
+            $.get('/r/toolbox/wiki/docs/'+module, function (result) {
+                helpwindow.document.getElementById('help-content').innerHTML = $(result).find('.wiki-page-content .md.wiki').html();
+            });
+        } else {
+            var htmlcontent = $tab.find('.tb-help-main-content').html();
+        }
+
         var html = '\
         <!DOCTYPE html>\
         <html>\
@@ -889,10 +908,11 @@
         </style>\
         </head>\
         <body>\
-        <div class="help-content">' + htmlcontent + '</div>\
+        <div class="help-content" id="help-content">' + htmlcontent + '</div>\
         </body>\
         </html>\
         ';
+
         helpwindow.document.write(html);
         helpwindow.focus();
     });

@@ -102,6 +102,8 @@ TB = {
                 var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
+                $tab.data('module', module.shortname);
+
                 for (var i=0; i < module.settingsList.length; i++) {
                     var setting = module.settingsList[i],
                         options = module.settings[setting];

@@ -21,7 +21,7 @@
 })();
 
 (function (TBStorage) {
-    TBStorage.userBrowserStorage = getSetting('Utils', 'usebrowserstorage', true);
+    TBStorage.userBrowserStorage = getSetting('Utils', 'usebrowserstorage', false);
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;

@@ -157,8 +157,8 @@
     });
 
     $('body').append(modbar);
-           
-    if(TBUtils.betaMode) {    
+
+    if(TBUtils.betaMode) {
         $('body').append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1><table></table>');
         $('body').find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
         TBUtils.getModSubs(function () {
@@ -170,7 +170,7 @@
             <a title="/r/'+ this.subreddit +' unmoderated" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
             ');
         });});
-        
+
         $('body').on('click', '#tb-toolbar-mysubs', function() {
             $('body').find('#tb-my-subreddits').toggle();
         });
@@ -776,9 +776,9 @@
         TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
         highlighted = $("input[name=highlighted]").val();
-        
+
         TBUtils.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
-        
+
 
         if (highlighted.substr(highlighted.length - 1) === ',') {
             highlighted = highlighted.slice(0, -1);
@@ -790,7 +790,7 @@
         TBUtils.setSetting('CommentsMod', 'spamremoved', $("#spamRemoved").prop('checked'));
         TBUtils.setSetting('CommentsMod', 'hamspammed', $("#hamSpammed").prop('checked'));
         TBUtils.setSetting('CommentsMod', 'highlightTitles', $("#highlightTitles").prop('checked'));
-        
+
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
             TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);

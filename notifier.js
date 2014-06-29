@@ -137,6 +137,7 @@
             <div class="tb-debug-header"> Debug Console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
             <div class="tb-debug-content">\
                 <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
+                <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
             </div>\
             <div class="tb-debug-footer" comment="for the looks">\
                 <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
@@ -147,6 +148,13 @@
         ');
 
     $console.appendTo('body').hide();
+
+    $('.tb-debug-input').keyup(function (e) {
+        if (e.keyCode == 13) {
+            $.log(eval($(this).val()));
+            $(this).val(''); // clear line
+        }
+    });
 
     $('body').append(modbar);
            

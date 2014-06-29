@@ -1167,7 +1167,7 @@ body .thing.flaired {
     bottom: 30px;
     right: 20px;
     width: 700px;
-    height: 269px;
+    height: 286px;
     padding: 0px !important;
     background-color: #FFF;
     border: solid 1px #808080;
@@ -1192,6 +1192,7 @@ body .thing.flaired {
     left: 0px;
     right: 0px;
     padding: 5px !important;
+    box-sizing: content-box;
 }
 
 .mod-toolbox .tb-debug-footer {
@@ -1211,7 +1212,7 @@ body .thing.flaired {
 }
 
 .mod-toolbox .tb-debug-console {
-    width: 98%;
+    width: 100%;
     height: 200px;
     font: normal small CONSOLAS, COURIER,"COURIER NEW";
     -webkit-appearance: textarea;
@@ -1225,6 +1226,12 @@ body .thing.flaired {
     padding: 2px !important;
     white-space: pre-wrap;
     word-wrap: break-word;
+    box-sizing: border-box;
+}
+
+.mod-toolbox .tb-debug-input {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* various reddit css fixes for mods */

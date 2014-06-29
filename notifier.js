@@ -876,8 +876,11 @@
             // we do fancy stuff here
             var htmlcontent = 'Loading...';
 
-            $.get('/r/toolbox/wiki/livedocs/'+module, function (result) {
-                helpwindow.document.getElementById('help-content').innerHTML = $(result).find('.wiki-page-content .md.wiki').html();
+            // We should use this, eventually...
+            TBUtils.readFromWiki('toolbox', 'livedocs/'+module, false, function (result) {
+                var parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
+
+                helpwindow.document.getElementById('help-content').innerHTML = parser.render(result);
             });
         } else {
             var htmlcontent = $tab.find('.tb-help-main-content').html();

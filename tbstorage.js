@@ -21,7 +21,7 @@
 })();
 
 (function (TBStorage) {
-    TBStorage.userBrowserStorage = getSetting('Utils', 'usebrowserstorage', false);
+    TBStorage.userBrowserStorage = getSetting('Utils', 'usebrowserstorage', true);
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;
@@ -132,6 +132,13 @@
         });
     }
     //saveSettingsToChrome();
+
+    function saveSettingsToFirefox() {
+        settingsToObject(function (sObject) {
+            self.port.emit('simple-storage', sObject)
+        });
+    }
+    saveSettingsToFirefox();
 
     function objectToSettings(object, callback) {
         console.log(object);

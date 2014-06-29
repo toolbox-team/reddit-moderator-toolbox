@@ -45,10 +45,12 @@ TB = {
                         if (module.setting('enabled')) {
                             console.log('Loading ' + module.name + ' module');
                             if (module.config["needs_mod_subs"]) {
-                                TB.utils.getModSubs(function () {
+                                TB.utils.getModSubs(function init() {
+                                    $.log("Loading "+module.name+" Module")
                                     module.init();
                                 });
                             } else {
+                                $.log("Loading "+module.name+" Module")
                                 module.init();
                             }
                         }

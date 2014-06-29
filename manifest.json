@@ -35,6 +35,7 @@
 				"jquery-plugins.js",
 				"tbutils.js",
 				"tbobject.js", // goes before any modules
+				"core.js",
 				"notifier.js",
 				"domaintagger.js",
 				"usernotes.js",

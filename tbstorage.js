@@ -135,8 +135,11 @@
 
     function saveSettingsToFirefox() {
         settingsToObject(function (sObject) {
-            console.log("sending settings");
             self.port.emit('simple-storage', sObject)
+        });
+        self.port.on('storage-reply', function (tbsettingString) {
+            console.log('got settings:');
+            console.log(tbsettingString);
         });
     }
     saveSettingsToFirefox();

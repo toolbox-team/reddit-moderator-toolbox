@@ -135,6 +135,7 @@
 
     function saveSettingsToFirefox() {
         settingsToObject(function (sObject) {
+            console.log("sending settings");
             self.port.emit('simple-storage', sObject)
         });
     }

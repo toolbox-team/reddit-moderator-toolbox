@@ -890,7 +890,7 @@
             // we do fancy stuff here
             var htmlcontent = 'Loading...';
 
-            $.get('/r/toolbox/wiki/docs/'+module, function (result) {
+            $.get('/r/toolbox/wiki/livedocs/'+module, function (result) {
                 helpwindow.document.getElementById('help-content').innerHTML = $(result).find('.wiki-page-content .md.wiki').html();
             });
         } else {

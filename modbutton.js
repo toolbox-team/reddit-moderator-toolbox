@@ -96,6 +96,7 @@ modButton.updateSavedSubs = function updateSavedSubs() {
             $savedSubsList = $popup.find('.saved-subs'),
             currentSub = $popup.find('.subreddit').text();
 
+        // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
         $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs).addClass('savedSubs'));
 
@@ -115,21 +116,7 @@ modButton.updateSavedSubs = function updateSavedSubs() {
             //         .text('/r/' + this));
         });
     });
-
-    // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
-    // $.each(TB.utils.mySubs, function (i, subreddit) {
-    //     $popups.find('.add-dropdown')
-    //         .append($('<option>', {
-    //                 value: subreddit
-    //             })
-    //             .text('/r/' + subreddit));
-    //     $popups.find('select.' + modButton.OTHER)
-    //         .append($('<option>', {
-    //                 value: subreddit
-    //             })
-    //             .text('/r/' + subreddit));
-    // });
-}
+};
 
 modButton.init = function init() {
     modButton.buttonName = 'mod';
@@ -591,50 +578,6 @@ modButton.init = function init() {
     });
 
 
-    // // settings button clicked
-    // $('body').on('click', '.user-role', function () {
-    //     var $popup = $(this).parents('.mod-popup');
-    //     // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-    //     $popup.find('.edit-user-flair').removeClass('active');
-    //     $(this).addClass('active');
-    //     $popup.find('.edit-modbutton-settings').removeClass('active');
-
-    //     $popup.find('.mod-popup-tab-settings').hide();
-    //     $popup.find('.mod-popup-tab-flair').hide();
-    //     $popup.find('.mod-popup-tab-role').show();
-    // });
-
-    // // settings button clicked
-    // $('body').on('click', '.edit-modbutton-settings', function () {
-    //     var $popup = $(this).parents('.mod-popup');
-    //     // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-    //     $popup.find('.edit-user-flair').removeClass('active');
-    //     $popup.find('.user-role').removeClass('active');
-    //     $(this).addClass('active');
-
-    //     $popup.find('.mod-popup-tab-settings').show();
-    //     $popup.find('.mod-popup-tab-flair').hide();
-    //     $popup.find('.mod-popup-tab-role').hide();
-    // });
-
-
-    // $('body').on('click', '.remove-save', function () {
-    //     var subname = $('.remove-dropdown option:selected').val();
-
-    //     modButton.savedSubs.splice(modButton.savedSubs.indexOf(subname), 1);
-    //     $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
-    // });
-
-    // $('body').on('click', '.add-save', function () {
-    //     var subname = $('.add-dropdown option:selected').val();
-
-    //     // Don't add the sub twice.
-    //     if ($.inArray(subname, modButton.savedSubs) === -1) {
-    //         modButton.savedSubs.push(subname);
-    //         $('.remove-dropdown').append($('<option>', { value: subname }).text('/r/' + subname));
-    //     }
-    // });
-
     // Edit save button clicked.
     $('body').on('click', '.setting-save', function () {
         var $popup = $(this).parents('.mod-popup'),
@@ -672,15 +615,6 @@ modButton.init = function init() {
         modButton.updateSavedSubs();
 
         $status.text('settings saved');
-
-        // // TODO: replace this with a real tab view controller so we don't have to duplicate these lines all the time
-        // $popup.find('.edit-user-flair').removeClass('active');
-        // $popup.find('.user-role').addClass('active');
-        // $popup.find('.edit-modbutton-settings').removeClass('active');
-
-        // $popup.find('.mod-popup-tab-settings').hide();
-        // $popup.find('.mod-popup-tab-flair').hide();
-        // $popup.find('.mod-popup-tab-role').show();
     });
 };
 

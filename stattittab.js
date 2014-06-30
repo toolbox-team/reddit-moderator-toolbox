@@ -2,6 +2,7 @@
 
 var stattitTab = new TB.Module('Stattit Tab');
 
+stattitTab.settings["enabled"]["default"] = true;
 stattitTab.config["betamode"] = false;
 
 stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {

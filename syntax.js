@@ -2,6 +2,7 @@
 
 var syntaxHighlighter = new TB.Module('Syntax Highlighter');
 
+syntaxHighlighter.settings["enabled"]["default"] = true;
 syntaxHighlighter.config["betamode"] = false;
 
 syntaxHighlighter.register_setting(

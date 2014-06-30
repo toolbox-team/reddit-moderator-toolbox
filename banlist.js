@@ -12,6 +12,7 @@
 
 var banList = new TB.Module('Ban List');
 
+banList.settings["enabled"]["default"] = true;
 banList.config["betamode"] = false; // this module is not in beta
 
 banList.register_setting(

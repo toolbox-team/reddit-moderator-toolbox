@@ -2,6 +2,7 @@
 
 var modButton = new TB.Module('Mod Button');
 
+modButton.settings["enabled"]["default"] = true;
 modButton.config["betamode"] = false;
 modButton.config["needs_mod_subs"] = true;
 

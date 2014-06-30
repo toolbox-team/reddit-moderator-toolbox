@@ -7,13 +7,11 @@ modButton.config["needs_mod_subs"] = true;
 
 modButton.register_setting(
     "sublist", {
-        "type": "sublist",
-        "args": [TB.utils.mySubs, modButton.setting('sublist')],
-        // "args": [["apple", "atheism"], ["apple"]],
+        "type": "list",
         "default": [],
         "betamode": false,
         "hidden": false,
-        "title": "Saved subs (for quick access)"
+        "title": "Saved subs (for quick access)."
     });
 modButton.register_setting(
     "rememberlastaction", {
@@ -21,7 +19,7 @@ modButton.register_setting(
         "default": false,
         "betamode": false,
         "hidden": false,
-        "title": "Remember last action"
+        "title": "Remember last action."
     });
 modButton.register_setting(
     "lastaction", {
@@ -36,7 +34,7 @@ modButton.register_setting(
         "default": false,
         "betamode": false,
         "hidden": false,
-        "title": "Enable Global Action button"
+        "title": "Enable Global Action button."
     });
 
 
@@ -111,6 +109,11 @@ modButton.updateSavedSubs = function updateSavedSubs() {
                 $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
             }
+            // $('.remove-dropdown')
+            //     .append($('<option>', {
+            //             value: this
+            //         })
+            //         .text('/r/' + this));
         });
     });
 };
@@ -183,7 +186,7 @@ modButton.init = function init() {
                         </div>\
                         <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
 						<textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
-						<input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <span class="ban-span-include-time">Include in message <input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"></span>\
+						<input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <label class="ban-span-include-time"><input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"> Include in message </label>\
 						</div>',
                     footer: '\
                         <span class="status error left"></span>\
@@ -303,10 +306,16 @@ modButton.init = function init() {
             $popup.find('select.mod-action option[data-api=friend][data-action=moderator]').attr('selected', 'selected');
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
+			$popup.find('textarea.ban-message').hide();
+			$popup.find('.ban-duration').hide();
+			$popup.find('.ban-span-include-time').hide();
         } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
             $popup.find('select.mod-action option[data-api=friend][data-action=contributor]').attr('selected', 'selected');
             $popup.find('.ban-note').hide();
             $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
+			$popup.find('textarea.ban-message').hide();
+			$popup.find('.ban-duration').hide();
+			$popup.find('.ban-span-include-time').hide();
         }
 
         // render the saved subs lists

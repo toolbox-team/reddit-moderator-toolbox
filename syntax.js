@@ -84,7 +84,7 @@ syntaxHighlighter.init = function init() {
         $('body').on('change keydown', '#theme_selector', function () {
             var thingy = $(this);
             setTimeout(function() {
-                editorSettings.setTheme("ace/theme/"+thingy.val());
+                editor.setTheme("ace/theme/"+thingy.val());
             }, 0);
         });
     }
@@ -119,7 +119,7 @@ syntaxHighlighter.init = function init() {
         $('body').on('change keydown', '#theme_selector', function () {
             var thingy = $(this);
             setTimeout(function() {
-                editorSettings.setTheme("ace/theme/"+thingy.val());
+                editor.setTheme("ace/theme/"+thingy.val());
             }, 0);
         });
     }

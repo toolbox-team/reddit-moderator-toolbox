@@ -66,6 +66,10 @@ syntaxHighlighter.init = function init() {
             textarea = $('textarea[name="stylesheet_contents"]').hide();
 
         editor.setTheme("ace/theme/" + selectedTheme);
+		if(TBUtils.browser == 'chrome') {
+			ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+
+		}
         session.setMode("ace/mode/css");
 
         session.setValue(textarea.val());

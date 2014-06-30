@@ -20,7 +20,7 @@ TB = {
         function initLoop() {
             setTimeout(function () {
                 if (TB.storage.isLoaded === true) {
-                    console.log("loaded storage, starting init");
+                    $.log("loaded storage, starting init");
                     // call every module's init() method on page load
                     for (var i = 0; i < TB.moduleList.length; i++) {
                         var module = TB.modules[TB.moduleList[i]];
@@ -43,7 +43,7 @@ TB = {
 
                         // lock 'n load
                         if (module.setting('enabled')) {
-                            console.log('Loading ' + module.name + ' module');
+                            $.log('Loading ' + module.name + ' module');
                             if (module.config["needs_mod_subs"]) {
                                 TB.utils.getModSubs(function init() {
                                     $.log("Loading "+module.name+" Module")

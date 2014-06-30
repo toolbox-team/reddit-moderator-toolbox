@@ -158,15 +158,12 @@
 
         $select_multiple.find('.remove-item').click(function() {
             var remove_item = $selected_list.find('option:selected').val();
-            console.log('removing '+remove_item);
 
             $selected_list.find('option[value="'+remove_item+'"]').remove();
         });
 
         $select_multiple.find('.add-item').click(function() {
             var $add_item = $available_list.find('option:selected');
-            console.log('adding');
-            console.log($add_item);
 
             // Don't add the sub twice.
             if (!($selected_list.find('option[value="'+$add_item.val()+'"]') > 0)) {
@@ -179,7 +176,6 @@
         });
 
         $.each(selected, function() {
-            console.log(this);
             $selected_list.append($('<option>').attr('value', this).text('/r/'+this));
         });
 

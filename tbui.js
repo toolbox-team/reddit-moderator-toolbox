@@ -149,8 +149,8 @@
 
         var $select_multiple = $('\
             <div class="select-multiple">\
-                <select class="selected-list left"></select><a class="remove-item right">remove</a>\
-                <select class="available-list left"></select><a class="add-item right">add</a>\
+                <select class="selected-list left"></select><button class="remove-item right">remove</button>\
+                <select class="available-list left"></select><button class="add-item right">add</button>\
                 <div style="clear:both"></div>\
             </div>'),
             $selected_list = $select_multiple.find('.selected-list'),

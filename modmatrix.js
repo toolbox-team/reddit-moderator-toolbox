@@ -13,6 +13,8 @@
         subredditModerators: null,
         subredditActions: null,
         total: 0,
+		
+		isMulti : false,
 
         downSortingIcon: "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQklEQVQoU2NkoAAwUqCXYVQziaGHLcD+4zEDRT2u0MZmAIZafFGFbABWdYTiGWQATjWENOMNQoo1M5EYQ3DlFNkMAOsiBBL3uxzDAAAAAElFTkSuQmCC",
         upSortingIcon: "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQ0lEQVQoU2NkoAAwUqCXAaSZiVwDKLaZXIvBzsYH/gMlcarBpxmkEQawqsOlGVkjTgOwacamEasBhPyMN0BGNZOY1gDYfgQSUTVBXwAAAABJRU5ErkJggg==",
@@ -27,6 +29,20 @@
 
             var regex = new RegExp(/reddit\.com\/r\/([^\/]+)\//g);
             var matches = regex.exec(subredditUrl);
+			
+			this.isMulti = false;
+			
+			if(matches == null) {
+				
+				var regex = new RegExp(/reddit\.com\/user\/[^\/]+\/m\/([^\/]+)\//g);
+				matches = regex.exec(subredditUrl);
+				
+				if(matches == null) {
+					return false;
+				}
+				
+				this.isMulti = true;
+			}
             this.subredditName = matches[1];
 
             if (location.hash != null && location.hash == "#matrix")
@@ -179,10 +195,11 @@
             modFilterCell.find(".mod-filter").change(function () { if ($("#mod-matrix-settings .mod-filter:not(:checked)").length > 0) { $("#modmatrixmodfilter-all").removeAttr("checked"); } else { $("#modmatrixmodfilter-all").prop("checked", "checked"); } });
             addButton.click(function () { if (modFilterCell.is(":hidden")) { modFilterCell.show(); $(this).text("hide moderator filter"); } else { modFilterCell.hide(); $(this).text("show moderator filter"); } });
 
-            // Unless we're on /r/mod, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
-            if (this.subredditName != "mod") {
+            // Unless we're on /r/mod or a /m/ulti, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
+            if (this.subredditName != "mod" && !this.isMulti) {
                 var subredditNames = this.subredditName.split("+");
                 var self = this;
+				
                 for (var i = 0; i < subredditNames.length; i++) {
                     $.getJSON("/r/" + subredditNames[i] + "/about/moderators.json", function (moderatorData) {
                         for (var j = 0; j < moderatorData.data.children.length; j++) {

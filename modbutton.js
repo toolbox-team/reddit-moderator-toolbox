@@ -8,12 +8,14 @@ modButton.config["needs_mod_subs"] = true;
 modButton.register_setting(
     "sublist", {
         "type": "sublist",
-        "args": [TB.utils.mySubs, modButton.setting('sublist')],
         "default": [],
         "betamode": false,
         "hidden": false,
         "title": "Saved subs (for quick access)"
     });
+// can't call this inside because it doesn't know the default value yet
+modButton.settings['sublist']["args"] = [TB.utils.mySubs, modButton.setting('sublist')];
+
 modButton.register_setting(
     "rememberlastaction", {
         "type": "boolean",

@@ -97,7 +97,10 @@
 	
 	$('body').find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
     // Open reason drop-down when we remove something as ham.
-    $('body').on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function() {
+	$('body').on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
+        //Don't show removal reasons for spam button.
+	    if ($(this).children().first().attr('value') === 'spammed') return;
+
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
         if (thingclasses.match(/\bcomment\b/) && !commentsEnabled)

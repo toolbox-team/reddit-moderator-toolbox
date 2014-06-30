@@ -101,7 +101,8 @@ TB = {
                 // build and inject our settings tab
                 //
 
-                var $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
+                var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
+                    $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
                 $tab.data('module', module.shortname);
@@ -149,8 +150,11 @@ TB = {
                         continue;
                     }
 
+                    moduleHasSettingTab = true;
+
                     // blank slate
-                    var $setting = $('<p></p>');
+                    var $setting = $('<p></p>'),
+                        execAfterInject = [];
 
                     // automagical handling of input ypes
                     switch (options.type) {
@@ -162,6 +166,41 @@ TB = {
                             $setting.append(options.title+'<br />');
                             $setting.append($('<input type="text" value="'+module.setting(setting)+'">'));
                             break;
+                        case "syntaxTheme":
+                            console.log("got it");
+                            $setting.append(options.title+':<br/>');
+                            $setting.append(syntaxHighlighter.themeSelect);
+                            $setting.find('select').attr('id', module.shortname+'_syntax_theme');
+                            $setting.append($('<pre class="syntax-example" id="'+module.shortname+'_syntax_theme_css">\
+    /* This is just some example code*/\n\
+    body {\n\
+        font-family: sans-serif, "Helvetica Neue", Arial;\n\
+        font-weight: normal;\n\
+    }\n\
+    \n\
+    .md h3, .commentarea h3 {\n\
+        font-size: 1em;\n\
+    }\n\
+    \n\
+    #header {\n\
+        border-bottom: 1px solid #9A9A9A; \n\
+        box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
+    }\n\
+</pre>'));
+                            execAfterInject.push(function() {
+                                // Syntax highlighter selection stuff
+                                $('body').addClass('mod-toolbox-ace');
+                                var editorSettings = ace.edit(module.shortname+'_syntax_theme_css');
+                                editorSettings.setTheme("ace/theme/"+module.setting(setting));
+                                editorSettings.getSession().setMode("ace/mode/css");
+
+                                $('#'+module.shortname+'_syntax_theme').val(module.setting(setting));
+                                $('body').on('change', '#'+module.shortname+'_syntax_theme', function() {
+                                    var themeName = $(this).val();
+                                    editorSettings.setTheme("ace/theme/"+themeName);
+                                });
+                            });
+                            break;
                         case "number":
                             $setting.append(options.title+': <input type="number" value="'+module.setting(setting)+'">');
                             break;
@@ -170,16 +209,22 @@ TB = {
                             break;
                     }
                     $setting.attr('id', 'tb-'+module.shortname+'-'+setting);
-                    $setting.find('input').data('module', module.shortname);
-                    $setting.find('input').data('setting', setting);
+                    $setting.find('input, select').data('module', module.shortname);
+                    $setting.find('input, select').data('setting', setting);
 
                     $settings.append($setting);
                 }
 
-                if ($settings.find('input').length > 0) {
+                // if ($settings.find('input').length > 0) {
+                if (moduleHasSettingTab) {
                     // attach tab and content
                     $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
                     $('.tb-settings .tb-window-content').append($settings);
+
+                    // stuff to exec after inject:
+                    for (var i = 0; i < execAfterInject.length; i++) {
+                        execAfterInject[i]();
+                    };
                 } else {
                     // module has no settings, for now don't inject a tab
                 }
@@ -198,7 +243,7 @@ TB = {
                     // handle the regular settings tab
                     var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
 
-                    $settings_page.find('input').each(function () {
+                    $settings_page.find('input, select').each(function () {
                         var $this = $(this),
                             value = '';
 
@@ -209,6 +254,9 @@ TB = {
                                 break;
                             case 'list':
                                 value = $this.val().split(',').map(function (str) { return str.trim(); });
+                                break;
+                            case "syntaxTheme":
+                                value = $this.val();
                                 break;
                             default:
                                 value = JSON.parse($this.val());

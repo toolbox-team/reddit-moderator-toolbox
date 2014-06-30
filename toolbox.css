@@ -1530,7 +1530,7 @@ body.mod-page .thing {
     display: none;
 }
 
-.mod-toolbox #syntax_setting_css {
+.mod-toolbox .syntax-example {
 display: block;
 width: 98%;
 height: 300px;

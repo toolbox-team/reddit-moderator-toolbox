@@ -195,6 +195,9 @@ TB = {
                                 $('body').addClass('mod-toolbox-ace');
                                 var editorSettings = ace.edit(module.shortname+'_syntax_theme_css');
                                 editorSettings.setTheme("ace/theme/"+module.setting(setting));
+                                if(TBUtils.browser == 'chrome') {
+									ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+								}
                                 editorSettings.getSession().setMode("ace/mode/css");
 
                                 $('#'+module.shortname+'_syntax_theme').val(module.setting(setting));

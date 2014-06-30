@@ -155,37 +155,38 @@
     $('body').append(modbar);
 
     if (TBUtils.betaMode) {
-        $('body').append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""><br><table id="tb-my-subreddit-list"></table>');
+        $('body').append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
         $('body').find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
         TBUtils.getModSubs(function () {
-        $(TBUtils.mySubsData).each(function () {
-            $('body').find('#tb-my-subreddits table').append('\
-            <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
-            <td class="tb-my-subreddits-subreddit"><a title="/r/'+ this.subreddit +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/message/moderator" class="generic-mail"></a>\
-            <a title="/r/'+ this.subreddit +' modqueue" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/modqueue" class="generic-modqueue"></a>\
-            <a title="/r/'+ this.subreddit +' unmoderated" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
-            ');
-        });});
+            $(TBUtils.mySubsData).each(function () {
+                $('body').find('#tb-my-subreddits table').append('\
+                <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
+                <td class="tb-my-subreddits-subreddit"><a title="/r/'+ this.subreddit +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/message/moderator" class="generic-mail"></a>\
+                <a title="/r/'+ this.subreddit +' modqueue" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/modqueue" class="generic-modqueue"></a>\
+                <a title="/r/'+ this.subreddit +' unmoderated" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
+                ');
+            });
+            $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+        });
 
         $('body').on('click', '#tb-toolbar-mysubs', function() {
             $('body').find('#tb-my-subreddits').toggle();
         });
-		
+
 		$('body').find('#tb-livefilter-input').keyup(function(){
 		var LiveSearchValue = $(this).val();
 			$('body').find('#tb-my-subreddits table tr').each(function(){
-			var $this = $(this);
-				var subredditName = $this.attr('data-subreddit');
-				if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) { 
-				$this.hide(); 
-				} else { 
-				$this.show();
+    			var $this = $(this),
+                    subredditName = $this.attr('data-subreddit');
+
+				if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+				    $this.hide();
+				} else {
+				    $this.show();
 				}
-				
-				
+                $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
 			});
 		});
-		
     }
 
     // if mod counters are on we append them to the rest of the counters here.

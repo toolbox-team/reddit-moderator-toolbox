@@ -26,6 +26,7 @@
 				"libs/jquery-2.1.1.js",
 				"libs/snuownd.js",
 				"libs/ace.js",
+				"libs/worker-css.js",
 				"libs/mode-css.js",
 				"libs/mode-json.js",
 				"libs/mode-yaml.js",
@@ -57,5 +58,5 @@
 			]
 		}
 	],
-	"web_accessible_resources": ["libs/jquery-2.1.1.min.js", "libs/snuownd.js"]
+	"web_accessible_resources": ["libs/jquery-2.1.1.min.js", "libs/snuownd.js", "libs/worker-css.js"]
 }

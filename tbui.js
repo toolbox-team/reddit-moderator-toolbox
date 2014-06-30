@@ -143,4 +143,47 @@
     }
 
 
+    TBui.selectMultiple = function selectMultiple(available, selected) {
+        available = (typeof available === "undefined") ? [] : available;
+        selected = (typeof selected === "undefined") ? [] : selected;
+
+        var $select_multiple = $('\
+            <div class="select-multiple">\
+                <select class="selected-list left"></select><a class="remove-item right">remove</a>\
+                <select class="available-list left"></select><a class="add-item right">add</a>\
+                <div style="clear:both"></div>\
+            </div>'),
+            $selected_list = $select_multiple.find('.selected-list'),
+            $available_list = $select_multiple.find('.available-list');
+
+        $select_multiple.find('.remove-item').click(function() {
+            var remove_item = $selected_list.find('option:selected').val();
+            console.log('removing '+remove_item);
+
+            $selected_list.find('option[value="'+remove_item+'"]').remove();
+        });
+
+        $select_multiple.find('.add-item').click(function() {
+            var $add_item = $available_list.find('option:selected');
+            console.log('adding');
+            console.log($add_item);
+
+            // Don't add the sub twice.
+            if (!($selected_list.find('option[value="'+$add_item.val()+'"]') > 0)) {
+                $selected_list.append($add_item.clone());
+            }
+        });
+
+        $.each(available, function() {
+            $available_list.append($('<option>').attr('value', this).text('/r/'+this));
+        });
+
+        $.each(selected, function() {
+            console.log(this);
+            $selected_list.append($('<option>').attr('value', this).text('/r/'+this));
+        });
+
+        return $select_multiple;
+    }
+
 }(TBui = window.TBui || {}));

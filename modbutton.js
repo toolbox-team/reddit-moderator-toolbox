@@ -225,6 +225,7 @@ modButton.init = function init() {
                     title: "Settings",
                     tooltip: "Edit Mod Button Settings.",
                     content: '\
+                        '+TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs)[0].outerHTML+'\
                         <div class="edit-subreddits">\
                             <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
                             <select class="add-dropdown left"></select><button class="add-save right">add</button>\

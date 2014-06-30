@@ -7,11 +7,13 @@ modButton.config["needs_mod_subs"] = true;
 
 modButton.register_setting(
     "sublist", {
-        "type": "list",
+        "type": "sublist",
+        "args": [TB.utils.mySubs, modButton.setting('sublist')],
+        // "args": [["apple", "atheism"], ["apple"]],
         "default": [],
         "betamode": false,
         "hidden": false,
-        "title": "Saved subs (for quick access)."
+        "title": "Saved subs (for quick access)"
     });
 modButton.register_setting(
     "rememberlastaction", {
@@ -19,7 +21,7 @@ modButton.register_setting(
         "default": false,
         "betamode": false,
         "hidden": false,
-        "title": "Remember last action."
+        "title": "Remember last action"
     });
 modButton.register_setting(
     "lastaction", {
@@ -34,7 +36,7 @@ modButton.register_setting(
         "default": false,
         "betamode": false,
         "hidden": false,
-        "title": "Enable Global Action button."
+        "title": "Enable Global Action button"
     });
 
 
@@ -109,11 +111,6 @@ modButton.updateSavedSubs = function updateSavedSubs() {
                 $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
             }
-            // $('.remove-dropdown')
-            //     .append($('<option>', {
-            //             value: this
-            //         })
-            //         .text('/r/' + this));
         });
     });
 };

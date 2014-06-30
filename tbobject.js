@@ -163,11 +163,14 @@ TB = {
                             break;
                         case "text":
                         case "list":
-                            $setting.append(options.title+'<br />');
+                            $setting.append(options.title+':<br />');
                             $setting.append($('<input type="text" value="'+module.setting(setting)+'">'));
                             break;
+                        case "sublist":
+                            $setting.append(options.title+':<br />');
+                            $setting.append(TB.ui.selectMultiple.apply(TB.ui, options.args)); // first arg sets `this` inside func
+                            break;
                         case "syntaxTheme":
-                            console.log("got it");
                             $setting.append(options.title+':<br/>');
                             $setting.append(syntaxHighlighter.themeSelect);
                             $setting.find('select').attr('id', module.shortname+'_syntax_theme');
@@ -208,9 +211,10 @@ TB = {
                             // what in the world would we do here? maybe raw JSON?
                             break;
                     }
+                    $setting = $('<span></span>').attr('class', 'setting-item').append($setting);
                     $setting.attr('id', 'tb-'+module.shortname+'-'+setting);
-                    $setting.find('input, select').data('module', module.shortname);
-                    $setting.find('input, select').data('setting', setting);
+                    $setting.data('module', module.shortname);
+                    $setting.data('setting', setting);
 
                     $settings.append($setting);
                 }
@@ -243,23 +247,29 @@ TB = {
                     // handle the regular settings tab
                     var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
 
-                    $settings_page.find('input, select').each(function () {
+                    $settings_page.find('span.setting-item').each(function () {
                         var $this = $(this),
                             value = '';
 
                         // automagically parse input types
                         switch (module.settings[$this.data('setting')].type) {
                             case 'boolean':
-                                value = $this.prop('checked');
+                                value = $this.find('input').prop('checked');
                                 break;
                             case 'list':
-                                value = $this.val().split(',').map(function (str) { return str.trim(); });
+                                value = $this.find('input').val().split(',').map(function (str) { return str.trim(); });
+                                break;
+                            case "sublist":
+                                value = [];
+                                $.each($this.find('.selected-list option'), function() {
+                                    value.push($(this).val());
+                                });
                                 break;
                             case "syntaxTheme":
-                                value = $this.val();
+                                value = $this.find('select').val();
                                 break;
                             default:
-                                value = JSON.parse($this.val());
+                                value = JSON.parse($this.find('input').val());
                                 break;
                         }
 

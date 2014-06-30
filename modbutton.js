@@ -96,6 +96,9 @@ modButton.updateSavedSubs = function updateSavedSubs() {
             $savedSubsList = $popup.find('.saved-subs'),
             currentSub = $popup.find('.subreddit').text();
 
+        $popup.find('.edit-subreddits .savedSubs').remove();
+        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs).addClass('savedSubs'));
+
         $.each(modButton.savedSubs, function (i, subreddit) {
             // only subs we moderate
             // and not the current sub
@@ -250,9 +253,6 @@ modButton.init = function init() {
             top: event.pageY - 10,
             display: 'block'
         });
-        // it'd be best to do this in the tab.content above
-        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs).addClass('savedSubs'));
-
 
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
@@ -669,7 +669,7 @@ modButton.init = function init() {
         modButton.setting('sublist', modButton.savedSubs);
 
         // re-render the lists
-        // modButton.updateSavedSubs();
+        modButton.updateSavedSubs();
 
         $status.text('settings saved');
 

@@ -85,8 +85,8 @@ modButton.updateSavedSubs = function updateSavedSubs() {
         $savedSubsLists = $popups.find('.saved-subs');
 
     // clear out the current stuff
-    $popups.find('.add-dropdown').find('option').remove();
-    $popups.find('.remove-dropdown').find('option').remove();
+    // $popups.find('.add-dropdown').find('option').remove();
+    // $popups.find('.remove-dropdown').find('option').remove();
     $savedSubsLists.html('');
 
     // add our saved subs to the "remove saved subs" dropdown on the setting tab
@@ -105,27 +105,27 @@ modButton.updateSavedSubs = function updateSavedSubs() {
                 $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
                     '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
             }
-            $('.remove-dropdown')
-                .append($('<option>', {
-                        value: this
-                    })
-                    .text('/r/' + this));
+            // $('.remove-dropdown')
+            //     .append($('<option>', {
+            //             value: this
+            //         })
+            //         .text('/r/' + this));
         });
     });
 
     // repopulate the "add sub" and "other-sub" dropdowns with all the subs we mod
-    $.each(TB.utils.mySubs, function (i, subreddit) {
-        $popups.find('.add-dropdown')
-            .append($('<option>', {
-                    value: subreddit
-                })
-                .text('/r/' + subreddit));
-        $popups.find('select.' + modButton.OTHER)
-            .append($('<option>', {
-                    value: subreddit
-                })
-                .text('/r/' + subreddit));
-    });
+    // $.each(TB.utils.mySubs, function (i, subreddit) {
+    //     $popups.find('.add-dropdown')
+    //         .append($('<option>', {
+    //                 value: subreddit
+    //             })
+    //             .text('/r/' + subreddit));
+    //     $popups.find('select.' + modButton.OTHER)
+    //         .append($('<option>', {
+    //                 value: subreddit
+    //             })
+    //             .text('/r/' + subreddit));
+    // });
 }
 
 modButton.init = function init() {
@@ -225,10 +225,7 @@ modButton.init = function init() {
                     title: "Settings",
                     tooltip: "Edit Mod Button Settings.",
                     content: '\
-                        '+TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs)[0].outerHTML+'\
                         <div class="edit-subreddits">\
-                            <select class="remove-dropdown left"></select><button class="remove-save right">remove</button>\
-                            <select class="add-dropdown left"></select><button class="add-save right">add</button>\
                             <p style="clear:both">\
                                 <label class="global-label" for="the-nuclear-option">\
                                     <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option" ' + (showglobal ? 'checked' : '' ) + '>\
@@ -253,6 +250,9 @@ modButton.init = function init() {
             top: event.pageY - 10,
             display: 'block'
         });
+        // it'd be best to do this in the tab.content above
+        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, modButton.savedSubs).addClass('savedSubs'));
+
 
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
@@ -618,22 +618,22 @@ modButton.init = function init() {
     // });
 
 
-    $('body').on('click', '.remove-save', function () {
-        var subname = $('.remove-dropdown option:selected').val();
+    // $('body').on('click', '.remove-save', function () {
+    //     var subname = $('.remove-dropdown option:selected').val();
 
-        modButton.savedSubs.splice(modButton.savedSubs.indexOf(subname), 1);
-        $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
-    });
+    //     modButton.savedSubs.splice(modButton.savedSubs.indexOf(subname), 1);
+    //     $('.remove-dropdown').find('option[value="'+subname+'"]').remove();
+    // });
 
-    $('body').on('click', '.add-save', function () {
-        var subname = $('.add-dropdown option:selected').val();
+    // $('body').on('click', '.add-save', function () {
+    //     var subname = $('.add-dropdown option:selected').val();
 
-        // Don't add the sub twice.
-        if ($.inArray(subname, modButton.savedSubs) === -1) {
-            modButton.savedSubs.push(subname);
-            $('.remove-dropdown').append($('<option>', { value: subname }).text('/r/' + subname));
-        }
-    });
+    //     // Don't add the sub twice.
+    //     if ($.inArray(subname, modButton.savedSubs) === -1) {
+    //         modButton.savedSubs.push(subname);
+    //         $('.remove-dropdown').append($('<option>', { value: subname }).text('/r/' + subname));
+    //     }
+    // });
 
     // Edit save button clicked.
     $('body').on('click', '.setting-save', function () {
@@ -657,11 +657,19 @@ modButton.init = function init() {
             $('.mod-popup .global-button').hide();
         }
 
+        // clean up
+        modButton.savedSubs = [];
+        // repopulate
+        $.each($popup.find('.savedSubs .selected-list option'), function() {
+            modButton.savedSubs.push($(this).val());
+        });
+        // sort alphabetical
         modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
-        modButton.savedSubs = modButton.setting('sublist', modButton.savedSubs);
+        // save
+        modButton.setting('sublist', modButton.savedSubs);
 
         // re-render the lists
-        modButton.updateSavedSubs();
+        // modButton.updateSavedSubs();
 
         $status.text('settings saved');
 

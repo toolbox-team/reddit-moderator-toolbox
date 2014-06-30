@@ -63,7 +63,7 @@
     TBUtils.log = [];
     TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
     TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
-    TBUtils.browser = UNKOWN_BROWSER;
+    TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
@@ -99,6 +99,7 @@
         TBStorage.setSetting('cache', 'lastgetshort', now);
     }
 
+    /*
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
     if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
         TBUtils.browser = FIREFOX;
@@ -111,6 +112,7 @@
     } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
         TBUtils.browser = SAFARI;
     }
+    */
 
     var pushedunread = TBStorage.getSetting('Notifier', 'unreadpushed', []);
     if (pushedunread.length > 250) {
@@ -246,7 +248,6 @@
         var sec = ('0' + a.getUTCSeconds()).slice(-2);
         var time = year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
         return time;
-
     }
 
     // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
@@ -260,8 +261,6 @@
         var sec = ('0' + a.getUTCSeconds()).slice(-2);
         var time = date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
         return time;
-
-
     }
 
 	TBUtils.longLoadSpinner = function (createOrDestroy) {
@@ -1010,7 +1009,7 @@
     };
     //TBUtils.importSettings('al_dev');
 
-
+    /*
     TBUtils.settingsToObject = function (callback) {
         var settingsObject = {};
         Object.keys(localStorage)
@@ -1036,6 +1035,7 @@
 
         callback();
     };
+    */
 
     /*
     TBUtils.settingsToObject(function (sObject) {
@@ -1164,6 +1164,7 @@
         });
     };
 
+    /*
     // Private functions
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
@@ -1180,6 +1181,7 @@
             localStorage['Toolbox.Utils.settings'] = JSON.stringify(settings.sort());
         }
     }
+
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
@@ -1207,6 +1209,7 @@
         localStorage[storageKey] = JSON.stringify(value);
         return getSetting(module, setting);
     }
+    */
 
 
     // NER, load more comments, and mod frame support.

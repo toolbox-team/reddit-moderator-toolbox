@@ -21,7 +21,8 @@
 })();
 
 (function (TBStorage) {
-    TBStorage.userBrowserStorage = getSetting('Utils', 'usebrowserstorage', false);
+    TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
+    TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', false);
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;
@@ -72,41 +73,29 @@
         return getSetting(module, setting, defaultVal);
     };
 
+    TBStorage.unloading = function () {
+        if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
+            saveSettingsToChrome();
+        } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
+            saveSettingsToFirefox();
+        }
+    }
 
-    // Import export methods
-    TBStorage.exportSettings = function (subreddit, callback) {
-        var settingsObject = {};
-        $(settings).each(function () {
-            var key = this.split(".");
-            var setting = getSetting(key[0], key[1], null);
-            if (setting && setting !== undefined) {
-                settingsObject[this] = setting;
-            }
+    function registerSetting(module, setting) {
+        // First parse out any of the ones we never want to save.
+        if (module === 'cache') return;
 
-        });
-        /*
-        TBUtils.postToWiki('tbsettings', subreddit, settingsObject, true, false, function () {
-            callback();
-        });
-        */
-    };
+        var keyName = module + '.' + setting;
 
-    TBStorage.importSettings = function (subreddit, callback) {
-        /*
-        TBUtils.readFromWiki(subreddit, 'tbsettings', true, function (resp) {
-            if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                return;
-            }
+        //if (settings === undefined) settings = [];
 
-            $.each(resp, function (fullKey, value) {
-                var key = fullKey.split(".");
-                setSetting(key[0], key[1], value);
-            });
+        if ($.inArray(keyName, TBStorage.settings) === -1) {
+            TBStorage.settings.push(keyName);
 
-            callback();
-        });
-        */
-    };
+            // Always save to localStorage.
+            localStorage['Toolbox.Storage.settings'] = JSON.stringify(TBStorage.settings.sort());
+        }
+    }
 
     function settingsToObject(callback) {
         var settingsObject = {};
@@ -137,12 +126,12 @@
         settingsToObject(function (sObject) {
             self.port.emit('simple-storage', sObject)
         });
-        self.port.on('storage-reply', function (tbsettingString) {
-            console.log('got settings:');
-            console.log(tbsettingString);
-        });
+        //self.port.on('storage-reply', function (tbsettingString) {
+        //    console.log('got settings:');
+        //    console.log(tbsettingString);
+        //});
     }
-    saveSettingsToFirefox();
+    //saveSettingsToFirefox();
 
     function objectToSettings(object, callback) {
         console.log(object);
@@ -157,7 +146,7 @@
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        //registerSetting(module, setting); why reg settings that have never changed?
+        registerSetting(module, setting); //why reg settings that have never changed?
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
@@ -176,7 +165,7 @@
 
     function setSetting(module, setting, value) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        //registerSetting(module, setting);
+        registerSetting(module, setting);
 
         localStorage[storageKey] = JSON.stringify(value);
         return getSetting(module, setting);

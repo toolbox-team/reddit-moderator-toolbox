@@ -66,10 +66,9 @@ syntaxHighlighter.init = function init() {
             textarea = $('textarea[name="stylesheet_contents"]').hide();
 
         editor.setTheme("ace/theme/" + selectedTheme);
-		if(TBUtils.browser == 'chrome') {
-			ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
-
-		}
+        if(TBUtils.browser == 'chrome') {
+            ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+        }
         session.setMode("ace/mode/css");
 
         session.setValue(textarea.val());
@@ -82,12 +81,11 @@ syntaxHighlighter.init = function init() {
 
         $('#theme_selector').val(selectedTheme);
 
-        $('body').on('change', '#theme_selector', function () {
-
-            var themeName = $(this).val();
-            editor.setTheme("ace/theme/" + themeName);
-
-
+        $('body').on('change keydown', '#theme_selector', function () {
+            var thingy = $(this);
+            setTimeout(function() {
+                editorSettings.setTheme("ace/theme/"+thingy.val());
+            }, 0);
         });
     }
 
@@ -118,13 +116,14 @@ syntaxHighlighter.init = function init() {
 
         $('#theme_selector').val(selectedTheme);
 
-        $('body').on('change', '#theme_selector', function () {
-            var themeName = $(this).val();
-            editor.setTheme("ace/theme/" + themeName);
+        $('body').on('change keydown', '#theme_selector', function () {
+            var thingy = $(this);
+            setTimeout(function() {
+                editorSettings.setTheme("ace/theme/"+thingy.val());
+            }, 0);
         });
     }
-
-
+    
     $('.ace_editor').on("webkitTransitionEnd transitionend oTransitionEnd", function () {
        editor.resize();
     });

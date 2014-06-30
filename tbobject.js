@@ -196,14 +196,16 @@ TB = {
                                 var editorSettings = ace.edit(module.shortname+'_syntax_theme_css');
                                 editorSettings.setTheme("ace/theme/"+module.setting(setting));
                                 if(TBUtils.browser == 'chrome') {
-									ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
-								}
+                                    ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+                                }
                                 editorSettings.getSession().setMode("ace/mode/css");
 
                                 $('#'+module.shortname+'_syntax_theme').val(module.setting(setting));
-                                $('body').on('change', '#'+module.shortname+'_syntax_theme', function() {
-                                    var themeName = $(this).val();
-                                    editorSettings.setTheme("ace/theme/"+themeName);
+                                $('body').on('change keydown', '#'+module.shortname+'_syntax_theme', function() {
+                                    var thingy = $(this);
+                                    setTimeout(function() {
+                                        editorSettings.setTheme("ace/theme/"+thingy.val());
+                                    }, 0);
                                 });
                             });
                             break;

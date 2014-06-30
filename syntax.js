@@ -62,14 +62,15 @@ syntaxHighlighter.init = function init() {
         $('.sheets .col').prepend('<div id="stylesheet_contents_div"></div>');
 
         var editor = ace.edit("stylesheet_contents_div"),
+            session = editor.getSession(),
             textarea = $('textarea[name="stylesheet_contents"]').hide();
 
         editor.setTheme("ace/theme/" + selectedTheme);
-        editor.getSession().setMode("ace/mode/css");
+        session.setMode("ace/mode/css");
 
-        editor.getSession().setValue(textarea.val());
-        editor.getSession().on('change', function () {
-            textarea.val(editor.getSession().getValue());
+        session.setValue(textarea.val());
+        session.on('change', function () {
+            textarea.val(session.getValue());
         });
         $('body').addClass('mod-toolbox-ace');
 
@@ -86,23 +87,26 @@ syntaxHighlighter.init = function init() {
         });
     }
 
-    if (location.pathname.match(/\/wiki\/edit\/automoderator\/?/) || location.pathname.match(/\/wiki\/edit\/toolbox\/?/)) {
+    if (location.pathname.match(/\/wiki\/edit\/automoderator\/?/)
+        || location.pathname.match(/\/wiki\/edit\/toolbox\/?/)
+    ) {
         $('#editform').prepend('<div id="wiki_contents_div"></div>');
 
         var editor = ace.edit("wiki_contents_div"),
+            session = editor.getSession(),
             textarea = $('textarea[name="content"]').hide();
 
         editor.setTheme("ace/theme/" + selectedTheme);
 
         if (location.pathname.match(/\/wiki\/edit\/automoderator\/?/)) {
-            editor.getSession().setMode("ace/mode/yaml");
+            session.setMode("ace/mode/yaml");
         }
         if (location.pathname.match(/\/wiki\/edit\/toolbox\/?/)) {
-            editor.getSession().setMode("ace/mode/json");
+            session.setMode("ace/mode/json");
         }
-        editor.getSession().setValue(textarea.val());
-        editor.getSession().on('change', function () {
-            textarea.val(editor.getSession().getValue());
+        session.setValue(textarea.val());
+        session.on('change', function () {
+            textarea.val(session.getValue());
         });
         $('body').addClass('mod-toolbox-ace');
 
@@ -111,11 +115,8 @@ syntaxHighlighter.init = function init() {
         $('#theme_selector').val(selectedTheme);
 
         $('body').on('change', '#theme_selector', function () {
-
             var themeName = $(this).val();
             editor.setTheme("ace/theme/" + themeName);
-
-
         });
     }
 

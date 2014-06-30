@@ -25,13 +25,13 @@
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
         settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
-        lastgetLong = getSetting('cache', 'lastgetlong', -1),
-        lastgetShort = getSetting('cache', 'lastgetshort', -1),
-        shortLength = getSetting('cache', 'shortlength', 15),
-        longLength = getSetting('cache', 'longlength', 45),
-        cacheName = getSetting('cache', 'cachename', ''),
-        seenNotes = getSetting('Utils', 'seennotes', []),
-        lastVersion = getSetting('Utils', 'lastversion', 0),
+        lastgetLong = TBStorage.getSetting('cache', 'lastgetlong', -1),
+        lastgetShort = TBStorage.getSetting('cache', 'lastgetshort', -1),
+        shortLength = TBStorage.getSetting('cache', 'shortlength', 15),
+        longLength = TBStorage.getSetting('cache', 'longlength', 45),
+        cacheName = TBStorage.getSetting('cache', 'cachename', ''),
+        seenNotes = TBStorage.getSetting('Utils', 'seennotes', []),
+        lastVersion = TBStorage.getSetting('Utils', 'lastversion', 0),
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
@@ -61,8 +61,8 @@
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isExtension = true;
     TBUtils.log = [];
-    TBUtils.debugMode = getSetting('Utils', 'debugMode', false),
-    TBUtils.betaMode = getSetting('Utils', 'betaMode', false),
+    TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
+    TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
     TBUtils.browser = UNKOWN_BROWSER;
     TBUtils.firstRun = false;
 
@@ -72,31 +72,31 @@
     }
 
     // Do settings echo before anything else.  If it fails, exit toolbox.
-    var ret = setSetting('Utils', 'echotest', ECHO);
+    var ret = TBStorage.setSetting('Utils', 'echotest', ECHO);
     if (ret !== ECHO) {
         alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
         return;
     }
 
     // Get cached info.
-    TBUtils.noteCache = (getnewShort) ? {} : getSetting('cache', 'notecache', {});
-    TBUtils.configCache = (getnewLong) ? {} : getSetting('cache', 'configcache', {});
-    TBUtils.noConfig = (getnewShort) ? [] : getSetting('cache', 'noconfig', []);
-    TBUtils.noNotes = (getnewShort) ? [] : getSetting('cache', 'nonotes', []);
-    TBUtils.mySubs = (getnewLong) ? [] : getSetting('cache', 'moderatedsubs', []);
-    TBUtils.mySubsData = (getnewLong) ? [] : getSetting('cache', 'moderatedsubsdata', []);
+    TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getSetting('cache', 'notecache', {});
+    TBUtils.configCache = (getnewLong) ? {} : TBStorage.getSetting('cache', 'configcache', {});
+    TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getSetting('cache', 'noconfig', []);
+    TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getSetting('cache', 'nonotes', []);
+    TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubs', []);
+    TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubsdata', []);
 
     // Update cache vars as needed.
     if (newLogin) {
-        setSetting('cache', 'cachename', TBUtils.logged);
+        TBStorage.setSetting('cache', 'cachename', TBUtils.logged);
     }
 
     if (getnewLong) {
-        setSetting('cache', 'lastgetlong', now);
+        TBStorage.setSetting('cache', 'lastgetlong', now);
     }
 
     if (getnewShort) {
-        setSetting('cache', 'lastgetshort', now);
+        TBStorage.setSetting('cache', 'lastgetshort', now);
     }
 
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
@@ -112,10 +112,36 @@
         TBUtils.browser = SAFARI;
     }
 
+    var pushedunread = TBStorage.getSetting('Notifier', 'unreadpushed', []);
+    if (pushedunread.length > 250) {
+        pushedunread.splice(150, (pushedunread.length - 150));
+        TBStorage.setSetting('Notifier', 'unreadpushed', pushedunread);
+    }
+
+    var pusheditems = TBStorage.getSetting('Notifier', 'modqueuepushed', []);
+    if (pusheditems.length > 250) {
+        pusheditems.splice(150, (pusheditems.length - 150));
+        TBStorage.setSetting('Notifier', 'modqueuepushed', pusheditems);
+    }
+    
+    var repliedModmail = TBStorage.getSetting('ModMailPro', 'replied', []);
+    if (repliedModmail.length > 250) {
+        pusheditems.splice(150, (repliedModmail.length - 150));
+        TBStorage.setSetting('Notifier', 'replied', repliedModmail);
+    }
+
+    if (seenNotes.length > 250) {
+        $.log("clearing seen notes");
+        seenNotes.splice(150, (seenNotes.length - 150));
+        TBStorage.setSetting('Utils', 'seennotes', seenNotes);
+    }
+
+
+
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
-        setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last sersin to this version.
+        TBStorage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last sersin to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -127,9 +153,9 @@
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
-        setSetting('Utils', 'debugMode', false);
-        setSetting('Utils', 'betaMode', false);
+        TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
+        TBStorage.setSetting('Utils', 'debugMode', false);
+        TBStorage.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
     }
@@ -313,11 +339,11 @@
 
         function show(){
             if ($.inArray(note.id, seenNotes) === -1) {
-                setSetting('Utils', 'notelastshown', now);
+                TBStorage.setSetting('Utils', 'notelastshown', now);
 
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
-                    setSetting('Utils', 'seennotes', seenNotes);
+                    TBStorage.setSetting('Utils', 'seennotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }
@@ -545,8 +571,8 @@
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
                 TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
                 // Update the cache.
-                setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-                setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
+                TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+                TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
                 // Go!
                 callback();
             }
@@ -956,7 +982,7 @@
         var settingsObject = {};
         $(settings).each(function () {
             var key = this.split(".");
-            var setting = getSetting(key[0], key[1], null);
+            var setting = TBStorage.getSetting(key[0], key[1], null);
             if (setting && setting !== undefined) {
                 settingsObject[this] = setting;
             }
@@ -976,7 +1002,7 @@
 
             $.each(resp, function (fullKey, value) {
                 var key = fullKey.split(".");
-                setSetting(key[0], key[1], value);
+                TBStorage.setSetting(key[0], key[1], value);
             });
 
             callback();
@@ -991,7 +1017,7 @@
         .forEach(function (fullKey) {
             if (/^(Toolbox.)/.test(fullKey)) {
                 var key = fullKey.split(".");
-                setting = getSetting(key[1], key[2], null);
+                setting = TBStorage.getSetting(key[1], key[2], null);
                 //$.log(fullKey, true);
                 if (setting && setting !== undefined) {
                     settingsObject[fullKey] = setting;
@@ -1005,7 +1031,7 @@
         $.each(object, function (fullKey, value) {
             var key = fullKey.split(".");
             //$.log(key[1] + '.' + key[2] + ': ' + value, true);
-            setSetting(key[1], key[2], value);
+            TBStorage.setSetting(key[1], key[2], value);
         });
 
         callback();
@@ -1200,12 +1226,12 @@
 			return 'Toolbox is still busy!';
 		}
         // Cache data.
-        setSetting('cache', 'configcache', TBUtils.configCache);
-        setSetting('cache', 'notecache', TBUtils.noteCache);
-        setSetting('cache', 'noconfig', TBUtils.noConfig);
-        setSetting('cache', 'nonotes', TBUtils.noNotes);
-        setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-        setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
+		TBStorage.setSetting('cache', 'configcache', TBUtils.configCache);
+		TBStorage.setSetting('cache', 'notecache', TBUtils.noteCache);
+		TBStorage.setSetting('cache', 'noconfig', TBUtils.noConfig);
+		TBStorage.setSetting('cache', 'nonotes', TBUtils.noNotes);
+		TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+		TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
     };
 

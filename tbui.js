@@ -144,8 +144,8 @@
 
 
     TBui.selectMultiple = function selectMultiple(available, selected) {
-        available = (typeof available === "undefined") ? [] : available;
-        selected = (typeof selected === "undefined") ? [] : selected;
+        available = (available instanceof Array) ? available : [];
+        selected = (selected instanceof Array) ? selected : [];
 
         var $select_multiple = $('\
             <div class="select-multiple">\

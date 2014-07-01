@@ -182,9 +182,9 @@ modButton.init = function init() {
                             <select class="' + modButton.OTHER + '" for="action-' + modButton.OTHER + '"><option value="' + modButton.OTHER + '">(select subreddit)</option></select>\
                         </div>\
                         <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
-						<textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
+                        <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
                         <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <label class="ban-span-include-time"><input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"> Include in message </label>\
-						</div>',
+                        </div>',
                     footer: '\
                         <span class="status error left"></span>\
                         <select class="mod-action">\
@@ -328,19 +328,19 @@ modButton.init = function init() {
         // show/hide ban reason text feild.
         $popup.find('.mod-action').change(function () {
             var $banNote = $popup.find('.ban-note'),
-				$banMessage = $popup.find('textarea.ban-message'),
-				$banDuration = $popup.find('.ban-duration'),
-				$banIncludeTime = $popup.find('.ban-span-include-time');
+                $banMessage = $popup.find('textarea.ban-message'),
+                $banDuration = $popup.find('.ban-duration'),
+                $banIncludeTime = $popup.find('.ban-span-include-time');
             if ($(this).val() == 'ban') {
                 $banNote.show();
-				$banMessage.show();
-				$banDuration.show();
-				$banIncludeTime.show();
+                $banMessage.show();
+                $banDuration.show();
+                $banIncludeTime.show();
             } else {
                 $banNote.hide();
-				$banMessage.hide();
-				$banDuration.hide();
-				$banIncludeTime.hide();
+                $banMessage.hide();
+                $banDuration.hide();
+                $banIncludeTime.hide();
             }
         });
 
@@ -361,8 +361,8 @@ modButton.init = function init() {
             actionName = $selected.val(),
             $status = $popup.find('.status'),
             banReason = $popup.find('.ban-note').val(),
-			banMessage = $popup.find('textarea.ban-message').val(),
-			banDuration = $popup.find('.ban-duration').val(),
+            banMessage = $popup.find('textarea.ban-message').val(),
+            banDuration = $popup.find('.ban-duration').val(),
             subreddits = [],
             user = $popup.find('.user').text();
 
@@ -372,7 +372,7 @@ modButton.init = function init() {
                 $.log('Including time in ban message', true);
                 banMessage = banMessage + '  \n \n\
 *You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
-			}
+            }
 
         modButton.setting('lastaction', actionName);
 
@@ -468,8 +468,8 @@ modButton.init = function init() {
                     name: user,
                     r: sub,
                     note: banReason,
-					ban_message: banMessage,
-					duration: banDuration,
+                    ban_message: banMessage,
+                    duration: banDuration,
                     api_type: 'json'
                 })
                 .success(function (resp) {

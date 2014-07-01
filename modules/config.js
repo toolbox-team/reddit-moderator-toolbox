@@ -80,7 +80,7 @@
             <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
                 <div class="wiki-edit-area" style="display: none;">\
                     <textarea class="edit-wikidata" rows="20" cols="20" style="display: none;"></textarea><br>\
-					<div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
+                    <div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
                 </div>\
                 <div class="reasons-notice" style="display:none;">\
                     <br><br>\

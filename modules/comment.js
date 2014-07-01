@@ -1,16 +1,3 @@
-// ==UserScript==
-// @name         Toolbox Comments Module
-// @namespace    http://www.reddit.com/r/toolbox
-// @author       creesch, agentlame
-// @description  notifications of messages
-// @include      http://reddit.com/*
-// @include      https://reddit.com/*
-// @include      http://*.reddit.com/*
-// @include      https://*.reddit.com/*
-// @version 1.0
-// ==/UserScript==
-
-
 (function comments() {
     if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
     $.log('Loading Comments Module');
@@ -224,10 +211,10 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
                 var modButtons = '';
                 if ($('body').hasClass('moderator')) {
                 modButtons = '\
-				<li>\
+                <li>\
                     <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
                 </li>\
-				<li>\
+                <li>\
                     <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
                 </li>\
                 ';
@@ -235,37 +222,37 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
 
                 htmlComment = '\
 <div class="thing comment id-' + thingClasses + '" onclick="click_thing(this)" data-fullname="' + name + '">\
-	<div class="entry mod-button" subreddit="' + subreddit + '">\
-		<div class="noncollapsed">\
-			<p class="tagline">\
-				<a href="http://www.reddit.com/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
-				<span class="score">' + score + ' points</span>\
-				<time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
-			</p>\
-			<div class="usertext-body">\
-			' + TBUtils.htmlDecode(bodyHtml) + '\
-			</div>\
-			<ul class="flat-list buttons">\
-				<li class="first">\
+    <div class="entry mod-button" subreddit="' + subreddit + '">\
+        <div class="noncollapsed">\
+            <p class="tagline">\
+                <a href="http://www.reddit.com/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
+                <span class="score">' + score + ' points</span>\
+                <time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
+            </p>\
+            <div class="usertext-body">\
+            ' + TBUtils.htmlDecode(bodyHtml) + '\
+            </div>\
+            <ul class="flat-list buttons">\
+                <li class="first">\
                     <a href="' + permaLinkComment + '" class="bylink" rel="nofollow" target="_blank">permalink</a>\
                 </li>\
-				<li>\
+                <li>\
                     <a href="' + permaLinkComment + '/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
                 </li> \
-				<li>\
+                <li>\
                     <a href="' + threadPermalink + '" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
                 </li> \
                 ' + bannedBy + '\
                 ' + modButtons + '\
-				<li>\
+                <li>\
                     <a href="javascript:;" class="global-mod-button">mod</a>\
                 </li>\
-				<li>\
+                <li>\
                     <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-			</ul>\
-		</div>\
-	</div>\
-	<div class="child"></div>\
+            </ul>\
+        </div>\
+    </div>\
+    <div class="child"></div>\
 </div>';
 
 

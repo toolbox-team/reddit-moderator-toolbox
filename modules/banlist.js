@@ -1,15 +1,3 @@
-// ==UserScript==
-// @name          reddit ban list live filter
-// @version       1.0
-// @namespace     Dakota Schneider <dakota@hackthetruth.org>
-// @include       http://*.reddit.com/r/*/about/banned/
-// @include       http://*.reddit.com/r/*/about/banned
-// @include       http://reddit.com/r/*/about/banned/
-// @include       http://reddit.com/r/*/about/banned
-// @grant none
-// @run-at document-end
-// ==/UserScript==
-
 var banList = new TB.Module('Ban List');
 
 banList.settings["enabled"]["default"] = true;

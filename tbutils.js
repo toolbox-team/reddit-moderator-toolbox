@@ -36,7 +36,7 @@
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-		longLoadArray = [];
+        longLoadArray = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
@@ -264,32 +264,32 @@
         return time;
     }
 
-	TBUtils.longLoadSpinner = function (createOrDestroy) {
-		if (createOrDestroy !== undefined) {
+    TBUtils.longLoadSpinner = function (createOrDestroy) {
+        if (createOrDestroy !== undefined) {
 
-			 // if requested and the element is not present yet
-			 if (createOrDestroy && longLoadArray.length == 0) {
+             // if requested and the element is not present yet
+             if (createOrDestroy && longLoadArray.length == 0) {
 
-				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
-				$('.footer-parent').append('<div id="tb-loading"></div>');
-				longLoadArray.push('load');
+                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
+                $('.footer-parent').append('<div id="tb-loading"></div>');
+                longLoadArray.push('load');
 
-			 // if requested and the element is already present
-			} else 	if (createOrDestroy && longLoadArray.length > 0) {
-				longLoadArray.push('load');
+             // if requested and the element is already present
+            } else 	if (createOrDestroy && longLoadArray.length > 0) {
+                longLoadArray.push('load');
 
-			 // if done and the only instance
-			} else if (!createOrDestroy && longLoadArray.length == 1) {
-				$('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
-				$('#tb-loading').remove();
-				longLoadArray.pop();
+             // if done and the only instance
+            } else if (!createOrDestroy && longLoadArray.length == 1) {
+                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
+                $('#tb-loading').remove();
+                longLoadArray.pop();
 
-			// if done but other process still running
-			} else if (!createOrDestroy && longLoadArray.length > 1) {
-				longLoadArray.pop();
+            // if done but other process still running
+            } else if (!createOrDestroy && longLoadArray.length > 1) {
+                longLoadArray.pop();
 
-			}
-		}
+            }
+        }
     };
 
 
@@ -302,14 +302,14 @@
             <div class="tb-internal-overlay">\
             <div class="tb-overlay-label"></div></div>\
             ';
-			TBUtils.longLoadSpinner(true);
+            TBUtils.longLoadSpinner(true);
                 $('body').find('.mod-popup-tabs').after(html);
             }
 
                 // Destory the overlay
             else {
                 $('body').find('.tb-internal-overlay').remove();
-				TBUtils.longLoadSpinner(false);
+                TBUtils.longLoadSpinner(false);
             }
         }
 
@@ -406,16 +406,16 @@
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
-				if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
-					var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
-					readCommentId = 't1_'+readCommentId[1];
-				    $.post('/api/read_message', {
-						id: readCommentId,
-						uh: TBUtils.modhash,
-						api_type: 'json'
-					});
-				}
-				
+                if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
+                    var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
+                    readCommentId = 't1_'+readCommentId[1];
+                    $.post('/api/read_message', {
+                        id: readCommentId,
+                        uh: TBUtils.modhash,
+                        api_type: 'json'
+                    });
+                }
+                
                 open(url);
                 // Remove notification
                 this.close();
@@ -445,15 +445,15 @@
                     notification.onclick = function () {
                         // Open the page
                         $.log('notification clicked');
-						if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
-							var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
-							readCommentId = 't1_'+readCommentId[1];
-							$.post('/api/read_message', {
-								id: readCommentId,
-								uh: TBUtils.modhash,
-								api_type: 'json'
-							});
-						}
+                        if(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)){
+                            var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
+                            readCommentId = 't1_'+readCommentId[1];
+                            $.post('/api/read_message', {
+                                id: readCommentId,
+                                uh: TBUtils.modhash,
+                                api_type: 'json'
+                            });
+                        }
                         open(url);
                         // Remove notification
                         this.close();
@@ -466,26 +466,26 @@
         }
     };
 
-	TBUtils.humaniseDays = function  (diff) {
-	  var str = '';
-	  var values = {
-		' year': 365, 
-		' month': 30,
-		' week': 7,  
-		' day': 1
-	  };
+    TBUtils.humaniseDays = function  (diff) {
+      var str = '';
+      var values = {
+        ' year': 365, 
+        ' month': 30,
+        ' week': 7,  
+        ' day': 1
+      };
 
-	  for (var x in values) {
-		var amount = Math.floor(diff / values[x]);
-		
-		if (amount >= 1) {
-		   str += amount + x + (amount > 1 ? 's' : '') + ' ';
-		   diff -= amount * values[x];
-		}
-	  }
-	  str = str.slice(0, - 1);
-	  return str
-	}
+      for (var x in values) {
+        var amount = Math.floor(diff / values[x]);
+        
+        if (amount >= 1) {
+           str += amount + x + (amount > 1 ? 's' : '') + ' ';
+           diff -= amount * values[x];
+        }
+      }
+      str = str.slice(0, - 1);
+      return str
+    }
     
     TBUtils.sortBy = function (arr, prop) {
     return arr.sort(function (a, b) {
@@ -1226,20 +1226,20 @@
     });
 
     window.onbeforeunload = function () {
-		if (longLoadArray.length > 0) {
-			return 'Toolbox is still busy!';
-		}
+        if (longLoadArray.length > 0) {
+            return 'Toolbox is still busy!';
+        }
 
         // Cache data.
-		TBStorage.setSetting('cache', 'configcache', TBUtils.configCache);
-		TBStorage.setSetting('cache', 'notecache', TBUtils.noteCache);
-		TBStorage.setSetting('cache', 'noconfig', TBUtils.noConfig);
-		TBStorage.setSetting('cache', 'nonotes', TBUtils.noNotes);
-		TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-		TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
+        TBStorage.setSetting('cache', 'configcache', TBUtils.configCache);
+        TBStorage.setSetting('cache', 'notecache', TBUtils.noteCache);
+        TBStorage.setSetting('cache', 'noconfig', TBUtils.noConfig);
+        TBStorage.setSetting('cache', 'nonotes', TBUtils.noNotes);
+        TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+        TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
         // Just incase.
-		TBStorage.unloading();
+        TBStorage.unloading();
     };
 
 

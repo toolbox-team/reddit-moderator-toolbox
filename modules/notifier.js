@@ -173,20 +173,20 @@
             $('body').find('#tb-my-subreddits').toggle();
         });
 
-		$('body').find('#tb-livefilter-input').keyup(function(){
-		var LiveSearchValue = $(this).val();
-			$('body').find('#tb-my-subreddits table tr').each(function(){
-    			var $this = $(this),
+        $('body').find('#tb-livefilter-input').keyup(function(){
+        var LiveSearchValue = $(this).val();
+            $('body').find('#tb-my-subreddits table tr').each(function(){
+                var $this = $(this),
                     subredditName = $this.attr('data-subreddit');
 
-				if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-				    $this.hide();
-				} else {
-				    $this.show();
-				}
+                if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
                 $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
-			});
-		});
+            });
+        });
     }
 
     // if mod counters are on we append them to the rest of the counters here.

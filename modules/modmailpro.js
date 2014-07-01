@@ -2,7 +2,7 @@ function modmailpro() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     $.log('Loading MMP Module');
 
-    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
+    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
@@ -20,6 +20,7 @@ function modmailpro() {
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
+        unansweredThreads = [],
         //newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
         unprocessedThreads = $('.message-parent:not(.mmp-processed)');
 
@@ -30,6 +31,7 @@ function modmailpro() {
         filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
         repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
         unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
+        unansweredlink = $('<li><a class="unansweredlink" href="javascript:;" view="' + UNANSWERED + '">unanswered</a></li>'),
         collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
@@ -53,6 +55,7 @@ function modmailpro() {
     menuList.append($(filteredLink).prepend(separator));
     menuList.append($(repliedLink).prepend(separator));
     menuList.append($(unreadLink).prepend(separator));
+    menuList.append($(unansweredlink).prepend(separator));
     menuList.append($(collapseLink).prepend(spacer));
 
     mmpMenu.append($(unreadCount).prepend(spacer));
@@ -99,6 +102,10 @@ function modmailpro() {
         } else if (inbox == UNREAD) {
             $(unreadLink).closest('li').addClass('selected');
             showThreads(unreadThreads, true);
+
+        } else if (inbox == UNANSWERED) {
+            $(unansweredlink).closest('li').addClass('selected');
+            showThreads(unansweredThreads, true);
         }
 
         // Hide invite spam.
@@ -114,7 +121,7 @@ function modmailpro() {
         }
     }
 
-    $('body').on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink', function (e) {
+    $('body').on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
         // Just unselect all, then select the caller.
         $(menuList).find('li').removeClass('selected');
 
@@ -269,12 +276,15 @@ function modmailpro() {
                 moreCommentThreads.push(threadID);
             }
             $('<span class="message-count">' + count + ' </span>' + spacer).appendTo(infoArea);
+        } else {
+            unansweredThreads.push(threadID);
 
             // Only hide invite spam with no replies.
-        } else if (hideInviteSpam) {
-            var title = $thread.find('.message-title').text().trim();
-            if (title === INVITE || title === ADDED) {
-                $thread.addClass('invitespam');
+            if (hideInviteSpam) {
+                var title = $thread.find('.message-title').text().trim();
+                if (title === INVITE || title === ADDED) {
+                    $thread.addClass('invitespam');
+                }
             }
         }
 
@@ -615,7 +625,7 @@ function modmailSwitch() {
 
 function settings() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
-    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
+    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
 
     var VERSION = '3.2',
         filteredsubs = TBUtils.getSetting('ModMailPro', 'filteredsubs', []),
@@ -645,7 +655,7 @@ function settings() {
     var inboxstyle = $('<label>inbox: </label><select class="inboxstyle" style="background:transparent;">\
                         <option value=' + ALL + '>all</option><option value=' + PRIORITY + '>priority</option>\
                         <option value=' + FILTERED + '>filtered</option><option value=' + REPLIED + '>replied</option>\
-                        <option value=' + UNREAD + '>unread</option></select>');
+                        <option value=' + UNREAD + '>unread</option><option value=' + UNANSWERED + '>unanswered</option></select>');
 
     var selectedCSS = {
         "color": "orangered",

@@ -15,6 +15,11 @@
                         localStorage.removeItem(key);
                     }
                 });
+            chrome.storage.local.remove('tbsettings', function () {
+                window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+            });
+
+            self.port.emit('tb-clearsettings');
             window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
         }
     }

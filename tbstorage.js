@@ -81,7 +81,7 @@
 
     // methods.
     TBStorage.setSetting = function (module, setting, value) {
-        return setSetting(module, setting, value);
+        return setSetting(module, setting, value, true);
     };
 
     TBStorage.getSetting = function (module, setting, defaultVal) {
@@ -160,7 +160,7 @@
         $.each(object, function (fullKey, value) {
             var key = fullKey.split(".");
             //$.log(key[1] + '.' + key[2] + ': ' + value, true);
-            setSetting(key[1], key[2], value);
+            setSetting(key[1], key[2], value, false);
         });
 
         callback();
@@ -185,14 +185,14 @@
         }
     }
 
-    function setSetting(module, setting, value) {
+    function setSetting(module, setting, value, syncSettings) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
 
         localStorage[storageKey] = JSON.stringify(value);
 
         // try to save our settings.
-        //saveSettingsToBrowser();
+        if (syncSettings) saveSettingsToBrowser();
 
         return getSetting(module, setting);
     }

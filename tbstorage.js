@@ -15,12 +15,23 @@
                         localStorage.removeItem(key);
                     }
                 });
-            chrome.storage.local.remove('tbsettings', function () {
-                window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
-            });
+            // Chrome
+            if (typeof (chrome) !== "undefined") {
+                chrome.storage.local.remove('tbsettings', function () {
+                    window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                });
 
-            self.port.emit('tb-clearsettings');
-            window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+            // Firefox
+            } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
+                self.port.emit('tb-clearsettings');
+                self.port.on('tb-clearsettings-reply', function () {
+                    window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                });
+
+            // Donno, fuck it.
+            } else {
+                window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+            }
         }
     }
 })();
@@ -65,11 +76,15 @@
 
         // wait for reply.
         self.port.on('tb-settings-reply', function (tbsettings) {
-            objectToSettings(tbsettings, function () {
-                console.log('got settings: firefox');
-                console.log(tbsettings);
+            if (tbsettings !== null) {
+                objectToSettings(tbsettings, function () {
+                    console.log('got settings: firefox');
+                    console.log(tbsettings);
+                    SendInit();
+                });
+            } else {
                 SendInit();
-            });
+            }
         });
     } else {
         SendInit();

@@ -22,7 +22,7 @@
 
 (function (TBStorage) {
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
-    TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', false);
+    TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;
@@ -47,9 +47,23 @@
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 objectToSettings(sObject.tbsettings, function () {
+                    console.log('got settings: chrome');
+                    console.log(sObject.tbsetting);
                     TBStorage.isLoaded = true;
                 });
             }
+        });
+    } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
+        // Ask for settings.
+        self.port.emit('tb-getsettings');
+
+        // wait for reply.
+        self.port.on('tb-settings-reply', function (tbsettings) {
+            objectToSettings(tbsettings, function () {
+                console.log('got settings: firefox');
+                console.log(tbsettings);
+                TBStorage.isLoaded = true;
+            });
         });
     } else {
         TBStorage.isLoaded = true;
@@ -73,21 +87,15 @@
         return getSetting(module, setting, defaultVal);
     };
 
-    TBStorage.unloading = function () {
-        if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
-            saveSettingsToChrome();
-        } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
-            saveSettingsToFirefox();
-        }
-    }
+    //TBStorage.unloading = function () {
+    //    saveSettingsToBrowser();
+    //}
 
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
         if (module === 'cache') return;
 
         var keyName = module + '.' + setting;
-
-        //if (settings === undefined) settings = [];
 
         if ($.inArray(keyName, TBStorage.settings) === -1) {
             TBStorage.settings.push(keyName);
@@ -104,7 +112,7 @@
             if (/^(Toolbox.)/.test(fullKey)) {
                 var key = fullKey.split(".");
                 setting = getSetting(key[1], key[2], null);
-                console.log(fullKey);
+                //console.log(fullKey);
                 if (setting && setting !== undefined) {
                     settingsObject[fullKey] = setting;
                 }
@@ -113,25 +121,23 @@
         callback(settingsObject);
     };
 
-    function saveSettingsToChrome() {
-        settingsToObject(function (sObject) {
-            chrome.storage.local.set({
-                'tbsettings': sObject
-            });
-        });
-    }
-    //saveSettingsToChrome();
+    function saveSettingsToBrowser() {
+        if (!TBStorage.userBrowserStorage) return;
 
-    function saveSettingsToFirefox() {
-        settingsToObject(function (sObject) {
-            self.port.emit('simple-storage', sObject)
-        });
-        //self.port.on('storage-reply', function (tbsettingString) {
-        //    console.log('got settings:');
-        //    console.log(tbsettingString);
-        //});
+        if (TBStorage.browser === CHROME) {
+            // chrome
+            settingsToObject(function (sObject) {
+                chrome.storage.local.set({
+                    'tbsettings': sObject
+                });
+            });
+        } else if (TBStorage.browser === FIREFOX) {
+            // firefox
+            settingsToObject(function (sObject) {
+                self.port.emit('tb-setsettings', sObject)
+            });
+        }
     }
-    //saveSettingsToFirefox();
 
     function objectToSettings(object, callback) {
         console.log(object);
@@ -168,6 +174,10 @@
         registerSetting(module, setting);
 
         localStorage[storageKey] = JSON.stringify(value);
+
+        // try to save our settings.
+        saveSettingsToBrowser();
+
         return getSetting(module, setting);
     }
 

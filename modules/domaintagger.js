@@ -1,4 +1,4 @@
-(function domaintagger() {
+function domaintagger() {
     if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false)) return;
     $.log('Loading Domain Tagger Module');
 
@@ -200,4 +200,12 @@
     });
 
 
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        domaintagger();
+    });
 })();

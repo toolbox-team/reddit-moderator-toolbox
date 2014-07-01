@@ -1,4 +1,4 @@
-﻿(function frame() {
+﻿function frame() {
     if (!TBUtils.logged || !TBUtils.getSetting('FrameMod', 'enabled', false)) return;
     if (!$('#tb-bottombar')) return setTimeout(frame);
 
@@ -382,4 +382,12 @@
         setThreshold($('.thing'));
         */
     }
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        frame();
+    });
 })();

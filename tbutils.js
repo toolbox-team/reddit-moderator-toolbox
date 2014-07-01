@@ -1,19 +1,5 @@
+function initwrapper() {
 (function (TBUtils) {
-    
-    function initLoop() {
-        setTimeout(function () {
-            if (TBStorage.isLoaded === true) {
-                console.log("loaded storage, starting tbutils");
-                //return;
-            } else {
-                console.log("no storage, looping (tbu)");
-                initLoop();
-            }
-        }, 50);
-    };
-    
-    if (!TBStorage.isLoaded) initLoop();
-
     console.log('TBUtils loading');
 
     // We need these before we can do anything.
@@ -1285,3 +1271,12 @@
     })();
 
 }(TBUtils = window.TBUtils || {}));
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        initwrapper();
+    });
+})();

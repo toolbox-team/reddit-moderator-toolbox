@@ -48,8 +48,8 @@
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 objectToSettings(sObject.tbsettings, function () {
                     console.log('got settings: chrome');
-                    console.log(sObject.tbsetting);
                     TBStorage.isLoaded = true;
+                    SendInit();
                 });
             }
         });
@@ -62,19 +62,20 @@
             objectToSettings(tbsettings, function () {
                 console.log('got settings: firefox');
                 console.log(tbsettings);
-                TBStorage.isLoaded = true;
+                SendInit();
             });
         });
     } else {
-        TBStorage.isLoaded = true;
-
-        // uncomment to test wait loops.  (nope, don't bother.  JS is shit and this doesn't fucking work.)
+        SendInit();
+        // uncomment to test wait loops.  
         /*
         TBStorage.isLoaded = false;
         setTimeout(function () {
             TBStorage.isLoaded = true;
+            SendInit();
         }, 9000);
-       */
+        */
+       
     }
 
 
@@ -89,6 +90,12 @@
 
     TBStorage.unloading = function () {
         saveSettingsToBrowser();
+    }
+
+    function SendInit() {
+        TBStorage.isLoaded = true;
+        var event = new CustomEvent("TBStorageLoaded");
+        window.dispatchEvent(event);
     }
 
     function registerSetting(module, setting) {

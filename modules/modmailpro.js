@@ -1,4 +1,4 @@
-(function modmailpro() {
+function modmailpro() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     $.log('Loading MMP Module');
 
@@ -489,9 +489,9 @@
         $(link).text('collapse all');
         $('.collapse-link').text('[-]');
     }
-})();
+}
 
-(function realtimemail() {
+function realtimemail() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
@@ -546,9 +546,9 @@
             $(refreshLink).css(unselectedCSS);
         });
     }
-})();
+}
 
-(function compose() {
+function compose() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var COMPOSE = "compose-message",
         //mySubs = [],
@@ -579,11 +579,11 @@
             }
         });
     }
-})();
+}
 
 
 
-(function modmailSwitch() {
+function modmailSwitch() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
         switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
@@ -611,9 +611,9 @@
             }
         });
     }
-})();
+}
 
-(function settings() {
+function settings() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4; //make a JSON object.
 
@@ -798,5 +798,17 @@
         TBUtils.setSetting('ModMailPro', 'expandreplies', $(autoexpand).hasClass('true'));
         TBUtils.setSetting('ModMailPro', 'hideinvitespam', $(hideinvitespam).hasClass('true'));
         TBUtils.setSetting('ModMailPro', 'autoload', $(autoload).hasClass('true'));
+    });
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        modmailpro();
+        realtimemail();
+        compose();
+        modmailSwitch();
+        settings();
     });
 })();

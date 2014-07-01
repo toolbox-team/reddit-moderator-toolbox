@@ -1,4 +1,4 @@
-(function comments() {
+function comments() {
     if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
     $.log('Loading Comments Module');
 
@@ -271,4 +271,12 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
 
     });
 
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        comments();
+    });
 })();

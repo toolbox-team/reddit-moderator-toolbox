@@ -1,4 +1,4 @@
-(function queuetools() {
+function queuetools() {
     // I don't actually know why this works the way it does, but without them modtools doesn't load.
     if (!document.head)
         return setTimeout(queuetools);
@@ -812,4 +812,13 @@
         }
     }
 
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        queuetools();
+    });
 })();
+

@@ -1,4 +1,4 @@
-(function usernotes() {
+function usernotes() {
     if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
     $.log('Loading User Notes Module');
 
@@ -567,4 +567,13 @@
         }
     });
 
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        usernotes();
+    });
 })();
+

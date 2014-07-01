@@ -1,4 +1,4 @@
-(function notifier() {
+function notifier() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
     $.log('Loading Notifier Module');
 
@@ -174,7 +174,7 @@
         });
 
         $('body').find('#tb-livefilter-input').keyup(function(){
-        var LiveSearchValue = $(this).val();
+            var LiveSearchValue = $(this).val();
             $('body').find('#tb-my-subreddits table tr').each(function(){
                 var $this = $(this),
                     subredditName = $this.attr('data-subreddit');
@@ -970,11 +970,11 @@
             $.getJSON(unreadcontexturl, function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
                 if(straightToInbox && messageunreadlink) {
-                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/unread/');
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/unread/');
                 } else if (straightToInbox) {
-                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/inbox/');
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com/message/inbox/');
                 } else {
-                TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com' + unreadcontext);
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), 'http://www.reddit.com' + unreadcontext);
                 }
             });
         }
@@ -1193,9 +1193,9 @@
                                   , author    = value.data.author;
 
                                 if (!notificationbody) {
-                                      notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
+                                    notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
                                 } else {
-                                      notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
+                                    notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
                                 }
 
                                 queuecount++;
@@ -1313,17 +1313,17 @@
                         var author = value.data.author;
 
                         if (author !== TBUtils.logged && !isInviteSpam) {
-                        // Sending 100 messages, since this loops through all messages, again.
-                        // In all honesty, all of this needs to be rewriten...
-                        messagecount++;
-                        if (messagecount > newCount) return false;
+                            // Sending 100 messages, since this loops through all messages, again.
+                            // In all honesty, all of this needs to be rewriten...
+                            messagecount++;
+                            if (messagecount > newCount) return false;
 
-                        var modmailbody = value.data.body;
-                        modmailsubject = value.data.subject;
-                        modmailsubreddit = value.data.subreddit;
-                        modmailpermalink = value.data.id;
+                            var modmailbody = value.data.body;
+                            modmailsubject = value.data.subject;
+                            modmailsubreddit = value.data.subreddit;
+                            modmailpermalink = value.data.id;
 
-                        TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
+                            TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, 'http://www.reddit.com/message/messages/' + modmailpermalink);
                         }
                     });
 
@@ -1346,4 +1346,12 @@
         TBUtils.setSetting('Notifier', 'modmailcount', 0);
     }
 
+}
+
+(function() {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        notifier();
+    });
 })();

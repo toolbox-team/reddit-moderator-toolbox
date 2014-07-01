@@ -1,4 +1,4 @@
-(function removalreasons() {
+function removalreasons() {
     // I don't actually know why this works the way it does, but without them modtools doesn't load.
     if (!document.head)
         return setTimeout(removalreasons);
@@ -587,4 +587,13 @@
     $('body').on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
         TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        removalreasons();
+    });
 })();
+

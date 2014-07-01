@@ -1,4 +1,4 @@
-(function modmatrix() {
+function modmatrix() {
     var modLogMatrix = {
 
         version: 2.0,
@@ -787,4 +787,12 @@ window.addEventListener("TBNewThings", function () {
 });
     
     
+}
+
+(function () {
+    // wait for storage
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        modmatrix();
+    });
 })();

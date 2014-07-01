@@ -54,6 +54,7 @@
 				"modules/frame.js",
 				"modules/modmaillite.js",
 				"modules/devtools.js",
+				"modules/betterbuttons.js",
 				"tbobjectinit.js" // this one always goes last
 			]
 		}

@@ -1,4 +1,4 @@
-(function modmaillite() {
+function modmaillite() {
     if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailLite', 'enabled', false)) return;
 
     $.log('Loading MML Module');
@@ -81,6 +81,13 @@
                 $(this).show();
             }
         });
+    });
+}
+
+(function() {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        modmaillite();
     });
 })();
 

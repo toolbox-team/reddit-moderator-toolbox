@@ -1,3 +1,4 @@
+function core(){
 // core.js for Toolbox general settings
 
 core = new TB.Module("General"); // because the settings tab should say this
@@ -6,7 +7,15 @@ core = new TB.Module("General"); // because the settings tab should say this
 // that should be in this module...
 
 core.init = function init() {
-	// Nothing here, for now.
+    // Nothing here, for now.
 }
 
 TB.register_module(core);
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        core();
+    });
+})();

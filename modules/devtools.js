@@ -1,3 +1,4 @@
+function devtools() {
 // Developer Tools, for managing /r/toolbox/w/tbnotes (etc.)
 
 var devTools = new TB.Module('Developer Tools');
@@ -5,3 +6,11 @@ var devTools = new TB.Module('Developer Tools');
 devTools.setting('betamode', false);
 devTools.setting('devmode', true);
 
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        devtools();
+    });
+})();

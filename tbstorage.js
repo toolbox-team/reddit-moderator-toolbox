@@ -48,7 +48,6 @@
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 objectToSettings(sObject.tbsettings, function () {
                     console.log('got settings: chrome');
-                    TBStorage.isLoaded = true;
                     SendInit();
                 });
             }
@@ -93,9 +92,18 @@
     }
 
     function SendInit() {
-        TBStorage.isLoaded = true;
-        var event = new CustomEvent("TBStorageLoaded");
+        //TBLoadUtils
+        var event = new CustomEvent("TBLoadUtils");
         window.dispatchEvent(event);
+        setTimeout(function () {
+            event = new CustomEvent("TBStorageLoaded");
+            window.dispatchEvent(event);
+
+            setTimeout(function () {
+                TBStorage.isLoaded = true;
+            }, 10);
+        }, 10);
+
     }
 
     function registerSetting(module, setting) {

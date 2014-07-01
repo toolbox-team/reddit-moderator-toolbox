@@ -1,3 +1,5 @@
+function stattittab() {
+
 // @copyright  2013+, LowSociety, dakta
 
 var stattitTab = new TB.Module('Stattit Tab');
@@ -47,3 +49,11 @@ stattitTab.init = function init() {
 };
 
 TB.register_module(stattitTab);
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        stattittab();
+    });
+})();

@@ -1,3 +1,5 @@
+function syntax(){
+
 // syntax highlighter with ACE, by creesch
 
 var syntaxHighlighter = new TB.Module('Syntax Highlighter');
@@ -132,3 +134,11 @@ syntaxHighlighter.init = function init() {
 };
 
 TB.register_module(syntaxHighlighter);
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        syntax();
+    });
+})();

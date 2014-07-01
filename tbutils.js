@@ -1275,8 +1275,8 @@ function initwrapper() {
 
 (function () {
     // wait for storage
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBLoadUtils", function () {
+        console.log("got storage (utils)");
         initwrapper();
     });
 })();

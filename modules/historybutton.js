@@ -1,3 +1,4 @@
+function historybutton() {
 var historyButton = new TB.Module('History Button');
 
 // Add history button to all users.
@@ -244,3 +245,12 @@ historyButton.init = function () {
 };
 
 TB.register_module(historyButton);
+
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        historybutton();
+    });
+})();

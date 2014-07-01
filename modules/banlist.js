@@ -1,3 +1,4 @@
+function banlist() {
 var banList = new TB.Module('Ban List');
 
 banList.settings["enabled"]["default"] = true;
@@ -210,3 +211,11 @@ banList.init = function init() {
 };
 
 TB.register_module(banList);
+}
+
+(function() {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        banlist();
+    });
+})();

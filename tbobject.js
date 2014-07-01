@@ -1,4 +1,4 @@
-(function tbobject() {
+function tbobject() {
 
 TB = {
     utils: TBUtils,
@@ -349,4 +349,11 @@ TB.Module = function Module(name) {
 // This needs to be called last. There's probably some clever way to do it, but I haven't figured it out.
 // TB.init();
 
+}
+
+(function() {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage (objects)");
+        tbobject();
+    });
 })();

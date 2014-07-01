@@ -1,4 +1,4 @@
-(function tbconfig() {
+function tbconfig() {
     if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
     $.log('Loading Configuration Module');
 
@@ -538,5 +538,12 @@
         // also, yes some of the pages are in JSON, but they aren't JSON objects,
         // so they don't need to be re-strinified.
         postToWiki(page, text, false, updateAM);
+    });
+}
+
+(function() {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        tbconfig();
     });
 })();

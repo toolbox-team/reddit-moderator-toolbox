@@ -1,3 +1,5 @@
+
+function modbutton(){
 // @copyright 2014 Toolbox Devs, dakta
 
 var modButton = new TB.Module('Mod Button');
@@ -624,3 +626,12 @@ modButton.init = function init() {
 };
 
 TB.register_module(modButton);
+
+}
+
+(function () {
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage");
+        modbutton();
+    });
+})();

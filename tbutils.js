@@ -24,7 +24,7 @@
     //Private variables
     var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
-        settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
+        //settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
         lastgetLong = TBStorage.getSetting('cache', 'lastgetlong', -1),
         lastgetShort = TBStorage.getSetting('cache', 'lastgetshort', -1),
         shortLength = TBStorage.getSetting('cache', 'shortlength', 15),
@@ -979,7 +979,7 @@
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
-        $(settings).each(function () {
+        $(TBStorage.settings).each(function () {
             var key = this.split(".");
             var setting = TBStorage.getSetting(key[0], key[1], null);
             if (setting && setting !== undefined) {
@@ -1228,6 +1228,7 @@
 		if (longLoadArray.length > 0) {
 			return 'Toolbox is still busy!';
 		}
+
         // Cache data.
 		TBStorage.setSetting('cache', 'configcache', TBUtils.configCache);
 		TBStorage.setSetting('cache', 'notecache', TBUtils.noteCache);
@@ -1236,6 +1237,8 @@
 		TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
 		TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
+        // Just incase.
+		TBStorage.unloading();
     };
 
 

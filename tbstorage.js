@@ -87,9 +87,9 @@
         return getSetting(module, setting, defaultVal);
     };
 
-    //TBStorage.unloading = function () {
-    //    saveSettingsToBrowser();
-    //}
+    TBStorage.unloading = function () {
+        saveSettingsToBrowser();
+    }
 
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
@@ -152,7 +152,7 @@
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        registerSetting(module, setting); //why reg settings that have never changed?
+        registerSetting(module, setting);
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
@@ -176,7 +176,7 @@
         localStorage[storageKey] = JSON.stringify(value);
 
         // try to save our settings.
-        saveSettingsToBrowser();
+        //saveSettingsToBrowser();
 
         return getSetting(module, setting);
     }

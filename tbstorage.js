@@ -26,6 +26,7 @@
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;
+    TBStorage.isLoaded = false;
 
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
     if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
@@ -41,8 +42,7 @@
     }
 
     if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
-        console.log('using browser storage')
-        TBStorage.isLoaded = false;
+        console.log('using browser storage');
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
@@ -50,6 +50,8 @@
                     console.log('got settings: chrome');
                     SendInit();
                 });
+            } else {
+                SendInit();
             }
         });
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
@@ -70,7 +72,6 @@
         /*
         TBStorage.isLoaded = false;
         setTimeout(function () {
-            TBStorage.isLoaded = true;
             SendInit();
         }, 9000);
         */

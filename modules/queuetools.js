@@ -674,6 +674,58 @@ function queuetools() {
             }
         });
 
+        if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
+            var prefix = '', page = '', type = '';
+            if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
+                $.log('sorting unmod');
+                prefix = 'umq-';
+                page = 'unmoderated';
+                //type = 'unmod-';
+            } else if (TBUtils.isModQueuePage && sortModQueue) {
+                $.log('sorting mod queue');
+                prefix = 'mq-';
+                page = 'modqueue';
+                //type = 'mod-';
+            } else {
+                return;
+            }
+
+            var now = new Date().valueOf(),
+                subs = {},
+                delay = 0;
+
+            // Update modqueue items count
+            var modSubs = [];
+            $('.subscription-box a.title').each(function () {
+                var elem = $(this),
+                    sr = elem.text(),
+                    data = JSON.parse(TBUtils.getSetting('cache', prefix + TBUtils.logged + '-' + sr, '[0,0]'));
+                modSubs.push(sr);
+
+                // Update count and re-cache data if more than an hour old.
+                elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
+                if (now > data[1] + 3600000)
+                    setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
+            });
+            //TBUtils.setSetting('QueueTools', type + TBUtils.logged, modSubs); //this, uh... doesn't do anything?
+
+            function sortSubreddits() {
+                var subs = $('.subscription-box li').sort(function (a, b) {
+                    return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
+                });
+                $('.subscription-box').empty().append(subs);
+            }
+            sortSubreddits();
+
+            function updateModqueueCount(sr) {
+                $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
+                    TBUtils.setSetting('cache', prefix + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                    $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
+                    sortSubreddits();
+                });
+            }
+        }
+
         // // RTS button pressed
         // $('.inline-content').on('click', '.rts-report', function () {
         //     var rtsLink = this,
@@ -759,59 +811,6 @@ function queuetools() {
     if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
         $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
     }
-
-    if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
-        var prefix = '', page = '', type = '';
-        if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
-            $.log('sorting unmod');
-            prefix = 'umq-';
-            page = 'unmoderated';
-            //type = 'unmod-';
-        } else if (TBUtils.isModQueuePage && sortModQueue) {
-            $.log('sorting mod queue');
-            prefix = 'mq-';
-            page = 'modqueue';
-            //type = 'mod-';
-        } else {
-            return;
-        }
-
-        var now = new Date().valueOf(),
-            subs = {},
-            delay = 0;
-
-        // Update modqueue items count
-        var modSubs = [];
-        $('.subscription-box a.title').each(function () {
-            var elem = $(this),
-                sr = elem.text(),
-                data = JSON.parse(TBUtils.getSetting('cache', prefix + TBUtils.logged + '-' + sr, '[0,0]'));
-            modSubs.push(sr);
-
-            // Update count and re-cache data if more than an hour old.
-            elem.parent().append('<a href="/r/' + sr + '/about/'+ page +'" count="' + data[0] + '">' + data[0] + '</a>');
-            if (now > data[1] + 3600000)
-                setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
-        });
-        //TBUtils.setSetting('QueueTools', type + TBUtils.logged, modSubs); //this, uh... doesn't do anything?
-
-        function sortSubreddits() {
-            var subs = $('.subscription-box li').sort(function (a, b) {
-                return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
-            });
-            $('.subscription-box').empty().append(subs);
-        }
-        sortSubreddits();
-
-        function updateModqueueCount(sr) {
-            $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
-                TBUtils.setSetting('cache', prefix + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
-                $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
-                sortSubreddits();
-            });
-        }
-    }
-
 }
 
 (function () {

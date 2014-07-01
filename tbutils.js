@@ -156,6 +156,7 @@
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
         TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
+        TBStorage.setSetting('Notifier', 'modmailcount', 0);
         TBStorage.setSetting('Utils', 'debugMode', false);
         TBStorage.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;

@@ -856,7 +856,7 @@
 
         // We have nothing unread if we're on the mod mail page.
         TBUtils.setSetting('Notifier', 'lastseenmodmail', now);
-        TBUtils.setSetting('Notifier', 'modmailcount', 0);
+        modmailCount = TBUtils.setSetting('Notifier', 'modmailcount', 0);
 
         $.getJSON('http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator/unread.json', function (json) {
             $.each(json.data.children, function (i, value) {

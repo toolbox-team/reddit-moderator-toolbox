@@ -289,7 +289,7 @@ function initwrapper() {
             <div class="tb-overlay-label"></div></div>\
             ';
             TBUtils.longLoadSpinner(true);
-                $('body').find('.mod-popup-tabs').after(html);
+                $('body').find('.tb-popup-tabs').after(html);
             }
 
                 // Destory the overlay

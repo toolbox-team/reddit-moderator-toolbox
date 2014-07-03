@@ -1023,6 +1023,7 @@ img.note-close {
     box-shadow: 0 1px 3px 1px #D6D6D6;
     margin-left: auto !important;
     margin-right: auto !important;
+    margin-bottom: 50px;
 }
 
 .reason-popup .reason-popup-content span p {

@@ -8,9 +8,9 @@ function removalreasons() {
     if (!TBUtils.logged || !TBUtils.getSetting('RemovalReasons', 'enabled', true) || TBUtils.isModmail)
         return;
     
-    var body = $('body');
+    var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
-    body.addClass('tb-removal-reasons');
+    $body.addClass('tb-removal-reasons');
     
     // Error texts
     var STATUS_DEFAULT_TEXT			= "saving...",
@@ -91,9 +91,9 @@ function removalreasons() {
         });
     }
 
-    body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
+    $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
     // Open reason drop-down when we remove something as ham.
-    body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
+    $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
         //Don't show removal reasons for spam button.
         if ($(this).children().first().attr('value') === 'spammed') return;
 
@@ -303,12 +303,12 @@ function removalreasons() {
 
     // Popup events
 
-    body.on('click', '.reason-popup', function (e) {
+    $body.on('click', '.reason-popup', function (e) {
         e.stopPropagation();
     });
 
     // Selection/deselection of removal reasons
-    body.on('click', '.selectable-reason', function (e) {
+    $body.on('click', '.selectable-reason', function (e) {
         var checkBox = $(this).find('.reason-check'),
             isChecked = checkBox.is(':checked'),
             targetIsCheckBox = $(e.target).is('.reason-check');
@@ -326,17 +326,17 @@ function removalreasons() {
     });
 
     // Toggle PM/reply/both notification method
-    body.on('click', '.reason-type', function () {
+    $body.on('click', '.reason-type', function () {
         TBUtils.setSetting('cache', 'reason-type', this.value);
     });
 
     // 'no reason' button clicked
-    body.on('click', '.reason-popup .no-reason', function () {
+    $body.on('click', '.reason-popup .no-reason', function () {
         $(this).parents('.reason-popup').hide();
     });
 
     // 'cancel' button clicked
-    body.on('click', '.reason-popup .cancel', function () {
+    $body.on('click', '.reason-popup .cancel', function () {
         var popup = $(this).parents('.reason-popup'),
             status = popup.find('.status'),
             attrs = popup.find('attrs');
@@ -350,7 +350,7 @@ function removalreasons() {
     });
 
     // 'save' button clicked
-    body.on('click', '.reason-popup .save', function () {
+    $body.on('click', '.reason-popup .save', function () {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
             checked = popup.find('.reason-check:checked'),
@@ -580,7 +580,7 @@ function removalreasons() {
     });
 
     // Reason textarea/input/select changed
-    body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
+    $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
         TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
 }

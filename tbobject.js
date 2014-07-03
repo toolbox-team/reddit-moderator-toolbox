@@ -18,7 +18,7 @@ TB = {
         initLoop();
 
         function initLoop() {
-            setTimeout(function () {
+            setTimeout(function init() {
                 if (TB.storage.isLoaded === true) {
                     $.log("loaded storage, starting init");
                     // call every module's init() method on page load
@@ -45,12 +45,11 @@ TB = {
                         if (module.setting('enabled')) {
                             $.log('Loading ' + module.name + ' module');
                             if (module.config["needs_mod_subs"]) {
+                                $.log("  We require additional mod subs");
                                 TB.utils.getModSubs(function init() {
-                                    $.log("Loading "+module.name+" Module")
                                     module.init();
                                 });
                             } else {
-                                $.log("Loading "+module.name+" Module")
                                 module.init();
                             }
                         }

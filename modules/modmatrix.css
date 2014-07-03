@@ -1,0 +1,131 @@
+#mod-matrix-wrapper a {
+	cursor: pointer;
+}
+
+#mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {
+	font-weight: bold;
+}
+
+#mod-matrix tr {
+	border-bottom: 1px solid #eee;
+}
+
+#mod-matrix tfoot tr {
+	border-top: 1px solid #eee;
+}
+
+#mod-matrix td, #mod-matrix th {
+	padding: 5px;
+	border-right: 1px solid #eee;
+	text-align: center;
+	font-size: x-small;
+}
+
+#mod-matrix td:first-child, #mod-matrix th:first-child {
+	text-align: left;
+}
+
+#mod-matrix a.modactions {
+	margin-right: 0;
+	display: inline-block;
+	float: none;
+}
+
+#mod-matrix tbody tr:nth-of-type(even) {
+	background: #fafafa;
+}
+
+#mod-matrix tr:hover, #mod-matrix td.hover {
+	background: #ffc!important;
+}
+
+#mod-matrix thead th {
+	position: relative;
+	cursor: s-resize;
+}
+
+#mod-matrix thead th {
+	cursor: pointer;
+}
+
+#mod-matrix thead th .sorting-icon {
+	position: absolute;
+	left: 50%;
+	margin-left: -8px;
+	bottom: -8px;
+}
+
+#mod-matrix .action-number {
+	color: #000;
+}
+
+#mod-matrix .zero a, #mod-matrix .zero span {
+	color: #c0c0c0;
+}
+
+#mod-matrix .highlight a, #mod-matrix .highlight span {
+	color: #f00;
+}
+
+#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered, #mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
+	display: none;
+}
+
+#mod-matrix-settings td {
+	padding: 2px;
+	vertical-align: top;
+	line-height: 25px;
+}
+
+#mod-matrix-settings td:first-child {
+	width: 200px;
+}
+
+#mod-matrix-settings div {
+	line-height: 1em;
+}
+
+#mod-matrix-settings input[type=submit] {
+	padding: 1px 6px;
+}
+
+#mod-matrix-statistics {
+	margin-top: 1em;
+}
+
+#mod-matrix-statistics {
+	border-top: 1px dotted #000;
+	padding: 7px;
+}
+
+#mod-matrix-statistics strong {
+	font-weight: bold;
+}
+
+/* show header labels (thanks to /u/ashishtiwari) */
+#mod-matrix.labels  th {
+	vertical-align: text-bottom;
+	text-align: center;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding-top: 150px;
+}
+
+#mod-matrix.labels a.modactions {
+	vertical-align: bottom;
+	width: 16px!important;
+	height: 16px!important;
+}
+
+#mod-matrix.labels a.modactions:before {
+	content: attr(title);
+	position: relative;
+	bottom: 20px;
+	display: block;
+	font-size: 11px;
+	white-space: nowrap;
+	font-weight: normal;
+	color: #000;
+	-webkit-transform: rotate(-90.0deg);
+	transform: rotate(-90.0deg);
+}

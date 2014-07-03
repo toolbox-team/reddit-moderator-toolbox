@@ -11,7 +11,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 }
 
 .mod-toolbox #tb-bottombar {
-    bottom: 0px;
+    bottom: 0;
     z-index: 6000;
     position: fixed;
     text-align: left;
@@ -24,8 +24,8 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     color: #696969;
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
 }
 
 .mod-toolbox #tb-toolbar-mysubs {
@@ -38,7 +38,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 }
 
 .mod-toolbox #tb-bottombar-hidden {
-    bottom: 0px;
+    bottom: 0;
     z-index: 6000;
     position: fixed;
     text-align: left;
@@ -53,7 +53,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
     border-right: solid 1px #A8B5C2;
-    left: 0px;
+    left: 0;
 }
 
 .mod-toolbox #tb-mail.nohavemail {
@@ -64,7 +64,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 
 .mod-toolbox #tb-mail.havemail {
     background-image: url("http://creesch.github.com/reddit-declutter/sprite-reddit.png");
-    background-position: 0px -645px;
+    background-position: 0 -645px;
     background-repeat: no-repeat;
 }
 
@@ -102,12 +102,12 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 }
 
 .mod-toolbox .articleFrame {
-border: solid 1px #808080;
-position: relative;
-width: 70%;
-margin-left: 60px;
-resize: both;
-display: none;
+	border: solid 1px #808080;
+	position: relative;
+	width: 70%;
+	margin-left: 60px;
+	resize: both;
+	display: none;
 }
 
 .mod-toolbox #tb-modqueue {
@@ -160,7 +160,7 @@ display: none;
     font-size: small;
     color: #696969;
     border: 1px solid #A8B5C2;
-    box-shadow: #D6D6D6 0px 1px 3px 1px;
+    box-shadow: #D6D6D6 0 1px 3px 1px;
 	text-align: center;
 }
 
@@ -243,13 +243,13 @@ text-align: left;
 .mod-toolbox .tb-page-overlay {
     padding: 10px 15px !important;
     background-color: rgba(250, 250, 250, 0.84);
-    border: 0px;
-    border-radius: 0px;
+    border: 0;
+    border-radius: 0;
     position: fixed;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     overflow: auto;
     z-index: 10000;
     font: normal x-small verdana,arial,helvetica,sans-serif !important;
@@ -265,9 +265,9 @@ text-align: left;
 	width: auto;
     padding: 40px 5px 5px 5px;
 	font-weight: bold;
-	text-shadow: 0px 0px 4px #FFF;
-	left: 0px;
-	right: 0px;
+	text-shadow: 0 0 4px #FFF;
+	left: 0;
+	right: 0;
     text-align: center;
 }
 
@@ -277,10 +277,10 @@ text-align: left;
     max-width: 1000px;
     margin-right: auto !important;
     margin-left: auto !important;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     font-size: small;
 }
 
@@ -290,10 +290,10 @@ text-align: left;
     max-width: 1000px;
     margin-right: auto !important;
     margin-left: 50px !important;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
 }
 
 .mod-toolbox .tb-window-wrapper a:hover, .mod-toolbox .tb-window-tabs a:hover {
@@ -301,8 +301,8 @@ text-align: left;
 }
 
 .mod-toolbox .tb-window-header {
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
@@ -340,8 +340,8 @@ text-align: left;
 
 .mod-toolbox .tb-window-content {
     overflow: auto;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     padding: 5px !important;
     font-size: 12px !important;
 }
@@ -438,7 +438,7 @@ text-align: left;
 
 div.sticky-queue {
     position: fixed;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     border: 0;
     width: 300px;
     z-index: 5000;
@@ -533,7 +533,7 @@ img.note-close {
     padding: 2px !important;
     border: solid 2px #B83E3E;
     top: auto;
-    box-shadow: #D1D1D1 0px 1px 3px 1px;
+    box-shadow: #D1D1D1 0 1px 3px 1px;
     cursor: pointer;
 }
 
@@ -558,7 +558,7 @@ img.note-close {
     padding: 2px !important;
     border: solid 1px #A8B5C2;
     top: auto;
-    box-shadow: #D1D1D1 0px 1px 3px 1px;
+    box-shadow: #D1D1D1 0 1px 3px 1px;
 }
 
 .tb-first-run {
@@ -568,17 +568,17 @@ img.note-close {
 
 .dtagger-popup {
     max-width: 900px;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     position: absolute;
     z-index: 10000;
 }
 
 .dtagger-popup-header {
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
@@ -590,8 +590,8 @@ img.note-close {
 
 .dtagger-popup-content {
     overflow: auto;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     padding: 5px !important;
 }
 
@@ -714,17 +714,17 @@ img.note-close {
     font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
     font-size: small;
     max-width: 1000px;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     position: absolute;
     z-index: 10000;
 }
 
 .tb-popup-header {
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
@@ -761,11 +761,10 @@ img.note-close {
     background-color: #9FBAD6;
 }
 
-
 .tb-popup-content {
     overflow: auto;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     padding: 5px !important;
 }
 
@@ -857,25 +856,24 @@ img.note-close {
     display: block;
     font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
     font-size: small;
-    color: #696969;
     background-color: rgba(250, 250, 250, 0.84);
-    border: 0px;
-    border-radius: 0px;
+    border: 0;
+    border-radius: 0;
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     margin-left: auto;
     margin-right: auto;
-    right: 0px;
-    bottom: 0px;
+    right: 0;
+    bottom: 0;
     overflow: auto;
     z-index: 10000;
     color: black;
 }
 
 .reason-popup-header {
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
@@ -887,8 +885,8 @@ img.note-close {
 
 .reason-popup-innercontent {
     overflow: auto;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     padding: 5px !important;
 }
 
@@ -956,7 +954,7 @@ img.note-close {
     margin-top: 2px;
     text-align: center;
     font-size: 16px;
-    font-family: arial;
+    font-family: Arial, sans-serif;
     color: #D3D3D3;
 }
 
@@ -990,7 +988,6 @@ img.note-close {
     margin-top: 2px;
     padding: 6px 0 6px 2px;
     vertical-align: middle;
-    text-align: middle;
     border: solid 1px transparent;
 }
 
@@ -1020,10 +1017,10 @@ img.note-close {
     position: relative;
     top: 40px;
     max-width: 1000px;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     margin-left: auto !important;
     margin-right: auto !important;
 }
@@ -1066,9 +1063,9 @@ body .thing.flaired {
     background-position: 0 -240px;
     background-image: url(http://www.redditstatic.com/sprite-reddit.rQ7y8qN-wzQ.png);
     background-repeat: repeat;
-    -moz-border-radius: 0px;
-    -webkit-border-radius: 0px;
-    border-radius: 0px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
 }
 
 .pretty-button.inoffensive.pressed {
@@ -1092,7 +1089,7 @@ body .thing.flaired {
 }
 
 .user-history {
-    padding: 0px !important;
+    padding: 0 !important;
 }
 
 .user-history td {
@@ -1132,7 +1129,7 @@ body .thing.flaired {
 }
 
 .user-history .submission-markdown {
-    margin: 0px 10px;
+    margin: 0 10px;
 }
 
 .user-history .table .error {
@@ -1142,7 +1139,7 @@ body .thing.flaired {
 .rts-report,.rts-report-clicked, .markdown-report {
     font-weight: bold;
     font-size: x-small;
-    padding: 0px 5px 0px 5px;
+    padding: 0 5px 0 5px;
     border-left: solid 1px #369;
     float: right;
 }
@@ -1160,7 +1157,6 @@ body .thing.flaired {
     -webkit-rtl-ordering: logical;
     -webkit-user-select: text;
     -webkit-flex-direction: column;
-    resize: auto;
     cursor: auto;
     padding: 2px !important;
     white-space: pre-wrap;
@@ -1173,16 +1169,16 @@ body .thing.flaired {
     right: 20px;
     width: 700px;
     height: 286px;
-    padding: 0px !important;
+    padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     z-index: 10001;
 }
 
 .mod-toolbox .tb-debug-header {
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
@@ -1194,8 +1190,8 @@ body .thing.flaired {
 
 .mod-toolbox .tb-debug-content {
     overflow: auto;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     padding: 5px !important;
     box-sizing: content-box;
 }
@@ -1226,7 +1222,6 @@ body .thing.flaired {
     -webkit-rtl-ordering: logical;
     -webkit-user-select: text;
     -webkit-flex-direction: column;
-    resize: auto;
     cursor: auto;
     padding: 2px !important;
     white-space: pre-wrap;
@@ -1272,202 +1267,6 @@ body .thing.flaired {
     background-color: rgba(80, 123, 167, 0.2)  !important;
 }
 
-
-
-/* Modtools mod page-only CSS */
-
-body.mod-page .subscription-box .option.active {
-    font-size: 0;
-    display: inline-block !important;
-    width: 10px;
-    height: 10px;
-    padding: 2px;
-}
-
-body.mod-page .subscription-box .option.add {
-    background-color: #7BB850;
-    background-position: 3px 3px;
-    background-repeat: no-repeat;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAHCAIAAABV+fA3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABrSURBVBhXY6zeEcAAATwx+dYW147m7P4CFWD6/58BjoAAmcvEyPgfhkByjIz/4CIMVYfXvPqPCZ7sPxzAWLnVH6QeCHhiC+0srh7K2vUFbALIvr//oAhsIUgPTISJ4R8DFP0FKwaSEO4/BgA35Fw9UX68TAAAAABJRU5ErkJggg==");
-}
-
-body.mod-page .subscription-box .option.remove {
-    background-color: #C85F63;
-    background-position: 3px 5px;
-    background-repeat: no-repeat;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAACCAIAAAAb/VE3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVBhXYzyXmMoABoxg8j+YZDg/8/x/NPB8KwA1RRZZO8v/6AAAAABJRU5ErkJggg==");
-}
-
-body.mod-page .subscription-box ul {
-    clear: both;
-}
-
-body.mod-page .subscription-box li {
-    margin-bottom: 2px;
-}
-
-body.mod-page .subscription-box li a:last-child {
-    float: right;
-}
-
-body.mod-page .subscription-box li a[count="100"]:after {
-    content: "+";
-}
-
-body.mod-page .thing {
-    overflow: hidden;
-    margin-left: 0 !important;
-    padding-left: 0px !important;
-}
-
-*/
-body.mod-page .midcol {
-    margin-left: 2px !important;
-    /*width: auto !important;*/;
-}
-
-body.mod-page a.pretty-button:focus {
-    box-shadow: 0 0 5px rgba(0,0,255,1);
-}
-
-body.mod-page .thing {
-    margin-bottom: 2px;
-    padding: 2px 0;
-}
-
-/* mod log matrix */
-
-#mod-matrix-wrapper a {
-    cursor: pointer;
-}
-
-#mod-matrix thead th, #mod-matrix tfoot td, #mod-matrix tbody td.action-total, #mod-matrix tbody td.action-percentage {
-    font-weight: bold;
-}
-
-#mod-matrix tr {
-    border-bottom: 1px solid #eee;
-}
-
-#mod-matrix tfoot tr {
-    border-top: 1px solid #eee;
-}
-
-#mod-matrix td, #mod-matrix th {
-    padding: 5px;
-    border-right: 1px solid #eee;
-    text-align: center;
-    font-size: x-small;
-}
-
-#mod-matrix td:first-child, #mod-matrix th:first-child {
-    text-align: left;
-}
-
-#mod-matrix a.modactions {
-    margin-right: 0px;
-    display: inline-block;
-    float: none;
-}
-
-#mod-matrix tbody tr:nth-of-type(even) {
-    background: #fafafa;
-}
-
-#mod-matrix tr:hover, #mod-matrix td.hover {
-    background: #ffc!important;
-}
-
-#mod-matrix thead th {
-    position: relative;
-    cursor: s-resize;
-}
-
-#mod-matrix thead th {
-    cursor: pointer;
-}
-
-#mod-matrix thead th .sorting-icon {
-    position: absolute;
-    left: 50%;
-    margin-left: -8px;
-    bottom: -8px;
-}
-
-#mod-matrix .action-number {
-    color: #000;
-}
-
-#mod-matrix .zero a, #mod-matrix .zero span {
-    color: #c0c0c0;
-}
-
-#mod-matrix .highlight a, #mod-matrix .highlight span {
-    color: #f00;
-}
-
-#mod-matrix tr.filtered, #mod-matrix td.filtered, #mod-matrix th.filtered, #mod-matrix tr.hide-zero, #mod-matrix td.hide-zero, #mod-matrix th.hide-zero {
-    display: none;
-}
-
-#mod-matrix-settings td {
-    padding: 2px;
-    vertical-align: top;
-    line-height: 25px;
-}
-
-#mod-matrix-settings td:first-child {
-    width: 200px;
-}
-
-#mod-matrix-settings div {
-    line-height: 1em;
-}
-
-#mod-matrix-settings input[type=submit] {
-    padding: 1px 6px;
-}
-
-#mod-matrix-statistics {
-    margin-top: 1em;
-}
-
-#mod-matrix-statistics {
-    border-top: 1px dotted #000;
-    padding: 7px;
-}
-
-#mod-matrix-statistics strong {
-    font-weight: bold;
-}
-
-    /* show header labels (thanks to /u/ashishtiwari) */
-#mod-matrix.labels  th {
-    vertical-align: text-bottom;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    padding-top: 150px;
-}
-
-#mod-matrix.labels a.modactions {
-    vertical-align: bottom;
-    width: 16px!important;
-    height: 16px!important;
-}
-
-#mod-matrix.labels a.modactions:before {
-    content: attr(title);
-    position: relative;
-    bottom: 20px;
-    display: block;
-    font-size: 11px;
-    white-space: nowrap;
-    font-weight: normal;
-    color: #000;
-    -webkit-transform: rotate(-90.0deg);
-    transform: rotate(-90.0deg);
-}
 /* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */
 
 /* Font size fixes, probably more will be needed */
@@ -1475,6 +1274,7 @@ body.mod-page .thing {
     font-size: inherit;
     max-width: 95%;
 }
+
 .mod-toolbox .tb-frame-module .flat-list.buttons a {
     font-size: 9px;
 }
@@ -1487,8 +1287,9 @@ body.mod-page .thing {
 /* Make the damn thing scrollable */
 .mod-toolbox .tb-frame-module .tb-window-footer {
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
 }
+
 .mod-toolbox .tb-frame-module .tb-window-content {
     height: auto;
     overflow: auto;
@@ -1500,7 +1301,7 @@ body.mod-page .thing {
 }
 
 .mod-toolbox .tb-page-overlay.tb-frame-module {
-    bottom: 0px;
+    bottom: 0;
     height: 100%;
 }
 
@@ -1524,11 +1325,11 @@ body.mod-page .thing {
 }
 .mod-toolbox .ace_searchbtn, .mod-toolbox .ace_replacebtn  {
 
-    margin: 0px;
+    margin: 0;
 }
 
 .mod-toolbox .ace_search_field {
-    border: 0px !important;
+    border: 0 !important;
 }
 
 .mod-toolbox .ace_print-margin {
@@ -1541,10 +1342,9 @@ width: 98%;
 height: 300px;
 }
 
-
 .ace_editor {
    resize:both;
-      -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+   -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
    transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
@@ -1554,21 +1354,19 @@ height: 300px;
    resize: none;
 }
 
-
 /* toolbox loading */
 #tb-loading {
-    left:0px;
-    right: 0px;
-    bottom: 0px;
+    left:0;
+    right: 0;
+    bottom: 0;
     display: block;
     z-index: 6000;
     position: fixed;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
     width: auto;
     height: 10px;    
 	background: url("http://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed; 
- 
 }
 
 .tb-internal-overlay {
@@ -1578,20 +1376,20 @@ height: 300px;
     top: 24px;
     bottom: 31px;
     z-index: 9999999;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
 }
 
 span#ratelimit-counter {
     position: fixed;
     padding: 10px;
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
     text-align: center;
     top: 150px;
     background: rgba(206, 227, 248, 0.9);
     border-style: solid;
-    border-width: 1px 0px;
+    border-width: 1px 0;
     border-color: rgba(95, 153, 207, 0.49);
     font-size: 20px;
     display: none;
@@ -1604,9 +1402,6 @@ span.rate-limit-explain {
     margin: auto;
 }
 
-
-
-
 /*------------------------
 
 Night mod "fixes", it is dark alright
@@ -1617,11 +1412,9 @@ Night mod "fixes", it is dark alright
     background-color: #621c1c;
 }
 
-
 .mod-toolbox.res-nightmode .comment.spam>.child, .mod-toolbox.res-nightmode .message.spam>.child {
 background-color: #1f1f1f;
 }
-
 
 .mod-toolbox.res-nightmode select, .mod-toolbox.res-nightmode input, .mod-toolbox.res-nightmode textarea {
 background: #969696 !important;
@@ -1655,20 +1448,20 @@ border: solid 1px #808080;
 
 .mod-toolbox.res-nightmode .tb-overlay-label {
 
-	text-shadow: 0px 0px 4px #878787;
+	text-shadow: 0 0 4px #878787;
 }
 
 .mod-toolbox.res-nightmode .tb-window-wrapper {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
     font-size: small;
 }
 
 .res-nightmode .tb-window-wrapper-two {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
 .mod-toolbox.res-nightmode .tb-window-wrapper a:hover,
@@ -1733,14 +1526,14 @@ div.sticky {
     color: #000;
     padding: 2px !important;
     border: solid 2px #B83E3E;
-    box-shadow: #D1D1D1 0px 1px 3px 1px;
+    box-shadow: #D1D1D1 0 1px 3px 1px;
 }
 
 .mod-toolbox.res-nightmode #tb-tooltip {
     background-color: rgba(206, 227, 248, 0.86);
     color: #000;
     border: solid 1px #39526b;
-    box-shadow: #D1D1D1 0px 1px 3px 1px;
+    box-shadow: #D1D1D1 0 1px 3px 1px;
 }
 
 .res-nightmode .tb-first-run {
@@ -1750,7 +1543,7 @@ div.sticky {
 .res-nightmode .dtagger-popup {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
 .res-nightmode .dtagger-popup-header {
@@ -1782,7 +1575,7 @@ div.sticky {
 .mod-toolbox.res-nightmode .mod-popup {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
 .mod-toolbox.res-nightmode .mod-popup-header {
@@ -1856,7 +1649,6 @@ div.sticky {
 /* Removal reasons */
 
 .mod-toolbox.res-nightmode .reason-popup {
-    color: #696969;
     background-color: rgba(250, 250, 250, 0.84);
     color: black;
 }
@@ -1924,14 +1716,12 @@ div.sticky {
 .res-nightmode .reason-popup .reason-popup-content {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
-
 
 .thing+input[type="checkbox"]:focus {
     outline: blue solid 1px;
 }
-
 
 .user-history td {
     border: 1px dotted lightgray;
@@ -1963,7 +1753,7 @@ div.sticky {
 .mod-toolbox.res-nightmode .tb-debug-window {
     background-color: #878787;
     border: solid 1px #808080;
-    box-shadow: 0px 1px 3px 1px rgba(83, 83, 83, 0.61);
+    box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 
 }
 
@@ -2019,7 +1809,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 .res-nightmode #mod-matrix .highlight a, .res-nightmode #mod-matrix .highlight span {
     color: #f00;
 }
-
 
 .res-nightmode .tb-internal-overlay {
     background-color: rgba(255, 255, 255, 0.82);

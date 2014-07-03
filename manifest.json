@@ -21,7 +21,10 @@
 	"content_scripts": [
 		{
 			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
-			"css": ["toolbox.css"],
+			"css": [
+				"toolbox.css",
+				"modules/modmatrix.css"
+			],
 			"js": [
 				"libs/jquery-2.1.1.js",
 				"libs/snuownd.js",

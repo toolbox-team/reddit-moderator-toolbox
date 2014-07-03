@@ -12,7 +12,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
 
 .mod-toolbox #tb-bottombar {
     bottom: 0;
-    z-index: 6000;
+    z-index: 2147483646 !important;
     position: fixed;
     text-align: left;
     margin-left: 0;
@@ -251,7 +251,7 @@ text-align: left;
     right: 0;
     bottom: 0;
     overflow: auto;
-    z-index: 10000;
+    z-index: 2147483647 !important;
     font: normal x-small verdana,arial,helvetica,sans-serif !important;
 }
 
@@ -1350,7 +1350,7 @@ height: 300px;
    transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
 }
 
-.ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar {
+.ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar, .ace_search_field, .ace_search.right {
    resize: none;
 }
 
@@ -1812,5 +1812,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 .res-nightmode .tb-internal-overlay {
     background-color: rgba(255, 255, 255, 0.82);
+}
 
+.res-nightmode #tb-toolbar-mysubs {
+    background: none !important;
+}
+
+.res-nightmode #stylesheet_contents_div, .res-nightmode #json_contents_div, .res-nightmode #wiki_contents_div {
+    border: solid 1px #383838;
 }

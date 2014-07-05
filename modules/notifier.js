@@ -1,8 +1,11 @@
 function notifier() {
-    if (!TBUtils.logged || TBUtils.isToolbarPage) return;
+    if (!TBUtils.logged || TBUtils.isToolbarPage)
+        return;
     $.log('Loading Notifier Module');
-
-    $('body').addClass('mod-toolbox');
+    
+    var $body = $('body');
+    $body.addClass('mod-toolbox');
+    
     //
     // preload some generic variables
     //
@@ -154,14 +157,14 @@ function notifier() {
         }
     });
 
-    $('body').append(modbar);
+    $body.append(modbar);
 
     if (TBUtils.betaMode) {
-        $('body').append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
-        $('body').find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
+        $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
+        $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
         TBUtils.getModSubs(function () {
             $(TBUtils.mySubsData).each(function () {
-                $('body').find('#tb-my-subreddits table').append('\
+                $body.find('#tb-my-subreddits table').append('\
                 <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
                 <td class="tb-my-subreddits-subreddit"><a title="/r/'+ this.subreddit +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/message/moderator" class="generic-mail"></a>\
                 <a title="/r/'+ this.subreddit +' modqueue" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/modqueue" class="generic-modqueue"></a>\
@@ -171,13 +174,13 @@ function notifier() {
             $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
         });
 
-        $('body').on('click', '#tb-toolbar-mysubs', function() {
-            $('body').find('#tb-my-subreddits').toggle();
+        $body.on('click', '#tb-toolbar-mysubs', function() {
+            $body.find('#tb-my-subreddits').toggle();
         });
 
-        $('body').find('#tb-livefilter-input').keyup(function(){
+        $body.find('#tb-livefilter-input').keyup(function(){
             var LiveSearchValue = $(this).val();
-            $('body').find('#tb-my-subreddits table tr').each(function(){
+            $body.find('#tb-my-subreddits table tr').each(function(){
                 var $this = $(this),
                     subredditName = $this.attr('data-subreddit');
 
@@ -253,7 +256,7 @@ function notifier() {
     toggleMenuBar(modbarHidden);
 
     // Show/hide menubar
-    $('body').on('click', '.tb-bottombar-unhide, .tb-bottombar-hide', function () {
+    $body.on('click', '.tb-bottombar-unhide, .tb-bottombar-hide', function () {
         toggleMenuBar($(this).hasClass('tb-bottombar-hide'));
     });
 
@@ -277,7 +280,7 @@ function notifier() {
 
     /// Console stuff
     // Show/hide console
-    $('body').on('click', '#tb-toggle-console, #tb-debug-hide', function () {
+    $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
         if (!consoleShowing) {
             $console.show();
         } else {
@@ -289,21 +292,21 @@ function notifier() {
     });
 
     // Set console scroll
-    $('body').on('click', '#tb-console-lockscroll', function () {
+    $body.on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll);
     });
 
     /*
     // Console copy... needs work
-    $('body').on('click', '#tb-console-copy', function () {
+    $body.on('click', '#tb-console-copy', function () {
         lockscroll = !lockscroll;
         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
     });
     */
 
     // Console clear
-    $('body').on('click', '.tb-console-clear', function () {
+    $body.on('click', '.tb-console-clear', function () {
         TBUtils.log = [];
     });
     /// End console stuff
@@ -356,7 +359,7 @@ function notifier() {
             </div></div>\
             ';
         $(html).appendTo('body').show();
-        $('body').css('overflow', 'hidden');
+        $body.css('overflow', 'hidden');
 
         // Settings for the tool bar.
         var htmltoolbar = '\
@@ -622,7 +625,7 @@ function notifier() {
         //	$("input[name=shortcuts]").val(unescape(shortcuts));
     }
 
-    $('body').on('click', '.tb-settings-import, .tb-settings-export', function (e) {
+    $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
         var sub = $("input[name=settingssub]").val();
         if (!sub) return;
 
@@ -645,37 +648,39 @@ function notifier() {
     });
 
     // Open the settings
-    $('body').on('click', '.tb-toolbarsettings', function () {
+    $body.on('click', '.tb-toolbarsettings', function () {
         showSettings();
         TB.injectSettings();
     });
 
     // change tabs
-    $('body').on('click', '.tb-window-tabs a', function () {
-        var tab = $(this).attr('class');
-        $('.tb-help-main').attr('currentpage', tab);
+    $body.on('click', '.tb-window-tabs a', function () {
+        var tab = $(this).attr('class'),
+            $tb_help_mains = $('.tb-help-main');
+        
+        $tb_help_mains.attr('currentpage', tab);
         // if we have module name, give that to the help button
         if ($(this).data('module')) {
-            $('.tb-help-main').data('module', $(this).data('module'));
+            $tb_help_mains.data('module', $(this).data('module'));
         }
         $('.tb-window-content').children().hide();
         $('div.' + tab).show();
     });
 
     // remove a shortcut
-    $('body').on('click', '.tb-remove-shortcuts', function () {
+    $body.on('click', '.tb-remove-shortcuts', function () {
         $(this).closest('.tb-window-content-shortcuts-tr').remove();
     });
 
     // add a shortcut
-    $('body').on('click', '.tb-add-shortcuts', function () {
+    $body.on('click', '.tb-add-shortcuts', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
         <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
         ').appendTo('.tb-window-content-shortcuts-table');
     });
 
     // Save the settings
-    $('body').on('click', '.tb-save', function () {
+    $body.on('click', '.tb-save', function () {
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
         if (messagenotificationssave === true) {
             TBUtils.setSetting('Notifier', 'messagenotifications', true);
@@ -753,12 +758,13 @@ function notifier() {
         TBUtils.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
 
         // Save shortcuts
-        if ($('.tb-window-content-shortcuts-tr').length === 0) {
+        var $shortcuts = $('.tb-window-content-shortcuts-tr');
+        if ($shortcuts.length === 0) {
             TBUtils.setSetting('Notifier', 'shortcuts2', {});
         } else {
             shortcuts2 = {};
 
-            $('.tb-window-content-shortcuts-tr').each(function () {
+            $shortcuts.each(function () {
                 var $this = $(this),
                     name = $this.find('input[name=name]').val(),
                     url = $this.find('input[name=url]').val();
@@ -804,12 +810,12 @@ function notifier() {
 
 
         $('.tb-settings').remove();
-        $('body').css('overflow', 'auto');
+        $body.css('overflow', 'auto');
         window.location.reload();
     });
 
 
-    $('body').on('click', '.tb-help-main', function () {
+    $body.on('click', '.tb-help-main', function () {
         var $this = $(this),
             tab = $(this).attr('currentpage'),
             module = $this.data('module');
@@ -853,9 +859,9 @@ function notifier() {
     });
 
     // Close the Settings menu
-    $('body').on('click', '.tb-close', function () {
+    $body.on('click', '.tb-close', function () {
         $('.tb-settings').remove();
-        $('body').css('overflow', 'auto');
+        $body.css('overflow', 'auto');
     });
 
     //
@@ -907,27 +913,32 @@ function notifier() {
         //
 
         function updateMessagesCount(count) {
+            var $mail = $('#mail'),
+                $mailCount = $('#mailCount'),
+                $mailcount = $('#mailcount'),
+                $tb_mail = $('#tb-mail'),
+                $tb_mailCount = $('#tb-mailCount');
             if (count < 1) {
-                $('#mailCount').empty();
-                $('#mail').attr('class', 'nohavemail');
-                $('#mail').attr('title', 'no new mail!');
-                $('#mail').attr('href', 'http://www.reddit.com/message/inbox/');
-                $('#mailcount').attr('href', 'http://www.reddit.com' + messageunreadurl);
-                $('#tb-mail').attr('class', 'nohavemail');
-                $('#tb-mail').attr('title', 'no new mail!');
-                $('#tb-mail').attr('href', 'http://www.reddit.com/message/inbox/');
+                $mailCount.empty();
+                $mail.attr('class', 'nohavemail');
+                $mail.attr('title', 'no new mail!');
+                $mail.attr('href', 'http://www.reddit.com/message/inbox/');
+                $mailcount.attr('href', 'http://www.reddit.com' + messageunreadurl);
+                $tb_mail.attr('class', 'nohavemail');
+                $tb_mail.attr('title', 'no new mail!');
+                $tb_mail.attr('href', 'http://www.reddit.com/message/inbox/');
                 $('#tb-mailCount').attr('href', 'http://www.reddit.com/message/inbox/');
             } else {
-                $('#mail').attr('class', 'havemail');
-                $('#mail').attr('title', 'new mail!');
-                $('#mail').attr('href', 'http://www.reddit.com' + messageunreadurl);
-                $('#mailcount').attr('href', 'http://www.reddit.com' + messageunreadurl);
-                $('#tb-mail').attr('class', 'havemail');
-                $('#tb-mail').attr('title', 'new mail!');
-                $('#tb-mail').attr('href', 'http://www.reddit.com' + messageunreadurl);
-                $('#tb-mailCount').attr('href', 'http://www.reddit.com' + messageunreadurl);
+                $mail.attr('class', 'havemail');
+                $mail.attr('title', 'new mail!');
+                $mail.attr('href', 'http://www.reddit.com' + messageunreadurl);
+                $mailcount.attr('href', 'http://www.reddit.com' + messageunreadurl);
+                $tb_mail.attr('class', 'havemail');
+                $tb_mail.attr('title', 'new mail!');
+                $tb_mail.attr('href', 'http://www.reddit.com' + messageunreadurl);
+                $tb_mailCount.attr('href', 'http://www.reddit.com' + messageunreadurl);
             }
-            $('#tb-mailCount').text('[' + count + ']');
+            $tb_mailCount.text('[' + count + ']');
 
             if (count > 0) {
                 $('#mailCount').text('[' + count + ']');
@@ -943,20 +954,22 @@ function notifier() {
         }
 
         function updateModMailCount(count) {
+            var $modmail = $('#modmail'),
+                $tb_modmail = $('#tb-modmail');
             if (count < 1) {
-                $('#tb-modmail').attr('class', 'nohavemail');
-                $('#tb-modmail').attr('title', 'no new mail!');
-                $('#tb-modmail').attr('href', 'http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator');
+                $tb_modmail.attr('class', 'nohavemail');
+                $tb_modmail.attr('title', 'no new mail!');
+                $tb_modmail.attr('href', 'http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator');
             } else {
-                $('#modmail').attr('class', 'havemail');
-                $('#modmail').attr('title', 'new mail!');
-                $('#modmail').attr('href', 'http://www.reddit.com' + modmailunreadurl);
-                $('#tb-modmail').attr('class', 'havemail');
-                $('#tb-modmail').attr('title', 'new mail!');
-                $('#tb-modmail').attr('href', 'http://www.reddit.com' + modmailunreadurl);
+                $modmail.attr('class', 'havemail');
+                $modmail.attr('title', 'new mail!');
+                $modmail.attr('href', 'http://www.reddit.com' + modmailunreadurl);
+                $tb_modmail.attr('class', 'havemail');
+                $tb_modmail.attr('title', 'new mail!');
+                $tb_modmail.attr('href', 'http://www.reddit.com' + modmailunreadurl);
             }
             $('#tb-modmailcount').text('[' + count + ']');
-            // $('#tb-modmail').attr('href', 'http://www.reddit.com/message/moderator/');
+            // $tb_modmail.attr('href', 'http://www.reddit.com/message/moderator/');
         }
 
         if (!newLoad && (now - lastchecked) < checkInterval) {

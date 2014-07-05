@@ -1,6 +1,9 @@
 function modmailpro() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true))
+        return;
     $.log('Loading MMP Module');
+    
+    var $body = $('body');
 
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
 
@@ -62,7 +65,7 @@ function modmailpro() {
 
     menuList.after(mmpMenu);
 
-    $('body').on('click', '.save', function (e) {
+    $body.on('click', '.save', function (e) {
         var parent = $(e.target).closest('.message-parent'),
             id = $(parent).attr('data-fullname'),
             replied = getRepliedThreads();
@@ -121,7 +124,7 @@ function modmailpro() {
         }
     }
 
-    $('body').on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
+    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
         // Just unselect all, then select the caller.
         $(menuList).find('li').removeClass('selected');
 
@@ -130,7 +133,7 @@ function modmailpro() {
         setView();
     });
 
-    $('body').on('click', '.collapse-all-link', function () {
+    $body.on('click', '.collapse-all-link', function () {
         if (collapsed) {
             expandall();
         } else {
@@ -138,7 +141,7 @@ function modmailpro() {
         }
     });
 
-    $('body').on('click', '.collapse-link', function () {
+    $body.on('click', '.collapse-link', function () {
         var $this = $(this),
             parent = $this.closest('.message-parent');
         if ($this.text() === '[-]') {
@@ -383,7 +386,7 @@ function modmailpro() {
         });
     }
 
-    $('body').on('click', '.filter-sub-link', function (e) {
+    $body.on('click', '.filter-sub-link', function (e) {
         var subname = getSubname($(e.target).closest('.message-parent'));
         var filtersubs = getFilteredSubs();
 
@@ -749,7 +752,7 @@ function settings() {
     // Set filtered sub count.
     $('.filter-count').text(filteredsubs.length);
 
-    $('body').on('click', '.settings-link', function (e) {
+    $body.on('click', '.settings-link', function (e) {
         if (firstrun) {
             $('.first-run').hide();
             $('.settings-link').css('color', '');
@@ -778,7 +781,7 @@ function settings() {
     });
 
     // Reset filter, reload page.
-    $('body').on('click', '.reset-filter-link', function (e) {
+    $body.on('click', '.reset-filter-link', function (e) {
         TBUtils.setSetting('ModMailPro', 'filteredsubs', []);
         window.location.reload();
     });
@@ -789,7 +792,7 @@ function settings() {
     });
 
     // Settings have been changed.
-    $('body').on('click', '.autocollapse, .redmodmail, .highlight, .autoexpand, .hideinvitespam, .autoload', function (e) {
+    $body.on('click', '.autocollapse, .redmodmail, .highlight, .autoexpand, .hideinvitespam, .autoload', function (e) {
         var sender = e.target;
 
         // Change link style.

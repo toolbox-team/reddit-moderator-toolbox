@@ -9,41 +9,44 @@ historyButton.addUserHistoryLink = function () {
 // This should be a setting, methinks.
 historyButton.SPAM_REPORT_SUB = 'spam';
 
+var $body = $('body'),
+    $inline_content = $('.inline-content');
+
 historyButton.init = function () {
     var self = this;
 
     var rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true);
 
     // Add context & history stuff
-    $('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
+    $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
     $('.thing .entry .userattrs').each(self.addUserHistoryLink);
 
     // Open inline context
-    $('.inline-content').click(function (e) {
+    $inline_content.click(function (e) {
         //  e.stopPropagation();
     });
-    $('body').on('click', 'a.context', function (e) {
-        $('body').on('click', '.user-history-close', function () {
-            $('.inline-content').hide();
+    $body.on('click', 'a.context', function (e) {
+        $body.on('click', '.user-history-close', function () {
+            $inline_content.hide();
         });
-        $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
+        $inline_content.show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
         return false;
     });
 
 
     //User history button pressed
     var gettingUserdata = false;
-    $('body').on('click', '.user-history-button', function () {
-        $('body').on('click', '.user-history-close', function () {
-            $('.inline-content').hide();
+    $body.on('click', '.user-history-button', function () {
+        $body.on('click', '.user-history-close', function () {
+            $inline_content.hide();
             gettingUserdata = false;
         });
         gettingUserdata = true;
 
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
-            contentBox = $('.inline-content').show().offset($(this).offset()).html('\
+            contentBox = $inline_content.show().offset($(this).offset()).html('\
             <div class="tb-popup user-history">\
             <div class="tb-popup-header">\
                 <div class="tb-popup-title">User history for ' + author + '\</div>\
@@ -91,7 +94,7 @@ historyButton.init = function () {
             }).done(function (d) {
                 if ($.isEmptyObject(d.data.children)) {
                     TBUtils.longLoadSpinner(false);
-                    $('body').find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
+                    $body.find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
                     gettingUserdata = false;
 
                 }
@@ -177,7 +180,7 @@ historyButton.init = function () {
                     populateHistory(after);
                 } else {
                     TBUtils.longLoadSpinner(false);
-                    $('body').find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
+                    $body.find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
                     gettingUserdata = false;
                 }
 
@@ -190,13 +193,13 @@ historyButton.init = function () {
     });
 
     // Markdown button pressed
-    $('.inline-content').on('click', '.markdown-report', function () {
-    var markdownReport = $('body').find('.rts-report').attr('data-commentbody');
-        $('body').find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
+    $inline_content.on('click', '.markdown-report', function () {
+    var markdownReport = $body.find('.rts-report').attr('data-commentbody');
+        $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
         
     });
     // RTS button pressed
-    $('.inline-content').on('click', '.rts-report', function () {
+    $inline_content.on('click', '.rts-report', function () {
         var rtsLink = this,
             author = rtsLink.getAttribute('data-author'),
             commentbody = rtsLink.getAttribute('data-commentbody');

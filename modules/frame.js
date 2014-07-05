@@ -1,11 +1,19 @@
 ﻿function frame() {
-    if (!TBUtils.logged || !TBUtils.getSetting('FrameMod', 'enabled', false)) return;
-    if (!$('#tb-bottombar')) return setTimeout(frame);
+    if (!TBUtils.logged || !TBUtils.getSetting('FrameMod', 'enabled', false))
+        return;
+    if (!$('#tb-bottombar'))
+        return setTimeout(frame);
 
     $.log('Loading Frame Module');
 
-    var $html, limit = 10, jackModBarLinks = true,
-        msgGet = limit, mmGet = limit, modGet = limit, umodGet = limit;
+    var $body = $('body'),
+        $html,
+        limit = 10,
+        jackModBarLinks = true,
+        msgGet = limit,
+        mmGet = limit,
+        modGet = limit,
+        umodGet = limit;
 
     // Hijack modbar.
     if (!jackModBarLinks) {
@@ -23,7 +31,7 @@
         }, 500);
     }
 
-    $('body').delegate('#tb-launch-fame, .tb-launch-fame', 'click', function (e) {
+    $body.delegate('#tb-launch-fame, .tb-launch-fame', 'click', function (e) {
 
         var unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
             modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
@@ -63,7 +71,7 @@
                 </div>\
             </div>\
         ').appendTo('body').show();
-        $('body').css('overflow', 'hidden');
+        $body.css('overflow', 'hidden');
 
         switch (e.target.id) {
             case 'tb-mailCount':
@@ -83,24 +91,24 @@
         }
     });
 
-    $('body').delegate('.tb-frame-close', 'click', function () {
+    $body.delegate('.tb-frame-close', 'click', function () {
             $html.remove();
-            $('body').css('overflow', 'auto');
+            $body.css('overflow', 'auto');
     });
 
-    $('body').delegate('.tb-frame-messages', 'click', function () {
+    $body.delegate('.tb-frame-messages', 'click', function () {
         update('http://www.reddit.com/message/inbox/?limit=' + msgGet);
     });
 
-    $('body').delegate('.tb-frame-modmail', 'click', function () {
+    $body.delegate('.tb-frame-modmail', 'click', function () {
         update('http://www.reddit.com/message/moderator/?limit=' + mmGet);
     });
 
-    $('body').delegate('.tb-frame-modqueue', 'click', function () {
+    $body.delegate('.tb-frame-modqueue', 'click', function () {
         update('http://www.reddit.com/r/mod/about/modqueue/?limit=' + modGet, true);
     });
 
-    $('body').delegate('.tb-frame-unmoderated', 'click', function () {
+    $body.delegate('.tb-frame-unmoderated', 'click', function () {
         update('http://www.reddit.com/r/mod/about/unmoderated/?limit=' + umodGet, true);
     });
 
@@ -195,7 +203,7 @@
         $frameSitetable.find('.thing').addClass('mte-processed');
 
         // Add context & history stuff
-        //$('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
+        //$body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
         $frameSitetable.find('.comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
             $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
         });

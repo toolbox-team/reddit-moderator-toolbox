@@ -1,6 +1,9 @@
 function tbconfig() {
-    if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true))
+        return;
     $.log('Loading Configuration Module');
+    
+    var $body = $('body');
 
     var toolbox = $('#moderation_tools').find('.content .icon-menu'),
         //configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
@@ -23,7 +26,7 @@ function tbconfig() {
         $(toolbox).append(configLink);
     }
 
-    $('body').on('click', '.toolbox-edit', function () {
+    $body.on('click', '.toolbox-edit', function () {
         showSettings();
     });
 
@@ -104,15 +107,15 @@ function tbconfig() {
 </div>\
         ';
         $(html).appendTo('body').show();
-        $('body').css('overflow', 'hidden');
+        $body.css('overflow', 'hidden');
     }
 
-    $('body').on('click', '.tb-close', function () {
+    $body.on('click', '.tb-close', function () {
         $('.tb-settings').remove();
-        $('body').css('overflow', 'auto');
+        $body.css('overflow', 'auto');
     });
 
-    $('body').on('click', '.edit-domains', function () {
+    $body.on('click', '.edit-domains', function () {
 
         var html = $('\
 <div class="tb-page-overlay edit-domains-form " comment="the white fade out over the page, we can do without, personally like it">\
@@ -155,7 +158,7 @@ function tbconfig() {
         });
     });
 
-    $('body').on('click', '.edit-reasons', function () {
+    $body.on('click', '.edit-reasons', function () {
 
         var html = $('\
 <div class="tb-page-overlay edit-reasons-form" comment="the white fade out over the page, we can do without, personally like it">\
@@ -298,7 +301,7 @@ function tbconfig() {
         });
     });
 
-    $('body').on('click', '.reason-settings', function () {
+    $body.on('click', '.reason-settings', function () {
         var html = '\
 <div class="tb-page-overlay reason-setting-form " comment="the white fade out over the page, we can do without, personally like it">\
 <div class="tb-window-wrapper-two" comment="the window itself">\
@@ -406,7 +409,7 @@ function tbconfig() {
         });
     });
 
-    $('body').on('click', '.tb-config-help', function () {
+    $body.on('click', '.tb-config-help', function () {
         var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100')
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
         $.log(htmlcontent, true);
@@ -432,15 +435,15 @@ function tbconfig() {
 
 
 
-    $('body').on('click', '.edit-wiki-page', function (e) {
+    $body.on('click', '.edit-wiki-page', function (e) {
         var page = $(e.target).attr('page'),
-            textArea = $('body').find('.edit-wikidata'),
-            textAreaDiv = $('body').find('#edit-wikidata-div'),
-            saveButton = $('body').find('.save-wiki-data'),
-            editArea = $('body').find('.wiki-edit-area');
+            textArea = $body.find('.edit-wikidata'),
+            textAreaDiv = $body.find('#edit-wikidata-div'),
+            saveButton = $body.find('.save-wiki-data'),
+            editArea = $body.find('.wiki-edit-area');
 
         if (TBUtils.getSetting('syntaxHighlighter', 'enabled', true)) {
-            $('body').addClass('mod-toolbox-ace');
+            $body.addClass('mod-toolbox-ace');
             $(editArea).show();
             $(textAreaDiv).show();
 
@@ -518,7 +521,7 @@ function tbconfig() {
     });
 
 
-    $('body').on('click', '.save-wiki-data, .cancel-wiki-data', function (e) {
+    $body.on('click', '.save-wiki-data, .cancel-wiki-data', function (e) {
         var button = e.target,
             editArea = $('.wiki-edit-area'),
             page = $(button).attr('page'),

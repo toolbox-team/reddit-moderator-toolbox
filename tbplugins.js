@@ -16,7 +16,6 @@
             return;
         }
         if (typeof message === 'object') {
-            var obj = message;
             if (message instanceof jQuery) {
                 message = 'jQuery object:\n' + $('<div>').append($(message).clone()).html();
             } else {
@@ -212,7 +211,7 @@
 
     $.fn.highlight.defaults = {
         ignore: false
-    }
+    };
 
     $.fn.removeHighlight = function () {
         return this.find("span.highlight").each(function () {

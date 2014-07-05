@@ -30,9 +30,9 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '2.2.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 220; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.configSchema = 1,
-    TBUtils.notesSchema = 4,
-    TBUtils.minNotesSchema = 0,
+    TBUtils.configSchema = 1;
+    TBUtils.notesSchema = 4;
+    TBUtils.minNotesSchema = 0;
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -47,8 +47,8 @@ function initwrapper() {
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isExtension = true;
     TBUtils.log = [];
-    TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false),
-    TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false),
+    TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false);
+    TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false);
     TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
 
@@ -178,7 +178,7 @@ function initwrapper() {
         ver: TBUtils.configSchema,
         domainTags: '',
         removalReasons: '',
-        modMacros: '',
+        modMacros: ''
     };
 
     TBUtils.setSetting = function (module, setting, value) {
@@ -233,9 +233,8 @@ function initwrapper() {
         var hour = ('0' + a.getUTCHours()).slice(-2);
         var min = ('0' + a.getUTCMinutes()).slice(-2);
         var sec = ('0' + a.getUTCSeconds()).slice(-2);
-        var time = year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
-        return time;
-    }
+        return year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
+    };
 
     // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
     TBUtils.timeConverterRead = function(UNIX_timestamp) {
@@ -246,9 +245,8 @@ function initwrapper() {
         var hour = ('0' + a.getUTCHours()).slice(-2);
         var min = ('0' + a.getUTCMinutes()).slice(-2);
         var sec = ('0' + a.getUTCSeconds()).slice(-2);
-        var time = date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
-        return time;
-    }
+        return date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
+    };
 
     TBUtils.longLoadSpinner = function (createOrDestroy) {
         if (createOrDestroy !== undefined) {
@@ -280,6 +278,8 @@ function initwrapper() {
 
 
     TBUtils.pageOverlay = function (text, createOrDestroy) {
+        var $body = $('body');
+        
         if (createOrDestroy !== undefined) {
 
             // Create the overlay
@@ -289,18 +289,18 @@ function initwrapper() {
             <div class="tb-overlay-label"></div></div>\
             ';
             TBUtils.longLoadSpinner(true);
-                $('body').find('.tb-popup-tabs').after(html);
+                $body.find('.tb-popup-tabs').after(html);
             }
 
                 // Destory the overlay
             else {
-                $('body').find('.tb-internal-overlay').remove();
+                $body.find('.tb-internal-overlay').remove();
                 TBUtils.longLoadSpinner(false);
             }
         }
 
         // Regardless, update the text.  It doen't matter if you pass text for destroy.
-        $('body').find('.tb-overlay-label').html(text);
+        $body.find('.tb-overlay-label').html(text);
 
     };
 
@@ -453,32 +453,31 @@ function initwrapper() {
     };
 
     TBUtils.humaniseDays = function  (diff) {
-      var str = '';
-      var values = {
-        ' year': 365, 
-        ' month': 30,
-        ' week': 7,  
-        ' day': 1
-      };
+        var str = '';
+        var values = {
+            ' year': 365,
+            ' month': 30,
+            ' week': 7,
+            ' day': 1
+        };
 
-      for (var x in values) {
-        var amount = Math.floor(diff / values[x]);
-        
-        if (amount >= 1) {
-           str += amount + x + (amount > 1 ? 's' : '') + ' ';
-           diff -= amount * values[x];
+        for (var x in values) {
+            var amount = Math.floor(diff / values[x]);
+            
+            if (amount >= 1) {
+                str += amount + x + (amount > 1 ? 's' : '') + ' ';
+                diff -= amount * values[x];
+            }
         }
-      }
-      str = str.slice(0, - 1);
-      return str
-    }
+        return str.slice(0, - 1);
+    };
     
     TBUtils.sortBy = function (arr, prop) {
-    return arr.sort(function (a, b) {
-        if (a[prop] < b[prop]) return 1;
-        if (a[prop] > b[prop]) return -1;
-        return 0;
-    });
+        return arr.sort(function (a, b) {
+            if (a[prop] < b[prop]) return 1;
+            if (a[prop] > b[prop]) return -1;
+            return 0;
+        });
     };
     
     // Because normal .sort() is case sensitive.
@@ -584,8 +583,8 @@ function initwrapper() {
         // removed? spam or ham?
         var removal = (entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [],
             banned_by = removal[1] || '',
-            spam = ( (removal[2] == 'spam' || removal[2] == 'confirm spam') ? true : false),
-            ham = (removal[2] == 'remove not spam' ? true : false);
+            spam = removal[2] == 'spam' || removal[2] == 'confirm spam',
+            ham = removal[2] == 'remove not spam';
 
         if (TBUtils.isEditUserPage && !user) {
             user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
@@ -671,12 +670,14 @@ function initwrapper() {
     };
 
     // Reddit API stuff
-    TBUtils.postToWiki = function (page, subreddit, data, isJSON, updateAM, callback) {
+    TBUtils.postToWiki = function postToWiki(page, subreddit, data, isJSON, updateAM, callback) {
 
         if (isJSON) {
             // Not indenting saves precious bytes.
             data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
         }
+        
+        $.log("Posting /r/" + subreddit + "/api/wiki/edit/"+page);
 
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
@@ -685,7 +686,8 @@ function initwrapper() {
             uh: TBUtils.modhash
         })
 
-        .error(function (err) {
+        .error(function postToWiki_error(err) {
+            $.log(err);
             callback(false, err.responseText);
         })
 
@@ -736,7 +738,7 @@ function initwrapper() {
                 .replace(/&amp;/g, "&");
         }
         return val;
-    }
+    };
 
     TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
@@ -888,14 +890,12 @@ function initwrapper() {
             $.log("Successfully posted comment on "+parent);
             if(typeof callback !== "undefined")
                 callback(true, response);
-            return;
         })
         .error(function(error) {
             $.log("Failed to post link to on"+parent);
             $.log(error);
             if(typeof callback !== "undefined")
                 callback(false, error);
-            return;
         });
     };
 
@@ -1036,7 +1036,7 @@ function initwrapper() {
     // Utility methods
     TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');
-    }
+    };
 
     // Added back for MMP's live mod mail.
     TBUtils.compressHTML = function (src) {
@@ -1060,7 +1060,7 @@ function initwrapper() {
             }
 
         });
-    }
+    };
 
     // easy way to simulate the php html encode and decode functions
     TBUtils.htmlEncode = function (value) {
@@ -1224,10 +1224,9 @@ function initwrapper() {
         TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
         TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
-        // Just incase.
+        // Just in case.
         TBStorage.unloading();
     };
-
 
     // get toolbox news
     (function getNotes() {

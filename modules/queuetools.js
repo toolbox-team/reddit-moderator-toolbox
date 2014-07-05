@@ -4,7 +4,9 @@ function queuetools() {
         return setTimeout(queuetools);
     if (!document.body)
         return setTimeout(queuetools);
-
+    
+    var $body = $('body');
+    
     if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
     $.log('Loading Queue Tools Module');
 
@@ -79,7 +81,6 @@ function queuetools() {
 
             $.log('falied: all');
             callback(false);
-            return;
         });
     }
 
@@ -165,19 +166,20 @@ function queuetools() {
             </div>');
 
         //Check if the tab menu exists and create it if it doesn't
-        var tabmenu = $('#header-bottom-left .tabmenu')
+        var tabmenu = $('#header-bottom-left .tabmenu');
         if(tabmenu.length == 0)
-            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>')
+            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>');
         $('.tabmenu').append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
 
         $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
         $('.buttons .pretty-button').attr('tabindex', '2');
 
         //add class to processed threads.
-        $('.thing').addClass('mte-processed');
+        var $things = $('.thing');
+        $things.addClass('mte-processed');
 
         // Add context & history stuff
-        $('body').append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
+        $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
         $('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
             $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
         });
@@ -185,22 +187,23 @@ function queuetools() {
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
-        $('body').on('click', '.thing .entry', function (e) {
+        $body.on('click', '.thing .entry', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
         });
 
         // Change sort order
         $('.sortorder-options a').click(function () {
-            var order = $(this).text(),
-                toggleAsc = (order == $('.sortorder').text());
+            var $sortOrder = $('.sortorder'),
+                order = $(this).text(),
+                toggleAsc = (order == $sortOrder.text());
 
             if (toggleAsc) sortAscending = !sortAscending;
 
             TBUtils.setSetting('QueueTools', 'reports-ascending', sortAscending);
             TBUtils.setSetting('QueueTools', 'reports-order', order);
 
-            $('.sortorder').text(order);
+            $sortOrder.text(order);
             sortThings(order, sortAscending);
         });
 
@@ -213,7 +216,7 @@ function queuetools() {
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
         });
-        $('body').on('click', '.thing input[type=checkbox]', function () {
+        $body.on('click', '.thing input[type=checkbox]', function () {
             $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
@@ -277,7 +280,7 @@ function queuetools() {
             $('.thing input[type=checkbox]').attr('checked', false);
         });
         $('.unhide-selected').click(function () {
-            $('.thing').show();
+            $things.show();
         });
 
         // Mass spam/remove/approve
@@ -304,7 +307,7 @@ function queuetools() {
 
         var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
-        $('body').on('click', '.pretty-button', function (e) {
+        $body.on('click', '.pretty-button', function (e) {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').attr('checked', false);
             if (hideActionedItems) {
@@ -327,7 +330,7 @@ function queuetools() {
         });
 
         // Open reason dropdown when we remove something as ham.
-        $('body').on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
+        $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
             if (!ignoreOnApprove) return;
             var thing = $(this).closest('.thing');
             $(thing).removeClass('removed');
@@ -350,7 +353,7 @@ function queuetools() {
 
             $(this).val(threshold);
             TBUtils.setSetting('QueueTools', 'reports-threshold', threshold);
-            setThreshold($('.thing'));
+            setThreshold($things);
         });
 
         function setThreshold(things) {
@@ -360,16 +363,15 @@ function queuetools() {
                     $(this).closest('.thing').hide();
             });
         }
-        setThreshold($('.thing'));
-
-
+        setThreshold($things);
+        
         function replaceSubLinks() {
             $this = $(this).find('a.subreddit');
             var href = $this.attr('href') + QUEUE_URL;
             $this.attr('href', href);
         }
         if (linkToQueues && QUEUE_URL) {
-            $('.thing').each(replaceSubLinks);
+            $things.each(replaceSubLinks);
         }
 
         // NER support. TODO: why doesn't this work?
@@ -407,7 +409,7 @@ function queuetools() {
         $('.inline-content').click(function (e) {
             e.stopPropagation();
         });
-        $('body').on('click', 'a.context', function (e) {
+        $body.on('click', 'a.context', function (e) {
             $('html').one('click', function () {
                 $('.inline-content').hide();
             });
@@ -415,19 +417,10 @@ function queuetools() {
             return false;
         });
 
-
         // Call History Button module init if it's not already enabled
         if (!TBUtils.getSetting('HistoryButton', 'enabled', true)) {
             historyButton.init();
         }
-
-        // // Add history button to all users.
-        // function addUserHistoryLink() {
-        //     var userhistory = '<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>';
-
-        //     $(this).append('[' + userhistory + ']');
-        // }
-        // $('.thing .entry .userattrs').each(addUserHistoryLink);
 
         // Add ban button to all users.
         function addUserBanLink() {
@@ -463,129 +456,7 @@ function queuetools() {
             if (action == 'expando' || action == 'remove' || action == 'approve') return !1;
             return rate_limit(action);
         };
-
-        // //User history button pressed
-        // var gettingUserdata = false;
-        // $('body').on('click', '.user-history-button', function () {
-        //     $('html').one('click', function () {
-        //         $('.inline-content').hide();
-        //         gettingUserdata = false;
-        //     });
-        //     gettingUserdata = true;
-
-        //     var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
-        //         commentbody = '',
-        //         contentBox = $('.inline-content').show().offset($(this).offset()).html('<div class="user-history"><a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="rts-report" href="javascript:;" data-commentbody="">Report Spammer</a><div><br /><b>Submission history:</b></div><div class="table domain-table"><table><thead><tr><th>domain submitted from</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div><div class="table subreddit-table"><table><thead><tr><th>subreddit submitted to</th><th>count</th><th>ups</th><th>downs</th><th>score</th><th>%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table></div></div>'),
-
-        //         domains = {},
-        //         domainslist = [],
-        //         domaintable = contentBox.find('.domain-table tbody'),
-        //         subreddits = {},
-        //         subredditlist = [],
-        //         subreddittable = contentBox.find('.subreddit-table tbody');
-
-        //     $('.rts-report').attr('data-author', author);
-
-        //     // Show user's karma
-        //     $.get('/user/' + author + '/about.json').success(function (d) {
-        //         contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
-        //     });
-
-        //     // Get user's domain & subreddit submission history
-        //     (function populateHistory(after) {
-        //         $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
-        //             contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
-        //         }).success(function (d) {
-
-        //             if (!gettingUserdata) return;
-        //             if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
-
-        //             var after = d.data.after,
-        //                 commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
-
-        //             for (i in d.data.children) {
-        //                 var data = d.data.children[i].data;
-
-        //                 if (!domains[data.domain]) {
-        //                     domains[data.domain] = {
-        //                         ups: 0,
-        //                         downs: 0,
-        //                         score: 0,
-        //                         count: 0
-        //                     };
-        //                     domainslist.push(data.domain);
-        //                 }
-
-        //                 domains[data.domain].ups += data.ups;
-        //                 domains[data.domain].downs += data.downs;
-        //                 domains[data.domain].score += data.score;
-        //                 domains[data.domain].count++;
-
-        //                 if (!subreddits[data.subreddit]) {
-        //                     subreddits[data.subreddit] = {
-        //                         ups: 0,
-        //                         downs: 0,
-        //                         score: 0,
-        //                         count: 0
-        //                     };
-        //                     subredditlist.push(data.subreddit);
-        //                 }
-        //                 subreddits[data.subreddit].ups += data.ups;
-        //                 subreddits[data.subreddit].downs += data.downs;
-        //                 subreddits[data.subreddit].score += data.score;
-        //                 subreddits[data.subreddit].count++;
-        //             }
-
-        //             domainslist.sort(function (a, b) {
-        //                 return domains[b].count - domains[a].count;
-        //             });
-        //             domaintable.empty();
-
-        //             for (i in domainslist) {
-        //                 var dom = domainslist[i],
-        //                     n = domains[dom].count,
-        //                     u = domains[dom].ups,
-        //                     d = domains[dom].downs,
-        //                     s = domains[dom].score,
-        //                     url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
-        //                     match = dom.match(/^self.(\w+)$/);
-
-        //                 if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
-        //                 domaintable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
-
-        //                 if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
-        //             }
-        //             if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
-
-        //             commentbody += '\n\nsubreddit submitted to|count|ups|downs|score|%\n:-|-:|-:|-:|-:|-:';
-
-        //             subredditlist.sort(function (a, b) {
-        //                 return subreddits[b].count - subreddits[a].count;
-        //             });
-        //             subreddittable.empty();
-        //             for (i in subredditlist) {
-        //                 var sr = subredditlist[i],
-        //                     n = subreddits[sr].count,
-        //                     u = subreddits[sr].ups,
-        //                     d = subreddits[sr].downs,
-        //                     s = subreddits[sr].score,
-        //                     url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
-
-        //                 subreddittable.append('<tr><td><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td>' + n + '</td><td>' + u + '</td><td>' + d + '</td><td>' + s + '</td><td>' + Math.round(u / (u + d) * 100) + '%</td></tr>');
-
-        //                 if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + u + '|' + d + '|' + s + '|' + Math.round(u / (u + d) * 100) + '%';
-        //             }
-        //             if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
-
-        //             $('.rts-report').attr('data-commentbody', commentbody);
-
-        //             if (after) populateHistory(after);
-        //             else gettingUserdata = false;
-        //         });
-        //     })();
-        //     return false;
-        // });
-
+        
         // User ban button pressed.
         function postbanlog(subreddit, author, reason) {
             var data = {
@@ -627,11 +498,10 @@ function queuetools() {
                 });
 
                 if (!data || !data.logsub) {
-                    return;
+                    //Do absolutely nothing
                 }
                 else if (reason == '' || reason == undefined || reason == null) {
                     alert('You did not give a reason for this ban.  You will need to create the log thread in /r/' + data.logsub + ' manually.');
-                    return;
                 }
                 else {
                     data.logreason = reason;
@@ -646,13 +516,12 @@ function queuetools() {
                         removalId = 't3_' + removalId[1];
 
                         TBUtils.approveThing(removalId);
-                        return;
                     });
                 }
             });
         }
 
-        $('body').on('click', '.user-ban-button', function (e) {
+        $body.on('click', '.user-ban-button', function (e) {
             var banbutton = e.target,
                 info = TBUtils.getThingInfo($(this).closest('.entry')),
                 currentsub = info.subreddit,
@@ -808,7 +677,7 @@ function queuetools() {
         addModtools();
     }
 
-    if (($('body').hasClass('listing-page') || $('body').hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
+    if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
         $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
     }
 }

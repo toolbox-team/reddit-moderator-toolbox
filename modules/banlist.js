@@ -16,9 +16,8 @@ banList.register_setting(
 // extracts a url parameter value from a URL string
 // from http://stackoverflow.com/a/15780907/362042
 banList.getURLParameter = function getURLParameter(url, name) {
-    return (RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
-}
-
+    return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+};
 
 banList.init = function init() {
     // if (!location.pathname.match(/\/about\/(?:banned)\/?/)) {
@@ -145,16 +144,17 @@ banList.init = function init() {
     }
 
     function liveFilter() {
+        var $user = $('#user');
         // initialize the loading spinner
-        $('#user').parent().spin('small');
+        $user.parent().spin('small');
         // hide it
         $loading = $('.spinner').hide();
 
         // counter for number of bans
         $num_bans = $('<span id="ban_count"></span>');
-        $num_bans.appendTo($('#user').parent());
+        $num_bans.appendTo($user.parent());
 
-        $('#user').prop('placeholder', 'Begin typing to live filter the ban list.');
+        $user.prop('placeholder', 'Begin typing to live filter the ban list.');
 
         $('.banned-table').addClass('filtered');
 
@@ -183,19 +183,20 @@ banList.init = function init() {
         }
 
         // text input trigger
-        $('input#user').keyup(function() {
+        var $userInput = $('input#user');
+        $userInput.keyup(function() {
             if ($('.banned-table tr').length > 1000) { return; } // don't live filter
             var value = $(this).val().toLowerCase();
             _filter(value);
         });
 
-        $('input#user').parent().submit(function (e) {
+        $userInput.parent().submit(function (e) {
             _filter($('input#user').val().toLowerCase());
             e.preventDefault();
         });
 
         // we want to populate the table immediately on load.
-        $('input#user').keyup();
+        $userInput.keyup();
     }
 
     if (TBUtils.getSetting('BanList', 'automatic', false)) {

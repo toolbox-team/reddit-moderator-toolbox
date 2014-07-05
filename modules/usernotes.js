@@ -27,7 +27,7 @@ function usernotes() {
                 return this._pools[poolName][id];
             }
         };
-    }
+    };
 
     function getUser(users, name) {
         if(users.hasOwnProperty(name)) {
@@ -70,12 +70,14 @@ function usernotes() {
     function postToWiki(sub, json) {
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
-
-        TBUtils.postToWiki('usernotes', sub, json, true, false, function done(succ, err) {
+        
+        $.log("Saving usernotes to wiki...");
+        TBUtils.postToWiki('usernotes', sub, json, true, false, function postToWiki(succ, err) {
             if (succ) {
+                $.log("Success!");
                 run();
             } else {
-                $.log(err.responseText, true);
+                $.log("Failure: "+err);
             }
         });
     }

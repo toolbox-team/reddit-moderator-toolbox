@@ -1,5 +1,6 @@
 function modmatrix() {
-    var modLogMatrix = {
+
+var modLogMatrix = {
 
         version: 2.0,
         limit: 300,
@@ -34,7 +35,7 @@ function modmatrix() {
             
             if(matches == null) {
                 
-                var regex = new RegExp(/reddit\.com\/user\/[^\/]+\/m\/([^\/]+)\//g);
+                regex = new RegExp(/reddit\.com\/user\/[^\/]+\/m\/([^\/]+)\//g);
                 matches = regex.exec(subredditUrl);
                 
                 if(matches == null) {
@@ -140,7 +141,7 @@ function modmatrix() {
             footer.append("<td class=\"action-total\"><span class=\"action-number\">0</span></td>");
             footer.append("<td class=\"action-percentage\"></td>");
 
-            var body = $("<tbody></tbody");
+            var body = $("<tbody></tbody>");
 
             header.parent().appendTo(matrix);
             footer.parent().appendTo(matrix);
@@ -652,16 +653,17 @@ function modmatrix() {
             return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
         }
 
-    }
+    };
 
+if (TBUtils.logged && $('.moderator').length && TBUtils.getSetting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
+    $.log('Loading Mod Matrix Module');
+    modLogMatrix.init();
+}
+    
+if (!location.pathname.match(/\/about\/(?:log)\/?/) || !TBUtils.betaMode)
+    return;
 
-    if (TBUtils.logged && $('.moderator').length && TBUtils.getSetting('ModMatrix', 'enabled', true) && TBUtils.isModLogPage) {
-        $.log('Loading Mod Matrix Module');
-        modLogMatrix.init();
-    }
-    
-    
-if (!location.pathname.match(/\/about\/(?:log)\/?/) || !TBUtils.betaMode) return;
+var $body = $('body');
 
 var commentLoadActive = false,
     ratelimitRemaining = 200,
@@ -684,8 +686,8 @@ function getComments() {
 
                 $.getJSON(removedUrl).done(function (data, status, jqxhr) {
 
-                    $('body').find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
-                    $('body').find('.activate-comment-load').attr('data-reset', ratelimitReset);
+                    $body.find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
+                    $body.find('.activate-comment-load').attr('data-reset', ratelimitReset);
 
                     var approved = data[1].data.children[0].data.approved_by;
                     var commentBody = data[1].data.children[0].data.body_html;
@@ -705,8 +707,6 @@ function getComments() {
         }
     });
     TBUtils.longLoadSpinner(false);
-    
-
 }
 
 
@@ -742,7 +742,7 @@ function addComments(ratelimit, ratelimitReset) {
 
         commentCount = commentCount + 10;
         if (parseInt(ratelimit) < commentCount) {
-            $('body').find('#ratelimit-counter').show();
+            $body.find('#ratelimit-counter').show();
             var count = parseInt(ratelimitReset);
             var counter = setInterval(timer, 1000);
 
@@ -751,8 +751,8 @@ function addComments(ratelimit, ratelimitReset) {
                 count = count - 1;
                 if (count <= 0) {
                     clearInterval(counter);
-                    $('body').find('#ratelimit-counter').empty();
-                    $('body').find('#ratelimit-counter').hide();
+                    $body.find('#ratelimit-counter').empty();
+                    $body.find('#ratelimit-counter').hide();
                     getComments();
                     return;
                 }
@@ -760,7 +760,7 @@ function addComments(ratelimit, ratelimitReset) {
                 var minutes = Math.floor(count / 60);
                 var seconds = count - minutes * 60;
 
-                $('body').find('#ratelimit-counter').html('<b>Oh dear, it seems we have hit a limit, waiting for ' + minutes + ' minutes and ' + seconds + ' seconds </b>\
+                $body.find('#ratelimit-counter').html('<b>Oh dear, it seems we have hit a limit, waiting for ' + minutes + ' minutes and ' + seconds + ' seconds </b>\
                 <br><br>\
                 <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimit + ' requests</i>. We are currently trying to load <i>'+ parseInt(commentCount-10) + ' comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
                 ');
@@ -776,7 +776,7 @@ function addComments(ratelimit, ratelimitReset) {
 }
 
 
-$('body').on('click', '.activate-comment-load', function () {
+$body.on('click', '.activate-comment-load', function () {
     addComments();
 });
 // NER support.

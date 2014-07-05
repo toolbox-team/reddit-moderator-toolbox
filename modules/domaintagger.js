@@ -1,6 +1,9 @@
 function domaintagger() {
-    if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false)) return;
+    if (!TBUtils.logged || !TBUtils.getSetting('DomainTagger', 'enabled', false))
+        return;
     $.log('Loading Domain Tagger Module');
+    
+    var $body = $('body');
 
     var YELLOW = '#EAC117', GREEN = '#347235', RED = '#FF0000', BLACK = '#000000';
     var subs = [];
@@ -102,7 +105,7 @@ function domaintagger() {
         });
     }
 
-    $('body').on('click', '.add-domain-tag', function (e) {
+    $body.on('click', '.add-domain-tag', function (e) {
         // TODO: This should use getThingInfo(), but I don't want to introduce any bugs for 2.0 by messing with it.
         var thing = $(e.target).closest('.thing');
         var domain = $(thing).find('span.domain:first').text().replace('(', '').replace(')', '').toLocaleLowerCase();
@@ -137,7 +140,7 @@ function domaintagger() {
             });
     });
 
-    $('body').on('click', '.save-domain', function () {
+    $body.on('click', '.save-domain', function () {
         var popup = $(this).closest('.dtagger-popup'),
             subreddit = popup.find('.domain-name').attr('subreddit');
 
@@ -195,7 +198,7 @@ function domaintagger() {
 
     });
 
-    $('body').on('click', '.dtagger-popup .close', function () {
+    $body.on('click', '.dtagger-popup .close', function () {
         $(this).parents('.dtagger-popup').remove();
     });
 

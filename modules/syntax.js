@@ -58,7 +58,6 @@ syntaxHighlighter.themeSelect = '\
 ';
 
 syntaxHighlighter.init = function init() {
-
     var selectedTheme = this.setting('selectedTheme');
 
     if (location.pathname.match(/\/about\/stylesheet\/?/)) {
@@ -78,13 +77,15 @@ syntaxHighlighter.init = function init() {
         session.on('change', function () {
             textarea.val(session.getValue());
         });
-        $('body').addClass('mod-toolbox-ace');
+
+        var $body = $('body');
+        $body.addClass('mod-toolbox-ace');
 
         $('#stylesheet_contents_div').before(this.themeSelect);
 
         $('#theme_selector').val(selectedTheme);
 
-        $('body').on('change keydown', '#theme_selector', function () {
+        $body.on('change keydown', '#theme_selector', function () {
             var thingy = $(this);
             setTimeout(function() {
                 editor.setTheme("ace/theme/"+thingy.val());
@@ -95,7 +96,10 @@ syntaxHighlighter.init = function init() {
     if (location.pathname.match(/\/wiki\/edit\/automoderator\/?/)
         || location.pathname.match(/\/wiki\/edit\/toolbox\/?/)
     ) {
-        $('#editform').prepend('<div id="wiki_contents_div"></div>');
+        var $body = $('body');
+        var $editform = $('#editform');
+        
+        $editform.prepend('<div id="wiki_contents_div"></div>');
 
         var editor = ace.edit("wiki_contents_div"),
             session = editor.getSession(),
@@ -113,13 +117,13 @@ syntaxHighlighter.init = function init() {
         session.on('change', function () {
             textarea.val(session.getValue());
         });
-        $('body').addClass('mod-toolbox-ace');
+        $body.addClass('mod-toolbox-ace');
 
-        $('#editform').prepend(this.themeSelect);
+        $editform.prepend(this.themeSelect);
 
         $('#theme_selector').val(selectedTheme);
 
-        $('body').on('change keydown', '#theme_selector', function () {
+        $body.on('change keydown', '#theme_selector', function () {
             var thingy = $(this);
             setTimeout(function() {
                 editor.setTheme("ace/theme/"+thingy.val());

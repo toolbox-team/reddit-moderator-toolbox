@@ -110,7 +110,7 @@
 
     TBStorage.unloading = function () {
         saveSettingsToBrowser();
-    }
+    };
 
     function SendInit() {
         //TBLoadUtils
@@ -184,7 +184,7 @@
         });
 
         callback();
-    };
+    }
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;

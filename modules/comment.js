@@ -1,7 +1,10 @@
 function comments() {
-    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail) return;
+    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail)
+        return;
     $.log('Loading Comments Module');
-
+    
+    var $body = $('body');
+    
     //
     // preload some generic variables
     //
@@ -10,11 +13,12 @@ function comments() {
         spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
         hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false);
 
-    $('body').on('click', '#tb-toggle-removed', function () {
-        if ($('.tb-comment-spam').is(':visible')) {
-            $('.tb-comment-spam').hide();
+    $body.on('click', '#tb-toggle-removed', function () {
+        var $comment_spam = $('.tb-comment-spam');
+        if ($comment_spam.is(':visible')) {
+            $comment_spam.hide();
         } else {
-            $('.tb-comment-spam').show();
+            $comment_spam.show();
         }
 
     });

@@ -46,6 +46,7 @@ modButton.register_setting(
         "title": "Enable Global Action button"
     });
 
+var $body = $('body');
 
 // Add mod button to all users
 modButton.processThing = function processThing(thing) {
@@ -56,7 +57,7 @@ modButton.processThing = function processThing(thing) {
         // Defer info gathering until button is clicked.
         $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
     }
-}
+};
 
 // need this for RES NER support
 modButton.run = function run() {
@@ -90,7 +91,7 @@ modButton.updateSavedSubs = function updateSavedSubs() {
     //
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
     //
-    var $popups = $('body').find('.mod-popup'),
+    var $popups = $body.find('.mod-popup'),
         $savedSubsLists = $popups.find('.saved-subs');
 
     // clear out the current stuff
@@ -150,7 +151,7 @@ modButton.init = function init() {
 
 
     // Mod button clicked
-    $('body').on('click', '.global-mod-button', function (event) {
+    $body.on('click', '.global-mod-button', function (event) {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
 
@@ -370,7 +371,7 @@ modButton.init = function init() {
     });
 
     // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
-    $('body').on('click', '.mod-popup .save, .global-button', function () {
+    $body.on('click', '.mod-popup .save, .global-button', function () {
 
         var $button = $(this),
             $popup = $button.parents('.mod-popup'),
@@ -516,18 +517,18 @@ modButton.init = function init() {
     });
 
     // 'cancel' button clicked
-    $('body').on('click', '.mod-popup .close', function () {
+    $body.on('click', '.mod-popup .close', function () {
         $(this).parents('.mod-popup').remove();
     });
 
-    $('body').on('click', '.nuke-comment-chain', function () {
+    $body.on('click', '.nuke-comment-chain', function () {
         var $popup = $(this).parents('.mod-popup'),
             thing_id = $popup.find('.thing_id').text();
 
         $.log(thing_id);
     });
 
-    $('body').on('click', '.tb-popup-tabs .user_flair', function () {
+    $body.on('click', '.tb-popup-tabs .user_flair', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
             user = $popup.find('.user').text(),
@@ -547,7 +548,7 @@ modButton.init = function init() {
 
 
     // Edit save button clicked.
-    $('body').on('click', '.flair-save', function () {
+    $body.on('click', '.flair-save', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),
             user = $popup.find('.user').text(),
@@ -603,7 +604,7 @@ modButton.init = function init() {
 
 
     // Edit save button clicked.
-    $('body').on('click', '.setting-save', function () {
+    $body.on('click', '.setting-save', function () {
         var $popup = $(this).parents('.mod-popup'),
             $savedSubsList = $popup.find('.saved-subs'),
             $status = $popup.find('.status');

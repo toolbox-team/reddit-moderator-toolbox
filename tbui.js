@@ -140,7 +140,7 @@
         }
 
         return $popup;
-    }
+    };
 
 
     TBui.selectMultiple = function selectMultiple(available, selected) {

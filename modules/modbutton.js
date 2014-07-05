@@ -118,6 +118,14 @@ modButton.updateSavedSubs = function updateSavedSubs() {
             }
         });
     });
+
+    $.each(TB.utils.mySubs, function (i, subreddit) {
+        $popups.find('select.' + modButton.OTHER)
+            .append($('<option>', {
+                    value: subreddit
+                })
+                .text('/r/' + subreddit));
+    });
 };
 
 modButton.init = function init() {
@@ -243,10 +251,11 @@ modButton.init = function init() {
             display: 'block'
         });
 
-        // wtf even happened to this originally?
-        $.each(TB.utils.mySubs, function (i, v) {
-            $popup.find('select.'+modButton.OTHER).append($('<option></option>').text(this).attr('value', this));
-        });
+
+        // // wtf even happened to this originally?
+        // $.each(TB.utils.mySubs, function (i, v) {
+        //     $popup.find('select.'+modButton.OTHER).append($('<option></option>').text(this).attr('value', this));
+        // });
 
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);

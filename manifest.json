@@ -14,16 +14,16 @@
 		"unlimitedStorage"
 	],
 	"icons": {
-		"16": "icon16.png",
-		"48": "icon48.png",
-		"128": "icon128.png"
+		"16": "images/icon16.png",
+		"48": "images/icon48.png",
+		"128": "images/icon128.png"
 	},
 	"content_scripts": [
 		{
 			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
 			"css": [
-				"toolbox.css",
-				"modules/modmatrix.css"
+				"styles/toolbox.css",
+				"styles/modmatrix.css"
 			],
 			"js": [
 				"libs/jquery-2.1.1.js",

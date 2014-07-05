@@ -17,7 +17,10 @@ modButton.register_setting(
         "title": "Saved subs (for quick access)"
     });
 // can't call this inside because it doesn't know the default value yet
-modButton.settings['sublist']["args"] = [TB.utils.mySubs, modButton.setting('sublist')];
+// can't call it plain because it uses TB.utils.mySubs
+TB.utils.getModSubs(function init() {
+    modButton.settings['sublist']["args"] = [TB.utils.mySubs, modButton.setting('sublist')];
+});
 
 modButton.register_setting(
     "rememberlastaction", {

@@ -86,15 +86,17 @@ function notifier() {
         commentsEnabled = TBUtils.getSetting('CommentsMod', 'enabled', true),
         modmatrixEnabled = TBUtils.getSetting('ModMatrix', 'enabled', true);
 
-    // MTE settings.
+    // QT settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
         ignoreonapprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
-        commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false),
         rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
         sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
+
+    // RR settings
+    //  removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
+    var commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false);
 
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
@@ -507,12 +509,6 @@ function notifier() {
                 <label><input type="checkbox" id="linktoqueues" ' + ((linkToQueues) ? "checked" : "") + '> Link to subreddit queue on mod pages</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="removalreasons" ' + ((removalreasons) ? "checked" : "") + '> Enable removal reasons</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="commentreasons" ' + ((commentreasons) ? "checked" : "") + '> Enable removal reasons for comments</label>\
-                </p>\
-                <p>\
                 <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summery when submitting to /r/reportthespammers</label>\
                 </p>\
                 <p>\
@@ -528,6 +524,21 @@ function notifier() {
         $(htmlmodtools).appendTo('.tb-window-content').hide();
         if (qtEnabled) {
             $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
+        }
+
+        // Settings to toggle the modules
+        var htmlremovalreasons = '\
+            <div class="tb-window-content-removalreasons">\
+             <p>\
+             <label><input type="checkbox" id="commentreasons" ' + ((commentreasons) ? "checked" : "") + '> Enable removal reasons for comments</label>\
+             </p>\
+            <div class="tb-help-main-content">Settings for Removal Reasons.</div>\
+            </div>\
+            ';
+
+        $(htmlremovalreasons).appendTo('.tb-window-content').hide();
+        if (rrEnabled) {
+            $('<a href="javascript:;" class="tb-window-content-removalreasons">Removal Reasons</a>').appendTo('.tb-window-tabs');
         }
 
         // Settings for the comment module
@@ -771,15 +782,17 @@ function notifier() {
         TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
-        // Save MTE settings.
+        // Save QT settings.
         TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
         TBUtils.setSetting('QueueTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
-        TBUtils.setSetting('RemovalReasons', 'removalreasons', $("#removalreasons").prop('checked'));
-        TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
         TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
         TBUtils.setSetting('QueueTools', 'sortmodqueue', $("#sortmodqueue").prop('checked'));
         TBUtils.setSetting('QueueTools', 'sortunmoderated', $("#sortunmoderated").prop('checked'));
         TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));
+
+        // Save RR settings.
+        //TBUtils.setSetting('RemovalReasons', 'removalreasons', $("#removalreasons").prop('checked'));
+        TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
 
         // save cache settings.
         TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());

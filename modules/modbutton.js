@@ -243,6 +243,11 @@ modButton.init = function init() {
             display: 'block'
         });
 
+        // wtf even happened to this originally?
+        $.each(TB.utils.mySubs, function (i, v) {
+            $popup.find('select.'+modButton.OTHER).append($('<option></option>').text(this).attr('value', this));
+        });
+
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
         }

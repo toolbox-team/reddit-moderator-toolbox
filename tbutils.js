@@ -671,10 +671,9 @@ function initwrapper() {
 
     // Reddit API stuff
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, isJSON, updateAM, callback) {
-
         if (isJSON) {
             // Not indenting saves precious bytes.
-            data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
+            data = JSON.stringify(data, undefined, undefined);
         }
         
         $.log("Posting /r/" + subreddit + "/api/wiki/edit/"+page);

@@ -177,20 +177,20 @@ TB = {
                             $setting.find('select').attr('id', module.shortname+'_syntax_theme');
                             $setting.append($('\
                                 <pre class="syntax-example" id="'+module.shortname+'_syntax_theme_css">\
-                                    /* This is just some example code*/\n\
-                                    body {\n\
-                                        font-family: sans-serif, "Helvetica Neue", Arial;\n\
-                                        font-weight: normal;\n\
-                                    }\n\
-                                    \n\
-                                    .md h3, .commentarea h3 {\n\
-                                        font-size: 1em;\n\
-                                    }\n\
-                                    \n\
-                                    #header {\n\
-                                        border-bottom: 1px solid #9A9A9A; \n\
-                                        box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
-                                    }\n\
+    /* This is just some example code*/\n\
+    body {\n\
+        font-family: sans-serif, "Helvetica Neue", Arial;\n\
+        font-weight: normal;\n\
+    }\n\
+    \n\
+    .md h3, .commentarea h3 {\n\
+        font-size: 1em;\n\
+    }\n\
+    \n\
+    #header {\n\
+        border-bottom: 1px solid #9A9A9A; \n\
+        box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
+    }\n\
                                 </pre>'));
                             execAfterInject.push(function() {
                                 // Syntax highlighter selection stuff

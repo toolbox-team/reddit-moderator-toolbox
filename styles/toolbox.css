@@ -28,15 +28,6 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     right: 0;
 }
 
-.mod-toolbox #tb-toolbar-mysubs {
-    background-color: rgb(199, 214, 230);
-    border-right: 1px dotted rgb(168, 181, 194);
-    display: inline;
-    padding: 6px; 
-    cursor: pointer;
-    border-left: 1px dotted rgb(168, 181, 194);
-}
-
 .mod-toolbox #tb-bottombar-hidden {
     bottom: 0;
     z-index: 6000;

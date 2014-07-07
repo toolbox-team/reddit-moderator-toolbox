@@ -635,7 +635,8 @@ function settings() {
         showing = false,
         inbox = TBUtils.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
         firstrun = TBUtils.getSetting('ModMailPro', 'firstrun', true),
-        menulist = $('.menuarea ul.flat-list:first');
+        menulist = $('.menuarea ul.flat-list:first'),
+		$body = $('body');
 
     // Create setting elements
     var settingsDiv = $('<div class="mmp-settings">'),

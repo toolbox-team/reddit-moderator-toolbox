@@ -19,6 +19,8 @@ function notifier() {
         modSubreddits = TBUtils.getSetting('Notifier', 'modsubreddits', 'mod'),
         unmoderatedSubreddits = TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
         modmailSubreddits = TBUtils.getSetting('Notifier', 'modmailsubreddits', 'mod'),
+        modmailSubredditsFromPro = TBUtils.getSetting('Notifier', 'modmailsubredditsfrompro', false),
+        modmailFilteredSubreddits = modmailSubreddits,
         notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
         shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
         shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
@@ -49,6 +51,14 @@ function notifier() {
         settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
 
 
+    // use filter subs from MMP, if appropriate
+    if (modmailSubredditsFromPro) {
+        modmailFilteredSubreddits = 'mod';
+        if (TBUtils.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += '-' + TBUtils.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+        }
+    }
+
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
     if (modNotifications == 'on') {
@@ -72,12 +82,14 @@ function notifier() {
     } else {
         messageunreadurl = '/message/inbox/';
     }
-    if (modmailunreadlink) {
-        modmailunreadurl = '/r/' + modmailSubreddits + '/about/message/moderator/unread/';
-    } else {
-        modmailunreadurl = '/r/' + modmailSubreddits + '/about/message/moderator/';
-    }
 
+    // this is a placeholder from issue #217
+    // TODO: provide an option for this once we fix modmailpro filtering
+    if (modmailunreadlink) {
+        modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
+    } else {
+        modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
+    }
 
     // Module settings.
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
@@ -120,8 +132,10 @@ function notifier() {
         <span id="tb-toolbarcounters">\
             <a title="no mail" href="http://www.reddit.com/message/inbox/" class="nohavemail" id="tb-mail"></a> \
             <a href="http://www.reddit.com/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-            <a title="modmail" href="http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
-            <a href="http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
+            <!-- <a title="modmail" href="http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator/" id="tb-modmail" class="nohavemail"></a> -->\
+            <!-- <a href="http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a> -->\
+            <a title="modmail" href="http://www.reddit.com/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
+            <a href="http://www.reddit.com/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
             <a title="modqueue" href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
             <a href="http://www.reddit.com/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
         </span>\
@@ -166,7 +180,7 @@ function notifier() {
             $(TBUtils.mySubsData).each(function () {
                 $body.find('#tb-my-subreddits table').append('\
                 <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
-                <td class="tb-my-subreddits-subreddit"><a title="/r/'+ this.subreddit +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/message/moderator" class="generic-mail"></a>\
+                <td class="tb-my-subreddits-subreddit"><a title="/r/'+ this.subreddit +' modmail!" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/message/moderator" class="generic-mail"></a>\
                 <a title="/r/'+ this.subreddit +' modqueue" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/modqueue" class="generic-modqueue"></a>\
                 <a title="/r/'+ this.subreddit +' unmoderated" target="_blank" href="http://www.reddit.com/r/'+ this.subreddit +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
                 ');
@@ -362,7 +376,7 @@ function notifier() {
         $body.css('overflow', 'hidden');
 
         // Settings for the tool bar.
-        var htmltoolbar = '\
+        var $htmltoolbar = $('\
             <div class="tb-window-content-toolbar">\
             <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
                 Import/export toolbox settings to a wiki page:<br>\
@@ -381,7 +395,8 @@ function notifier() {
             </p>\
             <p>\
                 Multireddit of subs you want displayed in the modmail counter:<br>\
-                <input type="text" name="modmailsubreddits" value="' + TBUtils.htmlEncode(unescape(modmailSubreddits)) + '">\
+                <input type="text" name="modmailsubreddits" value="' + TBUtils.htmlEncode(unescape(modmailSubreddits)) + '"' + ((modmailSubredditsFromPro) ? " disabled" : "") + '><br/>\
+                <label><input type="checkbox" name="modmailsubredditsfrompro"' + ((modmailSubredditsFromPro) ? " checked" : "") + '> Use filtered subreddits from ModMail Pro (overrides the list above)</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
@@ -397,7 +412,11 @@ function notifier() {
             </p>\
             <div class="tb-help-main-content">Edit toolbar stuff</div>\
             </div>\
-            ';
+            ');
+        // // we really shouldn't set these inline.
+        // $htmltoolbar.find('input[name=modmailsubreddits]').prop('disabled', modmailSubredditsFromPro);
+        $htmltoolbar.appendTo('.tb-window-content');
+
 
         var notifierSettings = $('<div class="tb-notifiersettings">\
             <p>\
@@ -409,7 +428,8 @@ function notifier() {
             </p>\
             <p>\
                 <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
-                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailSubreddits + '/about/message/moderator/unread/ if unread messages are present</label>\
+                <!-- <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailFilteredSubreddits + '/message/moderator/unread/ if unread messages are present</label> -->\
+                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
             </p>\
             <p>\
             <label><input type="checkbox" id="straightToInbox" ' + ((straightToInbox) ? "checked" : "") + '> When clicking a comment notification go to the inbox.</label>\
@@ -421,11 +441,12 @@ function notifier() {
                 <label><input type="checkbox" name="unmoderatednotifications" ' + unmoderatednotificationschecked + '> Get unmoderated queue notifications</label>\
             </p></div>').hide();
 
-        $(htmltoolbar).appendTo('.tb-window-content');
-
         // Add notifier settings, show them if not enabled.
         $('.tb-window-content-toolbar').prepend(notifierSettings);
         if (notifierEnabled) $(notifierSettings).show();
+        $('input[name=modmailsubredditsfrompro]').change(function (){
+            $('input[name=modmailsubreddits]').prop('disabled', this.checked);
+        });
 
         $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
@@ -745,12 +766,30 @@ function notifier() {
         }
         TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
+        // pull filtered subreddits from MMP?
+        modmailSubredditsFromPro = $("input[name=modmailsubredditsfrompro]")[0].checked; // $()[0].checked is a million times faster than other methods
+        TBUtils.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
+
         modmailSubreddits = $("input[name=modmailsubreddits]").val();
-        if (modmailSubreddits !== TBUtils.getSetting('Notifier', 'modmailsubreddits', '')) {
-            TBUtils.setSetting('Notifier', 'modmailcount', 0);
-            TBUtils.setSetting('Notifier', 'lastseenmodmail', -1);
+        modmailFilteredSubreddits = modmailSubreddits;
+
+        if (modmailSubredditsFromPro) {
+            // use MMP's filtered subs
+            // we don't want to overwrite the user's regular settings, just bypass them,
+            // so don't actually save modmailSubreddits if they are using filtered subs from MMP
+
+            modmailFilteredSubreddits = 'mod';
+            if (TBUtils.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
+                modmailFilteredSubreddits += '-' + TBUtils.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+            }
+        } else {
+            // save manually set filtered subs
+            if (modmailSubreddits !== TBUtils.getSetting('Notifier', 'modmailsubreddits', '')) {
+                TBUtils.setSetting('Notifier', 'modmailcount', 0);
+                TBUtils.setSetting('Notifier', 'lastseenmodmail', -1);
+            }
+            TBUtils.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
         }
-        TBUtils.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
 
         TBUtils.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
 
@@ -877,7 +916,7 @@ function notifier() {
         TBUtils.setSetting('Notifier', 'lastseenmodmail', now);
         modmailCount = TBUtils.setSetting('Notifier', 'modmailcount', 0);
 
-        $.getJSON('http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator/unread.json', function (json) {
+        $.getJSON('http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json', function (json) {
             $.each(json.data.children, function (i, value) {
 
                 var unreadmessageid = value.data.name;
@@ -959,7 +998,8 @@ function notifier() {
             if (count < 1) {
                 $tb_modmail.attr('class', 'nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
-                $tb_modmail.attr('href', 'http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator');
+                // $tb_modmail.attr('href', 'http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator');
+                $tb_modmail.attr('href', 'http://www.reddit.com/message/moderator');
             } else {
                 $modmail.attr('class', 'havemail');
                 $modmail.attr('title', 'new mail!');
@@ -1262,7 +1302,9 @@ function notifier() {
         // Modmail
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        $.getJSON('http://www.reddit.com/r/' + modmailSubreddits + '/about/message/moderator.json', function (json) {
+        $.getJSON('http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator.json', function (json) {
+            console.log('getting modmail');
+
             var count = json.data.children.length || 0;
             if (count === 0) {
                 TBUtils.setSetting('Notifier', 'modmailcount', count);
@@ -1365,7 +1407,7 @@ function notifier() {
     if (notifierEnabled) {
         setInterval(getmessages, checkInterval);
         getmessages();
-    } else { //this is a temp hack until 2.2
+    } else { // todo: this is a temp hack until 2.2
         TBUtils.setSetting('Notifier', 'unreadmessagecount', 0);
         TBUtils.setSetting('Notifier', 'modqueuecount', 0);
         TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);

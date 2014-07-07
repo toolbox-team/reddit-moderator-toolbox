@@ -670,6 +670,8 @@ function settings() {
         "font-weight": "normal"
     };
 
+    var $body = $('body');
+
     $(settingsDiv).css({
         'display': 'none',
         'height': '20px',

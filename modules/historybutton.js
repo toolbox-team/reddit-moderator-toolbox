@@ -9,8 +9,8 @@ historyButton.addUserHistoryLink = function () {
 // This should be a setting, methinks.
 historyButton.SPAM_REPORT_SUB = 'spam';
 
-var $body = $('body'),
-    $inline_content = $('.inline-content');
+var $body = $('body');
+    
 
 historyButton.init = function () {
     var self = this;
@@ -23,14 +23,14 @@ historyButton.init = function () {
     $('.thing .entry .userattrs').each(self.addUserHistoryLink);
 
     // Open inline context
-    $inline_content.click(function (e) {
+    $('.inline-content').click(function (e) {
         //  e.stopPropagation();
     });
     $body.on('click', 'a.context', function (e) {
         $body.on('click', '.user-history-close', function () {
-            $inline_content.hide();
+            $('.inline-content').hide();
         });
-        $inline_content.show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
+        $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
         return false;
     });
 
@@ -39,14 +39,14 @@ historyButton.init = function () {
     var gettingUserdata = false;
     $body.on('click', '.user-history-button', function () {
         $body.on('click', '.user-history-close', function () {
-            $inline_content.hide();
+            $('.inline-content').hide();
             gettingUserdata = false;
         });
         gettingUserdata = true;
 
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
-            contentBox = $inline_content.show().offset($(this).offset()).html('\
+            contentBox = $('.inline-content').show().offset($(this).offset()).html('\
             <div class="tb-popup user-history">\
             <div class="tb-popup-header">\
                 <div class="tb-popup-title">User history for ' + author + '\</div>\
@@ -193,13 +193,13 @@ historyButton.init = function () {
     });
 
     // Markdown button pressed
-    $inline_content.on('click', '.markdown-report', function () {
+    $('.inline-content').on('click', '.markdown-report', function () {
     var markdownReport = $body.find('.rts-report').attr('data-commentbody');
         $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
         
     });
     // RTS button pressed
-    $inline_content.on('click', '.rts-report', function () {
+    $('.inline-content').on('click', '.rts-report', function () {
         var rtsLink = this,
             author = rtsLink.getAttribute('data-author'),
             commentbody = rtsLink.getAttribute('data-commentbody');

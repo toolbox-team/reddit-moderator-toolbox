@@ -164,13 +164,6 @@ function notifier() {
 
     $console.appendTo('body').hide();
 
-    $('.tb-debug-input').keyup(function (e) {
-        if (e.keyCode == 13) {
-            $.log(eval($(this).val()));
-            $(this).val(''); // clear line
-        }
-    });
-
     $body.append(modbar);
 
     if (TBUtils.betaMode) {
@@ -322,6 +315,14 @@ function notifier() {
     // Console clear
     $body.on('click', '.tb-console-clear', function () {
         TBUtils.log = [];
+    });
+
+    // Run console input
+    $('.tb-debug-input').keyup(function (e) {
+        if (e.keyCode == 13) {
+            $.log(eval($(this).val()));
+            $(this).val(''); // clear line
+        }
     });
     /// End console stuff
 

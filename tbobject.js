@@ -301,7 +301,7 @@ TB.Module = function Module(name) {
         "betamode": true,
         "devmode": false,
         "needs_mod_subs": false
-    }
+    };
 
     this.settings = {};
     this.settingsList = [];
@@ -317,7 +317,7 @@ TB.Module = function Module(name) {
             "default": false,
             "betamode": false, // optional
             "hidden": false, // optional
-            "title": "Enable " + this.name + "."
+            "title": "Enable " + this.name
         });
 
     // PUBLIC: settings interface

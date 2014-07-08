@@ -377,30 +377,14 @@ function notifier() {
         $body.css('overflow', 'hidden');
 
         // Settings for the tool bar.
-        var $htmltoolbar = $('\
-            <div class="tb-window-content-toolbar">\
+        var $toolboxSettings = $('\
+            <div class="tb-window-content-toolbox">\
             <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
                 Import/export toolbox settings to a wiki page:<br>\
                 <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
                 <input class="tb-settings-import" type="button" value="import">\
                 <input class="tb-settings-export" type="button" value="export">\
                 <b> Important:</b> This will reload the page without saving!\
-            </p>\
-            <p>\
-                Multireddit of subs you want displayed in the modqueue counter:<br>\
-                <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
-            </p>\
-            <p>\
-                Multireddit of subs you want displayed in the unmoderated counter:<br>\
-                <input type="text" name="unmoderatedsubreddits" value="' + TBUtils.htmlEncode(unescape(unmoderatedSubreddits)) + '">\
-            </p>\
-            <p>\
-                Multireddit of subs you want displayed in the modmail counter:<br>\
-                <input type="text" name="modmailsubreddits" value="' + TBUtils.htmlEncode(unescape(modmailSubreddits)) + '"' + ((modmailSubredditsFromPro) ? " disabled" : "") + '><br/>\
-                <label><input type="checkbox" name="modmailsubredditsfrompro"' + ((modmailSubredditsFromPro) ? " checked" : "") + '> Use filtered subreddits from ModMail Pro (overrides the list above)</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
@@ -411,79 +395,16 @@ function notifier() {
             <p>\
                 <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
             </p>\
-            <div class="tb-help-main-content">Edit toolbar stuff</div>\
+            <div class="tb-help-main-content">Edit Toolbox general settings</div>\
             </div>\
             ');
         // // we really shouldn't set these inline.
-        // $htmltoolbar.find('input[name=modmailsubreddits]').prop('disabled', modmailSubredditsFromPro);
-        $htmltoolbar.appendTo('.tb-window-content');
+        // $toolboxSettings.find('input[name=modmailsubreddits]').prop('disabled', modmailSubredditsFromPro);
 
-
-        var notifierSettings = $('<div class="tb-notifiersettings">\
-            <p>\
-                <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
-            </p>\
-            <p>\
-                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
-                <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
-            </p>\
-            <p>\
-                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
-                <!-- <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailFilteredSubreddits + '/message/moderator/unread/ if unread messages are present</label> -->\
-                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
-            </p>\
-            <p>\
-            <label><input type="checkbox" id="straightToInbox" ' + ((straightToInbox) ? "checked" : "") + '> When clicking a comment notification go to the inbox.</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" name="unmoderatednotifications" ' + unmoderatednotificationschecked + '> Get unmoderated queue notifications</label>\
-            </p></div>').hide();
-
-        // Add notifier settings, show them if not enabled.
-        $('.tb-window-content-toolbar').prepend(notifierSettings);
-        if (notifierEnabled) $(notifierSettings).show();
-        $('input[name=modmailsubredditsfrompro]').change(function (){
-            $('input[name=modmailsubreddits]').prop('disabled', this.checked);
-        });
-
-        $('<a href="javascript:;" class="tb-window-content-toolbar">Toolbar Settings</a>').appendTo('.tb-window-tabs');
-        $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbar');
-
-
-
-        //$("input[name=modsubreddits]").val(unescape(modSubreddits));
-        //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
-        // Edit shortcuts
-        //console.log(htmlshorcuts);
-        var htmlshorcuts = '\
-        <div class="tb-window-content-shortcuts">\
-        <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
-        </table>\
-        <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a>\
-        <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
-        </div>\
-            ';
-        $(htmlshorcuts).appendTo('.tb-window-content').hide();
-
-        if ($.isEmptyObject(shortcuts2)) {
-            $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
-        ').appendTo('.tb-window-content-shortcuts-table');
-
-        } else {
-            $.each(shortcuts2, function (index, value) {
-                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
-        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
-        <br><br>';
-                //console.log(shortcutinput);
-                $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
-            });
-        }
-
-        $('<a href="javascript:;" class="tb-window-content-shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
+        // add them to the dialog
+        $toolboxSettings.appendTo('.tb-window-content');
+        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolox Settings</a>').appendTo('.tb-window-tabs');
+        $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
 
         // Settings to toggle the modules
         var htmlmodules = '\
@@ -515,11 +436,95 @@ function notifier() {
             <p>\
                 <label><input type="checkbox" id="notifierEnabled" ' + ((notifierEnabled) ? "checked" : "") + '> Enable Notifier (queue counts and desktop notifications)</label>\
             </p>\
-            <div class="tb-help-main-content">Here you can disable the several toolbox modules.</div>\
+            <div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
             </div>\
             ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
+
+
+        var $notifierSettings = $('<div class="tb-window-content-notifier">\
+            <p>\
+                Multireddit of subs you want displayed in the modqueue counter:<br>\
+                <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
+            </p>\
+            <p>\
+                Multireddit of subs you want displayed in the unmoderated counter:<br>\
+                <input type="text" name="unmoderatedsubreddits" value="' + TBUtils.htmlEncode(unescape(unmoderatedSubreddits)) + '">\
+            </p>\
+            <p>\
+                Multireddit of subs you want displayed in the modmail counter:<br>\
+                <input type="text" name="modmailsubreddits" value="' + TBUtils.htmlEncode(unescape(modmailSubreddits)) + '"' + ((modmailSubredditsFromPro) ? " disabled" : "") + '><br/>\
+                <label><input type="checkbox" name="modmailsubredditsfrompro"' + ((modmailSubredditsFromPro) ? " checked" : "") + '> Use filtered subreddits from ModMail Pro (overrides the list above)</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
+                <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+                <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
+                <!-- <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailFilteredSubreddits + '/message/moderator/unread/ if unread messages are present</label> -->\
+                <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
+            </p>\
+            <p>\
+            <label><input type="checkbox" id="straightToInbox" ' + ((straightToInbox) ? "checked" : "") + '> When clicking a comment notification go to the inbox.</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
+            </p>\
+            <p>\
+                <label><input type="checkbox" name="unmoderatednotifications" ' + unmoderatednotificationschecked + '> Get unmoderated queue notifications</label>\
+            </p>\
+            <div class="tb-help-main-content">Edit notifier settings</div>\
+        </div>').hide();
+
+        // get the checkbox change handler
+        $notifierSettings.find('input[name=modmailsubredditsfrompro]').change(function (){
+            $('input[name=modmailsubreddits]').prop('disabled', this.checked);
+        });
+
+        // Add notifier settings to dialog
+        $notifierSettings.appendTo('.tb-window-content');
+        $('<a href="javascript:;" class="tb-window-content-notifier">Notifier</a>').appendTo('.tb-window-tabs');
+
+        // TODO: what were these for? can we drop them?
+        //$("input[name=modsubreddits]").val(unescape(modSubreddits));
+        //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
+
+        // Edit shortcuts
+        //console.log(htmlshorcuts);
+        var htmlshorcuts = '\
+        <div class="tb-window-content-shortcuts">\
+        <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
+        </table>\
+        <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a>\
+        <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
+        </div>\
+            ';
+        $(htmlshorcuts).appendTo('.tb-window-content').hide();
+
+        if ($.isEmptyObject(shortcuts2)) {
+            $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
+        ').appendTo('.tb-window-content-shortcuts-table');
+
+        } else {
+            $.each(shortcuts2, function (index, value) {
+                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
+        <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
+        <br><br>';
+                //console.log(shortcutinput);
+                $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
+            });
+        }
+
+        $('<a href="javascript:;" class="tb-window-content-shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
 
         // Settings to toggle the modules
         var htmlmodtools = '\

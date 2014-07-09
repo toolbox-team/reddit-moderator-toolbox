@@ -287,7 +287,9 @@ text-align: left;
     box-shadow: 0 1px 3px 1px #D6D6D6;
 }
 
-.mod-toolbox .tb-window-wrapper a:hover, .mod-toolbox .tb-window-tabs a:hover {
+.mod-toolbox .tb-window-wrapper a:hover,
+.mod-toolbox .tb-window-tabs a.active,
+.mod-toolbox .tb-window-tabs a:hover {
     color: #000 !important;
 }
 
@@ -324,6 +326,7 @@ text-align: left;
     line-height: 34px;
 }
 
+.mod-toolbox .tb-window-tabs a.active,
 .mod-toolbox .tb-window-tabs a:hover {
     background-color: #9FBAD6;
 }
@@ -1465,6 +1468,7 @@ border: solid 1px #808080;
 }
 
 .mod-toolbox.res-nightmode .tb-window-wrapper a:hover,
+.mod-toolbox.res-nightmode .tb-window-tabs a.active,
 .mod-toolbox.res-nightmode .tb-window-tabs a:hover {
     color: #000 !important;
 }
@@ -1496,6 +1500,7 @@ border: solid 1px #808080;
     border-right: dotted 1px #39526b;
 }
 
+.mod-toolbox.res-nightmode .tb-window-tabs a.active,
 .mod-toolbox.res-nightmode .tb-window-tabs a:hover {
     background-color: #5D7186;
 }

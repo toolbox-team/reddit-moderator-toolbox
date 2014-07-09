@@ -403,7 +403,7 @@ function notifier() {
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolox Settings</a>').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
 
         // Settings to toggle the modules
@@ -684,7 +684,10 @@ function notifier() {
     $body.on('click', '.tb-window-tabs a', function () {
         var tab = $(this).attr('class'),
             $tb_help_mains = $('.tb-help-main');
-        
+
+        $('.tb-window-tabs a').removeClass('active');
+        $(this).addClass('active');
+
         $tb_help_mains.attr('currentpage', tab);
         // if we have module name, give that to the help button
         if ($(this).data('module')) {

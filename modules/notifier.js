@@ -85,10 +85,12 @@ function notifier() {
 
     // this is a placeholder from issue #217
     // TODO: provide an option for this once we fix modmailpro filtering
+    modmailunreadurl = '/message/moderator/'
     if (modmailunreadlink) {
-        modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
+        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
+        modmailunreadurl += 'unread/';
     } else {
-        modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
+        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
     }
 
     // Module settings.

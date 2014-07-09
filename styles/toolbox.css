@@ -306,14 +306,13 @@ text-align: left;
 .mod-toolbox .tb-window-tabs {
     border-bottom: solid 1px #A8B5C2;
     background-color: #C7D6E6;
-    height: 34px;
     font-size: 11px !important;
 }
 
 .mod-toolbox .tb-window-tabs a {
     background-color: #C7D6E6;
     border-right: dotted 1px #A8B5C2;
-    line-height: 34px;
+    display: inline-block;
     padding: 10px !important;
 }
 

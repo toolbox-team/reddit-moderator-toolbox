@@ -394,8 +394,8 @@
 
 (function () {
     // wait for storage
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBUtilsLoaded", function () {
+        console.log("got tbutils");
         frame();
     });
 })();

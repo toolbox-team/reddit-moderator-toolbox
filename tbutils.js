@@ -973,9 +973,9 @@ function initwrapper() {
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
         $(TBStorage.settings).each(function () {
-            var key = this.split(".");
-            var setting = TBStorage.getSetting(key[0], key[1], null);
-            if (setting && setting !== undefined) {
+            var key = this.split("."),
+                setting = TBStorage.getSetting(key[0], key[1], null);
+            if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
                 settingsObject[this] = setting;
             }
 
@@ -1280,8 +1280,10 @@ function initwrapper() {
 
 (function () {
     // wait for storage
-    window.addEventListener("TBLoadUtils", function () {
-        console.log("got storage (utils)");
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage (tbutils)");
         initwrapper();
+        var event = new CustomEvent("TBUtilsLoaded");
+        window.dispatchEvent(event);
     });
 })();

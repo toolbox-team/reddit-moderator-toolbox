@@ -29,7 +29,7 @@
             }
         }
 
-        var lines = String(TBUtils.log.length);//String(TBUtils.log.split('\n').length);
+        var lines = String(TBUtils.log.length); //String(TBUtils.log.split('\n').length);
         if (lines !== '0') {
             if (lines.length === 1) lines = '0' + lines;
             if (lines.length === 2) lines = '0' + lines;

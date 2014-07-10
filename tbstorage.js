@@ -117,12 +117,10 @@
         var event = new CustomEvent("TBLoadUtils");
         window.dispatchEvent(event);
         setTimeout(function () {
+            TBStorage.isLoaded = true;
+
             event = new CustomEvent("TBStorageLoaded");
             window.dispatchEvent(event);
-
-            setTimeout(function () {
-                TBStorage.isLoaded = true;
-            }, 10);
         }, 10);
 
     }
@@ -149,7 +147,7 @@
                 var key = fullKey.split(".");
                 setting = getSetting(key[1], key[2], null);
                 //console.log(fullKey);
-                if (setting && setting !== undefined) {
+                if (setting !== undefined) {
                     settingsObject[fullKey] = setting;
                 }
             }
@@ -200,6 +198,14 @@
                 result = JSON.parse(storageString);
             } catch (e) {
                 result = storageString;
+            }
+
+            // send back the default if, somehow, someone stored `null`
+            // NOTE: never, EVER store `null`!
+            if (result === null
+                && defaultVal !== null
+            ) {
+                result = defaultVal;
             }
             return result;
         }

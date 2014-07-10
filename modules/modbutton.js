@@ -648,8 +648,8 @@ TB.register_module(modButton);
 }
 
 (function () {
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBObjectLoaded", function () {
+        console.log("got tbobject");
         modbutton();
     });
 })();

@@ -85,6 +85,7 @@ function tbconfig() {
                 <div class="wiki-edit-area" style="display: none;">\
                     <textarea class="edit-wikidata" rows="20" cols="20" style="display: none;"></textarea><br>\
                     <div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
+                    <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />\
                 </div>\
                 <div class="reasons-notice" style="display:none;">\
                     <br><br>\
@@ -175,7 +176,7 @@ function tbconfig() {
 \
 \
 </div>\
-<div class="tb-window-footer" ><input class="save" type="button" value="new"/> <input class="delete" style="display:none" type="button" value="delete"/></div>\
+<div class="tb-window-footer"><input class="save" type="button" value="new"/> <input class="delete" style="display:none" type="button" value="delete"/></div>\
 <div class="tb-help-config-content">\
 <h2>Input options:</h2>\
 <p>\
@@ -413,7 +414,7 @@ function tbconfig() {
                 reasons: config.removalReasons.reasons || []
             };
 
-            postToWiki('toolbox', config, '.reason-setting-form .save click', true);
+            postToWiki('toolbox', config, 'updated removal reason settings', true);
 
             $('.reason-setting-form').remove();
         });
@@ -541,10 +542,15 @@ function tbconfig() {
             page = $(button).attr('page'),
             textArea = $('.edit-wikidata'),
             text = $(textArea).val(),
+            editNote = $('input[name=edit-wikidata-note]').val(),
             updateAM = (page === 'automoderator'),
             cancel = (e.target.className == 'cancel-wiki-data')
 
-            $(button).removeAttr('page');
+        if (!editNote) {
+            editNote = 'updated '+page+' configuration';
+        }
+
+        $(button).removeAttr('page');
         $(textArea).val('');
         $(editArea).hide();
 
@@ -555,7 +561,7 @@ function tbconfig() {
         // save the data, and blank the text area.
         // also, yes some of the pages are in JSON, but they aren't JSON objects,
         // so they don't need to be re-strinified.
-        postToWiki(page, text, '.save-wiki-data click', false, updateAM);
+        postToWiki(page, text, editNote, false, updateAM);
     });
 }
 

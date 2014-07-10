@@ -67,12 +67,12 @@ function usernotes() {
         return link;
     }
 
-    function postToWiki(sub, json) {
+    function postToWiki(sub, json, reason) {
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
         
         $.log("Saving usernotes to wiki...");
-        TBUtils.postToWiki('usernotes', sub, json, true, false, function postToWiki(succ, err) {
+        TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
                 $.log("Success!");
                 run();
@@ -508,7 +508,7 @@ function usernotes() {
             if (resp === TBUtils.NO_WIKI_PAGE) {
                 notes = noteSkel;
                 notes.users[user] = userNotes;
-                postToWiki(subreddit, notes);
+                postToWiki(subreddit, notes, 'create usernotes config');
                 return;
             }
 
@@ -532,26 +532,27 @@ function usernotes() {
                             }
                         });
 
-                        if(u.notes.length < 1) {
+                        if (u.notes.length < 1) {
                             delete notes.users[user];
                         }
 
-                        postToWiki(subreddit, notes);
+                        postToWiki(subreddit, notes, 'delete note '+noteid+' on user '+user);
                     // Add.
                     } else {
                         u.notes.unshift(note);
-                        postToWiki(subreddit, notes);
+                        postToWiki(subreddit, notes, 'create new note on user '+user);
                     }
 
                 // Adding a note for previously unknown user
                 } else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
-                    postToWiki(subreddit, notes);
+                    postToWiki(subreddit, notes, 'create new note on new user '+user);
                 }
             } else {
+                // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
-                postToWiki(subreddit, notes);
+                postToWiki(subreddit, notes, 'create new notes object, add new note on user '+user);
             }
         });
     });

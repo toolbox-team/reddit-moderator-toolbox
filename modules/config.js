@@ -30,9 +30,9 @@ function tbconfig() {
         showSettings();
     });
 
-    function postToWiki(page, data, isJSON, updateAM) {
+    function postToWiki(page, data, reason, isJSON, updateAM) {
         $.log("posting to wiki");
-        TBUtils.postToWiki(page, subreddit, data, isJSON, updateAM, function done(succ, err) {
+        TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
             $.log("save succ = " + succ);
             if (!succ) {
                 $.log(err.responseText, true)
@@ -55,7 +55,7 @@ function tbconfig() {
                     $('.update-reasons').click(function () {
                         config.removalReasons = resp;
 
-                        postToWiki('toolbox', config, true);
+                        postToWiki('toolbox', config, 'import removal reasons from CSS', true);
 
                         $('.reasons-notice').hide();
                     });
@@ -146,7 +146,7 @@ function tbconfig() {
                     var tags = JSON.parse(json.data.content_md).domainTags;
                     if (tags) {
                         config.domainTags = tags;
-                        postToWiki('toolbox', config, true);
+                        postToWiki('toolbox', config, '.import click', true);
                     }
                     $(html).remove();
                 }
@@ -168,14 +168,14 @@ function tbconfig() {
 \
 \
 <div class="tb-form">\
-<p style="text-align:center;"><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea><br/><input type="text" style="width: 150px;" name="flair-text" placeholder="flair text" /> <input type="text" style="width: 150px;" name="flair-css" placeholder="flair css" /></p>\
+<p style="text-align:center;"><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea><br/><input type="text" style="width: 150px;" name="flair-text" placeholder="flair text" /> <input type="text" style="width: 150px;" name="flair-css" placeholder="flair css" /><br/><input type="text" name="edit-note" placeholder="reason for edit (optional)" /></p>\
 <span class="edit-save-area">\
 &nbsp;&nbsp;(click on a reason below to edit it.)</span><br><br>\
 <table ><tbody /></table></div>\
 \
 \
 </div>\
-<div class="tb-window-footer" ><input class="save" type="button" value="new"/><input class="delete" style="display:none" type="button" value="delete"/></div>\
+<div class="tb-window-footer" ><input class="save" type="button" value="new"/> <input class="delete" style="display:none" type="button" value="delete"/></div>\
 <div class="tb-help-config-content">\
 <h2>Input options:</h2>\
 <p>\
@@ -247,12 +247,26 @@ function tbconfig() {
 
         // Do things about stuff.
         $(html).on('click', '.save', function () {
-            var reasonsNum = $('.edit-area').attr('reason');
-            var reasonText = $('.edit-area').val();
-            var reasonFlairText = $("input[name=flair-text]").val();
-            var reasonFlairCSS = $("input[name=flair-css]").val();
+            var reasonsNum = $('.edit-area').attr('reason'),
+                reasonText = $('.edit-area').val(),
+                reasonFlairText = $("input[name=flair-text]").val(),
+                reasonFlairCSS = $("input[name=flair-css]").val(),
+                editNote = $("input[name=edit-note]").val()
 
             if (reasonsNum) {
+                // is there's a reasonsNum, it's an existant reason
+                if (!editNote) {
+                    // default note
+                    editNote = 'update';
+                }
+                editNote += ', reason #'+reasonsNum;
+            } else {
+                // otherwise, it's a new reason
+                editNote = 'create new reason'+(editNote ? ', '+editNote : '');
+            }
+
+            if (reasonsNum) {
+                // if it's a current reason
                 config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
                 config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
                 config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
@@ -272,7 +286,7 @@ function tbconfig() {
 
                 config.removalReasons.reasons.push(reason);
             }
-            postToWiki('toolbox', config, true);
+            postToWiki('toolbox', config, editNote, true);
             if (TBUtils.configCache[subreddit] !== undefined) {
                 delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
@@ -289,7 +303,7 @@ function tbconfig() {
             } else {
                 return;
             }
-            postToWiki('toolbox', config, true);
+            postToWiki('toolbox', config, 'delete reason #'+reasonsNum, true);
             if (TBUtils.configCache[subreddit] !== undefined) {
                 delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
@@ -399,7 +413,7 @@ function tbconfig() {
                 reasons: config.removalReasons.reasons || []
             };
 
-            postToWiki('toolbox', config, true);
+            postToWiki('toolbox', config, '.reason-setting-form .save click', true);
 
             $('.reason-setting-form').remove();
         });
@@ -541,7 +555,7 @@ function tbconfig() {
         // save the data, and blank the text area.
         // also, yes some of the pages are in JSON, but they aren't JSON objects,
         // so they don't need to be re-strinified.
-        postToWiki(page, text, false, updateAM);
+        postToWiki(page, text, '.save-wiki-data click', false, updateAM);
     });
 }
 

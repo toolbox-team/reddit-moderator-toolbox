@@ -12,10 +12,10 @@ function domaintagger() {
         run();
     });
 
-    function postToWiki(sub, json) {
+    function postToWiki(sub, json, reason) {
         TBUtils.configCache[sub] = json;
 
-        TBUtils.postToWiki('toolbox', sub, json, true, false, function done(succ, err) {
+        TBUtils.postToWiki('toolbox', sub, json, reason, true, false, function done(succ, err) {
             if (succ) {
                 run();
             } else {
@@ -163,7 +163,7 @@ function domaintagger() {
             if (resp === TBUtils.NO_WIKI_PAGE) {
                 config.domainTags = [];
                 config.domainTags.push(domainTag);
-                postToWiki(subreddit, config);
+                postToWiki(subreddit, config, 'domain tagger: create new Toolbox config');
                 return;
             }
 
@@ -173,13 +173,16 @@ function domaintagger() {
             if (config.domainTags) {
                 var results = $.grep(config.domainTags, function (d) {
                     if (d.name === domainTag.name) {
-                        var idx = config.domainTags.indexOf(d);
+                        var idx = config.domainTags.indexOf(d),
+                            updateType;
                         if (domainTag.color === 'none') {
                             config.domainTags.splice(idx, 1);
+                            updateType = 'delete';
                         } else {
                             config.domainTags[idx] = domainTag;
+                            updateType = 'update';
                         }
-                        postToWiki(subreddit, config);
+                        postToWiki(subreddit, config, updateType+' tag "'+domainTag.name+'"');
 
                         return d;
                     }
@@ -187,12 +190,12 @@ function domaintagger() {
 
                 if (!results || results.length < 1) {
                     config.domainTags.push(domainTag);
-                    postToWiki(subreddit, config);
+                    postToWiki(subreddit, config, 'create tag "'+domainTag.name+'"');
                 }
             } else {
                 config.domainTags = [];
                 config.domainTags.push(domainTag);
-                postToWiki(subreddit, config);
+                postToWiki(subreddit, config, 'create new domain tags object, create tag "'+domainTag.name+'"');
             }
         });
 

@@ -670,7 +670,12 @@ function initwrapper() {
     };
 
     // Reddit API stuff
-    TBUtils.postToWiki = function postToWiki(page, subreddit, data, isJSON, updateAM, callback) {
+    TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
+        if (reason) {
+            reason = '"'+reason+'" via toolbox';
+        } else {
+            reason = 'updated via toolbox';
+        }
 
         if (isJSON) {
             // Not indenting saves precious bytes.
@@ -682,7 +687,8 @@ function initwrapper() {
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
-            reason: 'updated via toolbox config',
+            // reason: 'updated via toolbox config',
+            reason: reason,
             uh: TBUtils.modhash
         })
 
@@ -974,7 +980,7 @@ function initwrapper() {
             }
 
         });
-        TBUtils.postToWiki('tbsettings', subreddit, settingsObject, true, false, function () {
+        TBUtils.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, function () {
             callback();
         });
     };

@@ -113,7 +113,7 @@ TB.register_module(betterButtons);
 }
 
 (function() {
-    window.addEventListener("TBStorageLoaded", function () {
+    window.addEventListener("TBObjectLoaded", function () {
         betterbuttons();
     });
 })();

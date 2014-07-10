@@ -354,8 +354,10 @@ TB.Module = function Module(name) {
 }
 
 (function() {
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage (objects)");
+    window.addEventListener("TBUtilsLoaded", function () {
+        console.log("got tbutils");
         tbobject();
+        var event = new CustomEvent("TBObjectLoaded");
+        window.dispatchEvent(event);
     });
 })();

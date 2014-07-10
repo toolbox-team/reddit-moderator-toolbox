@@ -141,8 +141,8 @@ TB.register_module(syntaxHighlighter);
 }
 
 (function () {
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBObjectLoaded", function () {
+        console.log("got tbobject");
         syntax();
     });
 })();

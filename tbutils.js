@@ -1280,8 +1280,10 @@ function initwrapper() {
 
 (function () {
     // wait for storage
-    window.addEventListener("TBLoadUtils", function () {
-        console.log("got storage (utils)");
+    window.addEventListener("TBStorageLoaded", function () {
+        console.log("got storage (tbutils)");
         initwrapper();
+        var event = new CustomEvent("TBUtilsLoaded");
+        window.dispatchEvent(event);
     });
 })();

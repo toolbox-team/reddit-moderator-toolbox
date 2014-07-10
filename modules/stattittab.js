@@ -52,8 +52,8 @@ TB.register_module(stattitTab);
 }
 
 (function () {
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBObjectLoaded", function () {
+        console.log("got tbobject");
         stattittab();
     });
 })();

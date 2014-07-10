@@ -2,8 +2,8 @@
 // There's no super-clever way to trigger it automatically
 
 (function TBOBjectInit() {
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage (objects)");
+    window.addEventListener("TBObjectLoaded", function () {
+        console.log("got tbobject");
         TB.init();
     });
 })();

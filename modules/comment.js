@@ -279,8 +279,8 @@ $(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0
 
 (function () {
     // wait for storage
-    window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage");
+    window.addEventListener("TBUtilsLoaded", function () {
+        console.log("got tbutils");
         comments();
     });
 })();

@@ -117,12 +117,10 @@
         var event = new CustomEvent("TBLoadUtils");
         window.dispatchEvent(event);
         setTimeout(function () {
+            TBStorage.isLoaded = true;
+
             event = new CustomEvent("TBStorageLoaded");
             window.dispatchEvent(event);
-
-            setTimeout(function () {
-                TBStorage.isLoaded = true;
-            }, 10);
         }, 10);
 
     }

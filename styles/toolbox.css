@@ -1,3 +1,10 @@
+
+/* RES compatibility fix */
+
+.res #BigEditor {
+    margin-bottom: 25px !important;
+}
+
 body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBoxes body.comments-page .content .sitetable .thing.spam.comment:hover {
     cursor: pointer;
 }

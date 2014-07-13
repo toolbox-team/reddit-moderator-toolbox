@@ -20,7 +20,7 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/"],
+			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/*"],
 			"css": [
 				"styles/toolbox.css",
 				"styles/modmatrix.css"

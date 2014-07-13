@@ -3,7 +3,7 @@ function betterbuttons() {
 var betterButtons = new TB.Module('Better Buttons');
 
 //Default settings
-betterButtons.settings["enabled"]["default"] = true;
+betterButtons.settings["enabled"]["default"] = false;
 
 betterButtons.register_setting("enablemodsave", {
     "type": "boolean",

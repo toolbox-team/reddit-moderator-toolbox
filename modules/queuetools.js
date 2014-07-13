@@ -124,7 +124,7 @@ function queuetools() {
                 <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
                 <span>\
                     <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">&lt;/&gt;</a> \
-                    <!--a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a--> \
+                    <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
                     <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
                         <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
                     </div>\
@@ -381,11 +381,10 @@ function queuetools() {
             processNewThings(things);
         });
 
-        /*  Disabled for 2.1 final release.  Causes huge issue because reddit does a postback to get the expando content.
+
         // Toggle all expando boxes
         var expandosOpen = false;
         $('.open-expandos').on('click', function () {
-
 
             if (!expandosOpen) {
                 $('.open-expandos').text('[-]');
@@ -401,9 +400,7 @@ function queuetools() {
                 });
                 expandosOpen = false;
             }
-
         });
-        */
 
         // Open inline context
         $('.inline-content').click(function (e) {

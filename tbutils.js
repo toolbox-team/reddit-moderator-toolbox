@@ -597,7 +597,7 @@ function initwrapper() {
             // if ($(entry).find('.remove-button').text() === '') {
             // The previous check would mistakenly catch removed modmail messages as the user's messages.
             // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
-            // The '.message-parent' check fixes reddit.com/message/messages/, wich contains mod mail and PMs.
+            // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
             if (user === '') {
                 user = TBUtils.logged;
 
@@ -719,7 +719,9 @@ function initwrapper() {
             setTimeout(function () {
 
                 // Set page access to 'mod only'.
-                $.post('/r/' + subreddit + '/wiki/settings/' + page, {
+                $.post('/r/' + subreddit + '/wiki/settings/', {
+                    page: page,
+                    listed: true, //hrm, may need to make this a config setting.
                     permlevel: 2,
                     uh: TBUtils.modhash
                 })

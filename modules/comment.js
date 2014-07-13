@@ -124,7 +124,7 @@ function comments() {
 
 
 
-$(".commentarea .usertext-edit:first-of-type").after('<a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
+$(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
     $("body").on("click", ".loadFlat", function () {
         var flatListing = {},
         idListing = [];

@@ -15,6 +15,7 @@ banList.register_setting(
 
 // extracts a url parameter value from a URL string
 // from http://stackoverflow.com/a/15780907/362042
+// TODO: move to tbutils
 banList.getURLParameter = function getURLParameter(url, name) {
     return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
 };
@@ -39,9 +40,6 @@ banList.init = function init() {
         $.log("_get_next_ban_page("+after+")");
 
         var parameters = {'limit': 1000, 'after': after};
-
-        // make sure we have the loading icon
-        $loading.show();
 
         after = null;
         last_request = Date.now();
@@ -95,7 +93,7 @@ banList.init = function init() {
                     $.log("  last page");
                     banlist_updating = false;
                     banlist_last_update = Date.now();
-                    $loading.hide();
+                    TB.utils.longLoadSpinner(false);
                 }
             },
             error: function(data) {
@@ -107,7 +105,7 @@ banList.init = function init() {
                 } else {
                     // Did we get logged out during the process, or some other error?
                     banlist_updating = false;
-                    $loading.hide();
+                    TB.utils.longLoadSpinner(false);
                     $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                 }
             }
@@ -145,10 +143,6 @@ banList.init = function init() {
 
     function liveFilter() {
         var $user = $('#user');
-        // initialize the loading spinner
-        $user.parent().spin('small');
-        // hide it
-        $loading = $('.spinner').hide();
 
         // counter for number of bans
         $num_bans = $('<span id="ban_count"></span>');
@@ -170,6 +164,8 @@ banList.init = function init() {
                     || (banlist_last_update + time_to_update) <= Date.now())
             ) {
                 banlist_updating = true;
+                TB.utils.longLoadSpinner(true);
+
                 $.log("Updating now")
                 // clean up
                 $('.banned-table table tbody').empty();

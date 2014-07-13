@@ -52,10 +52,12 @@ function initwrapper() {
     TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
 
+
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
     if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site) {
         TBUtils.post_site = '';
     }
+
 
     // Do settings echo before anything else.  If it fails, exit toolbox.
     var ret = TBStorage.setSetting('Utils', 'echotest', ECHO);
@@ -64,6 +66,7 @@ function initwrapper() {
         return;
     }
 
+
     // Get cached info.
     TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getSetting('cache', 'notecache', {});
     TBUtils.configCache = (getnewLong) ? {} : TBStorage.getSetting('cache', 'configcache', {});
@@ -71,6 +74,7 @@ function initwrapper() {
     TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getSetting('cache', 'nonotes', []);
     TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubs', []);
     TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubsdata', []);
+
 
     // Update cache vars as needed.
     if (newLogin) {
@@ -84,21 +88,6 @@ function initwrapper() {
     if (getnewShort) {
         TBStorage.setSetting('cache', 'lastgetshort', now);
     }
-
-    /*
-    // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
-    if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
-        TBUtils.browser = FIREFOX;
-    } else if (typeof(chrome) !== "undefined") {
-        TBUtils.browser = CHROME;
-
-        if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
-            TBUtils.browser = OPERA;
-        }
-    } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
-        TBUtils.browser = SAFARI;
-    }
-    */
 
     var pushedunread = TBStorage.getSetting('Notifier', 'unreadpushed', []);
     if (pushedunread.length > 250) {
@@ -125,7 +114,6 @@ function initwrapper() {
     }
 
 
-
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
@@ -149,6 +137,7 @@ function initwrapper() {
         TBUtils.betaMode = false;
     }
 
+
     if (TBUtils.debugMode) {
         var consoleText = 'Toolbox version: ' + TBUtils.toolboxVersion +
                           ', Browser: ' + TBUtils.browser +
@@ -159,10 +148,12 @@ function initwrapper() {
         TBUtils.log.push(consoleText);
     }
 
+
     TBUtils.usernotes = {
         ver: TBUtils.notesSchema,
         users: [] //typeof userNotes
     };
+
 
     TBUtils.note = {
         note: '',
@@ -172,7 +163,9 @@ function initwrapper() {
         type: ''
     };
 
+
     TBUtils.warningType = ['spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
+
 
     TBUtils.config = {
         ver: TBUtils.configSchema,
@@ -181,13 +174,16 @@ function initwrapper() {
         modMacros: ''
     };
 
+
     TBUtils.setSetting = function (module, setting, value) {
         return TBStorage.setSetting(module, setting, value);
     };
 
+
     TBUtils.getSetting = function (module, setting, defaultVal) {
         return TBStorage.getSetting(module, setting, defaultVal);
     };
+
 
     TBUtils.getTypeInfo = function (warningType) {
         var typeInfo = {
@@ -223,7 +219,6 @@ function initwrapper() {
     };
 
 
-
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function(UNIX_timestamp) {
         var a = new Date(UNIX_timestamp * 1000);
@@ -236,6 +231,7 @@ function initwrapper() {
         return year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
     };
 
+
     // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
     TBUtils.timeConverterRead = function(UNIX_timestamp) {
         var a = new Date(UNIX_timestamp * 1000);
@@ -247,6 +243,7 @@ function initwrapper() {
         var sec = ('0' + a.getUTCSeconds()).slice(-2);
         return date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
     };
+
 
     TBUtils.longLoadSpinner = function (createOrDestroy) {
         if (createOrDestroy !== undefined) {
@@ -320,6 +317,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.showNote = function (note) {
         if (!note.id || !note.text) return;
 
@@ -334,7 +332,6 @@ function initwrapper() {
                 });
             }
         }
-
 
         //platform check.
         switch (note.platform) {
@@ -359,8 +356,8 @@ function initwrapper() {
         default:
             show();
         }
-
     };
+
 
     TBUtils.notification = function (title, body, url, timeout) {
         if (timeout === undefined) timeout = 15000;
@@ -426,8 +423,6 @@ function initwrapper() {
                         notification.close()
                     }, timeout);
 
-
-
                     notification.onclick = function () {
                         // Open the page
                         $.log('notification clicked');
@@ -452,6 +447,7 @@ function initwrapper() {
         }
     };
 
+
     TBUtils.humaniseDays = function  (diff) {
         var str = '';
         var values = {
@@ -471,7 +467,8 @@ function initwrapper() {
         }
         return str.slice(0, - 1);
     };
-    
+
+
     TBUtils.sortBy = function (arr, prop) {
         return arr.sort(function (a, b) {
             if (a[prop] < b[prop]) return 1;
@@ -479,7 +476,8 @@ function initwrapper() {
             return 0;
         });
     };
-    
+
+
     // Because normal .sort() is case sensitive.
     TBUtils.saneSort = function (arr) {
         return arr.sort(function (a, b) {
@@ -488,7 +486,8 @@ function initwrapper() {
             return 0;
         });
     };
-    
+
+
     TBUtils.saneSortAs = function (arr) {
         return arr.sort(function (a, b) {
             if (a.toLowerCase() > b.toLowerCase()) return -1;
@@ -497,8 +496,8 @@ function initwrapper() {
         });
     };
 
-    TBUtils.getModSubs = function (callback) {
 
+    TBUtils.getModSubs = function (callback) {
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
             $.log('getting new subs.');
@@ -526,7 +525,6 @@ function initwrapper() {
                     TBUtils.mySubs.push(sub);
                 }
                 
-                
                 var isinthere = false;
                 $(TBUtils.mySubsData).each(function() { 
                     if (this.subreddit === sub) {
@@ -535,7 +533,6 @@ function initwrapper() {
                 });
                 
                 if (!isinthere) {
-                
                     var subredditData = {
                     "subreddit": sub,
                     "subscribers": this.data.subscribers,
@@ -646,6 +643,7 @@ function initwrapper() {
         return info;
     };
 
+
     // Prevent page lock while parsing things.  (stolen from RES)
     TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
         if (array === null) return;
@@ -668,6 +666,7 @@ function initwrapper() {
         }
         window.setTimeout(doChunk, delay);
     };
+
 
     // Reddit API stuff
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
@@ -735,6 +734,7 @@ function initwrapper() {
         });
     };
 
+
     // reddit HTML encodes all of their JSON responses, we need to HTMLdecode
     // them before parsing.
     TBUtils.unescapeJSON = function(val) {
@@ -745,6 +745,7 @@ function initwrapper() {
         }
         return val;
     };
+
 
     TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
@@ -797,6 +798,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.redditLogin = function (uname, pass, remeber, callback) {
         $.post('/api/login', {
             api_type: 'json',
@@ -815,6 +817,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.getBanState = function (subreddit, user, callback) {
         $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user: user }, function (data) {
             var banned = data.data.children;
@@ -827,6 +830,7 @@ function initwrapper() {
             callback(true, banned[0].note, banned[0].date, banned[0].name);
         });
     };
+
 
     TBUtils.flairPost = function(postLink, subreddit, text, css, callback) {
         $.post('/api/flair', {
@@ -847,6 +851,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.distinguishThing = function(id, callback) {
         $.post('/api/distinguish/yes', {
             id: id,
@@ -862,6 +867,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.approveThing = function(id, callback) {
         $.post('/api/approve', {
             id: id,
@@ -876,6 +882,7 @@ function initwrapper() {
                 callback(false, error);
         });
     };
+
 
     TBUtils.postComment = function(parent, text, callback) {
         $.post('/api/comment', {
@@ -904,6 +911,7 @@ function initwrapper() {
                 callback(false, error);
         });
     };
+
 
     TBUtils.postLink = function(link, title, subreddit, callback) {
         $.post('/api/submit', {
@@ -936,6 +944,7 @@ function initwrapper() {
         });
     };
 
+
     TBUtils.sendPM = function(to, subject, text, callback) {
         $.post('/api/compose', {
             to: to,
@@ -952,6 +961,7 @@ function initwrapper() {
                 callback(false, error.responseText);
         });
     };
+
 
     TBUtils.banUser = function(user, subreddit, reason, callback) {
         $.post('/api/friend', {
@@ -984,7 +994,7 @@ function initwrapper() {
             callback();
         });
     };
-    //TBUtils.exportSettings('al_dev');
+
 
     TBUtils.importSettings = function (subreddit, callback) {
         TBUtils.readFromWiki(subreddit, 'tbsettings', true, function (resp) {
@@ -1000,54 +1010,19 @@ function initwrapper() {
             callback();
         });
     };
-    //TBUtils.importSettings('al_dev');
 
-    /*
-    TBUtils.settingsToObject = function (callback) {
-        var settingsObject = {};
-        Object.keys(localStorage)
-        .forEach(function (fullKey) {
-            if (/^(Toolbox.)/.test(fullKey)) {
-                var key = fullKey.split(".");
-                setting = TBStorage.getSetting(key[1], key[2], null);
-                //$.log(fullKey, true);
-                if (setting && setting !== undefined) {
-                    settingsObject[fullKey] = setting;
-                }
-            }
-        });
-        callback(settingsObject);
-    };
-
-    TBUtils.objectToSettings = function (object, callback) {
-        $.each(object, function (fullKey, value) {
-            var key = fullKey.split(".");
-            //$.log(key[1] + '.' + key[2] + ': ' + value, true);
-            TBStorage.setSetting(key[1], key[2], value);
-        });
-
-        callback();
-    };
-    */
-
-    /*
-    TBUtils.settingsToObject(function (sObject) {
-        $.log(sObject, true);
-        TBUtils.objectToSettings(sObject, function () {
-            $.log('done', true);
-        });
-    });
-    */
 
     // Utility methods
     TBUtils.removeQuotes = function(string) {
         return string.replace(/['"]/g, '');
     };
 
+
     // Added back for MMP's live mod mail.
     TBUtils.compressHTML = function (src) {
         return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" >  False/, 'child">');
     };
+
 
     TBUtils.addToSiteTaable = function (URL, callback) {
         if (!URL || !callback) callback(null);
@@ -1068,12 +1043,14 @@ function initwrapper() {
         });
     };
 
+
     // easy way to simulate the php html encode and decode functions
     TBUtils.htmlEncode = function (value) {
         //create a in-memory div, set it's inner text(which jQuery automatically encodes)
         //then grab the encoded contents back out.  The div never exists on the page.
         return $('<div/>').text(value).html();
     };
+
 
     TBUtils.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
@@ -1098,6 +1075,7 @@ function initwrapper() {
 
         //window.location.reload(); //casues way too many issues with callbacks and timouts.
     };
+
 
     TBUtils.getReasonsFromCSS = function (sub, callback) {
 
@@ -1157,53 +1135,6 @@ function initwrapper() {
         });
     };
 
-    /*
-    // Private functions
-    function registerSetting(module, setting) {
-        // First parse out any of the ones we never want to save.
-        if (module === 'cache') return;
-
-        var keyName = module + '.' + setting;
-
-        //if (settings === undefined) settings = [];
-
-        if ($.inArray(keyName, settings) === -1) {
-            settings.push(keyName);
-
-            // Always save to localStorage.
-            localStorage['Toolbox.Utils.settings'] = JSON.stringify(settings.sort());
-        }
-    }
-
-
-    function getSetting(module, setting, defaultVal) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
-        //registerSetting(module, setting); why reg settings that have never changed?
-
-        defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-
-        if (localStorage[storageKey] === undefined) {
-            return defaultVal;
-        } else {
-            var storageString = localStorage[storageKey];
-            try {
-                result = JSON.parse(storageString);
-            } catch (e) {
-                result = storageString;
-            }
-            return result;
-        }
-    }
-
-    function setSetting(module, setting, value) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
-        registerSetting(module, setting);
-
-        localStorage[storageKey] = JSON.stringify(value);
-        return getSetting(module, setting);
-    }
-    */
-
 
     // NER, load more comments, and mod frame support.
     $('div.content').on('DOMNodeInserted', function (e) {
@@ -1216,6 +1147,7 @@ function initwrapper() {
             window.dispatchEvent(event);
         }, 1000);
     });
+
 
     window.onbeforeunload = function () {
         if (longLoadArray.length > 0) {
@@ -1233,6 +1165,7 @@ function initwrapper() {
         // Just in case.
         TBStorage.unloading();
     };
+
 
     // get toolbox news
     (function getNotes() {

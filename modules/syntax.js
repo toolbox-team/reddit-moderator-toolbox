@@ -70,6 +70,8 @@ syntaxHighlighter.init = function init() {
         editor.setTheme("ace/theme/" + selectedTheme);
         if(TBUtils.browser == 'chrome') {
             ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+        } else if(TBUtils.browser == 'firefox') {
+            session.setUseWorker(false);
         }
         session.setMode("ace/mode/css");
 

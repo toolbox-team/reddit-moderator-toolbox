@@ -405,7 +405,7 @@ function notifier() {
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
 
         // Settings to toggle the modules

@@ -86,7 +86,7 @@ function modmaillite() {
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         modmaillite();
     });
 })();

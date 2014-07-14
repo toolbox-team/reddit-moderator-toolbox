@@ -567,7 +567,7 @@ function tbconfig() {
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         tbconfig();
     });
 })();

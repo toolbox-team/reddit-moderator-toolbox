@@ -212,7 +212,7 @@ TB.register_module(banList);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        console.log("got tbobject");
+        $.log("got tbobject");
         banlist();
     });
 })();

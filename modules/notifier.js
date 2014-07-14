@@ -1344,7 +1344,7 @@ function notifier() {
                 }
             }
 
-            $.log('New messages: ', newCount);
+            //$.log('New messages: ', newCount);
 
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 var notificationbody, messagecount = 0;
@@ -1430,7 +1430,7 @@ function notifier() {
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         notifier();
     });
 })();

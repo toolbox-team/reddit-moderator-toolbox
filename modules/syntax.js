@@ -144,7 +144,7 @@ TB.register_module(syntaxHighlighter);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        console.log("got tbobject");
+        $.log("got tbobject");
         syntax();
     });
 })();

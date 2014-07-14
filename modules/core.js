@@ -15,7 +15,7 @@ TB.register_module(core);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        console.log("got tbobject");
+        $.log("got tbobject");
         core();
     });
 })();

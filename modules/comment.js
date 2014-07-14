@@ -280,7 +280,7 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         comments();
     });
 })();

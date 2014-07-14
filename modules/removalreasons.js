@@ -588,7 +588,7 @@ function removalreasons() {
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         removalreasons();
     });
 })();

@@ -682,7 +682,7 @@ function queuetools() {
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         queuetools();
     });
 })();

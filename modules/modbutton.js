@@ -649,7 +649,7 @@ TB.register_module(modButton);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        console.log("got tbobject");
+        $.log("got tbobject");
         modbutton();
     });
 })();

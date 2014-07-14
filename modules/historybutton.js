@@ -256,7 +256,7 @@ TB.register_module(historyButton);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        console.log("got tbobject");
+        $.log("got tbobject");
         historybutton();
     });
 })();

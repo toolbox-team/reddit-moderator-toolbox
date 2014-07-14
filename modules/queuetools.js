@@ -675,7 +675,7 @@ function queuetools() {
     }
 
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
-        $('<li><a href="javascript:;" accesskey="M" class="modtools-on">modtools</a></li>').appendTo('.tabmenu').click(addModtools);
+        $('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').appendTo('.tabmenu').click(addModtools);
     }
 }
 

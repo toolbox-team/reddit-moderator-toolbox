@@ -9,6 +9,9 @@ historyButton.addUserHistoryLink = function () {
 // This should be a setting, methinks.
 historyButton.SPAM_REPORT_SUB = 'spam';
 
+historyButton.settings["enabled"]["default"] = true;
+historyButton.config["betamode"] = false;
+
 var $body = $('body');
     
 

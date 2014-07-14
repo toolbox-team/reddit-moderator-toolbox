@@ -58,12 +58,12 @@
     }
 
     if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
-        $.log('using browser storage');
+        //console.log('using browser storage');
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 objectToSettings(sObject.tbsettings, function () {
-                    $.log('got settings: chrome');
+                    //console.log('got settings: chrome');
                     SendInit();
                 });
             } else {
@@ -78,8 +78,8 @@
         self.port.on('tb-settings-reply', function (tbsettings) {
             if (tbsettings !== null) {
                 objectToSettings(tbsettings, function () {
-                    $.log('got settings: firefox');
-                    $.log(tbsettings);
+                    //console.log('got settings: firefox');
+                    //console.log(tbsettings);
                     SendInit();
                 });
             } else {
@@ -146,7 +146,7 @@
             if (/^(Toolbox.)/.test(fullKey)) {
                 var key = fullKey.split(".");
                 setting = getSetting(key[1], key[2], null);
-                //$.log(fullKey);
+                //console.log(fullKey);
                 if (setting !== undefined) {
                     settingsObject[fullKey] = setting;
                 }
@@ -174,10 +174,10 @@
     }
 
     function objectToSettings(object, callback) {
-        $.log(object);
+        //console.log(object);
         $.each(object, function (fullKey, value) {
             var key = fullKey.split(".");
-            //$.log(key[1] + '.' + key[2] + ': ' + value, true);
+            //console.log(key[1] + '.' + key[2] + ': ' + value, true);
             setSetting(key[1], key[2], value, false);
         });
 

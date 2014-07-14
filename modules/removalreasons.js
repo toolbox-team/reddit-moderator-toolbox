@@ -298,11 +298,16 @@ function removalreasons() {
                 display: ''
             });*/
             popup.show();
+            $body.css('overflow', 'hidden');
         }
     });
 
     // Popup events
-
+    function removePopup(popup) {
+        popup.remove();
+        $body.css('overflow', 'auto');
+        return;
+    }
     $body.on('click', '.reason-popup', function (e) {
         e.stopPropagation();
     });
@@ -343,7 +348,7 @@ function removalreasons() {
 
         TBUtils.approveThing(attrs.attr('fullname'), function (successful) {
             if(successful)
-                popup.remove();
+                removePopup(popup);
             else
                 status.text(APPROVE_ERROR);
         });
@@ -514,7 +519,7 @@ function removalreasons() {
         // Function to send PM and comment
         function sendRemovalMessage(logLink) {
             // If there is no message to send, don't send one.
-            if (reasonlength < 1) return popup.remove();
+            if (reasonlength < 1) return removePopup(popup);
 
             // Check if a valid notification type is selected
             if (!notifyBy || (logLink == null && notifyBy == 'none')) {
@@ -545,7 +550,7 @@ function removalreasons() {
                                     if(notifyByPM)
                                         sendPM();
                                     else
-                                        popup.remove();
+                                        removePopup(popup);
                                 }
                                 else {
                                     status.text(DISTINGUISH_ERROR);
@@ -568,7 +573,7 @@ function removalreasons() {
                     $.log("Sending removal message by PM.");
                     TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
                         if(successful) {
-                            popup.remove();
+                            removePopup(popup);
                         }
                         else {
                             status.text(PM_ERROR);

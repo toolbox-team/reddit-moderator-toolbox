@@ -864,7 +864,7 @@ img.note-close {
     bottom: 0;
     overflow: auto;
     z-index: 2147483647 !important;
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
+    font-size: 11px;
 }
 
 

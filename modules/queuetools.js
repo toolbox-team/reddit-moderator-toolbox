@@ -415,8 +415,8 @@ function queuetools() {
         });
 
         // Call History Button module init if it's not already enabled
-        if (!TBUtils.getSetting('HistoryButton', 'enabled', true)) {
-            historyButton.init();
+        if (!TB.modules.HistoryButton.setting('enabled')) {
+            TB.modules.HistoryButton.init();
         }
 
         // Add ban button to all users.

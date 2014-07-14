@@ -1,9 +1,10 @@
 (function ($) {
     $.fn.log = function (message, skip) {
-        if (TBUtils.log !== undefined) {
+        if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skiplocalconsole'] || 'false')) {
             TBUtils.log.push(message);
         } else {
-            console.log('TB: ' + message);
+            //console.log('TB: ' + message);
+            console.log(message);
         }
     };
     $.log = function (message, skip) {

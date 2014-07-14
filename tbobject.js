@@ -191,14 +191,17 @@ TB = {
         border-bottom: 1px solid #9A9A9A; \n\
         box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
     }\n\
+    /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
                                 </pre>'));
                             execAfterInject.push(function() {
                                 // Syntax highlighter selection stuff
                                 $body.addClass('mod-toolbox-ace');
                                 var editorSettings = ace.edit(module.shortname+'_syntax_theme_css');
                                 editorSettings.setTheme("ace/theme/"+module.setting(setting));
+                                editorSettings.getSession().setUseWrapMode(TBUtils.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+
                                 if(TBUtils.browser == 'chrome') {
-                                    ace.config.set("workerPath", chrome.extension.getURL("/libs/")); 
+                                    ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
                                 }
                                 editorSettings.getSession().setMode("ace/mode/css");
 

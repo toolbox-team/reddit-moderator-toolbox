@@ -8,6 +8,13 @@ syntaxHighlighter.settings["enabled"]["default"] = true;
 syntaxHighlighter.config["betamode"] = false;
 
 syntaxHighlighter.register_setting(
+    "enableWordWrap", {
+        "type": "boolean",
+        "default": true,
+        "hidden": false,
+        "title": "Enable word wrap in editor"
+    });
+syntaxHighlighter.register_setting(
     'selectedTheme', {
         "type": "syntaxTheme",
         "default": 'monokai',
@@ -58,7 +65,8 @@ syntaxHighlighter.themeSelect = '\
 ';
 
 syntaxHighlighter.init = function init() {
-    var selectedTheme = this.setting('selectedTheme');
+    var selectedTheme = this.setting('selectedTheme'),
+        enableWordWrap  = this.setting('enableWordWrap');
 
     if (location.pathname.match(/\/about\/stylesheet\/?/)) {
         $('.sheets .col').prepend('<div id="stylesheet_contents_div"></div>');
@@ -66,6 +74,8 @@ syntaxHighlighter.init = function init() {
         var editor = ace.edit("stylesheet_contents_div"),
             session = editor.getSession(),
             textarea = $('textarea[name="stylesheet_contents"]').hide();
+
+        editor.getSession().setUseWrapMode(enableWordWrap);
 
         editor.setTheme("ace/theme/" + selectedTheme);
         if(TBUtils.browser == 'chrome') {
@@ -106,7 +116,9 @@ syntaxHighlighter.init = function init() {
         var editor = ace.edit("wiki_contents_div"),
             session = editor.getSession(),
             textarea = $('textarea[name="content"]').hide();
-
+        if(enableWordWrap){
+            editor.getSession().setUseWrapMode(true);
+        }
         editor.setTheme("ace/theme/" + selectedTheme);
 
         if (location.pathname.match(/\/wiki\/edit\/automoderator\/?/)) {

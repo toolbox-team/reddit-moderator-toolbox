@@ -21,9 +21,11 @@ banList.getURLParameter = function getURLParameter(url, name) {
 };
 
 banList.init = function init() {
-    // if (!location.pathname.match(/\/about\/(?:banned)\/?/)) {
-    //     return;
-    // }
+    if (!(location.pathname.match(/\/about\/(?:banned)\/?/)
+        || location.pathname.match(/\/about\/(?:contributors)\/?/))
+    ) {
+        return;
+    }
 
     banlist_updating = false;
     banlist_last_update = 0;
@@ -55,23 +57,25 @@ banList.init = function init() {
                 $.log("  "+pages_back+" pages back");
                 var response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                // var $new_banlist = $('.banned-table', response_page);
-                $.log($('.banned-table table tbody tr', response_page).length);
-                if ($('.banned-table table tbody tr', response_page).length > 0) {
-                    $('.banned-table table tbody tr', response_page).each(function() {
+                // var $new_banlist = $('.usertable', response_page);
+                $.log($('.usertable table tbody tr', response_page).length);
+                if ($('.usertable table tbody tr', response_page).length > 0) {
+                    $('.usertable table tbody tr', response_page).each(function() {
                         // workaround for known bug in listings where "next" button is available on last page
                         if (this.className == 'notfound') { return; }
 
-                        var t = $(this).find('.user a').text().toLowerCase() + ' '
-                                + $(this).find('input[name="note"]').val().toLowerCase(); //all row text
+                        var t = $(this).find('.user a').text().toLowerCase(); // username
+                        if ($(this).find('input[name="note"]').length > 0) {
+                            t += ' ' + $(this).find('input[name="note"]').val().toLowerCase(); // ban note text, if available
+                        }
                         $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
                         $(this).addClass('visible');
                     });
                     var value = $('input#user').val().toLowerCase();
-                    filter_banlist($('.banned-table', response_page), value, true);
-                    $('.banned-table table tbody').append($('.banned-table table tbody tr', response_page));
+                    filter_banlist($('.usertable', response_page), value, true);
+                    $('.usertable table tbody').append($('.usertable table tbody tr', response_page));
                     // update the results counter
-                    $num_bans.html($('.banned-table tr:visible').length);
+                    $num_bans.html($('.usertable tr:visible').length);
                 } else {
                     return;
                 }
@@ -150,9 +154,9 @@ banList.init = function init() {
 
         $user.prop('placeholder', 'Begin typing to live filter the ban list.');
 
-        $('.banned-table').addClass('filtered');
+        $('.usertable').addClass('filtered');
 
-        $(".banned-table tr").each(function(){
+        $(".usertable tr").each(function(){
             var t = $(this).text().toLowerCase(); //all row text
             $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
         });//each tr
@@ -168,20 +172,20 @@ banList.init = function init() {
 
                 $.log("Updating now")
                 // clean up
-                $('.banned-table table tbody').empty();
+                $('.usertable table tbody').empty();
                 pages_back = 0;
                 _get_next_ban_page();
             }
 
-            filter_banlist($('.banned-table'), value);
+            filter_banlist($('.usertable'), value);
             // update the results counter
-            $num_bans.html($('.banned-table tr:visible').length);
+            $num_bans.html($('.usertable tr:visible').length);
         }
 
         // text input trigger
         var $userInput = $('input#user');
         $userInput.keyup(function() {
-            if ($('.banned-table tr').length > 1000) { return; } // don't live filter
+            if ($('.usertable tr').length > 1000) { return; } // don't live filter
             var value = $(this).val().toLowerCase();
             _filter(value);
         });

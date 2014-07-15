@@ -71,7 +71,7 @@ function modmailpro() {
             replied = getRepliedThreads();
 
         // Add sub to filtered subs.
-        if ($.inArray(id, replied) === -1) {
+        if ($.inArray(id, replied) === -1 && id !== null) {
             replied.push(id);
         }
 

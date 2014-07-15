@@ -337,7 +337,8 @@ function removalreasons() {
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
-        $(this).parents('.reason-popup').hide();
+        var popup = $(this).parents('.reason-popup');
+        removePopup(popup);
     });
 
     // 'cancel' button clicked

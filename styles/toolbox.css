@@ -1032,6 +1032,7 @@ img.note-close {
     margin-left: auto !important;
     margin-right: auto !important;
     margin-bottom: 50px;
+    font-size: 11px;
 }
 
 .reason-popup .reason-popup-content span p {

@@ -126,6 +126,9 @@ function comments() {
 
 $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
     $("body").on("click", ".loadFlat", function () {
+	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
+	$("body").find(".tabmenu li #modtab-threshold").closest('li').remove();
+	$("body").find(".menuarea.modtools").remove();
         var flatListing = {},
         idListing = [];
 

@@ -31,6 +31,12 @@ historyButton.init = function () {
     });
     $body.on('click', 'a.context', function (e) {
         $body.on('click', '.user-history-close', function () {
+            if(populateRunning.length > 0) {
+                $.each(populateRunning, function() {
+                    TBUtils.longLoadSpinner(false);
+                });
+            }
+
             $('.inline-content').hide();
         });
         $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
@@ -42,6 +48,12 @@ historyButton.init = function () {
     var gettingUserdata = false;
     $body.on('click', '.user-history-button', function () {
         $body.on('click', '.user-history-close', function () {
+            if(populateRunning.length > 0) {
+                $.each(populateRunning, function() {
+                    TBUtils.longLoadSpinner(false);
+                });
+            }
+
             $('.inline-content').hide();
             gettingUserdata = false;
         });
@@ -86,24 +98,27 @@ historyButton.init = function () {
         });
 
         // Get user's domain & subreddit submission history
-
+        var populateRunning = [];
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
                 TBUtils.longLoadSpinner(true);
+                populateRunning.push('load');
             }
             $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
                 contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
                 TBUtils.longLoadSpinner(false);
+                populateRunning.pop();
             }).done(function (d) {
                 if ($.isEmptyObject(d.data.children)) {
                     TBUtils.longLoadSpinner(false);
+                    populateRunning.pop();
                     $body.find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
                     gettingUserdata = false;
 
                 }
                 if (!gettingUserdata) return;
                 if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
-                var after = '';
+                var after = '',
                 after = d.data.after,
                 commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 

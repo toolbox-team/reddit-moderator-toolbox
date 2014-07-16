@@ -113,9 +113,9 @@ historyButton.init = function () {
                     TBUtils.longLoadSpinner(false);
                     populateRunning.pop();
 					
-					if (contentBox.find('.error').find('.submission-markdown').length > 0) {
+					if (contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
 					contentBox.find('.error').html('no submissions');
-					} else {
+					} else { // If it is not present we have results and we can show the links for reporting and markdown reports. 
                     contentBox.find('.rts-report').show();
 					contentBox.find('.markdown-report').show();
 					}
@@ -204,8 +204,12 @@ historyButton.init = function () {
                     populateHistory(after);
                 } else {
                     TBUtils.longLoadSpinner(false);
-                    contentBox.find('.rts-report').show();
-					contentBox.find('.markdown-report').show();
+					if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry. 
+					    contentBox.find('.error').html('no submissions');
+					} else {
+                        contentBox.find('.rts-report').show();
+					    contentBox.find('.markdown-report').show();
+					}
                     gettingUserdata = false;
                 }
 

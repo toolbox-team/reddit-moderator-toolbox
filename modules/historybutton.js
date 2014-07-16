@@ -113,11 +113,12 @@ historyButton.init = function () {
                     TBUtils.longLoadSpinner(false);
                     populateRunning.pop();
                     $body.find('.rts-report').before('<a class="markdown-report" href="javascript:;">view report in markdown</a>');
+					contentBox.find('.error').html('no submissions');
                     gettingUserdata = false;
 
                 }
                 if (!gettingUserdata) return;
-                if (!d.data.children.length) return contentBox.find('.error').html('no submissions');
+                
                 var after = '',
                 after = d.data.after,
                 commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';

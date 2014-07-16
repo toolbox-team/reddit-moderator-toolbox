@@ -213,8 +213,12 @@ historyButton.init = function () {
     // Markdown button pressed
     $('.inline-content').on('click', '.markdown-report', function () {
     var markdownReport = $body.find('.rts-report').attr('data-commentbody');
-        $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
-        
+        if($('body').find('.submission-markdown').length > 0)
+        {
+            $('body').find('.submission-markdown').toggle();
+        } else {
+            $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
+        }
     });
     // RTS button pressed
     $('.inline-content').on('click', '.rts-report', function () {

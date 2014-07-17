@@ -373,6 +373,7 @@ function initwrapper() {
         if (!('Notification' in window)) {
             // fallback on a javascript notification
             $.log('boring old rickety browser, falling back on jquery based notifications');
+            body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
 
         } else if (Notification.permission === 'granted') {
@@ -443,6 +444,7 @@ function initwrapper() {
             });
         } else {
             // They have the option enabled, but won't grant permissions, so fall back.
+            body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', { 'autoclose': timeout });
         }
     };

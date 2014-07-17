@@ -8,7 +8,7 @@ function initwrapper() {
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
     //Private variables
-    var modMineURL = 'http://www.reddit.com/subreddits/mine/moderator.json?count=100',
+    var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
         //settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
         lastgetLong = TBStorage.getSetting('cache', 'lastgetlong', -1),
@@ -712,7 +712,7 @@ function initwrapper() {
                     })
                     .error(function () {
                         alert('error sending update PM to automoderator');
-                        window.location = 'http://www.reddit.com/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
+                        window.location = '/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
                     });
             }
 
@@ -729,7 +729,7 @@ function initwrapper() {
                 // Super extra double-secret secure, just to be safe.
                 .error(function (err) {
                     alert('error setting wiki page to mod only access');
-                    window.location = 'http://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
+                    window.location = '/r/' + subreddit + '/wiki/settings/' + page;
                 });
 
             }, 500);
@@ -751,7 +751,7 @@ function initwrapper() {
 
     TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-        $.ajax('http://www.reddit.com/r/' + subreddit + '/wiki/' + page + '.json', {
+        $.ajax('/r/' + subreddit + '/wiki/' + page + '.json', {
             dataType: "json",
             dataFilter: function(data, type) {
                 //TODO: right now a lot of functions implicitly rely on reddit
@@ -821,7 +821,7 @@ function initwrapper() {
 
 
     TBUtils.getBanState = function (subreddit, user, callback) {
-        $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user: user }, function (data) {
+        $.get("/r/" + subreddit + "/about/banned/.json", { user: user }, function (data) {
             var banned = data.data.children;
 
             // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -1082,7 +1082,7 @@ function initwrapper() {
     TBUtils.getReasonsFromCSS = function (sub, callback) {
 
         // If not, build a new one, getting the XML from the stylesheet
-        $.get('http://www.reddit.com/r/' + sub + '/about/stylesheet.json').success(function (response) {
+        $.get('/r/' + sub + '/about/stylesheet.json').success(function (response) {
             if (!response.data) {
                 callback(false);
                 return;

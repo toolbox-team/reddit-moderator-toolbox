@@ -500,7 +500,7 @@ function removalreasons() {
                 if(successful) {
                     var logLink = response.json.data.url;
                     var loglinkToken = response.json.data.url;
-                    logLink = json.data.name;
+                    logLink = response.json.data.name;
                     TBUtils.approveThing(logLink);
 
                     sendRemovalMessage(loglinkToken);

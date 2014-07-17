@@ -232,7 +232,7 @@ function modmailpro() {
                 var entries = $('.entry');
                 var newCount = entries.length;
                 inbox = ALL;
-                menuList.html('<a href="http://www.reddit.com/message/moderator/">go to full mod mail</a>');
+                menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
                 $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
                 $(entries).click();
             }
@@ -513,7 +513,7 @@ function realtimemail() {
     var delay = 30000, // Default .5 min delay between requests.
         refreshLimit = 15, // Default five items per request.
         refreshLink = $('<li><a class="refresh-link" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>'),
-        updateURL = 'http://www.reddit.com/message/moderator?limit=',
+        updateURL = '/message/moderator?limit=',
         menulist = $('.menuarea ul.flat-list:first');
 
     var selectedCSS = {
@@ -566,7 +566,7 @@ function compose() {
     var COMPOSE = "compose-message",
         //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
-        composeURL = 'http://www.reddit.com/message/compose?to=%2Fr%2F';
+        composeURL = '/message/compose?to=%2Fr%2F';
 
     TBUtils.getModSubs(function () {
         populateCompose();
@@ -619,7 +619,7 @@ function modmailSwitch() {
         $('.switch-mail').change(function () {
             var sub = $(this).val();
             if (sub !== 'modmailswitch') {
-                window.open('http://www.reddit.com/r/' + sub + '/message/moderator/inbox');
+                window.open('/r/' + sub + '/message/moderator/inbox');
                 $(switchSelect).val('modmailswtich');
             }
         });

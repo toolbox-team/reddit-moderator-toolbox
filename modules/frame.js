@@ -75,16 +75,16 @@
 
         switch (e.target.id) {
             case 'tb-mailCount':
-                update('http://www.reddit.com/message/inbox/?limit=' + msgGet);
+                update('/message/inbox/?limit=' + msgGet);
                 break;
             case 'tb-modmailcount':
-                update('http://www.reddit.com/message/moderator/?limit=' + mmGet);
+                update('/message/moderator/?limit=' + mmGet);
                 break;
             case 'tb-queueCount':
-                update('http://www.reddit.com/r/mod/about/modqueue/?limit=' + modGet, true);
+                update('/r/mod/about/modqueue/?limit=' + modGet, true);
                 break;
             case 'tb-unmoderatedcount':
-                update('http://www.reddit.com/r/mod/about/unmoderated/?limit=' + umodGet, true);
+                update('/r/mod/about/unmoderated/?limit=' + umodGet, true);
                 break;
             default:
                 break;
@@ -97,19 +97,19 @@
     });
 
     $body.delegate('.tb-frame-messages', 'click', function () {
-        update('http://www.reddit.com/message/inbox/?limit=' + msgGet);
+        update('/message/inbox/?limit=' + msgGet);
     });
 
     $body.delegate('.tb-frame-modmail', 'click', function () {
-        update('http://www.reddit.com/message/moderator/?limit=' + mmGet);
+        update('/message/moderator/?limit=' + mmGet);
     });
 
     $body.delegate('.tb-frame-modqueue', 'click', function () {
-        update('http://www.reddit.com/r/mod/about/modqueue/?limit=' + modGet, true);
+        update('/r/mod/about/modqueue/?limit=' + modGet, true);
     });
 
     $body.delegate('.tb-frame-unmoderated', 'click', function () {
-        update('http://www.reddit.com/r/mod/about/unmoderated/?limit=' + umodGet, true);
+        update('/r/mod/about/unmoderated/?limit=' + umodGet, true);
     });
 
     function update(URL, modtools) {

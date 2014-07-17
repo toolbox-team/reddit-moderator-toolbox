@@ -232,7 +232,7 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
     <div class="entry mod-button" subreddit="' + subreddit + '">\
         <div class="noncollapsed">\
             <p class="tagline">\
-                <a href="http://www.reddit.com/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
+                <a href="/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
                 <span class="score">' + score + ' points</span>\
                 <time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
             </p>\

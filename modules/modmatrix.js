@@ -334,7 +334,7 @@ var modLogMatrix = {
                 return;
             var row = $("<tr></tr>").addClass("moderator-" + moderator).addClass("mod-row");
 
-            row.append("<td><a href=\"http://www.reddit.com/user/" + moderator + "\" target=\"_blank\" title=\"" + moderator + "\">" + moderator + "</a></td>");
+            row.append("<td><a href=\"/user/" + moderator + "\" target=\"_blank\" title=\"" + moderator + "\">" + moderator + "</a></td>");
             for (var subredditAction in this.subredditActions) {
                 var td = $("<td class=\"action-cell action-" + subredditAction + "\"><a title=\"" + this.subredditActions[subredditAction].title + " actions by " + moderator + "\" target=\"_blank\" class=\"action-number\" href=\"" + this.subredditUrl + "about/log?type=" + subredditAction + "&mod=" + moderator + "\">0</a></td>");
                 row.append(td);
@@ -711,7 +711,7 @@ function getComments() {
 
 
 function getRatelimit() {    
-    $.getJSON('http://www.reddit.com/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
+    $.getJSON('/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
         var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
         var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
         addComments(ratelimitRemaining, ratelimitReset);

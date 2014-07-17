@@ -53,7 +53,7 @@ function usernotes() {
 
     function unsquashPermalink(subreddit, permalink) {
         var linkParams = permalink.split(/,/g);
-        var link = "http://www.reddit.com/r/" + subreddit + "/";
+        var link = "/r/" + subreddit + "/";
 
         if(linkParams[0] == "l") {
             link += "comments/" + linkParams[1] + "/";
@@ -298,7 +298,7 @@ function usernotes() {
           $('.usernote-span-' + subreddit).remove();
 
             TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function(clicked) {
-                if (clicked) window.open("http://www.reddit.com/r/toolbox/wiki/download");
+                if (clicked) window.open("/r/toolbox/wiki/download");
             });
             return;
         }

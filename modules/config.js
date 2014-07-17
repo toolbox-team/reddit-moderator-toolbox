@@ -13,7 +13,7 @@ function tbconfig() {
 
     if (!subreddit) return;
 
-    $.getJSON('http://www.reddit.com/r/' + subreddit + '/wiki/toolbox.json', function (json) {
+    $.getJSON('/r/' + subreddit + '/wiki/toolbox.json', function (json) {
         if (json.data.content_md) {
             config = JSON.parse(json.data.content_md);
         }
@@ -72,7 +72,7 @@ function tbconfig() {
         </div>\
         <div class="tb-form">\
             <div class="tb-window-tabs">\
-                <a target="_blank" href="http://www.reddit.com/r/' + subreddit + '/wiki/pages" >wiki page listing</a>\
+                <a target="_blank" href="/r/' + subreddit + '/wiki/pages" >wiki page listing</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
@@ -141,7 +141,7 @@ function tbconfig() {
 
         $(html).on('click', '.import', function () {
 
-            $.getJSON('http://www.reddit.com/r/' + $('.importfrom').val() + '/wiki/toolbox.json', function (json) {
+            $.getJSON('/r/' + $('.importfrom').val() + '/wiki/toolbox.json', function (json) {
 
                 if (json.data.content_md) {
                     var tags = JSON.parse(json.data.content_md).domainTags;

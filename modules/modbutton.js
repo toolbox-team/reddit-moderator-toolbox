@@ -284,7 +284,7 @@ modButton.init = function init() {
 
             // Show if current user is banned, and why. - thanks /u/LowSociety
             // TODO: Display *when* they were banned, along with ban note. #194
-            $.get("http://www.reddit.com/r/" + subreddit + "/about/banned/.json", { user : user }, function (data) {
+            $.get("/r/" + subreddit + "/about/banned/.json", { user : user }, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
@@ -300,7 +300,7 @@ modButton.init = function init() {
                         $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                        $.get("http://www.reddit.com/r/" + subreddit + "/about/log/.json", { type: 'banuser', limit: '1000' }, function (data) {
+                        $.get("/r/" + subreddit + "/about/log/.json", { type: 'banuser', limit: '1000' }, function (data) {
                             var logged = data.data.children;
                             for (var i = 0; i < logged.length; i++) {
                                 if (logged[i].data.target_fullname == user_fullname) {
@@ -538,7 +538,7 @@ modButton.init = function init() {
 
         if (!user || !subreddit) return;
 
-        $.getJSON('http://www.reddit.com/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
+        $.getJSON('/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
 
             $textinput.val(resp.users[0].flair_text);

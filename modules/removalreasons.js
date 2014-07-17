@@ -500,8 +500,7 @@ function removalreasons() {
                 if(successful) {
                     var logLink = response.json.data.url;
                     var loglinkToken = response.json.data.url;
-                    logLink = logLink.match(/https?:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
-                    logLink = 't3_' + logLink[1];
+                    logLink = json.data.name;
                     TBUtils.approveThing(logLink);
 
                     sendRemovalMessage(loglinkToken);

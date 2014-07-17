@@ -463,7 +463,7 @@ function queuetools() {
                 logsub: '',
                 bantitle: '',
                 logreason: '',
-                url: 'http://www.reddit.com/user/' + author
+                url: '/user/' + author
             };
 
             if (notEnabled.indexOf(data.subreddit) != -1)
@@ -509,7 +509,7 @@ function queuetools() {
 
                     TBUtils.postLink(data.url, TBUtils.removeQuotes(data.bantitle), data.logsub, function(successful) {
                         var removalId = data.json.data.url;
-                        removalId = removalId.match(/http:\/\/www.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
+                        removalId = removalId.match(/https?:\/\/.*.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
                         removalId = 't3_' + removalId[1];
 
                         TBUtils.approveThing(removalId);
@@ -602,7 +602,7 @@ function queuetools() {
         //     rtsLink.className = '.rts-report-clicked';
 
         //     //Submit to RTS
-        //     var link = 'http://www.reddit.com/user/' + author,
+        //     var link = '/user/' + author,
         //         title = 'Overview for ' + author;
 
         //     TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
@@ -613,7 +613,7 @@ function queuetools() {
         //             if (submission.json.errors.length) {
         //                 rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
         //                 if (submission.json.errors[0][0] == 'ALREADY_SUB')
-        //                     rtsLink.href = 'http://www.reddit.com/r/'+SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+        //                     rtsLink.href = '/r/'+SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
         //                 return;
         //             }
 

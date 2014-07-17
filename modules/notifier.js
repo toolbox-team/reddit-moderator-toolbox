@@ -500,7 +500,6 @@ function notifier() {
         //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
 
         // Edit shortcuts
-        //console.log(htmlshorcuts);
         var htmlshorcuts = '\
         <div class="tb-window-content-shortcuts">\
         <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr>\
@@ -1177,7 +1176,7 @@ function notifier() {
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     //$.log('here we go!');
-                    var notificationbody, queuecount = 0;
+                    var notificationbody, queuecount = 0, xmoreModqueue = 0;
                     $.each(json.data.children, function (i, value) {
 
 
@@ -1185,11 +1184,14 @@ function notifier() {
                             var subreddit = value.data.subreddit,
                                 author = value.data.author;
 
-                            if (!notificationbody) {
-                                notificationbody = 'post from: ' + author + ', in:' + subreddit + '\n';
-                            } else {
-                                notificationbody = notificationbody + 'post from: ' + author + ', in:' + subreddit + '\n';
-                            }
+							if (!notificationbody) {
+								notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
+							} else if (queuecount<= 6){
+								notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
+							} else if (queuecount> 6) {
+								xmoreModqueue++;
+							}
+							
                             queuecount++;
                             pusheditems.push(value.data.name);
                         } else if ($.inArray(value.data.name, pusheditems) == -1) {
@@ -1198,15 +1200,19 @@ function notifier() {
 
                             if (!notificationbody) {
                                 notificationbody = 'comment from: ' + author + ', in ' + subreddit + '\n';
-                            } else {
+                            } else if (queuecount<= 6){
                                 notificationbody = notificationbody + 'comment from: ' + author + ',  in' + subreddit + '\n';
-                            }
+							} else if (queuecount> 6) {
+								xmoreModqueue++;
+							}
                             queuecount++;
                             pusheditems.push(value.data.name);
                         }
                     });
 
-
+					if (xmoreModqueue>0) {
+						notificationbody = notificationbody + '\n and: ' + xmoreModqueue.toString() + ' more items \n';
+					}
                     //$.log(queuecount);
                     //$.log(notificationbody);
                     if (queuecount === 1) {
@@ -1257,28 +1263,36 @@ function notifier() {
         if (unmoderatedOn || unmoderatedNotifications) {
             $.getJSON('http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100', function (json) {
                 var count = json.data.children.length || 0;
+					
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
                     var lastSeen = TBUtils.getSetting('Notifier', 'lastseenunmoderated', -1);
 
                     if (consolidatedMessages) {
-                        var notificationbody, queuecount = 0;
+                        var notificationbody, queuecount = 0, xmoreUnmod = 0;
 
                         $.each(json.data.children, function (i, value) {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                 var subreddit = value.data.subreddit
                                   , author    = value.data.author;
 
+								 
                                 if (!notificationbody) {
                                     notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
-                                } else {
+                                } else if (queuecount<= 6){
                                     notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
-                                }
+                                } else if (queuecount> 6) {
+									xmoreUnmod++;
+								}
 
                                 queuecount++;
 
                             }
                         });
+						
+						if (xmoreUnmod>0) {
+							notificationbody = notificationbody + '\n and: ' + xmoreUnmod.toString() + ' more items\n';
+						}
 
                         if (queuecount === 1) {
                             TBUtils.notification('One new unmoderated item!', notificationbody, 'http://www.reddit.com/r/' + unmoderatedSubreddits + '/about/unmoderated');
@@ -1314,7 +1328,6 @@ function notifier() {
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
         $.getJSON('http://www.reddit.com/r/' + modmailFilteredSubreddits + '/message/moderator.json', function (json) {
-            console.log('getting modmail');
 
             var count = json.data.children.length || 0;
             if (count === 0) {
@@ -1347,7 +1360,7 @@ function notifier() {
             //$.log('New messages: ', newCount);
 
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
-                var notificationbody, messagecount = 0;
+                var notificationbody, messagecount = 0, xmoreModMail = 0;
 
                 if (consolidatedMessages || newCount>5) {
 
@@ -1365,13 +1378,15 @@ function notifier() {
                         // In all honesty, all of this needs to be rewriten...
                         if (author !== TBUtils.logged && !isInviteSpam) {
                             messagecount++;
-                            if (messagecount > newCount) return false;
+                            if (messagecount > newCount) return false;								
 
                             if (!notificationbody) {
                                 notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
-                            } else {
+                            } else if (messagecount <= 6) {
                                 notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
-                            }
+                            } else if (messagecount > 6) { 
+							xmoreModMail++;
+							}
                         }
                     });
 
@@ -1379,6 +1394,9 @@ function notifier() {
                         TBUtils.notification('One new modmail!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
 
                     } else if (newCount > 1) {
+						if (xmoreModMail>0) {
+					    	notificationbody = notificationbody + '\n and: ' + xmoreModMail.toString() + ' more \n';
+						}
                         TBUtils.notification(newCount.toString() + ' new modmail!', notificationbody, 'http://www.reddit.com' + modmailunreadurl);
                     }
                 } else {

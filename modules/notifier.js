@@ -1046,11 +1046,11 @@ function notifier() {
             $.getJSON(unreadcontexturl, function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
                 if(straightToInbox && messageunreadlink) {
-                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), '/message/unread/');
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': '  + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), '/message/unread/');
                 } else if (straightToInbox) {
-                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), '/message/inbox/');
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': '  + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), '/message/inbox/');
                 } else {
-                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit, ' post: ' + commenttitle + '\n body:\n' + $(unreadbody_html).text(), unreadcontext);
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': '  + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), unreadcontext);
                 }
             });
         }
@@ -1133,7 +1133,7 @@ function notifier() {
                                 subject = value.data.subject,
                                 id = value.data.id;
 
-                            TBUtils.notification('New message:' + subject, $(body_html).text() + '... \n \n from:' + author, '/message/messages/' + id);
+                            TBUtils.notification('New message:' + subject, $(body_html).text() + '\u2026 \n \n from:' + author, '/message/messages/' + id);
                             pushedunread.push(value.data.name);
                         }
                     });

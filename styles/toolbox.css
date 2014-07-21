@@ -26,8 +26,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     margin-right: 0;
     height: 20px;
     background-color: rgba(206, 227, 248, 0.86);
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
-    font-size: small;
+    font-size:11px;
     color: #696969;
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
@@ -45,8 +44,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     width: auto;
     height: 20px;
     background-color: rgba(206, 227, 248, 0.86);
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
-    font-size: small;
+    font-size: 11px;
     color: #696969;
     padding: 2px !important;
     border-top: solid 1px #A8B5C2;
@@ -154,8 +152,7 @@ body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBo
     padding: 0;
     overflow: auto;
     background-color: rgba(206, 227, 248, 0.862745);
-    font-family: Calibri, 'Trebuchet MS', verdana, sans-serif;
-    font-size: small;
+    font-size: 11px;
     color: #696969;
     border: 1px solid #A8B5C2;
     box-shadow: #D6D6D6 0 1px 3px 1px;
@@ -167,7 +164,7 @@ text-align: left;
 }
 
 .mod-toolbox #tb-my-subreddits a {
-    font-size: small;
+    font-size: 11px;
 }
 
 .mod-toolbox #tb-my-subreddits h1 {
@@ -450,9 +447,8 @@ div.sticky-note {
 }
 
 div.sticky {
-    font-size: small;
+    font-size: 11px;
     background-color: rgba(206, 227, 248, 0.86);
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
     color: #696969;
     display: none;
     padding: 10px !important;
@@ -527,7 +523,6 @@ img.note-close {
     width: 500px;
     height: 70px;
     background-color: rgba(206, 227, 248, 1);
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
     font-size: 14px;
     color: #000;
     padding: 2px !important;
@@ -552,8 +547,7 @@ img.note-close {
     /* width: 500px;
     height: 50px; */
     background-color: rgba(206, 227, 248, 0.86);
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
-    font-size: small;
+    font-size: 11px;
     color: #000;
     padding: 2px !important;
     border: solid 1px #A8B5C2;
@@ -711,8 +705,7 @@ img.note-close {
 }
 
 .mod-toolbox .tb-popup {
-    font-family: Calibri,"Trebuchet MS",verdana,sans-serif;
-    font-size: small;
+    font-size:11px;
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;

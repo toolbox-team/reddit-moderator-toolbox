@@ -419,7 +419,11 @@ modButton.init = function init() {
 
             if (subreddits.length > 1) {
                 // require confirmation on all multi-sub actions
-                var confirmban = confirm("This will " + actionName + " /u/" + user + " from " + subreddits.join(', ') + ".   Are you sure?");
+				if (actionName === 'ban' || actionName === 'unban') {
+                var confirmban = confirm("This will " + actionName + " /u/" + user + " from the following subreddits: \n" + subreddits.join(', ') + ". \nAre you sure?");
+				} else {
+				var confirmban = confirm("This will " + actionName + " /u/" + user + " on the following subreddits: \n" + subreddits.join(', ') + ". \nAre you sure?");
+				}
                 if (confirmban) {
                     // Ban
                     massAction(subreddits);
@@ -431,7 +435,12 @@ modButton.init = function init() {
                 massAction(subreddits);
             }
         } else {
-            var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   Are you sure?");
+            if (actionName === 'ban' || actionName === 'unban') {
+                var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   \nAre you sure?");
+            } else {
+                var confirmban = confirm("This will " + actionName + " /u/" + user + " on every subreddit you moderate.   \nAre you sure?");
+            }
+            
             if (confirmban) {
                 massAction(TB.utils.mySubs);
             } else {

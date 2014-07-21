@@ -246,7 +246,7 @@ historyButton.init = function () {
 
         TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
-                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
+                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occurred.</span>';
             } else {
                 if (submission.json.errors.length) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';

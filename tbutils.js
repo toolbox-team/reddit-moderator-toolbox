@@ -21,7 +21,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         longLoadArray = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
@@ -117,7 +117,7 @@ function initwrapper() {
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
-        TBStorage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last sersin to this version.
+        TBStorage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last version to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 

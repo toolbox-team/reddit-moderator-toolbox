@@ -38,7 +38,7 @@
 				"tbui.js",
 				"tbplugins.js",
 				"tbutils.js",
-				"tbobject.js", // goes before any modules
+				"tbobject.js",
 				"modules/core.js",
 				"modules/notifier.js",
 				"modules/domaintagger.js",
@@ -57,7 +57,7 @@
 				"modules/frame.js",
 				"modules/modmaillite.js",
 				"modules/devtools.js",
-				"tbobjectinit.js" // this one always goes last
+				"tbobjectinit.js"
 			]
 		}
 	],

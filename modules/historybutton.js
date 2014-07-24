@@ -246,7 +246,7 @@ historyButton.init = function () {
 
         TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
-                rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occurred.</span>';
+                rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>';
             } else {
                 if (submission.json.errors.length) {
                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
@@ -267,9 +267,9 @@ historyButton.init = function () {
 
                 TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                     if (!successful) {
-                        rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
+                        rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>';
                     } else {
-                        if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
+                        if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>';
                         rtsLink.textContent = 'reported';
                         rtsLink.href = submission.json.data.url;
                         rtsLink.className = '';

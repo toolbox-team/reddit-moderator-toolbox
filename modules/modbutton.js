@@ -417,23 +417,8 @@ modButton.init = function init() {
             // Check dem values.
             if (subreddits.length < 1) return $status.text('error, no subreddits selected');
 
-            if (subreddits.length > 1) {
-                // require confirmation on all multi-sub actions
-				if (actionName === 'ban' || actionName === 'unban') {
-                var confirmban = confirm("This will " + actionName + " /u/" + user + " from the following subreddits: \n" + subreddits.join(', ') + ". \nAre you sure?");
-				} else {
-				var confirmban = confirm("This will " + actionName + " /u/" + user + " on the following subreddits: \n" + subreddits.join(', ') + ". \nAre you sure?");
-				}
-                if (confirmban) {
-                    // Ban
-                    massAction(subreddits);
-                } else {
-                    return;
-                }
-            } else {
-                // must be only one sub selected, no need to confirm
-                massAction(subreddits);
-            }
+            // do it.
+            massAction(subreddits);
         } else {
             if (actionName === 'ban' || actionName === 'unban') {
                 var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   \nAre you sure?");

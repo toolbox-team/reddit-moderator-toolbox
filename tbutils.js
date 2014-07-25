@@ -21,15 +21,15 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         longLoadArray = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
 
     // Public variables
-    TBUtils.toolboxVersion = '2.2.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 220; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '3.0.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 300; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 4;
     TBUtils.minNotesSchema = 0;
@@ -124,7 +124,7 @@ function initwrapper() {
         // Start: version changes.
         $.log('Running ' + TBUtils.toolboxVersion + ' changes');
 
-        // 2.2.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
+        // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
         // End: version changes.
 

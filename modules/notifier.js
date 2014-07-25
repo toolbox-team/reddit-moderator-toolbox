@@ -172,7 +172,6 @@ function notifier() {
     $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
     $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
     TBUtils.getModSubs(function () {
-        $('.tb-livefilter-count').text(TBUtils.mySubs.length);
         $(TBUtils.mySubsData).each(function () {
             $body.find('#tb-my-subreddits table').append('\
             <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
@@ -181,6 +180,7 @@ function notifier() {
             <a title="/r/'+ this.subreddit +' unmoderated" target="_blank" href="/r/'+ this.subreddit +'/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
             ');
         });
+        $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length + '/' + TBUtils.mySubs.length);
     });
 
     $body.on('click', '#tb-toolbar-mysubs', function() {

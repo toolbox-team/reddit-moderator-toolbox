@@ -234,6 +234,7 @@ historyButton.init = function () {
     // RTS button pressed
     $('.inline-content').on('click', '.rts-report', function () {
         var rtsLink = this,
+            $rtsLink = $(this),
             author = rtsLink.getAttribute('data-author'),
             commentbody = rtsLink.getAttribute('data-commentbody');
 
@@ -246,10 +247,12 @@ historyButton.init = function () {
 
         TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
-                rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>';
+                $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
+                $rtsLink.hide();
             } else {
                 if (submission.json.errors.length) {
-                    rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
+                    $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
+                    $rtsLink.hide();
                     if (submission.json.errors[0][0] == 'ALREADY_SUB') {
                         rtsLink.href = '/r/' + historyButton.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
                     }
@@ -267,9 +270,14 @@ historyButton.init = function () {
 
                 TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
                     if (!successful) {
-                        rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>';
+                        $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>');
+                        $rtsLink.hide();
                     } else {
-                        if (comment.json.errors.length) return rtsLink.innerHTML = '<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>';
+                        if (comment.json.errors.length) {
+                            $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>');
+                            $rtsLink.hide();
+                            return
+                        }
                         rtsLink.textContent = 'reported';
                         rtsLink.href = submission.json.data.url;
                         rtsLink.className = '';

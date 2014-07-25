@@ -592,56 +592,6 @@ function queuetools() {
             }
         }
 
-        // // RTS button pressed
-        // $('.inline-content').on('click', '.rts-report', function () {
-        //     var rtsLink = this,
-        //         author = rtsLink.getAttribute('data-author'),
-        //         commentbody = rtsLink.getAttribute('data-commentbody');
-
-        //     rtsLink.textContent = 'submitting...';
-        //     rtsLink.className = '.rts-report-clicked';
-
-        //     //Submit to RTS
-        //     var link = '/user/' + author,
-        //         title = 'Overview for ' + author;
-
-        //     TBUtils.postLink(link, title, SPAM_REPORT_SUB, function (successful, submission) {
-        //         if (!successful) {
-        //             rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-        //         }
-        //         else {
-        //             if (submission.json.errors.length) {
-        //                 rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>';
-        //                 if (submission.json.errors[0][0] == 'ALREADY_SUB')
-        //                     rtsLink.href = '/r/'+SPAM_REPORT_SUB+'/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
-        //                 return;
-        //             }
-
-        //             // Post stats as a comment.
-        //             if (!commentbody.length || !rtsComment) {
-        //                 rtsLink.textContent = 'reported';
-        //                 rtsLink.href = submission.json.data.url;
-        //                 rtsLink.className = '';
-        //                 return;
-        //             }
-
-
-        //             TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
-        //                 if (!successful) {
-        //                     rtsLink.innerHTML = '<span class="error" style="font-size:x-small">an error occured</span>';
-        //                 }
-        //                 else {
-        //                     if (comment.json.errors.length)
-        //                         return rtsLink.innerHTML = '<span class="error" style="font-size:x-small">' + comment.json.errors[1] + '</error>';
-        //                     rtsLink.textContent = 'reported';
-        //                     rtsLink.href = submission.json.data.url;
-        //                     rtsLink.className = '';
-        //                 };
-        //             });
-        //         }
-        //     });
-        // });
-
         // This method is evil and breaks shit if it's called too early.
         function sortThings(order, asc) {
             var $sitetable = $('#siteTable');

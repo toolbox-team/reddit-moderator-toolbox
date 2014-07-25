@@ -624,7 +624,7 @@ function notifier() {
         // About page
         var htmlabout = '\
         <div class="tb-window-content-about">\
-        <h3>About:</h3>	<a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + '</a> <br>\
+        <h3>About:</h3>	<a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName +'"</a> <br>\
             made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
             <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a> and <a href="/user/largenocream">/u/largenocream</a> <br><br>\
         <h3>Documentation by:</h3>\

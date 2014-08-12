@@ -108,8 +108,8 @@ TB = {
                 
                 var $body = $('body');
                 
-                for (var i=0; i < module.settingsList.length; i++) {
-                    var setting = module.settingsList[i],
+                for (var j = 0; j < module.settingsList.length; j++) {
+                    var setting = module.settingsList[j],
                         options = module.settings[setting];
 
                     // "enabled" will eventually be special, but for now it just shows up like any other setting
@@ -157,7 +157,7 @@ TB = {
                     var $setting = $('<p></p>'),
                         execAfterInject = [];
 
-                    // automagical handling of input ypes
+                    // automagical handling of input types
                     switch (options.type) {
                         case "boolean":
                             $setting.append($('<label><input type="checkbox" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
@@ -170,6 +170,12 @@ TB = {
                         case "sublist":
                             $setting.append(options.title+':<br />');
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, options.args)); // first arg sets `this` inside func
+                            break;
+                        case "selector":
+                            var v = module.setting(setting);
+                            $.log("Current setting: "+v);
+                            $setting.append(options.title+':<br />');
+                            $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
                         case "syntaxTheme":
                             $setting.append(options.title+':<br/>');
@@ -269,13 +275,16 @@ TB = {
                             case 'list':
                                 value = $this.find('input').val().split(',').map(function (str) { return str.trim(); });
                                 break;
-                            case "sublist":
+                            case 'sublist':
                                 value = [];
                                 $.each($this.find('.selected-list option'), function() {
                                     value.push($(this).val());
                                 });
                                 break;
-                            case "syntaxTheme":
+                            case 'selector':
+                                value = $this.find('.selector').val();
+                                break;
+                            case 'syntaxTheme':
                                 value = $this.find('select').val();
                                 break;
                             default:

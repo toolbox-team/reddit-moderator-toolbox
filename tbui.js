@@ -15,7 +15,7 @@
                 HNzLjkp24Uu1Ed6G8/F8qjqGRzlbl2H2dzjpMg1KdwsHxOlmJ7GTeZC/nesXbeZ6c9OYnuxUc3fmBuFft/Ff8xMd0s65SXIb/gAAAABJRU5ErkJggg==';
 
     TBui.iconNoteClose = 'iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAA1klEQVQoz6WSOw6CQBCG90gWXsjKxph4HZAEsgUSHlsAAa6ilzDGgopxP5Ix2K7FJH/+x+wMjBERoxXH8d5aey2K4l6W5ZMCw6FtvV+Qpumlrut313UyDIOM47gWGA4N\
-                z08QomkaadtW+r5fA9M0rQWGQ8OjYRNF0c53mxH8aLc8z8/OuYWXKDAcGh68ZAzzMwpdveFEtyzLDt6AScBwaHjwkjF++cem+6zGJEmOlDZCUx8ZU1XVS3eC9K8sGtAGcGi6M5nwYPCowR8n+HcEH8BfJxdy5B8L5i9vzgm5WAAAAABJRU5ErkJggg=='
+                z08QomkaadtW+r5fA9M0rQWGQ8OjYRNF0c53mxH8aLc8z8/OuYWXKDAcGh68ZAzzMwpdveFEtyzLDt6AScBwaHjwkjF++cem+6zGJEmOlDZCUx8ZU1XVS3eC9K8sGtAGcGi6M5nwYPCowR8n+HcEH8BfJxdy5B8L5i9vzgm5WAAAAABJRU5ErkJggg==';
 
     TBui.iconHide = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAEXSURBVDjLY/j//z8DJZiBLgZkz37Ynjrz4ReyDEideb89afrD\
                 f5ET7v4n2YCEqXf7qpY9/T9r76v/Xu03STMgasLteaVLHv+fufvl/6k7X/y3qrlCvAHBvTeXFC54ANbctv7p/95Nz/5rFZ0nzoCAzpuPsuc++D91x4v/jasf/y9aeP9/89rH/6VTTxJngGPDtc3xU+/879789H/5kgf/02fd\
@@ -82,8 +82,18 @@
                 w5yBtm5yyJAWkcaq6dOlS8Q/HBCx5eXk6C9eQfWhiMoRmgDVZ97riYr10N+cLYeQxWCgsBlY0qM4Vt7xzrxXOBeLlHWQyiCIUnjhxYvvt7AcP8KyvL35PZbOcnPBfdnZIiwcLNm1qV/bgwYMi9D116pTY/5fC4LOWzAcsJ3zp5+cnLDXTVuwd1F0ku77y7GxooNyfZwCSVbdydga38H\
                 Bw0aLTli1bBlu2bBEhMIfC1N4NjoVM9QDviw/gswRX5dyejFanE6HRo0fLb71C4hkUneHmPizNbwoXLVrUqcGr/Qpkn7mWeFecFs/y8vIyaYdHW5YvXy4rYHx3VIDs3xJlkqQjUltbK34cxY4EVIerHbuLApj/YlLgifT2+MBCi9EzRXpIEFD9kII/ORfO7Ohs6GoF9Afp7C5ZbXFylGn\
                 xkJAQMZhNOtycvvPB/INIptTIC2BKSoogSO3t7WWlfGapCrigb5vM399fdF79pKk+iYyMFGVPnDjRbjssICBA70bo+1YAh35IPlvnoCgzFB2nNNngVvmSJUtEueTkZJ33y8rKkLJCLvNPJRSg5C9GPhLMiK8v5OfnixBWjt05GCJ/DklJSbB+/XoIppw/PT1dUOB85I7TZWcKhFJTU2H//v\
-                2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII='
-
+                2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII=';
+    
+    TBui.standardColors = {
+        "red": "#FF0000",
+        "green": "#00F51E",
+        "blue": "#0082FF",
+        "magenta": "DC00C8",
+        "cyan": "#00F0F0",
+        "yellow": "#EAC117",
+        "black": "#000000"
+    };
+    
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class) {
         meta = (typeof meta !== "undefined") ? meta : null;
@@ -141,8 +151,26 @@
 
         return $popup;
     };
-
-
+    
+    TBui.selectSingular = function selectSingular(choices, selected) {
+        var $selector = $('\
+            <div class="select-single">\
+                <select class="selector"></select>\
+            </div>'),
+            $selector_list = $selector.find('.selector');
+        
+        //Add values to select
+        $.each(choices, function() {
+            var value = this.toLowerCase().replace(' ', '_');
+            $selector_list.append($('<option>').attr('value', value).text(this));
+        });
+        
+        //Set selected value
+        $selector_list.val(selected).prop('selected', true);
+        
+        return $selector;
+    };
+    
     TBui.selectMultiple = function selectMultiple(available, selected) {
         available = (available instanceof Array) ? available : [];
         selected = (selected instanceof Array) ? selected : [];
@@ -180,6 +208,6 @@
         });
 
         return $select_multiple;
-    }
+    };
 
 }(TBui = window.TBui || {}));

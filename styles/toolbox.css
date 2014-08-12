@@ -783,6 +783,10 @@ img.note-close {
 .tb-popup .status {
 }
 
+.tb-popup-error {
+	color: red;
+}
+
 .mod-popup .add-sub-link {
     text-decoration: none;
 }

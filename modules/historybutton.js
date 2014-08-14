@@ -15,6 +15,7 @@ historyButton.config["betamode"] = false;
 var $body = $('body');
     
 
+
 historyButton.init = function () {
     var self = this;
 
@@ -24,6 +25,16 @@ historyButton.init = function () {
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
     $('.thing .entry .userattrs').each(self.addUserHistoryLink);
+    
+    // NER support.
+    window.addEventListener("TBNewThings", function () {    
+        $body.find('.thing .entry .userattrs').each(function() {
+        $this = $(this);
+            if(!$this.find('.user-history-button').length) {            
+                $this.each(self.addUserHistoryLink); // using each since that carries correctly over to the current function. 
+            }
+        });
+    });
 
     // Open inline context
     $('.inline-content').click(function (e) {

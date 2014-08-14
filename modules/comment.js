@@ -126,12 +126,15 @@ function comments() {
 
 $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
     $("body").on("click", ".loadFlat", function () {
+    
+    // remove modtools since we don't want mass actions out of context comments.
 	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
 	$("body").find(".tabmenu li #modtab-threshold").closest('li').remove();
 	$("body").find(".menuarea.modtools").remove();
-        var flatListing = {},
-        idListing = [];
-
+        var flatListing = {}, // This will contain all comments later on.
+        idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
+        
+        // deconstruct the json we got.
         function parseComments(object) {
             switch (object.kind) {
                 case "Listing":
@@ -156,25 +159,33 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
             }
 
         }
-        var htmlCommentView = '';
-        var fullId = $('.thing.link').attr('data-fullname');
-        var smallId = fullId.substring(3);
+        
+        // Variables we need later on to be able to reconstruct comments.
+        var htmlCommentView = ''; // This will contain the new html we will add to the page. 
+        var fullId = $('.thing.link').attr('data-fullname'); // full id
+        var smallId = fullId.substring(3); // small id constructed from fullId
 
-        var siteTable = "#siteTable_" + fullId;
-        $(siteTable).empty();
-        TBUtils.longLoadSpinner(true);
+        var siteTable = "#siteTable_" + fullId; // sitetable id which we will be clearing.
+        $(siteTable).empty(); // clear the site table.
+        TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
-
+        // construct the url from which we grab the comments json.
         var jsonurl = $('.entry a.comments').attr('href');
 
+        // Lets get the comments.
         $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
+            
+            // put the json through our deconstructor.
             parseComments(data[1]);
+            // and get back a nice flat listing of ids 
             idListing = TBUtils.saneSortAs(idListing);
             var linkAuthor = data[0].data.children[0].data.author,
                 threadPermalink = data[0].data.children[0].data.permalink;
 
+            // from each id in the idlisting we construct a new comment. 
             $.each(idListing, function (index, value) {
 
+                // All variables we will need to construct a fresh new comment. 
                 var approvedBy = flatListing[value].approved_by,
                     author = flatListing[value].author,
                     authorFlairCssClass = flatListing[value].author_flair_css_class,
@@ -192,6 +203,8 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
                     scoreHidden = flatListing[value].score_hidden,
                     subreddit = flatListing[value].subreddit;
 
+                       
+                // figure out if we need to add author and mod stuff. 
                 var authorClass = 'author';
                 if (distinguished === 'moderator') {
                     authorClass = authorClass + ' moderator';
@@ -227,12 +240,16 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
                 ';
                 }
 
+                // Constructing the comment. Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff. 
+
                 htmlComment = '\
 <div class="thing comment id-' + thingClasses + '" onclick="click_thing(this)" data-fullname="' + name + '">\
     <div class="entry mod-button" subreddit="' + subreddit + '">\
         <div class="noncollapsed">\
             <p class="tagline">\
                 <a href="/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
+                <span class="userattrs">\
+                </span>\
                 <span class="score">' + score + ' points</span>\
                 <time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
             </p>\
@@ -268,9 +285,17 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
 
             TBUtils.longLoadSpinner(false);
 
+            // add the new comment list to the page.
             $(siteTable).append(htmlCommentView);
-
+            
+            // and simulate reddits timeago function with our native function.
             $("time.timeago").timeago();
+            
+            // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
+            setTimeout(function () {
+                var event = new CustomEvent("TBNewThings");
+                window.dispatchEvent(event);
+            }, 1000);
 
         });
 

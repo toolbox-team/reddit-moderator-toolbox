@@ -817,6 +817,76 @@ function settings() {
     });
 }
 
+function threadedModmail() {
+	var collapse = function() {
+		$(this).parents(".thing:first").find("> .child").hide();
+	}
+	var noncollapse = function() {
+		$(this).parents(".thing:first").find("> .child").show();
+	}
+
+	var threadModmail = function(fullname) {
+		var firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
+		
+		if(firstMessage.hasClass("hasThreads")) {
+			firstMessage.find(".thing").each(function() {
+				var parent = $("div.thing.id-" + $(this).data("parent"));
+				$(this).appendTo(parent.find("> .child"));
+				//$(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
+			});
+		} else {
+			var id = fullname.substring(3);
+			$.getJSON("http://www.reddit.com/message/messages/"+id+".json", null, function(data) {
+				var messages = data.data.children[0].data.replies.data.children;
+				
+				for(var i = 0; i < messages.length; i++) {
+					var item = messages[i].data;
+					
+					var message = $("div.thing.id-" + item.name);
+					var dummy = $("<div></div>").addClass("modmail-dummy-" + item.name);
+					var parent = $("div.thing.id-" + item.parent_id);
+					
+					message.data("parent", item.parent_id);
+					
+					dummy.insertAfter(message);
+					message.appendTo(parent.find("> .child"));
+					// message.css("padding-left", "20px");
+					
+					// message.find("> .entry, > .child").css({
+						// "border-left" : "2px solid #efefef",
+						// "margin-left" : "0px"
+					// });
+					
+					message.find("> .entry .noncollapsed .expand").bind("click", collapse);
+					message.find("> .entry .collapsed .expand").bind("click",noncollapse);
+					
+					firstMessage.addClass("hasThreads");
+				}
+			});
+		}
+	}
+
+	var flatModmail = function(fullname) {
+		var firstMessage = $("div.thing.id-" + fullname).removeClass("threaded-modmail");
+		
+		firstMessage.find(".thing").each(function() {
+			$(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
+		});
+	}
+
+	$("#siteTable > .thing.message").each(function() {
+		var fullname = $(this).data("fullname");
+		
+		var subject = $(this).find(".subject");
+		
+		var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href","#").appendTo(subject);
+		var threadTrigger = $("<a></a>").addClass("expand-btn").text("threaded view").attr("href","#").appendTo(subject);
+		
+		flatTrigger.click(function() { flatModmail(fullname); return false; });
+		threadTrigger.click(function() { threadModmail(fullname); return false; });
+	});
+}
+
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
@@ -826,5 +896,6 @@ function settings() {
         compose();
         modmailSwitch();
         settings();
+		threadedModmail();
     });
 })();

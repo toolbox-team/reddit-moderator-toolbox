@@ -1831,3 +1831,11 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 .res-nightmode #stylesheet_contents_div, .res-nightmode #json_contents_div, .res-nightmode #wiki_contents_div {
     border: solid 1px #383838;
 }
+
+.thing.threaded-modmail .child, .thing.threaded-modmail .entry {
+	border-left : 2px solid #efefef!important;
+	margin-left : 0px!important;
+}
+.thing.threaded-modmail .child .thing {
+	padding-left: 20px!important;
+}

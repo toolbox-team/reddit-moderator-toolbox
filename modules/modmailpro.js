@@ -832,7 +832,6 @@ function threadedModmail() {
 			firstMessage.find(".thing").each(function() {
 				var parent = $("div.thing.id-" + $(this).data("parent"));
 				$(this).appendTo(parent.find("> .child"));
-				//$(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
 			});
 		} else {
 			var id = fullname.substring(3);
@@ -850,12 +849,6 @@ function threadedModmail() {
 					
 					dummy.insertAfter(message);
 					message.appendTo(parent.find("> .child"));
-					// message.css("padding-left", "20px");
-					
-					// message.find("> .entry, > .child").css({
-						// "border-left" : "2px solid #efefef",
-						// "margin-left" : "0px"
-					// });
 					
 					message.find("> .entry .noncollapsed .expand").bind("click", collapse);
 					message.find("> .entry .collapsed .expand").bind("click",noncollapse);
@@ -879,11 +872,11 @@ function threadedModmail() {
 		
 		var subject = $(this).find(".subject");
 		
-		var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href","#").appendTo(subject);
+		var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href","#").appendTo(subject).hide();
 		var threadTrigger = $("<a></a>").addClass("expand-btn").text("threaded view").attr("href","#").appendTo(subject);
 		
-		flatTrigger.click(function() { flatModmail(fullname); return false; });
-		threadTrigger.click(function() { threadModmail(fullname); return false; });
+		flatTrigger.click(function() { flatModmail(fullname); $(this).hide(); threadTrigger.show(); return false; });
+		threadTrigger.click(function() { threadModmail(fullname); $(this).hide(); flatTrigger.show(); return false; });
 	});
 }
 

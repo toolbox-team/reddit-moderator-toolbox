@@ -1143,8 +1143,9 @@ function initwrapper() {
 
     // NER, load more comments, and mod frame support.
     $('div.content').on('DOMNodeInserted', function (e) {
-        if (e.target.className != 'sitetable linklisting' && e.target.className != 'sitetable modactionlisting' && e.target.parentNode.className !== 'morecomments' && !$(e.target).hasClass('flowwit')) return;
-        $.log("TBNewThings firing" + ($(e.target).hasClass('flowwit')) ? ' (flowitt)' : '');
+        var $target = $(e.target), $parentNode = $(e.target.parentNode);
+        if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") || $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+        $.log("TBNewThings firing" + ($target.hasClass('flowwit')) ? ' (flowitt)' : '');
 
         // Wait a sec for stuff to laod.
         setTimeout(function () {

@@ -237,10 +237,10 @@
 
         // Select / deselect all the things
         $('#select-all').click(function () {
-            $frameSitetable.find('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
+            $frameSitetable.find('.thing:visible input[type=checkbox]').prop('checked', allSelected = this.checked);
         });
         $frameSitetable.find('.thing input[type=checkbox]').live('click', function () {
-            $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
+            $('#select-all').prop('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
         // Select/deselect certain things
@@ -296,11 +296,11 @@
                     selector = ':has(.linkflair)';
                     break;
             }
-            things.filter(selector).find('input[type=checkbox]').attr('checked', true);
+            things.filter(selector).find('input[type=checkbox]').prop('checked', true);
         });
         $('.hide-selected').click(function () {
             $frameSitetable.find('.thing:visible:has(input:checked)').hide();
-            $frameSitetable.find('.thing input[type=checkbox]').attr('checked', false);
+            $frameSitetable.find('.thing input[type=checkbox]').prop('checked', false);
         });
         $('.unhide-selected').click(function () {
             $frameSitetable.find('.thing').show();
@@ -332,7 +332,7 @@
         // Uncheck anything we've taken an action, if it's checked.
         $('.pretty-button').live('click', function (e) {
             var thing = $(this).closest('.thing');
-            $(thing).find('input[type=checkbox]').attr('checked', false);
+            $(thing).find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
                 $(thing).hide();
             } else if (ignoreOnApproveset) {

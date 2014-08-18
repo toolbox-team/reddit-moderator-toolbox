@@ -287,7 +287,7 @@ function removalreasons() {
         function openPopup() {
             // Reset state
             popup.find('attrs').attr(data);
-            popup.find('.selectable-reason input[type=checkbox]:checked').attr('checked', false);
+            popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
             popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
             popup.find('.status').hide();//css('display: none;');
             popup.find('.error-highlight').removeClass('error-highlight');

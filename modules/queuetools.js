@@ -214,10 +214,10 @@ function queuetools() {
 
         // Select / deselect all the things
         $('#select-all').click(function () {
-            $('.thing:visible input[type=checkbox]').attr('checked', allSelected = this.checked);
+            $('.thing:visible input[type=checkbox]').prop('checked', allSelected = this.checked);
         });
         $body.on('click', '.thing input[type=checkbox]', function () {
-            $('#select-all').attr('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
+            $('#select-all').prop('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
 
         // Select/deselect certain things
@@ -273,11 +273,11 @@ function queuetools() {
                     selector = ':has(.linkflair)';
                     break;
             }
-            things.filter(selector).find('input[type=checkbox]').attr('checked', true);
+            things.filter(selector).find('input[type=checkbox]').prop('checked', true);
         });
         $('.hide-selected').click(function () {
             $('.thing:visible:has(input:checked)').hide();
-            $('.thing input[type=checkbox]').attr('checked', false);
+            $('.thing input[type=checkbox]').prop('checked', false);
         });
         $('.unhide-selected').click(function () {
             $things.show();
@@ -309,7 +309,7 @@ function queuetools() {
         // Uncheck anything we've taken an action, if it's checked.
         $body.on('click', '.pretty-button', function (e) {
             var thing = $(this).closest('.thing');
-            $(thing).find('input[type=checkbox]').attr('checked', false);
+            $(thing).find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
                 $(thing).hide();
             } else if (ignoreOnApproveset) {

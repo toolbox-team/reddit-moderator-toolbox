@@ -682,7 +682,7 @@ function notifier() {
     });
 
     // change tabs
-    $body.on('click', '.tb-window-tabs a', function () {
+    $body.on('click', '.tb-window-tabs a:not(.active)', function () {
         var tab = $(this).attr('class'),
             $tb_help_mains = $('.tb-help-main');
 

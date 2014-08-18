@@ -1839,3 +1839,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 .thing.threaded-modmail .child .thing {
 	padding-left: 20px!important;
 }
+
+.mod-toolbox .mmp-processed .message-count {
+	background-color: rgba(0, 0, 0, 0);
+	color: #369;
+	display: inline;
+	padding: 0;
+	margin: 0;
+	font-size: 12px;
+}

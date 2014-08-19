@@ -540,7 +540,7 @@ function notifier() {
                 <label><input type="checkbox" id="linktoqueues" ' + ((linkToQueues) ? "checked" : "") + '> Link to subreddit queue on mod pages</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summary when submitting to /r/reportthespammers</label>\
+                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summary when submitting spam reports</label>\
                 </p>\
                 <p>\
                 <label><input type="checkbox" id="sortmodqueue" ' + ((sortmodqueue) ? "checked" : "") + '> Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)</label>\

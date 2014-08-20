@@ -152,7 +152,7 @@ banList.init = function init() {
         $num_bans = $('<span id="ban_count"></span>');
         $num_bans.appendTo($user.parent());
 
-        $user.prop('placeholder', 'Begin typing to live filter the ban list.');
+        $user.prop('placeholder', 'Begin typing to live filter the list.');
 
         $('.usertable').addClass('filtered');
 

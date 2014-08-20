@@ -818,6 +818,8 @@ function settings() {
 }
 
 function threadedModmail() {
+	if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true))
+        return;
 	var collapse = function() {
 		$(this).parents(".thing:first").find("> .child").hide();
 	}

@@ -272,6 +272,9 @@ TB = {
                             case 'boolean':
                                 value = $this.find('input').prop('checked');
                                 break;
+                            case 'text':
+                                value = $this.find('input').val();
+                                break;
                             case 'list':
                                 value = $this.find('input').val().split(',').map(function (str) { return str.trim(); });
                                 break;
@@ -288,7 +291,7 @@ TB = {
                                 value = $this.find('select').val();
                                 break;
                             default:
-                                value = $this.find('input').val();
+                                value = JSON.parse($this.find('input').val());
                                 break;
                         }
 

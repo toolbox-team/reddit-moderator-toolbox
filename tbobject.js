@@ -288,7 +288,7 @@ TB = {
                                 value = $this.find('select').val();
                                 break;
                             default:
-                                value = JSON.parse($this.find('input').val());
+                                value = $this.find('input').val();
                                 break;
                         }
 

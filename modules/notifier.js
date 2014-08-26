@@ -366,7 +366,7 @@ function notifier() {
 
         // The window in which all settings will be showed.
         var html = '\
-            <div class="tb-page-overlay tb-settings"><div class="tb-window-wrapper">\
+            <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
                 <div class="tb-window-header">\
                     Toolbox Settings\
                     <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a> - <a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\

@@ -279,6 +279,10 @@ text-align: left;
     font-size: small;
 }
 
+.mod-toolbox .tb-personal-settings .tb-window-wrapper {
+    width: 845px;
+}
+
 .tb-window-wrapper-two {
     position: relative;
     top: 60px;
@@ -315,11 +319,24 @@ text-align: left;
     font-size: 11px !important;
 }
 
+.mod-toolbox .tb-personal-settings .tb-window-tabs {
+    display: inline-block;
+    width: 130px;
+    height: 100%;
+    margin-right: -4px;
+    border-bottom: 0;
+}
+
 .mod-toolbox .tb-window-tabs a {
     background-color: #C7D6E6;
     border-right: dotted 1px #A8B5C2;
     display: inline-block;
     padding: 10px !important;
+}
+
+.mod-toolbox .tb-personal-settings .tb-window-tabs a {
+    width: 109px;
+    border-bottom: 1px dotted #A8B5C2;
 }
 
 .mod-toolbox .tb-window-spacer {
@@ -341,6 +358,13 @@ text-align: left;
     right: 0;
     padding: 5px !important;
     font-size: 12px !important;
+}
+
+.mod-toolbox .tb-personal-settings .tb-window-content {
+    display: inline-block;
+    vertical-align: top;
+    width: 704px;
+    background-color: #fff;
 }
 
 .mod-toolbox .tb-window-content input {

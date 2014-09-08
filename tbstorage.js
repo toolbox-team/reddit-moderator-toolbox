@@ -18,19 +18,19 @@
             // Chrome
             if (typeof (chrome) !== "undefined") {
                 chrome.storage.local.remove('tbsettings', function () {
-                    window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
                 });
 
             // Firefox
             } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
                 self.port.emit('tb-clearsettings');
                 self.port.on('tb-clearsettings-reply', function () {
-                    window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
                 });
 
             // Donno, fuck it.
             } else {
-                window.location.href = "http://www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
             }
         }
     }

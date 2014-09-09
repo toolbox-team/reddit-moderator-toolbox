@@ -837,7 +837,7 @@ function threadedModmail() {
 			});
 		} else {
 			var id = fullname.substring(3);
-			$.getJSON("http://www.reddit.com/message/messages/"+id+".json", null, function(data) {
+			$.getJSON("//www.reddit.com/message/messages/"+id+".json", null, function(data) {
 				var messages = data.data.children[0].data.replies.data.children;
 				
 				for(var i = 0; i < messages.length; i++) {

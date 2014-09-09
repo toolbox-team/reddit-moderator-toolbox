@@ -1179,7 +1179,7 @@ function initwrapper() {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
             if (resp.stableVerson > TBUtils.shortVersion && TBUtils.browser == 'firefox' && TBUtils.isExtension) {
                 TBUtils.alert("There is a new version of Toolbox for Firefox!  Click here to update.", function (clicked) {
-                    if (clicked) window.open("http://creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
+                    if (clicked) window.open("//creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
                 });
                 return; //don't spam the user with notes until they have the current version.
             }

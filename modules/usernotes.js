@@ -376,7 +376,7 @@ function usernotes() {
         //         </div>'
         // )
         var popup = TB.ui.popup(
-            'User Notes - <a href="http://reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>',
+            'User Notes - <a href="//reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>',
             [
                 {
                     content: '\

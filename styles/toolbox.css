@@ -5,9 +5,6 @@
     margin-bottom: 25px !important;
 }
 
-body.comments-page .content .sitetable .thing.spam.comment:hover, .res-commentBoxes body.comments-page .content .sitetable .thing.spam.comment:hover {
-    cursor: pointer;
-}
 
 .debuginfo {
     height: 40px;

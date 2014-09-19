@@ -253,7 +253,7 @@ historyButton.init = function () {
         rtsLink.className = '.rts-report-clicked';
 
         //Submit to RTS
-        var link = 'http://www.reddit.com/user/' + author,
+        var link = 'https://www.reddit.com/user/' + author,
             title = 'Overview for ' + author;
 
         TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {

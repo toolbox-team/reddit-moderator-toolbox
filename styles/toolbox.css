@@ -50,13 +50,13 @@
 }
 
 .mod-toolbox #tb-mail.nohavemail {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -16px -645px;
     background-repeat: no-repeat;
 }
 
 .mod-toolbox #tb-mail.havemail {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: 0 -645px;
     background-repeat: no-repeat;
 }
@@ -83,13 +83,13 @@
 }
 
 .mod-toolbox #tb-modmail.havemail {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -85px -577px;
     background-repeat: no-repeat;
 }
 
 .mod-toolbox #tb-modmail.nohavemail {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -577px;
     background-repeat: no-repeat;
 }
@@ -104,7 +104,7 @@
 }
 
 .mod-toolbox #tb-modqueue {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -595px;
     background-repeat: no-repeat;
     line-height: 8px;
@@ -118,7 +118,7 @@
 }
 
 .mod-toolbox #tb-unmoderated {
-    background-image: url("//creesch.github.com/reddit-declutter/sprite-reddit.png");
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -51px -612px;
     background-repeat: no-repeat;
     line-height: 8px;
@@ -193,7 +193,7 @@ text-align: left;
 }
 
 .mod-toolbox .generic-modqueue {
-    background-image: url(//creesch.github.com/reddit-declutter/sprite-reddit.png);
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -595px;
     background-repeat: no-repeat;
     line-height: 8px;
@@ -207,7 +207,7 @@ text-align: left;
 }
 
 .mod-toolbox .generic-unmoderated {
-    background-image: url(//creesch.github.com/reddit-declutter/sprite-reddit.png);
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -51px -612px;
     background-repeat: no-repeat;
     line-height: 8px;
@@ -221,7 +221,7 @@ text-align: left;
 }
 
 .mod-toolbox .generic-mail {
-    background-image: url(//creesch.github.com/reddit-declutter/sprite-reddit.png);
+    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -577px;
     background-repeat: no-repeat;
     display: inline-block;
@@ -1394,7 +1394,7 @@ height: 300px;
     margin-right: 0;
     width: auto;
     height: 10px;    
-	background: url("//creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed; 
+	background: url("//creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 
 .tb-internal-overlay {

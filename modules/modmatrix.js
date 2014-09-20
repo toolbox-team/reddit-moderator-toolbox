@@ -699,7 +699,7 @@ function getComments() {
                         approved = '';
                     }
 
-                    $('#' + commentID).append('<div id="removed_comment_text">' + TBUtils.htmlDecode(commentBody) + approved + '</div>');
+                    $('#' + commentID).append('<div class="removed_comment_text">' + TBUtils.htmlDecode(commentBody) + approved + '</div>');
                     
                 });
 

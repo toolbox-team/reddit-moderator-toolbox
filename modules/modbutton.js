@@ -55,7 +55,7 @@ modButton.processThing = function processThing(thing) {
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
+        $(thing).find('.buttons > li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
     }
 };
 
@@ -148,7 +148,6 @@ modButton.init = function init() {
     window.addEventListener("TBNewThings", function () {
         modButton.run();
     });
-
 
     // Mod button clicked
     $body.on('click', '.global-mod-button', function (event) {

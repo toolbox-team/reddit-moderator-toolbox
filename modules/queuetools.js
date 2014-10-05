@@ -94,24 +94,26 @@ function queuetools() {
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
 
-        if (viewingspam && listingOrder == 'reports')
+        if (viewingspam && listingOrder == 'reports') {
             listingOrder = 'age';
+        }
 
         // Get rid of promoted links & thing rankings
         $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
-        // remove stuff we can't moderate.
-        TBUtils.getModSubs(function () {
-            $('.thing .subreddit').each(function () {
-                // Just to be safe.
-                var sub = $(this).text().replace('/r/', '').replace('/', '');
-
-
-                if ($.inArray(sub, TBUtils.mySubs) === -1) {
-                    $(this).parents('.thing').remove();
-                }
+        // remove stuff we can't moderate (in non-mod queues only)
+        if(!TBUtils.isModpage) {
+            TBUtils.getModSubs(function () {
+                $('.thing .subreddit').each(function () {
+                    // Just to be safe.
+                    var sub = $(this).text().replace('/r/', '').replace('/', '');
+                    
+                    if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                        $(this).parents('.thing').remove();
+                    }
+                });
             });
-        });
+        }
 
         $('.modtools-on').parent().remove();
 

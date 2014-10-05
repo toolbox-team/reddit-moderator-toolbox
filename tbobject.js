@@ -13,7 +13,7 @@ TB = {
         this.modules[module.shortname] = module;
     },
 
-    init: function init() {
+    init: function tbInit() {
         console.log("storage loaded: " + TB.storage.isLoaded);
         initLoop();
 

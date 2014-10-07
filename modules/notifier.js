@@ -128,7 +128,7 @@ function notifier() {
     var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
         <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
-        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconBox + '" title="toolbox settings"/></a>\
+        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconWrench + '" title="toolbox settings"/></a>\
         <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\

@@ -220,7 +220,7 @@ function usernotes() {
                 "ns": user.notes.map(function(note) {
                     return {
                         "n": note.note,
-                        "t": note.time,
+                        "t": TBUtils.notesSchema >= 5 ? deflateTime(note.time) : note.time,
                         "m": mgr.create("users", note.mod),
                         "l": note.link,
                         "w": mgr.create("warnings", note.type),
@@ -267,7 +267,9 @@ function usernotes() {
                 "name": mgr.get("users", user.u),
                 "notes": user.ns.map(function(note) {
                     var note = inflateNote(mgr, note);
-                    if(note.link) note.link = "l," + note.link;
+                    if(note.link) {
+                        note.link = "l," + note.link;
+                    }
                     return note;
                 })
             };
@@ -280,13 +282,28 @@ function usernotes() {
     function inflateNote(mgr, note) {
         return {
             "note": TBUtils.htmlDecode(note.n),
-            "time": note.t,
+            "time": TBUtils.notesSchema >= 5 ? inflateTime(note.t) : note.t,
             "mod": mgr.get("users", note.m),
             "link": note.l,
             "type": mgr.get("warnings", note.w),
         };
     }
-
+    
+    //Date/time utilities
+    function inflateTime(time) {
+        if(time.toString().length <= 10) {
+            time *= 1000;
+        }
+        return time;
+    }
+    
+    function deflateTime(time) {
+        if(time.toString().length > 10) {
+            time /= 1000;
+        }
+        return time;
+    }
+    
     function setNotes(notes, subreddit) {
         //$.log("notes = " + notes);
         //$.log("notes.ver = " + notes.ver);
@@ -430,7 +447,9 @@ function usernotes() {
 
                 var i = 0;
                 $(u.notes).each(function () {
-                    if (!this.type) this.type = 'none';
+                    if (!this.type) {
+                        this.type = 'none';
+                    }
 
                     var info = TBUtils.getTypeInfo(this.type);
                     var typeSpan = '';

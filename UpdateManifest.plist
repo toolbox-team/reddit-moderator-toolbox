@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Extension Updates</key>
+  <array>
+    <dict>
+      <key>CFBundleIdentifier</key>
+      <string>com.toolboxteam.toolbox</string>
+      <key>DeveloperIdentifier</key>
+      <string>42X34WDLP5</string>
+      <key>CFBundleVersion</key>
+      <string>1</string>
+      <key>CFBundleShortVersionString</key>
+      <string>3.0</string>
+      <key>URL</key>
+      <string>https://github.com/creesch/reddit-moderator-toolbox/releases/download/v3.0/reddit-moderator-toolbox-3.0.safariextz</string>
+    </dict>
+  </array>
+</dict>
+</plist>

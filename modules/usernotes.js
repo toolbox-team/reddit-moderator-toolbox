@@ -459,7 +459,7 @@ function usernotes() {
                     }
 
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
-                        new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + this.note +
+                        new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(this.note) +
                         '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconClose + '" /></td></tr>');
                     if (this.link) {
                         popup.find('#utagger-date-' + i).wrap('<a href="' + unsquashPermalink(subreddit, this.link) + '">');

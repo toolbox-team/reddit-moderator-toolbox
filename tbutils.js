@@ -21,16 +21,16 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         longLoadArray = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
 
     // Public variables
-    TBUtils.toolboxVersion = '2.3.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 230; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Shilling Serpent';
+    TBUtils.toolboxVersion = '3.0.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 300; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'No Name Beta';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 4;
     TBUtils.minNotesSchema = 0;
@@ -947,6 +947,36 @@ function initwrapper() {
             if(typeof callback !== "undefined")
                 callback(false, error);
         });
+    };
+
+    TBUtils.sendMessage = function(user, subject, message, subreddit, callback) {
+        $.post('/api/compose', {
+            from_sr: subreddit,
+            subject: subject,
+            text: message,
+            to: user,
+            uh: TBUtils.modhash,
+            api_type: 'json'
+        })
+            .success(function(response) {
+                if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
+                    $.log("Failed to send link to /u/"+user);
+                    $.log(response.json.errors);
+                    if(typeof callback !== "undefined")
+                        callback(false, response.json.errors);
+                    return;
+                }
+
+                $.log("Successfully send link to /u/"+user);
+                if(typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function(error) {
+                $.log("Failed to send link to /u/"+user);
+                $.log(error);
+                if(typeof callback !== "undefined")
+                    callback(false, error);
+            });
     };
 
 

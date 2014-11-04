@@ -808,6 +808,17 @@ img.note-close {
 	color: red;
 }
 
+.mod-popup .subreddit-message {
+    min-width: 235px;
+    min-height: 65px;
+}
+
+.mod-popup .subreddit-message-subject {
+    min-width: 235px;
+    margin-bottom: 3px;
+    padding: 1px;
+}
+
 .mod-popup .add-sub-link {
     text-decoration: none;
 }

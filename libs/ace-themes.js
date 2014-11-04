@@ -1276,13 +1276,13 @@ dom.importCssString(exports.cssText, exports.cssClass);
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/theme/cobalt', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
+ace.define("ace/theme/cobalt",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-cobalt";
-exports.cssText = ".ace-cobalt .ace_gutter {\
+    exports.isDark = true;
+    exports.cssClass = "ace-cobalt";
+    exports.cssText = ".ace-cobalt .ace_gutter {\
 background: #011e3a;\
-color: #fff\
+color: rgb(128,145,160)\
 }\
 .ace-cobalt .ace_print-margin {\
 width: 1px;\
@@ -1386,9 +1386,10 @@ color: #9EFFFF\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYHCLSvkPAAP3AgSDTRd4AAAAAElFTkSuQmCC) right repeat-y\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 });
+
 /* ***** BEGIN LICENSE BLOCK *****
  * Distributed under the BSD license:
  *
@@ -2136,13 +2137,13 @@ background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZ
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/theme/idle_fingers', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
+ace.define("ace/theme/idle_fingers",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-idle-fingers";
-exports.cssText = ".ace-idle-fingers .ace_gutter {\
+    exports.isDark = true;
+    exports.cssClass = "ace-idle-fingers";
+    exports.cssText = ".ace-idle-fingers .ace_gutter {\
 background: #3b3b3b;\
-color: #fff\
+color: rgb(153,153,153)\
 }\
 .ace-idle-fingers .ace_print-margin {\
 width: 1px;\
@@ -2230,8 +2231,8 @@ background-color: #FFF980\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWMwMjLyZYiPj/8PAAreAwAI1+g0AAAAAElFTkSuQmCC) right repeat-y\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 });
 /* ***** BEGIN LICENSE BLOCK *****
  * Distributed under the BSD license:
@@ -2413,11 +2414,11 @@ dom.importCssString(exports.cssText, exports.cssClass);
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/theme/kr_theme', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
+ace.define("ace/theme/kr_theme",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-kr-theme";
-exports.cssText = ".ace-kr-theme .ace_gutter {\
+    exports.isDark = true;
+    exports.cssClass = "ace-kr-theme";
+    exports.cssText = ".ace-kr-theme .ace_gutter {\
 background: #1c1917;\
 color: #FCFFE0\
 }\
@@ -2515,8 +2516,8 @@ color: #BABD9C\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 });
 /* ***** BEGIN LICENSE BLOCK *****
  * Distributed under the BSD license:
@@ -4264,11 +4265,11 @@ dom.importCssString(exports.cssText, exports.cssClass);
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/theme/tomorrow_night_bright', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
+ace.define("ace/theme/tomorrow_night_bright",["require","exports","module","ace/lib/dom"], function(require, exports, module) {
 
-exports.isDark = true;
-exports.cssClass = "ace-tomorrow-night-bright";
-exports.cssText = ".ace-tomorrow-night-bright .ace_gutter {\
+    exports.isDark = true;
+    exports.cssClass = "ace-tomorrow-night-bright";
+    exports.cssText = ".ace-tomorrow-night-bright .ace_gutter {\
 background: #1a1a1a;\
 color: #DEDEDE\
 }\
@@ -4302,7 +4303,7 @@ border: 1px solid rgb(110, 119, 0);\
 border-bottom: 0;\
 box-shadow: inset 0 -1px rgb(110, 119, 0);\
 margin: -1px 0 0 -1px;\
-background: rgba(255, 235, 0, 0.1);\
+background: rgba(255, 235, 0, 0.1)\
 }\
 .ace-tomorrow-night-bright .ace_marker-layer .ace_active-line {\
 background: #2A2A2A\
@@ -4377,14 +4378,14 @@ color: #D54E53\
 color: #969896\
 }\
 .ace-tomorrow-night-bright .ace_c9searchresults.ace_keyword {\
-color: #C2C280;\
+color: #C2C280\
 }\
 .ace-tomorrow-night-bright .ace_indent-guide {\
 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y\
 }";
 
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
+    var dom = require("../lib/dom");
+    dom.importCssString(exports.cssText, exports.cssClass);
 });
 /* ***** BEGIN LICENSE BLOCK *****
  * Distributed under the BSD license:

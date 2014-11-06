@@ -275,11 +275,11 @@ modButton.init = function init() {
 
         // Remove options that only apply to subs we mod
         if (!subreddit) {
-            // Hide the flair tab
+            // Hide the flair tab and message tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
             $popup.find('.tb-popup-tabs .user_flair').remove();
-
+            $popup.find('.tb-popup-tabs .send_message').remove();
             // We can oly nuke comments in subs we mod.
             $popup.find('.tb-popup-tabs .nuke_comment_chain').remove();
         }

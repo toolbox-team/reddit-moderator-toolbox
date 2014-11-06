@@ -782,6 +782,14 @@ img.note-close {
     padding: 5px !important;
 }
 
+.mod-popup .other-subs {
+    padding: 5px;
+}
+
+.mod-popup .ban-note {
+    margin-bottom: 3px;
+}
+
 .mod-popup-flair-label {
     display: inline-block;
     min-width: 35px;

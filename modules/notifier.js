@@ -171,7 +171,7 @@ function notifier() {
     // moderated subreddits button.
     $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
     $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
-    TBUtils.getModSubs(function () {
+    TBUtils.getModSubs(function notifierinit() {
         $(TBUtils.mySubsData).each(function () {
             $body.find('#tb-my-subreddits table').append('\
             <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \

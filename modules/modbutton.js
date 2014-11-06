@@ -18,7 +18,7 @@ modButton.register_setting(
     });
 // can't call this inside because it doesn't know the default value yet
 // can't call it plain because it uses TB.utils.mySubs
-TB.utils.getModSubs(function init() {
+TB.utils.getModSubs(function modbuttoninit() {
     modButton.settings['sublist']["args"] = [TB.utils.mySubs, modButton.setting('sublist')];
 });
 

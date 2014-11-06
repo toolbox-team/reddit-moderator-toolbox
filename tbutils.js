@@ -22,7 +22,9 @@ function initwrapper() {
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-        longLoadArray = [];
+        longLoadArray = [],
+        gettingModSubs = false,
+        getModSubsCallbacks = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
@@ -503,11 +505,22 @@ function initwrapper() {
     TBUtils.getModSubs = function (callback) {
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
-            $.log('getting new subs.');
-            TBUtils.mySubs = []; //reset list.
-            TBUtils.mySubsData = [];
-            getSubs(modMineURL);
+            // time to refresh
+            if (gettingModSubs) {
+                // we're already fetching a new list, so enqueue the callback
+                $.log('enqueueing getModSubs callback');
+                getModSubsCallbacks.push(callback);
+            } else {
+                // start the process
+                $.log('getting new subs.');
+
+                gettingModSubs = true;
+                TBUtils.mySubs = []; // reset
+                TBUtils.mySubsData = [];
+                getSubs(modMineURL);
+            }
         } else {
+            // run callback on cached sublist
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
             TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
             // Go!
@@ -559,7 +572,14 @@ function initwrapper() {
                 TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
                 TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
                 // Go!
-                callback();
+                while (getModSubsCallbacks.length > 0) {
+                    // call them in the order they were added
+                    $.log("calling callback "+getModSubsCallbacks[0].name);
+                    getModSubsCallbacks[0]();
+                    getModSubsCallbacks.splice(0, 1); // pop first element
+                }
+                // done
+                gettingModSubs = false;
             }
         }
     };

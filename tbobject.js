@@ -44,14 +44,16 @@ TB = {
                         // lock 'n load
                         if (module.setting('enabled')) {
                             $.log('Loading ' + module.name + ' module');
-                            if (module.config["needs_mod_subs"]) {
-                                $.log("  We require additional mod subs");
-                                TB.utils.getModSubs(function init() {
-                                    module.init();
-                                });
-                            } else {
-                                module.init();
-                            }
+                            // unnecessary; we do it in TB.utils.getModSubs now
+                            module.init();
+                            // if (module.config["needs_mod_subs"]) {
+                            //     $.log("  We require additional mod subs");
+                            //     TB.utils.getModSubs(function init() {
+                            //         module.init();
+                            //     });
+                            // } else {
+                            //     module.init();
+                            // }
                         }
 
                     }

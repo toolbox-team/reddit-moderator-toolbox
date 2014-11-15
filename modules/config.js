@@ -11,7 +11,11 @@ function tbconfig() {
         subreddit = TBUtils.post_site,
         config = TBUtils.config;
 
-    if (!subreddit) return;
+    // only load on definite subreddits
+    if (!subreddit || subreddit == "subreddits you moderate" || subreddit == "mod (filtered)") {
+        $.log("aborting: invalid subreddit");
+        return;
+    }
 
     $.getJSON('/r/' + subreddit + '/wiki/toolbox.json', function (json) {
         if (json.data.content_md) {

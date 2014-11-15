@@ -7,6 +7,11 @@ function initwrapper() {
     TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
+    // validate post_site. TODO: something better than this.
+    if (TBUtils.post_site == "subreddits you moderate" || TBUtils.post_site == "mod (filtered)") {
+        TBUtils.post_site = "";
+    }
+
     //Private variables
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),

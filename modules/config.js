@@ -12,7 +12,7 @@ function tbconfig() {
         config = TBUtils.config;
 
     // only load on definite subreddits
-    if (!subreddit || subreddit == "subreddits you moderate" || subreddit == "mod (filtered)") {
+    if (!subreddit) {
         $.log("aborting: invalid subreddit");
         return;
     }

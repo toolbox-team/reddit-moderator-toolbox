@@ -24,10 +24,8 @@ function notifier() {
         notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
         shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
         shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
-        highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', ''),
         modbarHidden = TBUtils.getSetting('Notifier', 'modbarhidden', false),
         compactHide = TBUtils.getSetting('Notifier', 'compacthide', false),
-        hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
         unmoderatedOn = TBUtils.getSetting('Notifier', 'unmoderatedon', true),
         consolidatedMessages = TBUtils.getSetting('Notifier', 'consolidatedmessages', true),
         footer = $('.footer-parent'),
@@ -44,10 +42,6 @@ function notifier() {
         now = new Date().getTime(),
         messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
-        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
-        spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
-        hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false),
-        highlightTitles = TBUtils.getSetting('CommentsMod', 'highlightTitles', true),
         settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
 
 
@@ -99,7 +93,6 @@ function notifier() {
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
-        commentsEnabled = TBUtils.getSetting('CommentsMod', 'enabled', true),
         modmatrixEnabled = TBUtils.getSetting('ModMatrix', 'enabled', true);
 
     // QT settings.
@@ -329,7 +322,7 @@ function notifier() {
     function showSettings() {
 
         // I probably should have stored "checked" instead of "on" will have to change that later.
-        var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked, hideRemovedChecked;
+        var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked;
 
         if (messageunreadlink) {
             messageunreadlinkchecked = 'checked';
@@ -354,9 +347,6 @@ function notifier() {
         }
         if (consolidatedMessages) {
             consolidatedmessageschecked = 'checked';
-        }
-        if (hideRemoved) {
-            hideRemovedChecked = 'checked';
         }
 
         // The window in which all settings will be showed.
@@ -421,9 +411,6 @@ function notifier() {
             </p>\
             <p>\
                 <label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="commentsEnabled" ' + ((commentsEnabled) ? "checked" : "") + '> Enable Comments Module</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Modlog Utilities</label>\
@@ -548,35 +535,6 @@ function notifier() {
         $(htmlmodtools).appendTo('.tb-window-content').hide();
         if (qtEnabled) {
             $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
-        }
-
-        // Settings for the comment module
-        var htmlcomments = '\
-            <div class="tb-window-content-comment">\
-            <p>\
-                <label><input type="checkbox" name="hideRemoved" ' + hideRemovedChecked + '> Hide removed comments by default</label>\
-            </p>\
-            <p>\
-            <label><input type="checkbox" id="approveComments" ' + ((approveComments) ? "checked" : "") + '> Show approve button on all comments</label>\
-            </p>\
-            <p>\
-            <label><input type="checkbox" id="spamRemoved" ' + ((spamRemoved) ? "checked" : "") + '> Show spam button on comments removed as ham</label>\
-            </p>\
-            <p>\
-            <label><input type="checkbox" id="hamSpammed" ' + ((hamSpammed) ? "checked" : "") + '> Show remove (not spam) button on comments removed as spam</label>\
-            </p>\
-            <p>\
-                Highlight keywords, keywords should entered separated by a comma without spaces:<br>\
-            <input type="text" name="highlighted" value="' + TBUtils.htmlEncode(unescape(highlighted)) + '"><br>\
-            <label><input type="checkbox" id="highlightTitles" ' + ((highlightTitles) ? "checked" : "") + '> Also highlight titles of submissions.</label>\
-            </p>\
-            <div class="tb-help-main-content">Settings Toolbox Comments.</div>\
-            </div>\
-            ';
-
-        $(htmlcomments).appendTo('.tb-window-content').hide();
-        if (commentsEnabled) {
-            $('<a href="javascript:;" class="tb-window-content-comment">Comments</a>').appendTo('.tb-window-tabs');
         }
 
         // Settings for caching
@@ -713,9 +671,6 @@ function notifier() {
         unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
         TBUtils.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
-        hideRemovedCheckedsave = $("input[name=hideRemoved]").is(':checked');
-        TBUtils.setSetting('CommentsMod', 'hideRemoved', hideRemovedCheckedsave);
-
         consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
         TBUtils.setSetting('Notifier', 'consolidatedmessages', consolidatedmessagescheckedsave);
 
@@ -734,18 +689,6 @@ function notifier() {
         highlighted = $("input[name=highlighted]").val();
 
         TBUtils.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
-
-
-        if (highlighted.substr(highlighted.length - 1) === ',') {
-            highlighted = highlighted.slice(0, -1);
-        }
-
-        TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
-
-        TBUtils.setSetting('CommentsMod', 'approvecomments', $("#approveComments").prop('checked'));
-        TBUtils.setSetting('CommentsMod', 'spamremoved', $("#spamRemoved").prop('checked'));
-        TBUtils.setSetting('CommentsMod', 'hamspammed', $("#hamSpammed").prop('checked'));
-        TBUtils.setSetting('CommentsMod', 'highlightTitles', $("#highlightTitles").prop('checked'));
 
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
@@ -810,7 +753,6 @@ function notifier() {
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));
-        TBUtils.setSetting('CommentsMod', 'enabled', $("#commentsEnabled").prop('checked'));
         TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 

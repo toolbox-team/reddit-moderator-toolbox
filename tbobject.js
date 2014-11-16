@@ -278,7 +278,7 @@ TB = {
                                 value = $this.find('input').val();
                                 break;
                             case 'list':
-                                value = $this.find('input').val().split(',').map(function (str) { return str.trim(); });
+                                value = $this.find('input').val().split(',').map(function (str) { return str.trim(); }).clean("");
                                 break;
                             case 'sublist':
                                 value = [];
@@ -290,7 +290,7 @@ TB = {
                                 value = $this.find('.selector').val();
                                 break;
                             case 'syntaxTheme':
-                                value = $this.find('select').val();
+                                value = $this.find('#'+module.shortname+'_syntax_theme').val();
                                 break;
                             default:
                                 value = JSON.parse($this.find('input').val());
@@ -309,10 +309,6 @@ TB = {
 TB.Module = function Module(name) {
     // PUBLIC: Module Metadata
     this.name = name;
-    this.__defineGetter__('shortname', function () {
-        // return name.trim().toLowerCase().replace(' ', '_');
-        return name.trim().replace(' ', '');
-    });
 
     this.config = {
         "betamode": true,
@@ -363,6 +359,17 @@ TB.Module = function Module(name) {
         // pass
     };
 };
+
+TB.Module.prototype = {
+    _shortname: '',
+    get shortname() {
+        // return name.trim().toLowerCase().replace(' ', '_');
+        return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(' ', '');
+    },
+    set shortname(val) {
+        this._shortname = val;
+    }
+}
 
 
 // This needs to be called last. There's probably some clever way to do it, but I haven't figured it out.

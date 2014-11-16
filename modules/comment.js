@@ -1,17 +1,77 @@
 function comments() {
-    if (!TBUtils.logged || !$('.moderator').length || !TBUtils.getSetting('CommentsMod', 'enabled', true) || TBUtils.isModmail)
+
+var commentsMod = new TB.Module('Comments');
+
+commentsMod.shortname = 'CommentsMod'; // historical precedent for settings
+
+commentsMod.settings["enabled"]["default"] = true;
+commentsMod.config["betamode"] = false;
+// removalReasons.config["needs_mod_subs"] = true;
+
+commentsMod.register_setting(
+    "hideRemoved", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Hide removed comments by default."
+    });
+commentsMod.register_setting(
+    "approvecomments", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Show approve button on all comments."
+    });
+commentsMod.register_setting(
+    "spamremoved", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Show spam button on comments removed as ham."
+    });
+commentsMod.register_setting(
+    "hamspammed", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Show remove (not spam) button on comments removed as spam."
+    });
+commentsMod.register_setting(
+    "highlighted", {
+        "type": "list",
+        "default": [],
+        "betamode": false,
+        "hidden": false,
+        "title": "Highlight keywords, keywords should entered separated by a comma without spaces"
+    });
+commentsMod.register_setting(
+    "highlightTitles", {
+        "type": "boolean",
+        "default": true,
+        "betamode": false,
+        "hidden": false,
+        "title": "Also highlight titles of submissions."
+    });
+
+commentsMod.init = function commentsModInit() {
+
+    if (!$('.moderator').length || TBUtils.isModmail) {
         return;
-    $.log('Loading Comments Module');
-    
+    }
+
     var $body = $('body');
-    
+
     //
     // preload some generic variables
     //
-    var hideRemoved = TBUtils.getSetting('CommentsMod', 'hideRemoved', false),
-        approveComments = TBUtils.getSetting('CommentsMod', 'approvecomments', false),
-        spamRemoved = TBUtils.getSetting('CommentsMod', 'spamremoved', false),
-        hamSpammed = TBUtils.getSetting('CommentsMod', 'hamspammed', false);
+    var hideRemoved = commentsMod.setting('hideRemoved'),
+        approveComments = commentsMod.setting('approvecomments'),
+        spamRemoved = commentsMod.setting('spamremoved'),
+        hamSpammed = commentsMod.setting('hamspammed');
 
     $body.on('click', '#tb-toggle-removed', function () {
         var $comment_spam = $('.tb-comment-spam');
@@ -24,7 +84,6 @@ function comments() {
     });
 
     function run() {
-
         //
         //  Do stuff with removed comments
         //
@@ -35,12 +94,13 @@ function comments() {
             $(this).addClass('tb-comment-spam');
             removedCounter = removedCounter + 1;
         });
+
         $.log(removedCounter, true);
+
         if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
             $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
             if (removedCounter == 1) {
                 $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]');
-
             } else if (removedCounter > 1) {
                 $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']');
             }
@@ -53,6 +113,7 @@ function comments() {
         if (hideRemoved) {
             $('.tb-comment-spam').hide();
         }
+
         if (approveComments || spamRemoved || hamSpammed) {
             // only need to iterate if at least one of the options is enabled
             $('.thing.comment').each(function () {
@@ -103,42 +164,37 @@ function comments() {
                             }
                         }
                     }
-
-
                 }
-
             });
-
         }
 
-        if (TBUtils.getSetting('CommentsMod', 'highlighted', '')) {
-            var highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', '');
-            highlighted = highlighted.split(',');
+        if (commentsMod.setting('highlighted').length > 0) {
+            var highlighted = commentsMod.setting('highlighted');
 
             $('.md p').highlight(highlighted);
-            
-            if (TBUtils.getSetting('CommentsMod', 'highlightTitles', true)) {     
+
+            if (commentsMod.setting('highlightTitles')) {
                 $('a.title').highlight(highlighted);
             }
         }
     }
+
     // NER support.
     window.addEventListener("TBNewThings", function () {
         run();
-
     });
 
     run();
 
 
+    $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
 
-$(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
     $("body").on("click", ".loadFlat", function () {
     
-    // remove modtools since we don't want mass actions out of context comments.
-	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
-	$("body").find(".tabmenu li #modtab-threshold").closest('li').remove();
-	$("body").find(".menuarea.modtools").remove();
+        // remove modtools since we don't want mass actions out of context comments.
+    	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
+    	$("body").find(".tabmenu li #modtab-threshold").closest('li').remove();
+    	$("body").find(".menuarea.modtools").remove();
         var flatListing = {}, // This will contain all comments later on.
         idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
         
@@ -147,7 +203,6 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
             switch (object.kind) {
                 case "Listing":
                     for (var i = 0; i < object.data.children.length; i++) {
-
                         parseComments(object.data.children[i]);
                     }
                     break;
@@ -167,9 +222,9 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
             }
 
         }
-        
+
         // Variables we need later on to be able to reconstruct comments.
-        var htmlCommentView = ''; // This will contain the new html we will add to the page. 
+        var htmlCommentView = ''; // This will contain the new html we will add to the page.
         var fullId = $('.thing.link').attr('data-fullname'); // full id
         var smallId = fullId.substring(3); // small id constructed from fullId
 
@@ -181,19 +236,18 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
         var jsonurl = $('.entry a.comments').attr('href');
 
         // Lets get the comments.
-        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
-            
+        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {            
             // put the json through our deconstructor.
             parseComments(data[1]);
-            // and get back a nice flat listing of ids 
+            // and get back a nice flat listing of ids
             idListing = TBUtils.saneSortAs(idListing);
             var linkAuthor = data[0].data.children[0].data.author,
                 threadPermalink = data[0].data.children[0].data.permalink;
 
-            // from each id in the idlisting we construct a new comment. 
+            // from each id in the idlisting we construct a new comment.
             $.each(idListing, function (index, value) {
 
-                // All variables we will need to construct a fresh new comment. 
+                // All variables we will need to construct a fresh new comment.
                 var approvedBy = flatListing[value].approved_by,
                     author = flatListing[value].author,
                     authorFlairCssClass = flatListing[value].author_flair_css_class,
@@ -211,8 +265,8 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
                     scoreHidden = flatListing[value].score_hidden,
                     subreddit = flatListing[value].subreddit;
 
-                       
-                // figure out if we need to add author and mod stuff. 
+
+                // figure out if we need to add author and mod stuff.
                 var authorClass = 'author';
                 if (distinguished === 'moderator') {
                     authorClass = authorClass + ' moderator';
@@ -307,9 +361,10 @@ $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" c
 
         });
 
-
-
     });
+};
+
+TB.register_module(commentsMod);
 
 }
 

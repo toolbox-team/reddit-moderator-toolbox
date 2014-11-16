@@ -129,3 +129,21 @@
 	-webkit-transform: rotate(-90.0deg);
 	transform: rotate(-90.0deg);
 }
+
+/* Comment text */
+
+.modactionlisting .removed_comment_text {
+	padding: 6px;
+	margin: 2px 0;
+	background-color: rgba(250, 250, 250, 0.8);
+	border: 1px solid lightgray;
+	border-radius: 5px;
+}
+
+.modactionlisting .removed_comment_text p:first-child {
+	margin-top: 0;
+}
+
+.modactionlisting .removed_comment_text p:last-child {
+	margin-bottom: 0;
+}

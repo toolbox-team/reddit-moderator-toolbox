@@ -120,8 +120,9 @@ function removalreasons() {
             };
 
         // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
-        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1)
+        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) {
             return;
+        }
 
         // Set attributes and open reason box if one already exists for this subreddit
         var popup = $('#reason-popup-' + data.subreddit);

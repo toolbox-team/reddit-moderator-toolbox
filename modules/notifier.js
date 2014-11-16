@@ -2,17 +2,17 @@ function notifier() {
     if (!TBUtils.logged || TBUtils.isToolbarPage)
         return;
     $.log('Loading Notifier Module');
-    
+
     var $body = $('body');
     $body.addClass('mod-toolbox');
-    
+
     //
     // preload some generic variables
     //
     var checkInterval = TBUtils.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
-        // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
+    // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
         modNotifications = TBUtils.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
-        // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
+    // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
         messageNotifications = TBUtils.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
         modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
         unmoderatedNotifications = TBUtils.getSetting('Notifier', 'unmoderatednotifications', false),
@@ -128,7 +128,7 @@ function notifier() {
     var modbar = $('\
     <div id="tb-bottombar" class="tb-toolbar">\
         <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
-        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconBox + '" title="toolbox settings"/></a>\
+        <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconWrench + '" title="toolbox settings"/></a>\
         <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
         <span id="tb-toolbarshortcuts"></span>\
         <span id="tb-toolbarcounters">\
@@ -171,7 +171,7 @@ function notifier() {
     // moderated subreddits button.
     $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
     $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
-    TBUtils.getModSubs(function () {
+    TBUtils.getModSubs(function notifierinit() {
         $(TBUtils.mySubsData).each(function () {
             $body.find('#tb-my-subreddits table').append('\
             <tr data-subreddit="'+ this.subreddit +'"><td><a href="/r/'+ this.subreddit +'" target="_blank">/r/'+ this.subreddit +'</a></td> \
@@ -233,6 +233,7 @@ function notifier() {
         if (consoleShowing) {
             $console.show();
         }
+
     }
 
     // Append shortcuts
@@ -279,12 +280,12 @@ function notifier() {
 
     if (compactHide) {
         $(modbarhid)
-          .mouseenter(function () {
-              $('#tb-bottombar-image').show();
-          })
-          .mouseleave(function () {
-              $('#tb-bottombar-image').hide();
-          });
+            .mouseenter(function () {
+                $('#tb-bottombar-image').show();
+            })
+            .mouseleave(function () {
+                $('#tb-bottombar-image').hide();
+            });
     }
 
     /// Console stuff
@@ -307,12 +308,12 @@ function notifier() {
     });
 
     /*
-    // Console copy... needs work
-    $body.on('click', '#tb-console-copy', function () {
-        lockscroll = !lockscroll;
-        TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
-    });
-    */
+     // Console copy... needs work
+     $body.on('click', '#tb-console-copy', function () {
+     lockscroll = !lockscroll;
+     TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
+     });
+     */
 
     // Console clear
     $body.on('click', '.tb-console-clear', function () {
@@ -365,7 +366,7 @@ function notifier() {
 
         // The window in which all settings will be showed.
         var html = '\
-            <div class="tb-page-overlay tb-settings"><div class="tb-window-wrapper">\
+            <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
                 <div class="tb-window-header">\
                     Toolbox Settings\
                     <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a> - <a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
@@ -744,7 +745,7 @@ function notifier() {
         messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
         TBUtils.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
 
-        modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
+            modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
         TBUtils.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
 
         shortcuts = escape($("input[name=shortcuts]").val());
@@ -943,7 +944,7 @@ function notifier() {
         TBUtils.setSetting('Notifier', 'lastseenmodmail', now);
         modmailCount = TBUtils.setSetting('Notifier', 'modmailcount', 0);
 
-        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json', function (json) {
+        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function(json) {
             $.each(json.data.children, function (i, value) {
 
                 var unreadmessageid = value.data.name;
@@ -1060,7 +1061,7 @@ function notifier() {
         // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
 
         function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
-            $.getJSON(unreadcontexturl, function (jsondata) {
+            $.getJSON(unreadcontexturl).done(function(jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
                 if(straightToInbox && messageunreadlink) {
                     TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': '  + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), '/message/unread/');
@@ -1073,7 +1074,7 @@ function notifier() {
         }
 
         // getting unread messages
-        $.getJSON('/message/unread.json', function (json) {
+        $.getJSON('/message/unread.json').done(function(json) {
             var count = json.data.children.length || 0;
             TBUtils.setSetting('Notifier', 'unreadmessagecount', count);
             updateMessagesCount(count);
@@ -1171,7 +1172,7 @@ function notifier() {
 
 
         function procesmqcomments(mqlinkid, mqreportauthor, mqidname) {
-            $.getJSON(mqlinkid, function (jsondata) {
+            $.getJSON(mqlinkid).done(function(jsondata) {
                 var infopermalink = jsondata.data.children[0].data.permalink,
                     infotitle = jsondata.data.children[0].data.title,
                     infosubreddit = jsondata.data.children[0].data.subreddit;
@@ -1180,7 +1181,7 @@ function notifier() {
             });
         }
         // getting modqueue
-        $.getJSON('/r/' + modSubreddits + '/about/modqueue.json?limit=100', function (json) {
+        $.getJSON('/r/' + modSubreddits + '/about/modqueue.json?limit=100').done(function(json) {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
             //$.log(modNotifications);
@@ -1201,14 +1202,14 @@ function notifier() {
                             var subreddit = value.data.subreddit,
                                 author = value.data.author;
 
-							if (!notificationbody) {
-								notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
-							} else if (queuecount<= 6){
-								notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
-							} else if (queuecount> 6) {
-								xmoreModqueue++;
-							}
-							
+                            if (!notificationbody) {
+                                notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
+                            } else if (queuecount<= 6){
+                                notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
+                            } else if (queuecount> 6) {
+                                xmoreModqueue++;
+                            }
+
                             queuecount++;
                             pusheditems.push(value.data.name);
                         } else if ($.inArray(value.data.name, pusheditems) == -1) {
@@ -1219,17 +1220,17 @@ function notifier() {
                                 notificationbody = 'comment from: ' + author + ', in ' + subreddit + '\n';
                             } else if (queuecount<= 6){
                                 notificationbody = notificationbody + 'comment from: ' + author + ',  in' + subreddit + '\n';
-							} else if (queuecount> 6) {
-								xmoreModqueue++;
-							}
+                            } else if (queuecount> 6) {
+                                xmoreModqueue++;
+                            }
                             queuecount++;
                             pusheditems.push(value.data.name);
                         }
                     });
 
-					if (xmoreModqueue>0) {
-						notificationbody = notificationbody + '\n and: ' + xmoreModqueue.toString() + ' more items \n';
-					}
+                    if (xmoreModqueue>0) {
+                        notificationbody = notificationbody + '\n and: ' + xmoreModqueue.toString() + ' more items \n';
+                    }
                     //$.log(queuecount);
                     //$.log(notificationbody);
                     if (queuecount === 1) {
@@ -1278,9 +1279,9 @@ function notifier() {
         //
         // getting unmoderated queue
         if (unmoderatedOn || unmoderatedNotifications) {
-            $.getJSON('/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100', function (json) {
+            $.getJSON('/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100').done(function(json) {
                 var count = json.data.children.length || 0;
-					
+
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
                     var lastSeen = TBUtils.getSetting('Notifier', 'lastseenunmoderated', -1);
@@ -1291,25 +1292,25 @@ function notifier() {
                         $.each(json.data.children, function (i, value) {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                 var subreddit = value.data.subreddit
-                                  , author    = value.data.author;
+                                    , author    = value.data.author;
 
-								 
+
                                 if (!notificationbody) {
                                     notificationbody  = 'post from: ' + author + ', in: ' + subreddit + '\n';
                                 } else if (queuecount<= 6){
                                     notificationbody += 'post from: ' + author + ', in: ' + subreddit + '\n';
                                 } else if (queuecount> 6) {
-									xmoreUnmod++;
-								}
+                                    xmoreUnmod++;
+                                }
 
                                 queuecount++;
 
                             }
                         });
-						
-						if (xmoreUnmod>0) {
-							notificationbody = notificationbody + '\n and: ' + xmoreUnmod.toString() + ' more items\n';
-						}
+
+                        if (xmoreUnmod>0) {
+                            notificationbody = notificationbody + '\n and: ' + xmoreUnmod.toString() + ' more items\n';
+                        }
 
                         if (queuecount === 1) {
                             TBUtils.notification('One new unmoderated item!', notificationbody, '/r/' + unmoderatedSubreddits + '/about/unmoderated');
@@ -1344,7 +1345,7 @@ function notifier() {
         // Modmail
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator.json', function (json) {
+        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator.json').done(function(json) {
 
             var count = json.data.children.length || 0;
             if (count === 0) {
@@ -1395,15 +1396,15 @@ function notifier() {
                         // In all honesty, all of this needs to be rewriten...
                         if (author !== TBUtils.logged && !isInviteSpam) {
                             messagecount++;
-                            if (messagecount > newCount) return false;								
+                            if (messagecount > newCount) return false;
 
                             if (!notificationbody) {
                                 notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
                             } else if (messagecount <= 6) {
                                 notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
-                            } else if (messagecount > 6) { 
-							xmoreModMail++;
-							}
+                            } else if (messagecount > 6) {
+                                xmoreModMail++;
+                            }
                         }
                     });
 
@@ -1411,9 +1412,9 @@ function notifier() {
                         TBUtils.notification('One new modmail!', notificationbody, modmailunreadurl);
 
                     } else if (newCount > 1) {
-						if (xmoreModMail>0) {
-					    	notificationbody = notificationbody + '\n and: ' + xmoreModMail.toString() + ' more \n';
-						}
+                        if (xmoreModMail>0) {
+                            notificationbody = notificationbody + '\n and: ' + xmoreModMail.toString() + ' more \n';
+                        }
                         TBUtils.notification(newCount.toString() + ' new modmail!', notificationbody, modmailunreadurl);
                     }
                 } else {

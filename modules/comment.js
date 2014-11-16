@@ -36,7 +36,15 @@ function comments() {
             removedCounter = removedCounter + 1;
         });
         $.log(removedCounter, true);
-        if (removedCounter == 1) {
+        if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
+            $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
+            if (removedCounter == 1) {
+                $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]');
+
+            } else if (removedCounter > 1) {
+                $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']');
+            }
+        } else if (removedCounter == 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]</a>');
         } else if (removedCounter > 1) {
             $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']</a>');

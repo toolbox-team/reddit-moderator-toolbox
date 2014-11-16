@@ -13,7 +13,7 @@ TB = {
         this.modules[module.shortname] = module;
     },
 
-    init: function init() {
+    init: function tbInit() {
         console.log("storage loaded: " + TB.storage.isLoaded);
         initLoop();
 
@@ -44,14 +44,16 @@ TB = {
                         // lock 'n load
                         if (module.setting('enabled')) {
                             $.log('Loading ' + module.name + ' module');
-                            if (module.config["needs_mod_subs"]) {
-                                $.log("  We require additional mod subs");
-                                TB.utils.getModSubs(function init() {
-                                    module.init();
-                                });
-                            } else {
-                                module.init();
-                            }
+                            // unnecessary; we do it in TB.utils.getModSubs now
+                            module.init();
+                            // if (module.config["needs_mod_subs"]) {
+                            //     $.log("  We require additional mod subs");
+                            //     TB.utils.getModSubs(function init() {
+                            //         module.init();
+                            //     });
+                            // } else {
+                            //     module.init();
+                            // }
                         }
 
                     }
@@ -271,6 +273,9 @@ TB = {
                         switch (module.settings[$this.data('setting')].type) {
                             case 'boolean':
                                 value = $this.find('input').prop('checked');
+                                break;
+                            case 'text':
+                                value = $this.find('input').val();
                                 break;
                             case 'list':
                                 value = $this.find('input').val().split(',').map(function (str) { return str.trim(); });

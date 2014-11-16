@@ -18,7 +18,7 @@ modButton.register_setting(
     });
 // can't call this inside because it doesn't know the default value yet
 // can't call it plain because it uses TB.utils.mySubs
-TB.utils.getModSubs(function init() {
+TB.utils.getModSubs(function modbuttoninit() {
     modButton.settings['sublist']["args"] = [TB.utils.mySubs, modButton.setting('sublist')];
 });
 
@@ -55,7 +55,7 @@ modButton.processThing = function processThing(thing) {
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        $(thing).find('.buttons li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
+        $(thing).find('.buttons > li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modButton.buttonName + '</a></li>');
     }
 };
 
@@ -149,7 +149,6 @@ modButton.init = function init() {
         modButton.run();
     });
 
-
     // Mod button clicked
     $body.on('click', '.global-mod-button', function (event) {
         var benbutton = event.target; //huehuehue
@@ -223,6 +222,18 @@ modButton.init = function init() {
                         <button class="flair-save">Save Flair</button>'
                 },
                 {
+                    title: "Send Message",
+                    tooltip: "Send a message from the subreddit.",
+                    content: '\
+                            <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>\
+                            <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>\
+                            <span id="subreddit-message-callback"></span>\
+                            ',
+                    footer: '\
+                        <span class="status error left"></span>\
+                        <button class="message-send">Send Message</button>'
+                },
+                {
                     title: "Settings",
                     tooltip: "Edit Mod Button Settings.",
                     content: '\
@@ -264,11 +275,11 @@ modButton.init = function init() {
 
         // Remove options that only apply to subs we mod
         if (!subreddit) {
-            // Hide the flair tab
+            // Hide the flair tab and message tab
             // TODO: add a "disabled" state, with tooltip, and use that instead
             // We can only edit flair in the current sub.
             $popup.find('.tb-popup-tabs .user_flair').remove();
-
+            $popup.find('.tb-popup-tabs .send_message').remove();
             // We can oly nuke comments in subs we mod.
             $popup.find('.tb-popup-tabs .nuke_comment_chain').remove();
         }
@@ -522,6 +533,48 @@ modButton.init = function init() {
         $.log(thing_id);
     });
 
+    // send a message to the user.
+    $body.on('click', '.mod-popup .message-send', function () {
+
+        TBUtils.longLoadSpinner(true);
+        var $popup = $(this).parents('.mod-popup'),
+            user = $popup.find('.user').text(),
+            subreddit = $popup.find('.subreddit').text(),
+            $callbackSpan = $popup.find('.send_message #subreddit-message-callback'),
+            $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
+            $subredditMessage = $popup.find('.send_message .subreddit-message');
+
+        if(!$subredditMessageSubject.val() ||  !$subredditMessage.val()) {
+            $callbackSpan.text('You forgot a subject or message');
+            $callbackSpan.css('color', 'red');
+            TBUtils.longLoadSpinner(false);
+            return;
+        } else {
+            var subject  = $subredditMessageSubject.val(),
+                message = $subredditMessage.val();
+        }
+
+        TBUtils.sendMessage(user, subject, message, subreddit, function(successful, response) {
+            if (!successful) {
+                $callbackSpan.text('an error occurred: ' + response[0][1]);
+                TBUtils.longLoadSpinner(false);
+            } else {
+                if (response.json.errors.length) {
+                    $callbackSpan.text(response.json.errors[1]);
+                    TBUtils.longLoadSpinner(false);
+                    return
+                } else {
+                    $callbackSpan.text('message send');
+                    $callbackSpan.css('color', 'green');
+                    TBUtils.longLoadSpinner(false);
+                }
+
+            };
+        });
+
+    });
+
+    // Flair ALL THE THINGS
     $body.on('click', '.tb-popup-tabs .user_flair', function () {
         var $popup = $(this).parents('.mod-popup'),
             $status = $popup.find('.status'),

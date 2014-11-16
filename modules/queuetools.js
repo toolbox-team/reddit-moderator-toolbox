@@ -94,24 +94,26 @@ function queuetools() {
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
 
-        if (viewingspam && listingOrder == 'reports')
+        if (viewingspam && listingOrder == 'reports') {
             listingOrder = 'age';
+        }
 
         // Get rid of promoted links & thing rankings
         $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
-        // remove stuff we can't moderate.
-        TBUtils.getModSubs(function () {
-            $('.thing .subreddit').each(function () {
-                // Just to be safe.
-                var sub = $(this).text().replace('/r/', '').replace('/', '');
-
-
-                if ($.inArray(sub, TBUtils.mySubs) === -1) {
-                    $(this).parents('.thing').remove();
-                }
+        // remove stuff we can't moderate (in non-mod queues only)
+        if(!TBUtils.isModpage) {
+            TBUtils.getModSubs(function () {
+                $('.thing .subreddit').each(function () {
+                    // Just to be safe.
+                    var sub = $(this).text().replace('/r/', '').replace('/', '');
+                    
+                    if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                        $(this).parents('.thing').remove();
+                    }
+                });
             });
-        });
+        }
 
         $('.modtools-on').parent().remove();
 
@@ -438,7 +440,7 @@ function queuetools() {
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
-            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />').find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').each(addUserHistoryLink).end().find('.userattrs').each(addUserBanLink).filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
+            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />').find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').each(addUserBanLink).filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
                 $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
             });
             if (expandosOpen)

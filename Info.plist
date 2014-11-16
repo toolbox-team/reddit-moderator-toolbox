@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>Toolbox Team</string>
+	<key>Builder Version</key>
+	<string>10600.1.25</string>
+	<key>CFBundleDisplayName</key>
+	<string>reddit Moderator Toolbox</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.codefromabove.toolbox</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.3</string>
+	<key>CFBundleVersion</key>
+	<string>2</string>
+	<key>Chrome</key>
+	<dict/>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>libs/jquery-2.1.1.js</string>
+				<string>libs/snuownd.js</string>
+				<string>libs/ace.js</string>
+				<string>libs/worker-css.js</string>
+				<string>libs/mode-css.js</string>
+				<string>libs/mode-json.js</string>
+				<string>libs/mode-yaml.js</string>
+				<string>libs/ace-themes.js</string>
+				<string>tbstorage.js</string>
+				<string>tbui.js</string>
+				<string>tbplugins.js</string>
+				<string>tbutils.js</string>
+				<string>tbobject.js</string>
+				<string>modules/core.js</string>
+				<string>modules/notifier.js</string>
+				<string>modules/domaintagger.js</string>
+				<string>modules/usernotes.js</string>
+				<string>modules/modbutton.js</string>
+				<string>modules/modmailpro.js</string>
+				<string>modules/stattittab.js</string>
+				<string>modules/comment.js</string>
+				<string>modules/config.js</string>
+				<string>modules/modmatrix.js</string>
+				<string>modules/banlist.js</string>
+				<string>modules/removalreasons.js</string>
+				<string>modules/queuetools.js</string>
+				<string>modules/historybutton.js</string>
+				<string>modules/syntax.js</string>
+				<string>modules/frame.js</string>
+				<string>modules/modmaillite.js</string>
+				<string>modules/devtools.js</string>
+				<string>tbobjectinit.js</string>
+			</array>
+		</dict>
+		<key>Stylesheets</key>
+		<array>
+			<string>styles/toolbox.css</string>
+			<string>styles/modmatrix.css</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>A set of tools to be used by moderators on reddit in order to make their jobs easier.</string>
+	<key>DeveloperIdentifier</key>
+	<string>42X34WDLP5</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Allowed Domains</key>
+			<array>
+				<string>*.reddit.com</string>
+			</array>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>Some</string>
+		</dict>
+	</dict>
+	<key>Website</key>
+	<string>http://reddit.com/r/toolbox</string>
+</dict>
+</plist>

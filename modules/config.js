@@ -11,14 +11,19 @@ function tbconfig() {
         subreddit = TBUtils.post_site,
         config = TBUtils.config;
 
-    if (!subreddit) return;
+    // only load on definite subreddits
+    if (!subreddit) {
+        $.log("aborting: invalid subreddit");
+        return;
+    }
 
-    $.getJSON('/r/' + subreddit + '/wiki/toolbox.json', function (json) {
-        if (json.data.content_md) {
-            config = JSON.parse(json.data.content_md);
+    TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+            $.log('failed: wiki config');
+            return;
         }
-        init();
-    }).error(function () {
+
+        config = resp;
         init();
     });
 

@@ -7,6 +7,11 @@ function initwrapper() {
     TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
+    // validate post_site. TODO: something better than this.
+    if (TBUtils.post_site == "subreddits you moderate" || TBUtils.post_site == "mod (filtered)") {
+        TBUtils.post_site = "";
+    }
+
     //Private variables
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
@@ -22,7 +27,9 @@ function initwrapper() {
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-        longLoadArray = [];
+        longLoadArray = [],
+        gettingModSubs = false,
+        getModSubsCallbacks = [];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
@@ -30,7 +37,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.0.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 300; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Shilling Serpent';
+    TBUtils.releaseName = 'No Name Beta';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 4;
     TBUtils.minNotesSchema = 0;
@@ -503,11 +510,22 @@ function initwrapper() {
     TBUtils.getModSubs = function (callback) {
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
-            $.log('getting new subs.');
-            TBUtils.mySubs = []; //reset list.
-            TBUtils.mySubsData = [];
-            getSubs(modMineURL);
+            // time to refresh
+            if (gettingModSubs) {
+                // we're already fetching a new list, so enqueue the callback
+                $.log('enqueueing getModSubs callback');
+                getModSubsCallbacks.push(callback);
+            } else {
+                // start the process
+                $.log('getting new subs.');
+
+                gettingModSubs = true;
+                TBUtils.mySubs = []; // reset
+                TBUtils.mySubsData = [];
+                getSubs(modMineURL);
+            }
         } else {
+            // run callback on cached sublist
             TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
             TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
             // Go!
@@ -559,7 +577,14 @@ function initwrapper() {
                 TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
                 TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
                 // Go!
-                callback();
+                while (getModSubsCallbacks.length > 0) {
+                    // call them in the order they were added
+                    $.log("calling callback "+getModSubsCallbacks[0].name);
+                    getModSubsCallbacks[0]();
+                    getModSubsCallbacks.splice(0, 1); // pop first element
+                }
+                // done
+                gettingModSubs = false;
             }
         }
     };
@@ -949,6 +974,36 @@ function initwrapper() {
         });
     };
 
+    TBUtils.sendMessage = function(user, subject, message, subreddit, callback) {
+        $.post('/api/compose', {
+            from_sr: subreddit,
+            subject: subject,
+            text: message,
+            to: user,
+            uh: TBUtils.modhash,
+            api_type: 'json'
+        })
+            .success(function(response) {
+                if(response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
+                    $.log("Failed to send link to /u/"+user);
+                    $.log(response.json.errors);
+                    if(typeof callback !== "undefined")
+                        callback(false, response.json.errors);
+                    return;
+                }
+
+                $.log("Successfully send link to /u/"+user);
+                if(typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function(error) {
+                $.log("Failed to send link to /u/"+user);
+                $.log(error);
+                if(typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+
 
     TBUtils.sendPM = function(to, subject, text, callback) {
         $.post('/api/compose', {
@@ -1179,7 +1234,7 @@ function initwrapper() {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
             if (resp.stableVerson > TBUtils.shortVersion && TBUtils.browser == 'firefox' && TBUtils.isExtension) {
                 TBUtils.alert("There is a new version of Toolbox for Firefox!  Click here to update.", function (clicked) {
-                    if (clicked) window.open("http://creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
+                    if (clicked) window.open("//creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
                 });
                 return; //don't spam the user with notes until they have the current version.
             }

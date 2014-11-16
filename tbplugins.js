@@ -138,6 +138,7 @@
                 }
                 var patternCount = pat.length;
                 for (var ii = 0; ii < patternCount; ii++) {
+                    if (pat[ii] == "") continue; // don't let "" kill us
                     var currentTerm = (ignore ? replaceDiacritics(pat[ii]) : pat[ii]).toUpperCase();
                     var pos = (ignore ? replaceDiacritics(node.data) : node.data).toUpperCase().indexOf(currentTerm);
                     if (pos >= 0) {
@@ -580,6 +581,15 @@
   document.createElement("time");
 }));
 
+Array.prototype.clean = function(deleteValue) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};
 
 (function ($) {
     // [name] is the name of the event "click", "mouseover", ..

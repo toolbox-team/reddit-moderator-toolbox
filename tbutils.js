@@ -134,6 +134,13 @@ function initwrapper() {
 
         // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
+        // 3.0: Convert comments module highlight keywords from string to array
+        var highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', []);
+        if (!Array.isArray(highlighted)) {
+            highlighted = highlighted.split(',').map(function (str) { return str.trim(); }).clean("");
+            TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
+        }
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

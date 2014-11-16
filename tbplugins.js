@@ -138,6 +138,7 @@
                 }
                 var patternCount = pat.length;
                 for (var ii = 0; ii < patternCount; ii++) {
+                    if (pat[ii] == "") continue; // don't let "" kill us
                     var currentTerm = (ignore ? replaceDiacritics(pat[ii]) : pat[ii]).toUpperCase();
                     var pos = (ignore ? replaceDiacritics(node.data) : node.data).toUpperCase().indexOf(currentTerm);
                     if (pos >= 0) {

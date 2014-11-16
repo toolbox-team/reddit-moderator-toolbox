@@ -1413,7 +1413,7 @@ height: 300px;
     margin-right: 0;
     width: auto;
     height: 10px;    
-	background: url("//creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
+    background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 
 .tb-internal-overlay {

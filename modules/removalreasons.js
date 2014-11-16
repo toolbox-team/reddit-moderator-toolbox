@@ -1,13 +1,22 @@
 function removalreasons() {
-    // I don't actually know why this works the way it does, but without them modtools doesn't load.
-    if (!document.head)
-        return setTimeout(removalreasons);
-    if (!document.body)
-        return setTimeout(removalreasons);
-    
-    if (!TBUtils.logged || !TBUtils.getSetting('RemovalReasons', 'enabled', true) || TBUtils.isModmail)
-        return;
-    
+
+var removalReasons = new TB.Module('Removal Reasons');
+
+removalReasons.settings["enabled"]["default"] = true;
+removalReasons.config["betamode"] = false;
+// removalReasons.config["needs_mod_subs"] = true;
+
+removalReasons.register_setting(
+    "commentreasons", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Enable removal reasons for comments."
+    });
+
+removalReasons.init = function removalReasonsInit() {
+
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
     $body.addClass('tb-removal-reasons');
@@ -29,10 +38,11 @@ function removalreasons() {
         DEFAULT_BAN_TITLE	= "/u/{author} has been banned from /r/{subreddit} for {reason}";
     
     // Cached data
-    var notEnabled = [],
-        commentsEnabled = TBUtils.getSetting('RemovalReasons', 'commentreasons', false);
+    var notEnabled = [];
     
     function getRemovalReasons(subreddit, callback) {
+        console.log("checking subreddit: "+subreddit);
+
         // Nothing to do if no toolbox config
         if (TBUtils.noConfig.indexOf(subreddit) != -1) {
             callback(false);
@@ -86,7 +96,7 @@ function removalreasons() {
                 return;
             }
 
-            $.log('falied: all');
+            $.log('failed: all');
             callback(false);
         });
     }
@@ -99,7 +109,7 @@ function removalreasons() {
 
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !commentsEnabled)
+        if (thingclasses.match(/\bcomment\b/) && !removalReasons.setting('commentreasons'))
             return;
 
         // Get link/comment attributes
@@ -120,8 +130,9 @@ function removalreasons() {
             };
 
         // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
-        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1)
+        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) {
             return;
+        }
 
         // Set attributes and open reason box if one already exists for this subreddit
         var popup = $('#reason-popup-' + data.subreddit);
@@ -588,7 +599,11 @@ function removalreasons() {
     $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
         TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
-}
+};
+
+TB.register_module(removalReasons);
+
+} // end removalreasons()
 
 (function () {
     // wait for storage

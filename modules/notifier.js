@@ -95,7 +95,6 @@ function notifier() {
 
     // Module settings.
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
-        rrEnabled = TBUtils.getSetting('RemovalReasons', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
         dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
@@ -110,10 +109,6 @@ function notifier() {
         sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
-
-    // RR settings
-    //  removalreasons = TBUtils.getSetting('RemovalReasons', 'removalreasons', true),
-    var commentreasons = TBUtils.getSetting('RemovalReasons', 'commentreasons', false);
 
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
@@ -416,9 +411,6 @@ function notifier() {
                 <label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="rrEnabled" ' + ((rrEnabled) ? "checked" : "") + '> Enable Removal Reasons</label>\
-            </p>\
-            <p>\
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
@@ -556,21 +548,6 @@ function notifier() {
         $(htmlmodtools).appendTo('.tb-window-content').hide();
         if (qtEnabled) {
             $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
-        }
-
-        // Settings to toggle the modules
-        var htmlremovalreasons = '\
-            <div class="tb-window-content-removalreasons">\
-             <p>\
-             <label><input type="checkbox" id="commentreasons" ' + ((commentreasons) ? "checked" : "") + '> Enable removal reasons for comments</label>\
-             </p>\
-            <div class="tb-help-main-content">Settings for Removal Reasons.</div>\
-            </div>\
-            ';
-
-        $(htmlremovalreasons).appendTo('.tb-window-content').hide();
-        if (rrEnabled) {
-            $('<a href="javascript:;" class="tb-window-content-removalreasons">Removal Reasons</a>').appendTo('.tb-window-tabs');
         }
 
         // Settings for the comment module
@@ -829,7 +806,6 @@ function notifier() {
 
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
-        TBUtils.setSetting('RemovalReasons', 'enabled', $("#rrEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
         TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
@@ -846,9 +822,6 @@ function notifier() {
         TBUtils.setSetting('QueueTools', 'sortunmoderated', $("#sortunmoderated").prop('checked'));
         TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));
 
-        // Save RR settings.
-        //TBUtils.setSetting('RemovalReasons', 'removalreasons', $("#removalreasons").prop('checked'));
-        TBUtils.setSetting('RemovalReasons', 'commentreasons', $("#commentreasons").prop('checked'));
 
         // save cache settings.
         TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());

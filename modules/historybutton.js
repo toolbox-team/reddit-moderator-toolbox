@@ -139,8 +139,8 @@ historyButton.init = function () {
                 after = d.data.after,
                 commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
-                for (i in d.data.children) {
-                    var data = d.data.children[i].data;
+                $.each(d.data.children, function( index, value ) {
+                    var data = value.data;
 
                     if (!domains[data.domain]) {
                         domains[data.domain] = {
@@ -158,15 +158,16 @@ historyButton.init = function () {
                         subredditlist.push(data.subreddit);
                     }
                     subreddits[data.subreddit].count++;
-                }
+                });
 
                 domainslist.sort(function (a, b) {
                     return domains[b].count - domains[a].count;
                 });
                 domaintable.empty();
 
-                for (i in domainslist) {
-                    var dom = domainslist[i],
+                var moredomains;
+                $.each(domainslist, function( index, value ) {
+                    var dom = value,
                         n = domains[dom].count,
                         url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
                         match = dom.match(/^self.(\w+)$/);
@@ -180,9 +181,11 @@ historyButton.init = function () {
                     if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
                     domaintable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
-                    if (i < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + percentage + '%';
-                }
-                if (i >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
+                    if (index < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + percentage + '%';
+                    moredomains = index;
+                });
+
+                if (moredomains >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
 
                 commentbody += '\n\nsubreddit submitted to|count|%\n:-|-:|-:';
 
@@ -191,9 +194,9 @@ historyButton.init = function () {
                 });
                 subreddittable.empty();
 
-
-                for (i in subredditlist) {
-                    var sr = subredditlist[i],
+                var moresubreddit;
+                $.each(subredditlist, function( index, value ) {
+                    var sr = value,
                         n = subreddits[sr].count,
                         url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
 
@@ -205,9 +208,10 @@ historyButton.init = function () {
                     var percentage = Math.round(n / subTotal * 100);
                     subreddittable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
-                    if (i < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage + '%';
-                }
-                if (i >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
+                    if (index < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage + '%';
+                    moresubreddit = index;
+                });
+                if (moresubreddit >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
 
                 $('.rts-report').attr('data-commentbody', commentbody);
 

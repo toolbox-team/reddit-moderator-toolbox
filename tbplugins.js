@@ -581,6 +581,8 @@
   document.createElement("time");
 }));
 
+// DefineProperty is implicitly non-enumerable
+// We don't want iterators to see this function
 Object.defineProperty(Array.prototype, "clean", {
     value: function clean(deleteValue) {
         for (var i = 0; i < this.length; i++) {

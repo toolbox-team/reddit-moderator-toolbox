@@ -91,7 +91,6 @@ function notifier() {
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
         notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
         configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true);
 
     // QT settings.
@@ -404,9 +403,6 @@ function notifier() {
             </p>\
             <p>\
                 <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '> Enable Domain Tagger</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
@@ -747,7 +743,6 @@ function notifier() {
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
-        TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 

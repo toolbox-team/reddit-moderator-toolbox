@@ -1,7 +1,20 @@
 function usernotes() {
-    if (!TBUtils.logged || !TBUtils.getSetting('UserNotes', 'enabled', true)) return;
-    $.log('Loading User Notes Module');
+//Setup
+var userNotes = new TB.Module('User Notes');
 
+////Default settings
+userNotes.settings['enabled']['default'] = true;
+
+// userNotes.register_setting('displaytype', {
+//     'type': 'selector',
+//     'values': ["Post border", "Domain background", "Domain border"],
+//     'default': "post_border",
+//     'betamode': true,
+//     'hidden': false,
+//     'title': "Tag location"
+// });
+
+userNotes.init = function () {
     var subs = [];
 
     TBUtils.getModSubs(function () {
@@ -288,7 +301,7 @@ function usernotes() {
             "type": mgr.get("warnings", note.w),
         };
     }
-    
+
     //Date/time utilities
     function inflateTime(time) {
         if(TBUtils.notesSchema >= 5 && time.toString().length <= 10) {
@@ -296,14 +309,14 @@ function usernotes() {
         }
         return time;
     }
-    
+
     function deflateTime(time) {
         if(TBUtils.notesSchema >= 5 && time.toString().length > 10) {
             time /= 1000;
         }
         return time;
     }
-    
+
     function setNotes(notes, subreddit) {
         //$.log("notes = " + notes);
         //$.log("notes.ver = " + notes.ver);
@@ -354,7 +367,7 @@ function usernotes() {
             TBUtils.forEachChunked(subs, 10, 500, processSub);
         });
     }
-    
+
     var $body = $('body');
 
     $body.on('click', '#add-user-tag', function (e) {
@@ -473,12 +486,12 @@ function usernotes() {
             }
         });
     });
-    
+
     // 'cancel' button clicked
     $body.on('click', '.utagger-popup .close', function () {
         $(this).parents('.utagger-popup').remove();
     });
-    
+
     $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
         var $popup = $(this).closest('.utagger-popup'),
             $unote = $popup.find('.utagger-user-note'),
@@ -495,7 +508,7 @@ function usernotes() {
         if ($popup.find('.utagger-include-link').is(':checked')) {
             link = $unote.attr('data-link');
         }
-        
+
         //Check new note data states
         if(!deleteNote) {
             if(!noteText) {
@@ -503,11 +516,11 @@ function usernotes() {
                 $unote.css({
                     "border": "1px solid red"
                 });
-                
+
                 var $error = $popup.find('.tb-popup-error');
                 $error.text("Note text is required");
                 $error.show();
-                
+
                 return;
             }
             else if ((!user || !subreddit)) {
@@ -515,7 +528,7 @@ function usernotes() {
                 return;
             }
         }
-        
+
         //Create new note
         note = {
             note: noteText,
@@ -595,12 +608,12 @@ function usernotes() {
             }
         });
     });
-    
+
     $body.on('click', '.utagger-cancel-user', function () {
         var popup = $(this).closest('.utagger-popup');
         $(popup).remove();
     });
-    
+
     $body.on('keyup', '.utagger-user-note', function (event) {
         if(event.keyCode == 13) {
             $.log("Enter pressed!", true);
@@ -608,7 +621,11 @@ function usernotes() {
             popup.find('.utagger-save-user').click();
         }
     });
-}
+}; // userNotes.init()
+
+TB.register_module(userNotes);
+
+} // usernotes() wrapper
 
 (function () {
     // wait for storage

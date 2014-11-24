@@ -90,10 +90,7 @@ function notifier() {
     // Module settings.
     var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
         qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true),
-        notesEnabled = TBUtils.getSetting('UserNotes', 'enabled', true),
-        dtagEnabled = TBUtils.getSetting('DomainTagger', 'enabled', false),
-        configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true),
-        modmatrixEnabled = TBUtils.getSetting('ModMatrix', 'enabled', true);
+        configEnabled = TBUtils.getSetting('TBConfig', 'enabled', true);
 
     // QT settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
@@ -404,16 +401,7 @@ function notifier() {
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
             <p>\
-                <label><input type="checkbox" id="notesEnabled" ' + ((notesEnabled) ? "checked" : "") + '> Enable User Notes</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="dtagEnabled" ' + ((dtagEnabled) ? "checked" : "") + '> Enable Domain Tagger</label>\
-            </p>\
-            <p>\
                 <label><input type="checkbox" id="configEnabled" ' + ((configEnabled) ? "checked" : "") + '> Enable Toolbox Config</label>\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="modmatrixEnabled" ' + ((modmatrixEnabled) ? "checked" : "") + '> Enable Modlog Utilities</label>\
             </p>\
             <p>\
                 <label><input type="checkbox" id="notifierEnabled" ' + ((notifierEnabled) ? "checked" : "") + '> Enable Notifier (queue counts and desktop notifications)</label>\
@@ -750,10 +738,7 @@ function notifier() {
         // Save which modules are enabled.
         TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
-        TBUtils.setSetting('UserNotes', 'enabled', $("#notesEnabled").prop('checked'));
-        TBUtils.setSetting('DomainTagger', 'enabled', $("#dtagEnabled").prop('checked'));
         TBUtils.setSetting('TBConfig', 'enabled', $("#configEnabled").prop('checked'));
-        TBUtils.setSetting('ModMatrix', 'enabled', $("#modmatrixEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
         // Save QT settings.

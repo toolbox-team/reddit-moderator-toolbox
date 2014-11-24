@@ -44,8 +44,8 @@ TB = {
                         // lock 'n load
                         if (module.setting('enabled')) {
                             $.log('Loading ' + module.name + ' module');
-                            // unnecessary; we do it in TB.utils.getModSubs now
                             module.init();
+                            // unnecessary; we do it in TB.utils.getModSubs now
                             // if (module.config["needs_mod_subs"]) {
                             //     $.log("  We require additional mod subs");
                             //     TB.utils.getModSubs(function init() {
@@ -107,9 +107,9 @@ TB = {
                     $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
                 $tab.data('module', module.shortname);
-                
+
                 var $body = $('body');
-                
+
                 for (var j = 0; j < module.settingsList.length; j++) {
                     var setting = module.settingsList[j],
                         options = module.settings[setting];

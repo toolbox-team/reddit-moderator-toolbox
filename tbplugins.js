@@ -581,15 +581,19 @@
   document.createElement("time");
 }));
 
-Array.prototype.clean = function(deleteValue) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == deleteValue) {
-      this.splice(i, 1);
-      i--;
-    }
-  }
-  return this;
-};
+// DefineProperty is implicitly non-enumerable
+// We don't want iterators to see this function
+Object.defineProperty(Array.prototype, "clean", {
+    value: function clean(deleteValue) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == deleteValue) {
+                this.splice(i, 1);
+                i--;
+            }
+        }
+        return this;
+    },
+});
 
 (function ($) {
     // [name] is the name of the event "click", "mouseover", ..

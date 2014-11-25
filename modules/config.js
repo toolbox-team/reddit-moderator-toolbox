@@ -1,7 +1,20 @@
 function tbconfig() {
-    if (!TBUtils.logged || !TBUtils.getSetting('TBConfig', 'enabled', true))
-        return;
-    $.log('Loading Configuration Module');
+//Setup
+var TBConfig = new TB.Module('Toolbox Config');
+TBConfig.shortname = 'TBConfig'; // for backwards compatibility
+////Default settings
+TBConfig.settings['enabled']['default'] = true;
+
+// TBConfig.register_setting('displaytype', {
+//     'type': 'selector',
+//     'values': ["Post border", "Domain background", "Domain border"],
+//     'default': "post_border",
+//     'betamode': true,
+//     'hidden': false,
+//     'title': "Tag location"
+// });
+
+TBConfig.init = function () {
     
     var $body = $('body');
 
@@ -569,7 +582,12 @@ function tbconfig() {
         // so they don't need to be re-strinified.
         postToWiki(page, text, editNote, false, updateAM);
     });
-}
+
+}; // TBConfig.init()
+
+TB.register_module(TBConfig);
+
+} // tbconfig() wrapper
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {

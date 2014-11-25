@@ -57,9 +57,27 @@ macros.init = function macrosInit() {
     // Look up macros.
     $body.on('click', '.tb-toplevel-macro, .tb-macro', function() {
         var $this = $(this);
-        var $textarea = $this.closest('.usertext-edit').find('textarea[name=text]');
+        var info = TB.utils.getThingInfo($this); //never send the thing, it will bomb on threads.
+        $.log(info.id);
 
-        $textarea.val('mods are gods');
+        TBUtils.postComment(info.id, "mods are gods", function(successful, response) {
+            if(!successful) {
+                TB.utils.alert("Failed to post comment.");
+            } else {
+                // Distinguish the new reply
+                TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
+                    if (!successful) {
+                        TB.utils.alert("Failed to distinguish comment.");
+                    }
+                });
+            }
+        });
+
+        //var $textarea = $this.closest('.usertext-edit').find('textarea[name=text]');
+        //var $save = $this.closest('.usertext-buttons').find('.save');
+
+        //$textarea.val('mods are gods');
+        //$save.trigger('click');
     });
 };
 

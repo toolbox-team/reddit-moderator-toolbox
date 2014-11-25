@@ -599,37 +599,38 @@ function initwrapper() {
     TBUtils.getThingInfo = function (sender, modCheck) {
         // If we were passed in a .thing, we may have to walk down the tree to
         // find the associated .entry
-        var entry = $($(sender).closest('.entry')[0] || $(sender).find('.entry')[0] || sender),
-            thing = $($(sender).closest('.thing')[0] || sender),
-            user = $(entry).find('.author:first').text() || $(thing).find('.author:first').text(),
-            subreddit = TBUtils.post_site || $(entry).find('.subreddit').text() || $(thing).find('.subreddit').text() || $(entry).find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
-            permalink = $(entry).find('a.bylink').attr('href') || $(entry).find('.buttons:first .first a').attr('href') || $(thing).find('a.bylink').attr('href') || $(thing).find('.buttons:first .first a').attr('href'),
-            domain = ($(entry).find('span.domain:first').text() || $(thing).find('span.domain:first').text()).replace('(', '').replace(')', ''),
-            id = $(entry).attr('data-fullname') || $(thing).attr('data-fullname'),
+        var $sender = $(sender),
+            $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender),
+            $thing = $($sender.closest('.thing')[0] || $sender),
+            user = $entry.find('.author:first').text() || $thing.find('.author:first').text(),
+            subreddit = TBUtils.post_site || $entry.find('.subreddit').text() || $thing.find('.subreddit').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
+            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href'),
+            domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
+            id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
 
-            // These need some fall backs, but only removal reasons use them for now.
-            title = thing.find('a.title').length ? thing.find('a.title').text() : '',
-            kind = thing.hasClass('link') ? 'submission' : 'comment',
-            postlink = thing.find('a.title').attr('href');
+        // These need some fall backs, but only removal reasons use them for now.
+            title = $thing.find('a.title').length ? $thing.find('a.title').text() : '',
+            kind = $thing.hasClass('link') ? 'submission' : 'comment',
+            postlink = $thing.find('a.title').attr('href');
 
         // removed? spam or ham?
-        var removal = (entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [],
+        var removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [],
             banned_by = removal[1] || '',
             spam = removal[2] == 'spam' || removal[2] == 'confirm spam',
             ham = removal[2] == 'remove not spam';
 
         if (TBUtils.isEditUserPage && !user) {
-            user = $(sender).closest('.user').find('a:first').text() || $(entry).closest('.user').find('a:first').text() || $(thing).closest('.user').find('a:first').text();
+            user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
         }
 
 
         // If we still don't have a sub, we're in mod mail, or PMs.
-        if (TBUtils.isModmail || $(sender).closest('.message-parent')[0] !== undefined) {
-            subreddit = (subreddit) ? subreddit : ($(entry).find('.head a:last').text() || $(thing).find('.head a:last').text());
+        if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+            subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
 
             //This is a weird palce to go about this, and the conditions are strange,
             //but if we're going to assume we're us, we better make damned well sure that is likely the case.
-            // if ($(entry).find('.remove-button').text() === '') {
+            // if ($entry.find('.remove-button').text() === '') {
             // The previous check would mistakenly catch removed modmail messages as the user's messages.
             // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
             // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
@@ -638,7 +639,7 @@ function initwrapper() {
 
                 if (!subreddit || subreddit.indexOf('/r/') < 1) {
                     // Find a better way, I double dog dare ya!
-                    subreddit = $(thing).closest('.message-parent').find('.correspondent.reddit.rounded a').text()
+                    subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text()
                 }
             }
         }
@@ -657,7 +658,7 @@ function initwrapper() {
             user = '';
         }
 
-        var approved_text = $(entry).find('.approval-checkmark').attr('title') || $(thing).find('.approval-checkmark').attr('title') || '';
+        var approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
         approved_by = approved_text.match(/by\s(.+?)\s/) || '';
 
         var info = {

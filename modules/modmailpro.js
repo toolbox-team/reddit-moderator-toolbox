@@ -1,8 +1,33 @@
 function modmailpro() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true))
-        return;
-    $.log('Loading MMP Module');
-    
+//Setup
+var modMailPro = new TB.Module('Mod Mail Pro');
+
+////Default settings
+modMailPro.settings['enabled']['default'] = true;
+
+// TBConfig.register_setting('displaytype', {
+//     'type': 'selector',
+//     'values': ["Post border", "Domain background", "Domain border"],
+//     'default': "post_border",
+//     'betamode': true,
+//     'hidden': false,
+//     'title': "Tag location"
+// });
+
+modMailPro.init = function () {
+    // if (!TBUtils.isModmail) return;
+
+    console.log('running mmp');
+
+    this.modmailpro();
+    this.realtimemail();
+    this.compose();
+    this.modmailSwitch();
+    this.settings();
+    this.threadedModmail();
+};
+
+modMailPro.modmailpro = function () {
     var $body = $('body');
 
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
@@ -504,11 +529,10 @@ function modmailpro() {
         $(link).text('collapse all');
         $('.collapse-link').text('[-]');
     }
-}
+};
 
-function realtimemail() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
 
+modMailPro.realtimemail = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
 
@@ -561,10 +585,10 @@ function realtimemail() {
             $(refreshLink).css(unselectedCSS);
         });
     }
-}
+};
 
-function compose() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+
+modMailPro.compose = function () {
     var COMPOSE = "compose-message",
         //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
@@ -594,15 +618,11 @@ function compose() {
             }
         });
     }
-}
+};
 
 
-
-function modmailSwitch() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
-
-        switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>'),
-
+modMailPro.modmailSwitch = function () {
+    switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>');
 
     TBUtils.getModSubs(function () {
         populateSwitch();
@@ -626,10 +646,10 @@ function modmailSwitch() {
             }
         });
     }
-}
+};
 
-function settings() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true)) return;
+
+modMailPro.settings = function () {
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
 
     var VERSION = '3.2',
@@ -718,7 +738,7 @@ function settings() {
 
     if (TBUtils.getSetting('ModMailPro', 'autoload', false)) {
         $(autoload).addClass('true');
-        $(autoload).css(selectedCSS); 
+        $(autoload).css(selectedCSS);
     }
 
     if (!TBUtils.getSetting('Notifier', 'enabled', true)) {
@@ -817,11 +837,10 @@ function settings() {
         TBUtils.setSetting('ModMailPro', 'hideinvitespam', $(hideinvitespam).hasClass('true'));
         TBUtils.setSetting('ModMailPro', 'autoload', $(autoload).hasClass('true'));
     });
-}
+};
 
-function threadedModmail() {
-    if (!TBUtils.isModmail || !TBUtils.logged || !TBUtils.getSetting('ModMailPro', 'enabled', true))
-        return;
+
+modMailPro.threadedModmail = function () {
     var collapse = function() {
         $(this).parents(".thing:first").find("> .child").hide();
     }
@@ -831,7 +850,7 @@ function threadedModmail() {
 
     var threadModmail = function(fullname) {
         var firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
-        
+
         if(firstMessage.hasClass("hasThreads")) {
             firstMessage.find(".thing").each(function() {
                 var parent = $("div.thing.id-" + $(this).data("parent"));
@@ -841,22 +860,22 @@ function threadedModmail() {
             var id = fullname.substring(3);
             $.getJSON("//www.reddit.com/message/messages/"+id+".json", null, function(data) {
                 var messages = data.data.children[0].data.replies.data.children;
-                
+
                 for(var i = 0; i < messages.length; i++) {
                     var item = messages[i].data;
-                    
+
                     var message = $("div.thing.id-" + item.name);
                     var dummy = $("<div></div>").addClass("modmail-dummy-" + item.name);
                     var parent = $("div.thing.id-" + item.parent_id);
-                    
+
                     message.data("parent", item.parent_id);
-                    
+
                     dummy.insertAfter(message);
                     message.appendTo(parent.find("> .child"));
-                    
+
                     message.find("> .entry .noncollapsed .expand").bind("click", collapse);
                     message.find("> .entry .collapsed .expand").bind("click",noncollapse);
-                    
+
                     firstMessage.addClass("hasThreads");
                 }
             });
@@ -865,7 +884,7 @@ function threadedModmail() {
 
     var flatModmail = function(fullname) {
         var firstMessage = $("div.thing.id-" + fullname).removeClass("threaded-modmail");
-        
+
         firstMessage.find(".thing").each(function() {
             $(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
         });
@@ -873,26 +892,25 @@ function threadedModmail() {
 
     $("#siteTable > .thing.message").each(function() {
         var fullname = $(this).data("fullname");
-        
+
         var subject = $(this).find(".subject");
-        
+
         var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href","#").appendTo(subject).hide();
         var threadTrigger = $("<a></a>").addClass("expand-btn").text("threaded view").attr("href","#").appendTo(subject);
-        
+
         flatTrigger.click(function() { flatModmail(fullname); $(this).hide(); threadTrigger.show(); return false; });
         threadTrigger.click(function() { threadModmail(fullname); $(this).hide(); flatTrigger.show(); return false; });
     });
-}
+};
+
+
+TB.register_module(modMailPro);
+
+} // modmailpro() wrapper
 
 (function () {
-    // wait for storage
-    window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
+    window.addEventListener("TBObjectLoaded", function () {
+        $.log("MMP: got tbobject");
         modmailpro();
-        realtimemail();
-        compose();
-        modmailSwitch();
-        settings();
-        threadedModmail();
     });
 })();

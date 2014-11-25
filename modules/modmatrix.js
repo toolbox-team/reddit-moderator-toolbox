@@ -672,11 +672,10 @@ modLogMatrix.dateToUTC = function (date) {
 
 
 modLogMatrix.init = function () {
+    if (!TBUtils.isModLogPage) return;
 
-    if (TBUtils.isModLogPage) {
-        $.log('Running Mod Matrix Module');
-        modLogMatrix.run();
-    }
+    $.log('Running Mod Matrix Module');
+    modLogMatrix.run();
 
     var $body = $('body');
 

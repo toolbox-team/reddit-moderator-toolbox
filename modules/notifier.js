@@ -88,8 +88,7 @@ function notifier() {
     }
 
     // Module settings.
-    var mmpEnabled = TBUtils.getSetting('ModMailPro', 'enabled', true),
-        qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true);
+    var qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true);
 
     // QT settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
@@ -393,9 +392,6 @@ function notifier() {
         // Settings to toggle the modules
         var htmlmodules = '\
             <div class="tb-window-content-modules">\
-            <p>\
-                <label><input type="checkbox" id="mmpEnabled" ' + ((mmpEnabled) ? "checked" : "") + '> Enable Mod Mail Pro</label>\
-            </p>\
             <p>\
                 <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
             </p>\
@@ -732,7 +728,6 @@ function notifier() {
         }
 
         // Save which modules are enabled.
-        TBUtils.setSetting('ModMailPro', 'enabled', $("#mmpEnabled").prop('checked'));
         TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 

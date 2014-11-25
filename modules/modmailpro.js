@@ -3,7 +3,8 @@ function modmailpro() {
 var modMailPro = new TB.Module('Mod Mail Pro');
 
 ////Default settings
-modMailPro.settings['enabled']['default'] = true;
+modMailPro.settings["enabled"]["default"] = true;
+modMailPro.config["betamode"] = false;
 
 // TBConfig.register_setting('displaytype', {
 //     'type': 'selector',
@@ -21,7 +22,7 @@ modMailPro.init = function () {
     this.realtimemail();
     this.compose();
     this.modmailSwitch();
-    this.settings();
+    this.displaySettings();
     this.threadedModmail();
 };
 
@@ -647,7 +648,7 @@ modMailPro.modmailSwitch = function () {
 };
 
 
-modMailPro.settings = function () {
+modMailPro.displaySettings = function () {
     var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
 
     var VERSION = '3.2',

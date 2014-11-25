@@ -15,9 +15,7 @@ modMailPro.settings['enabled']['default'] = true;
 // });
 
 modMailPro.init = function () {
-    // if (!TBUtils.isModmail) return;
-
-    console.log('running mmp');
+    if (!TBUtils.isModmail) return;
 
     this.modmailpro();
     this.realtimemail();

@@ -364,7 +364,7 @@ TB.Module.prototype = {
     _shortname: '',
     get shortname() {
         // return name.trim().toLowerCase().replace(' ', '_');
-        return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(' ', '');
+        return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
     },
     set shortname(val) {
         this._shortname = val;

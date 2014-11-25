@@ -378,6 +378,16 @@ function notifier() {
             <p>\
                 <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
             </p>\
+                Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                <input type="text" name="longLength" value="' + longLength + '">\
+            </p>\
+            <p>\
+                Cache subreddit user notes time (in minutes):<br>\
+                <input type="text" name="shortLength" value="' + shortLength + '">\
+            </p>\
+            <p>\
+                <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
+            </p>\
             <div class="tb-help-main-content">Edit Toolbox general settings</div>\
             </div>\
             ');
@@ -455,9 +465,6 @@ function notifier() {
         $notifierSettings.appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-notifier">Notifier</a>').appendTo('.tb-window-tabs');
 
-        // TODO: what were these for? can we drop them?
-        //$("input[name=modsubreddits]").val(unescape(modSubreddits));
-        //$("input[name=unmoderatedsubreddits]").val(unescape(unmoderatedSubreddits));
 
         // Edit shortcuts
         var htmlshorcuts = '\
@@ -516,26 +523,6 @@ function notifier() {
         if (qtEnabled) {
             $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
         }
-
-        // Settings for caching
-        var htmlcache = '\
-            <div class="tb-window-content-cache">\
-            <p>\
-                Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-                <input type="text" name="longLength" value="' + longLength + '">\
-            </p>\
-            <p>\
-                Cache subreddit user notes time (in minutes):<br>\
-                <input type="text" name="shortLength" value="' + shortLength + '">\
-            </p>\
-            <p>\
-                <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
-            </p>\
-            <div class="tb-help-main-content">Settings Toolbox caches.</div>\
-            </div>\
-            ';
-        $(htmlcache).appendTo('.tb-window-content').hide();
-        $('<a href="javascript:;" class="tb-window-content-cache">Cache</a>').appendTo('.tb-window-tabs');
 
         // About page
         var htmlabout = '\

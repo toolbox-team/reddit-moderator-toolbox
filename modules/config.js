@@ -95,8 +95,10 @@ TBConfig.init = function () {
                 <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
                 <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
                 <span class="tb-window-spacer">&nbsp;</span>\
-                <a class="reason-settings" href="javascript:;">removal reason settings</a><a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
+                <a class="reason-settings" href="javascript:;">removal reason settings</a>\
+                <a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
                 <a class="edit-domains" href="javascript:;">domain tags</a>\
+                <a class="edit-macros" href="javascript:;">mod macros</a>\
                 <!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
             </div>\
             <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
@@ -176,6 +178,140 @@ TBConfig.init = function () {
             $(html).remove();
         });
     });
+
+
+    $body.on('click', '.edit-macros', function () {
+
+        var $html = $('\
+<div class="tb-page-overlay edit-macros-form">\
+<div class="tb-window-wrapper-two">\
+<div class="tb-window-header"> Edit macros <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;">?</a> - <a class="cancel" href="javascript:;">✕</a></span></div>\
+<div class="tb-window-content">\
+\
+<div class="tb-form">\
+<p style="text-align:center;"><textarea class="edit-area" style="width: 800px; height: 150px;"></textarea><br/>\
+<input type="text" style="width: 150px;" class="macro-title" name="macro-title" placeholder="macro title" /><br/><input type="text" name="edit-note" placeholder="reason for edit (optional)" /></p>\
+<span class="edit-save-area">\
+&nbsp;&nbsp;(click on a macro below to edit it.)</span><br><br>\
+<table ><tbody /></table></div>\
+\
+</div>\
+<div class="tb-window-footer"><input class="save" type="button" value="new"/> <input class="delete" style="display:none" type="button" value="delete"/></div>\
+<div class="tb-help-config-content">\
+<h2>Input options:</h2>\
+<p>\
+<h2>Valid tokens:</h2>\
+<p><strong>{subreddit}</strong> - The subreddit the post/comment was posted to.<br>\
+<strong>{author}</strong> - The author of the link/comment<br>\
+<strong>{kind}</strong> - The type of post, either \'submission\' or \'comment\'<br>\
+<strong>{mod}</strong> - The name of the mod making comment (you)<br>\
+<strong>{title}</strong> - The title of the submission<br>\
+<strong>{url}</strong> - url/permalink to the removed post.<br>\
+<strong>{domain}</strong> - the domain of the removed submission.<br>\
+<strong>{link}</strong> - the link of the removed submission (same as {url} for self-posts)<br>\
+<strong>{reason}</strong> - this is the reason something was removed or someone was banned. It should not be used/will not work without &lt;logsub&gt;.<br>\
+<strong>{loglink}</strong> -  the link to the removal log thread. It should not be used/will not work without &lt;logsub&gt;. </p>\
+</div>\
+</div>\
+</div>\
+');
+        $html.appendTo('body').show();
+
+        // No macros stored in the config, don't populate list.
+        if (config.modMacros && config.modMacros.length > 0) {
+            var $editArea = $('.edit-area');
+
+            $(config.modMacros).each(function (i, item) {
+                var label = unescape(item.text);
+                if (label == "") {
+                    label = '<span style="color: #cecece">(no macro)</span>';
+                } else {
+                    if (label.length > 200) {
+                        label = label.substring(0, 197) + "...";
+                    }
+                    label = TBUtils.htmlEncode(label);
+                }
+                $html.find('tbody').append('<tr class="mod-macro"><th><input type="radio" style="display:none;" data-macro="' + i + '"name="reason-' + subreddit + '" id="macro-' + subreddit + '-' + i + '">' +
+                '</th><td><label style="padding: 1em; display: block;" for="macro-' + subreddit + '-' + i + '">' + label + '</label></td></tr>');
+            });
+
+            $('th input[type=radio]').change(function () {
+                $html.find('.save').val('save');
+                $html.find('.delete').show();
+
+                var macroNum = $(this).attr('data-macro');
+                $editArea.val(unescape(config.modMacros[macroNum].text));
+                $('.macro-title').val(config.modMacros[macroNum].title);
+                $editArea.attr('data-macro', macroNum);
+            });
+        }
+
+        // Do things about stuff.
+        $html.on('click', '.save', function () {
+            var $editArea = $('.edit-area'),
+                macroNum = $editArea.attr('data-macro'),
+                reasonText = $editArea.val(),
+                macroTitle = $('.macro-title').val(),
+                editNote = $("input[name=edit-note]").val();
+
+            if (macroNum) {
+                // is there's a macroNum, it's an existant reason
+                if (!editNote) {
+                    // default note
+                    editNote = 'update';
+                }
+                editNote += ', macro #'+macroNum;
+            } else {
+                // otherwise, it's a new reason
+                editNote = 'create new macro '+(editNote ? ', '+editNote : '');
+            }
+
+            if (macroNum) {
+                // if it's a current reason
+                config.modMacros[macroNum].text = escape(reasonText);
+            } else {
+                var macro = {
+                    text: escape(reasonText)
+                };
+
+                macro.title = macroTitle;
+
+                if (!config.modMacros) {
+                    config.modMacros = [];
+                }
+
+                config.modMacros.push(macro);
+            }
+            postToWiki('toolbox', config, editNote, true);
+            if (TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            }
+            $html.remove();
+        });
+
+        // Do things about stuff.
+        $html.on('click', '.delete', function () {
+            var macroNum = $('.edit-area').attr('data-macro');
+
+            if (macroNum) {
+                config.modMacros.splice(macroNum, 1);
+                //config.removalReasons.reasons[reasonsNum].remove();
+            } else {
+                return;
+            }
+            postToWiki('toolbox', config, 'delete macro #'+macroNum, true);
+            if (TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            }
+            $html.remove();
+        });
+
+        $html.on('click', '.cancel', function () {
+            $html.remove();
+        });
+    });
+
+
 
     $body.on('click', '.edit-reasons', function () {
 

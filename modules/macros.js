@@ -53,7 +53,7 @@ function modmacros() {
             $(macroConfig).each(function (i, item) {
                 $(selectClass)
                     .append($('<option>', {
-                        value: escape(item.text)
+                        value: item.text
                     })
                         .text(item.title));
             });

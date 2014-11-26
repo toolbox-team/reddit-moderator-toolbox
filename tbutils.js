@@ -702,8 +702,7 @@ function initwrapper() {
         }
         window.setTimeout(doChunk, delay);
     };
-
-
+    
     // Reddit API stuff
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {
@@ -714,7 +713,8 @@ function initwrapper() {
 
         if (isJSON) {
             // Not indenting saves precious bytes.
-            data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
+            //data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
+            data = JSON.stringify(data);
         }
         
         $.log("Posting /r/" + subreddit + "/api/wiki/edit/"+page);

@@ -164,6 +164,9 @@ TB = {
                         case "boolean":
                             $setting.append($('<label><input type="checkbox" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
                             break;
+                        case "number":
+                            $setting.append($('<label><input type="number" value="'+module.setting(setting)+'" min="'+options.min+'" max="'+options.max+'" step="'+options.step+'"> '+options.title+'</label>'));
+                            break;
                         case "text":
                         case "list":
                             $setting.append(options.title+':<br />');
@@ -273,6 +276,9 @@ TB = {
                         switch (module.settings[$this.data('setting')].type) {
                             case 'boolean':
                                 value = $this.find('input').prop('checked');
+                                break;
+                            case 'number':
+                                value = JSON.parse($this.find('input').val());
                                 break;
                             case 'text':
                                 value = $this.find('input').val();

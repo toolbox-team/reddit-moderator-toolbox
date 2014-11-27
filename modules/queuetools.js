@@ -1,22 +1,88 @@
 function queuetools() {
-    // I don't actually know why this works the way it does, but without them modtools doesn't load.
-    if (!document.head)
-        return setTimeout(queuetools);
-    if (!document.body)
-        return setTimeout(queuetools);
-    
+
+var queueTools = new TB.Module('Queue Tools');
+
+queueTools.settings["enabled"]["default"] = true;
+queueTools.config["betamode"] = false;
+queueTools.config["needs_mod_subs"] = true;
+
+queueTools.register_setting(
+    "hideactioneditems", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Hide items after mod action"
+    });
+queueTools.register_setting(
+    "ignoreonapprove", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Ignore reports on approved items"
+    });
+queueTools.register_setting(
+    "linktoqueues", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Link to subreddit queue on mod pages"
+    });
+queueTools.register_setting(
+    "sortmodqueue", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)"
+    });
+queueTools.register_setting(
+    "sortunmoderated", {
+        "type": "boolean",
+        "default": false,
+        "betamode": false,
+        "hidden": false,
+        "title": "Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)"
+    });
+queueTools.register_setting('reports-order', {
+    'type': 'selector',
+    'values': ["age", "score", "reports"],
+    'default': "age",
+    'betamode': false,
+    'hidden': false,
+    'title': "Tag location"
+});
+queueTools.register_setting('reports-threshold', {
+    'type': 'number',
+    'min': 0,
+    'max': null,
+    'step': 1,
+    'default': 1,
+    'betamode': false,
+    'hidden': false,
+    'title': "Reports threshold"
+});
+queueTools.register_setting('reports-ascending', {
+    'type': 'boolean',
+    'default': false,
+    'betamode': false,
+    'hidden': false,
+    'title': "Sort ascending."
+});
+
+
+queueTools.init = function () {
     var $body = $('body');
-    
-    if (!TBUtils.logged || !TBUtils.getSetting('QueueTools', 'enabled', true)) return;
-    $.log('Loading Queue Tools Module');
 
     // Cached data
     var notEnabled = [],
-        hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
-        ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        sortModQueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
-        sortUnmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
-        linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
+        hideActionedItems = queueTools.setting('hideactioneditems'),
+        ignoreOnApprove = queueTools.setting('ignoreonapprove'),
+        sortModQueue = queueTools.setting('sortmodqueue'),
+        sortUnmoderated = queueTools.setting('sortunmoderated'),
+        linkToQueues = queueTools.setting('linktoqueues');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -87,9 +153,9 @@ function queuetools() {
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1),
-            listingOrder = TBUtils.getSetting('QueueTools', 'reports-order', 'age'),
-            sortAscending = (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
+            reportsThreshold = queueTools.setting('reports-threshold'),
+            listingOrder = queueTools.setting('reports-order'),
+            sortAscending = queueTools.setting('reports-ascending'),
             viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !! location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -107,7 +173,7 @@ function queuetools() {
                 $('.thing .subreddit').each(function () {
                     // Just to be safe.
                     var sub = $(this).text().replace('/r/', '').replace('/', '');
-                    
+
                     if ($.inArray(sub, TBUtils.mySubs) === -1) {
                         $(this).parents('.thing').remove();
                     }
@@ -202,8 +268,8 @@ function queuetools() {
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            TBUtils.setSetting('QueueTools', 'reports-ascending', sortAscending);
-            TBUtils.setSetting('QueueTools', 'reports-order', order);
+            queueTools.setting('reports-ascending', sortAscending);
+            queueTools.setting('reports-order', order);
 
             $sortOrder.text(order);
             sortThings(order, sortAscending);
@@ -354,19 +420,19 @@ function queuetools() {
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            TBUtils.setSetting('QueueTools', 'reports-threshold', threshold);
+            queueTools.setting('reports-threshold', threshold);
             setThreshold($things);
         });
 
         function setThreshold(things) {
-            var threshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1);
+            var threshold = queueTools.setting('reports-threshold');
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
                     $(this).closest('.thing').hide();
             });
         }
         setThreshold($things);
-        
+
         function replaceSubLinks() {
             $this = $(this).find('a.subreddit');
             var href = $this.attr('href') + QUEUE_URL;
@@ -455,7 +521,7 @@ function queuetools() {
             if (action == 'expando' || action == 'remove' || action == 'approve') return !1;
             return rate_limit(action);
         };
-        
+
         // User ban button pressed.
         function postbanlog(subreddit, author, reason) {
             var data = {
@@ -629,7 +695,11 @@ function queuetools() {
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
         $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
     }
-}
+}; // queueTools.init()
+
+TB.register_module(queueTools);
+
+} // queuetools() wrapper
 
 (function () {
     // wait for storage

@@ -87,17 +87,6 @@ function notifier() {
         // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
     }
 
-    // Module settings.
-    var qtEnabled = TBUtils.getSetting('QueueTools', 'enabled', true);
-
-    // QT settings.
-    var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
-        ignoreonapprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
-        sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
-        sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
-        linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
-
     // cache settings.
     var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
         longLength = TBUtils.getSetting('cache', 'longlength', 45);
@@ -403,9 +392,6 @@ function notifier() {
         var htmlmodules = '\
             <div class="tb-window-content-modules">\
             <p>\
-                <label><input type="checkbox" id="qtEnabled" ' + ((qtEnabled) ? "checked" : "") + '> Enable Queue Tools</label>\
-            </p>\
-            <p>\
                 <label><input type="checkbox" id="notifierEnabled" ' + ((notifierEnabled) ? "checked" : "") + '> Enable Notifier (queue counts and desktop notifications)</label>\
             </p>\
             <div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
@@ -493,36 +479,6 @@ function notifier() {
         }
 
         $('<a href="javascript:;" class="tb-window-content-shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
-
-        // Settings to toggle the modules
-        var htmlmodtools = '\
-            <div class="tb-window-content-modtools">\
-                <p>\
-                <label><input type="checkbox" id="hideactioneditems" ' + ((hideactioneditems) ? "checked" : "") + '> Hide items after mod action</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="ignoreonapprove" ' + ((ignoreonapprove) ? "checked" : "") + '> Ignore reports on approved items</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="linktoqueues" ' + ((linkToQueues) ? "checked" : "") + '> Link to subreddit queue on mod pages</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summary when submitting spam reports</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="sortmodqueue" ' + ((sortmodqueue) ? "checked" : "") + '> Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)</label>\
-                </p>\
-                <p>\
-                <label><input type="checkbox" id="sortunmoderated" ' + ((sortunmoderated) ? "checked" : "") + '> Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)</label>\
-                </p>\
-            <div class="tb-help-main-content">Settings for Queue Tools.</div>\
-            </div>\
-            ';
-
-        $(htmlmodtools).appendTo('.tb-window-content').hide();
-        if (qtEnabled) {
-            $('<a href="javascript:;" class="tb-window-content-modtools">Queue Tools</a>').appendTo('.tb-window-tabs');
-        }
 
         // About page
         var htmlabout = '\
@@ -715,17 +671,7 @@ function notifier() {
         }
 
         // Save which modules are enabled.
-        TBUtils.setSetting('QueueTools', 'enabled', $("#qtEnabled").prop('checked'));
         TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
-
-        // Save QT settings.
-        TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'sortmodqueue', $("#sortmodqueue").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'sortunmoderated', $("#sortunmoderated").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));
-
 
         // save cache settings.
         TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());

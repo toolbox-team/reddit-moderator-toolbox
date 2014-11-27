@@ -140,6 +140,11 @@ function initwrapper() {
             highlighted = highlighted.split(',').map(function (str) { return str.trim(); }).clean("");
             TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
         }
+        // 3.0: Move QueueTools' rtscomment setting to HistoryButton
+        TBUtils.setSetting('HistoryButton', 'rtscomment', TBUtils.getSetting('QueueTools', 'rtscomment', true));
+        // 3.0: Upgrade QueueTools' sortAscending
+        TBUtils.setSetting('QueueTools', 'reports-ascending', (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'); //the fuck is going on here?
+
 
         // End: version changes.
 

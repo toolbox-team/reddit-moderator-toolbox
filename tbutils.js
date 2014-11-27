@@ -130,20 +130,22 @@ function initwrapper() {
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
         // Start: version changes.
+        /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
+        
         $.log('Running ' + TBUtils.toolboxVersion + ' changes');
 
         // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
         // 3.0: Convert comments module highlight keywords from string to array
-        var highlighted = TBUtils.getSetting('CommentsMod', 'highlighted', []);
+        var highlighted = TBStorage.getSetting('CommentsMod', 'highlighted', []);
         if (!Array.isArray(highlighted)) {
             highlighted = highlighted.split(',').map(function (str) { return str.trim(); }).clean("");
-            TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
+            TBStorage.setSetting('CommentsMod', 'highlighted', highlighted);
         }
         // 3.0: Move QueueTools' rtscomment setting to HistoryButton
-        TBUtils.setSetting('HistoryButton', 'rtscomment', TBUtils.getSetting('QueueTools', 'rtscomment', true));
+        TBStorage.setSetting('HistoryButton', 'rtscomment', TBStorage.getSetting('QueueTools', 'rtscomment', true));
         // 3.0: Upgrade QueueTools' sortAscending
-        TBUtils.setSetting('QueueTools', 'reports-ascending', (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
+        TBStorage.setSetting('QueueTools', 'reports-ascending', (TBStorage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
 
 
         // End: version changes.

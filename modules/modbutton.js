@@ -232,26 +232,6 @@ modButton.init = function init() {
                     footer: '\
                         <span class="status error left"></span>\
                         <button class="message-send">Send Message</button>'
-                },
-                {
-                    title: "Settings",
-                    tooltip: "Edit Mod Button Settings.",
-                    content: '\
-                        <div class="edit-subreddits">\
-                            <p style="clear:both">\
-                                <label class="global-label" for="the-nuclear-option">\
-                                    <input class="the-nuclear-option" type="checkbox" id="the-nuclear-option" name="the-nuclear-option" ' + (showglobal ? 'checked' : '' ) + '>\
-                                    &nbsp;enable Global Action button.\
-                                </label><br />\
-                                <label class="last-action-label" for="remember-last-action">\
-                                    <input class="remember-last-action" type="checkbox" id="remember-last-action" name="remember-last-action" ' + (rememberLastAction ? 'checked' : '') + '>\
-                                    &nbsp;remember last Mod Button action.\
-                                </label>\
-                            </p>\
-                        </div>',
-                    footer: '\
-                        <span class="status error left"></span>\
-                        <button class="setting-save">Save Settings</button>'
                 }
             ],
             '<label class="user">' + user + '</label><label class="subreddit">' + subreddit + '</label><label class="thing_id">' + thing_id + '</label>',
@@ -564,7 +544,7 @@ modButton.init = function init() {
                     TBUtils.longLoadSpinner(false);
                     return
                 } else {
-                    $callbackSpan.text('message send');
+                    $callbackSpan.text('message sent');
                     $callbackSpan.css('color', 'green');
                     TBUtils.longLoadSpinner(false);
                 }
@@ -647,46 +627,6 @@ modButton.init = function init() {
             // $popup.remove();
         });
 
-    });
-
-
-    // Edit save button clicked.
-    $body.on('click', '.setting-save', function () {
-        var $popup = $(this).parents('.mod-popup'),
-            $savedSubsList = $popup.find('.saved-subs'),
-            $status = $popup.find('.status');
-
-        $status.text('saving settings...');
-
-        // Enable/disable global ban button.
-        showglobal = modButton.setting('globalbutton', $('.the-nuclear-option').is(':checked'));
-
-        // Enable/disable remember last action
-        rememberLastAction = modButton.setting('rememberlastaction', $('.remember-last-action').is(':checked'));
-
-        // show the global-button in the footer, if enabled
-        if (modButton.setting('globalbutton')) {
-            $('.mod-popup .global-button').show();
-        } else {
-            // disabled? Make sure it's not shown
-            $('.mod-popup .global-button').hide();
-        }
-
-        // clean up
-        modButton.savedSubs = [];
-        // repopulate
-        $.each($popup.find('.savedSubs .selected-list option'), function() {
-            modButton.savedSubs.push($(this).val());
-        });
-        // sort alphabetical
-        modButton.savedSubs = TB.utils.saneSort(modButton.savedSubs);
-        // save
-        modButton.setting('sublist', modButton.savedSubs);
-
-        // re-render the lists
-        modButton.updateSavedSubs();
-
-        $status.text('settings saved');
     });
 };
 

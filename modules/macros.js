@@ -10,11 +10,10 @@ function modmacros() {
 
     macros.init = function macrosInit() {
 
-        var $body = $('body');
-        var macroConfig,
-            MACROS = 'TB-MACROS', TOP_SELECT = '', REPLY_SELECT = '',
-            STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;',
-            $dropdown = $('<select style="'+ STYLE +'"><option value=' + MACROS + '>macros</option></select>');
+        var $body = $('body'),
+            macroConfig,
+            MACROS = 'TB-MACROS',
+            STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;';
 
         function setConfig(config){
             if (!config.modMacros || config.modMacros.length < 1) return false;
@@ -65,7 +64,6 @@ function modmacros() {
                 if (success) {
                     $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="'+ STYLE +'"><option value='+ MACROS +'>macros</option></select>');
                     populateSelect('.tb-top-macro-select');
-                    //$('.commentarea>.usertext .usertext-buttons .save').after('<button type="button" class="tb-toplevel-macro">macro</button>');
                 }
             });
         }
@@ -124,7 +122,7 @@ function modmacros() {
                             if (!successful) {
                                 TB.utils.alert("Failed to distinguish comment.");
                             } else {
-                                TB.utils.alert("Comment posted.");
+                                TB.utils.alert("Reply posted.");
                                 if (e.target.className === 'tb-top-macro-select') {
                                     $this.val(MACROS);
                                 } else {

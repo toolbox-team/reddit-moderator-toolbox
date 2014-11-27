@@ -140,6 +140,8 @@ function initwrapper() {
             highlighted = highlighted.split(',').map(function (str) { return str.trim(); }).clean("");
             TBUtils.setSetting('CommentsMod', 'highlighted', highlighted);
         }
+        // 3.0: Move QueueTools' rtscomment setting to HistoryButton
+        TBUtils.setSetting('HistoryButton', 'rtscomment', TBUtils.getSetting('QueueTools', 'rtscomment', true));
 
         // End: version changes.
 

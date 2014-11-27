@@ -93,7 +93,6 @@ function notifier() {
     // QT settings.
     var hideactioneditems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
         ignoreonapprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        rtscomment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
         sortmodqueue = TBUtils.getSetting('QueueTools', 'sortmodqueue', false),
         sortunmoderated = TBUtils.getSetting('QueueTools', 'sortunmoderated', false),
         linkToQueues = TBUtils.getSetting('QueueTools', 'linktoqueues', false);
@@ -500,9 +499,6 @@ function notifier() {
                 <label><input type="checkbox" id="linktoqueues" ' + ((linkToQueues) ? "checked" : "") + '> Link to subreddit queue on mod pages</label>\
                 </p>\
                 <p>\
-                <label><input type="checkbox" id="rtscomment" ' + ((rtscomment) ? "checked" : "") + '> Post user summary when submitting spam reports</label>\
-                </p>\
-                <p>\
                 <label><input type="checkbox" id="sortmodqueue" ' + ((sortmodqueue) ? "checked" : "") + '> Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)</label>\
                 </p>\
                 <p>\
@@ -734,7 +730,6 @@ function notifier() {
         // Save QT settings.
         TBUtils.setSetting('QueueTools', 'hideactioneditems', $("#hideactioneditems").prop('checked'));
         TBUtils.setSetting('QueueTools', 'ignoreonapprove', $("#ignoreonapprove").prop('checked'));
-        TBUtils.setSetting('QueueTools', 'rtscomment', $("#rtscomment").prop('checked'));
         TBUtils.setSetting('QueueTools', 'sortmodqueue', $("#sortmodqueue").prop('checked'));
         TBUtils.setSetting('QueueTools', 'sortunmoderated', $("#sortunmoderated").prop('checked'));
         TBUtils.setSetting('QueueTools', 'linktoqueues', $("#linktoqueues").prop('checked'));

@@ -12,14 +12,20 @@ historyButton.SPAM_REPORT_SUB = 'spam';
 historyButton.settings["enabled"]["default"] = true;
 historyButton.config["betamode"] = false;
 
-var $body = $('body');
-    
-
+historyButton.register_setting(
+    "sortmodqueue", {
+        "type": "boolean",
+        "default": true,
+        "betamode": false,
+        "hidden": false,
+        "title": "Post user summary when submitting spam reports"
+    });
 
 historyButton.init = function () {
+    var $body = $('body');
     var self = this;
 
-    var rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true);
+    var rtsComment = historyButton.setting('rtscomment');
 
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');

@@ -165,7 +165,8 @@ TB = {
                             $setting.append($('<label><input type="checkbox" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
                             break;
                         case "number":
-                            $setting.append($('<label><input type="number" '+(module.setting(setting) ? ' checked="checked"' : '')+' min="'+options.min+'" max="'options.max'" step="'options.step'"> '+options.title+'</label>'));
+                            $setting.append($('<label><input type="number" value="'+module.setting(setting)+'" min="'+options.min+'" max="'+options.max+'" step="'+options.step+'"> '+options.title+'</label>'));
+                            break;
                         case "text":
                         case "list":
                             $setting.append(options.title+':<br />');

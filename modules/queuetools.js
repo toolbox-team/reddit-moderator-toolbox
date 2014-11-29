@@ -692,7 +692,7 @@ queueTools.init = function () {
         addModtools();
     }
 
-    if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) && (!TBUtils.post_site || $('body.moderator').length)) {
+    if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || $('body.moderator').length)) {
         $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
     }
 }; // queueTools.init()

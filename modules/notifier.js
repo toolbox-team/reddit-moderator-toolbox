@@ -263,10 +263,10 @@ function notifier() {
     /// Console stuff
     // Show/hide console
     $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
-        if (!consoleShowing) {
-            $console.show();
-        } else {
+        if (consoleShowing) {
             $console.hide();
+        } else {
+            $console.show();
         }
 
         consoleShowing = !consoleShowing;

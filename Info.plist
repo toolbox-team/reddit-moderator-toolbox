@@ -55,6 +55,7 @@
 				<string>modules/frame.js</string>
 				<string>modules/modmaillite.js</string>
 				<string>modules/devtools.js</string>
+				<string>modules/macros.js</string>
 				<string>tbobjectinit.js</string>
 			</array>
 		</dict>

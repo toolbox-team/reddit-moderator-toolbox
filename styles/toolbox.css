@@ -131,7 +131,8 @@
     height: 15px;
 }
 
-.mod-toolbox #tb-toolbarcounters {
+.mod-toolbox #tb-toolbarcounters,
+.mod-toolbox #tb-toggle-console {
     float: right;
     display: inline-block;
     margin-right: 25px;

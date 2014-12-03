@@ -386,8 +386,77 @@ commentsMod.init = function commentsModInit() {
         if ($body.hasClass('profile-page')) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-            $('.menuarea').append('<form id="searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text"> <input type="submit"></form>');
-            $body.on('submit', '#searchuser', function (event) {
+            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit"> <input type="submit" value="go"></form>');
+
+            $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
+
+            TBUtils.getModSubs(function () {
+                populateSearchSuggestion();
+            });
+
+            function populateSearchSuggestion() {
+
+                $(TBUtils.mySubs).each(function () {
+                    $body.find('#tb-search-suggest table#tb-search-suggest-list').append('\
+                    <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>\
+                    ');
+                });
+
+                $('.compose-mail').change(function () {
+                    var $this = $(this);
+                    var sub = $this.val();
+                    if (sub !== COMPOSE) {
+                        window.open(composeURL + $this.val());
+                        $(composeSelect).val(COMPOSE);
+                    }
+                });
+            }
+
+            $body.on('focus', '#subredditsearch', function () {
+                var offset = $(this).offset();
+                var offsetLeft = offset.left;
+                var offsetTop = offset.top;
+                var offsetTop = offsetTop + 20;
+
+                $body.find('#tb-search-suggest').css({
+                    "left": offsetLeft + 'px',
+                    "top": offsetTop + 'px'
+                });
+                if(!$body.find('#tb-search-suggest').is(':visible')) {
+                    $body.find('#tb-search-suggest').show();
+
+                }
+
+
+            });
+
+            $body.find('#subredditsearch').keyup(function() {
+                var LiveSearchValue = $(this).val();
+                $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
+                    var $this = $(this),
+                        subredditName = $this.attr('data-subreddit');
+
+                    if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                        $this.hide();
+                    } else {
+                        $this.show();
+                    }
+                });
+            });
+
+            $(document).on('click', function(event) {
+                if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('#subredditsearch').length) {
+                    $body.find('#tb-search-suggest').hide();
+                }
+            })
+            $body.on('click', '#tb-search-suggest-list tr', function() {
+                var subSuggestion = $(this).attr('data-subreddit');
+                $body.find('#subredditsearch').val(subSuggestion);
+                $body.find('#tb-search-suggest').hide();
+            });
+
+
+            $body.on('submit', '#tb-searchuser', function (event) {
                 var subredditsearch = $body.find('#subredditsearch').val(),
                     usersearch = $('#header-bottom-left .pagename').text();
                 subredditsearch = subredditsearch.replace(/\/?r\//g, '');

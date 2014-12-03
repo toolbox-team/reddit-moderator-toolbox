@@ -1889,3 +1889,43 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 	margin: 0;
 	font-size: 12px;
 }
+
+
+/* Comment search */
+#tb-search-suggest {
+    z-index: 100;
+    position: fixed;
+    display: none;
+    max-height: 65%;
+    position: absolute;
+    width: 171px;
+    padding: 0;
+    overflow: auto;
+    background-color: rgba(226, 238, 250, 1);
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #A8B5C2;
+    text-align: left;
+}
+
+#tb-search-suggest table {
+    width: 100%;
+}
+
+
+
+#tb-search-suggest table td {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+
+}
+
+#tb-search-suggest tr:nth-child(even) {
+    background: rgba(247, 250, 253, 1);
+}
+
+#tb-search-suggest tr:nth-child(even):hover, #tb-my-multis tr:hover {
+    background-color: rgba(174, 212, 250, 0.5);
+}

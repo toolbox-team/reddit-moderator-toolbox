@@ -790,14 +790,16 @@ modLogMatrix.init = function () {
     $body.on('click', '.activate-comment-load', function () {
         addComments();
     });
+
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        if (commentLoadActive) {
+            addComments();
+        }
+    });
+
 };
 
-// NER support.
-window.addEventListener("TBNewThings", function () {
-    if (commentLoadActive) {
-        addComments();
-    }
-});
 
 TB.register_module(modLogMatrix);
 

@@ -60,10 +60,9 @@ commentsMod.register_setting(
 commentsMod.init = function commentsModInit() {
     var $body = $('body');
 
-    if (!$('.moderator').length || TBUtils.isModmail) {
-        commentSearch(); // you can't be a mod if a user page.
-        return;
-    }
+    // Perform comment actions on pages where you are mod and which are not modmail.
+    if (TBUtils.isMod && !TBUtils.isModmail) {
+
 
     //
     // preload some generic variables
@@ -379,9 +378,10 @@ commentsMod.init = function commentsModInit() {
         });
 
     });
-
+    }
 
     function commentSearch() {
+
         // Find comments made by the user in specific subreddits.
         if ($body.hasClass('profile-page')) {
 
@@ -446,7 +446,7 @@ commentsMod.init = function commentsModInit() {
                         "limit": 100
                     }).success(function (data, status, jqxhr) {
                         $.each(data.data.children, function (i, value) {
-                            console.log(value);
+
                             var author = value.data.author,
                                 authorFlairCssClass = value.data.author_flair_css_class,
                                 authorFlairText = value.data.author_flair_text,

@@ -53,6 +53,7 @@ function initwrapper() {
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
     TBUtils.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
+    TBUtils.isMod = $('body.moderator').length;
     TBUtils.isExtension = true;
     TBUtils.log = [];
     TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false);

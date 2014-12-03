@@ -161,7 +161,7 @@
         
         //Add values to select
         $.each(choices, function() {
-            var value = this.toLowerCase().replace(' ', '_');
+            var value = this.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(this));
         });
         

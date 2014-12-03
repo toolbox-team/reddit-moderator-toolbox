@@ -193,6 +193,7 @@ removalReasons.init = function removalReasonsInit() {
                 footerDisplay = data.footer ? '' : 'none';
 
             var reasonType = TBUtils.getSetting('cache', 'reason-type', 'none');
+            var reasonAsSub = (TBUtils.getSetting('cache', 'reason-as-sub', 'false') != 'false');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -205,7 +206,7 @@ removalReasons.init = function removalReasonsInit() {
 
             // Make box & add reason radio buttons
             var popup = $('\
-                <div class="reason-popup" id="reason-popup-' + data.subreddit + '" > \
+                <div class="reason-popup" id="reason-popup-' + data.subreddit + '"> \
                     <attrs /> \
                     <div class="reason-popup-content"> \
                         <div class="reason-popup-header">Removal reasons for /r/' + data.subreddit + ':</div> \
@@ -229,15 +230,16 @@ removalReasons.init = function removalReasonsInit() {
                             <div class="styled-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
                                 <p>	\
                                     <input type="checkbox" id="include-footer" checked> Include footer. </input><br />\
-                                    <label id="reason-footer" name="footer">' + footerText + '</label> \
+                                    <label id="reason-footer">' + footerText + '</label> \
                                 </p> \
                             </div> \
                             <div id="buttons"> \
-                                <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + '><label for="type-PM-' + data.subreddit + '">PM</label> / \
-                                <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + '><label for="type-reply-' + data.subreddit + '">reply</label> / \
-                                <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + '><label for="type-both-' + data.subreddit + '">both</label> \
+                                <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
+                                 (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked="1"' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
+                                <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
+                                <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
                                 <span style="display:' + logDisplay + '"> / \
-                                    <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + '><label for="type-none-' + data.subreddit + '">none</label> \
+                                    <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none</label> \
                                 </span> \
                             </div> \
                             <div id="log-reason" style="display:' + logDisplay + '"> \
@@ -287,7 +289,7 @@ removalReasons.init = function removalReasonsInit() {
                 });
                 popup.find('tbody').append(tr);
             });
-
+            
             // Pre-fill reason input elements which have IDs.
             popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
                 this.id = 'reason-input-' + data.subreddit + '-' + this.id;
@@ -318,6 +320,7 @@ removalReasons.init = function removalReasonsInit() {
         popup.remove();
         $body.css('overflow', 'auto');
     }
+    
     $body.on('click', '.reason-popup', function (e) {
         e.stopPropagation();
     });
@@ -345,6 +348,10 @@ removalReasons.init = function removalReasonsInit() {
         TBUtils.setSetting('cache', 'reason-type', this.value);
     });
 
+    $body.on('click', '.reason-as-sub', function () {
+        TBUtils.setSetting('cache', 'reason-as-sub', this.value);
+    });
+
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
         var popup = $(this).parents('.reason-popup');
@@ -369,6 +376,7 @@ removalReasons.init = function removalReasonsInit() {
     $body.on('click', '.reason-popup .save', function () {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
+            notifyAsSub = popup.find('.reason-as-sub').val() != false,
             checked = popup.find('.reason-check:checked'),
             status = popup.find('.status'),
             attrs = popup.find('attrs'),
@@ -529,7 +537,8 @@ removalReasons.init = function removalReasonsInit() {
         // Function to send PM and comment
         function sendRemovalMessage(logLink) {
             // If there is no message to send, don't send one.
-            if (reasonlength < 1) return removePopup(popup);
+            if (reasonlength < 1)
+                return removePopup(popup);
 
             // Check if a valid notification type is selected
             if (!notifyBy || (logLink == null && notifyBy == 'none')) {
@@ -573,16 +582,29 @@ removalReasons.init = function removalReasonsInit() {
                     }
                 });
             }
-            else {
+            else if(notifyByPM) {
                 sendPM();
             }
 
             // Send PM the user
             function sendPM() {
-                if (notifyByPM) {
-                    $.log("Sending removal message by PM.");
-                    TBUtils.sendPM(data.author, subject, reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]', function(successful, response) {
-                        if(successful) {
+                var text = reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]';
+                
+                if (notifyAsSub) {
+                    $.log("Sending removal message by PM as " + data.subreddit);
+                    TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
+                        if (successful) {
+                            removePopup(popup);
+                        }
+                        else {
+                            status.text(PM_ERROR);
+                        }
+                    });
+                }
+                else {
+                    $.log("Sending removal message by PM as current user");
+                    TBUtils.sendPM(data.author, subject, text, function (successful, response) {
+                        if (successful) {
                             removePopup(popup);
                         }
                         else {

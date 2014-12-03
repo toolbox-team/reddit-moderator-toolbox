@@ -1065,12 +1065,12 @@ function initwrapper() {
     };
 
 
-    TBUtils.sendPM = function(to, subject, text, callback) {
+    TBUtils.sendPM = function(to, subject, message, callback) {
         $.post('/api/compose', {
             to: to,
             uh: TBUtils.modhash,
             subject: subject,
-            text: text
+            text: message
         })
         .success(function() {
             if(typeof callback !== "undefined")

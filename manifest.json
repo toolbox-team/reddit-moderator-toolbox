@@ -22,7 +22,8 @@
 			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/*"],
 			"css": [
 				"styles/toolbox.css",
-				"styles/modmatrix.css"
+				"styles/modmatrix.css",
+			  	"styles/removalreasons.css"
 			],
 			"js": [
 				"libs/jquery-2.1.1.js",

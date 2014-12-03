@@ -317,7 +317,7 @@ TB.Module = function Module(name) {
     this.name = name;
 
     this.config = {
-        "betamode": true,
+        "betamode": false,
         "devmode": false,
         "needs_mod_subs": false
     };

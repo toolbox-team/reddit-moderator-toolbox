@@ -110,10 +110,21 @@ function modmacros() {
             if (!macroConfig) return;
 
             var $this = $(this),
-                info = TB.utils.getThingInfo($this); //never send the thing, it will bomb on threads.
+                comment = unescape($this.val()),
+                info;
+
+            // If it's a top-level reply we need to find the post's info.
+            if ($this.hasClass('tb-top-macro-select')) {
+                info = TB.utils.getThingInfo($('#siteTable .thing:first'));
+            } else {
+                info = TB.utils.getThingInfo($this);
+            }
+
+            // replace token.
+            comment = TB.utils.replaceTokens(info, comment);
 
             if ($this.val() !== MACROS) {
-                TBUtils.postComment(info.id, unescape($this.val()), function (successful, response) {
+                TBUtils.postComment(info.id, comment, function (successful, response) {
                     if (!successful) {
                         TB.utils.alert("Failed to post comment.");
                     } else {
@@ -143,7 +154,6 @@ function modmacros() {
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         modmacros();
     });
 })();

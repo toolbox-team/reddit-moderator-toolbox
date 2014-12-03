@@ -150,6 +150,8 @@ function initwrapper() {
         TBStorage.setSetting('HistoryButton', 'rtscomment', TBStorage.getSetting('QueueTools', 'rtscomment', true));
         // 3.0: Upgrade QueueTools' sortAscending
         TBStorage.setSetting('QueueTools', 'reports-ascending', (TBStorage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
+        // 3.0: MMP uses proper module settings, so we need to change the inbox view to a string. (was an int)
+        TBStorage.setSetting('ModMailPro', 'inboxstyle', 'priority');
 
 
         // End: version changes.

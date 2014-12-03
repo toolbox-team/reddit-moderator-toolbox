@@ -5,15 +5,51 @@ var modMailPro = new TB.Module('Mod Mail Pro');
 ////Default settings
 modMailPro.settings["enabled"]["default"] = true;
 modMailPro.config["betamode"] = false;
+modMailPro.config["needs_mod_subs"] = true;
 
-// TBConfig.register_setting('displaytype', {
-//     'type': 'selector',
-//     'values': ["Post border", "Domain background", "Domain border"],
-//     'default': "post_border",
-//     'betamode': true,
-//     'hidden': false,
-//     'title': "Tag location"
-// });
+modMailPro.register_setting('inboxstyle', {
+    'type': 'selector',
+    'values': ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered'],
+    'default': 'priority',
+    'title': 'Default inbox view'
+});
+
+modMailPro.register_setting('defaultcollapse', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Collapse all mod mail threads by default.'
+});
+
+modMailPro.register_setting('noredmodmail', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Show removed threads with red titles.'
+});
+
+modMailPro.register_setting('highlightnew', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Highlight new threads and replies.'
+});
+
+modMailPro.register_setting('expandreplies', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Expand all replies when expanding threads.'
+});
+
+modMailPro.register_setting('hideinvitespam', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Filter mod invited and added threads.'
+});
+
+modMailPro.register_setting('autoload', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': !TBUtils.getSetting('Notifier', 'enabled', true),
+    'title': 'Automatically load new mod mail when received.'
+});
 
 modMailPro.init = function () {
     if (!TBUtils.isModmail) return;
@@ -22,14 +58,13 @@ modMailPro.init = function () {
     this.realtimemail();
     this.compose();
     this.modmailSwitch();
-    this.displaySettings();
     this.threadedModmail();
 };
 
 modMailPro.modmailpro = function () {
     var $body = $('body');
 
-    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
+    var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
@@ -647,205 +682,13 @@ modMailPro.modmailSwitch = function () {
     }
 };
 
-
-modMailPro.displaySettings = function () {
-    var ALL = 0, PRIORITY = 1, FILTERED = 2, REPLIED = 3, UNREAD = 4, UNANSWERED = 5; //make a JSON object.
-
-    var VERSION = '3.2',
-        filteredsubs = TBUtils.getSetting('ModMailPro', 'filteredsubs', []),
-        showing = false,
-        inbox = TBUtils.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
-        firstrun = TBUtils.getSetting('ModMailPro', 'firstrun', true),
-        menulist = $('.menuarea ul.flat-list:first'),
-        $body = $('body');
-
-    // Create setting elements
-    var settingsDiv = $('<div class="mmp-settings">'),
-        separator = '<span style="color:gray"> | </span>',
-        settingsToggle = $('<li><a style="color:gray" href="javascript:;" class="settings-link">' + String.fromCharCode(9660) + '</a><label class="first-run" style="display: none;">\
-                           &#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>  </span></li>'),
-        about = $('<span class="mmp-info" style="float:right; display:none"><b><a href="https://github.com/agentlame/modmailpro">Mod Mail Pro</a> v' + VERSION + '</b></span>'),
-        info = $('<span  style="float:right;">all changes require reload</span>');
-
-    var autocollapse = $('<a class="autocollapse" href="javascript:;">auto collapse</a>'),
-        redmodmail = $('<a class="redmodmail" href="javascript:;">no red mod mail</a>'),
-        highlight = $('<a class="highlight" href="javascript:;">highlight new</a>'),
-        autoexpand = $('<a class="autoexpand" href="javascript:;">auto expand replies</a>'),
-        hideinvitespam = $('<a class="hideinvitespam" href="javascript:;" title="WARNING: slows loading">hide invite spam</a>'),
-        autoload = $('<a class="autoload" href="javascript:;" title="Automatically load new mod mail">autoload mail</a>');
-
-    var resetfilter = $('<label class="filter-count" style="font-weight:bold"></label><span> - subreddits filtered\
-                       (</span><a href="javascript:;" class="reset-filter-link" title="WARNING: will reload page.">reset</a><span>)</span>');
-
-    var inboxstyle = $('<label>inbox: </label><select class="inboxstyle" style="background:transparent;">\
-                        <option value=' + ALL + '>all</option><option value=' + PRIORITY + '>priority</option>\
-                        <option value=' + FILTERED + '>filtered</option><option value=' + REPLIED + '>replied</option>\
-                        <option value=' + UNREAD + '>unread</option><option value=' + UNANSWERED + '>unanswered</option></select>');
-
-    var selectedCSS = {
-        "color": "orangered",
-        "font-weight": "bold"
-    };
-    var unselectedCSS = {
-        "color": "#369",
-        "font-weight": "normal"
-    };
-
-    var $body = $('body');
-
-    $(settingsDiv).css({
-        'display': 'none',
-        'height': '20px',
-        'padding-bottom': '5px',
-        'padding-left': '25px',
-        'padding-right': '10px',
-        'padding-top': '0px',
-        'border-bottom': '1px dotted gray',
-        'margin': '5px',
-        'overflow': 'hidden',
-        'font-size': 'larger',
-        'width': 'auto'
-    });
-
-    // Get settings/Set UI.
-    $(inboxstyle).val(inbox);
-
-    if (TBUtils.getSetting('ModMailPro', 'defaultcollapse', false)) {
-        $(autocollapse).addClass('true');
-        $(autocollapse).css(selectedCSS);
-    }
-
-    if (TBUtils.getSetting('ModMailPro', 'noredmodmail', true)) {
-        $(redmodmail).addClass('true');
-        $(redmodmail).css(selectedCSS);
-    }
-
-    if (TBUtils.getSetting('ModMailPro', 'highlightnew', true)) {
-        $(highlight).addClass('true');
-        $(highlight).css(selectedCSS);
-    }
-
-    if (TBUtils.getSetting('ModMailPro', 'expandreplies', false)) {
-        $(autoexpand).addClass('true');
-        $(autoexpand).css(selectedCSS);
-    }
-
-    if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false)) {
-        $(hideinvitespam).addClass('true');
-        $(hideinvitespam).css(selectedCSS);
-    }
-
-    if (TBUtils.getSetting('ModMailPro', 'autoload', false)) {
-        $(autoload).addClass('true');
-        $(autoload).css(selectedCSS);
-    }
-
-    if (!TBUtils.getSetting('Notifier', 'enabled', true)) {
-        autoload.hide();
-    }
-
-    // add settings button
-    $(settingsToggle).prependTo(menulist);
-
-    // Add settings items
-    $(settingsDiv).insertAfter('.menuarea');
-
-    settingsDiv.append(inboxstyle);
-    settingsDiv.append($(autocollapse).prepend(separator));
-    settingsDiv.append($(redmodmail).prepend(separator));
-    settingsDiv.append($(highlight).prepend(separator));
-    settingsDiv.append($(autoexpand).prepend(separator));
-    settingsDiv.append($(hideinvitespam).prepend(separator));
-    settingsDiv.append($(autoload).prepend(separator));
-
-    $('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>').appendTo(settingsDiv);
-    $(resetfilter).appendTo(settingsDiv);
-    $(info).appendTo(settingsDiv);
-    $(about).appendTo('.mmp-menu');
-
-    // Get filtered subs.
-    if (filteredsubs) {
-        $('.filter-count').attr('title', filteredsubs.join(', '));
-    }
-
-    if (firstrun) {
-        $('.first-run').show().css('color', 'red');
-        $('.settings-link').css('color', 'red');
-    }
-
-    // Set filtered sub count.
-    $('.filter-count').text(filteredsubs.length);
-
-    $body.on('click', '.settings-link', function (e) {
-        if (firstrun) {
-            $('.first-run').hide();
-            $('.settings-link').css('color', '');
-            TBUtils.setSetting('ModMailPro', 'firstrun', false);
-        }
-
-        if (!showing) {
-            $('.mmp-settings').show();
-            $('.mmp-info').show();
-            showing = true;
-
-            $('.menuarea').css({
-                'border-bottom': 'none',
-                'padding-bottom': '0px'
-            });
-        } else {
-            $('.mmp-settings').hide();
-            $('.mmp-info').hide();
-            showing = false;
-
-            $('.menuarea').css({
-                'border-bottom': '1px dotted gray',
-                'padding-bottom': '5px'
-            });
-        }
-    });
-
-    // Reset filter, reload page.
-    $body.on('click', '.reset-filter-link', function (e) {
-        TBUtils.setSetting('ModMailPro', 'filteredsubs', []);
-        window.location.reload();
-    });
-
-    // Save default inbox.
-    $(inboxstyle).change(function () {
-        TBUtils.setSetting('ModMailPro', 'inboxstyle', $(this).val());
-    });
-
-    // Settings have been changed.
-    $body.on('click', '.autocollapse, .redmodmail, .highlight, .autoexpand, .hideinvitespam, .autoload', function (e) {
-        var sender = e.target;
-
-        // Change link style.
-        if (!$(sender).hasClass('true')) {
-            $(sender).addClass('true');
-            $(sender).css(selectedCSS);
-        } else {
-            $(sender).removeClass('true');
-            $(sender).css(unselectedCSS);
-        }
-
-        // Save settings.
-        TBUtils.setSetting('ModMailPro', 'defaultcollapse', $(autocollapse).hasClass('true'));
-        TBUtils.setSetting('ModMailPro', 'noredmodmail', $(redmodmail).hasClass('true'));
-        TBUtils.setSetting('ModMailPro', 'highlightnew', $(highlight).hasClass('true'));
-        TBUtils.setSetting('ModMailPro', 'expandreplies', $(autoexpand).hasClass('true'));
-        TBUtils.setSetting('ModMailPro', 'hideinvitespam', $(hideinvitespam).hasClass('true'));
-        TBUtils.setSetting('ModMailPro', 'autoload', $(autoload).hasClass('true'));
-    });
-};
-
-
 modMailPro.threadedModmail = function () {
     var collapse = function() {
         $(this).parents(".thing:first").find("> .child").hide();
-    }
+    };
     var noncollapse = function() {
         $(this).parents(".thing:first").find("> .child").show();
-    }
+    };
 
     var threadModmail = function(fullname) {
         var firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");

@@ -193,7 +193,7 @@ commentsMod.init = function commentsModInit() {
 
        // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff. 
         htmlComment = '\
-<div class="thing comment id-{{thingClasses + " onclick="click_thing(this)" data-fullname="{{name}}">\
+<div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
     <div class="entry mod-button" subreddit="{{subreddit}}">\
         <div class="noncollapsed">\
             <p class="tagline">\

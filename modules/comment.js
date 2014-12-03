@@ -185,7 +185,7 @@ commentsMod.init = function commentsModInit() {
 
     run();
 
-
+    // Add flat view link.
     $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
 
     $body.on("click", ".loadFlat", function () {
@@ -232,17 +232,20 @@ commentsMod.init = function commentsModInit() {
         $body.find(".tabmenu li .modtools-on").closest('li').remove();
         $body.find(".tabmenu li #modtab-threshold").closest('li').remove();
         $body.find(".menuarea.modtools").remove();
+
         var flatListing = {}, // This will contain all comments later on.
             idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
         // deconstruct the json we got.
         function parseComments(object) {
             switch (object.kind) {
+
                 case "Listing":
                     for (var i = 0; i < object.data.children.length; i++) {
                         parseComments(object.data.children[i]);
                     }
                     break;
+
                 case "t1":
                     flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
                     idListing.push(object.data.id);
@@ -253,11 +256,10 @@ commentsMod.init = function commentsModInit() {
                         parseComments(object.data.replies); // parse them too
                     }
                     break;
-                default:
 
+                default:
                     break;
             }
-
         }
 
         // Variables we need later on to be able to reconstruct comments.
@@ -374,19 +376,17 @@ commentsMod.init = function commentsModInit() {
                 var event = new CustomEvent("TBNewThings");
                 window.dispatchEvent(event);
             }, 1000);
-
         });
-
     });
     }
 
     function commentSearch() {
-
         // Find comments made by the user in specific subreddits.
         if ($body.hasClass('profile-page')) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit"> <input type="submit" value="go"></form>');
+            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit">\
+            <input type="submit" value="go"></form>');
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
@@ -398,36 +398,23 @@ commentsMod.init = function commentsModInit() {
 
                 $(TBUtils.mySubs).each(function () {
                     $body.find('#tb-search-suggest table#tb-search-suggest-list').append('\
-                    <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>\
-                    ');
-                });
-
-                $('.compose-mail').change(function () {
-                    var $this = $(this);
-                    var sub = $this.val();
-                    if (sub !== COMPOSE) {
-                        window.open(composeURL + $this.val());
-                        $(composeSelect).val(COMPOSE);
-                    }
+                    <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
                 });
             }
 
             $body.on('focus', '#subredditsearch', function () {
                 var offset = $(this).offset();
                 var offsetLeft = offset.left;
-                var offsetTop = offset.top;
-                var offsetTop = offsetTop + 20;
+                var offsetTop = (offset.top + 20);
 
                 $body.find('#tb-search-suggest').css({
                     "left": offsetLeft + 'px',
                     "top": offsetTop + 'px'
                 });
+
                 if(!$body.find('#tb-search-suggest').is(':visible')) {
                     $body.find('#tb-search-suggest').show();
-
                 }
-
-
             });
 
             $body.find('#subredditsearch').keyup(function() {
@@ -448,7 +435,8 @@ commentsMod.init = function commentsModInit() {
                 if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('#subredditsearch').length) {
                     $body.find('#tb-search-suggest').hide();
                 }
-            })
+            });
+
             $body.on('click', '#tb-search-suggest-list tr', function() {
                 var subSuggestion = $(this).attr('data-subreddit');
                 $body.find('#subredditsearch').val(subSuggestion);
@@ -459,9 +447,11 @@ commentsMod.init = function commentsModInit() {
             $body.on('submit', '#tb-searchuser', function (event) {
                 var subredditsearch = $body.find('#subredditsearch').val(),
                     usersearch = $('#header-bottom-left .pagename').text();
+
                 subredditsearch = subredditsearch.replace(/\/?r\//g, '');
                 subredditsearch = TBUtils.htmlEncode(subredditsearch);
                 event.preventDefault();
+
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
         <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
@@ -503,15 +493,18 @@ commentsMod.init = function commentsModInit() {
             <div class="child"></div>\
         </div>\
         <div class="clearleft"></div>';
+
                 var htmlProfileCommentView = '';
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
                 TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+
                 function searchComments(user, searchSubreddit, after) {
                     $.getJSON('/user/' + user + '/comments.json', {
                         "after": after,
                         "limit": 100
                     }).success(function (data, status, jqxhr) {
+
                         $.each(data.data.children, function (i, value) {
 
                             var author = value.data.author,
@@ -529,26 +522,30 @@ commentsMod.init = function commentsModInit() {
                                 submissionTitle = value.data.link_title,
                                 linkId = value.data.link_id,
                                 linkUrl = value.data.link_url;
+
                             if (subreddit.toLowerCase() === searchSubreddit.toLowerCase()) {
                                 // figure out if we need to add author and mod stuff.
-                                var authorClass = 'author';
+                                var authorClass = 'author',
+                                    createdTimeAgo = TBUtils.timeConverterISO(createdUTC),
+                                    threadPermalink = '/r/' + subreddit + '/comments/' + linkId.substring(3) + '/' + TBUtils.title_to_url(submissionTitle) + '/',
+                                    permaLinkComment = threadPermalink + commentID,
+                                    thingClasses = name,
+                                    modButtons = '';
+
                                 if (distinguished === 'moderator') {
                                     authorClass = authorClass + ' moderator';
                                 }
                                 if (linkAuthor === author) {
                                     authorClass = authorClass + ' submitter';
                                 }
-                                createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
-                                var threadPermalink = '/r/' + subreddit + '/comments/' + linkId.substring(3) + '/' + TBUtils.title_to_url(submissionTitle) + '/';
-                                var permaLinkComment = threadPermalink + commentID;
-                                var thingClasses = name;
+
                                 if (bannedBy) {
                                     bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
                                     thingClasses = thingClasses + ' spam';
                                 } else {
                                     bannedBy = '';
                                 }
-                                var modButtons = '';
+
                                 // need to check if you are a mod of the returned sub
                                 if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
                                     modButtons = '\
@@ -560,6 +557,7 @@ commentsMod.init = function commentsModInit() {
                     </li>\
                     ';
                                 }
+
                                 // Constructing the comment.
                                 htmlConstructedComment = TBUtils.template(htmlCommentProfile, {
                                     'linkAuthor': linkAuthor,
@@ -582,25 +580,29 @@ commentsMod.init = function commentsModInit() {
                                 htmlProfileCommentView = htmlProfileCommentView + htmlConstructedComment;
                             }
                         });
+
                         if (!data.data.after) {
                             if (!htmlProfileCommentView) {
                                 htmlProfileCommentView = '<div class="error">no results found for /r/' + searchSubreddit + '</div>';
                             }
+
                             $('.sitetable.linklisting').append(htmlProfileCommentView);
                             $("time.timeago").timeago();
                             TBUtils.longLoadSpinner(false);
+
                             // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
                             setTimeout(function () {
                                 var event = new CustomEvent("TBNewThings");
                                 window.dispatchEvent(event);
                             }, 1000);
+
                         } else {
                             searchComments(user, searchSubreddit, data.data.after);
                         }
                     });
                 }
-
                 searchComments(usersearch, subredditsearch);
+
             });
         }
     }
@@ -608,13 +610,11 @@ commentsMod.init = function commentsModInit() {
 };
 
 TB.register_module(commentsMod);
-
 }
 
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         comments();
     });
 })();

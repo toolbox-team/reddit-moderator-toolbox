@@ -118,7 +118,6 @@ TB.register_module(realtimeReddit);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("real time init?");
         realtime();
     });
 })();

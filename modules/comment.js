@@ -428,8 +428,6 @@ commentsMod.init = function commentsModInit() {
                         <li>\
                             <a href="javascript:;" class="global-mod-button">mod</a>\
                         </li>\
-                        <li>\
-                            <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
                     </ul>\
                 </div>\
             </div>\

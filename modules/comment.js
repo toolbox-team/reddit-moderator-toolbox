@@ -583,6 +583,9 @@ commentsMod.init = function commentsModInit() {
                             }
                         });
                         if (!data.data.after) {
+                            if (!htmlProfileCommentView) {
+                                htmlProfileCommentView = '<div class="error">no results found for /r/' + searchSubreddit + '</div>';
+                            }
                             $('.sitetable.linklisting').append(htmlProfileCommentView);
                             $("time.timeago").timeago();
                             TBUtils.longLoadSpinner(false);

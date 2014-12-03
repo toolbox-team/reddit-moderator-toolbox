@@ -190,6 +190,44 @@ commentsMod.init = function commentsModInit() {
     $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
 
     $("body").on("click", ".loadFlat", function () {
+
+       // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff. 
+        htmlComment = '\
+<div class="thing comment id-{{thingClasses + " onclick="click_thing(this)" data-fullname="{{name}}">\
+    <div class="entry mod-button" subreddit="{{subreddit}}">\
+        <div class="noncollapsed">\
+            <p class="tagline">\
+                <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+                <span class="userattrs">\
+                </span>\
+                <span class="score">{{score}} points</span>\
+                <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+            </p>\
+            <div class="usertext-body">\
+            {{bodyHtml}}\
+            </div>\
+            <ul class="flat-list buttons">\
+                <li class="first">\
+                    <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+                </li>\
+                <li>\
+                    <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+                </li> \
+                <li>\
+                    <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+                </li> \
+                {{bannedBy}}\
+                {{modButtons}}\
+                <li>\
+                    <a href="javascript:;" class="global-mod-button">mod</a>\
+                </li>\
+                <li>\
+                    <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
+            </ul>\
+        </div>\
+    </div>\
+    <div class="child"></div>\
+</div>';    
     
         // remove modtools since we don't want mass actions out of context comments.
     	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
@@ -302,47 +340,26 @@ commentsMod.init = function commentsModInit() {
                 ';
                 }
 
-                // Constructing the comment. Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff. 
+                // Constructing the comment. 
 
-                htmlComment = '\
-<div class="thing comment id-' + thingClasses + '" onclick="click_thing(this)" data-fullname="' + name + '">\
-    <div class="entry mod-button" subreddit="' + subreddit + '">\
-        <div class="noncollapsed">\
-            <p class="tagline">\
-                <a href="/user/' + author + '" class="' + authorClass + ' may-blank">' + author + '</a>\
-                <span class="userattrs">\
-                </span>\
-                <span class="score">' + score + ' points</span>\
-                <time title="' + TBUtils.timeConverterRead(createdUTC) + '" datetime="' + createdTimeAgo + '" class="live-timestamp timeago">' + createdTimeAgo + '</time>\
-            </p>\
-            <div class="usertext-body">\
-            ' + TBUtils.htmlDecode(bodyHtml) + '\
-            </div>\
-            <ul class="flat-list buttons">\
-                <li class="first">\
-                    <a href="' + permaLinkComment + '" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                </li>\
-                <li>\
-                    <a href="' + permaLinkComment + '/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                </li> \
-                <li>\
-                    <a href="' + threadPermalink + '" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                </li> \
-                ' + bannedBy + '\
-                ' + modButtons + '\
-                <li>\
-                    <a href="javascript:;" class="global-mod-button">mod</a>\
-                </li>\
-                <li>\
-                    <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-            </ul>\
-        </div>\
-    </div>\
-    <div class="child"></div>\
-</div>';
+                htmlConstructedComment = TBUtils.template(htmlComment, {
+                     'thingClasses': thingClasses,
+                     'name':  name,
+                     'subreddit': subreddit,
+                     'author': author,
+                     'authorClass': authorClass,
+                     'score': score,
+                     'createdUTC': TBUtils.timeConverterRead(createdUTC),
+                     'createdTimeAgo': createdTimeAgo,
+                     'bodyHtml': TBUtils.htmlDecode(bodyHtml),
+                     'permaLinkComment': permaLinkComment,
+                     'threadPermalink': threadPermalink,
+                     'bannedBy': bannedBy,
+                     'modButtons': modButtons               
+                });
 
 
-                htmlCommentView = htmlCommentView + htmlComment;
+                htmlCommentView = htmlCommentView + htmlConstructedComment;
             });
 
             TBUtils.longLoadSpinner(false);

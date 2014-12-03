@@ -168,18 +168,20 @@ queueTools.init = function () {
         $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
         // remove stuff we can't moderate (in non-mod queues only)
-        if(!TBUtils.isModpage) {
-            TBUtils.getModSubs(function () {
-                $('.thing .subreddit').each(function () {
-                    // Just to be safe.
-                    var sub = $(this).text().replace('/r/', '').replace('/', '');
-
-                    if ($.inArray(sub, TBUtils.mySubs) === -1) {
-                        $(this).parents('.thing').remove();
-                    }
+        function removeUnmoddable() {
+            if (!TBUtils.isModpage) {
+                TBUtils.getModSubs(function () {
+                    $('.thing .subreddit').each(function () {
+                        // Just to be safe.
+                        var sub = $(this).text().replace('/r/', '').replace('/', '');
+                        if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                            $(this).parents('.thing').remove();
+                        }
+                    });
                 });
-            });
+            }
         }
+        removeUnmoddable();
 
         $('.modtools-on').parent().remove();
 
@@ -442,7 +444,7 @@ queueTools.init = function () {
             $things.each(replaceSubLinks);
         }
 
-        // NER support. TODO: why doesn't this work?
+        // NER support.
         window.addEventListener("TBNewThings", function () {
             $.log("proc new things");
             var things = $(".thing").not(".mte-processed");
@@ -487,32 +489,20 @@ queueTools.init = function () {
             TB.modules.HistoryButton.init();
         }
 
-        // Add ban button to all users.
-        function addUserBanLink() {
-            if (!$(this).hasClass('ban-button')) {
-
-                // Add the class so we don't add buttons twice.
-                $(this).addClass('ban-button');
-
-                // Add button.
-                $(this).append('[<a href="javascript:void(0)" title="ban user" class="user-ban-button">B</a>]');
-            }
-        }
-        $('.thing .entry .userattrs').each(addUserBanLink);
-
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
-            $.log("proc new things 2");
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
-            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />').find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').each(addUserBanLink).filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
+            $(things).prepend('<input type="checkbox" tabindex="2" style="margin:5px;float:left;"' + (allSelected ? ' checked' : '') + ' />').find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
                 $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
             });
             if (expandosOpen)
                 $(things).find('.expando-button.collapsed').click();
             if (!viewingspam)
                 setThreshold(things);
+
+            removeUnmoddable();
         }
 
         // Remove rate limit for expandos,removing,approving
@@ -522,91 +512,6 @@ queueTools.init = function () {
             return rate_limit(action);
         };
 
-        // User ban button pressed.
-        function postbanlog(subreddit, author, reason) {
-            var data = {
-                subreddit: subreddit,
-                author: author,
-                title: 'banned',
-                logsub: '',
-                bantitle: '',
-                logreason: '',
-                url: '/user/' + author
-            };
-
-            if (notEnabled.indexOf(data.subreddit) != -1)
-                return;
-
-            // Get removal reasons.
-            getRemovalReasons(data.subreddit, function (resp) {
-                if (!resp || resp.reasons.length < 1) {
-                    notEnabled.push(data.subreddit);
-                    return;
-                }
-
-                // Get PM subject line
-                data.subject = resp.pmsubject || 'Your {kind} was removed from {subreddit}';
-
-                // Add additional data that is found in the wiki JSON.
-                // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                data.logreason = resp.logreason || '';
-                data.header = unescape(resp.header || '');
-                data.footer = unescape(resp.footer || '');
-                data.logsub = resp.logsub || '';
-                data.logtitle = resp.logtitle || 'Removed: {kind} by /u/{author} to /r/{subreddit}';
-                data.bantitle = resp.bantitle || '/u/{author} has been {title} from /r/{subreddit} for {reason}';
-                data.reasons = [];
-
-                // Loop through the reasons... unescaping each.
-                $(resp.reasons).each(function () {
-                    data.reasons.push(unescape(this.text));
-                });
-
-                if (!data || !data.logsub) {
-                    //Do absolutely nothing
-                }
-                else if (reason == '' || reason == undefined || reason == null) {
-                    alert('You did not give a reason for this ban.  You will need to create the log thread in /r/' + data.logsub + ' manually.');
-                }
-                else {
-                    data.logreason = reason;
-                    data.bantitle = data.bantitle.replace('{reason}', data.logreason);
-                    data.bantitle = data.bantitle.replace('{title}', data.title);
-                    data.bantitle = data.bantitle.replace('{author}', data.author);
-                    data.bantitle = data.bantitle.replace('{subreddit}', data.subreddit);
-
-                    TBUtils.postLink(data.url, TBUtils.removeQuotes(data.bantitle), data.logsub, function(successful) {
-                        var removalId = data.json.data.url;
-                        removalId = removalId.match(/https?:\/\/.*.reddit.com\/r\/.+?\/comments\/([^\/]+?)\/.*/);
-                        removalId = 't3_' + removalId[1];
-
-                        TBUtils.approveThing(removalId);
-                    });
-                }
-            });
-        }
-
-        $body.on('click', '.user-ban-button', function (e) {
-            var banbutton = e.target,
-                info = TBUtils.getThingInfo($(this).closest('.entry')),
-                currentsub = info.subreddit,
-                user = info.user;
-
-            // No such luck.
-            if (!user || user === '[deleted]' || !currentsub) {
-                $(banbutton).text('E');
-                $(banbutton).css('color', 'red');
-                return;
-            }
-
-            var reason = prompt("Are you sure you want to ban /u/" + user + " from /r/" + currentsub + "?\n\nBan reason: (optional)", "");
-            if( reason != null){
-                postbanlog(currentsub, user, reason);
-                TBUtils.banUser(user, currentsub, reason, function() {
-                    alert(user + " has been banned from /r/" + currentsub);
-                });
-            }
-        });
 
         if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
             var prefix = '', page = '', type = '';
@@ -704,7 +609,6 @@ TB.register_module(queueTools);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         queuetools();
     });
 })();

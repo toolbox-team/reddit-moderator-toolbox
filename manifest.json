@@ -50,7 +50,6 @@
 				"modules/modmatrix.js",
 				"modules/banlist.js",
 				"modules/removalreasons.js",
-				"modules/queuetools.js",
 				"modules/historybutton.js",
 				"modules/syntax.js",
 				"modules/frame.js",
@@ -58,6 +57,7 @@
 				"modules/devtools.js",
 			  	"modules/macros.js",
 			  	"modules/realtime.js",
+			  	"modules/queuetools.js",
 				"tbobjectinit.js"
 			]
 		}

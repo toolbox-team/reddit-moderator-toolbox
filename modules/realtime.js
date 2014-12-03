@@ -1,3 +1,8 @@
+// ===============
+// http://userscripts-mirror.org/scripts/show/129928
+// By: /u/DEADBEEF
+// ===============
+
 function realtime() {
 
 var realtimeReddit = new TB.Module('Realtime Reddit');
@@ -9,8 +14,8 @@ realtimeReddit.config["betamode"] = true;
 
 realtimeReddit.init = function realtimeInit() {
 
-    // Don't run if the page we're viewing is paginated or a threaded comments page
-    if (location.search.match(/before|after/) || $('body.comments-page').length) return;
+    // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
+    if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
 
     // Add checkbox;
     $('.tabmenu').append('<li><a><label>realtime:<input id="realtime" class="tb-realtime-checkbox" type="checkbox" title="Toggle realtime mode" /></label></a></li>');
@@ -113,21 +118,7 @@ TB.register_module(realtimeReddit);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
+        $.log("real time init?");
         realtime();
     });
 })();
-
-
-
-// ==UserScript==
-// @name        reddit.com - Realtime Reddit
-// @namespace   v2
-// @include     *.reddit.com/r/*/about/unmoderated*
-// @include     *.reddit.com/r/*/comments/
-// @include     *.reddit.com/r/*/comments
-// @include     *.reddit.com/comments/
-// @include     *.reddit.com/comments
-// @include     *.reddit.com/user/*
-// @include     *.reddit.com/*/new*
-// @include     *.reddit.com/new*
-// ==/UserScript==

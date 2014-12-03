@@ -718,6 +718,17 @@ function initwrapper() {
     };
 
 
+    TBUtils.replaceTokens = function(info, content){
+        $.log(info);
+        for (var i in info) {
+            var pattern = new RegExp('{' + i + '}', 'mig');
+            content = content.replace(pattern, info[i]);
+        }
+
+        return content;
+    };
+
+
     // Prevent page lock while parsing things.  (stolen from RES)
     TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
         if (array === null) return;

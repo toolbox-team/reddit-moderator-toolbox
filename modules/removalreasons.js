@@ -317,7 +317,6 @@ removalReasons.init = function removalReasonsInit() {
     function removePopup(popup) {
         popup.remove();
         $body.css('overflow', 'auto');
-        return;
     }
     $body.on('click', '.reason-popup', function (e) {
         e.stopPropagation();
@@ -470,14 +469,14 @@ removalReasons.init = function removalReasonsInit() {
             reason += '\n\n' + footer;
         }
 
-        //// Replace reason variables
+        //// Convert attribs back to data.
         for (var i in data) {
-            var pattern = new RegExp('{' + i + '}', 'mig');
             data[i] = attrs.attr(i);
-            reason = reason.replace(pattern, data[i]);
-            subject = subject.replace(pattern, data[i]);
-            logTitle = logTitle.replace(pattern, data[i]);
         }
+
+        reason = TBUtils.replaceTokens(data, reason);
+        subject = TBUtils.replaceTokens(data, subject);
+        logTitle = TBUtils.replaceTokens(data, logTitle);
 
         //// Clean up reason
         reason = reason.trim();
@@ -608,7 +607,6 @@ TB.register_module(removalReasons);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         removalreasons();
     });
 })();

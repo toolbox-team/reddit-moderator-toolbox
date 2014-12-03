@@ -266,7 +266,37 @@ function initwrapper() {
         return date + '-' + month + '-' + year + ' ' + hour + ':' + min + ':' + sec + ' UTC';
     };
 
+    // convert titles to a format usable in urls
+    // from r2.lib.utils import title_to_url
+    TBUtils.title_to_url = function(title) {
+        var max_length = 50;
 
+        title = title.replace(/\s+/g, "_");     //remove whitespace
+        title = title.replace(/\W+/g, "");      //remove non-printables
+        title = title.replace(/_+/g, "_");      //remove double underscores
+        title = title.replace(/^_+|_+$/g, "");  //remove trailing underscores
+        title = title.toLowerCase();            //lowercase the title
+
+        if(title.length > max_length) {
+            title = title.substr(0, max_length);
+            title = title.replace(/_[^_]*$/g, "");
+        }
+
+        return title || "_";
+    };
+
+    // Easy way to use templates. Usage example: 
+    //    TBUtils.template('/r/{{subreddit}}/comments/{{link_id}}/{{title}}/', {
+    //                'subreddit': 'toolbox',
+    //                'title':  title_to_url('this is a title we pulled from a post),
+    //                'link_id': '2kwx2o'
+    //            });
+    TBUtils.template = function(tpl, variables) {
+        return tpl.replace(/{{([^}]+)}}/g, function(match, variable) {
+            return variables[variable];
+        });
+    };
+    
     TBUtils.longLoadSpinner = function (createOrDestroy) {
         if (createOrDestroy !== undefined) {
 

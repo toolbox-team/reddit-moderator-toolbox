@@ -1259,7 +1259,7 @@ function initwrapper() {
         if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") || $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
         $.log("TBNewThings firing" + ($target.hasClass('flowwit')) ? ' (flowitt)' : '');
 
-        // Wait a sec for stuff to laod.
+        // Wait a sec for stuff to load.
         setTimeout(function () {
             var event = new CustomEvent("TBNewThings");
             window.dispatchEvent(event);

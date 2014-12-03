@@ -57,6 +57,7 @@
 				"modules/modmaillite.js",
 				"modules/devtools.js",
 			  	"modules/macros.js",
+			  	"modules/realtime.js",
 				"tbobjectinit.js"
 			]
 		}

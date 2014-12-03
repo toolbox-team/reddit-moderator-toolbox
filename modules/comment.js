@@ -58,12 +58,12 @@ commentsMod.register_setting(
     });
 
 commentsMod.init = function commentsModInit() {
+    var $body = $('body');
 
     if (!$('.moderator').length || TBUtils.isModmail) {
+        commentSearch(); // you can't be a mod if a user page.
         return;
     }
-
-    var $body = $('body');
 
     //
     // preload some generic variables
@@ -189,9 +189,9 @@ commentsMod.init = function commentsModInit() {
 
     $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
 
-    $("body").on("click", ".loadFlat", function () {
+    $body.on("click", ".loadFlat", function () {
 
-       // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff. 
+        // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
         htmlComment = '\
 <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
     <div class="entry mod-button" subreddit="{{subreddit}}">\
@@ -227,15 +227,15 @@ commentsMod.init = function commentsModInit() {
         </div>\
     </div>\
     <div class="child"></div>\
-</div>';    
-    
+</div>';
+
         // remove modtools since we don't want mass actions out of context comments.
-    	$("body").find(".tabmenu li .modtools-on").closest('li').remove();
-    	$("body").find(".tabmenu li #modtab-threshold").closest('li').remove();
-    	$("body").find(".menuarea.modtools").remove();
+        $body.find(".tabmenu li .modtools-on").closest('li').remove();
+        $body.find(".tabmenu li #modtab-threshold").closest('li').remove();
+        $body.find(".menuarea.modtools").remove();
         var flatListing = {}, // This will contain all comments later on.
-        idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
-        
+            idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
+
         // deconstruct the json we got.
         function parseComments(object) {
             switch (object.kind) {
@@ -274,7 +274,7 @@ commentsMod.init = function commentsModInit() {
         var jsonurl = $('.entry a.comments').attr('href');
 
         // Lets get the comments.
-        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {            
+        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
             // put the json through our deconstructor.
             parseComments(data[1]);
             // and get back a nice flat listing of ids
@@ -329,8 +329,8 @@ commentsMod.init = function commentsModInit() {
                 }
 
                 var modButtons = '';
-                if ($('body').hasClass('moderator')) {
-                modButtons = '\
+                if ($body.hasClass('moderator')) {
+                    modButtons = '\
                 <li>\
                     <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
                 </li>\
@@ -343,19 +343,19 @@ commentsMod.init = function commentsModInit() {
                 // Constructing the comment. 
 
                 htmlConstructedComment = TBUtils.template(htmlComment, {
-                     'thingClasses': thingClasses,
-                     'name':  name,
-                     'subreddit': subreddit,
-                     'author': author,
-                     'authorClass': authorClass,
-                     'score': score,
-                     'createdUTC': TBUtils.timeConverterRead(createdUTC),
-                     'createdTimeAgo': createdTimeAgo,
-                     'bodyHtml': TBUtils.htmlDecode(bodyHtml),
-                     'permaLinkComment': permaLinkComment,
-                     'threadPermalink': threadPermalink,
-                     'bannedBy': bannedBy,
-                     'modButtons': modButtons               
+                    'thingClasses': thingClasses,
+                    'name': name,
+                    'subreddit': subreddit,
+                    'author': author,
+                    'authorClass': authorClass,
+                    'score': score,
+                    'createdUTC': TBUtils.timeConverterRead(createdUTC),
+                    'createdTimeAgo': createdTimeAgo,
+                    'bodyHtml': TBUtils.htmlDecode(bodyHtml),
+                    'permaLinkComment': permaLinkComment,
+                    'threadPermalink': threadPermalink,
+                    'bannedBy': bannedBy,
+                    'modButtons': modButtons
                 });
 
 
@@ -366,10 +366,10 @@ commentsMod.init = function commentsModInit() {
 
             // add the new comment list to the page.
             $(siteTable).append(htmlCommentView);
-            
+
             // and simulate reddits timeago function with our native function.
             $("time.timeago").timeago();
-            
+
             // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
             setTimeout(function () {
                 var event = new CustomEvent("TBNewThings");
@@ -379,183 +379,162 @@ commentsMod.init = function commentsModInit() {
         });
 
     });
-    
- // Find comments made by the user in specific subreddits. 
-if($("body").hasClass("profile-page")) {
-
-    // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-    $('.menuarea').append('<form id="searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text"> <input type="submit"></form>');
 
 
+    function commentSearch() {
+        // Find comments made by the user in specific subreddits.
+        if ($body.hasClass('profile-page')) {
 
-    $("body").on("submit", "#searchuser", function(event) {
-    
-    var subredditsearch = $("body").find('#subredditsearch').val(),
-        subredditsearch = subredditsearch.replace(/\/?r\//g, ""),
-        subredditsearch = TBUtils.htmlEncode(subredditsearch),
-        usersearch = $('#header-bottom-left .pagename').text();
-    event.preventDefault();
-     // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
-            htmlCommentProfile = '\
-    <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
-        <p class="parent">\
-            <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
-            by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
-            in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
-        </p>\
-        <div class="entry mod-button" subreddit="{{subreddit}}">\
-            <div class="noncollapsed">\
-                <p class="tagline">\
-                    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-                    <span class="userattrs">\
-                    </span>\
-                    <span class="score">{{score}} points</span>\
-                    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-                </p>\
-                <div class="usertext-body">\
-                {{bodyHtml}}\
+            // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
+            $('.menuarea').append('<form id="searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text"> <input type="submit"></form>');
+            $body.on('submit', '#searchuser', function (event) {
+                var subredditsearch = $body.find('#subredditsearch').val(),
+                    usersearch = $('#header-bottom-left .pagename').text();
+                subredditsearch = subredditsearch.replace(/\/?r\//g, '');
+                subredditsearch = TBUtils.htmlEncode(subredditsearch);
+                event.preventDefault();
+                // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
+                htmlCommentProfile = '\
+        <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+            <p class="parent">\
+                <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
+                by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
+                in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
+            </p>\
+            <div class="entry mod-button" subreddit="{{subreddit}}">\
+                <div class="noncollapsed">\
+                    <p class="tagline">\
+                        <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+                        <span class="userattrs">\
+                        </span>\
+                        <span class="score">{{score}} points</span>\
+                        <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+                    </p>\
+                    <div class="usertext-body">\
+                    {{bodyHtml}}\
+                    </div>\
+                    <ul class="flat-list buttons">\
+                        <li class="first">\
+                            <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+                        </li>\
+                        <li>\
+                            <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+                        </li> \
+                        <li>\
+                            <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+                        </li> \
+                        {{bannedBy}}\
+                        {{modButtons}}\
+                        <li>\
+                            <a href="javascript:;" class="global-mod-button">mod</a>\
+                        </li>\
+                        <li>\
+                            <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
+                    </ul>\
                 </div>\
-                <ul class="flat-list buttons">\
-                    <li class="first">\
-                        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                    </li>\
-                    <li>\
-                        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                    </li> \
-                    <li>\
-                        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                    </li> \
-                    {{bannedBy}}\
-                    {{modButtons}}\
-                    <li>\
-                        <a href="javascript:;" class="global-mod-button">mod</a>\
-                    </li>\
-                    <li>\
-                        <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-                </ul>\
             </div>\
+            <div class="child"></div>\
         </div>\
-        <div class="child"></div>\
-    </div>\
-    <div class="clearleft"></div>';   
+        <div class="clearleft"></div>';
+                var htmlProfileCommentView = '';
+                $('.sitetable.linklisting').empty();
+                $body.find('#progressIndicator').remove();
+                TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+                function searchComments(user, searchSubreddit, after) {
+                    $.getJSON('/user/' + user + '/comments.json', {
+                        "after": after,
+                        "limit": 100
+                    }).success(function (data, status, jqxhr) {
+                        $.each(data.data.children, function (i, value) {
+                            console.log(value);
+                            var author = value.data.author,
+                                authorFlairCssClass = value.data.author_flair_css_class,
+                                authorFlairText = value.data.author_flair_text,
+                                bannedBy = value.data.banned_by,
+                                bodyHtml = value.data.body_html,
+                                createdUTC = value.data.created_utc,
+                                distinguished = value.data.distinguished,
+                                commentID = value.data.id,
+                                score = value.data.score,
+                                name = value.data.name,
+                                subreddit = value.data.subreddit,
+                                linkAuthor = value.data.link_author,
+                                submissionTitle = value.data.link_title,
+                                linkId = value.data.link_id,
+                                linkUrl = value.data.link_url;
+                            if (subreddit.toLowerCase() === searchSubreddit.toLowerCase()) {
+                                // figure out if we need to add author and mod stuff.
+                                var authorClass = 'author';
+                                if (distinguished === 'moderator') {
+                                    authorClass = authorClass + ' moderator';
+                                }
+                                if (linkAuthor === author) {
+                                    authorClass = authorClass + ' submitter';
+                                }
+                                createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
+                                var threadPermalink = '/r/' + subreddit + '/comments/' + linkId.substring(3) + '/' + TBUtils.title_to_url(submissionTitle) + '/';
+                                var permaLinkComment = threadPermalink + commentID;
+                                var thingClasses = name;
+                                if (bannedBy) {
+                                    bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
+                                    thingClasses = thingClasses + ' spam';
+                                } else {
+                                    bannedBy = '';
+                                }
+                                var modButtons = '';
+                                // need to check if you are a mod of the returned sub
+                                if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
+                                    modButtons = '\
+                    <li>\
+                        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                    </li>\
+                    <li>\
+                        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                    </li>\
+                    ';
+                                }
+                                // Constructing the comment.
+                                htmlConstructedComment = TBUtils.template(htmlCommentProfile, {
+                                    'linkAuthor': linkAuthor,
+                                    'submissionTitle': submissionTitle,
+                                    'thingClasses': thingClasses,
+                                    'name': name,
+                                    'subreddit': subreddit,
+                                    'author': author,
+                                    'authorClass': authorClass,
+                                    'score': score,
+                                    'createdUTC': TBUtils.timeConverterRead(createdUTC),
+                                    'createdTimeAgo': createdTimeAgo,
+                                    'bodyHtml': TBUtils.htmlDecode(bodyHtml),
+                                    'permaLinkComment': permaLinkComment,
+                                    'threadPermalink': threadPermalink,
+                                    'linkUrl': linkUrl,
+                                    'bannedBy': bannedBy,
+                                    'modButtons': modButtons
+                                });
+                                htmlProfileCommentView = htmlProfileCommentView + htmlConstructedComment;
+                            }
+                        });
+                        if (!data.data.after) {
+                            $('.sitetable.linklisting').append(htmlProfileCommentView);
+                            $("time.timeago").timeago();
+                            TBUtils.longLoadSpinner(false);
+                            // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
+                            setTimeout(function () {
+                                var event = new CustomEvent("TBNewThings");
+                                window.dispatchEvent(event);
+                            }, 1000);
+                        } else {
+                            searchComments(user, searchSubreddit, data.data.after);
+                        }
+                    });
+                }
 
-
-    var htmlProfileCommentView = '';
-    $('.sitetable.linklisting').empty();
-    $('body').find('#progressIndicator').remove();
-    TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
-    
-    function searchComments(user,searchSubreddit,after) {
-    $.getJSON( '/user/'+ user + '/comments.json', {
-                    "after": after,
-                    "limit": 100
-                }).success(function (data, status, jqxhr) { 
-
-        $.each(data.data.children, function (i, value) {
-            console.log(value);
-            var author = value.data.author,
-                authorFlairCssClass = value.data.author_flair_css_class,
-                authorFlairText = value.data.author_flair_text,
-                bannedBy = value.data.banned_by,
-                bodyHtml = value.data.body_html,
-                createdUTC = value.data.created_utc,
-                distinguished = value.data.distinguished,
-                commentID = value.data.id,
-                score = value.data.score,
-                name = value.data.name,
-                subreddit = value.data.subreddit,
-                linkAuthor = value.data.link_author,
-                submissionTitle = value.data.link_title,
-                linkId = value.data.link_id,
-                linkUrl = value.data.link_url;
-
-            
-
-            if(subreddit.toLowerCase() === searchSubreddit.toLowerCase()) {
-            // figure out if we need to add author and mod stuff.
-            var authorClass = 'author';
-            if (distinguished === 'moderator') {
-                authorClass = authorClass + ' moderator';
-            }
-
-            if (linkAuthor === author) {
-                authorClass = authorClass + ' submitter';
-            }
-            createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
-
-            var threadPermalink = '/r/' + subreddit + '/comments/' + linkId.substring(3) + '/' + TBUtils.title_to_url(submissionTitle) + '/';
-            var permaLinkComment = threadPermalink + commentID;
-
-
-            var thingClasses = name;
-
-            if (bannedBy) {
-
-                bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
-                thingClasses = thingClasses + ' spam';
-            } else {
-                bannedBy = '';
-            }
-
-            var modButtons = '';
-
-            // need to check if you are a mod of the returned sub
-            if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
-                modButtons = '\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                ';
-            }
-
-
-            // Constructing the comment. 
-            htmlConstructedComment = TBUtils.template(htmlCommentProfile, {
-                'linkAuthor': linkAuthor,
-                'submissionTitle': submissionTitle,
-                'thingClasses': thingClasses,
-                'name':  name,
-                'subreddit': subreddit,
-                'author': author,
-                'authorClass': authorClass,
-                'score': score,
-                'createdUTC': TBUtils.timeConverterRead(createdUTC),
-                'createdTimeAgo': createdTimeAgo,
-                'bodyHtml': TBUtils.htmlDecode(bodyHtml),
-                'permaLinkComment': permaLinkComment,
-                'threadPermalink': threadPermalink,
-                'linkUrl': linkUrl,
-                'bannedBy': bannedBy,
-                'modButtons': modButtons               
+                searchComments(usersearch, subredditsearch);
             });
-            htmlProfileCommentView = htmlProfileCommentView + htmlConstructedComment;
         }
-        });
-        
-        if (!data.data.after) {
-            $('.sitetable.linklisting').append(htmlProfileCommentView);
-            $("time.timeago").timeago();
-            TBUtils.longLoadSpinner(false);
-            // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
-            setTimeout(function () {
-                var event = new CustomEvent("TBNewThings");
-                window.dispatchEvent(event);
-            }, 1000);
-        
-        } else { 
-        searchComments(user,searchSubreddit,data.data.after);
-        }
-        
-    });
     }
-
-    searchComments(usersearch,subredditsearch);
-    });
-};
-
+    commentSearch();
 };
 
 TB.register_module(commentsMod);

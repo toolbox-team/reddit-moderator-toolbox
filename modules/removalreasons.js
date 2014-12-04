@@ -192,8 +192,8 @@ removalReasons.init = function removalReasonsInit() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = TBUtils.getSetting('cache', 'reason-type', 'none');
-            var reasonAsSub = (TBUtils.getSetting('cache', 'reason-as-sub', 'false') != 'false');
+            var reasonType = TB.storage.getSetting('cache', 'reason-type', 'none');
+            var reasonAsSub = (TB.storage.getSetting('cache', 'reason-as-sub', 'false') != 'false');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -293,7 +293,7 @@ removalReasons.init = function removalReasonsInit() {
             // Pre-fill reason input elements which have IDs.
             popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
                 this.id = 'reason-input-' + data.subreddit + '-' + this.id;
-                this.value = TBUtils.getSetting('cache', this.id, this.value);
+                this.value = TB.storage.getSetting('cache', this.id, this.value);
             });
         }
 
@@ -345,11 +345,11 @@ removalReasons.init = function removalReasonsInit() {
 
     // Toggle PM/reply/both notification method
     $body.on('click', '.reason-type', function () {
-        TBUtils.setSetting('cache', 'reason-type', this.value);
+        TB.storage.setSetting('cache', 'reason-type', this.value);
     });
 
     $body.on('click', '.reason-as-sub', function () {
-        TBUtils.setSetting('cache', 'reason-as-sub', this.value);
+        TB.storage.setSetting('cache', 'reason-as-sub', this.value);
     });
 
     // 'no reason' button clicked
@@ -624,7 +624,7 @@ removalReasons.init = function removalReasonsInit() {
 
     // Reason textarea/input/select changed
     $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
-        TBUtils.setSetting('cache', this.id, this.selectedIndex || this.value);
+        TB.storage.setSetting('cache', this.id, this.selectedIndex || this.value);
     });
 };
 

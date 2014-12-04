@@ -1,5 +1,5 @@
 ﻿function frame() {
-if (!TBUtils.logged || !TBUtils.getSetting('FrameMod', 'enabled', false))
+if (!TBUtils.logged || !TB.storage.getSetting('FrameMod', 'enabled', false))
     return;
 if (!$('#tb-bottombar'))
     return setTimeout(frame);
@@ -33,10 +33,10 @@ else {
 
 $body.delegate('#tb-launch-fame, .tb-launch-fame', 'click', function (e) {
 
-    var unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
+    var unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
+        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
+        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
+        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0);
 
 
     msgGet = (unreadMessageCount <= limit && unreadMessageCount > 0) ? unreadMessageCount : limit;
@@ -136,14 +136,14 @@ function update(URL, modtools) {
 function addModtools() {
     $.log('adding moodtools');
     var numberRX = /-?\d+/,
-        reportsThreshold = TBUtils.getSetting('QueueTools', 'reports-threshold', 1),
-        listingOrder = TBUtils.getSetting('QueueTools', 'reports-order', 'age'),
-        sortAscending = (TBUtils.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
+        reportsThreshold = TB.storage.getSetting('QueueTools', 'reports-threshold', 1),
+        listingOrder = TB.storage.getSetting('QueueTools', 'reports-order', 'age'),
+        sortAscending = (TB.storage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true'), //the fuck is going on here?
         allSelected = false,
         $frameSitetable = $('.tb-frame-sitetable'),
-        hideActionedItems = TBUtils.getSetting('QueueTools', 'hideactioneditems', false),
-        ignoreOnApprove = TBUtils.getSetting('QueueTools', 'ignoreonapprove', false),
-        rtsComment = TBUtils.getSetting('QueueTools', 'rtscomment', true),
+        hideActionedItems = TB.storage.getSetting('QueueTools', 'hideactioneditems', false),
+        ignoreOnApprove = TB.storage.getSetting('QueueTools', 'ignoreonapprove', false),
+        rtsComment = TB.storage.getSetting('QueueTools', 'rtscomment', true),
         spamReportSub = 'reportthespammers';
 
     // Make visible any collapsed things (stuff below /prefs/ threshold)
@@ -223,8 +223,8 @@ function addModtools() {
 
         if (toggleAsc) sortAscending = !sortAscending;
 
-        TBUtils.setSetting('QueueTools', 'reports-ascending', sortAscending);
-        TBUtils.setSetting('QueueTools', 'reports-order', order);
+        TB.storage.setSetting('QueueTools', 'reports-ascending', sortAscending);
+        TB.storage.setSetting('QueueTools', 'reports-order', order);
 
         $('.sortorder').text(order);
         sortThings(order, sortAscending);

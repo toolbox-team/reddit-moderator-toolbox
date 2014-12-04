@@ -47,7 +47,7 @@ modMailPro.register_setting('hideinvitespam', {
 modMailPro.register_setting('autoload', {
     'type': 'boolean',
     'default': false,
-    'hidden': !TBUtils.getSetting('Notifier', 'enabled', true),
+    'hidden': !TB.storage.getSetting('Notifier', 'enabled', true),
     'title': 'Automatically load new mod mail when received.'
 });
 
@@ -68,17 +68,17 @@ modMailPro.modmailpro = function () {
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
-        inbox = TBUtils.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
+        inbox = TB.storage.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
         now = new Date().getTime(),
         buffer = 5 * 60000, // 5mins
-        lastVisited = TBUtils.getSetting('ModMailPro', 'lastvisited', now),
-        visitedBuffer = TBUtils.getSetting('ModMailPro', 'visitedbuffer', -1), // I think this may be broken.
+        lastVisited = TB.storage.getSetting('ModMailPro', 'lastvisited', now),
+        visitedBuffer = TB.storage.getSetting('ModMailPro', 'visitedbuffer', -1), // I think this may be broken.
         newCount = 0,
-        collapsed = TBUtils.getSetting('ModMailPro', 'defaultcollapse', false),
-        expandReplies = TBUtils.getSetting('ModMailPro', 'expandreplies', false),
-        noRedModmail = TBUtils.getSetting('ModMailPro', 'noredmodmail', true),
-        hideInviteSpam = TBUtils.getSetting('ModMailPro', 'hideinvitespam', false),
-        highlightNew = TBUtils.getSetting('ModMailPro', 'highlightnew', true),
+        collapsed = TB.storage.getSetting('ModMailPro', 'defaultcollapse', false),
+        expandReplies = TB.storage.getSetting('ModMailPro', 'expandreplies', false),
+        noRedModmail = TB.storage.getSetting('ModMailPro', 'noredmodmail', true),
+        hideInviteSpam = TB.storage.getSetting('ModMailPro', 'hideinvitespam', false),
+        highlightNew = TB.storage.getSetting('ModMailPro', 'highlightnew', true),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -134,7 +134,7 @@ modMailPro.modmailpro = function () {
             replied.push(id);
         }
 
-        TBUtils.setSetting('ModMailPro', 'replied', replied);
+        TB.storage.setSetting('ModMailPro', 'replied', replied);
 
         setReplied();
     });
@@ -277,8 +277,8 @@ modMailPro.modmailpro = function () {
             // Update time stamps, but only if it has been more than five minutes since the last update.
             //console.log(now > visitedBuffer);
             if (now > visitedBuffer) {
-                TBUtils.setSetting('ModMailPro', 'lastvisited', now);
-                TBUtils.setSetting('ModMailPro', 'visitedbuffer', now + buffer);
+                TB.storage.setSetting('ModMailPro', 'lastvisited', now);
+                TB.storage.setSetting('ModMailPro', 'visitedbuffer', now + buffer);
             }
 
             // If set collapse all threads on load.
@@ -459,7 +459,7 @@ modMailPro.modmailpro = function () {
         }
 
         // Save new filter list.
-        TBUtils.setSetting('ModMailPro', 'filteredsubs', filtersubs);
+        TB.storage.setSetting('ModMailPro', 'filteredsubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -478,11 +478,11 @@ modMailPro.modmailpro = function () {
     }
 
     function getFilteredSubs() {
-        return TBUtils.getSetting('ModMailPro', 'filteredsubs', []);
+        return TB.storage.getSetting('ModMailPro', 'filteredsubs', []);
     }
 
     function getRepliedThreads() {
-        return TBUtils.getSetting('ModMailPro', 'replied', []);
+        return TB.storage.getSetting('ModMailPro', 'replied', []);
     }
 
     function showThreads(items, byID) {
@@ -594,9 +594,9 @@ modMailPro.realtimemail = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (TBUtils.getSetting('ModMailPro', 'autoload', false) && TBUtils.getSetting('Notifier', 'enabled', true)) {
+    if (TB.storage.getSetting('ModMailPro', 'autoload', false) && TB.storage.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
-            var count = TBUtils.getSetting('Notifier', 'modmailcount', 0);
+            var count = TB.storage.getSetting('Notifier', 'modmailcount', 0);
             if (count > 0) {
                 $(refreshLink).css(selectedCSS);
                 getNewThings(count);
@@ -606,8 +606,8 @@ modMailPro.realtimemail = function () {
 
     // Add new things
     function getNewThings(limit) {
-        TBUtils.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
-        TBUtils.setSetting('Notifier', 'modmailcount', 0);
+        TB.storage.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
+        TB.storage.setSetting('Notifier', 'modmailcount', 0);
 
         $.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {

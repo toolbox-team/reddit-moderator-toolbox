@@ -608,15 +608,15 @@ TBConfig.init = function () {
             saveButton = $body.find('.save-wiki-data'),
             editArea = $body.find('.wiki-edit-area');
 
-        if (TBUtils.getSetting('SyntaxHighlighter', 'enabled', true)) {
+        if (TB.storage.getSetting('SyntaxHighlighter', 'enabled', true)) {
             $body.addClass('mod-toolbox-ace');
             $(editArea).show();
             $(textAreaDiv).show();
 
-            var selectedTheme = TBUtils.getSetting('SyntaxHighlighter', 'selectedTheme', 'monokai'),
+            var selectedTheme = TB.storage.getSetting('SyntaxHighlighter', 'selectedTheme', 'monokai'),
                 configEditor = ace.edit('edit-wikidata-div');
 
-            configEditor.getSession().setUseWrapMode(TBUtils.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+            configEditor.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
             configEditor.setTheme("ace/theme/" + selectedTheme);
 
             if (page === 'automoderator') {

@@ -45,68 +45,68 @@ notifierMod.init = function notifierMod_init() {
     //
     // preload some generic variables
     //
-    var checkInterval = TBUtils.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+    var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
     // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
-        modNotifications = TBUtils.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
+        modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
     // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
-        messageNotifications = TBUtils.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
-        modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
-        unmoderatedNotifications = TBUtils.getSetting('Notifier', 'unmoderatednotifications', false),
+        messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
+        modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
+        unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
 
         modSubreddits = notifierMod.setting('modsubreddits'),
         unmoderatedSubreddits = notifierMod.setting('unmoderatedsubreddits'),
         modmailSubreddits = notifierMod.setting('modmailsubreddits'),
 
-        modmailSubredditsFromPro = TBUtils.getSetting('Notifier', 'modmailsubredditsfrompro', false),
+        modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
 
         modmailFilteredSubreddits = modmailSubreddits,
-        notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
-        shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
-        shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
-        modbarHidden = TBUtils.getSetting('Notifier', 'modbarhidden', false),
-        compactHide = TBUtils.getSetting('Notifier', 'compacthide', false),
-        unmoderatedOn = TBUtils.getSetting('Notifier', 'unmoderatedon', true),
-        consolidatedMessages = TBUtils.getSetting('Notifier', 'consolidatedmessages', true),
+        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
+        shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
+        shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
+        modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
+        compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
+        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
+        consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
         footer = $('.footer-parent'),
-        unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
-        straightToInbox = TBUtils.getSetting('Notifier', 'straightToInbox', false),
+        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
+        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
+        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
+        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
+        straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
-        consoleShowing = TBUtils.getSetting('Notifier', 'consoleshowing', false),
-        lockscroll = TBUtils.getSetting('Notifier', 'lockscroll', false),
+        consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),
+        lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
         newLoad = true,
         now = new Date().getTime(),
-        messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
-        settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
+        messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
+        modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
+        settingSub = TB.storage.getSetting('Utils', 'settingsub', '');
 
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (TBUtils.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += '-' + TBUtils.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+        if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
         }
     }
 
     // convert some settings values
     // TODO: add a fixer in the first run function for next release and drop this section
     if (modNotifications == 'on') {
-        TBUtils.setSetting('Notifier', 'modnotifications', true);
+        TB.storage.setSetting('Notifier', 'modnotifications', true);
         modNotifications = true;
     } else if (modNotifications == 'off') {
-        TBUtils.setSetting('Notifier', 'modnotifications', false);
+        TB.storage.setSetting('Notifier', 'modnotifications', false);
         modNotifications = false;
     }
 
     if (messageNotifications == 'on') {
-        TBUtils.setSetting('Notifier', 'messagenotifications', true);
+        TB.storage.setSetting('Notifier', 'messagenotifications', true);
         messageNotifications = true;
     } else if (messageNotifications == 'off') {
-        TBUtils.setSetting('Notifier', 'messagenotifications', true);
+        TB.storage.setSetting('Notifier', 'messagenotifications', true);
         messageNotifications = false;
     }
 
@@ -127,8 +127,8 @@ notifierMod.init = function notifierMod_init() {
     }
 
     // cache settings.
-    var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
-        longLength = TBUtils.getSetting('cache', 'longlength', 45);
+    var shortLength = TB.storage.getSetting('cache', 'shortlength', 15),
+        longLength = TB.storage.getSetting('cache', 'longlength', 45);
 
 
     //
@@ -153,8 +153,8 @@ notifierMod.init = function notifierMod_init() {
         $.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
-        TBUtils.setSetting('Notifier', 'lastseenmodmail', now);
-        modmailCount = TBUtils.setSetting('Notifier', 'modmailcount', 0);
+        TB.storage.setSetting('Notifier', 'lastseenmodmail', now);
+        modmailCount = TB.storage.setSetting('Notifier', 'modmailcount', 0);
 
         $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function (json) {
             $.each(json.data.children, function (i, value) {
@@ -173,7 +173,7 @@ notifierMod.init = function notifierMod_init() {
 
     function getmessages() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-        var lastchecked = TBUtils.getSetting('Notifier', 'lastchecked', -1),
+        var lastchecked = TB.storage.getSetting('Notifier', 'lastchecked', -1),
             author = '',
             body_html = '';
 
@@ -182,10 +182,10 @@ notifierMod.init = function notifierMod_init() {
 
 
         // Update counters.
-        unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0);
-        modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0);
-        unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0);
-        modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0);
+        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0);
+        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0);
+        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0);
+        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0);
 
         //
         // Update methods
@@ -264,7 +264,7 @@ notifierMod.init = function notifierMod_init() {
 
         //$.log('updating totals');
         // We're checking now.
-        TBUtils.setSetting('Notifier', 'lastchecked', now);
+        TB.storage.setSetting('Notifier', 'lastchecked', now);
 
         //
         // Messages
@@ -288,7 +288,7 @@ notifierMod.init = function notifierMod_init() {
         // getting unread messages
         $.getJSON('/message/unread.json').done(function (json) {
             var count = json.data.children.length || 0;
-            TBUtils.setSetting('Notifier', 'unreadmessagecount', count);
+            TB.storage.setSetting('Notifier', 'unreadmessagecount', count);
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
@@ -297,7 +297,7 @@ notifierMod.init = function notifierMod_init() {
 
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pushedunread = TBUtils.getSetting('Notifier', 'unreadpushed', []);
+                var pushedunread = TB.storage.getSetting('Notifier', 'unreadpushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     var notificationbody, messagecount = 0;
@@ -370,7 +370,7 @@ notifierMod.init = function notifierMod_init() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                TBUtils.setSetting('Notifier', 'unreadpushed', pushedunread);
+                TB.storage.setSetting('Notifier', 'unreadpushed', pushedunread);
 
 
             }
@@ -400,7 +400,7 @@ notifierMod.init = function notifierMod_init() {
                 //$.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pusheditems = TBUtils.setSetting('Notifier', 'modqueuepushed', []);
+                var pusheditems = TB.storage.setSetting('Notifier', 'modqueuepushed', []);
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     //$.log('here we go!');
@@ -477,11 +477,11 @@ notifierMod.init = function notifierMod_init() {
                 if (pusheditems.length > 100) {
                     pusheditems.splice(0, 100 - pusheditems.length);
                 }
-                TBUtils.setSetting('Notifier', 'modqueuepushed', pusheditems);
+                TB.storage.setSetting('Notifier', 'modqueuepushed', pusheditems);
 
 
             }
-            TBUtils.setSetting('Notifier', 'modqueuecount', count);
+            TB.storage.setSetting('Notifier', 'modqueuecount', count);
         });
 
         //
@@ -494,7 +494,7 @@ notifierMod.init = function notifierMod_init() {
 
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
-                    var lastSeen = TBUtils.getSetting('Notifier', 'lastseenunmoderated', -1);
+                    var lastSeen = TB.storage.getSetting('Notifier', 'lastseenunmoderated', -1);
 
                     if (consolidatedMessages) {
                         var notificationbody, queuecount = 0, xmoreUnmod = 0;
@@ -540,10 +540,10 @@ notifierMod.init = function notifierMod_init() {
                         });
                     }
 
-                    TBUtils.setSetting('Notifier', 'lastseenunmoderated', now);
+                    TB.storage.setSetting('Notifier', 'lastseenunmoderated', now);
                 }
 
-                TBUtils.setSetting('Notifier', 'unmoderatedcount', count);
+                TB.storage.setSetting('Notifier', 'unmoderatedcount', count);
 
                 if (unmoderatedOn) {
                     updateUnmodCount(count);
@@ -559,12 +559,12 @@ notifierMod.init = function notifierMod_init() {
 
             var count = json.data.children.length || 0;
             if (count === 0) {
-                TBUtils.setSetting('Notifier', 'modmailcount', count);
+                TB.storage.setSetting('Notifier', 'modmailcount', count);
                 updateModMailCount(count);
                 return;
             }
 
-            var lastSeen = TBUtils.getSetting('Notifier', 'lastseenmodmail', -1),
+            var lastSeen = TB.storage.getSetting('Notifier', 'lastseenmodmail', -1),
                 newIdx = '',
                 title = '',
                 text = '',
@@ -575,7 +575,7 @@ notifierMod.init = function notifierMod_init() {
                     messageAuthor = json.data.children[i].data.author;
 
                 var isInviteSpam = false;
-                if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
+                if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
                     isInviteSpam = true;
                 }
 
@@ -597,7 +597,7 @@ notifierMod.init = function notifierMod_init() {
                     $.each(json.data.children, function (i, value) {
 
                         var isInviteSpam = false;
-                        if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
 
@@ -633,7 +633,7 @@ notifierMod.init = function notifierMod_init() {
                     $.each(json.data.children, function (i, value) {
 
                         var isInviteSpam = false;
-                        if (TBUtils.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
 
@@ -657,7 +657,7 @@ notifierMod.init = function notifierMod_init() {
                 }
             }
 
-            TBUtils.setSetting('Notifier', 'modmailcount', newCount);
+            TB.storage.setSetting('Notifier', 'modmailcount', newCount);
             updateModMailCount(newCount);
 
         });
@@ -668,10 +668,10 @@ notifierMod.init = function notifierMod_init() {
         setInterval(getmessages, checkInterval);
         getmessages();
     } else { // todo: this is a temp hack until 2.2
-        TBUtils.setSetting('Notifier', 'unreadmessagecount', 0);
-        TBUtils.setSetting('Notifier', 'modqueuecount', 0);
-        TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);
-        TBUtils.setSetting('Notifier', 'modmailcount', 0);
+        TB.storage.setSetting('Notifier', 'unreadmessagecount', 0);
+        TB.storage.setSetting('Notifier', 'modqueuecount', 0);
+        TB.storage.setSetting('Notifier', 'unmoderatedcount', 0);
+        TB.storage.setSetting('Notifier', 'modmailcount', 0);
     }
 
 };

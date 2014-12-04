@@ -209,7 +209,7 @@ body {\n\
                                 $body.addClass('mod-toolbox-ace');
                                 var editorSettings = ace.edit(module.shortname + '_syntax_theme_css');
                                 editorSettings.setTheme("ace/theme/" + module.setting(setting));
-                                editorSettings.getSession().setUseWrapMode(TBUtils.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+                                editorSettings.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
 
                                 if (TBUtils.browser == 'chrome') {
                                     ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
@@ -387,7 +387,7 @@ TB.Module.prototype = {
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {
-        console.log("got tbutils");
+        $.log("got tbutils");
         tbobject();
         var event = new CustomEvent("TBObjectLoaded");
         window.dispatchEvent(event);

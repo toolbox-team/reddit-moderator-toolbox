@@ -9,65 +9,65 @@ $body.addClass('mod-toolbox');
 //
 // preload some generic variables
 //
-var checkInterval = TBUtils.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
 // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
-    modNotifications = TBUtils.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
+    modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
 // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
-    messageNotifications = TBUtils.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
-    modmailNotifications = TBUtils.getSetting('Notifier', 'modmailnotifications', true),
-    unmoderatedNotifications = TBUtils.getSetting('Notifier', 'unmoderatednotifications', false),
-    modSubreddits = TBUtils.getSetting('Notifier', 'modsubreddits', 'mod'),
-    unmoderatedSubreddits = TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
-    modmailSubreddits = TBUtils.getSetting('Notifier', 'modmailsubreddits', 'mod'),
-    modmailSubredditsFromPro = TBUtils.getSetting('Notifier', 'modmailsubredditsfrompro', false),
+    messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
+    modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
+    unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
+    modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
+    unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
+    modmailSubreddits = TB.storage.getSetting('Notifier', 'modmailsubreddits', 'mod'),
+    modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
     modmailFilteredSubreddits = modmailSubreddits,
-    notifierEnabled = TBUtils.getSetting('Notifier', 'enabled', true),
-    shortcuts = TBUtils.getSetting('Notifier', 'shortcuts', '-'),
-    shortcuts2 = TBUtils.getSetting('Notifier', 'shortcuts2', {}),
-    modbarHidden = TBUtils.getSetting('Notifier', 'modbarhidden', false),
-    compactHide = TBUtils.getSetting('Notifier', 'compacthide', false),
-    unmoderatedOn = TBUtils.getSetting('Notifier', 'unmoderatedon', true),
-    consolidatedMessages = TBUtils.getSetting('Notifier', 'consolidatedmessages', true),
+    notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
+    shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
+    shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
+    modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
+    compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
+    unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
+    consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
     footer = $('.footer-parent'),
-    unreadMessageCount = TBUtils.getSetting('Notifier', 'unreadmessagecount', 0),
-    modqueueCount = TBUtils.getSetting('Notifier', 'modqueuecount', 0),
-    unmoderatedCount = TBUtils.getSetting('Notifier', 'unmoderatedcount', 0),
-    modmailCount = TBUtils.getSetting('Notifier', 'modmailcount', 0),
-    straightToInbox = TBUtils.getSetting('Notifier', 'straightToInbox', false),
+    unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
+    modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
+    unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
+    modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
+    straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
     debugMode = TBUtils.debugMode,
     betaMode = TBUtils.betaMode,
-    consoleShowing = TBUtils.getSetting('Notifier', 'consoleshowing', false),
-    lockscroll = TBUtils.getSetting('Notifier', 'lockscroll', false),
+    consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),
+    lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
     newLoad = true,
     now = new Date().getTime(),
-    messageunreadlink = TBUtils.getSetting('Notifier', 'messageunreadlink', false),
-    modmailunreadlink = TBUtils.getSetting('Notifier', 'modmailunreadlink', false),
-    settingSub = TBUtils.getSetting('Utils', 'settingsub', '');
+    messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
+    modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
+    settingSub = TB.storage.getSetting('Utils', 'settingsub', '');
 
 
 // use filter subs from MMP, if appropriate
 if (modmailSubredditsFromPro) {
     modmailFilteredSubreddits = 'mod';
-    if (TBUtils.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-        modmailFilteredSubreddits += '-' + TBUtils.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+    if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
+        modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
     }
 }
 
 // convert some settings values
 // TODO: add a fixer in the first run function for next release and drop this section
 if (modNotifications == 'on') {
-    TBUtils.setSetting('Notifier', 'modnotifications', true);
+    TB.storage.setSetting('Notifier', 'modnotifications', true);
     modNotifications = true;
 } else if (modNotifications == 'off') {
-    TBUtils.setSetting('Notifier', 'modnotifications', false);
+    TB.storage.setSetting('Notifier', 'modnotifications', false);
     modNotifications = false;
 }
 
 if (messageNotifications == 'on') {
-    TBUtils.setSetting('Notifier', 'messagenotifications', true);
+    TB.storage.setSetting('Notifier', 'messagenotifications', true);
     messageNotifications = true;
 } else if (messageNotifications == 'off') {
-    TBUtils.setSetting('Notifier', 'messagenotifications', true);
+    TB.storage.setSetting('Notifier', 'messagenotifications', true);
     messageNotifications = false;
 }
 
@@ -88,8 +88,8 @@ if (modmailunreadlink) {
 }
 
 // cache settings.
-var shortLength = TBUtils.getSetting('cache', 'shortlength', 15),
-    longLength = TBUtils.getSetting('cache', 'longlength', 45);
+var shortLength = TB.storage.getSetting('cache', 'shortlength', 15),
+    longLength = TB.storage.getSetting('cache', 'longlength', 45);
 
 
 //
@@ -224,7 +224,7 @@ function toggleMenuBar(hidden) {
         $(modbarhid).hide();
         if (consoleShowing) $console.show();
     }
-    TBUtils.setSetting('Notifier', 'modbarhidden', hidden);
+    TB.storage.setSetting('Notifier', 'modbarhidden', hidden);
 }
 
 toggleMenuBar(modbarHidden);
@@ -262,13 +262,13 @@ $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
     }
 
     consoleShowing = !consoleShowing;
-    TBUtils.setSetting('Notifier', 'consoleshowing', consoleShowing);
+    TB.storage.setSetting('Notifier', 'consoleshowing', consoleShowing);
 });
 
 // Set console scroll
 $body.on('click', '#tb-console-lockscroll', function () {
     lockscroll = !lockscroll;
-    TBUtils.setSetting('Notifier', 'lockscroll', lockscroll);
+    TB.storage.setSetting('Notifier', 'lockscroll', lockscroll);
 });
 
 /*
@@ -511,7 +511,7 @@ $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
     sub = sub.replace('/r/', '').replace('/', '');
 
     // Save the sub, firest.
-    TBUtils.setSetting('Utils', 'settingsub', sub);
+    TB.storage.setSetting('Utils', 'settingsub', sub);
 
     if ($(e.target).hasClass('tb-settings-import')) {
         TBUtils.importSettings(sub, function () {
@@ -564,56 +564,56 @@ $body.on('click', '.tb-add-shortcuts', function () {
 $body.on('click', '.tb-save', function () {
     var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
     if (messagenotificationssave === true) {
-        TBUtils.setSetting('Notifier', 'messagenotifications', true);
+        TB.storage.setSetting('Notifier', 'messagenotifications', true);
     } else {
-        TBUtils.setSetting('Notifier', 'messagenotifications', false);
+        TB.storage.setSetting('Notifier', 'messagenotifications', false);
     }
 
     var modnotificationscheckedsave = $("input[name=modnotifications]").is(':checked');
     if (modnotificationscheckedsave === true) {
-        TBUtils.setSetting('Notifier', 'modnotifications', true);
+        TB.storage.setSetting('Notifier', 'modnotifications', true);
     } else {
-        TBUtils.setSetting('Notifier', 'modnotifications', false);
+        TB.storage.setSetting('Notifier', 'modnotifications', false);
     }
 
     modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
-    TBUtils.setSetting('Notifier', 'modmailnotifications', modmailnotificationscheckedsaved);
+    TB.storage.setSetting('Notifier', 'modmailnotifications', modmailnotificationscheckedsaved);
 
     unmoderatednotificationscheckedsaved = $("input[name=unmoderatednotifications]").is(':checked');
-    TBUtils.setSetting('Notifier', 'unmoderatednotifications', unmoderatednotificationscheckedsaved);
+    TB.storage.setSetting('Notifier', 'unmoderatednotifications', unmoderatednotificationscheckedsaved);
 
     unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
-    TBUtils.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
+    TB.storage.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
     consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
-    TBUtils.setSetting('Notifier', 'consolidatedmessages', consolidatedmessagescheckedsave);
+    TB.storage.setSetting('Notifier', 'consolidatedmessages', consolidatedmessagescheckedsave);
 
     messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
-    TBUtils.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
+    TB.storage.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
 
         modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
-    TBUtils.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
+    TB.storage.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
 
     shortcuts = escape($("input[name=shortcuts]").val());
-    TBUtils.setSetting('Notifier', 'shortcuts', shortcuts);
+    TB.storage.setSetting('Notifier', 'shortcuts', shortcuts);
 
     modSubreddits = $("input[name=modsubreddits]").val();
-    TBUtils.setSetting('Notifier', 'modsubreddits', modSubreddits);
+    TB.storage.setSetting('Notifier', 'modsubreddits', modSubreddits);
 
     highlighted = $("input[name=highlighted]").val();
 
-    TBUtils.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
+    TB.storage.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
 
     unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
-    if (unmoderatedSubreddits !== TBUtils.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
-        TBUtils.setSetting('Notifier', 'unmoderatedcount', 0);
-        TBUtils.setSetting('Notifier', 'lastseenunmoderated', -1);
+    if (unmoderatedSubreddits !== TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
+        TB.storage.setSetting('Notifier', 'unmoderatedcount', 0);
+        TB.storage.setSetting('Notifier', 'lastseenunmoderated', -1);
     }
-    TBUtils.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
+    TB.storage.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
     // pull filtered subreddits from MMP?
     modmailSubredditsFromPro = $("input[name=modmailsubredditsfrompro]")[0].checked; // $()[0].checked is a million times faster than other methods
-    TBUtils.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
+    TB.storage.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
 
     modmailSubreddits = $("input[name=modmailsubreddits]").val();
     modmailFilteredSubreddits = modmailSubreddits;
@@ -624,27 +624,27 @@ $body.on('click', '.tb-save', function () {
         // so don't actually save modmailSubreddits if they are using filtered subs from MMP
 
         modmailFilteredSubreddits = 'mod';
-        if (TBUtils.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += '-' + TBUtils.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+        if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
         }
     } else {
         // save manually set filtered subs
-        if (modmailSubreddits !== TBUtils.getSetting('Notifier', 'modmailsubreddits', '')) {
-            TBUtils.setSetting('Notifier', 'modmailcount', 0);
-            TBUtils.setSetting('Notifier', 'lastseenmodmail', -1);
+        if (modmailSubreddits !== TB.storage.getSetting('Notifier', 'modmailsubreddits', '')) {
+            TB.storage.setSetting('Notifier', 'modmailcount', 0);
+            TB.storage.setSetting('Notifier', 'lastseenmodmail', -1);
         }
-        TBUtils.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
+        TB.storage.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
     }
 
-    TBUtils.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
+    TB.storage.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
 
-    TBUtils.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
-    TBUtils.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
+    TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
+    TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
 
     // Save shortcuts
     var $shortcuts = $('.tb-window-content-shortcuts-tr');
     if ($shortcuts.length === 0) {
-        TBUtils.setSetting('Notifier', 'shortcuts2', {});
+        TB.storage.setSetting('Notifier', 'shortcuts2', {});
     } else {
         shortcuts2 = {};
 
@@ -658,15 +658,15 @@ $body.on('click', '.tb-save', function () {
             }
         });
 
-        TBUtils.setSetting('Notifier', 'shortcuts2', shortcuts2);
+        TB.storage.setSetting('Notifier', 'shortcuts2', shortcuts2);
     }
 
     // Save which modules are enabled.
-    TBUtils.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
+    TB.storage.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
     // save cache settings.
-    TBUtils.setSetting('cache', 'longlength', $("input[name=longLength]").val());
-    TBUtils.setSetting('cache', 'shortlength', $("input[name=shortLength]").val());
+    TB.storage.setSetting('cache', 'longlength', $("input[name=longLength]").val());
+    TB.storage.setSetting('cache', 'shortlength', $("input[name=shortLength]").val());
 
     if ($("#clearcache").prop('checked')) {
         TBUtils.clearCache();

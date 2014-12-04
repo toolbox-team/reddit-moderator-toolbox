@@ -16,13 +16,13 @@ function initwrapper() {
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
     //settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
-        lastgetLong = TBStorage.getSetting('cache', 'lastgetlong', -1),
-        lastgetShort = TBStorage.getSetting('cache', 'lastgetshort', -1),
-        shortLength = TBStorage.getSetting('cache', 'shortlength', 15),
-        longLength = TBStorage.getSetting('cache', 'longlength', 45),
-        cacheName = TBStorage.getSetting('cache', 'cachename', ''),
-        seenNotes = TBStorage.getSetting('Utils', 'seennotes', []),
-        lastVersion = TBStorage.getSetting('Utils', 'lastversion', 0),
+        lastgetLong = TB.storage.getSetting('cache', 'lastgetlong', -1),
+        lastgetShort = TB.storage.getSetting('cache', 'lastgetshort', -1),
+        shortLength = TB.storage.getSetting('cache', 'shortlength', 15),
+        longLength = TB.storage.getSetting('cache', 'longlength', 45),
+        cacheName = TB.storage.getSetting('cache', 'cachename', ''),
+        seenNotes = TB.storage.getSetting('Utils', 'seennotes', []),
+        lastVersion = TB.storage.getSetting('Utils', 'lastversion', 0),
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
@@ -59,9 +59,9 @@ function initwrapper() {
     TBUtils.isMod = $('body.moderator').length;
     TBUtils.isExtension = true;
     TBUtils.log = [];
-    TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false);
-    TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false);
-    TBUtils.browser = TBStorage.browser;
+    TBUtils.debugMode = TB.storage.getSetting('Utils', 'debugMode', false);
+    TBUtils.betaMode = TB.storage.getSetting('Utils', 'betaMode', false);
+    TBUtils.browser = TB.storage.browser;
     TBUtils.firstRun = false;
 
 
@@ -72,7 +72,7 @@ function initwrapper() {
 
 
     // Do settings echo before anything else.  If it fails, exit toolbox.
-    var ret = TBStorage.setSetting('Utils', 'echotest', ECHO);
+    var ret = TB.storage.setSetting('Utils', 'echotest', ECHO);
     if (ret !== ECHO) {
         alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
         return;
@@ -80,56 +80,56 @@ function initwrapper() {
 
 
     // Get cached info.
-    TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getSetting('cache', 'notecache', {});
-    TBUtils.configCache = (getnewLong) ? {} : TBStorage.getSetting('cache', 'configcache', {});
-    TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getSetting('cache', 'noconfig', []);
-    TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getSetting('cache', 'nonotes', []);
-    TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubs', []);
-    TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getSetting('cache', 'moderatedsubsdata', []);
+    TBUtils.noteCache = (getnewShort) ? {} : TB.storage.getSetting('cache', 'notecache', {});
+    TBUtils.configCache = (getnewLong) ? {} : TB.storage.getSetting('cache', 'configcache', {});
+    TBUtils.noConfig = (getnewShort) ? [] : TB.storage.getSetting('cache', 'noconfig', []);
+    TBUtils.noNotes = (getnewShort) ? [] : TB.storage.getSetting('cache', 'nonotes', []);
+    TBUtils.mySubs = (getnewLong) ? [] : TB.storage.getSetting('cache', 'moderatedsubs', []);
+    TBUtils.mySubsData = (getnewLong) ? [] : TB.storage.getSetting('cache', 'moderatedsubsdata', []);
 
 
     // Update cache vars as needed.
     if (newLogin) {
-        TBStorage.setSetting('cache', 'cachename', TBUtils.logged);
+        TB.storage.setSetting('cache', 'cachename', TBUtils.logged);
     }
 
     if (getnewLong) {
-        TBStorage.setSetting('cache', 'lastgetlong', now);
+        TB.storage.setSetting('cache', 'lastgetlong', now);
     }
 
     if (getnewShort) {
-        TBStorage.setSetting('cache', 'lastgetshort', now);
+        TB.storage.setSetting('cache', 'lastgetshort', now);
     }
 
-    var pushedunread = TBStorage.getSetting('Notifier', 'unreadpushed', []);
+    var pushedunread = TB.storage.getSetting('Notifier', 'unreadpushed', []);
     if (pushedunread.length > 250) {
         pushedunread.splice(150, (pushedunread.length - 150));
-        TBStorage.setSetting('Notifier', 'unreadpushed', pushedunread);
+        TB.storage.setSetting('Notifier', 'unreadpushed', pushedunread);
     }
 
-    var pusheditems = TBStorage.getSetting('Notifier', 'modqueuepushed', []);
+    var pusheditems = TB.storage.getSetting('Notifier', 'modqueuepushed', []);
     if (pusheditems.length > 250) {
         pusheditems.splice(150, (pusheditems.length - 150));
-        TBStorage.setSetting('Notifier', 'modqueuepushed', pusheditems);
+        TB.storage.setSetting('Notifier', 'modqueuepushed', pusheditems);
     }
 
-    var repliedModmail = TBStorage.getSetting('ModMailPro', 'replied', []);
+    var repliedModmail = TB.storage.getSetting('ModMailPro', 'replied', []);
     if (repliedModmail.length > 250) {
         pusheditems.splice(150, (repliedModmail.length - 150));
-        TBStorage.setSetting('Notifier', 'replied', repliedModmail);
+        TB.storage.setSetting('Notifier', 'replied', repliedModmail);
     }
 
     if (seenNotes.length > 250) {
         $.log("clearing seen notes");
         seenNotes.splice(150, (seenNotes.length - 150));
-        TBStorage.setSetting('Utils', 'seennotes', seenNotes);
+        TB.storage.setSetting('Utils', 'seennotes', seenNotes);
     }
 
 
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
-        TBStorage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last version to this version.
+        TB.storage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last version to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -141,28 +141,28 @@ function initwrapper() {
         // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
         // 3.0: Convert comments module highlight keywords from string to array
-        var highlighted = TBStorage.getSetting('CommentsMod', 'highlighted', []);
+        var highlighted = TB.storage.getSetting('CommentsMod', 'highlighted', []);
         if (!Array.isArray(highlighted)) {
             highlighted = highlighted.split(',').map(function (str) {
                 return str.trim();
             }).clean("");
-            TBStorage.setSetting('CommentsMod', 'highlighted', highlighted);
+            TB.storage.setSetting('CommentsMod', 'highlighted', highlighted);
         }
         // 3.0: Move QueueTools' rtscomment setting to HistoryButton
-        TBStorage.setSetting('HistoryButton', 'rtscomment', TBStorage.getSetting('QueueTools', 'rtscomment', true));
+        TB.storage.setSetting('HistoryButton', 'rtscomment', TB.storage.getSetting('QueueTools', 'rtscomment', true));
         // 3.0: Upgrade QueueTools' sortAscending
-        TBStorage.setSetting('QueueTools', 'reports-ascending', (TBStorage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
+        TB.storage.setSetting('QueueTools', 'reports-ascending', (TB.storage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
         // 3.0: MMP uses proper module settings, so we need to change the inbox view to a string. (was an int)
-        TBStorage.setSetting('ModMailPro', 'inboxstyle', 'priority');
+        TB.storage.setSetting('ModMailPro', 'inboxstyle', 'priority');
 
 
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
-        TBStorage.setSetting('Notifier', 'modmailcount', 0);
-        TBStorage.setSetting('Utils', 'debugMode', false);
-        TBStorage.setSetting('Utils', 'betaMode', false);
+        TB.storage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
+        TB.storage.setSetting('Notifier', 'modmailcount', 0);
+        TB.storage.setSetting('Utils', 'debugMode', false);
+        TB.storage.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
     }
@@ -206,12 +206,14 @@ function initwrapper() {
 
 
     TBUtils.setSetting = function (module, setting, value) {
-        return TBStorage.setSetting(module, setting, value);
+        $.log("TBUtils.setSetting is depricated.  Use: TB.storage.setSetting");
+        return TB.storage.setSetting(module, setting, value);
     };
 
 
     TBUtils.getSetting = function (module, setting, defaultVal) {
-        return TBStorage.getSetting(module, setting, defaultVal);
+        $.log("TBUtils.getSetting is depricated.  Use: TB.storage.getSetting");
+        return TB.storage.getSetting(module, setting, defaultVal);
     };
 
 
@@ -383,11 +385,11 @@ function initwrapper() {
 
         function show() {
             if ($.inArray(note.id, seenNotes) === -1) {
-                TBStorage.setSetting('Utils', 'notelastshown', now);
+                TB.storage.setSetting('Utils', 'notelastshown', now);
 
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
-                    TBStorage.setSetting('Utils', 'seennotes', seenNotes);
+                    TB.storage.setSetting('Utils', 'seennotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }
@@ -626,8 +628,8 @@ function initwrapper() {
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
                 TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
                 // Update the cache.
-                TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-                TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
+                TB.storage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+                TB.storage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
                 // Go!
                 while (getModSubsCallbacks.length > 0) {
                     // call them in the order they were added
@@ -1107,9 +1109,9 @@ function initwrapper() {
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
-        $(TBStorage.settings).each(function () {
+        $(TB.storage.settings).each(function () {
             var key = this.split("."),
-                setting = TBStorage.getSetting(key[0], key[1], null);
+                setting = TB.storage.getSetting(key[0], key[1], null);
             if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
                 settingsObject[this] = setting;
             }
@@ -1129,7 +1131,7 @@ function initwrapper() {
 
             $.each(resp, function (fullKey, value) {
                 var key = fullKey.split(".");
-                TBStorage.setSetting(key[0], key[1], value);
+                TB.storage.setSetting(key[0], key[1], value);
             });
 
             callback();
@@ -1281,15 +1283,15 @@ function initwrapper() {
         }
 
         // Cache data.
-        TBStorage.setSetting('cache', 'configcache', TBUtils.configCache);
-        TBStorage.setSetting('cache', 'notecache', TBUtils.noteCache);
-        TBStorage.setSetting('cache', 'noconfig', TBUtils.noConfig);
-        TBStorage.setSetting('cache', 'nonotes', TBUtils.noNotes);
-        TBStorage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
-        TBStorage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
+        TB.storage.setSetting('cache', 'configcache', TBUtils.configCache);
+        TB.storage.setSetting('cache', 'notecache', TBUtils.noteCache);
+        TB.storage.setSetting('cache', 'noconfig', TBUtils.noConfig);
+        TB.storage.setSetting('cache', 'nonotes', TBUtils.noNotes);
+        TB.storage.setSetting('cache', 'moderatedsubs', TBUtils.mySubs);
+        TB.storage.setSetting('cache', 'moderatedsubsdata', TBUtils.mySubsData);
 
         // Just in case.
-        TBStorage.unloading();
+        TB.storage.unloading();
     };
 
 

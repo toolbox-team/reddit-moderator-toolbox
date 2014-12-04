@@ -10,7 +10,6 @@ devTools.setting('devmode', true);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         devtools();
     });
 })();

@@ -123,7 +123,6 @@ TB.register_module(nukeComments);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         nukecomments();
     });
 })();

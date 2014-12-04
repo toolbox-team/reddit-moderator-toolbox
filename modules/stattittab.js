@@ -53,7 +53,6 @@ TB.register_module(stattitTab);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         stattittab();
     });
 })();

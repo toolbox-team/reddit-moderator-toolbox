@@ -216,7 +216,6 @@ TB.register_module(banList);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         banlist();
     });
 })();

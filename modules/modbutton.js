@@ -636,7 +636,6 @@ TB.register_module(modButton);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         modbutton();
     });
 })();

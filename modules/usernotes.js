@@ -630,7 +630,6 @@ TB.register_module(userNotes);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         usernotes();
     });
 })();

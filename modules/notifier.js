@@ -679,7 +679,6 @@ TB.register_module(notifierMod);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         notifiermod();
     });
 })();

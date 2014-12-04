@@ -808,7 +808,6 @@ TB.register_module(modLogMatrix);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         modmatrix();
     });
 })();

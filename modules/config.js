@@ -727,7 +727,6 @@ TB.register_module(TBConfig);
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         tbconfig();
     });
 })();

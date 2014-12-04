@@ -748,7 +748,6 @@ function notifier() {
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
         notifier();
     });
 })();

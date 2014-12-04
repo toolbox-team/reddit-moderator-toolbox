@@ -752,7 +752,6 @@ TB.register_module(modMailPro);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("MMP: got tbobject");
         modmailpro();
     });
 })();

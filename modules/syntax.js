@@ -156,7 +156,6 @@ TB.register_module(syntaxHighlighter);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("got tbobject");
         syntax();
     });
 })();

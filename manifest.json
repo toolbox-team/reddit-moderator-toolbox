@@ -58,6 +58,7 @@
 				"modules/devtools.js",
 			  	"modules/macros.js",
 			  	"modules/realtime.js",
+			  	"modules/nukecomments.js",
 			  	"modules/queuetools.js",
 				"tbobjectinit.js"
 			]

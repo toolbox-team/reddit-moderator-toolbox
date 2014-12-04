@@ -20,7 +20,8 @@ TB = {
         function initLoop() {
             setTimeout(function init() {
                 if (TB.storage.isLoaded === true) {
-                    $.log("loaded storage, starting init");
+
+                    $.log("TBObject has TBStorage, loading modules...");
                     // call every module's init() method on page load
                     for (var i = 0; i < TB.moduleList.length; i++) {
                         var module = TB.modules[TB.moduleList[i]];
@@ -377,18 +378,14 @@ TB.Module.prototype = {
     set shortname(val) {
         this._shortname = val;
     }
+};
 }
 
-
-// This needs to be called last. There's probably some clever way to do it, but I haven't figured it out.
-// TB.init();
-
-}
-
-(function() {
+(function TBinit() {
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("TBObject has TBUtils, loading modules");
+        $.log("TBObject has TBUtils", false, "TBinit");
         tbobject();
+
         var event = new CustomEvent("TBObjectLoaded");
         window.dispatchEvent(event);
     });

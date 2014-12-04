@@ -1,5 +1,4 @@
-
-function modbutton(){
+function modbutton() {
 // @copyright 2014 Toolbox Devs, dakta
 
 var modButton = new TB.Module('Mod Button');
@@ -115,7 +114,7 @@ modButton.updateSavedSubs = function updateSavedSubs() {
                 && subreddit != currentSub
             ) {
                 $savedSubsList.append('<div><input type="checkbox" class="action-sub" name="action-sub" value="' + this +
-                    '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
+                '" id="action-' + this + '"><label for="action-' + this + '">&nbsp;&nbsp;/r/' + this + '</label></div>');
             }
         });
     });
@@ -123,8 +122,8 @@ modButton.updateSavedSubs = function updateSavedSubs() {
     $.each(TB.utils.mySubs, function (i, subreddit) {
         $popups.find('select.' + modButton.OTHER)
             .append($('<option>', {
-                    value: subreddit
-                })
+                value: subreddit
+            })
                 .text('/r/' + subreddit));
     });
 };
@@ -179,69 +178,68 @@ modButton.init = function init() {
                     title: "Role",
                     id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
-                    content:
-                        (subreddit
-                            ? '\
-                        <div class="current-sub">\
-                            <input type="checkbox" class="action-sub" name="action-sub" value="' + subreddit + '" id="action-' + subreddit + '" checked>\
-                            <label for="action-' + subreddit + '">&nbsp;&nbsp;/r/' + subreddit + ' (current)</label>\
-                        </div>'
-                            : ''
-                        ) + '\
-                        <div class="saved-subs">\
-                        </div>\
-                        <div class="other-subs">\
-                            <input type="checkbox" class="action-sub ' + modButton.OTHER + '-checkbox name="action-sub" value="' + modButton.OTHER + '">\
-                            <select class="' + modButton.OTHER + '" for="action-' + modButton.OTHER + '"><option value="' + modButton.OTHER + '">(select subreddit)</option></select>\
-                        </div>\
-                        <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
-                        <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
-                        <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <label class="ban-span-include-time"><input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"> Include in message </label>\
-                        </div>',
+                    content: (subreddit
+                        ? '\
+                    <div class="current-sub">\
+                        <input type="checkbox" class="action-sub" name="action-sub" value="' + subreddit + '" id="action-' + subreddit + '" checked>\
+                        <label for="action-' + subreddit + '">&nbsp;&nbsp;/r/' + subreddit + ' (current)</label>\
+                    </div>'
+                        : ''
+                    ) + '\
+                    <div class="saved-subs">\
+                    </div>\
+                    <div class="other-subs">\
+                        <input type="checkbox" class="action-sub ' + modButton.OTHER + '-checkbox name="action-sub" value="' + modButton.OTHER + '">\
+                        <select class="' + modButton.OTHER + '" for="action-' + modButton.OTHER + '"><option value="' + modButton.OTHER + '">(select subreddit)</option></select>\
+                    </div>\
+                    <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
+                    <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
+                    <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <label class="ban-span-include-time"><input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"> Include in message </label>\
+                    </div>',
                     footer: '\
-                        <span class="status error left"></span>\
-                        <select class="mod-action">\
-                            <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
-                            <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                            <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
-                            <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
-                            <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
-                            <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
-                        </select>\
-                        <button class="save">' + modButton.saveButton + '</button>\
-                        <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
+                    <span class="status error left"></span>\
+                    <select class="mod-action">\
+                        <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
+                        <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
+                        <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
+                        <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
+                        <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
+                        <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
+                    </select>\
+                    <button class="save">' + modButton.saveButton + '</button>\
+                    <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
                     title: "User Flair",
                     tooltip: "Edit User Flair.",
                     content: '\
-                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
-                            <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
+                        <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
+                        <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
                     footer: '\
-                        <span class="status error left"></span>\
-                        <button class="flair-save">Save Flair</button>'
+                    <span class="status error left"></span>\
+                    <button class="flair-save">Save Flair</button>'
                 },
                 {
                     title: "Send Message",
                     tooltip: "Send a message from the subreddit.",
                     content: '\
-                            <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>\
-                            <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>\
-                            <span id="subreddit-message-callback"></span>\
-                            ',
+                        <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>\
+                        <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>\
+                        <span id="subreddit-message-callback"></span>\
+                        ',
                     footer: '\
-                        <span class="status error left"></span>\
-                        <button class="message-send">Send Message</button>'
+                    <span class="status error left"></span>\
+                    <button class="message-send">Send Message</button>'
                 }
             ],
             '<label class="user">' + user + '</label><label class="subreddit">' + subreddit + '</label><label class="thing_id">' + thing_id + '</label>',
             'mod-popup' // class
         ).appendTo('body')
-        .css({
-            left: event.pageX - 50,
-            top: event.pageY - 10,
-            display: 'block'
-        });
+            .css({
+                left: event.pageX - 50,
+                top: event.pageY - 10,
+                display: 'block'
+            });
 
 
         // // wtf even happened to this originally?
@@ -275,7 +273,7 @@ modButton.init = function init() {
 
             // Show if current user is banned, and why. - thanks /u/LowSociety
             // TODO: Display *when* they were banned, along with ban note. #194
-            $.get("/r/" + subreddit + "/about/banned/.json", { user : user }, function (data) {
+            $.get("/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
@@ -291,11 +289,14 @@ modButton.init = function init() {
                         $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                        $.get("/r/" + subreddit + "/about/log/.json", { type: 'banuser', limit: '1000' }, function (data) {
+                        $.get("/r/" + subreddit + "/about/log/.json", {
+                            type: 'banuser',
+                            limit: '1000'
+                        }, function (data) {
                             var logged = data.data.children;
                             for (var i = 0; i < logged.length; i++) {
                                 if (logged[i].data.target_fullname == user_fullname) {
-                                    $popup.find(".current-sub .already-banned a").attr('href', '/u/'+logged[i].data.mod).text(logged[i].data.mod);
+                                    $popup.find(".current-sub .already-banned a").attr('href', '/u/' + logged[i].data.mod).text(logged[i].data.mod);
                                     break;
                                 }
                             }
@@ -377,13 +378,13 @@ modButton.init = function init() {
             subreddits = [],
             user = $popup.find('.user').text();
 
-            if (isNaN(banDuration)) {
-                banDuration = '';
-            } else if($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
-                $.log('Including time in ban message', true);
-                banMessage = banMessage + '  \n \n\
-*You are banned for: '+ TBUtils.humaniseDays(banDuration) +'*';
-            }
+        if (isNaN(banDuration)) {
+            banDuration = '';
+        } else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
+            $.log('Including time in ban message', true);
+            banMessage = banMessage + '  \n \n\
+*You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
+        }
 
         modButton.setting('lastaction', actionName);
 
@@ -416,7 +417,7 @@ modButton.init = function init() {
             } else {
                 var confirmban = confirm("This will " + actionName + " /u/" + user + " on every subreddit you moderate.   \nAre you sure?");
             }
-            
+
             if (confirmban) {
                 massAction(TB.utils.mySubs);
             } else {
@@ -425,6 +426,7 @@ modButton.init = function init() {
         }
 
         var $timer;
+
         function completeCheck(failedSubs) {
             $timer.stop();
             TB.utils.pageOverlay(null, false);
@@ -477,18 +479,18 @@ modButton.init = function init() {
                     duration: banDuration,
                     api_type: 'json'
                 })
-                .success(function (resp) {
+                    .success(function (resp) {
 
-                    if (!$.isEmptyObject(resp) && !$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
-                       $timer.pause();
-                       $.log('ratelimited');
-                       rateLimit(resp.json.ratelimit);
-                    }
-                })
-                .error(function (error, more) {
-                    $.log('missed one');
-                    failedSubs.push(sub);
-                });
+                        if (!$.isEmptyObject(resp) && !$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
+                            $timer.pause();
+                            $.log('ratelimited');
+                            rateLimit(resp.json.ratelimit);
+                        }
+                    })
+                    .error(function (error, more) {
+                        $.log('missed one');
+                        failedSubs.push(sub);
+                    });
 
                 actionCount++;
 
@@ -524,17 +526,17 @@ modButton.init = function init() {
             $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
             $subredditMessage = $popup.find('.send_message .subreddit-message');
 
-        if(!$subredditMessageSubject.val() ||  !$subredditMessage.val()) {
+        if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
             $callbackSpan.text('You forgot a subject or message');
             $callbackSpan.css('color', 'red');
             TBUtils.longLoadSpinner(false);
             return;
         } else {
-            var subject  = $subredditMessageSubject.val(),
+            var subject = $subredditMessageSubject.val(),
                 message = $subredditMessage.val();
         }
 
-        TBUtils.sendMessage(user, subject, message, subreddit, function(successful, response) {
+        TBUtils.sendMessage(user, subject, message, subreddit, function (successful, response) {
             if (!successful) {
                 $callbackSpan.text('an error occurred: ' + response[0][1]);
                 TBUtils.longLoadSpinner(false);
@@ -549,7 +551,8 @@ modButton.init = function init() {
                     TBUtils.longLoadSpinner(false);
                 }
 
-            };
+            }
+            ;
         });
 
     });
@@ -586,28 +589,28 @@ modButton.init = function init() {
         $status.text("saving user flair...");
 
         /*
-        if (!text && !css_class) {
-            $.post('/api/deleteflair', {
-                api_type: 'json',
-                name: user,
-                r: subreddit,
-                uh: TB.utils.modhash
-            })
+         if (!text && !css_class) {
+         $.post('/api/deleteflair', {
+         api_type: 'json',
+         name: user,
+         r: subreddit,
+         uh: TB.utils.modhash
+         })
 
-            .error(function (err) {
-                console.log(err.responseText);
-                $popup.remove();
-                return;
-            })
+         .error(function (err) {
+         console.log(err.responseText);
+         $popup.remove();
+         return;
+         })
 
-            .success(function () {
-                $popup.remove();
-                return;
-            });
+         .success(function () {
+         $popup.remove();
+         return;
+         });
 
-            return;
-        }
-        */
+         return;
+         }
+         */
 
         $.post('/api/flair', {
             api_type: 'json',
@@ -617,21 +620,20 @@ modButton.init = function init() {
             r: subreddit,
             uh: TB.utils.modhash
         })
-        .done(function () {
-            $status.text("saved user flair");
-            // $popup.remove();
-        })
-        .fail(function (err) {
-            $.log(err.responseText, true);
-            $status.text(err.responseText);
-            // $popup.remove();
-        });
+            .done(function () {
+                $status.text("saved user flair");
+                // $popup.remove();
+            })
+            .fail(function (err) {
+                $.log(err.responseText, true);
+                $status.text(err.responseText);
+                // $popup.remove();
+            });
 
     });
 };
 
 TB.register_module(modButton);
-
 }
 
 (function () {

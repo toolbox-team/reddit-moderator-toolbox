@@ -11,8 +11,8 @@ stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
     var matches = regex.exec(url);
 
-    if(matches != null) {
-        return { section : matches[3], subSection : matches[4] };
+    if (matches != null) {
+        return {section: matches[3], subSection: matches[4]};
     } else {
         return null;
     }
@@ -21,7 +21,7 @@ stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
 stattitTab.init = function init() {
     var page = this.getSectionFromUrl(window.location.href);
 
-    if(page == null) {
+    if (page == null) {
         return false;
     }
 

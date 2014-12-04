@@ -31,13 +31,13 @@ historyButton.init = function () {
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
     $('.thing .entry .userattrs').each(self.addUserHistoryLink);
-    
+
     // NER support.
-    window.addEventListener("TBNewThings", function () {    
-        $body.find('.thing .entry .userattrs').each(function() {
-        $this = $(this);
-            if(!$this.find('.user-history-button').length) {            
-                $this.each(self.addUserHistoryLink); // using each since that carries correctly over to the current function. 
+    window.addEventListener("TBNewThings", function () {
+        $body.find('.thing .entry .userattrs').each(function () {
+            $this = $(this);
+            if (!$this.find('.user-history-button').length) {
+                $this.each(self.addUserHistoryLink); // using each since that carries correctly over to the current function.
             }
         });
     });
@@ -48,8 +48,8 @@ historyButton.init = function () {
     });
     $body.on('click', 'a.context', function (e) {
         $body.on('click', '.user-history-close', function () {
-            if(populateRunning.length > 0) {
-                $.each(populateRunning, function() {
+            if (populateRunning.length > 0) {
+                $.each(populateRunning, function () {
                     TBUtils.longLoadSpinner(false);
                 });
             }
@@ -65,8 +65,8 @@ historyButton.init = function () {
     var gettingUserdata = false;
     $body.on('click', '.user-history-button', function () {
         $body.on('click', '.user-history-close', function () {
-            if(populateRunning.length > 0) {
-                $.each(populateRunning, function() {
+            if (populateRunning.length > 0) {
+                $.each(populateRunning, function () {
                     TBUtils.longLoadSpinner(false);
                 });
             }
@@ -79,26 +79,26 @@ historyButton.init = function () {
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
             contentBox = $('.inline-content').show().offset($(this).offset()).html('\
-            <div class="tb-popup user-history">\
-            <div class="tb-popup-header">\
-                <div class="tb-popup-title">User history for ' + author + '\</div>\
-                <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
+        <div class="tb-popup user-history">\
+        <div class="tb-popup-header">\
+            <div class="tb-popup-title">User history for ' + author + '\</div>\
+            <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
+        </div>\
+        <div class=" tb-popup-content">\
+        <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+        <div><br /><b>Submission history:</b></div>\
+        <div class="table domain-table">\
+        <table><thead>\
+        <tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
+        <tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
+        </table>\
+        </div><div class="table subreddit-table">\
+        <table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
+        </div></div>\
+            <div class="tb-popup-footer">\
             </div>\
-            <div class=" tb-popup-content">\
-            <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-            <div><br /><b>Submission history:</b></div>\
-            <div class="table domain-table">\
-            <table><thead>\
-            <tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
-            <tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
-            </table>\
-            </div><div class="table subreddit-table">\
-            <table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
-            </div></div>\
-                <div class="tb-popup-footer">\
-                </div>\
-            </div>\
-            '),
+        </div>\
+        '),
 
             domains = {},
             domainslist = [],
@@ -129,23 +129,23 @@ historyButton.init = function () {
                 if ($.isEmptyObject(d.data.children)) {
                     TBUtils.longLoadSpinner(false);
                     populateRunning.pop();
-					
-					if (contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
-					contentBox.find('.error').html('no submissions');
-					} else { // If it is not present we have results and we can show the links for reporting and markdown reports. 
-                    contentBox.find('.rts-report').show();
-					contentBox.find('.markdown-report').show();
-					}
+
+                    if (contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
+                        contentBox.find('.error').html('no submissions');
+                    } else { // If it is not present we have results and we can show the links for reporting and markdown reports.
+                        contentBox.find('.rts-report').show();
+                        contentBox.find('.markdown-report').show();
+                    }
                     gettingUserdata = false;
 
                 }
                 if (!gettingUserdata) return;
-                
-                var after = '',
-                after = d.data.after,
-                commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
-                $.each(d.data.children, function( index, value ) {
+                var after = '',
+                    after = d.data.after,
+                    commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
+
+                $.each(d.data.children, function (index, value) {
                     var data = value.data;
 
                     if (!domains[data.domain]) {
@@ -172,7 +172,7 @@ historyButton.init = function () {
                 domaintable.empty();
 
                 var moredomains;
-                $.each(domainslist, function( index, value ) {
+                $.each(domainslist, function (index, value) {
                     var dom = value,
                         n = domains[dom].count,
                         url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
@@ -201,7 +201,7 @@ historyButton.init = function () {
                 subreddittable.empty();
 
                 var moresubreddit;
-                $.each(subredditlist, function( index, value ) {
+                $.each(subredditlist, function (index, value) {
                     var sr = value,
                         n = subreddits[sr].count,
                         url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
@@ -225,12 +225,12 @@ historyButton.init = function () {
                     populateHistory(after);
                 } else {
                     TBUtils.longLoadSpinner(false);
-					if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry. 
-					    contentBox.find('.error').html('no submissions');
-					} else {
+                    if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
+                        contentBox.find('.error').html('no submissions');
+                    } else {
                         contentBox.find('.rts-report').show();
-					    contentBox.find('.markdown-report').show();
-					}
+                        contentBox.find('.markdown-report').show();
+                    }
                     gettingUserdata = false;
                 }
 
@@ -244,9 +244,8 @@ historyButton.init = function () {
 
     // Markdown button pressed
     $('.inline-content').on('click', '.markdown-report', function () {
-    var markdownReport = $body.find('.rts-report').attr('data-commentbody');
-        if($('body').find('.submission-markdown').length > 0)
-        {
+        var markdownReport = $body.find('.rts-report').attr('data-commentbody');
+        if ($('body').find('.submission-markdown').length > 0) {
             $('body').find('.submission-markdown').toggle();
         } else {
             $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
@@ -302,7 +301,8 @@ historyButton.init = function () {
                         rtsLink.textContent = 'reported';
                         rtsLink.href = submission.json.data.url;
                         rtsLink.className = '';
-                    };
+                    }
+                    ;
                 });
             }
         });
@@ -310,7 +310,6 @@ historyButton.init = function () {
 };
 
 TB.register_module(historyButton);
-
 }
 
 (function () {

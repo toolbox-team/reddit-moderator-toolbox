@@ -27,7 +27,7 @@
                 D4CGPPrvXH/5v2Tksc1EGWBaful/+/on/4sW3gfGxsP/9lUX/ksEH1gj6rqdhSgDlPPO/q9b8fB/5bIH/23LL/wXD9i7kqRAlEo6+b908f3/NiXn/4t57V1EcjRKRB75b1145r+o684FZCUkMb8D/0Uct88euMxEKgYA7Ojr\
                 v4CgE7EAAAAASUVORK5CYII=';
 
-    TBui.iconAdd= 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7b\
+    TBui.iconAdd = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJvSURBVDjLpZPrS5NhGIf9W7YvBYOkhlkoqCklWChv2WyKik7b\
                 lnNris72bi6dus0DLZ0TDxW1odtopDs4D8MDZuLU0kXq61CijSIIasOvv94VTUfLiB74fXngup7nvrnvJABJ/5PfLnTTdcwOj4RsdYmo5glBWP6iOtzwvIKSWstI0Wgx80SBblpKtE9KQs/We7EaWoT/8wbWP61gMmCH0lMD\
                 vokT4j25TiQU/ITFkek9Ow6+7WH2gwsmahCPdwyw75uw9HEO2gUZSkfyI9zBPCJOoJ2SMmg46N61YO/rNoa39Xi41oFuXysMfh36/Fp0b7bAfWAH6RGi0HglWNCbzYgJaFjRv6zGuy+b9It96N3SQvNKiV9HvSaDfFEIxXIt\
                 nPs23BzJQd6DDEVM0OKsoVwBG/1VMzpXVWhbkUM2K4oJBDYuGmbKIJ0qxsAbHfRLzbjcnUbFBIpx/qH3vQv9b3U03IQ/HfFkERTzfFj8w8jSpR7GBE123uFEYAzaDRIqX/2JAtJbDat/COkd7CNBva2cMvq0MGxp0PRSCPF8\
@@ -83,7 +83,7 @@
                 Bw0aLTli1bBlu2bBEhMIfC1N4NjoVM9QDviw/gswRX5dyejFanE6HRo0fLb71C4hkUneHmPizNbwoXLVrUqcGr/Qpkn7mWeFecFs/y8vIyaYdHW5YvXy4rYHx3VIDs3xJlkqQjUltbK34cxY4EVIerHbuLApj/YlLgifT2+MBCi9EzRXpIEFD9kII/ORfO7Ohs6GoF9Afp7C5ZbXFylGn\
                 xkJAQMZhNOtycvvPB/INIptTIC2BKSoogSO3t7WWlfGapCrigb5vM399fdF79pKk+iYyMFGVPnDjRbjssICBA70bo+1YAh35IPlvnoCgzFB2nNNngVvmSJUtEueTkZJ33y8rKkLJCLvNPJRSg5C9GPhLMiK8v5OfnixBWjt05GCJ/DklJSbB+/XoIppw/PT1dUOB85I7TZWcKhFJTU2H//v\
                 2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII=';
-    
+
     TBui.standardColors = {
         "red": "#FF0000",
         "green": "#00F51E",
@@ -93,7 +93,7 @@
         "yellow": "#EAC117",
         "black": "#000000"
     };
-    
+
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class) {
         meta = (typeof meta !== "undefined") ? meta : null;
@@ -101,7 +101,7 @@
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         var $popup = $('\
-<div class="tb-popup'+(css_class ? ' '+css_class : '')+'">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+<div class="tb-popup' + (css_class ? ' ' + css_class : '') + '">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
     <div class="tb-popup-header">\
         <div class="tb-popup-title">' + title + '</div>\
         <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
@@ -113,11 +113,13 @@
         } else if (tabs.length > 1) {
             $popup.append($('<div class="tb-popup-tabs"></div>'));
 
-            for (var i=0; i<tabs.length; i++) {
+            for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
-                if (tab.id === "undefined" || !tab.id) { tab.id = tab.title.trim().toLowerCase().replace(' ', '_'); }
+                if (tab.id === "undefined" || !tab.id) {
+                    tab.id = tab.title.trim().toLowerCase().replace(' ', '_');
+                }
 
-                var $button = $('<a'+(tab.tooltip ? ' title="'+tab.tooltip+'"' : '')+' class="'+tab.id+'">'+tab.title+'</a>');
+                var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
                 $button.click({tab: tab}, function (e) {
                     var tab = e.data.tab;
 
@@ -126,24 +128,30 @@
                     $popup.find('.tb-popup-tab').hide();
 
                     // show current
-                    $popup.find('.tb-popup-tab.'+tab.id).show();
+                    $popup.find('.tb-popup-tab.' + tab.id).show();
                     $(this).addClass('active');
 
                     e.preventDefault();
                 });
 
                 // default first tab is active tab
-                if (i==0) { $button.addClass('active'); }
+                if (i == 0) {
+                    $button.addClass('active');
+                }
 
                 $button.appendTo($popup.find('.tb-popup-tabs'));
 
 
-                var $tab = $('<div class="tb-popup-tab '+tab.id+'"></div>');
-                $tab.append($('<div class="tb-popup-content">'+tab.content+'</div>'));
-                $tab.append($('<div class="tb-popup-footer">'+tab.footer+'</div>'));
+                var $tab = $('<div class="tb-popup-tab ' + tab.id + '"></div>');
+                $tab.append($('<div class="tb-popup-content">' + tab.content + '</div>'));
+                $tab.append($('<div class="tb-popup-footer">' + tab.footer + '</div>'));
 
                 // default first tab is visible; hide others
-                if (i==0) { $tab.show(); } else { $tab.hide(); }
+                if (i == 0) {
+                    $tab.show();
+                } else {
+                    $tab.hide();
+                }
 
                 $tab.appendTo($popup);
             }
@@ -151,26 +159,26 @@
 
         return $popup;
     };
-    
+
     TBui.selectSingular = function selectSingular(choices, selected) {
         var $selector = $('\
             <div class="select-single">\
                 <select class="selector"></select>\
             </div>'),
             $selector_list = $selector.find('.selector');
-        
+
         //Add values to select
-        $.each(choices, function() {
+        $.each(choices, function () {
             var value = this.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(this));
         });
-        
+
         //Set selected value
         $selector_list.val(selected).prop('selected', true);
-        
+
         return $selector;
     };
-    
+
     TBui.selectMultiple = function selectMultiple(available, selected) {
         available = (available instanceof Array) ? available : [];
         selected = (selected instanceof Array) ? selected : [];
@@ -184,27 +192,27 @@
             $selected_list = $select_multiple.find('.selected-list'),
             $available_list = $select_multiple.find('.available-list');
 
-        $select_multiple.find('.remove-item').click(function() {
+        $select_multiple.find('.remove-item').click(function () {
             var remove_item = $selected_list.find('option:selected').val();
 
-            $selected_list.find('option[value="'+remove_item+'"]').remove();
+            $selected_list.find('option[value="' + remove_item + '"]').remove();
         });
 
-        $select_multiple.find('.add-item').click(function() {
+        $select_multiple.find('.add-item').click(function () {
             var $add_item = $available_list.find('option:selected');
 
             // Don't add the sub twice.
-            if (!($selected_list.find('option[value="'+$add_item.val()+'"]') > 0)) {
+            if (!($selected_list.find('option[value="' + $add_item.val() + '"]') > 0)) {
                 $selected_list.append($add_item.clone());
             }
         });
 
-        $.each(available, function() {
-            $available_list.append($('<option>').attr('value', this).text('/r/'+this));
+        $.each(available, function () {
+            $available_list.append($('<option>').attr('value', this).text('/r/' + this));
         });
 
-        $.each(selected, function() {
-            $selected_list.append($('<option>').attr('value', this).text('/r/'+this));
+        $.each(selected, function () {
+            $selected_list.append($('<option>').attr('value', this).text('/r/' + this));
         });
 
         return $select_multiple;

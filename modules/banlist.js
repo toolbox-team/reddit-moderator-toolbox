@@ -17,7 +17,7 @@ banList.register_setting(
 // from http://stackoverflow.com/a/15780907/362042
 // TODO: move to tbutils
 banList.getURLParameter = function getURLParameter(url, name) {
-    return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url)||[,null])[1];
+    return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url) || [, null])[1];
 };
 
 banList.init = function init() {
@@ -36,10 +36,10 @@ banList.init = function init() {
     function _get_next_ban_page(after, pages_back) {
 
         // default parameter value handling
-        after      = typeof after      !== 'undefined' ? after      : '';
+        after = typeof after !== 'undefined' ? after : '';
         pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
 
-        $.log("_get_next_ban_page("+after+")");
+        $.log("_get_next_ban_page(" + after + ")");
 
         var parameters = {'limit': 1000, 'after': after};
 
@@ -52,17 +52,19 @@ banList.init = function init() {
             type: 'get',
             dataType: 'html',
             async: true,
-            success: function(data) {
+            success: function (data) {
                 $.log("  success!");
-                $.log("  "+pages_back+" pages back");
+                $.log("  " + pages_back + " pages back");
                 var response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                 // var $new_banlist = $('.usertable', response_page);
                 $.log($('.usertable table tbody tr', response_page).length);
                 if ($('.usertable table tbody tr', response_page).length > 0) {
-                    $('.usertable table tbody tr', response_page).each(function() {
+                    $('.usertable table tbody tr', response_page).each(function () {
                         // workaround for known bug in listings where "next" button is available on last page
-                        if (this.className == 'notfound') { return; }
+                        if (this.className == 'notfound') {
+                            return;
+                        }
 
                         var t = $(this).find('.user a').text().toLowerCase(); // username
                         if ($(this).find('input[name="note"]').length > 0) {
@@ -100,7 +102,7 @@ banList.init = function init() {
                     TB.utils.longLoadSpinner(false);
                 }
             },
-            error: function(data) {
+            error: function (data) {
                 $.log("  failed");
                 $.log(data.status);
                 if (data.status == 504) {
@@ -118,15 +120,15 @@ banList.init = function init() {
     }
 
     function filter_banlist(banlist, value, ignore_last) {
-        $.log('filter('+value+')');
+        $.log('filter(' + value + ')');
         last_value = typeof last_value !== 'undefined' ? last_value : '';
         ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
-        if ( value == '' ) {
+        if (value == '') {
             $.log('empty');
             // empty search? show all
             $('tr', banlist).show().addClass('visible');
-        } else if ( !ignore_last && last_value && value.indexOf(last_value) > -1 ) {
+        } else if (!ignore_last && last_value && value.indexOf(last_value) > -1) {
             $.log('subset');
             // is this query a subset of the last query?
             // filter *out* non-matching
@@ -156,7 +158,7 @@ banList.init = function init() {
 
         $('.usertable').addClass('filtered');
 
-        $(".usertable tr").each(function(){
+        $(".usertable tr").each(function () {
             var t = $(this).text().toLowerCase(); //all row text
             $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
         });//each tr
@@ -165,7 +167,7 @@ banList.init = function init() {
         function _filter(value) {
             if (!banlist_updating // don't trigger an update if we're still running
                 && (banlist_last_update === 0 // catch the first run, before last_update has been set
-                    || (banlist_last_update + time_to_update) <= Date.now())
+                || (banlist_last_update + time_to_update) <= Date.now())
             ) {
                 banlist_updating = true;
                 TB.utils.longLoadSpinner(true);
@@ -184,8 +186,10 @@ banList.init = function init() {
 
         // text input trigger
         var $userInput = $('input#user');
-        $userInput.keyup(function() {
-            if ($('.usertable tr').length > 1000) { return; } // don't live filter
+        $userInput.keyup(function () {
+            if ($('.usertable tr').length > 1000) {
+                return;
+            } // don't live filter
             var value = $(this).val().toLowerCase();
             _filter(value);
         });
@@ -204,7 +208,7 @@ banList.init = function init() {
     } else {
         $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
         $tb_liveFilter.insertAfter($('input#user').next());
-        $tb_liveFilter.click(function() {
+        $tb_liveFilter.click(function () {
             liveFilter();
             $(this).remove();
         });

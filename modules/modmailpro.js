@@ -83,7 +83,7 @@ modMailPro.modmailpro = function () {
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
-        //newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
+    //newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
         unprocessedThreads = $('.message-parent:not(.mmp-processed)');
 
     var separator = '<span class="separator">|</span>',
@@ -175,7 +175,7 @@ modMailPro.modmailpro = function () {
             $('.invitespam').each(function () {
                 var $this = $(this);
                 if ($this.hasClass('new')) {
-                $this.find('.entry').click();
+                    $this.find('.entry').click();
                 }
 
                 $this.hide();
@@ -385,7 +385,7 @@ modMailPro.modmailpro = function () {
                         $(entry).find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
 
                         // Expand thread / highlight new
-                        if(message.hasClass('collapsed')) {
+                        if (message.hasClass('collapsed')) {
                             $(entry).find('.expand:first').click();
                         }
                         $(infoArea).css('background-color', 'lightgreen');
@@ -624,7 +624,7 @@ modMailPro.realtimemail = function () {
 
 modMailPro.compose = function () {
     var COMPOSE = "compose-message",
-        //mySubs = [],
+    //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
         composeURL = '/message/compose?to=%2Fr%2F';
 
@@ -638,8 +638,8 @@ modMailPro.compose = function () {
         $(TBUtils.mySubs).each(function () {
             $('.compose-mail')
                 .append($('<option>', {
-                        value: this
-                    })
+                    value: this
+                })
                     .text('/r/' + this));
         });
 
@@ -668,8 +668,8 @@ modMailPro.modmailSwitch = function () {
         $(TBUtils.mySubs).each(function () {
             $('.switch-mail')
                 .append($('<option>', {
-                        value: this
-                    })
+                    value: this
+                })
                     .text('/r/' + this));
         });
         $('.switch-mail').change(function () {
@@ -683,27 +683,27 @@ modMailPro.modmailSwitch = function () {
 };
 
 modMailPro.threadedModmail = function () {
-    var collapse = function() {
+    var collapse = function () {
         $(this).parents(".thing:first").find("> .child").hide();
     };
-    var noncollapse = function() {
+    var noncollapse = function () {
         $(this).parents(".thing:first").find("> .child").show();
     };
 
-    var threadModmail = function(fullname) {
+    var threadModmail = function (fullname) {
         var firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
 
-        if(firstMessage.hasClass("hasThreads")) {
-            firstMessage.find(".thing").each(function() {
+        if (firstMessage.hasClass("hasThreads")) {
+            firstMessage.find(".thing").each(function () {
                 var parent = $("div.thing.id-" + $(this).data("parent"));
                 $(this).appendTo(parent.find("> .child"));
             });
         } else {
             var id = fullname.substring(3);
-            $.getJSON("//www.reddit.com/message/messages/"+id+".json", null, function(data) {
+            $.getJSON("//www.reddit.com/message/messages/" + id + ".json", null, function (data) {
                 var messages = data.data.children[0].data.replies.data.children;
 
-                for(var i = 0; i < messages.length; i++) {
+                for (var i = 0; i < messages.length; i++) {
                     var item = messages[i].data;
 
                     var message = $("div.thing.id-" + item.name);
@@ -716,7 +716,7 @@ modMailPro.threadedModmail = function () {
                     message.appendTo(parent.find("> .child"));
 
                     message.find("> .entry .noncollapsed .expand").bind("click", collapse);
-                    message.find("> .entry .collapsed .expand").bind("click",noncollapse);
+                    message.find("> .entry .collapsed .expand").bind("click", noncollapse);
 
                     firstMessage.addClass("hasThreads");
                 }
@@ -724,30 +724,38 @@ modMailPro.threadedModmail = function () {
         }
     }
 
-    var flatModmail = function(fullname) {
+    var flatModmail = function (fullname) {
         var firstMessage = $("div.thing.id-" + fullname).removeClass("threaded-modmail");
 
-        firstMessage.find(".thing").each(function() {
+        firstMessage.find(".thing").each(function () {
             $(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
         });
     }
 
-    $("#siteTable > .thing.message").each(function() {
+    $("#siteTable > .thing.message").each(function () {
         var fullname = $(this).data("fullname");
 
         var subject = $(this).find(".subject");
 
-        var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href","#").appendTo(subject).hide();
-        var threadTrigger = $("<a></a>").addClass("expand-btn").text("threaded view").attr("href","#").appendTo(subject);
+        var flatTrigger = $("<a></a>").addClass("expand-btn").text("flat view").attr("href", "#").appendTo(subject).hide();
+        var threadTrigger = $("<a></a>").addClass("expand-btn").text("threaded view").attr("href", "#").appendTo(subject);
 
-        flatTrigger.click(function() { flatModmail(fullname); $(this).hide(); threadTrigger.show(); return false; });
-        threadTrigger.click(function() { threadModmail(fullname); $(this).hide(); flatTrigger.show(); return false; });
+        flatTrigger.click(function () {
+            flatModmail(fullname);
+            $(this).hide();
+            threadTrigger.show();
+            return false;
+        });
+        threadTrigger.click(function () {
+            threadModmail(fullname);
+            $(this).hide();
+            flatTrigger.show();
+            return false;
+        });
     });
 };
 
-
 TB.register_module(modMailPro);
-
 } // modmailpro() wrapper
 
 (function () {

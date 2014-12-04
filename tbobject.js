@@ -66,7 +66,7 @@ TB = {
     },
 
     injectSettings: function injectSettings() {
-        for (var i=0; i < this.moduleList.length; i++) {
+        for (var i = 0; i < this.moduleList.length; i++) {
             var idx = i,
                 self = this;
 
@@ -103,8 +103,8 @@ TB = {
                 //
 
                 var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
-                    $tab = $('<a href="javascript:;" class="tb-window-content-'+module.shortname.toLowerCase()+'">'+module.name+'</a>'),
-                    $settings = $('<div class="tb-window-content-'+module.shortname.toLowerCase()+'" style="display: none;"><div class="tb-help-main-content"></div></div>');
+                    $tab = $('<a href="javascript:;" class="tb-window-content-' + module.shortname.toLowerCase() + '">' + module.name + '</a>'),
+                    $settings = $('<div class="tb-window-content-' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
                 $tab.data('module', module.shortname);
 
@@ -123,7 +123,7 @@ TB = {
                     if (setting == "enabled") {
                         // blank slate
                         var $setting = $('<p></p>');
-                        $setting.append($('<label><input type="checkbox" id="'+module.shortname+'Enabled" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
+                        $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));
 
                         $('.tb-window-content .tb-window-content-modules').append($setting);
 
@@ -162,78 +162,78 @@ TB = {
                     // automagical handling of input types
                     switch (options.type) {
                         case "boolean":
-                            $setting.append($('<label><input type="checkbox" '+(module.setting(setting) ? ' checked="checked"' : '')+'> '+options.title+'</label>'));
+                            $setting.append($('<label><input type="checkbox" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));
                             break;
                         case "number":
-                            $setting.append($('<label><input type="number" value="'+module.setting(setting)+'" min="'+options.min+'" max="'+options.max+'" step="'+options.step+'"> '+options.title+'</label>'));
+                            $setting.append($('<label><input type="number" value="' + module.setting(setting) + '" min="' + options.min + '" max="' + options.max + '" step="' + options.step + '"> ' + options.title + '</label>'));
                             break;
                         case "text":
                         case "list":
-                            $setting.append(options.title+':<br />');
-                            $setting.append($('<input type="text" value="'+module.setting(setting)+'">'));
+                            $setting.append(options.title + ':<br />');
+                            $setting.append($('<input type="text" value="' + module.setting(setting) + '">'));
                             break;
                         case "sublist":
-                            $setting.append(options.title+':<br />');
+                            $setting.append(options.title + ':<br />');
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, options.args)); // first arg sets `this` inside func
                             break;
                         case "selector":
                             var v = module.setting(setting);
-                            $.log("Current setting: "+v);
-                            $setting.append(options.title+':<br />');
+                            $.log("Current setting: " + v);
+                            $setting.append(options.title + ':<br />');
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
                         case "syntaxTheme":
-                            $setting.append(options.title+':<br/>');
+                            $setting.append(options.title + ':<br/>');
                             $setting.append(TB.modules.SyntaxHighlighter.themeSelect);
-                            $setting.find('select').attr('id', module.shortname+'_syntax_theme');
+                            $setting.find('select').attr('id', module.shortname + '_syntax_theme');
                             $setting.append($('\
-                                <pre class="syntax-example" id="'+module.shortname+'_syntax_theme_css">\
-    /* This is just some example code*/\n\
-    body {\n\
-        font-family: sans-serif, "Helvetica Neue", Arial;\n\
-        font-weight: normal;\n\
-    }\n\
-    \n\
-    .md h3, .commentarea h3 {\n\
-        font-size: 1em;\n\
-    }\n\
-    \n\
-    #header {\n\
-        border-bottom: 1px solid #9A9A9A; \n\
-        box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
-    }\n\
-    /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
-                                </pre>'));
-                            execAfterInject.push(function() {
+                            <pre class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\
+/* This is just some example code*/\n\
+body {\n\
+    font-family: sans-serif, "Helvetica Neue", Arial;\n\
+    font-weight: normal;\n\
+}\n\
+\n\
+.md h3, .commentarea h3 {\n\
+    font-size: 1em;\n\
+}\n\
+\n\
+#header {\n\
+    border-bottom: 1px solid #9A9A9A; \n\
+    box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
+}\n\
+/* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
+                            </pre>'));
+                            execAfterInject.push(function () {
                                 // Syntax highlighter selection stuff
                                 $body.addClass('mod-toolbox-ace');
-                                var editorSettings = ace.edit(module.shortname+'_syntax_theme_css');
-                                editorSettings.setTheme("ace/theme/"+module.setting(setting));
+                                var editorSettings = ace.edit(module.shortname + '_syntax_theme_css');
+                                editorSettings.setTheme("ace/theme/" + module.setting(setting));
                                 editorSettings.getSession().setUseWrapMode(TBUtils.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
 
-                                if(TBUtils.browser == 'chrome') {
+                                if (TBUtils.browser == 'chrome') {
                                     ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
                                 }
                                 editorSettings.getSession().setMode("ace/mode/css");
 
-                                $('#'+module.shortname+'_syntax_theme').val(module.setting(setting));
-                                $body.on('change keydown', '#'+module.shortname+'_syntax_theme', function() {
+                                $('#' + module.shortname + '_syntax_theme').val(module.setting(setting));
+                                $body.on('change keydown', '#' + module.shortname + '_syntax_theme', function () {
                                     var thingy = $(this);
-                                    setTimeout(function() {
-                                        editorSettings.setTheme("ace/theme/"+thingy.val());
+                                    setTimeout(function () {
+                                        editorSettings.setTheme("ace/theme/" + thingy.val());
                                     }, 0);
                                 });
                             });
                             break;
                         case "number":
-                            $setting.append(options.title+': <input type="number" value="'+module.setting(setting)+'">');
+                            $setting.append(options.title + ': <input type="number" value="' + module.setting(setting) + '">');
                             break;
                         default:
                             // what in the world would we do here? maybe raw JSON?
                             break;
                     }
                     $setting = $('<span></span>').attr('class', 'setting-item').append($setting);
-                    $setting.attr('id', 'tb-'+module.shortname+'-'+setting);
+                    $setting.attr('id', 'tb-' + module.shortname + '-' + setting);
                     $setting.data('module', module.shortname);
                     $setting.data('setting', setting);
 
@@ -262,11 +262,11 @@ TB = {
                 // We get one additional click handler for each module that gets injected.
                 $body.bindFirst('click', '.tb-save', function (event) {
                     // handle module enable/disable on Toggle Modules first
-                    var $moduleEnabled = $('.tb-window-content .tb-window-content-modules #'+module.shortname+'Enabled').prop('checked');
+                    var $moduleEnabled = $('.tb-window-content .tb-window-content-modules #' + module.shortname + 'Enabled').prop('checked');
                     module.setting('enabled', $moduleEnabled);
 
                     // handle the regular settings tab
-                    var $settings_page = $('.tb-window-content-'+module.shortname.toLowerCase());
+                    var $settings_page = $('.tb-window-content-' + module.shortname.toLowerCase());
 
                     $settings_page.find('span.setting-item').each(function () {
                         var $this = $(this),
@@ -284,11 +284,13 @@ TB = {
                                 value = $this.find('input').val();
                                 break;
                             case 'list':
-                                value = $this.find('input').val().split(',').map(function (str) { return str.trim(); }).clean("");
+                                value = $this.find('input').val().split(',').map(function (str) {
+                                    return str.trim();
+                                }).clean("");
                                 break;
                             case 'sublist':
                                 value = [];
-                                $.each($this.find('.selected-list option'), function() {
+                                $.each($this.find('.selected-list option'), function () {
                                     value.push($(this).val());
                                 });
                                 break;
@@ -296,7 +298,7 @@ TB = {
                                 value = $this.find('.selector').val();
                                 break;
                             case 'syntaxTheme':
-                                value = $this.find('#'+module.shortname+'_syntax_theme').val();
+                                value = $this.find('#' + module.shortname + '_syntax_theme').val();
                                 break;
                             default:
                                 value = JSON.parse($this.find('input').val());

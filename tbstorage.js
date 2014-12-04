@@ -90,12 +90,12 @@
         SendInit();
         // uncomment to test wait loops.  
         /*
-        TBStorage.isLoaded = false;
-        setTimeout(function () {
-            SendInit();
-        }, 9000);
-        */
-       
+         TBStorage.isLoaded = false;
+         setTimeout(function () {
+         SendInit();
+         }, 9000);
+         */
+
     }
 
 
@@ -142,16 +142,16 @@
     function settingsToObject(callback) {
         var settingsObject = {};
         Object.keys(localStorage)
-        .forEach(function (fullKey) {
-            if (/^(Toolbox.)/.test(fullKey)) {
-                var key = fullKey.split(".");
-                setting = getSetting(key[1], key[2], null);
-                //console.log(fullKey);
-                if (setting !== undefined) {
-                    settingsObject[fullKey] = setting;
+            .forEach(function (fullKey) {
+                if (/^(Toolbox.)/.test(fullKey)) {
+                    var key = fullKey.split(".");
+                    setting = getSetting(key[1], key[2], null);
+                    //console.log(fullKey);
+                    if (setting !== undefined) {
+                        settingsObject[fullKey] = setting;
+                    }
                 }
-            }
-        });
+            });
         callback(settingsObject);
     };
 

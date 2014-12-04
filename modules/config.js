@@ -15,12 +15,12 @@ TBConfig.settings['enabled']['default'] = true;
 // });
 
 TBConfig.init = function () {
-    
+
     var $body = $('body');
 
     var toolbox = $('#moderation_tools').find('.content .icon-menu'),
         configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
-        //configLink = '<li><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
+    //configLink = '<li><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
         subreddit = TBUtils.post_site,
         config = TBUtils.config;
 
@@ -83,50 +83,50 @@ TBConfig.init = function () {
 
         var html = '\
 <div class="tb-page-overlay tb-settings" comment="the white fade out over the page, we can do without, personally like it">\
-    <div class="tb-window-wrapper" comment="the window itself">\
-        <div class="tb-window-header" comment="This will contain the name of the window">\
-            Toolbox Configuration - /r/' + subreddit + '\
-            <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;" title="Toolbox Configuration Help">?</a> - <a class="tb-close" title="Close Toolbox Configuration" href="javascript:;">✕</a></span>\
-        </div>\
-        <div class="tb-form">\
-            <div class="tb-window-tabs">\
-                <a target="_blank" href="/r/' + subreddit + '/wiki/pages" >wiki page listing</a>\
-                <a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
-                <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
-                <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
-                <span class="tb-window-spacer">&nbsp;</span>\
-                <a class="reason-settings" href="javascript:;">removal reason settings</a>\
-                <a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
-                <a class="edit-domains" href="javascript:;">domain tags</a>\
-                <a class="edit-macros" href="javascript:;">mod macros</a>\
-                <!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
-            </div>\
-            <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
-                <div class="wiki-edit-area" style="display: none;">\
-                    <textarea class="edit-wikidata" rows="20" cols="20" style="display: none;"></textarea><br>\
-                    <div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
-                    <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />\
-                </div>\
-                <div class="reasons-notice" style="display:none;">\
-                    <br><br>\
-                    <p>\
-                        Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
-                        You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
-                        <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
-                    </p>\
-                </div>\
-            </div>\
-            <div class="tb-window-footer" >\
-                <div class="wiki-edit-area" style="display: none;">\
-                    <input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
-                    <input class="cancel-wiki-data" type="button" value="Cancel"></input>\
-                </div>\
-            </div>\
-        </div>\
-        <div class="tb-help-config-content">Choose what you want to edit.</div>\
+<div class="tb-window-wrapper" comment="the window itself">\
+    <div class="tb-window-header" comment="This will contain the name of the window">\
+        Toolbox Configuration - /r/' + subreddit + '\
+        <span class="tb-window-header-options"><a class="tb-config-help" href="javascript:;" title="Toolbox Configuration Help">?</a> - <a class="tb-close" title="Close Toolbox Configuration" href="javascript:;">✕</a></span>\
     </div>\
+    <div class="tb-form">\
+        <div class="tb-window-tabs">\
+            <a target="_blank" href="/r/' + subreddit + '/wiki/pages" >wiki page listing</a>\
+            <a href="javascript:;" class="edit-wiki-page" page="toolbox">edit toolbox config</a>\
+            <a href="javascript:;" class="edit-wiki-page" page="usernotes">edit user notes</a>\
+            <a href="javascript:;" class="edit-wiki-page" page="automoderator">edit automoderator config</a>\
+            <span class="tb-window-spacer">&nbsp;</span>\
+            <a class="reason-settings" href="javascript:;">removal reason settings</a>\
+            <a class="edit-reasons" href="javascript:;">edit removal reasons</a>\
+            <a class="edit-domains" href="javascript:;">domain tags</a>\
+            <a class="edit-macros" href="javascript:;">mod macros</a>\
+            <!--<a class="tb-local-settings" href="javascript:;">toolbox settings</a><br>-->\
+        </div>\
+        <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
+            <div class="wiki-edit-area" style="display: none;">\
+                <textarea class="edit-wikidata" rows="20" cols="20" style="display: none;"></textarea><br>\
+                <div id="edit-wikidata-div" style="display: none; height: 500px;"></div><br>\
+                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />\
+            </div>\
+            <div class="reasons-notice" style="display:none;">\
+                <br><br>\
+                <p>\
+                    Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
+                    You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
+                    <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
+                </p>\
+            </div>\
+        </div>\
+        <div class="tb-window-footer" >\
+            <div class="wiki-edit-area" style="display: none;">\
+                <input class="save-wiki-data" type="button" value="Save Page to Wiki"></input>&nbsp;&nbsp;\
+                <input class="cancel-wiki-data" type="button" value="Cancel"></input>\
+            </div>\
+        </div>\
+    </div>\
+    <div class="tb-help-config-content">Choose what you want to edit.</div>\
 </div>\
-        ';
+</div>\
+    ';
         $(html).appendTo('body').show();
         $body.css('overflow', 'hidden');
     }
@@ -260,10 +260,10 @@ TBConfig.init = function () {
                     // default note
                     editNote = 'update';
                 }
-                editNote += ', macro #'+macroNum;
+                editNote += ', macro #' + macroNum;
             } else {
                 // otherwise, it's a new reason
-                editNote = 'create new macro '+(editNote ? ', '+editNote : '');
+                editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
             }
 
             if (macroNum) {
@@ -299,7 +299,7 @@ TBConfig.init = function () {
             } else {
                 return;
             }
-            postToWiki('toolbox', config, 'delete macro #'+macroNum, true);
+            postToWiki('toolbox', config, 'delete macro #' + macroNum, true);
             if (TBUtils.configCache[subreddit] !== undefined) {
                 delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
@@ -310,7 +310,6 @@ TBConfig.init = function () {
             $html.remove();
         });
     });
-
 
 
     $body.on('click', '.edit-reasons', function () {
@@ -414,10 +413,10 @@ TBConfig.init = function () {
                     // default note
                     editNote = 'update';
                 }
-                editNote += ', reason #'+reasonsNum;
+                editNote += ', reason #' + reasonsNum;
             } else {
                 // otherwise, it's a new reason
-                editNote = 'create new reason'+(editNote ? ', '+editNote : '');
+                editNote = 'create new reason' + (editNote ? ', ' + editNote : '');
             }
 
             if (reasonsNum) {
@@ -458,7 +457,7 @@ TBConfig.init = function () {
             } else {
                 return;
             }
-            postToWiki('toolbox', config, 'delete reason #'+reasonsNum, true);
+            postToWiki('toolbox', config, 'delete reason #' + reasonsNum, true);
             if (TBUtils.configCache[subreddit] !== undefined) {
                 delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
             }
@@ -478,78 +477,78 @@ TBConfig.init = function () {
 <div class="tb-window-content" comment="This will contain all other elements, this is basically a wrapper to give is more flexibility in the future">\
 \
 \
-            <div class="tb-form">\
-            <table>\
-            <tr>\
-            <td>\
-                get reason from /r/:\
-            </td><td>\
-                <input class="getfrom" type="text" value="' + (config.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
-            </tr><tr>\
-            <td>\
-                logsub /r/:\
-            </td><td>\
-                <input class="logsub" type="text" value="' + (config.removalReasons.logsub || '') + '"/>\
-            </td>\
-            </tr><tr>\
-            <td>\
-               pmsubject:\
-            </td><td>\
-               <input class="pmsubject" type="text" value="' + (config.removalReasons.pmsubject || '') + '"/>\
-            </td>\
-            </tr><tr>\
-            <td>\
-                logtitle:\
-            </td><td>\
-                <input class="logtitle" type="text" value="' + (config.removalReasons.logtitle || '') + '"/>\
-            </td>\
-            </tr><tr>\
-            <td>\
-                bantitle:\
-            </td><td>\
-                <input class="bantitle" type="text" value="' + (config.removalReasons.bantitle || '') + '"/>\
-            </td>\
-            </tr><tr>\
-            <td>\
-                logreason:\
-            </td><td>\
-                <input class="logreason" type="text" value="' + (config.removalReasons.logreason || '') + '"/>\
-            </td>\
-            </tr>\
-            </table>\
-                <span>Header:</span>\
-                <p><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) + '</textarea></p>\
-                <span>Footer:</span>\
-                <p><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) + '</textarea></p>\
-            </div>\
+        <div class="tb-form">\
+        <table>\
+        <tr>\
+        <td>\
+            get reason from /r/:\
+        </td><td>\
+            <input class="getfrom" type="text" value="' + (config.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+        </tr><tr>\
+        <td>\
+            logsub /r/:\
+        </td><td>\
+            <input class="logsub" type="text" value="' + (config.removalReasons.logsub || '') + '"/>\
+        </td>\
+        </tr><tr>\
+        <td>\
+           pmsubject:\
+        </td><td>\
+           <input class="pmsubject" type="text" value="' + (config.removalReasons.pmsubject || '') + '"/>\
+        </td>\
+        </tr><tr>\
+        <td>\
+            logtitle:\
+        </td><td>\
+            <input class="logtitle" type="text" value="' + (config.removalReasons.logtitle || '') + '"/>\
+        </td>\
+        </tr><tr>\
+        <td>\
+            bantitle:\
+        </td><td>\
+            <input class="bantitle" type="text" value="' + (config.removalReasons.bantitle || '') + '"/>\
+        </td>\
+        </tr><tr>\
+        <td>\
+            logreason:\
+        </td><td>\
+            <input class="logreason" type="text" value="' + (config.removalReasons.logreason || '') + '"/>\
+        </td>\
+        </tr>\
+        </table>\
+            <span>Header:</span>\
+            <p><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) + '</textarea></p>\
+            <span>Footer:</span>\
+            <p><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) + '</textarea></p>\
+        </div>\
 \
 \
 </div>\
 <div class="tb-window-footer"><input class="save" type="button" value="save" /></div>\
 <div class="tb-help-config-content">\
-        <p><strong>get reason from /r/:</strong> This will load the excisting reasons from an other subreddit. <span style="color:red">WARNING:</span> Will override all settings currently in place<p>\
-        <p><strong>logsub /r/:</strong>If this is filled in all removals will be logged to a subreddit specified in this field.<p>\
-        <p><strong>pmsubject:</strong> Subject field for the pm that can be send to a user after a removal.<p>\
-        <p><strong>logtitle:</strong> Used for a public modlog to define the title of the log post.<p>\
-        <p><strong>bantitle:</strong> Same as above but then for bans.<p>\
-        <p><strong>logreason:</strong> The standard reason a mod will be presented when logging a removal or ban.<p>\
-        <p><strong>Header:</strong> The standard line of text to start each removal post/pm with.<p>\
-        <p><strong>Footer:</strong> The standard line of text to end each removal post/pm with.<p>\
-        <h2>Valid tokens:</h2>\
-        <p><strong>{subreddit}</strong> - The subreddit the post/comment was posted to.<br>\
-        <strong>{author}</strong> - The author of the link/comment<br>\
-        <strong>{kind}</strong> - The type of post, either \'submission\' or \'comment\'<br>\
-        <strong>{mod}</strong> - The name of the mod removing the post (you)<br>\
-        <strong>{title}</strong> - The title of the submission<br>\
-        <strong>{url}</strong> - url/permalink to the removed post.<br>\
-        <strong>{domain}</strong> - the domain of the removed submission.<br>\
-        <strong>{link}</strong> - the link of the removed submission (same as {url} for self-posts)<br>\
-        <strong>{reason}</strong> - this is the reason something was removed or someone was banned. It should not be used/will not work without &lt;logsub&gt;.<br>\
-        <strong>{loglink}</strong> -  the link to the removal log thread. It should not be used/will not work without &lt;logsub&gt;. </p>\
+    <p><strong>get reason from /r/:</strong> This will load the excisting reasons from an other subreddit. <span style="color:red">WARNING:</span> Will override all settings currently in place<p>\
+    <p><strong>logsub /r/:</strong>If this is filled in all removals will be logged to a subreddit specified in this field.<p>\
+    <p><strong>pmsubject:</strong> Subject field for the pm that can be send to a user after a removal.<p>\
+    <p><strong>logtitle:</strong> Used for a public modlog to define the title of the log post.<p>\
+    <p><strong>bantitle:</strong> Same as above but then for bans.<p>\
+    <p><strong>logreason:</strong> The standard reason a mod will be presented when logging a removal or ban.<p>\
+    <p><strong>Header:</strong> The standard line of text to start each removal post/pm with.<p>\
+    <p><strong>Footer:</strong> The standard line of text to end each removal post/pm with.<p>\
+    <h2>Valid tokens:</h2>\
+    <p><strong>{subreddit}</strong> - The subreddit the post/comment was posted to.<br>\
+    <strong>{author}</strong> - The author of the link/comment<br>\
+    <strong>{kind}</strong> - The type of post, either \'submission\' or \'comment\'<br>\
+    <strong>{mod}</strong> - The name of the mod removing the post (you)<br>\
+    <strong>{title}</strong> - The title of the submission<br>\
+    <strong>{url}</strong> - url/permalink to the removed post.<br>\
+    <strong>{domain}</strong> - the domain of the removed submission.<br>\
+    <strong>{link}</strong> - the link of the removed submission (same as {url} for self-posts)<br>\
+    <strong>{reason}</strong> - this is the reason something was removed or someone was banned. It should not be used/will not work without &lt;logsub&gt;.<br>\
+    <strong>{loglink}</strong> -  the link to the removal log thread. It should not be used/will not work without &lt;logsub&gt;. </p>\
 </div>\
 </div>\
 </div>\
-        ';
+    ';
         $(html).appendTo('body').show();
 
 
@@ -583,25 +582,23 @@ TBConfig.init = function () {
         var htmlcontent = $(this).parents('.tb-window-wrapper-two').find('.tb-help-config-content').html();
         $.log(htmlcontent, true);
         var html = '\
-        <!DOCTYPE html>\
-        <html>\
-        <head>\
-        <style>\
-        body {\
-        font: normal x-small verdana,arial,helvetica,sans-serif;\
-        }\
-        </style>\
-        </head>\
-        <body>\
-        <div class="help-content">' + htmlcontent + '</div>\
-        </body>\
-        </html>\
-        ';
+    <!DOCTYPE html>\
+    <html>\
+    <head>\
+    <style>\
+    body {\
+    font: normal x-small verdana,arial,helvetica,sans-serif;\
+    }\
+    </style>\
+    </head>\
+    <body>\
+    <div class="help-content">' + htmlcontent + '</div>\
+    </body>\
+    </html>\
+    ';
         helpwindow.document.write(html);
         helpwindow.focus();
     });
-
-
 
 
     $body.on('click', '.edit-wiki-page', function (e) {
@@ -634,8 +631,6 @@ TBConfig.init = function () {
             configEditor.getSession().on('change', function () {
                 textArea.val(configEditor.getSession().getValue());
             });
-
-
 
 
             TBUtils.readFromWiki(subreddit, page, false, function (resp) {
@@ -702,7 +697,7 @@ TBConfig.init = function () {
             cancel = (e.target.className == 'cancel-wiki-data')
 
         if (!editNote) {
-            editNote = 'updated '+page+' configuration';
+            editNote = 'updated ' + page + ' configuration';
         }
 
         $(button).removeAttr('page');
@@ -722,7 +717,6 @@ TBConfig.init = function () {
 }; // TBConfig.init()
 
 TB.register_module(TBConfig);
-
 } // tbconfig() wrapper
 
 (function() {

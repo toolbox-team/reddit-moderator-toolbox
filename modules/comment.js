@@ -64,320 +64,320 @@ commentsMod.init = function commentsModInit() {
     if (TBUtils.isMod && !TBUtils.isModmail) {
 
 
-    //
-    // preload some generic variables
-    //
-    var hideRemoved = commentsMod.setting('hideRemoved'),
-        approveComments = commentsMod.setting('approvecomments'),
-        spamRemoved = commentsMod.setting('spamremoved'),
-        hamSpammed = commentsMod.setting('hamspammed');
-
-    $body.on('click', '#tb-toggle-removed', function () {
-        var $comment_spam = $('.tb-comment-spam');
-        if ($comment_spam.is(':visible')) {
-            $comment_spam.hide();
-        } else {
-            $comment_spam.show();
-        }
-
-    });
-
-    function run() {
         //
-        //  Do stuff with removed comments
+        // preload some generic variables
         //
-        // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
-        var removedCounter = 0;
+        var hideRemoved = commentsMod.setting('hideRemoved'),
+            approveComments = commentsMod.setting('approvecomments'),
+            spamRemoved = commentsMod.setting('spamremoved'),
+            hamSpammed = commentsMod.setting('hamspammed');
 
-        $('.comments-page .thing.comment.spam > .entry').each(function () {
-            $(this).addClass('tb-comment-spam');
-            removedCounter = removedCounter + 1;
+        $body.on('click', '#tb-toggle-removed', function () {
+            var $comment_spam = $('.tb-comment-spam');
+            if ($comment_spam.is(':visible')) {
+                $comment_spam.hide();
+            } else {
+                $comment_spam.show();
+            }
+
         });
 
-        $.log(removedCounter, true);
+        function run() {
+            //
+            //  Do stuff with removed comments
+            //
+            // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
+            var removedCounter = 0;
 
-        if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
-            $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
-            if (removedCounter == 1) {
-                $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]');
-            } else if (removedCounter > 1) {
-                $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']');
-            }
-        } else if (removedCounter == 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]</a>');
-        } else if (removedCounter > 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']</a>');
-        }
-
-        if (hideRemoved) {
-            $('.tb-comment-spam').hide();
-        }
-
-        if (approveComments || spamRemoved || hamSpammed) {
-            // only need to iterate if at least one of the options is enabled
-            $('.thing.comment').each(function () {
-                if (!$(this).hasClass('.tb-comments-checked')) {
-                    $(this).addClass('tb-comments-checked');
-
-                    var thing = TBUtils.getThingInfo(this, true);
-
-                    if (approveComments) {
-                        // only for subreddits we mod
-                        // and for comments that haven't already been approved
-                        if (thing.subreddit && !thing.approved_by) {
-                            // and only if there isn't already one
-                            if ($(this).children('.entry').find('.buttons .positive').length == 0) {
-                                // lifted straight from the "remove" link button
-                                $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
-                                    .insertAfter($(this).children('.entry').find('input[value="removed"]').closest('li'));
-                            }
-                        }
-                    }
-
-                    if (spamRemoved) {
-                        // only for subreddits we mod
-                        // and for comments that have been removed as ham ("remove not spam")
-                        if (thing.subreddit && thing.ham) {
-                            // and only if there isn't already one
-                            if ($(this).children('.entry').find('.big-mod-buttons .negative').length == 0) {
-                                // lifted straight from the "spam" big mod button
-                                $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
-                                    .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                                $('<span class="status-msg spammed">spammed</span>')
-                                    .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
-                            }
-                        }
-                    }
-
-                    if (hamSpammed) {
-                        // only for subreddits we mod
-                        // and for comments that have been removed as spam ("spam" or "confirm spam")
-                        if (thing.subreddit && thing.spam) {
-                            // and only if there isn't already one
-                            if ($(this).children('.entry').find('.big-mod-buttons .neutral').length == 0) {
-                                // lifted straight from the "remove" big mod button
-                                $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
-                                    .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                                $('<span class="status-msg removed">removed</span>')
-                                    .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
-                            }
-                        }
-                    }
-                }
+            $('.comments-page .thing.comment.spam > .entry').each(function () {
+                $(this).addClass('tb-comment-spam');
+                removedCounter = removedCounter + 1;
             });
-        }
 
-        if (commentsMod.setting('highlighted').length > 0) {
-            var highlighted = commentsMod.setting('highlighted');
+            $.log(removedCounter, true);
 
-            $('.md p').highlight(highlighted);
+            if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
+                $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
+                if (removedCounter == 1) {
+                    $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]');
+                } else if (removedCounter > 1) {
+                    $tbToggle.html('<img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']');
+                }
+            } else if (removedCounter == 1) {
+                $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[1]</a>');
+            } else if (removedCounter > 1) {
+                $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconCommentsRemove + '" />[' + removedCounter.toString() + ']</a>');
+            }
 
-            if (commentsMod.setting('highlightTitles')) {
-                $('a.title').highlight(highlighted);
+            if (hideRemoved) {
+                $('.tb-comment-spam').hide();
+            }
+
+            if (approveComments || spamRemoved || hamSpammed) {
+                // only need to iterate if at least one of the options is enabled
+                $('.thing.comment').each(function () {
+                    if (!$(this).hasClass('.tb-comments-checked')) {
+                        $(this).addClass('tb-comments-checked');
+
+                        var thing = TBUtils.getThingInfo(this, true);
+
+                        if (approveComments) {
+                            // only for subreddits we mod
+                            // and for comments that haven't already been approved
+                            if (thing.subreddit && !thing.approved_by) {
+                                // and only if there isn't already one
+                                if ($(this).children('.entry').find('.buttons .positive').length == 0) {
+                                    // lifted straight from the "remove" link button
+                                    $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
+                                        .insertAfter($(this).children('.entry').find('input[value="removed"]').closest('li'));
+                                }
+                            }
+                        }
+
+                        if (spamRemoved) {
+                            // only for subreddits we mod
+                            // and for comments that have been removed as ham ("remove not spam")
+                            if (thing.subreddit && thing.ham) {
+                                // and only if there isn't already one
+                                if ($(this).children('.entry').find('.big-mod-buttons .negative').length == 0) {
+                                    // lifted straight from the "spam" big mod button
+                                    $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
+                                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
+                                    $('<span class="status-msg spammed">spammed</span>')
+                                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                                }
+                            }
+                        }
+
+                        if (hamSpammed) {
+                            // only for subreddits we mod
+                            // and for comments that have been removed as spam ("spam" or "confirm spam")
+                            if (thing.subreddit && thing.spam) {
+                                // and only if there isn't already one
+                                if ($(this).children('.entry').find('.big-mod-buttons .neutral').length == 0) {
+                                    // lifted straight from the "remove" big mod button
+                                    $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
+                                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
+                                    $('<span class="status-msg removed">removed</span>')
+                                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (commentsMod.setting('highlighted').length > 0) {
+                var highlighted = commentsMod.setting('highlighted');
+
+                $('.md p').highlight(highlighted);
+
+                if (commentsMod.setting('highlightTitles')) {
+                    $('a.title').highlight(highlighted);
+                }
             }
         }
-    }
 
-    // NER support.
-    window.addEventListener("TBNewThings", function () {
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            run();
+        });
+
         run();
-    });
 
-    run();
+        // Add flat view link.
+        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
 
-    // Add flat view link.
-    $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat">Load comments in flat view</a>');
+        $body.on("click", ".loadFlat", function () {
 
-    $body.on("click", ".loadFlat", function () {
-
-        // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
-        htmlComment = '\
+            // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
+            htmlComment = '\
 <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
-    <div class="entry mod-button" subreddit="{{subreddit}}">\
-        <div class="noncollapsed">\
-            <p class="tagline">\
-                <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-                <span class="userattrs">\
-                </span>\
-                <span class="score">{{score}} points</span>\
-                <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-            </p>\
-            <div class="usertext-body">\
-            {{bodyHtml}}\
-            </div>\
-            <ul class="flat-list buttons">\
-                <li class="first">\
-                    <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                </li>\
-                <li>\
-                    <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                </li> \
-                <li>\
-                    <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                </li> \
-                {{bannedBy}}\
-                {{modButtons}}\
-                <li>\
-                    <a href="javascript:;" class="global-mod-button">mod</a>\
-                </li>\
-                <li>\
-                    <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-            </ul>\
+<div class="entry mod-button" subreddit="{{subreddit}}">\
+    <div class="noncollapsed">\
+        <p class="tagline">\
+            <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+            <span class="userattrs">\
+            </span>\
+            <span class="score">{{score}} points</span>\
+            <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+        </p>\
+        <div class="usertext-body">\
+        {{bodyHtml}}\
         </div>\
+        <ul class="flat-list buttons">\
+            <li class="first">\
+                <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+            </li>\
+            <li>\
+                <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+            </li> \
+            <li>\
+                <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+            </li> \
+            {{bannedBy}}\
+            {{modButtons}}\
+            <li>\
+                <a href="javascript:;" class="global-mod-button">mod</a>\
+            </li>\
+            <li>\
+                <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
+        </ul>\
     </div>\
-    <div class="child"></div>\
+</div>\
+<div class="child"></div>\
 </div>';
 
-        // remove modtools since we don't want mass actions out of context comments.
-        $body.find(".tabmenu li .modtools-on").closest('li').remove();
-        $body.find(".tabmenu li #modtab-threshold").closest('li').remove();
-        $body.find(".menuarea.modtools").remove();
+            // remove modtools since we don't want mass actions out of context comments.
+            $body.find(".tabmenu li .modtools-on").closest('li').remove();
+            $body.find(".tabmenu li #modtab-threshold").closest('li').remove();
+            $body.find(".menuarea.modtools").remove();
 
-        var flatListing = {}, // This will contain all comments later on.
-            idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
+            var flatListing = {}, // This will contain all comments later on.
+                idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
-        // deconstruct the json we got.
-        function parseComments(object) {
-            switch (object.kind) {
+            // deconstruct the json we got.
+            function parseComments(object) {
+                switch (object.kind) {
 
-                case "Listing":
-                    for (var i = 0; i < object.data.children.length; i++) {
-                        parseComments(object.data.children[i]);
-                    }
-                    break;
+                    case "Listing":
+                        for (var i = 0; i < object.data.children.length; i++) {
+                            parseComments(object.data.children[i]);
+                        }
+                        break;
 
-                case "t1":
-                    flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
-                    idListing.push(object.data.id);
+                    case "t1":
+                        flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
+                        idListing.push(object.data.id);
 
-                    // if we have replies
-                    if (flatListing[object.data.id].hasOwnProperty('replies') && flatListing[object.data.id].replies && typeof flatListing[object.data.id].replies === "object") {
-                        delete flatListing[object.data.id].replies; // remove them from the flat object
-                        parseComments(object.data.replies); // parse them too
-                    }
-                    break;
+                        // if we have replies
+                        if (flatListing[object.data.id].hasOwnProperty('replies') && flatListing[object.data.id].replies && typeof flatListing[object.data.id].replies === "object") {
+                            delete flatListing[object.data.id].replies; // remove them from the flat object
+                            parseComments(object.data.replies); // parse them too
+                        }
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
-        }
 
-        // Variables we need later on to be able to reconstruct comments.
-        var htmlCommentView = ''; // This will contain the new html we will add to the page.
-        var fullId = $('.thing.link').attr('data-fullname'); // full id
-        var smallId = fullId.substring(3); // small id constructed from fullId
+            // Variables we need later on to be able to reconstruct comments.
+            var htmlCommentView = ''; // This will contain the new html we will add to the page.
+            var fullId = $('.thing.link').attr('data-fullname'); // full id
+            var smallId = fullId.substring(3); // small id constructed from fullId
 
-        var siteTable = "#siteTable_" + fullId; // sitetable id which we will be clearing.
-        $(siteTable).empty(); // clear the site table.
-        TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+            var siteTable = "#siteTable_" + fullId; // sitetable id which we will be clearing.
+            $(siteTable).empty(); // clear the site table.
+            TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
-        // construct the url from which we grab the comments json.
-        var jsonurl = $('.entry a.comments').attr('href');
+            // construct the url from which we grab the comments json.
+            var jsonurl = $('.entry a.comments').attr('href');
 
-        // Lets get the comments.
-        $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
-            // put the json through our deconstructor.
-            parseComments(data[1]);
-            // and get back a nice flat listing of ids
-            idListing = TBUtils.saneSortAs(idListing);
-            var linkAuthor = data[0].data.children[0].data.author,
-                threadPermalink = data[0].data.children[0].data.permalink;
+            // Lets get the comments.
+            $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
+                // put the json through our deconstructor.
+                parseComments(data[1]);
+                // and get back a nice flat listing of ids
+                idListing = TBUtils.saneSortAs(idListing);
+                var linkAuthor = data[0].data.children[0].data.author,
+                    threadPermalink = data[0].data.children[0].data.permalink;
 
-            // from each id in the idlisting we construct a new comment.
-            $.each(idListing, function (index, value) {
+                // from each id in the idlisting we construct a new comment.
+                $.each(idListing, function (index, value) {
 
-                // All variables we will need to construct a fresh new comment.
-                var approvedBy = flatListing[value].approved_by,
-                    author = flatListing[value].author,
-                    authorFlairCssClass = flatListing[value].author_flair_css_class,
-                    authorFlairText = flatListing[value].author_flair_text,
-                    bannedBy = flatListing[value].banned_by,
-                    bodyHtml = flatListing[value].body_html,
-                    createdUTC = flatListing[value].created_utc,
-                    distinguished = flatListing[value].distinguished,
-                    commentID = flatListing[value].id,
-                    linkId = flatListing[value].link_id,
-                    name = flatListing[value].name,
-                    numReports = flatListing[value].num_reports,
-                    parentId = flatListing[value].parent_id,
-                    score = flatListing[value].score,
-                    scoreHidden = flatListing[value].score_hidden,
-                    subreddit = flatListing[value].subreddit;
-
-
-                // figure out if we need to add author and mod stuff.
-                var authorClass = 'author';
-                if (distinguished === 'moderator') {
-                    authorClass = authorClass + ' moderator';
-                }
-
-                if (linkAuthor === author) {
-                    authorClass = authorClass + ' submitter';
-                }
-                createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
-
-                permaLinkComment = threadPermalink + commentID;
+                    // All variables we will need to construct a fresh new comment.
+                    var approvedBy = flatListing[value].approved_by,
+                        author = flatListing[value].author,
+                        authorFlairCssClass = flatListing[value].author_flair_css_class,
+                        authorFlairText = flatListing[value].author_flair_text,
+                        bannedBy = flatListing[value].banned_by,
+                        bodyHtml = flatListing[value].body_html,
+                        createdUTC = flatListing[value].created_utc,
+                        distinguished = flatListing[value].distinguished,
+                        commentID = flatListing[value].id,
+                        linkId = flatListing[value].link_id,
+                        name = flatListing[value].name,
+                        numReports = flatListing[value].num_reports,
+                        parentId = flatListing[value].parent_id,
+                        score = flatListing[value].score,
+                        scoreHidden = flatListing[value].score_hidden,
+                        subreddit = flatListing[value].subreddit;
 
 
-                var thingClasses = name;
+                    // figure out if we need to add author and mod stuff.
+                    var authorClass = 'author';
+                    if (distinguished === 'moderator') {
+                        authorClass = authorClass + ' moderator';
+                    }
 
-                if (bannedBy) {
+                    if (linkAuthor === author) {
+                        authorClass = authorClass + ' submitter';
+                    }
+                    createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
 
-                    bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
-                    thingClasses = thingClasses + ' spam';
-                } else {
-                    bannedBy = '';
-                }
+                    permaLinkComment = threadPermalink + commentID;
 
-                var modButtons = '';
-                if ($body.hasClass('moderator')) {
-                    modButtons = '\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                ';
-                }
 
-                // Constructing the comment. 
+                    var thingClasses = name;
 
-                htmlConstructedComment = TBUtils.template(htmlComment, {
-                    'thingClasses': thingClasses,
-                    'name': name,
-                    'subreddit': subreddit,
-                    'author': author,
-                    'authorClass': authorClass,
-                    'score': score,
-                    'createdUTC': TBUtils.timeConverterRead(createdUTC),
-                    'createdTimeAgo': createdTimeAgo,
-                    'bodyHtml': TBUtils.htmlDecode(bodyHtml),
-                    'permaLinkComment': permaLinkComment,
-                    'threadPermalink': threadPermalink,
-                    'bannedBy': bannedBy,
-                    'modButtons': modButtons
+                    if (bannedBy) {
+
+                        bannedBy = '<li><b>[ removed by ' + bannedBy + ' ]</b></li>';
+                        thingClasses = thingClasses + ' spam';
+                    } else {
+                        bannedBy = '';
+                    }
+
+                    var modButtons = '';
+                    if ($body.hasClass('moderator')) {
+                        modButtons = '\
+            <li>\
+                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+            </li>\
+            <li>\
+                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+            </li>\
+            ';
+                    }
+
+                    // Constructing the comment.
+
+                    htmlConstructedComment = TBUtils.template(htmlComment, {
+                        'thingClasses': thingClasses,
+                        'name': name,
+                        'subreddit': subreddit,
+                        'author': author,
+                        'authorClass': authorClass,
+                        'score': score,
+                        'createdUTC': TBUtils.timeConverterRead(createdUTC),
+                        'createdTimeAgo': createdTimeAgo,
+                        'bodyHtml': TBUtils.htmlDecode(bodyHtml),
+                        'permaLinkComment': permaLinkComment,
+                        'threadPermalink': threadPermalink,
+                        'bannedBy': bannedBy,
+                        'modButtons': modButtons
+                    });
+
+
+                    htmlCommentView = htmlCommentView + htmlConstructedComment;
                 });
 
+                TBUtils.longLoadSpinner(false);
 
-                htmlCommentView = htmlCommentView + htmlConstructedComment;
+                // add the new comment list to the page.
+                $(siteTable).append(htmlCommentView);
+
+                // and simulate reddits timeago function with our native function.
+                $("time.timeago").timeago();
+
+                // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
+                setTimeout(function () {
+                    var event = new CustomEvent("TBNewThings");
+                    window.dispatchEvent(event);
+                }, 1000);
             });
-
-            TBUtils.longLoadSpinner(false);
-
-            // add the new comment list to the page.
-            $(siteTable).append(htmlCommentView);
-
-            // and simulate reddits timeago function with our native function.
-            $("time.timeago").timeago();
-
-            // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
-            setTimeout(function () {
-                var event = new CustomEvent("TBNewThings");
-                window.dispatchEvent(event);
-            }, 1000);
         });
-    });
     }
 
     function commentSearch() {
@@ -386,7 +386,7 @@ commentsMod.init = function commentsModInit() {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
             $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit">\
-            <input type="submit" value="go"></form>');
+        <input type="submit" value="go"></form>');
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
@@ -398,7 +398,7 @@ commentsMod.init = function commentsModInit() {
 
                 $(TBUtils.mySubs).each(function () {
                     $body.find('#tb-search-suggest table#tb-search-suggest-list').append('\
-                    <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
+                <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
                 });
             }
 
@@ -412,12 +412,12 @@ commentsMod.init = function commentsModInit() {
                     "top": offsetTop + 'px'
                 });
 
-                if(!$body.find('#tb-search-suggest').is(':visible')) {
+                if (!$body.find('#tb-search-suggest').is(':visible')) {
                     $body.find('#tb-search-suggest').show();
                 }
             });
 
-            $body.find('#subredditsearch').keyup(function() {
+            $body.find('#subredditsearch').keyup(function () {
                 var LiveSearchValue = $(this).val();
                 $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
                     var $this = $(this),
@@ -431,13 +431,13 @@ commentsMod.init = function commentsModInit() {
                 });
             });
 
-            $(document).on('click', function(event) {
+            $(document).on('click', function (event) {
                 if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('#subredditsearch').length) {
                     $body.find('#tb-search-suggest').hide();
                 }
             });
 
-            $body.on('click', '#tb-search-suggest-list tr', function() {
+            $body.on('click', '#tb-search-suggest-list tr', function () {
                 var subSuggestion = $(this).attr('data-subreddit');
                 $body.find('#subredditsearch').val(subSuggestion);
                 $body.find('#tb-search-suggest').hide();
@@ -454,45 +454,45 @@ commentsMod.init = function commentsModInit() {
 
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
-        <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
-            <p class="parent">\
-                <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
-                by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
-                in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
-            </p>\
-            <div class="entry mod-button" subreddit="{{subreddit}}">\
-                <div class="noncollapsed">\
-                    <p class="tagline">\
-                        <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-                        <span class="userattrs">\
-                        </span>\
-                        <span class="score">{{score}} points</span>\
-                        <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-                    </p>\
-                    <div class="usertext-body">\
-                    {{bodyHtml}}\
-                    </div>\
-                    <ul class="flat-list buttons">\
-                        <li class="first">\
-                            <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                        </li>\
-                        <li>\
-                            <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                        </li> \
-                        <li>\
-                            <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                        </li> \
-                        {{bannedBy}}\
-                        {{modButtons}}\
-                        <li>\
-                            <a href="javascript:;" class="global-mod-button">mod</a>\
-                        </li>\
-                    </ul>\
+    <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+        <p class="parent">\
+            <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
+            by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
+            in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
+        </p>\
+        <div class="entry mod-button" subreddit="{{subreddit}}">\
+            <div class="noncollapsed">\
+                <p class="tagline">\
+                    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+                    <span class="userattrs">\
+                    </span>\
+                    <span class="score">{{score}} points</span>\
+                    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+                </p>\
+                <div class="usertext-body">\
+                {{bodyHtml}}\
                 </div>\
+                <ul class="flat-list buttons">\
+                    <li class="first">\
+                        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+                    </li>\
+                    <li>\
+                        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+                    </li> \
+                    <li>\
+                        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+                    </li> \
+                    {{bannedBy}}\
+                    {{modButtons}}\
+                    <li>\
+                        <a href="javascript:;" class="global-mod-button">mod</a>\
+                    </li>\
+                </ul>\
             </div>\
-            <div class="child"></div>\
         </div>\
-        <div class="clearleft"></div>';
+        <div class="child"></div>\
+    </div>\
+    <div class="clearleft"></div>';
 
                 var htmlProfileCommentView = '';
                 $('.sitetable.linklisting').empty();
@@ -549,13 +549,13 @@ commentsMod.init = function commentsModInit() {
                                 // need to check if you are a mod of the returned sub
                                 if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
                                     modButtons = '\
-                    <li>\
-                        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                    </li>\
-                    <li>\
-                        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                    </li>\
-                    ';
+                <li>\
+                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                </li>\
+                <li>\
+                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+                </li>\
+                ';
                                 }
 
                                 // Constructing the comment.
@@ -601,11 +601,13 @@ commentsMod.init = function commentsModInit() {
                         }
                     });
                 }
+
                 searchComments(usersearch, subredditsearch);
 
             });
         }
     }
+
     commentSearch();
 };
 

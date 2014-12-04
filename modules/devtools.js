@@ -5,7 +5,6 @@ var devTools = new TB.Module('Developer Tools');
 
 devTools.setting('betamode', false);
 devTools.setting('devmode', true);
-
 }
 
 (function () {

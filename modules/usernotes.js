@@ -25,25 +25,25 @@ userNotes.init = function () {
     var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/;
     var MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/;
 
-    var ConstManager = function(init_pools) {
+    var ConstManager = function (init_pools) {
         return {
             _pools: init_pools,
-            create: function(poolName, constant) {
+            create: function (poolName, constant) {
                 var pool = this._pools[poolName];
                 var id = pool.indexOf(constant);
-                if(id !== -1)
+                if (id !== -1)
                     return id;
                 pool.push(constant);
                 return pool.length - 1;
             },
-            get: function(poolName, id) {
+            get: function (poolName, id) {
                 return this._pools[poolName][id];
             }
         };
     };
 
     function getUser(users, name) {
-        if(users.hasOwnProperty(name)) {
+        if (users.hasOwnProperty(name)) {
             return users[name];
         }
         return undefined;
@@ -52,12 +52,12 @@ userNotes.init = function () {
     function squashPermalink(permalink) {
         var linkMatches = permalink.match(COMMENTS_LINK_RE);
         var modMailMatches = permalink.match(MODMAIL_LINK_RE);
-        if(linkMatches) {
+        if (linkMatches) {
             var squashed = "l," + linkMatches[1];
-            if(linkMatches[3] !== undefined)
+            if (linkMatches[3] !== undefined)
                 squashed += "," + linkMatches[3];
             return squashed
-        } else if(modMailMatches) {
+        } else if (modMailMatches) {
             return "m," + modMailMatches[1];
         } else {
             return "";
@@ -68,11 +68,11 @@ userNotes.init = function () {
         var linkParams = permalink.split(/,/g);
         var link = "/r/" + subreddit + "/";
 
-        if(linkParams[0] == "l") {
+        if (linkParams[0] == "l") {
             link += "comments/" + linkParams[1] + "/";
-            if(linkParams.length > 2)
+            if (linkParams.length > 2)
                 link += "a/" + linkParams[2] + "/";
-        } else if(linkParams[0] == "m") {
+        } else if (linkParams[0] == "m") {
             link += "message/messages/" + linkParams [1];
         } else {
             return "";
@@ -83,14 +83,14 @@ userNotes.init = function () {
     function postToWiki(sub, json, reason) {
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
-        
+
         $.log("Saving usernotes to wiki...");
         TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
                 $.log("Success!");
                 run();
             } else {
-                $.log("Failure: "+err);
+                $.log("Failure: " + err);
             }
         });
     }
@@ -164,8 +164,8 @@ userNotes.init = function () {
     function convertNotes(notes) {
         function decodeNoteText(notes) {
             // We stopped using encode()d notes in v4
-            notes.users.forEach(function(user) {
-                user.notes.forEach(function(note) {
+            notes.users.forEach(function (user) {
+                user.notes.forEach(function (note) {
                     note.note = unescape(note.note);
                 });
             });
@@ -175,7 +175,7 @@ userNotes.init = function () {
         function keyOnUsername(notes) {
             // we have to rebuild .users to be an object keyed on .name
             var users = {};
-            notes.users.forEach(function(user){
+            notes.users.forEach(function (user) {
                 users[user.name] = {
                     "notes": user.notes
                 }
@@ -184,31 +184,31 @@ userNotes.init = function () {
             return notes;
         }
 
-        if(notes.ver <= 2) {
-        var newUsers = [];
-        var corruptedNotes = false;
+        if (notes.ver <= 2) {
+            var newUsers = [];
+            var corruptedNotes = false;
             //TODO: v2 support drops next version
-            notes.users.forEach(function(user) {
-                if(!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) {
+            notes.users.forEach(function (user) {
+                if (!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) {
                     corruptedNotes = true;
                 } else {
-                user.notes.forEach(function(note) {
-                   if(note.link && note.link.trim()) {
-                        note.link = squashPermalink(note.link);
-                    }
-                });
-                newUsers.push(user);
+                    user.notes.forEach(function (note) {
+                        if (note.link && note.link.trim()) {
+                            note.link = squashPermalink(note.link);
+                        }
+                    });
+                    newUsers.push(user);
                 }
             });
             notes.users = newUsers;
             notes.ver = TBUtils.notesSchema;
             notes.corrupted = corruptedNotes;
             return keyOnUsername(decodeNoteText(notes));
-        } else if(notes.ver == 3) {
+        } else if (notes.ver == 3) {
             notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes)));
             notes.ver = TBUtils.notesSchema;
             return notes;
-        } else if(notes.ver == 4) {
+        } else if (notes.ver == 4) {
             return inflateNotes(notes);
         }
 
@@ -228,9 +228,9 @@ userNotes.init = function () {
 
         var mgr = new ConstManager(deflated.constants);
 
-        $.each(notes.users, function(name, user) {
+        $.each(notes.users, function (name, user) {
             deflated.users[name] = {
-                "ns": user.notes.map(function(note) {
+                "ns": user.notes.map(function (note) {
                     return {
                         "n": note.note,
                         "t": deflateTime(note.time),
@@ -254,10 +254,10 @@ userNotes.init = function () {
 
         var mgr = new ConstManager(deflated.constants);
 
-        $.each(deflated.users, function(name, user) {
+        $.each(deflated.users, function (name, user) {
             notes.users[name] = {
                 "name": name,
-                "notes": user.ns.map(function(note) {
+                "notes": user.ns.map(function (note) {
                     return inflateNote(mgr, note);
                 })
             };
@@ -275,12 +275,12 @@ userNotes.init = function () {
 
         var mgr = new ConstManager(deflated.constants);
 
-        notes.users = deflated.users.map(function(user) {
+        notes.users = deflated.users.map(function (user) {
             return {
                 "name": mgr.get("users", user.u),
-                "notes": user.ns.map(function(note) {
+                "notes": user.ns.map(function (note) {
                     var note = inflateNote(mgr, note);
-                    if(note.link) {
+                    if (note.link) {
                         note.link = "l," + note.link;
                     }
                     return note;
@@ -304,14 +304,14 @@ userNotes.init = function () {
 
     //Date/time utilities
     function inflateTime(time) {
-        if(TBUtils.notesSchema >= 5 && time.toString().length <= 10) {
+        if (TBUtils.notesSchema >= 5 && time.toString().length <= 10) {
             time *= 1000;
         }
         return time;
     }
 
     function deflateTime(time) {
-        if(TBUtils.notesSchema >= 5 && time.toString().length > 10) {
+        if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
             time /= 1000;
         }
         return time;
@@ -324,10 +324,10 @@ userNotes.init = function () {
         // schema check.
         if (notes.ver > TBUtils.notesSchema) {
 
-          // Remove the option to add notes.
-          $('.usernote-span-' + subreddit).remove();
+            // Remove the option to add notes.
+            $('.usernote-span-' + subreddit).remove();
 
-            TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function(clicked) {
+            TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function (clicked) {
                 if (clicked) window.open("/r/toolbox/wiki/download");
             });
             return;
@@ -349,7 +349,7 @@ userNotes.init = function () {
 
             note = u.notes[0].note;
             if (note.length > 53)
-                note = note.substring(0, 50)+"...";
+                note = note.substring(0, 50) + "...";
             $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
             var type = u.notes[0].type;
@@ -410,21 +410,21 @@ userNotes.init = function () {
             [
                 {
                     content: '\
-                        <table class="utagger-notes"><tbody><tr>\
-                            <td class="utagger-notes-td1">Author</td>\
-                            <td class="utagger-notes-td2">Note</td>\
-                            <td class="utagger-notes-td3"></td>\
-                        </tr></tbody></table>\
-                        <table class="utagger-type"><tbody><tr>\
-                            <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
-                        </tr></tbody></table>\
-                        <span>\
-                            <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
-                            <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
-                        </span>',
+                    <table class="utagger-notes"><tbody><tr>\
+                        <td class="utagger-notes-td1">Author</td>\
+                        <td class="utagger-notes-td2">Note</td>\
+                        <td class="utagger-notes-td3"></td>\
+                    </tr></tbody></table>\
+                    <table class="utagger-type"><tbody><tr>\
+                        <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
+                    </tr></tbody></table>\
+                    <span>\
+                        <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+                        <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
+                    </span>',
                     footer: '\
-                        <span class="tb-popup-error" style="display:none"/>\
-                        <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
+                    <span class="tb-popup-error" style="display:none"/>\
+                    <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
                 }
             ],
             '', // meta to inject in popup header; just a placeholder
@@ -455,8 +455,8 @@ userNotes.init = function () {
 
             var u = getUser(resp.users, user);
             // User has notes
-            if(u !== undefined) {
-                popup.find('#utagger-type-' + u.notes[0].type).prop('checked',true);
+            if (u !== undefined) {
+                popup.find('#utagger-type-' + u.notes[0].type).prop('checked', true);
 
                 var i = 0;
                 $(u.notes).each(function () {
@@ -472,8 +472,8 @@ userNotes.init = function () {
                     }
 
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
-                        new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(this.note) +
-                        '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconClose + '" /></td></tr>');
+                    new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(this.note) +
+                    '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconClose + '" /></td></tr>');
                     if (this.link) {
                         popup.find('#utagger-date-' + i).wrap('<a href="' + unsquashPermalink(subreddit, this.link) + '">');
                     }
@@ -510,8 +510,8 @@ userNotes.init = function () {
         }
 
         //Check new note data states
-        if(!deleteNote) {
-            if(!noteText) {
+        if (!deleteNote) {
+            if (!noteText) {
                 //User forgot note text!
                 $unote.css({
                     "border": "1px solid red"
@@ -549,7 +549,7 @@ userNotes.init = function () {
         var noteSkel = {
             "ver": TBUtils.notesSchema,
             "constants": {},
-            "users":{}
+            "users": {}
         };
 
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
@@ -574,7 +574,7 @@ userNotes.init = function () {
 
             if (notes) {
                 var u = getUser(notes.users, user);
-                if(u !== undefined) {
+                if (u !== undefined) {
                     // Delete.
                     if (deleteNote) {
                         $(u.notes).each(function (idx) {
@@ -588,23 +588,23 @@ userNotes.init = function () {
                             delete notes.users[user];
                         }
 
-                        postToWiki(subreddit, notes, 'delete note '+noteid+' on user '+user);
-                    // Add.
+                        postToWiki(subreddit, notes, 'delete note ' + noteid + ' on user ' + user);
+                        // Add.
                     } else {
                         u.notes.unshift(note);
-                        postToWiki(subreddit, notes, 'create new note on user '+user);
+                        postToWiki(subreddit, notes, 'create new note on user ' + user);
                     }
 
-                // Adding a note for previously unknown user
+                    // Adding a note for previously unknown user
                 } else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
-                    postToWiki(subreddit, notes, 'create new note on new user '+user);
+                    postToWiki(subreddit, notes, 'create new note on new user ' + user);
                 }
             } else {
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
-                postToWiki(subreddit, notes, 'create new notes object, add new note on user '+user);
+                postToWiki(subreddit, notes, 'create new notes object, add new note on user ' + user);
             }
         });
     });
@@ -615,7 +615,7 @@ userNotes.init = function () {
     });
 
     $body.on('keyup', '.utagger-user-note', function (event) {
-        if(event.keyCode == 13) {
+        if (event.keyCode == 13) {
             $.log("Enter pressed!", true);
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();

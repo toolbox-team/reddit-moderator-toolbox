@@ -156,8 +156,8 @@ queueTools.init = function () {
             reportsThreshold = queueTools.setting('reports-threshold'),
             listingOrder = queueTools.setting('reports-order'),
             sortAscending = queueTools.setting('reports-ascending'),
-            viewingspam = !! location.pathname.match(/\/about\/(spam|trials)/),
-            viewingreports = !! location.pathname.match(/\/about\/reports/),
+            viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
+            viewingreports = !!location.pathname.match(/\/about\/reports/),
             allSelected = false;
 
         if (viewingspam && listingOrder == 'reports') {
@@ -181,6 +181,7 @@ queueTools.init = function () {
                 });
             }
         }
+
         removeUnmoddable();
 
         $('.modtools-on').parent().remove();
@@ -190,54 +191,54 @@ queueTools.init = function () {
 
         // Add checkboxes, tabs, menu, etc
         $('#siteTable').before('\
-            <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;"> \
-                <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
-                <span>\
-                    <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">&lt;/&gt;</a> \
-                    <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
-                    <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
-                        <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
-                    </div>\
-                    <div class="drop-choices lightdrop select-options"> \
-                        ' + (viewingreports ? '' : '<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>\
-                        <a class="choice inoffensive" href="javascript:;" type="filtered">spam-filtered</a>\
-                        ' + (viewingspam ? '' : '<a class="choice inoffensive" href="javascript:;" type="reported">has-reports</a>')) + '\
-                        <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a> \
-                        <a class="choice" href="javascript:;" type="removed">[ removed ]</a> \
-                        <a class="choice" href="javascript:;" type="approved">[ approved ]</a>\
-                        ' + (TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
-                        <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>\
-                        <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
-                        <a class="choice" href="javascript:;" type="user">user...</a> \
-                        <a class="choice" href="javascript:;" type="title">title...</a> \
-                        <a class="choice dashed" href="javascript:;" type="comments">all comments</a> \
-                        <a class="choice" href="javascript:;" type="links">all submissions</a> \
-                        <a class="choice dashed" href="javascript:;" type="self">self posts</a> \
-                        <a class="choice" href="javascript:;" type="flair">posts with flair</a> \
-                    </div>\
-                    &nbsp; \
-                    <a href="javascript:;" class="pretty-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
-                    <a href="javascript:;" class="pretty-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
-                    <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
-                    <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
-                    <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
-                    ' + (TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
-                </span> \
-                <span class="dropdown-title lightdrop" style="float:right"> sort: \
-                    <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
-                        <span class="selected sortorder">' + listingOrder + '</span> \
-                    </div> \
-                    <div class="drop-choices lightdrop sortorder-options"> \
-                            <a class="choice" href="javascript:;">age</a> \
-                            ' + (viewingspam ? '' : '<a class="choice" href="javascript:;">reports</a>') + ' \
-                            <a class="choice" href="javascript:;">score</a> \
-                    </div> \
-                </span> \
-            </div>');
+        <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;"> \
+            <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
+            <span>\
+                <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">&lt;/&gt;</a> \
+                <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
+                <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
+                    <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
+                </div>\
+                <div class="drop-choices lightdrop select-options"> \
+                    ' + (viewingreports ? '' : '<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>\
+                    <a class="choice inoffensive" href="javascript:;" type="filtered">spam-filtered</a>\
+                    ' + (viewingspam ? '' : '<a class="choice inoffensive" href="javascript:;" type="reported">has-reports</a>')) + '\
+                    <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a> \
+                    <a class="choice" href="javascript:;" type="removed">[ removed ]</a> \
+                    <a class="choice" href="javascript:;" type="approved">[ approved ]</a>\
+                    ' + (TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : '') + '\
+                    <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>\
+                    <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
+                    <a class="choice" href="javascript:;" type="user">user...</a> \
+                    <a class="choice" href="javascript:;" type="title">title...</a> \
+                    <a class="choice dashed" href="javascript:;" type="comments">all comments</a> \
+                    <a class="choice" href="javascript:;" type="links">all submissions</a> \
+                    <a class="choice dashed" href="javascript:;" type="self">self posts</a> \
+                    <a class="choice" href="javascript:;" type="flair">posts with flair</a> \
+                </div>\
+                &nbsp; \
+                <a href="javascript:;" class="pretty-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
+                <a href="javascript:;" class="pretty-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
+                <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
+                <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
+                <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
+                ' + (TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
+            </span> \
+            <span class="dropdown-title lightdrop" style="float:right"> sort: \
+                <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
+                    <span class="selected sortorder">' + listingOrder + '</span> \
+                </div> \
+                <div class="drop-choices lightdrop sortorder-options"> \
+                        <a class="choice" href="javascript:;">age</a> \
+                        ' + (viewingspam ? '' : '<a class="choice" href="javascript:;">reports</a>') + ' \
+                        <a class="choice" href="javascript:;">score</a> \
+                </div> \
+            </span> \
+        </div>');
 
         //Check if the tab menu exists and create it if it doesn't
         var tabmenu = $('#header-bottom-left .tabmenu');
-        if(tabmenu.length == 0)
+        if (tabmenu.length == 0)
             tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>');
         $('.tabmenu').append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
 
@@ -319,7 +320,7 @@ queueTools.init = function () {
                     break;
                 case 'actioned':
                     selector = '.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),\
-                                    :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))';
+                                :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))';
                     break;
                 case 'domain':
                     selector = ':has(.domain:contains(' + prompt('domain contains:', '').toLowerCase() + '))';
@@ -433,6 +434,7 @@ queueTools.init = function () {
                     $(this).closest('.thing').hide();
             });
         }
+
         setThreshold($things);
 
         function replaceSubLinks() {
@@ -440,6 +442,7 @@ queueTools.init = function () {
             var href = $this.attr('href') + QUEUE_URL;
             $this.attr('href', href);
         }
+
         if (linkToQueues && QUEUE_URL) {
             $things.each(replaceSubLinks);
         }
@@ -460,7 +463,9 @@ queueTools.init = function () {
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
                     var button = this;
-                    setTimeout(function () { $(button).click(); }, index * 1000);
+                    setTimeout(function () {
+                        $(button).click();
+                    }, index * 1000);
                 });
                 expandosOpen = true;
             } else {
@@ -554,6 +559,7 @@ queueTools.init = function () {
                 });
                 $('.subscription-box').empty().append(subs);
             }
+
             sortSubreddits();
 
             function updateModqueueCount(sr) {
@@ -589,6 +595,7 @@ queueTools.init = function () {
             $sitetable.find('.thing').remove();
             $sitetable.prepend(things);
         }
+
         sortThings(listingOrder, sortAscending);
     }
 
@@ -603,8 +610,7 @@ queueTools.init = function () {
 }; // queueTools.init()
 
 TB.register_module(queueTools);
-
-} // queuetools() wrapper
+}// queuetools() wrapper
 
 (function () {
     // wait for storage

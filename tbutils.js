@@ -160,8 +160,6 @@ function initwrapper() {
                     localStorage.removeItem(key);
                 }
             });
-        // 3.0: remove setting cache.  Was never really used as intended and is redundant with new caching.
-        localStorage.removeItem('Toolbox.Storage.settings');
 
         // End: version changes.
 
@@ -1117,13 +1115,16 @@ function initwrapper() {
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
         $(TBStorage.settings).each(function () {
+            if (this == 'Storage.settings') return; // don't backup the setting registry.
+
             var key = this.split("."),
                 setting = TBStorage.getSetting(key[0], key[1], null);
+
             if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
                 settingsObject[this] = setting;
             }
-
         });
+
         TBUtils.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, function () {
             callback();
         });

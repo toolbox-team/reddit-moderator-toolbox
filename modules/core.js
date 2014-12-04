@@ -513,11 +513,13 @@ $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
 
     if ($(e.target).hasClass('tb-settings-import')) {
         TBUtils.importSettings(sub, function () {
+            TBUtils.clearCache();
             window.location.reload();
         });
     }
     else {
         TBUtils.exportSettings(sub, function () {
+            TBUtils.clearCache();
             window.location.reload();
         });
     }

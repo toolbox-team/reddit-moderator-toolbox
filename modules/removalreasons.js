@@ -404,7 +404,8 @@ removalReasons.init = function removalReasonsInit() {
         popup.find('.error-highlight').removeClass('error-highlight');
 
         // Check if reason checked
-        if (!checked.length) {
+        var noneSelected = $('body').find('.reason-type:checked').val();
+        if (!checked.length && noneSelected !== 'none') {
             var table = popup.find('#reason-table');
             popup.find('#reason-table').addClass('error-highlight');
             return status.text(NO_REASON_ERROR);
@@ -501,6 +502,7 @@ removalReasons.init = function removalReasonsInit() {
 
         // If logSub is not empty, log the removal and send a PM/comment
         if (data.logSub) {
+        
             // Finalize log reasons
             if (logTitle.indexOf('{reason}') >= 0) {
                 // Check if a log reason is selected
@@ -520,8 +522,12 @@ removalReasons.init = function removalReasonsInit() {
                     var loglinkToken = response.json.data.url;
                     logLink = response.json.data.name;
                     TBUtils.approveThing(logLink);
-
-                    sendRemovalMessage(loglinkToken);
+                    
+                    if(noneSelected === 'none') {
+                        removePopup(popup);
+                    } else {
+                        sendRemovalMessage(loglinkToken);
+                    } 
                 }
                 else {
                     status.text(LOG_POST_ERROR);
@@ -631,4 +637,3 @@ TB.register_module(removalReasons);
         removalreasons();
     });
 })();
-

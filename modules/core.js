@@ -482,6 +482,7 @@ function notifier() {
         <h3>Credits:</h3>\
         <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
         <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
+        <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
         <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
         <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
         <h3>License:</h3>\

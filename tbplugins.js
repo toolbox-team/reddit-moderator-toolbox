@@ -1,5 +1,5 @@
 (function ($) {
-    $.fn.log = function (message, skip) {
+    $.fn.log = function (message, skip, callerName) {
         if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skiplocalconsole'] || 'false')) {
             TBUtils.log.push(message);
         } else {
@@ -7,9 +7,10 @@
             console.log(message);
         }
     };
-    $.log = function (message, skip) {
+    $.log = function (message, skip, callerName) {
         if (!TBUtils.debugMode) return;
         var caller = (arguments.callee.caller.name !== "") ? arguments.callee.caller.name : 'anonymous function';
+            caller = (callerName !== undefined) ? callerName : caller;
 
         if (skip) {
             console.log(' [' + caller + ']: ');

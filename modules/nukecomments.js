@@ -26,7 +26,6 @@ nukeComments.settings["enabled"]["default"] = true;
 // });
 
 nukeComments.init = function () {
-	console.log('running nuke comments');
 
 	delete_function = function (thread_root) {
 		var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
@@ -77,7 +76,7 @@ nukeComments.init = function () {
 				if (use_image) {
 					nuke_button[i].appendChild(img_element.cloneNode(true));
 				} else {
-					nuke_button[i].innerHTML = "[Nuke]";
+					nuke_button[i].innerHTML = "[D]";
 				}
 				// append after the author's name
 				author_link.parentNode.insertBefore(nuke_button[i], author_link.nextSibling);
@@ -118,7 +117,6 @@ nukeComments.init = function () {
 		}
 	}
 };
-console.log('running nuke comments');
 
 TB.register_module(nukeComments);
 } // nukecomments() wrapper

@@ -1,6 +1,5 @@
 function initwrapper() {
 (function (TBUtils) {
-    console.log('TBUtils loading');
 
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
@@ -575,7 +574,7 @@ function initwrapper() {
             // time to refresh
             if (gettingModSubs) {
                 // we're already fetching a new list, so enqueue the callback
-                $.log('enqueueing getModSubs callback');
+                $.log('Enqueueing getModSubs callback', false, 'TBUtils');
                 getModSubsCallbacks.push(callback);
             } else {
                 // start the process
@@ -1343,8 +1342,8 @@ function initwrapper() {
 (function () {
     // wait for storage
     window.addEventListener("TBStorageLoaded", function () {
-        console.log("got storage (tbutils)");
         initwrapper();
+
         var event = new CustomEvent("TBUtilsLoaded");
         window.dispatchEvent(event);
     });

@@ -14,7 +14,6 @@ TB = {
     },
 
     init: function tbInit() {
-        console.log("storage loaded: " + TB.storage.isLoaded);
         initLoop();
 
         function initLoop() {

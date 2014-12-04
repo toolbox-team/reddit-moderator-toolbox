@@ -65,6 +65,8 @@
 		<array>
 			<string>styles/toolbox.css</string>
 			<string>styles/modmatrix.css</string>
+			<string>styles/removalreasons.css</string>
+			<string>styles/queuetools.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

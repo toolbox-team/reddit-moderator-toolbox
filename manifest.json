@@ -24,7 +24,8 @@
 	  "css": [
 		"styles/toolbox.css",
 		"styles/modmatrix.css",
-		"styles/removalreasons.css"
+		"styles/removalreasons.css",
+		"styles/queuetools.css"
 	  ],
 	  "js": [
 		"libs/jquery-2.1.1.js",

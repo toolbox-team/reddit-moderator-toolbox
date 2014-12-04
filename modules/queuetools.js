@@ -255,6 +255,21 @@ queueTools.init = function () {
             $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
         });
 
+        // Fix the position of the modtools. We do it like this so we can support custom css
+        var $modtoolsMenu = $body.find('.menuarea.modtools'),
+            offset = $modtoolsMenu.offset(),
+            offsetTop = offset.top,
+            rightPosition = $('.side').outerWidth();
+
+        $modtoolsMenu.css({
+            "top": offsetTop + 'px',
+            "right": rightPosition + 'px',
+            "left": "0px",
+            "position": "fixed"
+        });
+
+        $('.mod-toolbox #siteTable').addClass('modtools-active');
+
         //// Button actions ////
         // Select thing when clicked
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
@@ -597,6 +612,8 @@ queueTools.init = function () {
         }
 
         sortThings(listingOrder, sortAscending);
+
+
     }
 
     // Add mod tools or mod tools toggle button if applicable

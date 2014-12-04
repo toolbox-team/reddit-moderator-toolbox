@@ -136,7 +136,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        $.log('Running ' + TBUtils.toolboxVersion + ' changes');
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true);
 
         // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
 
@@ -161,7 +161,8 @@ function initwrapper() {
                     localStorage.removeItem(key);
                 }
             });
-
+        // 3.0: remove setting cache.  Was never really used as intended and is redundant with new caching.
+        localStorage.removeItem('Toolbox.Storage.settings');
 
         // End: version changes.
 

@@ -26,13 +26,13 @@ TBConfig.init = function () {
 
     // only load on definite subreddits
     if (!subreddit) {
-        $.log("aborting: invalid subreddit");
+        $.log("TBConfig aborting: invalid subreddit");
         return;
     }
 
     TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-            $.log('failed: wiki config');
+            $.log('TBConfig failed: wiki config');
             return;
         }
 

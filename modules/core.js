@@ -1,7 +1,7 @@
-function notifier() {
-if (!TBUtils.logged || TBUtils.isToolbarPage)
-    return;
-$.log('Loading Notifier Module');
+function tbcore() {
+if (!TBUtils.logged || TBUtils.isToolbarPage) return;
+
+$.log('Loading Toolbox Core Module');
 
 var $body = $('body');
 $body.addClass('mod-toolbox');
@@ -747,6 +747,6 @@ $body.on('click', '.tb-close', function () {
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        notifier();
+        tbcore();
     });
 })();

@@ -37,7 +37,7 @@
 })();
 
 (function (TBStorage) {
-    TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
+    //TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
@@ -210,7 +210,7 @@
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        registerSetting(module, setting);
+        //registerSetting(module, setting);
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
@@ -237,7 +237,7 @@
 
     function setSetting(module, setting, value, syncSettings) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
-        registerSetting(module, setting);
+        //registerSetting(module, setting);
 
         localStorage[storageKey] = JSON.stringify(value);
 

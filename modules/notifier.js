@@ -118,7 +118,7 @@ notifierMod.init = function notifierMod_init() {
 
     // this is a placeholder from issue #217
     // TODO: provide an option for this once we fix modmailpro filtering
-    modmailunreadurl = '/message/moderator/'
+    modmailunreadurl = '/message/moderator/';
     if (modmailunreadlink) {
         // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
         modmailunreadurl += 'unread/';

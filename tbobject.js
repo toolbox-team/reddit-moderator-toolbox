@@ -387,7 +387,7 @@ TB.Module.prototype = {
 
 (function() {
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("got tbutils");
+        $.log("TBObject has TBUtils, loading modules");
         tbobject();
         var event = new CustomEvent("TBObjectLoaded");
         window.dispatchEvent(event);

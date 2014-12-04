@@ -17,7 +17,7 @@ domainTagger.register_setting('displaytype', {
 domainTagger.init = function domainTaggerInit() {
     //Get settings
     var tagType = this.setting('displaytype');
-    $.log("Domain tag type: " + tagType);
+    //$.log("Domain tag type: " + tagType);
 
     //Module body
     var $body = $('body');

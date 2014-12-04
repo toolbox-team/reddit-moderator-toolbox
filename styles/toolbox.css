@@ -1625,13 +1625,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     color: #696969;
     border: 1px solid #A8B5C2;
     text-align: left;
+    z-index: 501;
 }
 
 #tb-search-suggest table {
     width: 100%;
 }
-
-
 
 #tb-search-suggest table td {
     padding-top: 3px;
@@ -1641,10 +1640,11 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 }
 
-#tb-search-suggest tr:nth-child(even) {
+#tb-search-suggest tr {
     background: rgba(247, 250, 253, 1);
+    border-bottom: solid 1px #CCD1D7;
 }
 
-#tb-search-suggest tr:nth-child(even):hover, #tb-my-multis tr:hover {
+#tb-search-suggest tr:hover {
     background-color: rgba(174, 212, 250, 0.5);
 }

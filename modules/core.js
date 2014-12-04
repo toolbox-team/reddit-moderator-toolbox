@@ -342,7 +342,7 @@ function notifier() {
         // Settings for the tool bar.
         var $toolboxSettings = $('\
             <div class="tb-window-content-toolbox">\
-            <p'+ ((betaMode) ? '' : ' style="display:none"') +'>\
+            <p>\
                 Import/export toolbox settings to a wiki page:<br>\
                 <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
                 <input class="tb-settings-import" type="button" value="import">\

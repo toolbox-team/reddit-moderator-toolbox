@@ -85,7 +85,7 @@ historyButton.init = function () {
             <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
         </div>\
         <div class=" tb-popup-content">\
-        <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+        <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" href="javascript:;" data-commentbody="">Report Spammer</a>\
         <div><br /><b>Submission history:</b></div>\
         <div class="table domain-table">\
         <table><thead>\
@@ -133,7 +133,6 @@ historyButton.init = function () {
                     if (contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
                         contentBox.find('.error').html('no submissions');
                     } else { // If it is not present we have results and we can show the links for reporting and markdown reports.
-                        contentBox.find('.rts-report').show();
                         contentBox.find('.markdown-report').show();
                     }
                     gettingUserdata = false;

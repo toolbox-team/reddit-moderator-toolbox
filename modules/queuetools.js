@@ -249,11 +249,12 @@ queueTools.init = function () {
         var $things = $('.thing');
         $things.addClass('mte-processed');
 
-        // Add context & history stuff
-        $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
-        $('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
-            $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
-        });
+        // Add context & history stuff TODO: Figure out what the hell this did. History has been moved to historybutton though. 
+        
+        //$body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
+        //$('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
+        //   $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
+        //});
 
         // Fix the position of the modtools. We do it like this so we can support custom css
         var $modtoolsMenu = $body.find('.menuarea.modtools'),
@@ -493,17 +494,7 @@ queueTools.init = function () {
             }
         });
 
-        // Open inline context
-        $('.inline-content').click(function (e) {
-            e.stopPropagation();
-        });
-        $body.on('click', 'a.context', function (e) {
-            $('html').one('click', function () {
-                $('.inline-content').hide();
-            });
-            $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
-            return false;
-        });
+
 
         // Call History Button module init if it's not already enabled
         if (!TB.modules.HistoryButton.setting('enabled')) {

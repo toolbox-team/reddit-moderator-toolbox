@@ -1,68 +1,73 @@
 {
-	"manifest_version": 2,
-
-	"name": "reddit Moderator Toolbox",
-	"description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-	"version": "3.0.0",
-
-	"permissions": [
-		"https://*.reddit.com/",
-		"http://*.reddit.com/",
-		"tabs",
-		"storage",
-		"unlimitedStorage"
-	],
-	"icons": {
-		"16": "/images/icon16.png",
-		"48": "/images/icon48.png",
-		"128": "/images/icon128.png"
-	},
-	"content_scripts": [
-		{
-			"matches": ["http://*.reddit.com/*", "https://*.reddit.com/*"],
-			"css": [
-				"styles/toolbox.css",
-				"styles/modmatrix.css",
-			  	"styles/removalreasons.css"
-			],
-			"js": [
-				"libs/jquery-2.1.1.js",
-				"libs/snuownd.js",
-				"libs/ace.js",
-				"libs/worker-css.js",
-				"libs/mode-css.js",
-				"libs/mode-json.js",
-				"libs/mode-yaml.js",
-				"libs/ace-themes.js",
-				"tbstorage.js",
-				"tbui.js",
-				"tbplugins.js",
-				"tbutils.js",
-				"tbobject.js",
-				"modules/core.js",
-				"modules/notifier.js",
-				"modules/domaintagger.js",
-				"modules/usernotes.js",
-				"modules/modbutton.js",
-				"modules/modmailpro.js",
-				"modules/stattittab.js",
-				"modules/comment.js",
-				"modules/config.js",
-				"modules/modmatrix.js",
-				"modules/banlist.js",
-				"modules/removalreasons.js",
-				"modules/historybutton.js",
-				"modules/syntax.js",
-				"modules/frame.js",
-				"modules/modmaillite.js",
-				"modules/devtools.js",
-			  	"modules/macros.js",
-			  	"modules/realtime.js",
-			  	"modules/nukecomments.js",
-			  	"modules/queuetools.js",
-				"tbobjectinit.js"
-			]
-		}
-	],
-	"web_accessible_resources": ["libs/jquery-2.1.1.min.js", "libs/snuownd.js", "libs/worker-css.js"]
+  "manifest_version": 2,
+  "name": "reddit Moderator Toolbox",
+  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+  "version": "3.0.0",
+  "permissions": [
+	"https://*.reddit.com/",
+	"http://*.reddit.com/",
+	"tabs",
+	"storage",
+	"unlimitedStorage"
+  ],
+  "icons": {
+	"16": "/images/icon16.png",
+	"48": "/images/icon48.png",
+	"128": "/images/icon128.png"
+  },
+  "content_scripts": [
+	{
+	  "matches": [
+		"http://*.reddit.com/*",
+		"https://*.reddit.com/*"
+	  ],
+	  "css": [
+		"styles/toolbox.css",
+		"styles/modmatrix.css",
+		"styles/removalreasons.css"
+	  ],
+	  "js": [
+		"libs/jquery-2.1.1.js",
+		"libs/snuownd.js",
+		"libs/ace.js",
+		"libs/worker-css.js",
+		"libs/mode-css.js",
+		"libs/mode-json.js",
+		"libs/mode-yaml.js",
+		"libs/ace-themes.js",
+		"tbstorage.js",
+		"tbui.js",
+		"tbplugins.js",
+		"tbutils.js",
+		"tbobject.js",
+		"modules/core.js",
+		"modules/notifier.js",
+		"modules/domaintagger.js",
+		"modules/usernotes.js",
+		"modules/modbutton.js",
+		"modules/modmailpro.js",
+		"modules/stattittab.js",
+		"modules/comment.js",
+		"modules/config.js",
+		"modules/modmatrix.js",
+		"modules/banlist.js",
+		"modules/removalreasons.js",
+		"modules/historybutton.js",
+		"modules/syntax.js",
+		"modules/frame.js",
+		"modules/modmaillite.js",
+		"modules/devtools.js",
+		"modules/macros.js",
+		"modules/realtime.js",
+		"modules/nukecomments.js",
+		"modules/queuetools.js",
+		"tbobjectinit.js"
+	  ]
+	}
+  ],
+  "web_accessible_resources": [
+	"libs/jquery-2.1.1.min.js",
+	"libs/snuownd.js",
+	"libs/worker-css.js"
+  ]
 }

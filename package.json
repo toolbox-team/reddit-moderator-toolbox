@@ -6,7 +6,7 @@
     "fullName": "reddit Moderator Toolbox",
     "id": "yes",
     "name": "reddit_mod_tb",
-	"permissions": {
-		"private-browsing": true
+    "permissions": {
+        "private-browsing": true
     }
 }

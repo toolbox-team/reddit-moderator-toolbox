@@ -259,12 +259,13 @@ queueTools.init = function () {
         var $modtoolsMenu = $body.find('.menuarea.modtools'),
             offset = $modtoolsMenu.offset(),
             offsetTop = offset.top,
-            rightPosition = $('.side').outerWidth();
+            rightPosition = $('.side').outerWidth(),
+            rightPosition = rightPosition+5;
 
         $modtoolsMenu.css({
             "top": offsetTop + 'px',
             "right": rightPosition + 'px',
-            "left": "0px",
+            "left": "5px",
             "position": "fixed"
         });
 

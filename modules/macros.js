@@ -16,13 +16,17 @@ macros.init = function macrosInit() {
         STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;';
 
     function setConfig(config) {
-        if (!config.modMacros || config.modMacros.length < 1) return false;
+        if (!config.modMacros || config.modMacros.length < 1) {
+            $.log("!config.modMacros || config.modMacros.length < 1");
+            return false;
+        }
         macroConfig = config.modMacros;
         return true;
     }
 
     function getConfig(sub, callback) {
         if (TBUtils.noConfig.indexOf(sub) != -1) {
+            $.log("TBUtils.noConfig.indexOf(sub) != -1");
             callback(false);
         }
 
@@ -33,10 +37,12 @@ macros.init = function macrosInit() {
         } else {
             TBUtils.readFromWiki(sub, 'toolbox', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                    $.log("!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN");
                     callback(false);
                 }
 
                 if (resp === TBUtils.NO_WIKI_PAGE) {
+                    $.log("resp === TBUtils.NO_WIKI_PAGE");
                     TBUtils.noConfig.push(sub);
                     callback(false);
                 }

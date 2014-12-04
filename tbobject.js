@@ -28,7 +28,7 @@ TB = {
                         // Don't do anything with beta modules unless beta mode is enabled
                         // Need TB.setting() call for non-module settings
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.utils.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
+                        if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
                             // skip this module entirely
                             continue;
                         }
@@ -36,7 +36,7 @@ TB = {
                         // Don't do anything with dev modules unless debug mode is enabled
                         // Need TB.setting() call for non-module settings
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.utils.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
+                        if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
                             // skip this module entirely
                             continue;
                         }
@@ -79,7 +79,7 @@ TB = {
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.utils.getSetting('Utils', 'betaMode', false)
+                if (!TB.storage.getSetting('Utils', 'betaMode', false)
                     && module.config['betamode']
                 ) {
                     // skip this module entirely
@@ -89,7 +89,7 @@ TB = {
                 // Don't do anything with dev modules unless debug mode is enabled
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {
-                if (!TB.utils.getSetting('Utils', 'debugMode', false)
+                if (!TB.storage.getSetting('Utils', 'debugMode', false)
                     && module.config['devmode']
                 ) {
                     // skip this module entirely
@@ -133,14 +133,14 @@ TB = {
 
                     // hide beta stuff unless beta mode enabled
                     if (options.hasOwnProperty("betamode")
-                        && !TB.utils.getSetting('Utils', 'betaMode', false)
+                        && !TB.storage.getSetting('Utils', 'betaMode', false)
                         && options["betamode"]
                     ) {
                         continue;
                     }
                     // hide dev stuff unless debug mode enabled
                     if (options.hasOwnProperty("devmode")
-                        && !TB.utils.getSetting('Utils', 'debugMode', false)
+                        && !TB.storage.getSetting('Utils', 'debugMode', false)
                         && options["devmode"]
                     ) {
                         continue;
@@ -346,7 +346,7 @@ TB.Module = function Module(name) {
         // are we setting or getting?
         if (typeof value !== "undefined") {
             // setting
-            return TB.utils.setSetting(this.shortname, name, value);
+            return TB.storage.setSetting(this.shortname, name, value);
         } else {
             // getting
             // do we have a default?
@@ -354,10 +354,10 @@ TB.Module = function Module(name) {
                 && this.settings[name].hasOwnProperty("default")
             ) {
                 // we know what the default should be
-                return TB.utils.getSetting(this.shortname, name, this.settings[name]["default"])
+                return TB.storage.getSetting(this.shortname, name, this.settings[name]["default"])
             } else {
                 // getSetting defaults to null for default value, no need to pass it explicitly
-                return TB.utils.getSetting(this.shortname, name);
+                return TB.storage.getSetting(this.shortname, name);
             }
         }
     };

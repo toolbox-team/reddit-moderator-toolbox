@@ -43,7 +43,7 @@ nukeComments.init = function () {
 	};
 
 	if (document.querySelector('body.moderator')) { // only execute if you are a moderator
-		console.log('running nuke comments');
+		//console.log('running nuke comments');
 
 		var nuke_button = new Array();
 		var divels = document.querySelectorAll('div.noncollapsed');

@@ -9,28 +9,55 @@
             // TODO clear chrome storage here.
             //
 
-            Object.keys(localStorage)
-                .forEach(function (key) {
-                    if (/^(Toolbox.)/.test(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
+            function clearLocal() {
+
+                // Settings.
+                Object.keys(localStorage)
+                    .forEach(function (key) {
+                        if (/^(Toolbox.)/.test(key)) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+
+                // Cache.
+                Object.keys(sessionStorage)
+                    .forEach(function (key) {
+                        if (/^(Toolbox.)/.test(key)) {
+                            sessionStorage.removeItem(key);
+                        }
+                    });
+
+                // Wait a sec for stuff to clear.
+                setTimeout(function () {
+                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                }, 1000);
+            }
+
             // Chrome
             if (typeof (chrome) !== "undefined") {
                 chrome.storage.local.remove('tbsettings', function () {
-                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                    // Wait a sec for stuff to clear.
+                    setTimeout(function () {
+                        clearLocal();
+                    }, 1000);
                 });
 
             // Firefox
             } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
                 self.port.emit('tb-clearsettings');
                 self.port.on('tb-clearsettings-reply', function () {
-                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                    // Wait a sec for stuff to clear.
+                    setTimeout(function () {
+                        clearLocal();
+                    }, 1000);
                 });
 
             // Donno, fuck it.
             } else {
-                window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                // Wait a sec for stuff to clear.
+                setTimeout(function () {
+                    clearLocal();
+                }, 1000);
             }
         }
     }

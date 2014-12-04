@@ -261,16 +261,27 @@ queueTools.init = function () {
             offset = $modtoolsMenu.offset(),
             offsetTop = offset.top,
             rightPosition = $('.side').outerWidth(),
-            rightPosition = rightPosition+5;
+            rightPosition = rightPosition+10;
 
         $modtoolsMenu.css({
-            "top": offsetTop + 'px',
-            "right": rightPosition + 'px',
-            "left": "5px",
-            "position": "fixed"
+            'margin-right': rightPosition + 'px',
+            'margin-left': '5px',
+            'left': '0',
+            'margin-top': '0',
+            'position': 'relative'
         });
 
-        $('.mod-toolbox #siteTable').addClass('modtools-active');
+        $(window).scroll(function(){
+            if ($(window).scrollTop() > offsetTop){
+                $modtoolsMenu.css({
+                    'top': ($(window).scrollTop()) -offsetTop + 5 + 'px',
+                });
+            } else {
+                $modtoolsMenu.css({
+                    'top': 'inherit',
+                });
+            }
+        });
 
         //// Button actions ////
         // Select thing when clicked

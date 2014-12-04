@@ -192,8 +192,8 @@ removalReasons.init = function removalReasonsInit() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = TB.storage.getSetting('cache', 'reason-type', 'none');
-            var reasonAsSub = (TB.storage.getSetting('cache', 'reason-as-sub', 'false') != 'false');
+            var reasonType = TB.storage.getCache('RemovalReasons', 'reason-type', 'none');
+            var reasonAsSub = (TB.storage.getCache('RemovalReasons', 'reason-as-sub', 'false') != 'false');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -293,7 +293,7 @@ removalReasons.init = function removalReasonsInit() {
             // Pre-fill reason input elements which have IDs.
             popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
                 this.id = 'reason-input-' + data.subreddit + '-' + this.id;
-                this.value = TB.storage.getSetting('cache', this.id, this.value);
+                this.value = TB.storage.getCache('RemovalReasons', this.id, this.value);
             });
         }
 
@@ -345,11 +345,11 @@ removalReasons.init = function removalReasonsInit() {
 
     // Toggle PM/reply/both notification method
     $body.on('click', '.reason-type', function () {
-        TB.storage.setSetting('cache', 'reason-type', this.value);
+        TB.storage.setCache('RemovalReasons', 'reason-type', this.value);
     });
 
     $body.on('click', '.reason-as-sub', function () {
-        TB.storage.setSetting('cache', 'reason-as-sub', this.value);
+        TB.storage.setCache('RemovalReasons', 'reason-as-sub', this.value);
     });
 
     // 'no reason' button clicked
@@ -624,7 +624,7 @@ removalReasons.init = function removalReasonsInit() {
 
     // Reason textarea/input/select changed
     $body.on('change', '.reason-popup td input[id],.reason-popup td textarea[id],.reason-popup td select[id]', function () {
-        TB.storage.setSetting('cache', this.id, this.selectedIndex || this.value);
+        TB.storage.setCache('RemovalReasons', this.id, this.selectedIndex || this.value);
     });
 };
 

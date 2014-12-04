@@ -108,8 +108,32 @@
         return getSetting(module, setting, defaultVal);
     };
 
+    // methods.
+    TBStorage.setCache = function (module, setting, value) {
+        return setCache(module, setting, value, true);
+    };
+
+    TBStorage.getCache = function (module, setting, defaultVal) {
+        return getCache(module, setting, defaultVal);
+    };
+
     TBStorage.unloading = function () {
         saveSettingsToBrowser();
+    };
+
+    TBStorage.clearCache = function () {
+
+        Object.keys(sessionStorage)
+            .forEach(function (key) {
+                sessionStorage.removeItem(key);
+            });
+
+        setCache('Utils', 'configcache',{});
+        setCache('Utils', 'notecache', {});
+        setCache('Utils', 'noconfig', []);
+        setCache('Utils', 'nonotes', []);
+        setCache('Utils', 'moderatedsubs', []);
+        setCache('Utils', 'moderatedsubsdata', []);
     };
 
     function SendInit() {
@@ -153,7 +177,7 @@
                 }
             });
         callback(settingsObject);
-    };
+    }
 
     function saveSettingsToBrowser() {
         if (!TBStorage.userBrowserStorage) return;
@@ -219,6 +243,40 @@
 
         // try to save our settings.
         if (syncSettings) saveSettingsToBrowser();
+
+        return getSetting(module, setting);
+    }
+
+    function getCache(module, setting, defaultVal) {
+        var storageKey = 'Toolbox.' + module + '.' + setting;
+
+        defaultVal = (defaultVal !== undefined) ? defaultVal : null;
+
+        if (sessionStorage[storageKey] === undefined) {
+            return defaultVal;
+        } else {
+            var storageString = sessionStorage[storageKey];
+            try {
+                result = JSON.parse(storageString);
+            } catch (e) {
+                result = storageString;
+            }
+
+            // send back the default if, somehow, someone stored `null`
+            // NOTE: never, EVER store `null`!
+            if (result === null
+                && defaultVal !== null
+            ) {
+                result = defaultVal;
+            }
+            return result;
+        }
+    }
+
+    function setCache(module, setting, value) {
+        var storageKey = 'Toolbox.' + module + '.' + setting;
+
+        sessionStorage[storageKey] = JSON.stringify(value);
 
         return getSetting(module, setting);
     }

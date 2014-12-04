@@ -10,9 +10,7 @@ $body.addClass('mod-toolbox');
 // preload some generic variables
 //
 var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
-// modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
     modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
-// messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
     messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
     modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
     unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
@@ -88,8 +86,8 @@ if (modmailunreadlink) {
 }
 
 // cache settings.
-var shortLength = TB.storage.getSetting('cache', 'shortlength', 15),
-    longLength = TB.storage.getSetting('cache', 'longlength', 45);
+var shortLength = TB.storage.getCache('Core', 'shortlength', 15),
+    longLength = TB.storage.getCache('Core', 'longlength', 45);
 
 
 //
@@ -665,8 +663,8 @@ $body.on('click', '.tb-save', function () {
     TB.storage.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
     // save cache settings.
-    TB.storage.setSetting('cache', 'longlength', $("input[name=longLength]").val());
-    TB.storage.setSetting('cache', 'shortlength', $("input[name=shortLength]").val());
+    TB.storage.setCache('Core', 'longlength', $("input[name=longLength]").val());
+    TB.storage.setCache('Core', 'shortlength', $("input[name=shortLength]").val());
 
     if ($("#clearcache").prop('checked')) {
         TBUtils.clearCache();

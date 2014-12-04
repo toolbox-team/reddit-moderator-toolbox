@@ -127,8 +127,8 @@ notifierMod.init = function notifierMod_init() {
     }
 
     // cache settings.
-    var shortLength = TB.storage.getSetting('cache', 'shortlength', 15),
-        longLength = TB.storage.getSetting('cache', 'longlength', 45);
+    var shortLength = TB.storage.getCache('Notifier', 'shortlength', 15),
+        longLength = TB.storage.getCache('Notifier', 'longlength', 45);
 
 
     //

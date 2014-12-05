@@ -11,10 +11,13 @@ function nukecomments() {
 // ==/UserScript==
 
 //Setup
-var nukeComments = new TB.Module('Nuke Comments');
+var nukeComments = new TB.Module('Comment Nuke');
+
+nukeComments.shortname = 'Nuke';
 
 ////Default settings
-nukeComments.settings["enabled"]["default"] = true;
+nukeComments.settings["enabled"]["default"] = false;
+nukeComments.config["betamode"] = true;
 
 // TBConfig.register_setting('displaytype', {
 //     'type': 'selector',

@@ -100,6 +100,7 @@ var modbar = $('\
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
     <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconWrench + '" title="toolbox settings"/></a>\
     <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
+    <span>&nbsp; | &nbsp;</span>\
     <span id="tb-toolbarshortcuts"></span>\
     <span id="tb-toolbarcounters">\
         <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \

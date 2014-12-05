@@ -1609,6 +1609,11 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 	font-size: 12px;
 }
 
+/* This should probably be somewhere else */
+
+#moderation_tools .icon-menu .toolbox-edit {
+	margin-left: 6px;
+}
 
 /* Comment search */
 #tb-search-suggest {

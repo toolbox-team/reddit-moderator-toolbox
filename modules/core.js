@@ -392,14 +392,13 @@ toolboxCore.init = function coreInit() {
         // Settings to toggle the modules
         var htmlmodules = '\
     <div class="tb-window-content-modules">\
-    </p>\
     <div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
     </div>\
     ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
-
+/*
         var $notifierSettings = $('<div class="tb-window-content-notifier">\
     <p>\
         Multireddit of subs you want displayed in the modqueue counter:<br>\
@@ -441,11 +440,11 @@ toolboxCore.init = function coreInit() {
         });
 
         // Add notifier settings to dialog
-        $.log('Core: injecting Notifier Settings.')
+        $.log('Core: injecting Notifier Settings.');
         $notifierSettings.appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-notifier">Notifier</a>').appendTo('.tb-window-tabs');
 
-
+*/
         // Edit shortcuts
         var htmlshorcuts = '\
 <div class="tb-window-content-shortcuts">\

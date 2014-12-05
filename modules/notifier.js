@@ -6,52 +6,72 @@ notifierMod.settings["enabled"]["default"] = true;
 notifierMod.config["betamode"] = false;
 notifierMod.config["needs_mod_subs"] = true;
 
-// notifierMod.register_setting("hideactioneditems", {
-//     "type": "boolean",
-//     "default": false,
-//     "betamode": false,
-//     "hidden": false,
-//     "title": "Hide items after mod action"
-// });
+notifierMod.register_setting("straightToInbox", {
+    "type": "boolean",
+    "default": false,
+    "title": "When clicking a comment notification go to the inbox"
+});
+notifierMod.register_setting("consolidatedmessages", {
+    "type": "boolean",
+    "default": true,
+    "title": "Consolidate notifications (x new messages) instead of individual notifications"
+});
 
-/*
- notifierMod.register_setting("modsubreddits", {
- "type": "text",
- "default": "mod",
- "betamode": false,
- "hidden": false,
- "title": "Multireddit of subs you want displayed in the modqueue counter"
- });
- notifierMod.register_setting("unmoderatedsubreddits", {
- "type": "text",
- "default": "mod",
- "betamode": false,
- "hidden": false,
- "title": "Multireddit of subs you want displayed in the unmoderated counter"
- });
- notifierMod.register_setting("modmailsubreddits", {
- "type": "text",
- "default": "mod",
- "betamode": false,
- "hidden": false,
- "title": "Multireddit of subs you want displayed in the modmail counter"
- });
- */
- notifierMod.register_setting("straightToInbox", {
-     "type": "boolean",
-     "default": false,
-     "betamode": false,
-     "hidden": false,
-     "title": "When clicking a comment notification go to the inbox"
- });
- notifierMod.register_setting("consolidatedmessages", {
-     "type": "boolean",
-     "default": true,
-     "betamode": false,
-     "hidden": false,
-     "title": "Consolidate notifications (x new messages) instead of individual notifications"
- });
+notifierMod.register_setting("modsubreddits", {
+    "type": "text",
+    "default": 'mod',
+    "title": "Multireddit of subs you want displayed in the modqueue counter"
+});
+notifierMod.register_setting("modnotifications", {
+    "type": "boolean",
+    "default": true,
+    "title": "Get modqueue notifications"
+});
 
+notifierMod.register_setting("messagenotifications", {
+    "type": "boolean",
+    "default": true,
+    "title": "Get notifications for new messages"
+});
+notifierMod.register_setting("messageunreadlink", {
+    "type": "boolean",
+    "default": false,
+    "title": " - link to /message/unread/ if unread messages are present"
+});
+
+notifierMod.register_setting("modmailnotifications", {
+    "type": "boolean",
+    "default": true,
+    "title": "Get modmail notifications"
+});
+notifierMod.register_setting("modmailunreadlink", {
+    "type": "boolean",
+    "default": true,
+    "title": " - link to /message/moderator/unread/ if unread messages are present"
+});
+
+notifierMod.register_setting("unmoderatedsubreddits", {
+    "type": "text",
+    "default": "mod",
+    "title": "Multireddit of subs you want displayed in the unmoderated counter"
+});
+notifierMod.register_setting("unmoderatednotifications", {
+    "type": "boolean",
+    "default": false,
+    "title": "Get unmoderated queue notifications"
+});
+notifierMod.register_setting("modmailsubreddits", {
+    "type": "text",
+    "default": 'mod',
+    "hidden": notifierMod.setting('modmailsubredditsfrompro'),
+    "title": "Multireddit of subs you want displayed in the modmail counter"
+});
+
+notifierMod.register_setting("modmailsubredditsfrompro", {
+    "type": "boolean",
+    "default": false,
+    "title": "Use filtered subreddits from ModMail Pro"
+});
 
 notifierMod.init = function notifierMod_init() {
     var $body = $('body');
@@ -59,42 +79,38 @@ notifierMod.init = function notifierMod_init() {
     //
     // preload some generic variables
     //
-    var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
-    // modNotifications = localStorage['Toolbox.Notifier.modnotifications'] || 'on',  // these need to be converted to booleans.
-        modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
-    // messageNotifications = localStorage['Toolbox.Notifier.messagenotifications'] || 'on', // these need to be converted to booleans.
+    var modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
         messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
         modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
         unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
         consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
+        straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
         modSubreddits = notifierMod.setting('modsubreddits'),
         unmoderatedSubreddits = notifierMod.setting('unmoderatedsubreddits'),
         modmailSubreddits = notifierMod.setting('modmailsubreddits'),
 
         modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
 
-        modmailFilteredSubreddits = modmailSubreddits,
+        modmailFilteredSubreddits = modmailSubreddits,  //wat?
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
-        shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
-        modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
-        compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
-        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
-        footer = $('.footer-parent'),
+        //shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
+        //shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
+        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),  //why?
+        //footer = $('.footer-parent'),
+
+        //lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
+
+        messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
+        modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false);
+
+    // private
+    var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+        newLoad = true,
+        now = new Date().getTime(),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
-        debugMode = TBUtils.debugMode,
-        betaMode = TBUtils.betaMode,
-        consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),
-        lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
-        newLoad = true,
-        now = new Date().getTime(),
-        messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
-        settingSub = TB.storage.getSetting('Utils', 'settingsub', '');
-
+        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0);
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {

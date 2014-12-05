@@ -25,13 +25,11 @@ var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 
     modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
     compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
     unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
-    consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
     footer = $('.footer-parent'),
     unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
     modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
     unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
     modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
-    straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
     debugMode = TBUtils.debugMode,
     betaMode = TBUtils.betaMode,
     consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),
@@ -297,7 +295,7 @@ $('.tb-debug-input').keyup(function (e) {
 function showSettings() {
 
     // I probably should have stored "checked" instead of "on" will have to change that later.
-    var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, consolidatedmessageschecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked;
+    var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked;
 
     if (messageunreadlink) {
         messageunreadlinkchecked = 'checked';
@@ -319,9 +317,6 @@ function showSettings() {
     }
     if (unmoderatedNotifications) {
         unmoderatednotificationschecked = 'checked';
-    }
-    if (consolidatedMessages) {
-        consolidatedmessageschecked = 'checked';
     }
 
     // The window in which all settings will be showed.
@@ -408,9 +403,6 @@ function showSettings() {
             <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
         </p>\
         <p>\
-            <label><input type="checkbox" name="consolidatedmessages" ' + consolidatedmessageschecked + '> Consolidate notifications (x new messages) instead of individual notifications.</label>\
-        </p>\
-        <p>\
             <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
             <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
         </p>\
@@ -418,9 +410,6 @@ function showSettings() {
             <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
             <!-- <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailFilteredSubreddits + '/message/moderator/unread/ if unread messages are present</label> -->\
             <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
-        </p>\
-        <p>\
-        <label><input type="checkbox" id="straightToInbox" ' + ((straightToInbox) ? "checked" : "") + '> When clicking a comment notification go to the inbox.</label>\
         </p>\
         <p>\
             <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
@@ -437,6 +426,7 @@ function showSettings() {
     });
 
     // Add notifier settings to dialog
+    $.log('Core: injecting Notifier Settings.')
     $notifierSettings.appendTo('.tb-window-content');
     $('<a href="javascript:;" class="tb-window-content-notifier">Notifier</a>').appendTo('.tb-window-tabs');
 
@@ -586,8 +576,6 @@ $body.on('click', '.tb-save', function () {
     unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
     TB.storage.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
-    consolidatedmessagescheckedsave = $("input[name=consolidatedmessages]").is(':checked');
-    TB.storage.setSetting('Notifier', 'consolidatedmessages', consolidatedmessagescheckedsave);
 
     messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
     TB.storage.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
@@ -603,7 +591,6 @@ $body.on('click', '.tb-save', function () {
 
     highlighted = $("input[name=highlighted]").val();
 
-    TB.storage.setSetting('Notifier', 'straightToInbox', $("#straightToInbox").prop('checked'));
 
     unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
     if (unmoderatedSubreddits !== TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
@@ -661,9 +648,6 @@ $body.on('click', '.tb-save', function () {
 
         TB.storage.setSetting('Notifier', 'shortcuts2', shortcuts2);
     }
-
-    // Save which modules are enabled.
-    TB.storage.setSetting('Notifier', 'enabled', $("#notifierEnabled").prop('checked'));
 
     // save cache settings.
     TB.storage.setCache('Core', 'longlength', $("input[name=longLength]").val());

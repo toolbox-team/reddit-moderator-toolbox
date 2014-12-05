@@ -37,6 +37,20 @@ notifierMod.config["needs_mod_subs"] = true;
  "title": "Multireddit of subs you want displayed in the modmail counter"
  });
  */
+ notifierMod.register_setting("straightToInbox", {
+     "type": "boolean",
+     "default": false,
+     "betamode": false,
+     "hidden": false,
+     "title": "When clicking a comment notification go to the inbox"
+ });
+ notifierMod.register_setting("consolidatedmessages", {
+     "type": "boolean",
+     "default": true,
+     "betamode": false,
+     "hidden": false,
+     "title": "Consolidate notifications (x new messages) instead of individual notifications"
+ });
 
 
 notifierMod.init = function notifierMod_init() {
@@ -66,13 +80,11 @@ notifierMod.init = function notifierMod_init() {
         modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
         compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
         unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
-        consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
         footer = $('.footer-parent'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
-        straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),

@@ -38,7 +38,8 @@ var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 
     now = new Date().getTime(),
     messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
     modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
-    settingSub = TB.storage.getSetting('Utils', 'settingsub', '');
+    settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
+    enableTopLink = true; //needs a setting.
 
 
 // use filter subs from MMP, if appropriate
@@ -194,6 +195,11 @@ if (debugMode) {
         $console.show();
     }
 
+}
+
+if (enableTopLink) {
+    // This is literally the exact fucking line from the console, above--fucking loads in the wrong place.
+    $('#tb-bottombar').find('#tb-toolbarcounters').after('<a href="#content" id="tb-top-link">[top]</a>'); // needs an icon.
 }
 
 // Append shortcuts

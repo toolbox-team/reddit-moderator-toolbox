@@ -66,7 +66,7 @@ notifierMod.init = function notifierMod_init() {
         messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
         modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
         unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
-
+        consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
         modSubreddits = notifierMod.setting('modsubreddits'),
         unmoderatedSubreddits = notifierMod.setting('unmoderatedsubreddits'),
         modmailSubreddits = notifierMod.setting('modmailsubreddits'),

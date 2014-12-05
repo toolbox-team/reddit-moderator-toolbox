@@ -121,6 +121,8 @@ TB = {
 
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting == "enabled") {
+                        if (options.hasOwnProperty("hidden") && options["hidden"]) continue;
+
                         // blank slate
                         var $setting = $('<p></p>');
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));

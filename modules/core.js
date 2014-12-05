@@ -48,7 +48,7 @@ toolboxCore.init = function coreInit() {
         messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
         settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
-        enableTopLink = true; //needs a setting.
+        enableTopLink = TB.storage.getSetting('Notifier', 'enableTopLink', false);
 
 
     // use filter subs from MMP, if appropriate
@@ -208,7 +208,7 @@ toolboxCore.init = function coreInit() {
 
     if (enableTopLink) {
         // This is literally the exact fucking line from the console, above--fucking loads in the wrong place.
-        $('#tb-bottombar').find('#tb-toolbarcounters').after('<a href="#content" id="tb-top-link">[top]</a>'); // needs an icon.
+        $('#tb-bottombar').find('#tb-toolbarcounters').after('<a href="#content" id="tb-top-link"><img title="debug console" src="data:image/png;base64,' + TBui.topIcon + '" /></a>'); // needs an icon.
     }
 
     // Append shortcuts
@@ -367,6 +367,9 @@ toolboxCore.init = function coreInit() {
     </p>\
     <p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
+    </p>\
+    <p>\
+        <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
     </p>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
@@ -590,11 +593,10 @@ See the License for the specific language governing permissions and limitations 
         unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
         TB.storage.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
 
-
         messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
-        TB.storage.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave),
+        TB.storage.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave);
 
-            modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
+        modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
         TB.storage.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
 
         shortcuts = escape($("input[name=shortcuts]").val());
@@ -614,8 +616,8 @@ See the License for the specific language governing permissions and limitations 
         TB.storage.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
 
         // pull filtered subreddits from MMP?
-        modmailSubredditsFromPro = $("input[name=modmailsubredditsfrompro]")[0].checked; // $()[0].checked is a million times faster than other methods
-        TB.storage.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
+        //modmailSubredditsFromPro = $("input[name=modmailsubredditsfrompro]")[0].checked; // $()[0].checked is a million times faster than other methods
+        //TB.storage.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
 
         modmailSubreddits = $("input[name=modmailsubreddits]").val();
         modmailFilteredSubreddits = modmailSubreddits;
@@ -639,6 +641,7 @@ See the License for the specific language governing permissions and limitations 
         }
 
         TB.storage.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
+        TB.storage.setSetting('Notifier', 'enableTopLink', $("#enableTopLink").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));

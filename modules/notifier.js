@@ -46,8 +46,8 @@ notifierMod.register_setting("modmailnotifications", {
 });
 notifierMod.register_setting("modmailunreadlink", {
     "type": "boolean",
-    "default": true,
-    "title": " - link to /message/moderator/unread/ if unread messages are present"
+    "default": false,
+    "title": " - link to /message/moderator/unread/ if unread modmail is present"
 });
 
 notifierMod.register_setting("unmoderatedsubreddits", {

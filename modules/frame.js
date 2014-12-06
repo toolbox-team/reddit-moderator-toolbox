@@ -124,7 +124,7 @@ function update(URL, modtools) {
         if ($sitetable) {
             $html.find('.tb-window-content').html('').append($sitetable);
 
-            // call modules to preocess new things.
+            // call modules to process new things.
             var event = new CustomEvent("TBNewThings");
             window.dispatchEvent(event);
         }
@@ -219,14 +219,15 @@ function addModtools() {
     // Change sort order
     $('.sortorder-options a').click(function () {
         var order = $(this).text(),
-            toggleAsc = (order == $('.sortorder').text());
+            $sortorder = $('.sortorder'),
+            toggleAsc = (order == $sortorder.text());
 
         if (toggleAsc) sortAscending = !sortAscending;
 
         TB.storage.setSetting('QueueTools', 'reports-ascending', sortAscending);
         TB.storage.setSetting('QueueTools', 'reports-order', order);
 
-        $('.sortorder').text(order);
+        $sortorder.text(order);
         sortThings(order, sortAscending);
     });
 
@@ -308,17 +309,27 @@ function addModtools() {
 
     // Mass spam/remove/approve
     $('.pretty-button.action').click(function () {
-        var spam = (this.type == 'negative'),
-            type = (this.type == 'positive' ? 'approve' : 'remove');
+        var approve = this.type == 'positive',
+            spam = !remove && (this.type == 'negative');
 
         // Apply action
-        $frameSitetable.find('.thing:visible>input:checked').parent().each(function () {
-            $.post('/api/' + type, {
-                uh: TBUtils.modhash,
-                spam: spam,
-                id: $(this).attr('data-fullname') //getThingInfo seems like overkill.
-            });
-        }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
+        var $actioned = $frameSitetable.find('.thing:visible > input:checked').parent().each(function () {
+            var id = $(this).attr('data-fullname');
+            
+            if(approve) {
+                TBUtils.approveThing(id, function (success) {
+                    //Insert useful error handling here (or not)
+                });
+            }
+            else {
+                TBUtils.removeThing(id, spam, function (success) {
+                    //Insert useful error handling here (or not)
+                });
+            }
+        });
+        $actioned.css('opacity', '1');
+        $actioned.removeClass('flaired spammed removed approved');
+        $actioned.addClass(approve ? 'approved' : (spam ? 'spammed' : 'removed'));
     });
 
     // menuarea pretty-button feedback.

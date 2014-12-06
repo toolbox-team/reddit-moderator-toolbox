@@ -388,12 +388,19 @@ queueTools.init = function () {
                 type = (this.type == 'positive' ? 'approve' : 'remove');
 
             // Apply action
-            $('.thing:visible>input:checked').parent().each(function () {
-                $.post('/api/' + type, {
-                    uh: TBUtils.modhash,
-                    spam: spam,
-                    id: $(this).attr('data-fullname') //getThingInfo seems like overkill.
-                });
+            $('.thing:visible > input:checked').parent().each(function () {
+                var id = $(this).attr('data-fullname');
+
+                if(approve) {
+                    TBUtils.approveThing(id, function (success) {
+                        //Insert useful error handling here (or not)
+                    });
+                }
+                else {
+                    TBUtils.removeThing(id, spam, function (success) {
+                        //Insert useful error handling here (or not)
+                    });
+                }
             }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
         });
 

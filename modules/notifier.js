@@ -189,10 +189,8 @@ notifierMod.init = function notifierMod_init() {
 
                 var unreadmessageid = value.data.name;
 
-                $.post('/api/read_message', {
-                    id: unreadmessageid,
-                    uh: TBUtils.modhash,
-                    api_type: 'json'
+                TBUtils.markMessageRead(unreadmessageid, function() {
+                    //Insert useful error handling here
                 });
             });
         });

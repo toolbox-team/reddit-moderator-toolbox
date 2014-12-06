@@ -934,12 +934,12 @@ function initwrapper() {
     };
 
 
-    TBUtils.flairPost = function (postLink, subreddit, text, css, callback) {
+    TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
         $.post('/api/flair', {
             api_type: 'json',
             link: postLink,
             text: text,
-            css_class: css,
+            css_class: cssClass,
             r: subreddit,
             uh: TBUtils.modhash
         })
@@ -953,6 +953,63 @@ function initwrapper() {
             });
     };
 
+    TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
+        $.post('/api/flair', {
+            api_type: 'json',
+            user: user,
+            r: subreddit,
+            text: text,
+            css_class: cssClass,
+            uh: TBUtils.modhash
+        })
+            .success(function () {
+                if (typeof callback !== "undefined")
+                    callback(true);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+    
+    TBUtils.banUser = function (user, subreddit, banReason, banMessage, banDuration, callback) {
+        $.post('/api/friend', {
+            api_type: 'json',
+            uh: TBUtils.modhash,
+            type: 'banned',
+            name: user,
+            r: subreddit,
+            note: banReason,
+            ban_message: banMessage,
+            duration: banDuration
+        })
+            .success(function (response) {
+                if (typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+
+    TBUtils.unbanUser = function (user, subreddit, callback) {
+        $.post('/api/unfriend', {
+            api_type: 'json',
+            uh: TBUtils.modhash,
+            type: 'banned',
+            name: user,
+            r: subreddit
+        })
+            .success(function (response) {
+                if (typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
 
     TBUtils.distinguishThing = function (id, callback) {
         $.post('/api/distinguish/yes', {
@@ -985,6 +1042,21 @@ function initwrapper() {
             });
     };
 
+    TBUtils.removeThing = function (id, spam, callback) {
+        $.post('/api/remove', {
+            uh: TBUtils.modhash,
+            id: id,
+            spam: spam
+        })
+            .success(function () {
+                if (typeof callback !== "undefined")
+                    callback(true);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
 
     TBUtils.postComment = function (parent, text, callback) {
         $.post('/api/comment', {
@@ -1013,8 +1085,7 @@ function initwrapper() {
                     callback(false, error);
             });
     };
-
-
+    
     TBUtils.postLink = function (link, title, subreddit, callback) {
         $.post('/api/submit', {
             kind: 'link',
@@ -1075,8 +1146,7 @@ function initwrapper() {
                     callback(false, error);
             });
     };
-
-
+    
     TBUtils.sendPM = function (to, subject, message, callback) {
         $.post('/api/compose', {
             to: to,
@@ -1093,24 +1163,15 @@ function initwrapper() {
                     callback(false, error.responseText);
             });
     };
-
-
-    TBUtils.banUser = function (user, subreddit, reason, callback) {
-        $.post('/api/friend', {
-            uh: TBUtils.modhash,
-            type: 'banned',
-            name: user,
-            r: subreddit,
-            note: (reason == null) ? '' : reason,
-            api_type: 'json'
-        })
-            .done(function (data) {
-                if (typeof callback !== "undefined")
-                    callback();
-            });
+    
+    TBUtils.markMessageRead = function (id, callback) {
+        $.post('/api/read_message', {
+            api_type: 'json',
+            id: id,
+            uh: TBUtils.modhash
+        });
     };
-
-
+    
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};

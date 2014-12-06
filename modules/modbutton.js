@@ -305,7 +305,6 @@ modButton.init = function init() {
                         break;
                     }
                 }
-                return;
             });
         }
 
@@ -380,7 +379,8 @@ modButton.init = function init() {
 
         if (isNaN(banDuration)) {
             banDuration = '';
-        } else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
+        }
+        else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
             $.log('Including time in ban message', true);
             banMessage = banMessage + '  \n \n\
 *You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
@@ -389,7 +389,9 @@ modButton.init = function init() {
         modButton.setting('lastaction', actionName);
 
         // Check dem values.
-        if (!api) return $status.text('error, no action selected');
+        if (!api)
+            return $status.text('error, no action selected');
+        var banning = (api == 'friend');
 
         if (!$(this).hasClass('global-button')) {
 
@@ -397,7 +399,8 @@ modButton.init = function init() {
             $popup.find('.action-sub:checkbox:checked').each(function () {
                 if ($(this).val() !== modButton.OTHER) {
                     subreddits.push($(this).val());
-                } else {
+                }
+                else {
                     var subname = $('.' + modButton.OTHER + ' option:selected').val();
                     if (subname !== modButton.OTHER) {
                         subreddits.push(subname);
@@ -407,20 +410,25 @@ modButton.init = function init() {
             });
 
             // Check dem values.
-            if (subreddits.length < 1) return $status.text('error, no subreddits selected');
+            if (subreddits.length < 1)
+                return $status.text('error, no subreddits selected');
 
             // do it.
             massAction(subreddits);
-        } else {
+        }
+        else {
+            var confirmban;
             if (actionName === 'ban' || actionName === 'unban') {
-                var confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   \nAre you sure?");
-            } else {
-                var confirmban = confirm("This will " + actionName + " /u/" + user + " on every subreddit you moderate.   \nAre you sure?");
+                confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   \nAre you sure?");
+            }
+            else {
+                confirmban = confirm("This will " + actionName + " /u/" + user + " on every subreddit you moderate.   \nAre you sure?");
             }
 
             if (confirmban) {
                 massAction(TB.utils.mySubs);
-            } else {
+            }
+            else {
                 return;
             }
         }
@@ -435,12 +443,13 @@ modButton.init = function init() {
                 if (retry) {
                     $.log('retrying');
                     massAction(failedSubs);
-                } else {
+                }
+                else {
                     $.log('not retrying');
                     $('.mod-popup').remove();
-                    return;
                 }
-            } else {
+            }
+            else {
                 $.log('complete');
                 $('.mod-popup').remove();
             }
@@ -464,33 +473,41 @@ modButton.init = function init() {
             // Ban dem trolls.
             TB.utils.pageOverlay("", true);
             $timer = $.timer(function () {
-                var sub = $(subs).get(actionCount);
+                var subreddit = $(subs).get(actionCount);
 
-                TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + sub, undefined);
+                TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + subreddit, undefined);
 
-                $.log('banning from: ' + sub);
-                $.post('/api/' + api, {
-                    uh: TB.utils.modhash,
-                    type: action,
-                    name: user,
-                    r: sub,
-                    note: banReason,
-                    ban_message: banMessage,
-                    duration: banDuration,
-                    api_type: 'json'
-                })
-                    .success(function (resp) {
-
-                        if (!$.isEmptyObject(resp) && !$.isEmptyObject(resp.json.errors) && resp.json.errors[0][0] === 'RATELIMIT') {
-                            $timer.pause();
-                            $.log('ratelimited');
-                            rateLimit(resp.json.ratelimit);
+                $.log('banning from: ' + subreddit);
+                if(banning) {
+                    TBUtils.banUser(user, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                        if (success) {
+                            if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
+                                $timer.pause();
+                                $.log('ratelimited');
+                                rateLimit(response.json.ratelimit);
+                            }
                         }
-                    })
-                    .error(function (error, more) {
-                        $.log('missed one');
-                        failedSubs.push(sub);
+                        else {
+                            $.log('missed one');
+                            failedSubs.push(subreddit);
+                        }
                     });
+                }
+                else {
+                    TBUtils.unbanUser(user, subreddit, function (success, response) {
+                        if (success) {
+                            if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
+                                $timer.pause();
+                                $.log('ratelimited');
+                                rateLimit(response.json.ratelimit);
+                            }
+                        }
+                        else {
+                            $.log('missed one');
+                            failedSubs.push(subreddit);
+                        }
+                    });
+                }
 
                 actionCount++;
 
@@ -531,7 +548,8 @@ modButton.init = function init() {
             $callbackSpan.css('color', 'red');
             TBUtils.longLoadSpinner(false);
             return;
-        } else {
+        }
+        else {
             var subject = $subredditMessageSubject.val(),
                 message = $subredditMessage.val();
         }
@@ -540,19 +558,18 @@ modButton.init = function init() {
             if (!successful) {
                 $callbackSpan.text('an error occurred: ' + response[0][1]);
                 TBUtils.longLoadSpinner(false);
-            } else {
+            }
+            else {
                 if (response.json.errors.length) {
                     $callbackSpan.text(response.json.errors[1]);
                     TBUtils.longLoadSpinner(false);
-                    return
-                } else {
+                }
+                else {
                     $callbackSpan.text('message sent');
                     $callbackSpan.css('color', 'green');
                     TBUtils.longLoadSpinner(false);
                 }
-
             }
-            ;
         });
 
     });
@@ -566,7 +583,8 @@ modButton.init = function init() {
             $textinput = $popup.find('.flair-text'),
             $classinput = $popup.find('.flair-class');
 
-        if (!user || !subreddit) return;
+        if (!user || !subreddit)
+            return;
 
         $.getJSON('/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
@@ -612,24 +630,15 @@ modButton.init = function init() {
          }
          */
 
-        $.post('/api/flair', {
-            api_type: 'json',
-            name: user,
-            text: text,
-            css_class: css_class,
-            r: subreddit,
-            uh: TB.utils.modhash
-        })
-            .done(function () {
+        TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
+            if(success) {
                 $status.text("saved user flair");
-                // $popup.remove();
-            })
-            .fail(function (err) {
+            }
+            else {
                 $.log(err.responseText, true);
                 $status.text(err.responseText);
-                // $popup.remove();
-            });
-
+            }
+        });
     });
 };
 

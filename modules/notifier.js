@@ -6,33 +6,47 @@ notifierMod.settings["enabled"]["default"] = true;
 notifierMod.config["betamode"] = false;
 notifierMod.config["needs_mod_subs"] = true;
 
-notifierMod.register_setting("straightToInbox", {
-    "type": "boolean",
-    "default": false,
-    "title": "When clicking a comment notification go to the inbox"
-});
-notifierMod.register_setting("consolidatedmessages", {
-    "type": "boolean",
-    "default": true,
-    "title": "Consolidate notifications (x new messages) instead of individual notifications"
-});
 
+// First show the options for filtering of subreddits.
 notifierMod.register_setting("modsubreddits", {
     "type": "text",
     "default": 'mod',
     "title": "Multireddit of subs you want displayed in the modqueue counter"
 });
-notifierMod.register_setting("modnotifications", {
-    "type": "boolean",
-    "default": true,
-    "title": "Get modqueue notifications"
+
+notifierMod.register_setting("unmoderatedsubreddits", {
+    "type": "text",
+    "default": "mod",
+    "title": "Multireddit of subs you want displayed in the unmoderated counter"
 });
+
+
+notifierMod.register_setting("modmailsubreddits", {
+    "type": "text",
+    "default": 'mod',
+    "hidden": notifierMod.setting('modmailsubredditsfrompro'),
+    "title": "Multireddit of subs you want displayed in the modmail counter"
+});
+
+notifierMod.register_setting("modmailsubredditsfrompro", {
+    "type": "boolean",
+    "default": false,
+    "title": "Use filtered subreddits from ModMail Pro"
+});
+
+
+// Do we want to show an icon for unmoderated?
+
+     // THIS SETTING IS MISSING
+
+// Do we want notifications and where do they link to?
 
 notifierMod.register_setting("messagenotifications", {
     "type": "boolean",
     "default": true,
     "title": "Get notifications for new messages"
 });
+
 notifierMod.register_setting("messageunreadlink", {
     "type": "boolean",
     "default": false,
@@ -50,27 +64,30 @@ notifierMod.register_setting("modmailunreadlink", {
     "title": " - link to /message/moderator/unread/ if unread modmail is present"
 });
 
-notifierMod.register_setting("unmoderatedsubreddits", {
-    "type": "text",
-    "default": "mod",
-    "title": "Multireddit of subs you want displayed in the unmoderated counter"
-});
-notifierMod.register_setting("unmoderatednotifications", {
+notifierMod.register_setting("straightToInbox", {
     "type": "boolean",
     "default": false,
-    "title": "Get unmoderated queue notifications"
-});
-notifierMod.register_setting("modmailsubreddits", {
-    "type": "text",
-    "default": 'mod',
-    "hidden": notifierMod.setting('modmailsubredditsfrompro'),
-    "title": "Multireddit of subs you want displayed in the modmail counter"
+    "title": "When clicking a comment notification go to the inbox"
 });
 
-notifierMod.register_setting("modmailsubredditsfrompro", {
+notifierMod.register_setting("consolidatedmessages", {
     "type": "boolean",
-    "default": false,
-    "title": "Use filtered subreddits from ModMail Pro"
+    "default": true,
+    "title": "Consolidate notifications (x new messages) instead of individual notifications"
+});
+
+// Do we want queue notifications?
+
+notifierMod.register_setting("modnotifications", {
+    "type": "boolean",
+    "default": true,
+    "title": "Get modqueue notifications"
+});
+
+notifierMod.register_setting("unmoderatednotifications", {
+        "type": "boolean",
+        "default": false,
+        "title": "Get unmoderated queue notifications"
 });
 
 notifierMod.init = function notifierMod_init() {

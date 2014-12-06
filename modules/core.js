@@ -570,6 +570,7 @@ See the License for the specific language governing permissions and limitations 
 
     // Save the settings
     $body.on('click', '.tb-save', function () {
+/*
         var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
         if (messagenotificationssave === true) {
             TB.storage.setSetting('Notifier', 'messagenotifications', true);
@@ -608,6 +609,7 @@ See the License for the specific language governing permissions and limitations 
         highlighted = $("input[name=highlighted]").val();
 
 
+
         unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
         if (unmoderatedSubreddits !== TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
             TB.storage.setSetting('Notifier', 'unmoderatedcount', 0);
@@ -639,12 +641,16 @@ See the License for the specific language governing permissions and limitations 
             }
             TB.storage.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
         }
+ */
 
+        // TODO: Check if the settings below work as intended.
         TB.storage.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
         TB.storage.setSetting('Notifier', 'enableTopLink', $("#enableTopLink").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
+
+
 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');

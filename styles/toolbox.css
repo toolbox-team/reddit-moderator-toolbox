@@ -1653,3 +1653,16 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 #tb-search-suggest tr:hover {
     background-color: rgba(174, 212, 250, 0.5);
 }
+
+
+/* notifier temp fix TODO: proper grouping in tbobject */
+
+#tb-Notifier-messagenotifications, #tb-Notifier-modmailnotifications {
+    display: inline-block;
+    width: 250px;
+}
+
+#tb-Notifier-messageunreadlink, #tb-Notifier-modmailunreadlink {
+    display: inline-block;
+    width: 450px;
+}

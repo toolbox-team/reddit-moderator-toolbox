@@ -139,6 +139,12 @@
     font-weight: bold;
 }
 
+.mod-toolbox #tb-top-link {
+    float: right;
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .mod-toolbox #tb-my-subreddits {
     z-index: 100;
     position: fixed;

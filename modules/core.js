@@ -208,7 +208,7 @@ toolboxCore.init = function coreInit() {
 
     if (enableTopLink) {
         // This is literally the exact fucking line from the console, above--fucking loads in the wrong place.
-        $('#tb-bottombar').find('#tb-toolbarcounters').after('<a href="#content" id="tb-top-link"><img title="debug console" src="data:image/png;base64,' + TBui.topIcon + '" /></a>'); // needs an icon.
+        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="#content" id="tb-top-link"><img title="go to top" src="data:image/png;base64,' + TBui.topIcon + '" /></a>'); // needs an icon.
     }
 
     // Append shortcuts

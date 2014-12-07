@@ -25,6 +25,7 @@
 			<key>End</key>
 			<array>
 				<string>libs/jquery-2.1.1.js</string>
+				<string>libs/tbplugins.js</string>
 				<string>libs/snuownd.js</string>
 				<string>libs/ace.js</string>
 				<string>libs/worker-css.js</string>
@@ -34,10 +35,9 @@
 				<string>libs/ace-themes.js</string>
 				<string>tbstorage.js</string>
 				<string>tbui.js</string>
-				<string>tbplugins.js</string>
 				<string>tbutils.js</string>
-				<string>tbobject.js</string>
-				<string>modules/core.js</string>
+				<string>tbmodule.js</string>
+				<string>modules/modbar.js</string>
 				<string>modules/notifier.js</string>
 				<string>modules/domaintagger.js</string>
 				<string>modules/usernotes.js</string>
@@ -58,7 +58,7 @@
 				<string>modules/realtime.js</string>
 				<string>modules/nukecomments.js</string>
 				<string>modules/queuetools.js</string>
-				<string>tbobjectinit.js</string>
+				<string>tbmoduleinit.js</string>
 			</array>
 		</dict>
 		<key>Stylesheets</key>

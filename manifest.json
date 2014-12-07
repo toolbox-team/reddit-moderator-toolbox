@@ -29,6 +29,7 @@
 	  ],
 	  "js": [
 		"libs/jquery-2.1.1.js",
+		"libs/tbplugins.js",
 		"libs/snuownd.js",
 		"libs/ace.js",
 		"libs/worker-css.js",
@@ -38,10 +39,9 @@
 		"libs/ace-themes.js",
 		"tbstorage.js",
 		"tbui.js",
-		"tbplugins.js",
 		"tbutils.js",
-		"tbobject.js",
-		"modules/core.js",
+		"tbmodule.js",
+		"modules/modbar.js",
 		"modules/notifier.js",
 		"modules/domaintagger.js",
 		"modules/usernotes.js",
@@ -62,7 +62,7 @@
 		"modules/realtime.js",
 		"modules/nukecomments.js",
 		"modules/queuetools.js",
-		"tbobjectinit.js"
+		"tbmoduleinit.js"
 	  ]
 	}
   ],

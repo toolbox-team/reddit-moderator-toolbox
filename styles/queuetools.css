@@ -12,3 +12,8 @@
 .drop-choices.lightdrop {
     z-index: 501;
 }
+
+
+#modtab-threshold {
+    width: 20px;
+}

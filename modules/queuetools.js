@@ -219,11 +219,13 @@ queueTools.init = function () {
                 &nbsp; \
                 <a href="javascript:;" class="pretty-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
                 <a href="javascript:;" class="pretty-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
+                <a href="javascript:;" class="pretty-button inoffensive expand-reports"   >expand&nbsp;reports</a> \
                 <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
                 <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
                 <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
                 ' + (TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : '') + ' \
             </span> \
+            <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" /></a></span>\
             <span class="dropdown-title lightdrop" style="float:right"> sort: \
                 <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
                     <span class="selected sortorder">' + listingOrder + '</span> \
@@ -237,10 +239,10 @@ queueTools.init = function () {
         </div>');
 
         //Check if the tab menu exists and create it if it doesn't
-        var tabmenu = $('#header-bottom-left .tabmenu');
-        if (tabmenu.length == 0)
-            tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>');
-        $('.tabmenu').append(viewingspam ? '' : '<li><a><label for="modtab-threshold">threshold: </label><input id="modtab-threshold" value="' + reportsThreshold + '" style="width:10px;height:14px;border:none;background-color:#EFF7FF"/></a></li>');
+        //var tabmenu = $('#header-bottom-left .tabmenu');
+        //if (tabmenu.length == 0)
+        //    tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>');
+        // $('.tabmenu').append(viewingspam ? '' : '<li></li>');
 
         $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
         $('.buttons .pretty-button').attr('tabindex', '2');
@@ -268,7 +270,8 @@ queueTools.init = function () {
             'margin-left': '5px',
             'left': '0',
             'margin-top': '0',
-            'position': 'relative'
+            'position': 'relative',
+            'padding-top': '9px'
         });
 
         $(window).scroll(function(){
@@ -381,7 +384,9 @@ queueTools.init = function () {
         $('.unhide-selected').click(function () {
             $things.show();
         });
-
+        $('.expand-reports').click(function () {
+            $('.reported-stamp').each(function() { $(this).trigger('click') });
+        });
         // Mass spam/remove/approve
         $('.pretty-button.action').click(function () {
             var spam = (this.type == 'negative'),

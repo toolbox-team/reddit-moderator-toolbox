@@ -29,7 +29,7 @@
 
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
-                    window.location.href = "//www.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/"
+                    window.location.href = "reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
                 }, 1000);
             }
 
@@ -66,6 +66,7 @@
 (function (TBStorage) {
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
+    TBStorage.domain = window.location.hostname.split('.')[0];
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;
@@ -207,7 +208,8 @@
     }
 
     function saveSettingsToBrowser() {
-        if (!TBStorage.userBrowserStorage) return;
+        // Never write back from subdomains.  This can cause a bit of syincing issue, but resolves reset issues.
+        if (!TBStorage.userBrowserStorage || TBStorage.domain !== 'www') return;
 
         if (TBStorage.browser === CHROME) {
             // chrome

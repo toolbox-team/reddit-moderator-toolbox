@@ -1,15 +1,15 @@
-function tbcore() {
+function tbmodbar() {
 
-var toolboxCore = new TB.Module('Toolbox Core');
-toolboxCore.shortname = 'Core';
+var modbar = new TB.Module('Toolbox UI (modbar)');
+modbar.shortname = 'modbar';
 
-toolboxCore.settings["enabled"]["default"] = true;
-toolboxCore.config["needs_mod_subs"] = true;
+modbar.settings["enabled"]["default"] = true;
+modbar.config["needs_mod_subs"] = true;
 
 // How about you don't disable core?  No other module should ever do this.
-toolboxCore.settings["enabled"]["hidden"] = true;
+modbar.settings["enabled"]["hidden"] = true;
 
-toolboxCore.init = function coreInit() {
+modbar.init = function coreInit() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
     var $body = $('body');
@@ -753,12 +753,12 @@ See the License for the specific language governing permissions and limitations 
         $body.css('overflow', 'auto');
     });
 };
-TB.register_module(toolboxCore);
+TB.register_module(modbar);
 }
 
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        tbcore();
+        tbmodbar();
     });
 })();

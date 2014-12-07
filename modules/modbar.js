@@ -119,11 +119,19 @@ modbar.init = function coreInit() {
     <a href="/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
     <a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
     <a href="/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
-    <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-    <a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
 </span>\
 </div>\
 ');
+
+    // Add unmoderated icon if it is enabled.
+if (unmoderatedOn) {
+    modbar.find('#tb-toolbarcounters').append('\
+    <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
+    <a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
+    ');
+
+}
+
 
     var modbarhid = $('\
 <div id="tb-bottombar-hidden" class="tb-toolbar">\

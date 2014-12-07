@@ -183,12 +183,6 @@ notifierMod.init = function notifierMod_init() {
     //
     // UI elements
 
-    // if mod counters are off we remove them. It used to be other way around but modbay.js sometimes isn't on page yet when this is fired.
-
-    if (!unmoderatedOn) {
-        $('#tb-toolbarcounters').find('#tb-unmoderated, #tb-unmoderatedcount').remove();
-    }
-
 
     //
     // Counters and notifications

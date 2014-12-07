@@ -497,7 +497,7 @@ commentsMod.init = function commentsModInit() {
                 var htmlProfileCommentView = '';
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
-                TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+                TBUtils.longLoadSpinner(true,'searching for user comments in /r/' + subredditsearch,'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
                 function searchComments(user, searchSubreddit, after) {
                     $.getJSON('/user/' + user + '/comments.json', {

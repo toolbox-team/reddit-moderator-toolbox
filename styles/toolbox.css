@@ -159,7 +159,7 @@
     font-size: 11px;
     color: #696969;
     border: 1px solid #A8B5C2;
-    box-shadow: #D6D6D6 0 1px 3px 1px;
+    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 	text-align: center;
 }
 
@@ -279,7 +279,7 @@ text-align: left;
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     font-size: small;
 }
 
@@ -296,7 +296,7 @@ text-align: left;
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
 .mod-toolbox .tb-window-wrapper a:hover,
@@ -552,7 +552,7 @@ img.note-close {
     padding: 2px !important;
     border: solid 2px #B83E3E;
     top: auto;
-    box-shadow: #D1D1D1 0 1px 3px 1px;
+    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
     cursor: pointer;
 }
 
@@ -576,7 +576,7 @@ img.note-close {
     padding: 2px !important;
     border: solid 1px #A8B5C2;
     top: auto;
-    box-shadow: #D1D1D1 0 1px 3px 1px;
+    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
 .tb-first-run {
@@ -589,7 +589,7 @@ img.note-close {
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     position: absolute;
     z-index: 10000;
 }
@@ -734,7 +734,7 @@ img.note-close {
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     position: absolute;
     z-index: 2147483647;
 }
@@ -1023,7 +1023,7 @@ body .thing.flaired {
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     z-index: 10001;
 }
 
@@ -1375,14 +1375,14 @@ div.sticky {
     color: #000;
     padding: 2px !important;
     border: solid 2px #B83E3E;
-    box-shadow: #D1D1D1 0 1px 3px 1px;
+    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
 .mod-toolbox.res-nightmode #tb-tooltip {
     background-color: rgba(206, 227, 248, 0.86);
     color: #000;
     border: solid 1px #39526b;
-    box-shadow: #D1D1D1 0 1px 3px 1px;
+    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
 .res-nightmode .tb-first-run {
@@ -1672,3 +1672,39 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     display: inline-block;
     width: 450px;
 }
+
+
+/* Feedback window */
+
+#tb-feedback-window {
+    max-width: 400px;
+    position: fixed;
+    z-index: 50000;
+    top: 50%;
+    left: 50%;
+    padding: 10px;
+    min-width: 150px;
+    text-align: center;
+    background-color: #CEE3F8;
+    border: 1px solid #A8B5C2;
+    box-shadow: rgba(214, 214, 214, 0.47) 0px 1px 3px 1px;
+}
+
+#tb-feedback-window .tb-feedback-text {
+    background-color: #FFF;
+    margin: 0;
+    display: block;
+    padding: 5px;
+    font-size: 12px;
+}
+
+#tb-feedback-window.positive {
+    background: #69d47d;
+    border-color: #68A172;
+}
+
+#tb-feedback-window.negative {
+    background: #ff7f4f;
+    border-color: #C77151;
+}
+

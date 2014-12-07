@@ -37,7 +37,11 @@ notifierMod.register_setting("modmailsubredditsfrompro", {
 
 // Do we want to show an icon for unmoderated?
 
-     // THIS SETTING IS MISSING
+notifierMod.register_setting("unmoderatedon", {
+    "type": "boolean",
+    "default": true,
+    "title": "Show icon for unmoderated"
+});
 
 // Do we want notifications and where do they link to?
 
@@ -72,7 +76,7 @@ notifierMod.register_setting("straightToInbox", {
 
 notifierMod.register_setting("consolidatedmessages", {
     "type": "boolean",
-    "default": true,
+    "default": false,
     "title": "Consolidate notifications (x new messages) instead of individual notifications"
 });
 
@@ -112,7 +116,7 @@ notifierMod.init = function notifierMod_init() {
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
         //shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
         //shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
-        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),  //why?
+        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
         //footer = $('.footer-parent'),
 
         //lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
@@ -179,12 +183,10 @@ notifierMod.init = function notifierMod_init() {
     //
     // UI elements
 
-    // if mod counters are on we append them to the rest of the counters here.
-    if (unmoderatedOn) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').append('\
-        <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-        <a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
-        ');
+    // if mod counters are off we remove them. It used to be other way around but modbay.js sometimes isn't on page yet when this is fired.
+
+    if (!unmoderatedOn) {
+        $('#tb-toolbarcounters').find('#tb-unmoderated, #tb-unmoderatedcount').remove();
     }
 
 

@@ -50,7 +50,7 @@ notifierMod.register_setting("messagenotifications", {
 notifierMod.register_setting("messageunreadlink", {
     "type": "boolean",
     "default": false,
-    "title": " - link to /message/unread/ if unread messages are present"
+    "title": "Link to /message/unread/ if unread messages are present"
 });
 
 notifierMod.register_setting("modmailnotifications", {
@@ -61,7 +61,7 @@ notifierMod.register_setting("modmailnotifications", {
 notifierMod.register_setting("modmailunreadlink", {
     "type": "boolean",
     "default": false,
-    "title": " - link to /message/moderator/unread/ if unread modmail is present"
+    "title": "Link to /message/moderator/unread/ if unread modmail is present"
 });
 
 notifierMod.register_setting("straightToInbox", {
@@ -85,9 +85,9 @@ notifierMod.register_setting("modnotifications", {
 });
 
 notifierMod.register_setting("unmoderatednotifications", {
-        "type": "boolean",
-        "default": false,
-        "title": "Get unmoderated queue notifications"
+    "type": "boolean",
+    "default": false,
+    "title": "Get unmoderated queue notifications"
 });
 
 notifierMod.init = function notifierMod_init() {

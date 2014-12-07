@@ -37,6 +37,7 @@
 		"libs/mode-json.js",
 		"libs/mode-yaml.js",
 		"libs/ace-themes.js",
+		"libs/redditapi.js",
 		"tbstorage.js",
 		"tbui.js",
 		"tbutils.js",

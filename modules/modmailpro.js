@@ -57,6 +57,12 @@ modMailPro.register_setting('autothread', {
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
+modMailPro.register_setting('subredditcolor', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
+});
+
 modMailPro.init = function () {
     if (!TBUtils.isModmail) return;
 
@@ -270,7 +276,7 @@ modMailPro.modmailpro = function () {
             }, 500);
             return;
         }
-    });
+    });     
 
     function initialize() {
         $.log('MMP init');
@@ -311,8 +317,25 @@ modMailPro.modmailpro = function () {
             setReplied(unprocessedThreads);
             setView();
         });
+        // Add borders if enabled. 
+        if (TB.storage.getSetting('ModMailPro', 'subredditcolor', true)) {
+            colorBorderMail();
+        }
     }
-
+    
+    // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for. 
+    function colorBorderMail() {    
+        $('body').find('.thing.message-parent').each(function() {
+        var $this = $(this);
+            if (!$this.hasClass('tb-subreddit-color')) {
+                var subredditName = $this.find('.correspondent a[href*="moderator/inbox"]').text(), 
+                    subredditColor = TBUtils.stringToColor(subredditName);
+                $this.css('border-left', 'solid 3px ' + subredditColor);
+                $this.addClass('tb-subreddit-color');
+            }    
+        });
+    }     
+    
     function processThread(thread) {
         var $thread = $(thread);
         if ($thread.hasClass('mmp-processed')) {

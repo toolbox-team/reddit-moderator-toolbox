@@ -1708,3 +1708,10 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     border-color: #C77151;
 }
 
+/* config.js */
+
+.mod-toolbox .tb-window-header .buttons {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+}

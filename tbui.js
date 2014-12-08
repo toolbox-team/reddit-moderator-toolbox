@@ -128,7 +128,7 @@
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
                 if (tab.id === "undefined" || !tab.id) {
-                    tab.id = tab.title.trim().toLowerCase().replace(' ', '_');
+                    tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
                 }
 
                 var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
@@ -170,6 +170,76 @@
         }
 
         return $popup;
+    };
+
+
+    // Window Overlay HTML generator
+    TBui.overlay = function overlay(title, tabs, meta, css_class) {
+        meta = (typeof meta !== "undefined") ? meta : null;
+        css_class = (typeof css_class !== "undefined") ? css_class : '';
+
+        // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
+        var $overlay = $('\
+<div class="tb-page-overlay ' + (css_class ? ' ' + css_class : '') + '">\
+    <div class="tb-window-wrapper ' + (css_class ? ' ' + css_class : '') + '">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+        <div class="tb-window-header">\
+            <div class="tb-window-title">' + title + '</div>\
+            <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
+        </div>\
+</div>');
+
+        if (tabs.length == 1) {
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tab"><div class="tb-window-content">' + tabs[0].content + '</div></div>'));
+            $overlay.find('.tb-window-wrapper .tb-window-tab').append($('<div class="tb-window-footer">' + tabs[0].footer + '</div>'));
+        } else if (tabs.length > 1) {
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
+
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
+                if (tab.id === "undefined" || !tab.id) {
+                    tab.id = tab.title.trim().toLowerCase();
+                    tab.id = tab.id.replace(/\s/g, '_')
+                }
+
+                var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+                $button.click({tab: tab}, function (e) {
+                    var tab = e.data.tab;
+
+                    // hide others
+                    $overlay.find('.tb-window-tabs a').removeClass('active');
+                    $overlay.find('.tb-window-tab').hide();
+
+                    // show current
+                    $overlay.find('.tb-window-tab.' + tab.id).show();
+                    $(this).addClass('active');
+
+                    e.preventDefault();
+                });
+
+                // default first tab is active tab
+                if (i == 0) {
+                    $button.addClass('active');
+                }
+
+                $button.appendTo($overlay.find('.tb-window-tabs'));
+
+
+                var $tab = $('<div class="tb-window-tab ' + tab.id + '"></div>');
+                $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
+                $tab.append($('<div class="tb-window-footer">' + tab.footer + '</div>'));
+
+                // default first tab is visible; hide others
+                if (i == 0) {
+                    $tab.show();
+                } else {
+                    $tab.hide();
+                }
+
+                $tab.appendTo($overlay.find('.tb-window-wrapper'));
+            }
+        }
+
+        return $overlay;
     };
 
     TBui.selectSingular = function selectSingular(choices, selected) {

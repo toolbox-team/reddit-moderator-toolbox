@@ -50,7 +50,7 @@ historyButton.init = function () {
         $body.on('click', '.user-history-close', function () {
             if (populateRunning.length > 0) {
                 $.each(populateRunning, function () {
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                 });
             }
 
@@ -67,7 +67,7 @@ historyButton.init = function () {
         $body.on('click', '.user-history-close', function () {
             if (populateRunning.length > 0) {
                 $.each(populateRunning, function () {
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                 });
             }
 
@@ -118,16 +118,16 @@ historyButton.init = function () {
         var populateRunning = [];
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
-                TBUtils.longLoadSpinner(true);
+                TB.ui.longLoadSpinner(true);
                 populateRunning.push('load');
             }
             $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
                 contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
-                TBUtils.longLoadSpinner(false);
+                TB.ui.longLoadSpinner(false);
                 populateRunning.pop();
             }).done(function (d) {
                 if ($.isEmptyObject(d.data.children)) {
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                     populateRunning.pop();
 
                     contentBox.find('.rts-report').show();
@@ -224,7 +224,7 @@ historyButton.init = function () {
                 if (after) {
                     populateHistory(after);
                 } else {
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
 					contentBox.find('.rts-report').show();
                     if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
                         contentBox.find('.error').html('no submissions');

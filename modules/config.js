@@ -41,16 +41,16 @@ function tbconfig() {
 
         function postToWiki(page, data, reason, isJSON, updateAM) {
             $.log("posting to wiki");
-            TBUtils.textFeedback('saving to wiki', 'neutral');
+            TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
             TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
                 $.log("save succ = " + succ);
                 console.log("save succ = " + succ);
                 if (!succ) {
                     $.log(err.responseText, true)
-                    TBUtils.textFeedback(err.responseText, 'negative');
+                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 } else {
                     $.log("clearing cache");
-                    TBUtils.textFeedback('wiki page saved', 'positive');
+                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
                     TBUtils.clearCache();
                 }
             });
@@ -372,7 +372,7 @@ function tbconfig() {
 
             postToWiki('toolbox', config, 'updated removal reason settings', true);
             // Let people know that settings are saved.
-            TBUtils.textFeedback('Removal reasons settings are saved', 'positive');
+            TB.ui.textFeedback('Removal reasons settings are saved', TB.ui.FEEDBACK_POSITIVE);
         });
 
     // When the import button is clicked on the domain tags thing.

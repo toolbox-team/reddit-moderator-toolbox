@@ -269,7 +269,7 @@ commentsMod.init = function commentsModInit() {
 
             var siteTable = "#siteTable_" + fullId; // sitetable id which we will be clearing.
             $(siteTable).empty(); // clear the site table.
-            TBUtils.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+            TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
             // construct the url from which we grab the comments json.
             var jsonurl = $('.entry a.comments').attr('href');
@@ -363,7 +363,7 @@ commentsMod.init = function commentsModInit() {
                     htmlCommentView = htmlCommentView + htmlConstructedComment;
                 });
 
-                TBUtils.longLoadSpinner(false);
+                TB.ui.longLoadSpinner(false);
 
                 // add the new comment list to the page.
                 $(siteTable).append(htmlCommentView);
@@ -497,7 +497,7 @@ commentsMod.init = function commentsModInit() {
                 var htmlProfileCommentView = '';
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
-                TBUtils.longLoadSpinner(true,'searching for user comments in /r/' + subredditsearch,'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
+                TB.ui.longLoadSpinner(true,'searching for user comments in /r/' + subredditsearch,'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
                 function searchComments(user, searchSubreddit, after) {
                     $.getJSON('/user/' + user + '/comments.json', {
@@ -588,7 +588,7 @@ commentsMod.init = function commentsModInit() {
 
                             $('.sitetable.linklisting').append(htmlProfileCommentView);
                             $("time.timeago").timeago();
-                            TBUtils.longLoadSpinner(false);
+                            TB.ui.longLoadSpinner(false);
 
                             // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
                             setTimeout(function () {

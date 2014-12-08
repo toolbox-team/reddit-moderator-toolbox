@@ -136,14 +136,14 @@ macros.init = function macrosInit() {
         if ($this.val() !== MACROS) {
             TBUtils.postComment(info.id, comment, function (successful, response) {
                 if (!successful) {
-                    TB.utils.textFeedback('Failed to post reply', 'negative');
+                    TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
                 } else {
                     // Distinguish the new reply
                     TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
                         if (!successful) {
-                            TB.utils.textFeedback('Failed to distinguish reply', 'negative');
+                            TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
                         } else {
-                            TB.utils.textFeedback('Reply posted', 'positive');
+                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
                             if (topLevel) {
                                 $this.val(MACROS);
                             } else {

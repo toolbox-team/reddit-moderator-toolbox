@@ -535,7 +535,7 @@ modButton.init = function init() {
     // send a message to the user.
     $body.on('click', '.mod-popup .message-send', function () {
 
-        TBUtils.longLoadSpinner(true);
+        TB.ui.longLoadSpinner(true);
         var $popup = $(this).parents('.mod-popup'),
             user = $popup.find('.user').text(),
             subreddit = $popup.find('.subreddit').text(),
@@ -546,7 +546,7 @@ modButton.init = function init() {
         if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
             $callbackSpan.text('You forgot a subject or message');
             $callbackSpan.css('color', 'red');
-            TBUtils.longLoadSpinner(false);
+            TB.ui.longLoadSpinner(false);
             return;
         }
         else {
@@ -557,17 +557,17 @@ modButton.init = function init() {
         TBUtils.sendMessage(user, subject, message, subreddit, function (successful, response) {
             if (!successful) {
                 $callbackSpan.text('an error occurred: ' + response[0][1]);
-                TBUtils.longLoadSpinner(false);
+                TB.ui.longLoadSpinner(false);
             }
             else {
                 if (response.json.errors.length) {
                     $callbackSpan.text(response.json.errors[1]);
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                 }
                 else {
                     $callbackSpan.text('message sent');
                     $callbackSpan.css('color', 'green');
-                    TBUtils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                 }
             }
         });

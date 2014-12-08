@@ -26,7 +26,6 @@ function initwrapper() {
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-        longLoadArray = [],
         gettingModSubs = false,
         getModSubsCallbacks = [];
 
@@ -313,68 +312,12 @@ function initwrapper() {
     };
 
     TBUtils.textFeedback = function(feedbackText, feedbackKind) {
-        // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
-        if (feedbackKind !== undefined && feedbackKind !== undefined) {
-            var $body = $('body');
-
-            // If there is still a previous feedback element on the page we remove it.
-            $body.find('#tb-feedback-window').remove();
-
-            // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-            feedbackElement = '<div id="tb-feedback-window" class="' + feedbackKind + '"><span class="tb-feedback-text">' + feedbackText + '</span></div>';
-
-            // Add the element to the page.
-            $body.append(feedbackElement);
-
-            //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-            var $feedbackWindow = $body.find('#tb-feedback-window'),
-                feedbackLeftMargin = $feedbackWindow.outerWidth(),
-                feedbackLeftMargin = feedbackLeftMargin / 2,
-                feedbackTopMargin = $feedbackWindow.outerHeight(),
-                feedbackTopMargin = feedbackTopMargin / 2;
-
-            $feedbackWindow.css({
-                'margin-left': '-' + feedbackLeftMargin + 'px',
-                'margin-top': '-' + feedbackTopMargin + 'px'
-            });
-
-            // And fade out nicely after 3 seconds.
-            $body.find('#tb-feedback-window').delay(3000).fadeOut();
-        }
+        TBui.textFeedback(feedbackText, feedbackKind);
     };
 
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-    TBUtils.longLoadSpinner = function (createOrDestroy,feedbackText,feedbackKind) {
-        if (createOrDestroy !== undefined) {
-
-            // if requested and the element is not present yet
-            if (createOrDestroy && longLoadArray.length == 0) {
-
-                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
-                $('.footer-parent').append('<div id="tb-loading"></div>');
-                longLoadArray.push('load');
-
-                // if requested and the element is already present
-            } else if (createOrDestroy && longLoadArray.length > 0) {
-                longLoadArray.push('load');
-
-                // if done and the only instance
-            } else if (!createOrDestroy && longLoadArray.length == 1) {
-                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
-                $('#tb-loading').remove();
-                longLoadArray.pop();
-
-                // if done but other process still running
-            } else if (!createOrDestroy && longLoadArray.length > 1) {
-                longLoadArray.pop();
-
-            }
-
-            // Support for text feedback removing the need to fire two function calls from a module.
-            if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBUtils.textFeedback(feedbackText, feedbackKind);
-            }
-        }
+    TBUtils.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind) {
+        TBui.longLoadSpinner(createOrDestroy, feedbackText, feedbackKind);
     };
 
     // TODO: This should probably be removed in the future since text feedback can now take of this.
@@ -389,14 +332,14 @@ function initwrapper() {
         <div class="tb-internal-overlay">\
         <div class="tb-overlay-label"></div></div>\
         ';
-                TBUtils.longLoadSpinner(true);
+                TBui.longLoadSpinner(true);
                 $body.find('.tb-popup-tabs').after(html);
             }
 
             // Destory the overlay
             else {
                 $body.find('.tb-internal-overlay').remove();
-                TBUtils.longLoadSpinner(false);
+                TBui.longLoadSpinner(false);
             }
         }
 
@@ -404,7 +347,7 @@ function initwrapper() {
         $body.find('.tb-overlay-label').html(text);
         // Also pass the text to the new text feedback
         if (text !== null) {
-        TBUtils.textFeedback(text, 'neutral');
+            TBui.textFeedback(text, 'neutral');
         }
 
     };
@@ -1390,9 +1333,12 @@ function initwrapper() {
 
 
     window.onbeforeunload = function () {
-        if (longLoadArray.length > 0) {
+        // TBUI now handles the long load array.
+        if (TBui.longLoadArray.length > 0) {
             return 'Toolbox is still busy!';
         }
+
+
 
         // Cache data.
         TBStorage.setCache('Utils', 'configcache', TBUtils.configCache);
@@ -1404,6 +1350,8 @@ function initwrapper() {
 
         // Just in case.
         TBStorage.unloading();
+
+        $.log("claring cache");
     };
 
 

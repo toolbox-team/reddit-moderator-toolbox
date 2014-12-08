@@ -1,4 +1,5 @@
 (function (TBui) {
+    TBui.longLoadArray = [];
 
     // Icons
     TBui.iconWrench = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -105,6 +106,11 @@
         "yellow": "#EAC117",
         "black": "#000000"
     };
+
+    TBui.FEEDBACK_NEUTRAL = 'neutral';
+    TBui.FEEDBACK_POSITIVE = 'positive';
+    TBui.FEEDBACK_NEGATIVE = 'negative';
+
 
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class) {
@@ -298,6 +304,75 @@
         });
 
         return $select_multiple;
+    };
+
+    TBui.textFeedback = function(feedbackText, feedbackKind) {
+        // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
+        if (feedbackKind !== undefined && feedbackKind !== undefined) {
+            var $body = $('body');
+
+            // If there is still a previous feedback element on the page we remove it.
+            $body.find('#tb-feedback-window').remove();
+
+            // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
+            var feedbackElement = '<div id="tb-feedback-window" class="' + feedbackKind + '"><span class="tb-feedback-text">' + feedbackText + '</span></div>';
+
+            // Add the element to the page.
+            $body.append(feedbackElement);
+
+            //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
+            var $feedbackWindow = $body.find('#tb-feedback-window'),
+                feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
+                feedbackTopMargin = ($feedbackWindow.outerHeight() /2);
+
+            $feedbackWindow.css({
+                'margin-left': '-' + feedbackLeftMargin + 'px',
+                'margin-top': '-' + feedbackTopMargin + 'px'
+            });
+
+            // And fade out nicely after 3 seconds.
+            $body.find('#tb-feedback-window').delay(3000).fadeOut();
+        }
+    };
+
+    // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
+    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind) {
+        if (createOrDestroy !== undefined) {
+
+            // if requested and the element is not present yet
+            if (createOrDestroy && TBui.longLoadArray.length == 0) {
+
+                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
+                $('.footer-parent').append('<div id="tb-loading"></div>');
+                TBui.longLoadArray.push('load');
+
+                // if requested and the element is already present
+            } else if (createOrDestroy && TBui.longLoadArray.length > 0) {
+                TBui.longLoadArray.push('load');
+
+                // if done and the only instance
+            } else if (!createOrDestroy && TBui.longLoadArray.length == 1) {
+                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
+                $('#tb-loading').remove();
+                TBui.longLoadArray.pop();
+
+                // if done but other process still running
+            } else if (!createOrDestroy && TBui.longLoadArray.length > 1) {
+                TBui.longLoadArray.pop();
+
+            }
+
+            // Support for text feedback removing the need to fire two function calls from a module.
+            if (feedbackText !== undefined && feedbackKind !== undefined) {
+                TBui.textFeedback(feedbackText, feedbackKind);
+            }
+        }
+    };
+
+    TBui.beforeunload = function () {
+        if (longLoadArray.length > 0) {
+            return 'Toolbox is still busy!';
+        }
     };
 
 }(TBui = window.TBui || {}));

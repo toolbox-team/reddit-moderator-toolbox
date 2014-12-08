@@ -779,7 +779,7 @@ modLogMatrix.init = function () {
                 }
             }
         });
-        TBUtils.longLoadSpinner(false);
+        TB.ui.longLoadSpinner(false);
     }
 
 
@@ -798,7 +798,7 @@ modLogMatrix.init = function () {
         if (ratelimit === undefined) {
             getRatelimit();
         } else {
-            TBUtils.longLoadSpinner(true);
+            TB.ui.longLoadSpinner(true);
             $('.modactionlisting table tr.modactions').each(function () {
                 var $this = $(this);
                 if ($this.find('.button a').hasClass("removecomment")) {

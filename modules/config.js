@@ -41,12 +41,16 @@ function tbconfig() {
 
         function postToWiki(page, data, reason, isJSON, updateAM) {
             $.log("posting to wiki");
+            TBUtils.textFeedback('saving to wiki', 'neutral');
             TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
                 $.log("save succ = " + succ);
+                console.log("save succ = " + succ);
                 if (!succ) {
                     $.log(err.responseText, true)
+                    TBUtils.textFeedback(err.responseText, 'negative');
                 } else {
                     $.log("clearing cache");
+                    TBUtils.textFeedback('wiki page saved', 'positive');
                     TBUtils.clearCache();
                 }
             });
@@ -75,7 +79,7 @@ function tbconfig() {
                         <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data wiki-toolbox" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "edit user notes",
@@ -85,7 +89,7 @@ function tbconfig() {
                         <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data wiki-usernotes" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "edit automoderator config",
@@ -95,7 +99,7 @@ function tbconfig() {
                         <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data wiki-automoderator" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "removal reasons settings",
@@ -317,6 +321,38 @@ function tbconfig() {
             }
         });
     // Wiki tab save button is clicked.
+        $body.on('click', '.save-wiki-data', function () {
+            var $this = $(this),
+                tabname = $this.attr('data-tabname'),
+                page;
+
+            switch (tabname) {
+                case 'edit_toolbox_config':
+                    page = 'toolbox';
+                    break;
+                case 'edit_user_notes':
+                    page = 'usernotes';
+                    break;
+                case 'edit_automoderator_config':
+                    page = 'automoderator';
+                    break;
+            }
+
+            var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
+                editArea = $wikiContentArea.find('.wiki-edit-area'),
+                textArea = $wikiContentArea.find('.edit-wikidata'),
+                text = $(textArea).val(),
+                editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val(),
+                updateAM = (page === 'automoderator');
+
+            if (!editNote) {
+                editNote = 'updated ' + page + ' configuration';
+            }
+            // save the data, and blank the text area.
+            // also, yes some of the pages are in JSON, but they aren't JSON objects,
+            // so they don't need to be re-strinified.
+            postToWiki(page, text, editNote, false, updateAM);
+        });
 
     // Toolbox config FORM tab save
 

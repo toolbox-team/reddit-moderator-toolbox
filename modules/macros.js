@@ -64,15 +64,18 @@ macros.init = function macrosInit() {
         });
     }
 
-    if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
-        getConfig(TB.utils.post_site, function (success) {
-            // if we're a mod, add macros to top level reply button.
-            if (success) {
-                $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="' + STYLE + '"><option value=' + MACROS + '>macros</option></select>');
-                populateSelect('.tb-top-macro-select');
-            }
-        });
-    }
+    TB.utils.getModSubs(function() {
+        if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
+            $.log("getting config", false, 'modmacros');
+            getConfig(TB.utils.post_site, function (success) {
+                // if we're a mod, add macros to top level reply button.
+                if (success) {
+                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="' + STYLE + '"><option value=' + MACROS + '>macros</option></select>');
+                    populateSelect('.tb-top-macro-select');
+                }
+            });
+        }
+    });
 
     // add macro buttons after we click reply, if we're a mod.
     $body.on('click', 'ul.buttons a', function () {
@@ -117,10 +120,11 @@ macros.init = function macrosInit() {
 
         var $this = $(this),
             comment = unescape($this.val()),
+            topLevel = (e.target.className === 'tb-top-macro-select'),
             info;
 
         // If it's a top-level reply we need to find the post's info.
-        if ($this.hasClass('tb-top-macro-select')) {
+        if (topLevel) {
             info = TB.utils.getThingInfo($('#siteTable .thing:first'));
         } else {
             info = TB.utils.getThingInfo($this);
@@ -132,15 +136,15 @@ macros.init = function macrosInit() {
         if ($this.val() !== MACROS) {
             TBUtils.postComment(info.id, comment, function (successful, response) {
                 if (!successful) {
-                    TB.utils.alert("Failed to post comment.");
+                    TB.utils.textFeedback('Failed to post reply', 'negative');
                 } else {
                     // Distinguish the new reply
                     TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
                         if (!successful) {
-                            TB.utils.alert("Failed to distinguish comment.");
+                            TB.utils.textFeedback('Failed to distinguish reply', 'negative');
                         } else {
-                            TB.utils.alert("Reply posted.");
-                            if (e.target.className === 'tb-top-macro-select') {
+                            TB.utils.textFeedback('Reply posted', 'positive');
+                            if (topLevel) {
                                 $this.val(MACROS);
                             } else {
                                 $this.closest('.usertext-buttons').find('.cancel').trigger('click');

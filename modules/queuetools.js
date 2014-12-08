@@ -411,7 +411,7 @@ queueTools.init = function () {
             $('.thing:visible > input:checked').parent().each(function () {
                 var id = $(this).attr('data-fullname');
 
-                if(approve) {
+                if(type == 'approve') {
                     TBUtils.approveThing(id, function (success) {
                         //Insert useful error handling here (or not)
                     });

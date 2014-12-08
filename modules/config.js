@@ -55,23 +55,6 @@ function tbconfig() {
         // Create the window overlay.
         function showSettings() {
 
-            // If there are no reasons stored in the config, check the CSS.  NOTE: Do we still want to to have this around?
-            if (!config.removalReasons || config.removalReasons.reasons.length < 1) {
-                TBUtils.getReasonsFromCSS(subreddit, function (resp) {
-                    if (resp) {
-                        $('.reasons-notice').show();
-
-                        // Save old removal reasons when clicked.
-                        $('.update-reasons').click(function () {
-                            config.removalReasons = resp;
-
-                            postToWiki('toolbox', config, 'import removal reasons from CSS', true);
-
-                            $('.reasons-notice').hide();
-                        });
-                    }
-                });
-            }
 
             $overlay = TB.ui.overlay(
                 'Toolbox Configuration - /r/' + subreddit,
@@ -80,15 +63,8 @@ function tbconfig() {
                         title: "Settings Home",
                         tooltip: "Pointers and handy links.",
                         content: '\
-                        Through this window you can edit the settings for /r/' + subreddit + '. Settings you change here will apply to the entire subreddit and by extension other moderators.\
-                        <div class="reasons-notice" style="display:none;">\
-                        <br><br>\
-                        <p>\
-                        Removal reasons were found in your CSS but have not been saved to the wiki configuration page.<br />\
-                        You will need to save them to the wiki before you can edit them. &nbsp;Would you like to do so now?<br />\
-                        <a class="update-reasons" href="javascript:;">Save removal reasons to wiki</a> (note: this requires that you have wiki editing permisissions)\
-                        </p>\
-                        </div>', // note that I have put the reasons-notice here since this is the landing page.
+                        Through this window you can edit the settings for /r/' + subreddit + '. </br></br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
+                        ',
                         footer: ''
                     },
                     {
@@ -99,7 +75,7 @@ function tbconfig() {
                         <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data wiki-toolbox" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "edit user notes",
@@ -109,7 +85,7 @@ function tbconfig() {
                         <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data wiki-usernotes" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "edit automoderator config",
@@ -119,7 +95,7 @@ function tbconfig() {
                         <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data wiki-automoderator" type="button" style="display:none" value="Save Page to Wiki"></input>'
                     },
                     {
                         title: "removal reasons settings",
@@ -340,6 +316,7 @@ function tbconfig() {
                 $this.addClass('content-populated');
             }
         });
+    // Wiki tab save button is clicked.
 
     // Toolbox config FORM tab save
 

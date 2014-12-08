@@ -271,8 +271,7 @@ queueTools.init = function () {
         var $modtoolsMenu = $body.find('.menuarea.modtools'),
             offset = $modtoolsMenu.offset(),
             offsetTop = offset.top,
-            rightPosition = $('.side').outerWidth(),
-            rightPosition = rightPosition+10;
+            rightPosition = $('.side').outerWidth() + 10;
 
         $modtoolsMenu.css({
             'margin-right': rightPosition + 'px',
@@ -286,11 +285,11 @@ queueTools.init = function () {
         $(window).scroll(function(){
             if ($(window).scrollTop() > offsetTop){
                 $modtoolsMenu.css({
-                    'top': ($(window).scrollTop()) -offsetTop + 5 + 'px',
+                    'top': ($(window).scrollTop()) -offsetTop + 5 + 'px'
                 });
             } else {
                 $modtoolsMenu.css({
-                    'top': 'inherit',
+                    'top': 'inherit'
                 });
             }
         });
@@ -327,6 +326,7 @@ queueTools.init = function () {
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').prop('checked', allSelected = this.checked);
         });
+        
         $body.on('click', '.thing input[type=checkbox]', function () {
             $('#select-all').prop('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
@@ -386,10 +386,12 @@ queueTools.init = function () {
             }
             things.filter(selector).find('input[type=checkbox]').prop('checked', true);
         });
+        
         $('.hide-selected').click(function () {
             $('.thing:visible:has(input:checked)').hide();
             $('.thing input[type=checkbox]').prop('checked', false);
         });
+        
         $('.unhide-selected').click(function () {
             $things.show();
         });
@@ -402,16 +404,17 @@ queueTools.init = function () {
         $('.collapse-reports').click(function () {
             $('.reported-stamp').siblings('.report-reasons').hide();
         });
+        
         // Mass spam/remove/approve
         $('.pretty-button.action').click(function () {
-            var spam = (this.type == 'negative'),
-                type = (this.type == 'positive' ? 'approve' : 'remove');
+            var approve = this.type == 'positive',
+                spam = !approve && (this.type == 'negative');
 
             // Apply action
-            $('.thing:visible > input:checked').parent().each(function () {
+            var $actioned = $('.thing:visible > input:checked').parent().each(function () {
                 var id = $(this).attr('data-fullname');
 
-                if(type == 'approve') {
+                if(approve) {
                     TBUtils.approveThing(id, function (success) {
                         //Insert useful error handling here (or not)
                     });
@@ -421,7 +424,10 @@ queueTools.init = function () {
                         //Insert useful error handling here (or not)
                     });
                 }
-            }).css('opacity', '1').removeClass('flaired spammed removed approved').addClass((spam ? 'spamme' : type) + 'd');
+            });
+            $actioned.css('opacity', '1');
+            $actioned.removeClass('flaired spammed removed approved');
+            $actioned.addClass(approve ? 'approved' : (spam ? 'spammed' : 'removed'));
         });
 
         // menuarea pretty-button feedback.
@@ -438,19 +444,20 @@ queueTools.init = function () {
             $(thing).find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
                 $(thing).hide();
-            } else if (ignoreOnApproveset) {
+            }
+            else if (ignoreOnApproveset) {
                 ignoreOnApproveset = false;
-            } else if ($(this).hasClass('negative')) {
-                $(thing).removeClass('removed');
-                $(thing).removeClass('approved');
+            }
+            else if ($(this).hasClass('negative')) {
+                $(thing).removeClass('removed approved');
                 $(thing).addClass('spammed');
-            } else if ($(this).hasClass('neutral')) {
-                $(thing).removeClass('spammed');
-                $(thing).removeClass('approved');
+            }
+            else if ($(this).hasClass('neutral')) {
+                $(thing).removeClass('spammed approved');
                 $(thing).addClass('removed');
-            } else if ($(this).hasClass('positive')) {
-                $(thing).removeClass('removed');
-                $(thing).removeClass('spammed');
+            }
+            else if ($(this).hasClass('positive')) {
+                $(thing).removeClass('removed spammed');
                 $(thing).addClass('approved');
             }
         });
@@ -511,7 +518,6 @@ queueTools.init = function () {
 
         });
 
-
         // Toggle all expando boxes
         var expandosOpen = false;
         $('.open-expandos').on('click', function () {
@@ -533,8 +539,6 @@ queueTools.init = function () {
                 expandosOpen = false;
             }
         });
-
-
 
         // Call History Button module init if it's not already enabled
         if (!TB.modules.HistoryButton.setting('enabled')) {
@@ -567,7 +571,6 @@ queueTools.init = function () {
             if (action == 'expando' || action == 'remove' || action == 'approve') return !1;
             return rate_limit(action);
         };
-
 
         if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
             var prefix = '', page = '', type = '';
@@ -648,8 +651,6 @@ queueTools.init = function () {
         }
 
         sortThings(listingOrder, sortAscending);
-
-
     }
 
     // Add mod tools or mod tools toggle button if applicable

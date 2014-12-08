@@ -310,7 +310,7 @@ function addModtools() {
     // Mass spam/remove/approve
     $('.pretty-button.action').click(function () {
         var approve = this.type == 'positive',
-            spam = !remove && (this.type == 'negative');
+            spam = !approve && (this.type == 'negative');
 
         // Apply action
         var $actioned = $frameSitetable.find('.thing:visible > input:checked').parent().each(function () {

@@ -45,6 +45,7 @@ nukeComments.init = function () {
 						if (_idx == elmnts.length) {
 							$.log("kill spinner");
 							TB.utils.longLoadSpinner(false);
+							TB.utils.textFeedback('all comments removed','positive');
 						}
 					}
 				})(elmnts[i], (i+1)), 1500 * i); // 1.5s timeout prevents overloading reddit.

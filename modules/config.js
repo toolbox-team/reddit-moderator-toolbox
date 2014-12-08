@@ -46,7 +46,7 @@ function tbconfig() {
                 $.log("save succ = " + succ);
                 console.log("save succ = " + succ);
                 if (!succ) {
-                    $.log(err.responseText, true)
+                    $.log(err.responseText, true);
                     TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 } else {
                     $.log("clearing cache");
@@ -60,7 +60,7 @@ function tbconfig() {
         function showSettings() {
 
 
-            $overlay = TB.ui.overlay(
+            var $overlay = TB.ui.overlay(
                 'Toolbox Configuration - /r/' + subreddit,
                 [
                     {
@@ -79,7 +79,7 @@ function tbconfig() {
                         <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
                         title: "edit user notes",
@@ -89,7 +89,7 @@ function tbconfig() {
                         <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
                         title: "edit automoderator config",
@@ -99,7 +99,7 @@ function tbconfig() {
                         <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                         <br>\
                         <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                        footer: '<input class="save-wiki-data" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki"></input>'
+                        footer: '<input class="save-wiki-data" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
                         title: "removal reasons settings",
@@ -148,7 +148,7 @@ function tbconfig() {
                             <span>Footer:</span>\
                             <p><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) + '</textarea></p>\
                     ',
-                        footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings"></input>'
+                        footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'
                     },
                     {
                         title: "edit removal reasons",
@@ -292,6 +292,14 @@ function tbconfig() {
             }
         }
 
+        function removalReasonsContent() {
+
+        }
+
+        function modMacrosContent() {
+
+        }
+
     // Let's do some stuff with all those nice tabs we generated!
 
     // Toolbox config WIKI tab
@@ -339,7 +347,6 @@ function tbconfig() {
             }
 
             var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
-                editArea = $wikiContentArea.find('.wiki-edit-area'),
                 textArea = $wikiContentArea.find('.edit-wikidata'),
                 text = $(textArea).val(),
                 editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val(),
@@ -374,6 +381,27 @@ function tbconfig() {
             // Let people know that settings are saved.
             TB.ui.textFeedback('Removal reasons settings are saved', TB.ui.FEEDBACK_POSITIVE);
         });
+
+    // Removal reasons tab
+        $body.on('click', '.tb-window-tabs .edit_removal_reasons', function() {
+            var $this = $(this);
+            if(!$this.hasClass('content-populated')) {
+                removalReasonsContent();
+                $this.addClass('content-populated');
+            }
+        });
+
+        // Removal reasons interaction and related functions.
+
+    // Mod macros tab is clicked.
+        $body.on('click', '.tb-window-tabs .edit_mod_macros', function() {
+            if(!$this.hasClass('content-populated')) {
+                modMacrosContent();
+                $this.addClass('content-populated');
+            }
+        });
+
+        // mod macros interaction and related functions
 
     // When the import button is clicked on the domain tags thing.
         $body.on('click', '.domain_tags .import', function () {

@@ -32,17 +32,24 @@ nukeComments.init = function () {
 
 	delete_function = function (thread_root) {
 		var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
+		TB.utils.longLoadSpinner(true,'removing comments','neutral');
 		for (var i = 0; i < elmnts.length; i++) {
 			setTimeout(
-				(function (_elmnt) {
+				(function (_elmnt, _idx) {
 					return function () {
+						TB.utils.textFeedback('removing comment ' + _idx + '/' + elmnts.length,'neutral');
+						$.log('removing comment ' + _idx + '/' + elmnts.length, false, 'nuke');
 						var event = document.createEvent('UIEvents');
 						event.initUIEvent('click', true, true, window, 1);
 						_elmnt.dispatchEvent(event);
+						if (_idx == elmnts.length) {
+							$.log("kill spinner");
+							TB.utils.longLoadSpinner(false);
+						}
 					}
-				})(elmnts[i]), 1500 * i); // 1.5s timeout prevents overloading reddit.
+				})(elmnts[i], (i+1)), 1500 * i); // 1.5s timeout prevents overloading reddit.
 		}
-		;
+
 	};
 
 	if (document.querySelector('body.moderator')) { // only execute if you are a moderator
@@ -72,14 +79,14 @@ nukeComments.init = function () {
 			// console.log(i + ':' + comment_ids);
 			if (author_link) {
 				// create link DOM element with img inside link
-				nuke_button[i] = document.createElement('a')
+				nuke_button[i] = document.createElement('a');
 				nuke_button[i].setAttribute('href', 'javascript:void(0)');
 				nuke_button[i].setAttribute('title', 'Nuke!');
 				nuke_button[i].setAttribute('id', 'nuke_' + i);
 				if (use_image) {
 					nuke_button[i].appendChild(img_element.cloneNode(true));
 				} else {
-					nuke_button[i].innerHTML = "[D]";
+					nuke_button[i].innerHTML = "[R]";
 				}
 				// append after the author's name
 				author_link.parentNode.insertBefore(nuke_button[i], author_link.nextSibling);
@@ -96,6 +103,7 @@ nukeComments.init = function () {
 						// form input[value="removed"]~span.option.error a.yes -- finds the yes for normal deleting comments.
 						// a.pretty-button.neutral finds the 'remove' button for flagged comments
 						if (confirm("Are you sure you want to nuke the following " + delete_button.length + comment_str)) {
+
 							for (var indx = 0; indx < continue_thread.length; indx++) {
 								var elmnt = continue_thread[indx];
 								setTimeout(

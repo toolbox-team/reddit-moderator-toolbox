@@ -72,6 +72,14 @@ queueTools.register_setting('reports-ascending', {
     'title': "Sort ascending."
 });
 
+queueTools.register_setting('expand-reports', {
+    'type': 'boolean',
+    'default': false,
+    'betamode': false,
+    'hidden': false,
+    'title': "Automatically expand reports on mod pages."
+});
+
 
 queueTools.init = function () {
     var $body = $('body');
@@ -220,6 +228,7 @@ queueTools.init = function () {
                 <a href="javascript:;" class="pretty-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
                 <a href="javascript:;" class="pretty-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
                 <a href="javascript:;" class="pretty-button inoffensive expand-reports"   >expand&nbsp;reports</a> \
+                <a href="javascript:;" class="pretty-button inoffensive collapse-reports"   >collapse&nbsp;reports</a> \
                 <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
                 <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
                 <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
@@ -384,8 +393,14 @@ queueTools.init = function () {
         $('.unhide-selected').click(function () {
             $things.show();
         });
+        
+        // Expand reports on click. 
         $('.expand-reports').click(function () {
-            $('.reported-stamp').each(function() { $(this).trigger('click') });
+            $('.reported-stamp').siblings('.report-reasons').show();
+        });
+        
+        $('.collapse-reports').click(function () {
+            $('.reported-stamp').siblings('.report-reasons').hide();
         });
         // Mass spam/remove/approve
         $('.pretty-button.action').click(function () {
@@ -491,7 +506,9 @@ queueTools.init = function () {
         window.addEventListener("TBNewThings", function () {
             $.log("proc new things");
             var things = $(".thing").not(".mte-processed");
+
             processNewThings(things);
+
         });
 
 
@@ -526,6 +543,10 @@ queueTools.init = function () {
 
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
+            // Expand reports on the new page, we leave the ones the user might already has collapsed alone. 
+            if (queueTools.setting('expand-reports')) {
+                $(things).find('.reported-stamp').siblings('.report-reasons').show();
+            }
             //add class to processed threads.
             $(things).addClass('mte-processed');
 
@@ -634,6 +655,9 @@ queueTools.init = function () {
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage) {
         addModtools();
+        if(queueTools.setting('expand-reports')) {
+            $('.reported-stamp').siblings('.report-reasons').show();
+        }
     }
 
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || $('body.moderator').length)) {
@@ -650,4 +674,3 @@ TB.register_module(queueTools);
         queuetools();
     });
 })();
-

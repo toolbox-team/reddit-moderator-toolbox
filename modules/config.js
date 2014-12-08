@@ -355,7 +355,6 @@ function tbconfig() {
         });
 
     // Toolbox config FORM tab save
-
         $body.on('click', '.save-removal-settings', function () {
 
 
@@ -376,6 +375,20 @@ function tbconfig() {
             TBUtils.textFeedback('Removal reasons settings are saved', 'positive');
         });
 
+    // When the import button is clicked on the domain tags thing.
+        $body.on('click', '.domain_tags .import', function () {
+
+            $.getJSON('/r/' + $body.find('.domain_tags .importfrom').val() + '/wiki/toolbox.json', function (json) {
+
+                if (json.data.content_md) {
+                    var tags = JSON.parse(json.data.content_md).domainTags;
+                    if (tags) {
+                        config.domainTags = tags;
+                        postToWiki('toolbox', config, '.import click', true);
+                    }
+                }
+            });
+        });
     }; // TBConfig.init()
 
     TB.register_module(TBConfig);

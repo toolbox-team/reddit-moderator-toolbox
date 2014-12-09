@@ -676,7 +676,8 @@ function initwrapper() {
             }
 
             // If there is only one use present and it says "to" it means that this is not the user sending the message.
-            if ($entry.find('.tagline .head a.author').length === 1 && $entry.find('.tagline .head').text().indexOf('to ') > -1) {
+
+            if ($entry.find('.tagline .head a.author').length === 1 && /^to /.test($entry.find('.tagline .head').text())) {
                 user = TBUtils.logged;
             }
 

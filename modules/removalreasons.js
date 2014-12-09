@@ -41,7 +41,7 @@ removalReasons.init = function removalReasonsInit() {
     var notEnabled = [];
 
     function getRemovalReasons(subreddit, callback) {
-        console.log("checking subreddit: " + subreddit);
+
 
         // Nothing to do if no toolbox config
         if (TBUtils.noConfig.indexOf(subreddit) != -1) {
@@ -173,6 +173,7 @@ removalReasons.init = function removalReasonsInit() {
                 $(response.reasons).each(function () {
                     data.reasons.push({
                         text: unescape(this.text),
+                        title: this.title,
                         flairText: this.flairText,
                         flairCSS: this.flairCSS
                     });
@@ -218,12 +219,12 @@ removalReasons.init = function removalReasonsInit() {
                                 <label id="reason-header">' + headerText + '</label> \
                             </p> \
                         </div> \
-                        <table> \
+                        <table id="removal-reasons-table"> \
                             <thead><tr> \
-                                <th></th> \
-                                <th>reason</th> \
-                                <th>flair text</th> \
-                                <th>flair css</th> \
+                                <th class="removal-toggle"></th> \
+                                <th class="reason">reason</th> \
+                                <th class="flair-text">flair text</th> \
+                                <th class="flair-css">flair css</th> \
                             </tr></thead> \
                             <tbody id="reason-table" /> \
                         </table> \
@@ -270,23 +271,34 @@ removalReasons.init = function removalReasonsInit() {
 
                 var tr = $('\
                 <tr class="selectable-reason"> \
-                    <td> \
+                    <td class="removal-toggle"> \
                         <input type="checkbox" class="reason-check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + index + '" /> \
                         <div class="reason-num">' + (index + 1) + '</div> \
                     </td> \
-                    <td> \
+                    <td class="reason"> \
+                        <div class="removal-reason-title">' + (this.title ? this.title : "") + '</div>\
                         <div class="styled-reason reason-content ' + data.subreddit + '-' + index + '">' + reasonHtml + '<br /></div> \
                     </td> \
-                    <td>' + (this.flairText ? this.flairText : "") + '</td> \
-                    <td>' + (this.flairCSS ? this.flairCSS : "") + '</td> \
+                    <td class="flair-text"><span class="flair-text-span">' + (this.flairText ? this.flairText : "") + '</span></td> \
+                    <td class="flair-css"><span class="flair-css-span">' + (this.flairCSS ? this.flairCSS : "") + '</span></td> \
                 </tr>');
 
                 tr.data({
                     reasonId: index,
                     reasonMarkdown: reasonMarkdown,
+                    title: this.title,
                     flairText: this.flairText,
                     flairCSS: this.flairCSS
                 });
+
+                 if(this.title)  {
+                     tr.find('.styled-reason.reason-content').hide();
+                     tr.find('.flair-text-span').hide();
+                     tr.find('.flair-css-span').hide();
+                 } else {
+                     tr.find('.removal-reason-title').remove();
+                 }
+
                 popup.find('tbody').append(tr);
             });
 
@@ -327,19 +339,36 @@ removalReasons.init = function removalReasonsInit() {
 
     // Selection/deselection of removal reasons
     $body.on('click', '.selectable-reason', function (e) {
-        var checkBox = $(this).find('.reason-check'),
+        var $this = $(this);
+        var checkBox = $this.find('.reason-check'),
             isChecked = checkBox.is(':checked'),
             targetIsCheckBox = $(e.target).is('.reason-check');
+        var hasTitle = $this.find('.removal-reason-title').length;
 
         if (!isChecked && !targetIsCheckBox) {
-            $(this).addClass('reason-selected');
+            $this.addClass('reason-selected');
             checkBox.prop('checked', true);
+            if(hasTitle > 0) {
+                $this.find('.reason-content').show();
+                $this.find('.flair-text-span').show();
+                $this.find('.flair-css-span').show();
+            }
         }
         else if (isChecked && targetIsCheckBox) {
-            $(this).addClass('reason-selected');
+            $this.addClass('reason-selected');
+            if(hasTitle > 0) {
+                $this.find('.reason-content').show();
+                $this.find('.flair-text-span').show();
+                $this.find('.flair-css-span').show();
+            }
         }
         else if (!isChecked && targetIsCheckBox) {
-            $(this).removeClass('reason-selected');
+            $this.removeClass('reason-selected');
+            if(hasTitle > 0) {
+                $this.find('.reason-content').hide();
+                $this.find('.flair-text-span').hide();
+                $this.find('.flar-css-span').hide();
+            }
         }
     });
 

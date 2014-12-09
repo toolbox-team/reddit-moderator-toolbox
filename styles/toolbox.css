@@ -1767,7 +1767,8 @@ span.tb-config-intro {
     margin: 2px;
 }
 
-.mod-toolbox h3.macro-title {
+.mod-toolbox h3.macro-title,
+.mod-toolbox h3.removal-title {
     font-size: 12px;
     border-bottom: dotted 1px #D2D2D2;
 }

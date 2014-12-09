@@ -271,3 +271,41 @@
 .mod-toolbox.res-nightmode tr.removal-reason {
 	border-bottom: solid 5px #7A7A7A;
 }
+
+
+
+/* 3.0 fixes */
+
+.mod-toolbox #removal-reasons-table {
+	width: 99%;
+}
+
+.mod-toolbox .removal-toggle {
+	width: 20px;
+}
+
+.mod-toolbox .flair-text {
+	width: 75px;
+}
+
+.mod-toolbox .flair-css {
+	width: 50px;
+	overflow: hidden;
+}
+
+.mod-toolbox td.flair-css,
+.mod-toolbox td.flair-text {
+	padding-top: 8px;
+
+}
+
+.mod-toolbox .reason-popup .reason-check {
+	margin: 4px 6px 6px 3px !important;
+}
+
+.mod-toolbox .removal-reason-title {
+	margin-top: 4px;
+	padding: 1px 3px 3px;
+	font-style: italic;
+	margin-bottom: -5px;
+}

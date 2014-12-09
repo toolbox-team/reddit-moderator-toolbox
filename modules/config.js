@@ -162,6 +162,7 @@ function tbconfig() {
                         <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,'+ TBui.iconAdd  +'"> Add new removal reason</a></br>\
                         <span id="tb-add-removal-reason-form">\
                             <textarea class="edit-area"></textarea><br/>\
+                            <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
                             <input type="text" name="flair-text" placeholder="flair text" /><br/>\
                             <input type="text" name="flair-css" placeholder="flair css" /><br/>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
@@ -324,6 +325,7 @@ function tbconfig() {
                     }
 
                     var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '<span style="color: #cecece">(no reason)</span>',
+                        removalReasonTitle = config.removalReasons.reasons[i].title || '',
                         removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                         removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
 
@@ -334,9 +336,10 @@ function tbconfig() {
                             <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
                         </td>\
                         <td class="removal-reasons-content" data-reason="{{i}}">\
-                            <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span>{{label}}</span></span><br>\
+                            <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="reason-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
                             <span class="removal-reason-edit">\
                                 <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
+                                <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\
                                 <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
                                 <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
                                 <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
@@ -351,6 +354,7 @@ function tbconfig() {
                         'i++': (i++),
                         'label': label,
                         'removalReasonText': removalReasonText,
+                        'removalReasonTitle': removalReasonTitle,
                         'removalReasonFlairText': removalReasonFlairText,
                         'removalReasonFlairCSS': removalReasonFlairCSS,
                         'uiCommentRemove': TBui.iconCommentRemove,
@@ -546,6 +550,7 @@ function tbconfig() {
                     reasonsNum = $removalContent.attr('data-reason');
 
                 $removalContent.find('.edit-area').val(decodeURIComponent(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
+                $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[i].title || '');
                 $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
                 $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
                 $removalContent.find('input[name=edit-note]').val('');
@@ -561,6 +566,7 @@ function tbconfig() {
                     $removalContent = $this.closest('td.removal-reasons-content'),
                     reasonsNum = $removalContent.attr('data-reason'),
                     reasonText = $removalContent.find('.edit-area').val(),
+                    reasonTitle = $removalContent.find('input[name=removal-title]').val(),
                     reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
                     reasonFlairCSS = $removalContent.find('input[name=flair-css]').val(),
                     editNote = $removalContent.find('input[name=edit-note]').val();
@@ -575,6 +581,7 @@ function tbconfig() {
                 config.removalReasons.reasons[reasonsNum].text = encodeURIComponent(reasonText);
                 config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
                 config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+                config.removalReasons.reasons[reasonsNum].title = reasonTitle;
 
                 postToWiki('toolbox', config, editNote, true);
                 if (TBUtils.configCache[subreddit] !== undefined) {
@@ -593,8 +600,7 @@ function tbconfig() {
 
 
                 var $removalReasonLabel = $removalContent.find('.removal-reason-label');
-                $removalReasonLabel.html('<span>' + label + '</span>');
-
+                $removalReasonLabel.html('<span><h3 class="removal-title">' + reasonTitle + '</h3>' + label + '</span>');
 
 
                 $removalReasonLabel.show();
@@ -635,6 +641,7 @@ function tbconfig() {
             $body.on('click', '#tb-add-removal-reason-form .save-new-reason', function() {
 
                 var reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
+                    reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
                     reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
                     reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val(),
                     editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
@@ -647,6 +654,7 @@ function tbconfig() {
 
                     reason.flairText = reasonFlairText;
                     reason.flairCSS = reasonFlairCSS;
+                    reason.title = reasonTitle;
 
                     if (!config.removalReasons) {
                         config.removalReasons = {
@@ -666,6 +674,7 @@ function tbconfig() {
                     $body.find('#tb-add-removal-reason').show();
                     $body.find('#tb-add-removal-reason-form').hide();
                     $body.find('#tb-add-removal-reason-form .edit-area').val('');
+                    $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
                     $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
                     $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
                     $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
@@ -676,6 +685,7 @@ function tbconfig() {
                 $body.find('#tb-add-removal-reason').show();
                 $body.find('#tb-add-removal-reason-form').hide();
                 $body.find('#tb-add-removal-reason-form .edit-area').val('');
+                $body.find('#tb-add-removal-reason-form input[name=removal-title]').val('');
                 $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
                 $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
                 $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');

@@ -711,154 +711,146 @@ function tbconfig() {
         });
 
         // mod macros interaction and related functions
-        // Removal reasons interaction and related functions.
 
-        // editing of reasons
-        $body.on('click', '.mod-macros-buttons .edit', function() {
-            var $this = $(this);
+            // editing of reasons
+            $body.on('click', '.mod-macros-buttons .edit', function() {
+                var $this = $(this);
 
-            $this.closest('tr.mod-macro').find('.mod-macro-label').hide();
-            $this.closest('tr.mod-macro').find('.mod-macro-edit').show();
-        });
+                $this.closest('tr.mod-macro').find('.mod-macro-label').hide();
+                $this.closest('tr.mod-macro').find('.mod-macro-edit').show();
+            });
 
-        // cancel
-        $body.on('click', '.mod-macro-edit .cancel-edit-macro', function() {
-            var $this = $(this),
-                $macroContent = $this.closest('td.mod-macros-content'),
-                reasonsNum = $macroContent.attr('data-macro');
+            // cancel
+            $body.on('click', '.mod-macro-edit .cancel-edit-macro', function() {
+                var $this = $(this),
+                    $macroContent = $this.closest('td.mod-macros-content'),
+                    reasonsNum = $macroContent.attr('data-macro');
 
-            $macroContent.find('.edit-area').val(decodeURIComponent(config.modMacros[reasonsNum].text)  || '<span style="color: #cecece">(no macro)</span>');
-            $macroContent.find('input[name=macro-title]').val(config.modMacros[reasonsNum].title || '');
-            $macroContent.find('input[name=edit-note]').val('');
+                $macroContent.find('.edit-area').val(decodeURIComponent(config.modMacros[reasonsNum].text)  || '<span style="color: #cecece">(no macro)</span>');
+                $macroContent.find('input[name=macro-title]').val(config.modMacros[reasonsNum].title || '');
+                $macroContent.find('input[name=edit-note]').val('');
 
-            $macroContent.find('.mod-macro-label').show();
-            $macroContent.find('.mod-macro-edit').hide();
-        });
+                $macroContent.find('.mod-macro-label').show();
+                $macroContent.find('.mod-macro-edit').hide();
+            });
 
-        // save
+            // save
+            $body.on('click', '.mod-macro-edit .save-edit-macro', function() {
+                var $this = $(this),
+                    $macroContent = $this.closest('td.mod-macros-content'),
+                    macroNum = $macroContent.attr('data-macro'),
+                    macroText = $macroContent.find('.edit-area').val(),
+                    macroTitle = $macroContent.find('input[name=macro-title]').val(),
+                    editNote = $macroContent.find('input[name=edit-note]').val();
 
-        $body.on('click', '.mod-macro-edit .save-edit-macro', function() {
-            var $this = $(this),
-                $macroContent = $this.closest('td.mod-macros-content'),
-                macroNum = $macroContent.attr('data-macro'),
-                macroText = $macroContent.find('.edit-area').val(),
-                macroTitle = $macroContent.find('input[name=macro-title]').val(),
-                editNote = $macroContent.find('input[name=edit-note]').val();
-
-
-            if (!editNote) {
-                // default note
-                editNote = 'update';
-            }
-            editNote += ', macro #' + macroNum;
-
-            config.modMacros[macroNum].text = encodeURIComponent(macroText);
-            config.modMacros[macroNum].title = macroTitle;
-
-            postToWiki('toolbox', config, editNote, true);
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-            }
-
-
-            var label = decodeURIComponent(macroText);
-            console.log(label);
-            if (label == '') {
-                label = '<span style="color: #cecece">(no macro)</span>';
-            } else {
-                if (label.length > 200) {
-                    label = label.substring(0, 197) + '...';
+                if (!editNote) {
+                    // default note
+                    editNote = 'update';
                 }
-                label = TBUtils.htmlEncode(label);
-            }
+                editNote += ', macro #' + macroNum;
 
+                config.modMacros[macroNum].text = encodeURIComponent(macroText);
+                config.modMacros[macroNum].title = macroTitle;
 
-            var $modMacroLabel = $macroContent.find('.mod-macro-label');
-            $modMacroLabel.html('<span><h3 class="macro-title">' + macroTitle + '</h3>' + label + '</span>');
-
-
-
-            $modMacroLabel.show();
-            $macroContent.find('.mod-macro-edit').hide();
-        });
-
-        // deleting a macro
-        $body.on('click', '.mod-macros-buttons .delete', function() {
-            var $this = $(this);
-
-            var confirmDelete = confirm('This will delete this mod macro, are you sure?');
-            if (confirmDelete) {
-                var macroNum = $this.attr('data-macro');
-
-                if (macroNum) {
-                    config.modMacros.splice(macroNum, 1);
-                } else {
-                    return;
-                }
-                postToWiki('toolbox', config, 'delete macro #' + macroNum, true);
+                postToWiki('toolbox', config, editNote, true);
                 if (TBUtils.configCache[subreddit] !== undefined) {
                     delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
                 }
 
-                $this.closest('.mod-macro').remove();
-            } else {
-                console.log('cancel');
-            }
+                var label = decodeURIComponent(macroText);
+                console.log(label);
+                if (label == '') {
+                    label = '<span style="color: #cecece">(no macro)</span>';
+                } else {
+                    if (label.length > 200) {
+                        label = label.substring(0, 197) + '...';
+                    }
+                    label = TBUtils.htmlEncode(label);
+                }
 
-        });
+                var $modMacroLabel = $macroContent.find('.mod-macro-label');
+                $modMacroLabel.html('<span><h3 class="macro-title">' + macroTitle + '</h3>' + label + '</span>');
 
-        // Adding a new reason
-        $body.on('click', '#tb-add-mod-macro', function() {
+                $modMacroLabel.show();
+                $macroContent.find('.mod-macro-edit').hide();
+            });
 
-            $(this).hide();
-            $body.find('#tb-add-mod-macro-form').show();
-        });
+            // deleting a macro
+            $body.on('click', '.mod-macros-buttons .delete', function() {
+                var $this = $(this);
 
-        // Save new reason
-        $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function() {
-            var macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
-                macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
-                editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
+                var confirmDelete = confirm('This will delete this mod macro, are you sure?');
+                if (confirmDelete) {
+                    var macroNum = $this.attr('data-macro');
 
-            editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
+                    if (macroNum) {
+                        config.modMacros.splice(macroNum, 1);
+                    } else {
+                        return;
+                    }
+                    postToWiki('toolbox', config, 'delete macro #' + macroNum, true);
+                    if (TBUtils.configCache[subreddit] !== undefined) {
+                        delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+                    }
 
-            var macro = {
-                text: encodeURIComponent(macroText)
-            };
+                    $this.closest('.mod-macro').remove();
+                } else {
+                    console.log('cancel');
+                }
 
-            macro.title = macroTitle;
+            });
 
-            if (!config.modMacros) {
-                config.modMacros = [];
-            }
+            // Adding a new reason
+            $body.on('click', '#tb-add-mod-macro', function() {
 
-            config.modMacros.push(macro);
+                $(this).hide();
+                $body.find('#tb-add-mod-macro-form').show();
+            });
 
-            postToWiki('toolbox', config, editNote, true);
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-            }
-            // And finally we repopulate the macro list and hide the current form.
-            $body.find('#tb-mod-macros-list').html('');
-            modMacrosContent();
-            $body.find('#tb-add-mod-macro').show();
-            $body.find('#tb-add-mod-macro-form').hide();
-            $body.find('#tb-add-mod-macro-form .edit-area').val('');
-            $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
-            $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
-            $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
-        });
+            // Save new reason
+            $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function() {
+                var macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
+                    macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
+                    editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
-        // cancel
-        $body.on('click', '#tb-add-mod-macro-form .cancel-new-macro', function() {
+                editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
 
-            $body.find('#tb-add-mod-macro').show();
-            $body.find('#tb-add-mod-macro-form').hide();
-            $body.find('#tb-add-mod-macro-form .edit-area').val('');
-            $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
-            $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
-            $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
-        });
+                var macro = {
+                    text: encodeURIComponent(macroText)
+                };
+
+                macro.title = macroTitle;
+
+                if (!config.modMacros) {
+                    config.modMacros = [];
+                }
+
+                config.modMacros.push(macro);
+
+                postToWiki('toolbox', config, editNote, true);
+                if (TBUtils.configCache[subreddit] !== undefined) {
+                    delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+                }
+                // And finally we repopulate the macro list and hide the current form.
+                $body.find('#tb-mod-macros-list').html('');
+                modMacrosContent();
+                $body.find('#tb-add-mod-macro').show();
+                $body.find('#tb-add-mod-macro-form').hide();
+                $body.find('#tb-add-mod-macro-form .edit-area').val('');
+                $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
+                $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
+                $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
+            });
+
+            // cancel
+            $body.on('click', '#tb-add-mod-macro-form .cancel-new-macro', function() {
+                $body.find('#tb-add-mod-macro').show();
+                $body.find('#tb-add-mod-macro-form').hide();
+                $body.find('#tb-add-mod-macro-form .edit-area').val('');
+                $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
+                $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
+                $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
+            });
 
     // When the import button is clicked on the domain tags thing.
         $body.on('click', '.domain_tags .import', function () {

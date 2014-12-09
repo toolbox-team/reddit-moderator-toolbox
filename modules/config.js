@@ -60,7 +60,7 @@ function tbconfig() {
         function showSettings() {
 
 
-            var $overlay = TB.ui.overlay(
+             $overlay = TB.ui.overlay(
                 'Toolbox Configuration - /r/' + subreddit,
                 [
                     {
@@ -141,12 +141,14 @@ function tbconfig() {
                             </td><td>\
                                 <input class="logreason" type="text" value="' + (config.removalReasons.logreason || '') + '"/>\
                             </td>\
+                            </tr><tr>\
+                            <td>Header:</td>\
+                            <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(config.removalReasons.header || '')) + '</textarea></td>\
+                            </tr><tr>\
+                            <td>Footer:</td>\
+                            <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(config.removalReasons.footer || '')) + '</textarea></td>\
                             </tr>\
-                            </table>\
-                            <span>Header:</span>\
-                            <p><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(config.removalReasons.header || '')) + '</textarea></p>\
-                            <span>Footer:</span>\
-                            <p><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(config.removalReasons.footer || '')) + '</textarea></p>\
+                        </table>\
                     ',
                         footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'
                     },
@@ -154,12 +156,12 @@ function tbconfig() {
                         title: "edit removal reasons",
                         tooltip: "Edit and add your removal reasons here.",
                         content: '\
-                        <a href="javascript:;" id="tb-add-removal-reason"> Add new removal reason</a></br>\
+                        <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,'+ TBui.iconAdd  +'"> Add new removal reason</a></br>\
                         <span id="tb-add-removal-reason-form">\
-                            <textarea class="edit-area" style="width: 800px; height: 150px;"></textarea><br/>\
+                            <textarea class="edit-area"></textarea><br/>\
                             <input type="text" name="flair-text" placeholder="flair text" /><br/>\
                             <input type="text" name="flair-css" placeholder="flair css" /><br/>\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br><br>\
+                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-new-reason" type="button" value="Save new reason"><input class="cancel-new-reason" type="button" value="Cancel adding reason">\
                         </span>\
                         <table id="tb-removal-reasons-list">\
@@ -294,6 +296,64 @@ function tbconfig() {
 
         function removalReasonsContent() {
 
+            if (config.removalReasons && config.removalReasons.reasons.length > 0) {
+
+                var i = 0;
+                $(config.removalReasons.reasons).each(function () {
+                    var label = decodeURIComponent(this.text);
+                    if (label == "") {
+                        label = '<span style="color: #cecece">(no reason)</span>';
+                    } else {
+                        if (label.length > 200) {
+                            label = label.substring(0, 197) + "...";
+                        }
+                        label = TBUtils.htmlEncode(label);
+                    }
+
+                    var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text),
+                        removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
+                        removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
+
+
+                    removalReasonTemplate = '\
+                    <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">\
+                        <td class="removal-reasons-buttons">\
+                            <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>\
+                            <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
+                        </td>\
+                        <td class="removal-reasons-content" data-reason="{{i}}">\
+                            <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span>{{label}}</span></span><br>\
+                            <span class="removal-reason-edit">\
+                                <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
+                                <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
+                                <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
+                                <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
+                                <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel editing reason">\
+                            </span>\
+                        </td>\
+                    </tr>';
+
+                    removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
+                        'i': i,
+                        'subreddit': subreddit,
+                        'i++': (i++),
+                        'label': label,
+                        'removalReasonText': removalReasonText,
+                        'removalReasonFlairText': removalReasonFlairText,
+                        'removalReasonFlairCSS': removalReasonFlairCSS,
+                        'uiCommentRemove': TBui.iconCommentRemove,
+                        'uiCommentEdit': TBui.iconCommentsEdit
+                    });
+
+                    var $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');
+
+
+
+                    $removalReasonsList.append(removalReasonTemplateHTML);
+                });
+
+            }
+
         }
 
         function modMacrosContent() {
@@ -337,6 +397,7 @@ function tbconfig() {
             switch (tabname) {
                 case 'edit_toolbox_config':
                     page = 'toolbox';
+                    $body.addClass('toolbox-wiki-edited');
                     break;
                 case 'edit_user_notes':
                     page = 'usernotes';
@@ -368,8 +429,8 @@ function tbconfig() {
             config.removalReasons = {
                 pmsubject: $('.pmsubject').val(),
                 logreason: $('.logreason').val(),
-                header: escape($('.edit-header').val()),
-                footer: escape($('.edit-footer').val()),
+                header: encodeURIComponent($('.edit-header').val()),
+                footer: encodeURIComponent($('.edit-footer').val()),
                 logsub: $('.logsub').val(),
                 logtitle: $('.logtitle').val(),
                 bantitle: $('.bantitle').val(),
@@ -386,12 +447,183 @@ function tbconfig() {
         $body.on('click', '.tb-window-tabs .edit_removal_reasons', function() {
             var $this = $(this);
             if(!$this.hasClass('content-populated')) {
-                removalReasonsContent();
+
+                // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
+                if ($body.hasClass('toolbox-wiki-edited')) {
+                    TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+                        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                            TBConfig.log('Failed: wiki config');
+                            return;
+                        }
+
+                        config = resp;
+                        removalReasonsContent();
+                    });
+                } else {
+                    removalReasonsContent();
+                }
+
+
+
                 $this.addClass('content-populated');
             }
         });
 
         // Removal reasons interaction and related functions.
+
+            // editing of reasons
+            $body.on('click', '.removal-reasons-buttons .edit', function() {
+                var $this = $(this);
+
+                $this.closest('tr.removal-reason').find('.removal-reason-label').hide();
+                $this.closest('tr.removal-reason').find('.removal-reason-edit').show();
+            });
+
+            // cancel
+            $body.on('click', '.removal-reason-edit .cancel-edit-reason', function() {
+                var $this = $(this),
+                    $removalContent = $this.closest('td.removal-reasons-content'),
+                    reasonsNum = $removalContent.attr('data-reason');
+
+                $removalContent.find('.edit-area').val(decodeURIComponent(config.removalReasons.reasons[reasonsNum].text));
+                $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
+                $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
+                $removalContent.find('input[name=edit-note]').val('');
+
+                $removalContent.find('.removal-reason-label').show();
+                $removalContent.find('.removal-reason-edit').hide();
+            });
+
+            // save
+
+        $body.on('click', '.removal-reason-edit .save-edit-reason', function() {
+            var $this = $(this),
+                $removalContent = $this.closest('td.removal-reasons-content'),
+                reasonsNum = $removalContent.attr('data-reason'),
+                reasonText = $removalContent.find('.edit-area').val(),
+                reasonFlairText = $removalContent.find("input[name=flair-text]").val(),
+                reasonFlairCSS = $removalContent.find("input[name=flair-css]").val(),
+                editNote = $removalContent.find("input[name=edit-note]").val();
+
+
+            if (!editNote) {
+                // default note
+                editNote = 'update';
+            }
+            editNote += ', reason #' + reasonsNum;
+
+            config.removalReasons.reasons[reasonsNum].text = encodeURIComponent(reasonText);
+            config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
+            config.removalReasons.reasons[reasonsNum].flairCSS = reasonFlairCSS;
+
+            postToWiki('toolbox', config, editNote, true);
+            if (TBUtils.configCache[subreddit] !== undefined) {
+                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+            }
+
+            var label = decodeURIComponent(reasonText);
+            console.log(label);
+            if (label == "") {
+                label = '<span style="color: #cecece">(no reason)</span>';
+            } else {
+                if (label.length > 200) {
+                    label = label.substring(0, 197) + "...";
+                }
+                label = TBUtils.htmlEncode(label);
+            }
+
+
+            var $removalReasonLabel = $removalContent.find('.removal-reason-label');
+            $removalReasonLabel.html('<span>' + label + '</span>');
+
+
+
+            $removalReasonLabel.show();
+            $removalContent.find('.removal-reason-edit').hide();
+        });
+
+            // deleting a reason
+            $body.on('click', '.removal-reasons-buttons .delete', function() {
+                var $this = $(this);
+
+                var confirmDelete = confirm('This will delete this removal reason, are you sure?');
+                if (confirmDelete) {
+                    var reasonsNum = $this.attr('data-reason');
+
+                    if (reasonsNum) {
+                        config.removalReasons.reasons.splice(reasonsNum, 1);
+                        //config.removalReasons.reasons[reasonsNum].remove();
+                    } else {
+                        return;
+                    }
+                    postToWiki('toolbox', config, 'delete reason #' + reasonsNum, true);
+                    if (TBUtils.configCache[subreddit] !== undefined) {
+                        delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al Aren't removal reasons cached? - cr
+                    }
+
+                    $this.closest('.removal-reason').remove();
+                } else {
+                    console.log('cancel');
+                }
+
+            });
+
+            // Adding a new reason
+            $body.on('click', '#tb-add-removal-reason', function() {
+
+                $(this).hide();
+                $body.find('#tb-add-removal-reason-form').show();
+            });
+
+            // Save new reason
+            $body.on('click', '#tb-add-removal-reason-form .save-new-reason', function() {
+
+                var reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
+                    reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
+                    reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val(),
+                    editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
+
+                    editNote = 'create new reason' + (editNote ? ', ' + editNote : '');
+
+                    var reason = {
+                        text: encodeURIComponent(reasonText)
+                    };
+
+                    reason.flairText = reasonFlairText;
+                    reason.flairCSS = reasonFlairCSS;
+
+                    if (!config.removalReasons) {
+                        config.removalReasons = {
+                            reasons: []
+                        };
+                    }
+
+                    config.removalReasons.reasons.push(reason);
+
+                    postToWiki('toolbox', config, editNote, true);
+                    if (TBUtils.configCache[subreddit] !== undefined) {
+                        delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
+                    }
+                    // And finally we repopulate the reasons list and hide the current form.
+                    $body.find('#tb-removal-reasons-list').html('');
+                    removalReasonsContent();
+                    $body.find('#tb-add-removal-reason').show();
+                    $body.find('#tb-add-removal-reason-form').hide();
+                    $body.find('#tb-add-removal-reason-form .edit-area').val('');
+                    $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
+                    $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
+                    $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+            });
+            // cancel
+            $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', function() {
+
+                $body.find('#tb-add-removal-reason').show();
+                $body.find('#tb-add-removal-reason-form').hide();
+                $body.find('#tb-add-removal-reason-form .edit-area').val('');
+                $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
+                $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
+                $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+            });
 
     // Mod macros tab is clicked.
         $body.on('click', '.tb-window-tabs .edit_mod_macros', function() {

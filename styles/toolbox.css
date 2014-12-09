@@ -1600,7 +1600,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 .thing.threaded-modmail .child, .thing.threaded-modmail .entry {
 	border-left : 2px solid #efefef!important;
-	margin-left : 0px!important;
+	margin-left : 0!important;
 }
 .thing.threaded-modmail .child .thing {
 	padding-left: 20px!important;
@@ -1623,8 +1623,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 /* Comment search */
 #tb-search-suggest {
-    z-index: 100;
-    position: fixed;
     display: none;
     max-height: 65%;
     position: absolute;
@@ -1687,7 +1685,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     text-align: center;
     background-color: #CEE3F8;
     border: 1px solid #A8B5C2;
-    box-shadow: rgba(214, 214, 214, 0.47) 0px 1px 3px 1px;
+    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 }
 
 #tb-feedback-window .tb-feedback-text {
@@ -1714,4 +1712,36 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     position: absolute;
     top: 4px;
     right: 4px;
+}
+
+.mod-toolbox #tb-removal-reasons-list {
+    border-top: solid 2px gray;
+    margin-top: 5px;
+    width: 99%;
+}
+
+.mod-toolbox #tb-removal-reasons-list td {
+    padding: 5px;
+    vertical-align: top;
+}
+
+.mod-toolbox .removal-reason-edit, .mod-toolbox #tb-add-removal-reason-form {
+    display: none;
+}
+
+
+.mod-toolbox .edit_removal_reasons input[type="text"] {
+    max-width: 600px;
+}
+
+.mod-toolbox .edit_removal_reasons .edit-area {
+    width: 600px;
+    height: 150px;
+    margin: 2px;
+}
+
+.mod-toolbox .removal_reasons_settings .edit-header, .mod-toolbox .removal_reasons_settings .edit-footer {
+    width: 600px;
+    height: 100px;
+    margin: 2px;
 }

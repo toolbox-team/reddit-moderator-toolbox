@@ -76,7 +76,7 @@ notifierMod.register_setting("straightToInbox", {
 
 notifierMod.register_setting("consolidatedmessages", {
     "type": "boolean",
-    "default": false,
+    "default": true,
     "title": "Consolidate notifications (x new messages) instead of individual notifications"
 });
 

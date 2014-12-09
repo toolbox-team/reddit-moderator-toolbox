@@ -59,7 +59,7 @@ modMailPro.register_setting('autothread', {
 
 modMailPro.register_setting('subredditcolor', {
     'type': 'boolean',
-    'default': true,
+    'default': false,
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 

@@ -58,6 +58,7 @@
 		"modules/syntax.js",
 		"modules/frame.js",
 		"modules/modmaillite.js",
+		"modules/modtalkadvisory.js",
 		"modules/devtools.js",
 		"modules/macros.js",
 		"modules/realtime.js",

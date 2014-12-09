@@ -304,8 +304,8 @@
 }
 
 .mod-toolbox .removal-reason-title {
-	margin-top: 4px;
+	margin-top: 7px;
 	padding: 1px 3px 3px;
-	font-style: italic;
 	margin-bottom: -5px;
+	font-size: 13px;
 }

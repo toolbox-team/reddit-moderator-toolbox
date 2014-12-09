@@ -388,7 +388,7 @@ function initwrapper() {
 
 
     TBUtils.notification = function (title, body, url, timeout) {
-        if (timeout === undefined) timeout = 15000;
+        if (timeout === undefined) timeout = 5000;
 
         var toolboxnotificationenabled = true;
 

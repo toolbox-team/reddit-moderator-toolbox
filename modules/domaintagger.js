@@ -3,7 +3,7 @@ function domaintagger() {
 var domainTagger = new TB.Module('Domain Tagger');
 
 ////Default settings
-domainTagger.settings['enabled']['default'] = true;
+domainTagger.settings['enabled']['default'] = false;
 
 domainTagger.register_setting('displaytype', {
     'type': 'selector',

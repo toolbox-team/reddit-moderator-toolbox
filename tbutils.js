@@ -35,7 +35,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.0.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 300; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'No Name Beta';
+    TBUtils.releaseName = 'A BRAVE NEW WORLD';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 4;
     TBUtils.minNotesSchema = 0;
@@ -134,31 +134,9 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
+        // 3.0 is a BRAVE NEW WORLD.  No Version chnages.
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true);
 
-        // 3.0 TODO: convert Notifier.shortcuts2 to Notifier.shortcuts
-
-        // 3.0: Convert comments module highlight keywords from string to array
-        var highlighted = TBStorage.getSetting('CommentsMod', 'highlighted', []);
-        if (!Array.isArray(highlighted)) {
-            highlighted = highlighted.split(',').map(function (str) {
-                return str.trim();
-            }).clean("");
-            TBStorage.setSetting('CommentsMod', 'highlighted', highlighted);
-        }
-        // 3.0: Move QueueTools' rtscomment setting to HistoryButton
-        TBStorage.setSetting('HistoryButton', 'rtscomment', TBStorage.getSetting('QueueTools', 'rtscomment', true));
-        // 3.0: Upgrade QueueTools' sortAscending
-        TBStorage.setSetting('QueueTools', 'reports-ascending', (TBStorage.getSetting('QueueTools', 'reports-ascending', 'false') == 'true')); //the fuck is going on here?
-        // 3.0: MMP uses proper module settings, so we need to change the inbox view to a string. (was an int)
-        TBStorage.setSetting('ModMailPro', 'inboxstyle', 'priority');
-        // 3.0: Clear old caches (caching is now handled in tb.storage.
-        Object.keys(localStorage)
-            .forEach(function (key) {
-                if (/^(Toolbox.cache.)/.test(key)) {
-                    localStorage.removeItem(key);
-                }
-            });
 
         // End: version changes.
 

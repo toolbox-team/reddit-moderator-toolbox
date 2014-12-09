@@ -34,15 +34,6 @@ notifierMod.register_setting("modmailsubredditsfrompro", {
     "title": "Use filtered subreddits from ModMail Pro"
 });
 
-
-// Do we want to show an icon for unmoderated?
-
-notifierMod.register_setting("unmoderatedon", {
-    "type": "boolean",
-    "default": true,
-    "title": "Show icon for unmoderated"
-});
-
 // Do we want notifications and where do they link to?
 
 notifierMod.register_setting("messagenotifications", {
@@ -114,12 +105,7 @@ notifierMod.init = function notifierMod_init() {
 
         modmailFilteredSubreddits = modmailSubreddits,  //wat?
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        //shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
-        //shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
-        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
-        //footer = $('.footer-parent'),
-
-        //lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
+        unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
         messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false);

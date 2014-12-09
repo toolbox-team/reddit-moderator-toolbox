@@ -1,7 +1,7 @@
 function tbmodbar() {
 
 var modbar = new TB.Module('Toolbox UI (modbar)');
-modbar.shortname = 'modbar';
+modbar.shortname = 'Modbar';
 
 modbar.settings["enabled"]["default"] = true;
 modbar.config["needs_mod_subs"] = true;
@@ -18,22 +18,16 @@ modbar.init = function coreInit() {
     //
     // preload some generic variables
     //
-    var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
-        modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
-        messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
-        modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
-        unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
-        modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
+    var modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
         unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
         modmailSubreddits = TB.storage.getSetting('Notifier', 'modmailsubreddits', 'mod'),
         modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
         modmailFilteredSubreddits = modmailSubreddits,
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        shortcuts = TB.storage.getSetting('Notifier', 'shortcuts', '-'),
-        shortcuts2 = TB.storage.getSetting('Notifier', 'shortcuts2', {}),
-        modbarHidden = TB.storage.getSetting('Notifier', 'modbarhidden', false),
-        compactHide = TB.storage.getSetting('Notifier', 'compacthide', false),
-        unmoderatedOn = TB.storage.getSetting('Notifier', 'unmoderatedon', true),
+        shortcuts = TB.storage.getSetting('Modbar', 'shortcuts', {}),
+        modbarHidden = TB.storage.getSetting('Modbar', 'modbarhidden', false),
+        compactHide = TB.storage.getSetting('Modbar', 'compacthide', false),
+        unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true),
         footer = $('.footer-parent'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
@@ -41,14 +35,12 @@ modbar.init = function coreInit() {
         modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
-        consoleShowing = TB.storage.getSetting('Notifier', 'consoleshowing', false),
-        lockscroll = TB.storage.getSetting('Notifier', 'lockscroll', false),
-        newLoad = true,
-        now = new Date().getTime(),
-        messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
+        consoleShowing = TB.storage.getSetting('Modbar', 'consoleshowing', false),
+        lockscroll = TB.storage.getSetting('Modbar', 'lockscroll', false),
+        messageunreadlink = TB.storage.getSetting('Modbar', 'messageunreadlink', false),
+        modmailunreadlink = TB.storage.getSetting('Modbar', 'modmailunreadlink', false),
         settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
-        enableTopLink = TB.storage.getSetting('Notifier', 'enableTopLink', false),
+        enableTopLink = TB.storage.getSetting('Modbar', 'enableTopLink', false),
         browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false);
 
 
@@ -58,24 +50,6 @@ modbar.init = function coreInit() {
         if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
             modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
         }
-    }
-
-    // convert some settings values
-    // TODO: add a fixer in the first run function for next release and drop this section
-    if (modNotifications == 'on') {
-        TB.storage.setSetting('Notifier', 'modnotifications', true);
-        modNotifications = true;
-    } else if (modNotifications == 'off') {
-        TB.storage.setSetting('Notifier', 'modnotifications', false);
-        modNotifications = false;
-    }
-
-    if (messageNotifications == 'on') {
-        TB.storage.setSetting('Notifier', 'messagenotifications', true);
-        messageNotifications = true;
-    } else if (messageNotifications == 'off') {
-        TB.storage.setSetting('Notifier', 'messagenotifications', true);
-        messageNotifications = false;
     }
 
     if (messageunreadlink) {
@@ -222,7 +196,7 @@ if (unmoderatedOn) {
     }
 
     // Append shortcuts
-    $.each(shortcuts2, function (index, value) {
+    $.each(shortcuts, function (index, value) {
         var shortcut = $('<span>- <a href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
 
         $(shortcut).appendTo('#tb-toolbarshortcuts');
@@ -246,7 +220,7 @@ if (unmoderatedOn) {
             $(modbarhid).hide();
             if (consoleShowing) $console.show();
         }
-        TB.storage.setSetting('Notifier', 'modbarhidden', hidden);
+        TB.storage.setSetting('Modbar', 'modbarhidden', hidden);
     }
 
     toggleMenuBar(modbarHidden);
@@ -319,30 +293,7 @@ if (unmoderatedOn) {
     // Settings menu
     function showSettings() {
 
-        // I probably should have stored "checked" instead of "on" will have to change that later.
-        var modnotificationschecked, messagenotificationschecked, messageunreadlinkchecked, modmailnotificationschecked, modmailunreadlinkchecked, unmoderatedonchecked, unmoderatednotificationschecked;
 
-        if (messageunreadlink) {
-            messageunreadlinkchecked = 'checked';
-        }
-        if (modmailunreadlink) {
-            modmailunreadlinkchecked = 'checked';
-        }
-        if (modNotifications) {
-            modnotificationschecked = 'checked';
-        }
-        if (messageNotifications) {
-            messagenotificationschecked = 'checked';
-        }
-        if (modmailNotifications) {
-            modmailnotificationschecked = 'checked';
-        }
-        if (unmoderatedOn) {
-            unmoderatedonchecked = 'checked';
-        }
-        if (unmoderatedNotifications) {
-            unmoderatednotificationschecked = 'checked';
-        }
 
         // The window in which all settings will be showed.
         var html = '\
@@ -384,6 +335,9 @@ if (unmoderatedOn) {
     <p>\
         <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
     </p>\
+    <p>\
+        <label><input type="checkbox" id="unmoderatedOn" ' + ((unmoderatedOn) ? "checked" : "") + '> Show icon for unmoderated</label>\
+    </p>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
     </p>\
@@ -414,53 +368,7 @@ if (unmoderatedOn) {
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
-/*
-        var $notifierSettings = $('<div class="tb-window-content-notifier">\
-    <p>\
-        Multireddit of subs you want displayed in the modqueue counter:<br>\
-        <input type="text" name="modsubreddits" value="' + TBUtils.htmlEncode(unescape(modSubreddits)) + '">\
-    </p>\
-    <p>\
-        Multireddit of subs you want displayed in the unmoderated counter:<br>\
-        <input type="text" name="unmoderatedsubreddits" value="' + TBUtils.htmlEncode(unescape(unmoderatedSubreddits)) + '">\
-    </p>\
-    <p>\
-        Multireddit of subs you want displayed in the modmail counter:<br>\
-        <input type="text" name="modmailsubreddits" value="' + TBUtils.htmlEncode(unescape(modmailSubreddits)) + '"' + ((modmailSubredditsFromPro) ? " disabled" : "") + '><br/>\
-        <label><input type="checkbox" name="modmailsubredditsfrompro"' + ((modmailSubredditsFromPro) ? " checked" : "") + '> Use filtered subreddits from ModMail Pro (overrides the list above)</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" name="unmoderatedon" ' + unmoderatedonchecked + '> Show icon for unmoderated.</label>\
-    </p>\
-    <p>\
-        <label style="width: 30%; display: inline-block;"><input type="checkbox" name="messagenotifications" ' + messagenotificationschecked + '> Get notifications for new messages</label>\
-        <label><input type="checkbox" name="messageunreadlink" ' + messageunreadlinkchecked + '> Link to /message/unread/ if unread messages are present</label>\
-    </p>\
-    <p>\
-        <label style="width: 30%; display: inline-block;"><input type="checkbox" name="modmailnotifications" ' + modmailnotificationschecked + '> Get modmail notifications</label>\
-        <!-- <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /r/' + modmailFilteredSubreddits + '/message/moderator/unread/ if unread messages are present</label> -->\
-        <label><input type="checkbox" name="modmailunreadlink" ' + modmailunreadlinkchecked + '> Link to /message/moderator/unread/ if unread messages are present</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" name="modnotifications" ' + modnotificationschecked + '> Get modqueue notifications</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" name="unmoderatednotifications" ' + unmoderatednotificationschecked + '> Get unmoderated queue notifications</label>\
-    </p>\
-    <div class="tb-help-main-content">Edit notifier settings</div>\
-</div>').hide();
 
-        // get the checkbox change handler
-        $notifierSettings.find('input[name=modmailsubredditsfrompro]').change(function () {
-            $('input[name=modmailsubreddits]').prop('disabled', this.checked);
-        });
-
-        // Add notifier settings to dialog
-        $.log('Core: injecting Notifier Settings.');
-        $notifierSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-notifier">Notifier</a>').appendTo('.tb-window-tabs');
-
-*/
         // Edit shortcuts
         var htmlshorcuts = '\
 <div class="tb-window-content-shortcuts">\
@@ -472,13 +380,13 @@ if (unmoderatedOn) {
     ';
         $(htmlshorcuts).appendTo('.tb-window-content').hide();
 
-        if ($.isEmptyObject(shortcuts2)) {
+        if ($.isEmptyObject(shortcuts)) {
             $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
 <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
 ').appendTo('.tb-window-content-shortcuts-table');
 
         } else {
-            $.each(shortcuts2, function (index, value) {
+            $.each(shortcuts, function (index, value) {
                 shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
 <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
 <br><br>';
@@ -583,82 +491,11 @@ See the License for the specific language governing permissions and limitations 
 
     // Save the settings
     $body.on('click', '.tb-save', function () {
-/*
-        var messagenotificationssave = $("input[name=messagenotifications]").is(':checked');
-        if (messagenotificationssave === true) {
-            TB.storage.setSetting('Notifier', 'messagenotifications', true);
-        } else {
-            TB.storage.setSetting('Notifier', 'messagenotifications', false);
-        }
-
-        var modnotificationscheckedsave = $("input[name=modnotifications]").is(':checked');
-        if (modnotificationscheckedsave === true) {
-            TB.storage.setSetting('Notifier', 'modnotifications', true);
-        } else {
-            TB.storage.setSetting('Notifier', 'modnotifications', false);
-        }
-
-        modmailnotificationscheckedsaved = $("input[name=modmailnotifications]").is(':checked');
-        TB.storage.setSetting('Notifier', 'modmailnotifications', modmailnotificationscheckedsaved);
-
-        unmoderatednotificationscheckedsaved = $("input[name=unmoderatednotifications]").is(':checked');
-        TB.storage.setSetting('Notifier', 'unmoderatednotifications', unmoderatednotificationscheckedsaved);
-
-        unmoderatedoncheckedsave = $("input[name=unmoderatedon]").is(':checked');
-        TB.storage.setSetting('Notifier', 'unmoderatedon', unmoderatedoncheckedsave);
-
-        messageunreadlinkcheckedsave = $("input[name=messageunreadlink]").is(':checked');
-        TB.storage.setSetting('Notifier', 'messageunreadlink', messageunreadlinkcheckedsave);
-
-        modmailunreadlinkcheckedsave = $("input[name=modmailunreadlink]").is(':checked');
-        TB.storage.setSetting('Notifier', 'modmailunreadlink', modmailunreadlinkcheckedsave);
-
-        shortcuts = escape($("input[name=shortcuts]").val());
-        TB.storage.setSetting('Notifier', 'shortcuts', shortcuts);
-
-        modSubreddits = $("input[name=modsubreddits]").val();
-        TB.storage.setSetting('Notifier', 'modsubreddits', modSubreddits);
-
-        highlighted = $("input[name=highlighted]").val();
-
-
-
-        unmoderatedSubreddits = $("input[name=unmoderatedsubreddits]").val();
-        if (unmoderatedSubreddits !== TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', '')) {
-            TB.storage.setSetting('Notifier', 'unmoderatedcount', 0);
-            TB.storage.setSetting('Notifier', 'lastseenunmoderated', -1);
-        }
-        TB.storage.setSetting('Notifier', 'unmoderatedsubreddits', unmoderatedSubreddits);
-
-        // pull filtered subreddits from MMP?
-        //modmailSubredditsFromPro = $("input[name=modmailsubredditsfrompro]")[0].checked; // $()[0].checked is a million times faster than other methods
-        //TB.storage.setSetting('Notifier', 'modmailsubredditsfrompro', modmailSubredditsFromPro);
-
-        modmailSubreddits = $("input[name=modmailsubreddits]").val();
-        modmailFilteredSubreddits = modmailSubreddits;
-
-        if (modmailSubredditsFromPro) {
-            // use MMP's filtered subs
-            // we don't want to overwrite the user's regular settings, just bypass them,
-            // so don't actually save modmailSubreddits if they are using filtered subs from MMP
-
-            modmailFilteredSubreddits = 'mod';
-            if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-                modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
-            }
-        } else {
-            // save manually set filtered subs
-            if (modmailSubreddits !== TB.storage.getSetting('Notifier', 'modmailsubreddits', '')) {
-                TB.storage.setSetting('Notifier', 'modmailcount', 0);
-                TB.storage.setSetting('Notifier', 'lastseenmodmail', -1);
-            }
-            TB.storage.setSetting('Notifier', 'modmailsubreddits', modmailSubreddits);
-        }
- */
 
         // TODO: Check if the settings below work as intended.
-        TB.storage.setSetting('Notifier', 'compacthide', $("#compactHide").prop('checked'));
-        TB.storage.setSetting('Notifier', 'enableTopLink', $("#enableTopLink").prop('checked'));
+        TB.storage.setSetting('Modbar', 'compacthide', $("#compactHide").prop('checked'));
+        TB.storage.setSetting('Modbar', 'enableTopLink', $("#enableTopLink").prop('checked'));
+        TB.storage.setSetting('Modbar', 'unmoderatedon', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
@@ -669,9 +506,9 @@ See the License for the specific language governing permissions and limitations 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');
         if ($shortcuts.length === 0) {
-            TB.storage.setSetting('Notifier', 'shortcuts2', {});
+            TB.storage.setSetting('Modbar', 'shortcuts', {});
         } else {
-            shortcuts2 = {};
+            shortcuts = {};
 
             $shortcuts.each(function () {
                 var $this = $(this),
@@ -679,11 +516,11 @@ See the License for the specific language governing permissions and limitations 
                     url = $this.find('input[name=url]').val();
 
                 if (name.trim() !== '' || url.trim() !== '') {
-                    shortcuts2[escape(name)] = escape(url);
+                    shortcuts[escape(name)] = escape(url);
                 }
             });
 
-            TB.storage.setSetting('Notifier', 'shortcuts2', shortcuts2);
+            TB.storage.setSetting('Modbar', 'shortcuts', shortcuts);
         }
 
         // save cache settings.

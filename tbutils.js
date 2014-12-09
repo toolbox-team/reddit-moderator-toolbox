@@ -1196,8 +1196,19 @@ function initwrapper() {
                 return;
             }
 
+            if (TBStorage.domain != 'www') {
+                TBui.textFeedback("Cannot import from " + TBStorage.domain + ".reddit.com.");
+                return;
+            }
+
             $.each(resp, function (fullKey, value) {
                 var key = fullKey.split(".");
+
+                // 3.0 stuff that should be removed after release.
+                if (key[1] === undefined ||  key[1] == 'undefined') return;
+                if (key[1] === 'Settings' ||  key[1] == 'cache') return;
+                if (value === undefined || value == 'undefined') return;
+
                 TBStorage.setSetting(key[0], key[1], value);
             });
 
@@ -1219,7 +1230,7 @@ function initwrapper() {
     for (var i = 0, color = "#"; i < 3; color += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
 
     return color;
-    }
+    };
 
 
     // Added back for MMP's live mod mail.

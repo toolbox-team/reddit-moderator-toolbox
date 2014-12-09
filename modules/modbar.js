@@ -48,7 +48,8 @@ modbar.init = function coreInit() {
         messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
         modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false),
         settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
-        enableTopLink = TB.storage.getSetting('Notifier', 'enableTopLink', false);
+        enableTopLink = TB.storage.getSetting('Notifier', 'enableTopLink', false),
+        browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false);
 
 
     // use filter subs from MMP, if appropriate
@@ -374,6 +375,9 @@ if (unmoderatedOn) {
     <p>\
         <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
     </p>\
+    <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
+        <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
+    </p>\
     <p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
     </p>\
@@ -659,6 +663,7 @@ See the License for the specific language governing permissions and limitations 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
 
+        TB.storage.setSetting('Utils', 'skiplocalconsole', $("#browserConsole").prop('checked'));
 
 
         // Save shortcuts

@@ -44,7 +44,6 @@ function tbconfig() {
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
             TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
                 $.log("save succ = " + succ);
-                console.log("save succ = " + succ);
                 if (!succ) {
                     $.log(err.responseText, true);
                     TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
@@ -583,7 +582,6 @@ function tbconfig() {
                 }
 
                 var label = decodeURIComponent(reasonText);
-                console.log(label);
                 if (label == '') {
                     label = '<span style="color: #cecece">(no reason)</span>';
                 } else {
@@ -623,10 +621,7 @@ function tbconfig() {
                     }
 
                     $this.closest('.removal-reason').remove();
-                } else {
-                    console.log('cancel');
                 }
-
             });
 
             // Adding a new reason
@@ -758,7 +753,7 @@ function tbconfig() {
                 }
 
                 var label = decodeURIComponent(macroText);
-                console.log(label);
+
                 if (label == '') {
                     label = '<span style="color: #cecece">(no macro)</span>';
                 } else {
@@ -794,8 +789,6 @@ function tbconfig() {
                     }
 
                     $this.closest('.mod-macro').remove();
-                } else {
-                    console.log('cancel');
                 }
 
             });

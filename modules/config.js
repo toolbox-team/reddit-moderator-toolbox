@@ -17,13 +17,13 @@ function tbconfig() {
 
         // only load on definite subreddits
         if (!subreddit) {
-            $.log('Aborting: invalid subreddit', false, 'TBConfig');
+            TBConfig.log('Aborting: invalid subreddit');
             return;
         }
 
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                $.log('Failed: wiki config', false, 'TBConfig');
+                TBConfig.log('Failed: wiki config');
                 return;
             }
 

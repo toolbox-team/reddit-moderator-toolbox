@@ -365,6 +365,12 @@ TB.Module = function Module(name) {
         }
     };
 
+    this.log = function (message, skip) {
+        if (!TBUtils.debugMode) return;
+        if (skip === undefined) skip = false;
+        $.log(message, skip, this.shortname);
+    };
+
     // PUBLIC: placeholder init(), just in case
     this.init = function init() {
         // pass

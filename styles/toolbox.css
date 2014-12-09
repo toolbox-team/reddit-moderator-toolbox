@@ -1708,40 +1708,66 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 /* config.js */
 
+span.tb-config-intro {
+    max-width: 59em;
+}
+
 .mod-toolbox .tb-window-header .buttons {
     position: absolute;
     top: 4px;
     right: 4px;
 }
 
-.mod-toolbox #tb-removal-reasons-list {
+.mod-toolbox #tb-removal-reasons-list,
+.mod-toolbox #tb-mod-macros-list {
     border-top: solid 2px gray;
     margin-top: 5px;
     width: 99%;
 }
 
-.mod-toolbox #tb-removal-reasons-list td {
+.mod-toolbox #tb-removal-reasons-list td,
+.mod-toolbox #tb-mod-macros-list td {
     padding: 5px;
     vertical-align: top;
 }
+.mod-toolbox .removal-reasons-buttons,
+.mod-toolbox .mod-macros-buttons {
+    width: 25px;
+}
 
-.mod-toolbox .removal-reason-edit, .mod-toolbox #tb-add-removal-reason-form {
+.mod-toolbox .removal-reason-edit,
+.mod-toolbox #tb-add-removal-reason-form,
+.mod-toolbox .mod-macro-edit,
+.mod-toolbox #tb-add-mod-macro-form
+{
     display: none;
 }
 
+.mod-toolbox .edit_removal_reasons tr.removal-reason,
+.mod-toolbox .edit_mod_macros tr.mod-macro {
+    border-bottom: solid 5px #F0F0F0;
+}
 
-.mod-toolbox .edit_removal_reasons input[type="text"] {
+.mod-toolbox .edit_removal_reasons input[type="text"],
+.mod-toolbox .edit_mod_macros input[type="text"]{
     max-width: 600px;
 }
 
-.mod-toolbox .edit_removal_reasons .edit-area {
+.mod-toolbox .edit_removal_reasons .edit-area,
+.mod-toolbox .edit_mod_macros .edit-area {
     width: 600px;
     height: 150px;
     margin: 2px;
 }
 
-.mod-toolbox .removal_reasons_settings .edit-header, .mod-toolbox .removal_reasons_settings .edit-footer {
+.mod-toolbox .removal_reasons_settings .edit-header,
+.mod-toolbox .removal_reasons_settings .edit-footer {
     width: 600px;
     height: 100px;
     margin: 2px;
+}
+
+.mod-toolbox h3.macro-title {
+    font-size: 12px;
+    border-bottom: dotted 1px #D2D2D2;
 }

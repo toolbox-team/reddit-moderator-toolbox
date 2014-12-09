@@ -15,6 +15,8 @@ macros.init = function macrosInit() {
         MACROS = 'TB-MACROS',
         STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;';
 
+    $.log($body);
+    $.log(TB.utils.config);
     function setConfig(config) {
         if (!config.modMacros || config.modMacros.length < 1) {
             $.log("!config.modMacros || config.modMacros.length < 1");

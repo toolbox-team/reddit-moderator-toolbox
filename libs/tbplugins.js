@@ -1,17 +1,20 @@
 (function ($) {
-    $.fn.log = function (message, orignalMessage) {
+    $.fn.log = function (message, caller, orignalMessage) {
         if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skiplocalconsole'] || 'false')) {
             TBUtils.log.push(message);
         } else {
-            //console.log('TB: ' + message);
-            console.log(message + ':');
-            //console.log(orignalMessage);
+            console.log(' [' + caller + ']: ');
+
         }
     };
     $.log = function (message, skip, callerName) {
         var orignalMessage = message;
         // NO TBU, just push to console.
-        if (typeof (TBUtils) == 'undefined') return console.log('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + '] ' + message);
+        if (typeof (TBUtils) == 'undefined') {
+            console.log('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']');
+            console.log(message);
+            return;
+        }
 
         if (!TBUtils.debugMode) return;
         var caller = (arguments.callee.caller.name !== "") ? arguments.callee.caller.name : 'anonymous function';
@@ -28,7 +31,8 @@
                 console.log(orignalMessage);
             } else {
                 try {
-                    message = 'Object:\n' + JSON.stringify(message);
+                    message = 'Object (see browser console):\n' + JSON.stringify(message);
+                    console.log(orignalMessage);
                 } catch (e) {
                     console.log('TB Console could not convert: ');
                     console.log(orignalMessage);
@@ -46,7 +50,7 @@
         }
 
         var msg = lines + ' [' + caller + ']: ' + message;
-        return $.fn.log(msg, orignalMessage);
+        return $.fn.log(msg, caller, orignalMessage);
     };
 })(jQuery);
 

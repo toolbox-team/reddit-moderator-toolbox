@@ -8,6 +8,9 @@
         }
     };
     $.log = function (message, skip, callerName) {
+        // NO TBU, just push to console.
+        if (typeof (TBUtils) == 'undefined') return console.log('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + '] ' + message);
+
         if (!TBUtils.debugMode) return;
         var caller = (arguments.callee.caller.name !== "") ? arguments.callee.caller.name : 'anonymous function';
             caller = (callerName !== undefined) ? callerName : caller;

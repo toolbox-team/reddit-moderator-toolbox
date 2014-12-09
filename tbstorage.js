@@ -67,6 +67,7 @@
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
     TBStorage.domain = window.location.hostname.split('.')[0];
+    $.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
     TBStorage.browser = UNKOWN_BROWSER;

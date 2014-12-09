@@ -440,7 +440,7 @@ function initwrapper() {
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
-                if (/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)) {
+                if (/\.com\/r\/.*\/(.*?)\?context=3/.test('/r/Creesch_dev/comments/2o921s/reason/cmprjfd?context=3')) {
                     var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
                     readCommentId = 't1_' + readCommentId[1];
                     $.post('/api/read_message', {

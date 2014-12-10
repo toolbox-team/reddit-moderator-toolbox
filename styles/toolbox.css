@@ -1772,3 +1772,11 @@ span.tb-config-intro {
     font-size: 12px;
     border-bottom: dotted 1px #D2D2D2;
 }
+
+/* comment.js */
+
+.mod-toolbox  .comment-nest-info {
+	font-size: 11px;
+	margin-top: -10px;
+	color: #888;
+}

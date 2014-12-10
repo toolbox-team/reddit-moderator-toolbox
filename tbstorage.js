@@ -260,7 +260,7 @@ function storageWrapper() {
 
     function saveSettingsToBrowser() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
-        if (!TBStorage.userBrowserStorage || !JSON.parse(localStorage[TBStorage.SAFE_STORE_KEY])) return;
+        if (!TBStorage.userBrowserStorage || !JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
 
         if (TBStorage.browser === CHROME) {
             // chrome

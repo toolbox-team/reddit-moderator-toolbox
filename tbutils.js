@@ -387,8 +387,8 @@ function initwrapper() {
     };
 
 
-    TBUtils.notification = function (title, body, url, timeout) {
-        if (timeout === undefined) timeout = 10000;
+    TBUtils.notification = function (title, body, url, markreadid) {
+        var timeout = 10000;
 
         var toolboxnotificationenabled = true;
 
@@ -418,11 +418,9 @@ function initwrapper() {
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
-                if (/\/r\/.*\/(.*?)\?context=3/.test(url)) {
-                    var readCommentId = url.match(/\/r\/.*\/(.*?)\?context=3/);
-                    readCommentId = 't1_' + readCommentId[1];
+                if (markreadid !== 'undefined') {
                     $.post('/api/read_message', {
-                        id: readCommentId,
+                        id: markreadid,
                         uh: TBUtils.modhash,
                         api_type: 'json'
                     });
@@ -455,11 +453,9 @@ function initwrapper() {
                     notification.onclick = function () {
                         // Open the page
                         $.log('notification clicked');
-                        if (/.*reddit\.com\/r\/.*\/(.*?)\?context=3/.test(url)) {
-                            var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
-                            readCommentId = 't1_' + readCommentId[1];
+                        if (markreadid !== 'undefined') {
                             $.post('/api/read_message', {
-                                id: readCommentId,
+                                id: markreadid,
                                 uh: TBUtils.modhash,
                                 api_type: 'json'
                             });

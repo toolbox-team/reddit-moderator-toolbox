@@ -297,7 +297,7 @@ notifierMod.init = function notifierMod_init() {
         // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes:
         // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
 
-        function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html) {
+        function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
             $.getJSON(unreadcontexturl).done(function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageunreadlink) {
@@ -305,7 +305,7 @@ notifierMod.init = function notifierMod_init() {
                 } else if (straightToInbox) {
                     TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': ' + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), '/message/inbox/');
                 } else {
-                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': ' + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), unreadcontext);
+                    TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': ' + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), unreadcontext, unreadcommentid);
                 }
             });
         }
@@ -375,9 +375,10 @@ notifierMod.init = function notifierMod_init() {
                                 body_html = TBUtils.htmlDecode(value.data.body_html),
                                 author = value.data.author,
                                 subreddit = value.data.subreddit,
+                                commentid = value.data.name,
                                 contexturl = context.slice(0, -10) + '.json';
 
-                            getcommentitle(subreddit, contexturl, context, author, body_html);
+                            getcommentitle(subreddit, contexturl, context, author, body_html,commentid);
                             pushedunread.push(value.data.name);
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block

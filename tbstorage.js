@@ -165,7 +165,7 @@ function storageWrapper() {
         // wait for reply.
         self.port.on('tb-settings-reply', function (tbsettings) {
             if (tbsettings !== null) {
-                if ((sObject.tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
+                if ((tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
                     objectToSettings(tbsettings, function () {
                         SendInit();
                     });

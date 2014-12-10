@@ -17,6 +17,87 @@ userNotes.settings['enabled']['default'] = true;
 userNotes.init = function () {
     var subs = [];
 
+    if (window.location.href.indexOf('/about/usernotes/') > -1) {
+
+        //userNotes.log(TBUtils.post_site);  // that should work?
+        var sub = $('.pagename a:first').html();
+        var $siteTable = $('.content');
+        $siteTable.html('');
+
+        function getSubNotes(currsub) {
+            userNotes.log('getting notes: ' + currsub);
+            if (TBUtils.noteCache[currsub] !== undefined) {
+                showSubNotes(TBUtils.noteCache[currsub], currsub);
+                return;
+            }
+
+            if (!currsub || TBUtils.noNotes.indexOf(currsub) != -1) return;
+
+            TBUtils.readFromWiki(currsub, 'usernotes', true, function (resp) {
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                    return;
+                }
+
+                if (resp === TBUtils.NO_WIKI_PAGE) {
+                    TBUtils.noNotes.push(currsub);
+                    return;
+                }
+
+                if (!resp || resp.length < 1) {
+                    TBUtils.noNotes.push(currsub);
+                    return;
+                }
+
+                resp = convertNotes(resp);
+
+                TBUtils.noteCache[currsub] = resp;
+                showSubNotes(resp, currsub);
+            });
+        }
+
+        function showSubNotes(notes) {
+
+            $.each(notes.users, function (key, val) {
+
+                var user = val.name;
+
+                var userHTML = '\
+                <div class="tb-un-user un-{{user}}">\
+                    <span class="user"><a href="https://www.reddit.com/user/{{user}}">{{user}}</a></span>\
+                    <div class="tb-usernotes">\
+                    </div>\
+                </div></br></br>';
+
+                var usercontent = TBUtils.template(userHTML, {
+                    'user': user
+                });
+
+                $siteTable.append(usercontent);
+
+                $.each(val.notes, function (key, val) {
+                    userNotes.log(key);
+                    userNotes.log(val);
+
+                    var noteHTML = '&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span></br>';
+
+                    var notecontent = TBUtils.template(noteHTML, {
+                        'note': val.note,
+                        'link': unsquashPermalink(sub, val.link)
+                    });
+
+                    $siteTable.find('.un-' + user).append(notecontent);
+                });
+
+
+                //
+
+            });
+
+        }
+
+        getSubNotes(sub);
+    }
+
     TBUtils.getModSubs(function () {
         run();
     });

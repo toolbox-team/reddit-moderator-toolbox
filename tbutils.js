@@ -14,11 +14,12 @@ function initwrapper() {
     //Private variables
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
-    //settings = JSON.parse(localStorage['Toolbox.Utils.settings'] || '[]'), //always a localStorage object.
+
+        shortLength = TBStorage.getSetting('Utils', 'shortlength', 15),
+        longLength = TBStorage.getSetting('Utils', 'longlength', 45),
+
         lastgetLong = TBStorage.getCache('Utils', 'lastgetlong', -1),
         lastgetShort = TBStorage.getCache('Utils', 'lastgetshort', -1),
-        shortLength = TBStorage.getCache('Utils', 'shortlength', 15),
-        longLength = TBStorage.getCache('Utils', 'longlength', 45),
         cacheName = TBStorage.getCache('Utils', 'cachename', ''),
         seenNotes = TBStorage.getSetting('Utils', 'seennotes', []),
         lastVersion = TBStorage.getSetting('Utils', 'lastversion', 0),

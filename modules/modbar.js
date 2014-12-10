@@ -69,8 +69,8 @@ modbar.init = function coreInit() {
     }
 
     // cache settings.
-    var shortLength = TB.storage.getCache('Core', 'shortlength', 15),
-        longLength = TB.storage.getCache('Core', 'longlength', 45);
+    var shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
+        longLength = TB.storage.getSetting('Utils', 'longlength', 45);
 
 
     //
@@ -258,13 +258,13 @@ if (unmoderatedOn) {
         }
 
         consoleShowing = !consoleShowing;
-        TB.storage.setSetting('Notifier', 'consoleshowing', consoleShowing);
+        TB.storage.setSetting('Modbar', 'consoleshowing', consoleShowing);
     });
 
     // Set console scroll
     $body.on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
-        TB.storage.setSetting('Notifier', 'lockscroll', lockscroll);
+        TB.storage.setSetting('Modbar', 'lockscroll', lockscroll);
     });
 
     /*
@@ -524,8 +524,8 @@ See the License for the specific language governing permissions and limitations 
         }
 
         // save cache settings.
-        TB.storage.setCache('Core', 'longlength', $("input[name=longLength]").val());
-        TB.storage.setCache('Core', 'shortlength', $("input[name=shortLength]").val());
+        TB.storage.setSetting('Utils', 'longlength', $("input[name=longLength]").val());
+        TB.storage.setSetting('Utils', 'shortlength', $("input[name=shortLength]").val());
 
         if ($("#clearcache").prop('checked')) {
             TBUtils.clearCache();

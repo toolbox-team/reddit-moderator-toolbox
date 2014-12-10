@@ -388,7 +388,7 @@ function initwrapper() {
 
 
     TBUtils.notification = function (title, body, url, timeout) {
-        if (timeout === undefined) timeout = 5000;
+        if (timeout === undefined) timeout = 10000;
 
         var toolboxnotificationenabled = true;
 
@@ -411,15 +411,15 @@ function initwrapper() {
                 body: body,
                 icon: "data:image/png;base64," + TBui.logo64
             });
-            notification.onshow = setTimeout(function () {
+            setTimeout(function () {
                 notification.close()
             }, timeout);
 
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
-                if (/\.com\/r\/.*\/(.*?)\?context=3/.test('/r/Creesch_dev/comments/2o921s/reason/cmprjfd?context=3')) {
-                    var readCommentId = url.match(/.*reddit\.com\/r\/.*\/(.*?)\?context=3/);
+                if (/\.com\/r\/.*\/(.*?)\?context=3/.test(url)) {
+                    var readCommentId = url.match(/\/r\/.*\/(.*?)\?context=3/);
                     readCommentId = 't1_' + readCommentId[1];
                     $.post('/api/read_message', {
                         id: readCommentId,
@@ -448,7 +448,7 @@ function initwrapper() {
                         body: body,
                         icon: "data:image/png;base64," + TBui.logo64
                     });
-                    notification.onshow = setTimeout(function () {
+                    setTimeout(function () {
                         notification.close()
                     }, timeout);
 
@@ -758,7 +758,13 @@ function initwrapper() {
         }
 
         $.log("Posting /r/" + subreddit + "/api/wiki/edit/" + page);
-
+        
+        
+        // If we update automoderator we want to replace any tabs with four spaces. 
+        if (updateAM) {
+            data = data.replace(/\t/g, "    ");
+        }
+        
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
@@ -784,10 +790,10 @@ function initwrapper() {
                         text: 'update'
                     })
                         .success(function () {
-                            alert('sucessfully sent update PM to automoderator');
+                            TB.ui.textFeedback('sucessfully sent update PM to automoderator', TBui.FEEDBACK_POSITIVE);
                         })
                         .error(function () {
-                            alert('error sending update PM to automoderator');
+                            TB.ui.textFeedback('error sending update PM to automoderator', TB.ui.FEEDBACK_NEGATIVE);
                             window.location = '/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
                         });
                 }

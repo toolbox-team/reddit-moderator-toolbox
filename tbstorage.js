@@ -151,6 +151,8 @@ function storageWrapper() {
                     objectToSettings(sObject.tbsettings, function () {
                         SendInit();
                     });
+                } else {
+                    SendInit();
                 }
             } else {
                 SendInit();
@@ -167,6 +169,8 @@ function storageWrapper() {
                     objectToSettings(tbsettings, function () {
                         SendInit();
                     });
+                } else {
+                    SendInit();
                 }
             } else {
                 SendInit();

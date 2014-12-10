@@ -393,7 +393,7 @@ userNotes.init = function () {
 
     function deflateTime(time) {
         if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
-            time /= 1000;
+            time = Math.trunc(time/1000);
         }
         return time;
     }

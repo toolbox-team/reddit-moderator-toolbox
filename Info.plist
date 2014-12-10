@@ -58,6 +58,7 @@
 				<string>modules/macros.js</string>
 				<string>modules/realtime.js</string>
 				<string>modules/nukecomments.js</string>
+				<string>modules/personalnotes.js</string>
 				<string>modules/queuetools.js</string>
 				<string>tbmoduleinit.js</string>
 			</array>
@@ -67,6 +68,7 @@
 			<string>styles/toolbox.css</string>
 			<string>styles/modmatrix.css</string>
 			<string>styles/removalreasons.css</string>
+			<string>styles/personalnotes.css</string>
 			<string>styles/queuetools.css</string>
 		</array>
 	</dict>

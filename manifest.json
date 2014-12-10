@@ -25,8 +25,8 @@
 		"styles/toolbox.css",
 		"styles/modmatrix.css",
 		"styles/removalreasons.css",
-		"styles/queuetools.css",
-		"styles/personalnotes.css"
+		"styles/personalnotes.css",
+		"styles/queuetools.css"
 	  ],
 	  "js": [
 		"libs/jquery-2.1.1.js",
@@ -63,8 +63,8 @@
 		"modules/macros.js",
 		"modules/realtime.js",
 		"modules/nukecomments.js",
-		"modules/queuetools.js",
 		"modules/personalnotes.js",
+		"modules/queuetools.js",
 		"tbmoduleinit.js"
 	  ]
 	}

@@ -146,17 +146,12 @@ macros.init = function macrosInit() {
             });
     }
 
-    $body.on('click', '.macro-popup .close', function () {
+    $body.on('click', '.macro-popup .close', function (e) {
         var $currentMacroPopup = $(this).closest('.macro-popup'),
-            topLevel = $currentMacroPopup.find('.macro-edit-area').data('toplevel'),
             infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
             $selectElement = $body.find('#macro-dropdown-'+ infoId);
 
-        if (topLevel) {
-            $selectElement.val(MACROS);
-        } else {
-            $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
-        }
+        $selectElement.val(MACROS);
 
         $currentMacroPopup.remove();
         $selectElement.prop('disabled', false);

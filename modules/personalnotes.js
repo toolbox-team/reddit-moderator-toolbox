@@ -170,7 +170,8 @@ function personalnotes() {
                     ';
 
                     // Lets get a list of notes!
-                    $.getJSON('/r/' + notewiki + '/wiki/pages.json').done(function (json) {
+                    $.getJSON('/r/' + notewiki + '/wiki/pages.json')
+                        .success(function (json) {
                         notesArray = [];
                         var notesList,
                             count = json.data.length || 0;
@@ -204,6 +205,11 @@ function personalnotes() {
                             'notesList': notesList
                         });
                         createPersonalNotesPopup(notesPopupContent);
+                    })
+                    .error(function (error) {
+                        TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
+                        $this.removeClass('tb-notes-activated');
+
                     });
 
                 }

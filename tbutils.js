@@ -289,7 +289,7 @@ function initwrapper() {
         });
     };
 
-    TBUtils.textFeedback = function(feedbackText, feedbackKind) {
+    TBUtils.textFeedback = function (feedbackText, feedbackKind) {
         TBui.textFeedback(feedbackText, feedbackKind);
     };
 
@@ -307,9 +307,9 @@ function initwrapper() {
             // Create the overlay
             if (createOrDestroy) {
                 var html = '\
-        <div class="tb-internal-overlay">\
-        <div class="tb-overlay-label"></div></div>\
-        ';
+    <div class="tb-internal-overlay">\
+    <div class="tb-overlay-label"></div></div>\
+    ';
                 TBui.longLoadSpinner(true);
                 $body.find('.tb-popup-tabs').after(html);
             }
@@ -665,7 +665,6 @@ function initwrapper() {
             }
 
 
-
         }
 
         // A recent reddit change makes subreddit names sometimes start with "/r/".
@@ -754,13 +753,13 @@ function initwrapper() {
         }
 
         $.log("Posting /r/" + subreddit + "/api/wiki/edit/" + page);
-        
-        
-        // If we update automoderator we want to replace any tabs with four spaces. 
+
+
+        // If we update automoderator we want to replace any tabs with four spaces.
         if (updateAM) {
             data = data.replace(/\t/g, "    ");
         }
-        
+
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
@@ -949,7 +948,7 @@ function initwrapper() {
                     callback(false, error);
             });
     };
-    
+
     TBUtils.banUser = function (user, subreddit, banReason, banMessage, banDuration, callback) {
         $.post('/api/friend', {
             api_type: 'json',
@@ -1063,7 +1062,7 @@ function initwrapper() {
                     callback(false, error);
             });
     };
-    
+
     TBUtils.postLink = function (link, title, subreddit, callback) {
         $.post('/api/submit', {
             kind: 'link',
@@ -1124,7 +1123,7 @@ function initwrapper() {
                     callback(false, error);
             });
     };
-    
+
     TBUtils.sendPM = function (to, subject, message, callback) {
         $.post('/api/compose', {
             to: to,
@@ -1141,7 +1140,7 @@ function initwrapper() {
                     callback(false, error.responseText);
             });
     };
-    
+
     TBUtils.markMessageRead = function (id, callback) {
         $.post('/api/read_message', {
             api_type: 'json',
@@ -1149,7 +1148,7 @@ function initwrapper() {
             uh: TBUtils.modhash
         });
     };
-    
+
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
@@ -1182,7 +1181,7 @@ function initwrapper() {
                 return;
             }
 
-            if (resp['Utils.lastversion'] < 300){
+            if (resp['Utils.lastversion'] < 300) {
                 TBui.textFeedback("Cannot import from a toolbox version under 3.0");
                 $.log("Cannot import from a toolbox version under 3.0");
                 return;
@@ -1203,15 +1202,15 @@ function initwrapper() {
     TBUtils.removeQuotes = function (string) {
         return string.replace(/['"]/g, '');
     };
-    
-    TBUtils.stringToColor = function(str) {
-    // str to hash
-    for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
-    // int/hash to hex
-    for (var i = 0, color = "#"; i < 3; color += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
+    TBUtils.stringToColor = function (str) {
+        // str to hash
+        for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
-    return color;
+        // int/hash to hex
+        for (var i = 0, color = "#"; i < 3; color += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
+
+        return color;
     };
 
 
@@ -1345,7 +1344,6 @@ function initwrapper() {
         if (TBui.longLoadArray.length > 0) {
             return 'Toolbox is still busy!';
         }
-
 
 
         // Cache data.

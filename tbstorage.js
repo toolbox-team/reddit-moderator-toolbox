@@ -82,16 +82,17 @@ function storageWrapper() {
 
     // We'll see about this idea after some testing.
     /*
-    if (TBStorage.domain !== 'www') {
-        Object.keys(localStorage)
-            .forEach(function (key) {
-                if (key === TBStorage.BNW_SHIM_KEY) return;
-                if (/^(Toolbox.)/.test(key)) {
-                    localStorage.removeItem(key);
-                }
-            });
-    }
-    */
+     if (TBStorage.domain !== 'www') {
+         Object.keys(localStorage)
+             .forEach(function (key) {
+                 if (key === TBStorage.BNW_SHIM_KEY) return;
+                 if (/^(Toolbox.)/.test(key)) {
+                     localStorage.removeItem(key);
+                 }
+             });
+     }
+     */
+
 
     localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
 
@@ -146,7 +147,7 @@ function storageWrapper() {
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
-                if ((sObject.tbsettings[TBStorage.BNW_SHIM_KEY] || false)){
+                if ((sObject.tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
                     objectToSettings(sObject.tbsettings, function () {
                         SendInit();
                     });
@@ -205,7 +206,7 @@ function storageWrapper() {
                 sessionStorage.removeItem(key);
             });
 
-        setCache('Utils', 'configcache',{});
+        setCache('Utils', 'configcache', {});
         setCache('Utils', 'notecache', {});
         setCache('Utils', 'noconfig', []);
         setCache('Utils', 'nonotes', []);

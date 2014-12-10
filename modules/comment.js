@@ -83,7 +83,6 @@ commentsMod.init = function commentsModInit() {
         });
 
         function run() {
-        console.log('run!');
             //
             //  Do stuff with removed comments
             //
@@ -232,6 +231,7 @@ commentsMod.init = function commentsModInit() {
     </div>\
 </div>\
 <div class="child"></div>\
+<div class="comment-nest-info">{{commentNestInfo}}</div>\
 </div>';
 
             // remove modtools since we don't want mass actions out of context comments.
@@ -242,24 +242,40 @@ commentsMod.init = function commentsModInit() {
             var flatListing = {}, // This will contain all comments later on.
                 idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
-            // deconstruct the json we got.
+            // deconstruct the json we got.    
+
             function parseComments(object) {
                 switch (object.kind) {
 
                     case "Listing":
                         for (var i = 0; i < object.data.children.length; i++) {
+                            // let's make sure that child comments also have the istop property and have it set to false. 
+                            if(object.isreply) {
+                                object.data.children[i].data.istop = false;  
+                            } else {
+                                object.data.children[i].data.istop = true;  
+                            }                     
+                            
                             parseComments(object.data.children[i]);
                         }
+                        
+                        firstFlatRun = false;
                         break;
 
                     case "t1":
                         flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
-                        idListing.push(object.data.id);
+                        idListing.push(object.data.id);                    
+
 
                         // if we have replies
                         if (flatListing[object.data.id].hasOwnProperty('replies') && flatListing[object.data.id].replies && typeof flatListing[object.data.id].replies === "object") {
                             delete flatListing[object.data.id].replies; // remove them from the flat object
+                            flatListing[object.data.id].hasreplies = true;
+                            
+                            object.data.replies.isreply = true; 
                             parseComments(object.data.replies); // parse them too
+                        } else {
+                            flatListing[object.data.id].hasreplies = false;
                         }
                         break;
 
@@ -283,6 +299,7 @@ commentsMod.init = function commentsModInit() {
             // Lets get the comments.
             $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
                 // put the json through our deconstructor.
+                data[1].isreply = false;
                 parseComments(data[1]);
                 // and get back a nice flat listing of ids
                 idListing = TBUtils.saneSortAs(idListing);
@@ -308,8 +325,25 @@ commentsMod.init = function commentsModInit() {
                         parentId = flatListing[value].parent_id,
                         score = flatListing[value].score,
                         scoreHidden = flatListing[value].score_hidden,
-                        subreddit = flatListing[value].subreddit;
+                        subreddit = flatListing[value].subreddit,
+                        hasreplies = flatListing[value].hasreplies,
+                        istop = flatListing[value].istop;
 
+                     
+                     var commentNestInfo = '';
+                     
+                     if (istop) {
+                        commentNestInfo = 'top level comment</span> ';
+                     } else { 
+                        commentNestInfo = 'child comment ';
+                     }
+                     
+                     if (hasreplies) {
+                        commentNestInfo = commentNestInfo + 'with replies.';
+                     } else { 
+                        commentNestInfo = commentNestInfo + 'without replies.';
+                     }
+                     
 
                     // figure out if we need to add author and mod stuff.
                     var authorClass = 'author';
@@ -362,7 +396,8 @@ commentsMod.init = function commentsModInit() {
                         'permaLinkComment': permaLinkComment,
                         'threadPermalink': threadPermalink,
                         'bannedBy': bannedBy,
-                        'modButtons': modButtons
+                        'modButtons': modButtons,
+                        'commentNestInfo': commentNestInfo
                     });
 
 

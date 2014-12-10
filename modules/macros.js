@@ -135,27 +135,64 @@ macros.init = function macrosInit() {
         // replace token.
         comment = TB.utils.replaceTokens(info, comment);
 
-        if ($this.val() !== MACROS) {
-            TBUtils.postComment(info.id, comment, function (successful, response) {
-                if (!successful) {
-                    TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
-                } else {
-                    // Distinguish the new reply
-                    TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
-                        if (!successful) {
-                            TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                        } else {
-                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                            if (topLevel) {
-                                $this.val(MACROS);
-                            } else {
-                                $this.closest('.usertext-buttons').find('.cancel').trigger('click');
-                            }
-                        }
-                    });
+        // get some placement variables
+        var offset =  $this.offset(),
+            offsetLeft = offset.left,
+            offsetTop = offset.top + 23;
+
+        $macroPopup = TB.ui.popup(
+            'Edit macro',
+            [
+                {
+                    title: "Edit Macro",
+                    id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
+                    tooltip: 'Edit macro',
+                    content: '<textarea id="macro-comment">' +  comment +  '</textarea>',
+                    footer: '<button id="macro-send">Send Message</button>'
                 }
+            ],
+            '',
+            'macro-popup' // class
+        ).appendTo('body')
+            .css({
+                "left": offsetLeft + 'px',
+                "top": offsetTop + 'px',
+                display: 'block'
             });
-        }
+
+        $macroPopup.on('click', '.close', function() {
+            $macroPopup.remove();
+            if (topLevel) {
+                $this.val(MACROS);
+            } else {
+                $this.closest('.usertext-buttons').find('.cancel').trigger('click');
+            }
+        });
+        $macroPopup.on('click', '#macro-send', function() {
+            var editedcomment =  $macroPopup.find('#macro-comment').val();
+            if ($this.val() !== MACROS) {
+                TBUtils.postComment(info.id, editedcomment, function (successful, response) {
+                    if (!successful) {
+                        TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                    } else {
+                        // Distinguish the new reply
+                        TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
+                            if (!successful) {
+                                TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                            } else {
+                                TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                                $macroPopup.remove();
+                                if (topLevel) {
+                                    $this.val(MACROS);
+                                } else {
+                                    $this.closest('.usertext-buttons').find('.cancel').trigger('click');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
     });
 };
 

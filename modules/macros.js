@@ -117,26 +117,10 @@ macros.init = function macrosInit() {
         }
     });
 
-    $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {
-        if (!macroConfig) return;
-
-        var $this = $(this),
-            comment = unescape($this.val()),
-            topLevel = (e.target.className === 'tb-top-macro-select'),
-            info;
-
-        // If it's a top-level reply we need to find the post's info.
-        if (topLevel) {
-            info = TB.utils.getThingInfo($('#siteTable .thing:first'));
-        } else {
-            info = TB.utils.getThingInfo($this);
-        }
-
-        // replace token.
-        comment = TB.utils.replaceTokens(info, comment);
-
+    function editMacro(dropdown, info, comment, topLevel) {
         // get some placement variables
-        var offset =  $this.offset(),
+
+        var offset = dropdown.offset(),
             offsetLeft = offset.left,
             offsetTop = offset.top + 23;
 
@@ -145,54 +129,95 @@ macros.init = function macrosInit() {
             [
                 {
                     title: "Edit Macro",
-                    id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
+                    id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Edit macro',
-                    content: '<textarea id="macro-comment">' +  comment +  '</textarea>',
-                    footer: '<button id="macro-send">Send Message</button>'
+                    content: '<textarea class="macro-edit-area" data-toplevel="'+ topLevel +'" data-id="' + info.id + '">' + comment + '</textarea>',
+                    footer: '<button class="macro-send">Send Message</button>'
                 }
             ],
             '',
-            'macro-popup' // class
+            'macro-popup', // class
+            'macro-' + info.id // id
         ).appendTo('body')
             .css({
                 "left": offsetLeft + 'px',
                 "top": offsetTop + 'px',
                 display: 'block'
             });
+    }
 
-        $macroPopup.on('click', '.close', function() {
-            $macroPopup.remove();
-            if (topLevel) {
-                $this.val(MACROS);
-            } else {
-                $this.closest('.usertext-buttons').find('.cancel').trigger('click');
-            }
-        });
-        $macroPopup.on('click', '#macro-send', function() {
-            var editedcomment =  $macroPopup.find('#macro-comment').val();
-            if ($this.val() !== MACROS) {
-                TBUtils.postComment(info.id, editedcomment, function (successful, response) {
-                    if (!successful) {
-                        TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
-                    } else {
-                        // Distinguish the new reply
-                        TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
-                            if (!successful) {
-                                TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+    $body.on('click', '.macro-popup .close', function () {
+        var $currentMacroPopup = $(this).closest('.macro-popup'),
+            topLevel = $currentMacroPopup.find('.macro-edit-area').data('toplevel'),
+            infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
+            $selectElement = $body.find('#macro-dropdown-'+ infoId);
+
+        if (topLevel) {
+            $selectElement.val(MACROS);
+        } else {
+            $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
+        }
+
+        $currentMacroPopup.remove();
+        $selectElement.prop('disabled', false);
+    });
+
+    $body.on('click', '.macro-popup .macro-send', function () {
+        var $currentMacroPopup = $(this).closest('.macro-popup'),
+            topLevel = $currentMacroPopup.find('.macro-edit-area').data('toplevel'),
+            infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
+            $selectElement = $body.find('#macro-dropdown-'+ infoId),
+            editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+
+        if ($selectElement.val() !== MACROS) {
+            TBUtils.postComment(infoId, editedcomment, function (successful, response) {
+                if (!successful) {
+                    TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                } else {
+                    // Distinguish the new reply
+                    TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
+                        if (!successful) {
+                            $currentMacroPopup.remove();
+                            TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                        } else {
+                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                            $currentMacroPopup.remove();
+                            $selectElement.prop('disabled', false);
+                            if (topLevel) {
+                                $selectElement.val(MACROS);
                             } else {
-                                TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                                $macroPopup.remove();
-                                if (topLevel) {
-                                    $this.val(MACROS);
-                                } else {
-                                    $this.closest('.usertext-buttons').find('.cancel').trigger('click');
-                                }
+                                $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
                             }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {
+        if (!macroConfig) return;
+
+        var $this = $(this),
+            comment = unescape($this.val()),
+            topLevel = (e.target.className === 'tb-top-macro-select'),
+            info;
+
+            // disable the select box to prevent a mess with creating multiple popup boxes.
+            $this.prop('disabled', 'disabled');
+            // If it's a top-level reply we need to find the post's info.
+            if (topLevel) {
+                info = TB.utils.getThingInfo($('#siteTable .thing:first'));
+            } else {
+                info = TB.utils.getThingInfo($this);
             }
-        });
+
+            // replace token.
+            comment = TB.utils.replaceTokens(info, comment);
+
+            // add unique id to the dropdown
+            $this.attr('id', 'macro-dropdown-'+ info.id)
+            editMacro($this, info, comment, topLevel);
     });
 };
 

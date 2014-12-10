@@ -69,6 +69,9 @@ function tbconfig() {
                         <span class="tb-config-intro">\
                         Through this window you can edit the settings for /r/' + subreddit + '. </br>\
                         </br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
+                        </br>\
+                        </br><a href="/r/'+ subreddit +'/w/pages/">All Wiki Pages</a>\
+                        </br><a href="/r/'+ subreddit +'/about/usernotes/">Manage Usernotes</a>\
                         \
                         </span>\
                         ',

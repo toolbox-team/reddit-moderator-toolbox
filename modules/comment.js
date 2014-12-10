@@ -83,6 +83,7 @@ commentsMod.init = function commentsModInit() {
         });
 
         function run() {
+        console.log('run!');
             //
             //  Do stuff with removed comments
             //
@@ -170,13 +171,18 @@ commentsMod.init = function commentsModInit() {
             if (commentsMod.setting('highlighted').length > 0) {
                 var highlighted = commentsMod.setting('highlighted');
 
-                $('.md p').highlight(highlighted);
+                $body.find('.md p').highlight(highlighted);
 
                 if (commentsMod.setting('highlightTitles')) {
-                    $('a.title').highlight(highlighted);
+                    $body.find('a.title').highlight(highlighted);
                 }
             }
         }
+        
+        // Let's support selfpost expandos 
+        $body.on('click', '.expando-button.selftext', function() { 
+        delayedHighlight = setTimeout(run, 1000);
+        });
 
         // NER support.
         window.addEventListener("TBNewThings", function () {

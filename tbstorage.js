@@ -64,14 +64,20 @@
 })();
 
 (function (TBStorage) {
+    if (!$("form.logout input[name=uh]").val()) return; // not logged in.
+
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
     TBStorage.domain = window.location.hostname.split('.')[0];
+    TBStorage.bnwShim = JSON.parse(localStorage['Toolbox.Storage.bnwShim'] || 'false');
     $.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
-    var shimming = false;
+
+    if (TBStorage.domain === 'www'){
+        localStorage['Toolbox.Storage.safetostore'] = true;
+    }
 
     // one time hack for 3.0 storage changes.
-    if (!JSON.parse(localStorage['Toolbox.Storage.bnwShim'] || 'null')) {
+    if (!TBStorage.bnwShim) {
         $.log('Fixing pre-3.0 storage', false, 'TBStorage');
         var shortcuts;
 
@@ -89,6 +95,7 @@
             });
 
         localStorage['Toolbox.Storage.bnwShim'] = true;
+        localStorage['Toolbox.Storage.safetostore'] = (TBStorage.domain === 'www');
 
         if (shortcuts) {
             $.log('Found old shortcuts', false, 'TBStorage');
@@ -114,31 +121,32 @@
         TBStorage.browser = SAFARI;
     }
 
-    if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME && !shimming) {
+    if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
         //console.log('using browser storage');
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
-                objectToSettings(sObject.tbsettings, function () {
-                    //console.log('got settings: chrome');
-                    SendInit();
-                });
+                if ((sObject.tbsettings['Toolbox.Storage.bnwShim'] || false)){
+                    objectToSettings(sObject.tbsettings, function () {
+                        SendInit();
+                    });
+                }
             } else {
                 SendInit();
             }
         });
-    } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX && !shimming) {
+    } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
         // Ask for settings.
         self.port.emit('tb-getsettings');
 
         // wait for reply.
         self.port.on('tb-settings-reply', function (tbsettings) {
             if (tbsettings !== null) {
-                objectToSettings(tbsettings, function () {
-                    //console.log('got settings: firefox');
-                    //console.log(tbsettings);
-                    SendInit();
-                });
+                if ((sObject.tbsettings['Toolbox.Storage.bnwShim'] || false)) {
+                    objectToSettings(tbsettings, function () {
+                        SendInit();
+                    });
+                }
             } else {
                 SendInit();
             }
@@ -225,6 +233,7 @@
         Object.keys(localStorage)
             .forEach(function (fullKey) {
                 if (/^(Toolbox.)/.test(fullKey)) {
+                    if (fullKey === 'Toolbox.Storage.safetostore') return;
                     var key = fullKey.split(".");
                     setting = getSetting(key[1], key[2], null);
                     //console.log(fullKey);
@@ -237,8 +246,8 @@
     }
 
     function saveSettingsToBrowser() {
-        // Never write back from subdomains.  This can cause a bit of syincing issue, but resolves reset issues.
-        if (!TBStorage.userBrowserStorage || TBStorage.domain !== 'www') return;
+        // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
+        if (!TBStorage.userBrowserStorage || !(localStorage['Toolbox.Storage.safetostore'] || false)) return;
 
         if (TBStorage.browser === CHROME) {
             // chrome

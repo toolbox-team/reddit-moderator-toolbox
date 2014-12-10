@@ -1359,7 +1359,12 @@ function initwrapper() {
         // Just in case.
         TBStorage.unloading();
 
-        $.log("claring cache");
+
+        localStorage['Toolbox.Storage.safetostore'] = false;
+
+        if (TBStorage.bnwShim) {
+            localStorage['Toolbox.Storage.bnwShim'] = true;
+        }
     };
 
 

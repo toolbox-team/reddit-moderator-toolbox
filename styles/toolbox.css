@@ -736,7 +736,7 @@ img.note-close {
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     position: absolute;
-    z-index: 2147483647;
+    z-index: 2147483640;
 }
 
 .tb-popup-header {

@@ -372,7 +372,6 @@ function tbconfig() {
 
         function modMacrosContent() {
             if (config.modMacros && config.modMacros.length > 0) {
-                var $editArea = $('.edit-area');
 
                 $(config.modMacros).each(function (i, item) {
                     var label = decodeURIComponent(item.text);
@@ -550,7 +549,7 @@ function tbconfig() {
                     reasonsNum = $removalContent.attr('data-reason');
 
                 $removalContent.find('.edit-area').val(decodeURIComponent(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
-                $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[i].title || '');
+                $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
                 $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
                 $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
                 $removalContent.find('input[name=edit-note]').val('');

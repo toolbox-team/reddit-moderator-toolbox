@@ -1,0 +1,52 @@
+.mod-toolbox .personal-notes-popup table {
+    min-height: 200px
+
+}
+
+.mod-toolbox #tb-personal-notes-listing {
+    width: 100px;
+    border-right: solid 1px gray;
+    vertical-align: top;
+    padding: 3px 3px 3px 0;
+}
+
+
+
+.mod-toolbox #tb-personal-notes-content {
+    vertical-align: top;
+    min-width: 450px;
+    padding: 3px;
+    position: relative;
+}
+
+.mod-toolbox #tb-personal-notes-editarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    min-height: 100%;
+    min-width: 100%;
+    display: none;
+}
+
+.mod-toolbox .personal-notes-popup input {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.mod-toolbox #tb-new-personal-note-div {
+    border-top: 1px solid #808080;
+    margin-top: 10px;
+}
+
+.mod-toolbox #save-personal-note {
+    display: none;
+    width: 100px;
+}
+
+.mod-toolbox .tb-personal-note-link.tb-personal-notes-active {
+    font-weight: bold;
+}

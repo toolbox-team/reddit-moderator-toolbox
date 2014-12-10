@@ -1360,10 +1360,10 @@ function initwrapper() {
         TBStorage.unloading();
 
 
-        localStorage['Toolbox.Storage.safetostore'] = false;
+        localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
         if (TBStorage.bnwShim) {
-            localStorage['Toolbox.Storage.bnwShim'] = true;
+            localStorage[TBStorage.BNW_SHIM_KEY] = true;
         }
     };
 

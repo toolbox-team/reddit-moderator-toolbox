@@ -29,7 +29,7 @@
 
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
-                    window.location.href = "reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
+                    window.location.href = "//reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
                 }, 1000);
             }
 
@@ -60,21 +60,41 @@
                 }, 1000);
             }
         }
+    } else {
+        storageWrapper();
     }
 })();
 
+function storageWrapper() {
 (function (TBStorage) {
     if (!$("form.logout input[name=uh]").val()) return; // not logged in.
+
+    // Type safe keys.
+    TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safetostore';
+    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwShim';
 
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
     TBStorage.domain = window.location.hostname.split('.')[0];
-    TBStorage.bnwShim = JSON.parse(localStorage['Toolbox.Storage.bnwShim'] || 'false');
+    TBStorage.bnwShim = JSON.parse(localStorage[TBStorage.BNW_SHIM_KEY] || 'false');
+
     $.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
 
-    if (TBStorage.domain === 'www'){
-        localStorage['Toolbox.Storage.safetostore'] = true;
+    // We'll see about this idea after some testing.
+    /*
+    if (TBStorage.domain !== 'www') {
+        Object.keys(localStorage)
+            .forEach(function (key) {
+                if (key === TBStorage.BNW_SHIM_KEY) return;
+                if (/^(Toolbox.)/.test(key)) {
+                    localStorage.removeItem(key);
+                }
+            });
     }
+    */
+
+    localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
+
 
     // one time hack for 3.0 storage changes.
     if (!TBStorage.bnwShim) {
@@ -94,8 +114,8 @@
                 }
             });
 
-        localStorage['Toolbox.Storage.bnwShim'] = true;
-        localStorage['Toolbox.Storage.safetostore'] = (TBStorage.domain === 'www');
+        localStorage[TBStorage.BNW_SHIM_KEY] = true;
+        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
 
         if (shortcuts) {
             $.log('Found old shortcuts', false, 'TBStorage');
@@ -126,7 +146,7 @@
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
-                if ((sObject.tbsettings['Toolbox.Storage.bnwShim'] || false)){
+                if ((sObject.tbsettings[TBStorage.BNW_SHIM_KEY] || false)){
                     objectToSettings(sObject.tbsettings, function () {
                         SendInit();
                     });
@@ -142,7 +162,7 @@
         // wait for reply.
         self.port.on('tb-settings-reply', function (tbsettings) {
             if (tbsettings !== null) {
-                if ((sObject.tbsettings['Toolbox.Storage.bnwShim'] || false)) {
+                if ((sObject.tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
                     objectToSettings(tbsettings, function () {
                         SendInit();
                     });
@@ -153,14 +173,6 @@
         });
     } else {
         SendInit();
-        // uncomment to test wait loops.  
-        /*
-         TBStorage.isLoaded = false;
-         setTimeout(function () {
-         SendInit();
-         }, 9000);
-         */
-
     }
 
 
@@ -233,7 +245,7 @@
         Object.keys(localStorage)
             .forEach(function (fullKey) {
                 if (/^(Toolbox.)/.test(fullKey)) {
-                    if (fullKey === 'Toolbox.Storage.safetostore') return;
+                    if (fullKey === TBStorage.SAFE_STORE_KEY) return;
                     var key = fullKey.split(".");
                     setting = getSetting(key[1], key[2], null);
                     //console.log(fullKey);
@@ -247,7 +259,7 @@
 
     function saveSettingsToBrowser() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
-        if (!TBStorage.userBrowserStorage || !(localStorage['Toolbox.Storage.safetostore'] || false)) return;
+        if (!TBStorage.userBrowserStorage || !JSON.parse(localStorage[TBStorage.SAFE_STORE_KEY])) return;
 
         if (TBStorage.browser === CHROME) {
             // chrome
@@ -349,3 +361,4 @@
     }
 
 }(TBStorage = window.TBStorage || {}));
+}

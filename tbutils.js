@@ -418,7 +418,7 @@ function initwrapper() {
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked');
-                if (/\.com\/r\/.*\/(.*?)\?context=3/.test(url)) {
+                if (/\/r\/.*\/(.*?)\?context=3/.test(url)) {
                     var readCommentId = url.match(/\/r\/.*\/(.*?)\?context=3/);
                     readCommentId = 't1_' + readCommentId[1];
                     $.post('/api/read_message', {

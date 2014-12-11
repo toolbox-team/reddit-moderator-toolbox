@@ -62,7 +62,6 @@
 		"modules/macros.js",
 		"modules/realtime.js",
 		"modules/nukecomments.js",
-		"modules/modtalkadvisory.js",
 		"modules/personalnotes.js",
 		"modules/queuetools.js",
 		"tbmoduleinit.js"

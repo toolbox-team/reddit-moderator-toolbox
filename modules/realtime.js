@@ -112,12 +112,12 @@ realtime.init = function realtimeInit() {
     }
 };
 
-TB.register_module(realtimeInit);
+TB.register_module(realtime);
 }
 
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        realtime();
+        realtimeInit();
     });
 })();

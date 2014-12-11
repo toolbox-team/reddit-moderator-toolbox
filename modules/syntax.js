@@ -3,7 +3,7 @@ function syntax() {
 // syntax highlighter with ACE, by creesch
 
 var syntax = new TB.Module('Syntax Highlighter');
-syntax.shortname('Syntax');
+syntax.shortname = 'Syntax';
 
 syntax.settings["enabled"]["default"] = true;
 

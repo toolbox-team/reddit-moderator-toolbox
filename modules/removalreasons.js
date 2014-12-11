@@ -1,7 +1,7 @@
 function removalreasons() {
 
 var reasons = new TB.Module('Removal Reasons');
-reasons.shortname('RReasons');
+reasons.shortname = 'RReasons';
 
 reasons.settings["enabled"]["default"] = true;
 

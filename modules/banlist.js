@@ -1,11 +1,11 @@
 function banlist() {
-var banList = new TB.Module('Ban List');
-banList.shortname = 'BanList';
+var banlist = new TB.Module('Ban List');
+banlist.shortname = 'BanList';
 
-banList.settings["enabled"]["default"] = true;
-banList.config["betamode"] = false; // this module is not in beta
+banlist.settings["enabled"]["default"] = true;
+banlist.config["betamode"] = false; // this module is not in beta
 
-banList.register_setting(
+banlist.register_setting(
     'automatic', {
         "type": "boolean",
         "default": false,
@@ -17,11 +17,11 @@ banList.register_setting(
 // extracts a url parameter value from a URL string
 // from http://stackoverflow.com/a/15780907/362042
 // TODO: move to tbutils
-banList.getURLParameter = function getURLParameter(url, name) {
+banlist.getURLParameter = function getURLParameter(url, name) {
     return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url) || [, null])[1];
 };
 
-banList.init = function init() {
+banlist.init = function init() {
     if (!(location.pathname.match(/\/about\/(?:banned)\/?/)
         || location.pathname.match(/\/about\/(?:contributors)\/?/))
     ) {
@@ -85,7 +85,7 @@ banList.init = function init() {
 
                 after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                 $.log(after_url);
-                after = banList.getURLParameter(after_url, 'after');
+                after = banlist.getURLParameter(after_url, 'after');
                 $.log(after);
                 if (after) {
                     // hit the API hard the first 10, to make it more responsive on small subs
@@ -216,7 +216,7 @@ banList.init = function init() {
     }
 };
 
-TB.register_module(banList);
+TB.register_module(banlist);
 }
 
 (function() {

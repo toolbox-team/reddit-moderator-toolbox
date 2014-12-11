@@ -187,7 +187,7 @@ TB = {
                             break;
                         case "syntaxTheme":
                             $setting.append(options.title + ':<br/>');
-                            $setting.append(TB.modules.SyntaxHighlighter.themeSelect);
+                            $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', module.shortname + '_syntax_theme');
                             $setting.append($('\
                             <pre class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\

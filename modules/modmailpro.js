@@ -1,7 +1,7 @@
 function modmailpro() {
 //Setup
 var modmail = new TB.Module('Mod Mail Pro');
-modmail.shortname('ModMail');
+modmail.shortname = 'ModMail';
 
 
 ////Default settings

@@ -1,11 +1,11 @@
-function tbconfig() {
+function tbConfig() {
 //Setup
-    var config = new TB.Module('Toolbox Config');
-    config.shortname = 'TBConfig'; // for backwards compatibility
+    var tbconfig = new TB.Module('Toolbox Config');
+    tbconfig.shortname = 'TBConfig'; // for backwards compatibility
     //Default settings
-    config.settings['enabled']['default'] = true;
+    tbconfig.settings['enabled']['default'] = true;
 
-    config.init = function () {
+    tbconfig.init = function () {
 
         var $body = $('body');
 
@@ -17,13 +17,13 @@ function tbconfig() {
 
         // only load on definite subreddits
         if (!subreddit) {
-            config.log('Aborting: invalid subreddit');
+            tbconfig.log('Aborting: invalid subreddit');
             return;
         }
 
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                config.log('Failed: wiki config');
+                tbconfig.log('Failed: wiki config');
                 return;
             }
 
@@ -873,11 +873,11 @@ function tbconfig() {
         });
     }; // TBConfig.init()
 
-    TB.register_module(config);
+    TB.register_module(tbconfig);
 } // tbconfig() wrapper
 
 (function() {
     window.addEventListener('TBUtilsLoaded', function () {
-        tbconfig();
+        tbConfig();
     });
 })();

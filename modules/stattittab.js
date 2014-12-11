@@ -3,7 +3,7 @@ function stattittab() {
 // @copyright  2013+, LowSociety, dakta
 
 var stattit = new TB.Module('Stattit Tab');
-stattit.shortname('Stattit');
+stattit.shortname = 'Stattit';
 
 stattit.settings["enabled"]["default"] = true;
 

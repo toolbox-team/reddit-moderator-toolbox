@@ -1,7 +1,7 @@
 function personalnotes() {
     var notes = new TB.Module('Personal Notes');
 
-    notes.shortname = 'PersonalNotes';
+    notes.shortname = 'PNotes';
 
     notes.settings["enabled"]["default"] = true;
     notes.config["betamode"] = true;

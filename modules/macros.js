@@ -18,7 +18,7 @@ macros.init = function macrosInit() {
     //$.log(TB.utils.config);
     function setConfig(config) {
         if (!config.modMacros || config.modMacros.length < 1) {
-            $.log("!config.modMacros || config.modMacros.length < 1");
+            macros.log("!config.modMacros || config.modMacros.length < 1");
             return false;
         }
         macroConfig = config.modMacros;
@@ -27,7 +27,7 @@ macros.init = function macrosInit() {
 
     function getConfig(sub, callback) {
         if (TBUtils.noConfig.indexOf(sub) != -1) {
-            $.log("TBUtils.noConfig.indexOf(sub) != -1");
+            macros.log("TBUtils.noConfig.indexOf(sub) != -1");
             callback(false);
         }
 
@@ -38,12 +38,12 @@ macros.init = function macrosInit() {
         } else {
             TBUtils.readFromWiki(sub, 'toolbox', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                    $.log("!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN");
+                    macros.log("!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN");
                     callback(false);
                 }
 
                 if (resp === TBUtils.NO_WIKI_PAGE) {
-                    $.log("resp === TBUtils.NO_WIKI_PAGE");
+                    macros.log("resp === TBUtils.NO_WIKI_PAGE");
                     TBUtils.noConfig.push(sub);
                     callback(false);
                 }
@@ -67,7 +67,7 @@ macros.init = function macrosInit() {
 
     TB.utils.getModSubs(function() {
         if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
-            $.log("getting config", false, 'modmacros');
+            macros.log("getting config");
             getConfig(TB.utils.post_site, function (success) {
                 // if we're a mod, add macros to top level reply button.
                 if (success) {

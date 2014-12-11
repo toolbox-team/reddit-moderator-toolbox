@@ -1,7 +1,7 @@
 function modmaillite() {
 if (!TBUtils.isModmail || !TBUtils.logged || !TB.storage.getSetting('ModMailLite', 'enabled', false)) return;
 
-$.log('Loading MML Module');
+//$.log('Loading MML Module');
 
 var $sitetable = $('#siteTable'),//.hide(),
     $threads = $('.message-parent'),

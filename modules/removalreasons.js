@@ -46,7 +46,7 @@ reasons.init = function removalReasonsInit() {
             return;
         }
 
-        $.log('getting config: ' + subreddit);
+        reasons.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -62,7 +62,7 @@ reasons.init = function removalReasonsInit() {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            $.log('returning: cache');
+            reasons.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -70,7 +70,7 @@ reasons.init = function removalReasonsInit() {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                $.log('failed: wiki config');
+                reasons.log('failed: wiki config');
                 callback(false);
                 return;
             }
@@ -81,19 +81,19 @@ reasons.init = function removalReasonsInit() {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                $.log('trying: get from, no cache');
+                reasons.log('trying: get from, no cache');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                $.log('returning: no cache');
+                reasons.log('returning: no cache');
                 callback(reasons);
                 return;
             }
 
-            $.log('failed: all');
+            reasons.log('failed: all');
             callback(false);
         });
     }
@@ -183,7 +183,7 @@ reasons.init = function removalReasonsInit() {
         }
 
         function createPopup() {
-            $.log("Creating removal reason popup");
+            reasons.log("Creating removal reason popup");
 
             // Options
             var logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none',
@@ -587,7 +587,7 @@ reasons.init = function removalReasonsInit() {
 
             // Reply to submission/comment
             if (notifyByReply) {
-                $.log("Sending removal message by comment reply.");
+                reasons.log("Sending removal message by comment reply.");
                 TBUtils.postComment(data.fullname, reason, function (successful, response) {
                     if (successful) {
                         // Check if reddit actually returned an error
@@ -623,7 +623,7 @@ reasons.init = function removalReasonsInit() {
                 var text = reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]';
 
                 if (notifyAsSub) {
-                    $.log("Sending removal message by PM as " + data.subreddit);
+                    reasons.log("Sending removal message by PM as " + data.subreddit);
                     TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
                         if (successful) {
                             removePopup(popup);
@@ -634,7 +634,7 @@ reasons.init = function removalReasonsInit() {
                     });
                 }
                 else {
-                    $.log("Sending removal message by PM as current user");
+                    reasons.log("Sending removal message by PM as current user");
                     TBUtils.sendPM(data.author, subject, text, function (successful, response) {
                         if (successful) {
                             removePopup(popup);

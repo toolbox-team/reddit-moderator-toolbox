@@ -1,6 +1,7 @@
 function usernotes() {
 //Setup
 var usernotes = new TB.Module('User Notes');
+usernotes.shortname = "UserNotes";
 
 ////Default settings
 usernotes.settings['enabled']['default'] = true;
@@ -156,13 +157,13 @@ usernotes.init = function () {
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
 
-        $.log("Saving usernotes to wiki...");
+        usernotes.log("Saving usernotes to wiki...");
         TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
-                $.log("Success!");
+                usernotes.log("Success!");
                 run();
             } else {
-                $.log("Failure: " + err);
+                usernotes.log("Failure: " + err);
             }
         });
     }
@@ -688,7 +689,7 @@ usernotes.init = function () {
 
     $body.on('keyup', '.utagger-user-note', function (event) {
         if (event.keyCode == 13) {
-            $.log("Enter pressed!");
+            usernotes.log("Enter pressed!");
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }

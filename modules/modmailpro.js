@@ -258,7 +258,7 @@ modmail.modmailpro = function () {
             var attrib = $sender.attr('data-fullname');
             if (attrib) {
                 setTimeout(function () {
-                    $.log('realtime go');
+                    modmail.log('realtime go');
                     var thread = $(".message-parent[data-fullname='" + attrib + "']");
                     if (thread.length > 1) {
                         $sender.remove();
@@ -272,7 +272,7 @@ modmail.modmailpro = function () {
             return;
         } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
             setTimeout(function () {
-                $.log('LMC go');
+                modmail.log('LMC go');
                 processThread($sender);
                 window.dispatchEvent(event);
             }, 500);
@@ -281,10 +281,10 @@ modmail.modmailpro = function () {
     });     
 
     function initialize() {
-        $.log('MMP init');
+        modmail.log('MMP init');
 
         unprocessedThreads = $('.message-parent:not(.mmp-processed)');
-        $.log(unprocessedThreads.length);
+        modmail.log(unprocessedThreads.length);
 
         // Add filter link to each title, if it doesn't already have one.
         TBUtils.forEachChunked(unprocessedThreads, 25, 350, function (thread) {
@@ -622,7 +622,7 @@ modmail.modmailpro = function () {
     }
 
     function collapseall(threads) {
-        $.log('collapsing all');
+        modmail.log('collapsing all');
         collapsed = true;
         var link = ('.collapse-all-link');
 
@@ -716,7 +716,7 @@ modmail.realtimemail = function () {
         TB.storage.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
         TB.storage.setSetting('Notifier', 'modmailcount', 0);
 
-        $.log('real time a gogo: ' + limit);
+        modmail.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {
             if (!resp) return;
             var $things = $(resp).find('.message-parent').addClass('realtime-new').hide();

@@ -1,6 +1,7 @@
 function notifiermod() {
 
 var notifier = new TB.Module('Notifier');
+notifier.shortname = 'Notifier';
 
 notifier.settings["enabled"]["default"] = true;
 notifier.config["needs_mod_subs"] = true;
@@ -176,7 +177,7 @@ notifier.init = function notifierMod_init() {
     // Mark all modmail messages read when visiting a modmail related page. This is done outside the function since it only has to run on page load when the page is modmail related.
     // If it was part of the function it would fail to show notifications when the user multiple tabs open and the script runs in a modmail tab.
     if (TBUtils.isModmailUnread || TBUtils.isModmail) {
-        $.log('clearing all unread stuff');
+        notifier.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
         TB.storage.setSetting('Notifier', 'lastseenmodmail', now);

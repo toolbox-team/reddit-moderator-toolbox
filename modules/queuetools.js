@@ -1,6 +1,7 @@
 function queuetools() {
 
 var queue = new TB.Module('Queue Tools');
+queue.shortname = 'QueueTools';
 
 queue.settings["enabled"]["default"] = true;
 queue.config["needs_mod_subs"] = true;
@@ -87,7 +88,7 @@ queue.init = function () {
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
     function getRemovalReasons(subreddit, callback) {
-        $.log('getting config: ' + subreddit);
+        queue.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -103,7 +104,7 @@ queue.init = function () {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            $.log('returning: cache');
+            queue.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -111,7 +112,7 @@ queue.init = function () {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                $.log('failed: wiki config');
+                queue.log('failed: wiki config');
                 callback(false);
                 return;
             }
@@ -122,19 +123,19 @@ queue.init = function () {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                $.log('trying: get from, no cache');
+                queue.log('trying: get from, no cache');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                $.log('returning: no cache');
+                queue.log('returning: no cache');
                 callback(reasons);
                 return;
             }
 
-            $.log('falied: all');
+            queue.log('falied: all');
             callback(false);
         });
     }
@@ -492,7 +493,7 @@ queue.init = function () {
 
         // NER support.
         window.addEventListener("TBNewThings", function () {
-            $.log("proc new things");
+            queue.log("proc new things");
             var things = $(".thing").not(".mte-processed");
 
             processNewThings(things);
@@ -556,12 +557,12 @@ queue.init = function () {
         if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
             var prefix = '', page = '', type = '';
             if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
-                $.log('sorting unmod');
+                queue.log('sorting unmod');
                 prefix = 'umq-';
                 page = 'unmoderated';
                 //type = 'unmod-';
             } else if (TBUtils.isModQueuePage && sortModQueue) {
-                $.log('sorting mod queue');
+                queue.log('sorting mod queue');
                 prefix = 'mq-';
                 page = 'modqueue';
                 //type = 'mod-';

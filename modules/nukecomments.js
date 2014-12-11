@@ -12,7 +12,6 @@ function nukecomments() {
 
 //Setup
 var nuke = new TB.Module('Comment Nuke');
-
 nuke.shortname = 'Nuke';
 
 ////Default settings
@@ -38,12 +37,12 @@ nuke.init = function () {
 				(function (_elmnt, _idx) {
 					return function () {
 						TB.utils.textFeedback('removing comment ' + _idx + '/' + elmnts.length,'neutral');
-						$.log('removing comment ' + _idx + '/' + elmnts.length, false, 'nuke');
+						nuke.log('removing comment ' + _idx + '/' + elmnts.length, false, 'nuke');
 						var event = document.createEvent('UIEvents');
 						event.initUIEvent('click', true, true, window, 1);
 						_elmnt.dispatchEvent(event);
 						if (_idx == elmnts.length) {
-							$.log("kill spinner");
+							nuke.log("kill spinner");
 							TB.utils.longLoadSpinner(false);
 							TB.utils.textFeedback('all comments removed','positive');
 						}

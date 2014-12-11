@@ -40,7 +40,7 @@ banlist.init = function init() {
         after = typeof after !== 'undefined' ? after : '';
         pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
 
-        $.log("_get_next_ban_page(" + after + ")");
+        banlist.log("_get_next_ban_page(" + after + ")");
 
         var parameters = {'limit': 1000, 'after': after};
 
@@ -54,12 +54,12 @@ banlist.init = function init() {
             dataType: 'html',
             async: true,
             success: function (data) {
-                $.log("  success!");
-                $.log("  " + pages_back + " pages back");
+                banlist.log("  success!");
+                banlist.log("  " + pages_back + " pages back");
                 var response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                 // var $new_banlist = $('.usertable', response_page);
-                $.log($('.usertable table tbody tr', response_page).length);
+                banlist.log($('.usertable table tbody tr', response_page).length);
                 if ($('.usertable table tbody tr', response_page).length > 0) {
                     $('.usertable table tbody tr', response_page).each(function () {
                         // workaround for known bug in listings where "next" button is available on last page
@@ -84,9 +84,9 @@ banlist.init = function init() {
                 }
 
                 after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
-                $.log(after_url);
+                banlist.log(after_url);
                 after = banlist.getURLParameter(after_url, 'after');
-                $.log(after);
+                banlist.log(after);
                 if (after) {
                     // hit the API hard the first 10, to make it more responsive on small subs
                     if (pages_back < 10) {
@@ -97,15 +97,15 @@ banlist.init = function init() {
                         setTimeout(_get_next_ban_page, sleep, after, pages_back);
                     }
                 } else {
-                    $.log("  last page");
+                    banlist.log("  last page");
                     banlist_updating = false;
                     banlist_last_update = Date.now();
                     TB.utils.longLoadSpinner(false);
                 }
             },
             error: function (data) {
-                $.log("  failed");
-                $.log(data.status);
+                banlist.log("  failed");
+                banlist.log(data.status);
                 if (data.status == 504) {
                     // "504, post some more"
                     this.success(data);
@@ -121,21 +121,21 @@ banlist.init = function init() {
     }
 
     function filter_banlist(banlist, value, ignore_last) {
-        $.log('filter(' + value + ')');
+        banlist.log('filter(' + value + ')');
         last_value = typeof last_value !== 'undefined' ? last_value : '';
         ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
         if (value == '') {
-            $.log('empty');
+            banlist.log('empty');
             // empty search? show all
             $('tr', banlist).show().addClass('visible');
         } else if (!ignore_last && last_value && value.indexOf(last_value) > -1) {
-            $.log('subset');
+            banlist.log('subset');
             // is this query a subset of the last query?
             // filter *out* non-matching
             $("tr.visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
         } else {
-            $.log('full search');
+            banlist.log('full search');
             $('tr', banlist).hide().removeClass('visible');
             // combine and use a single selector for increased performance
             // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
@@ -173,7 +173,7 @@ banlist.init = function init() {
                 banlist_updating = true;
                 TB.utils.longLoadSpinner(true);
 
-                $.log("Updating now")
+                banlist.log("Updating now")
                 // clean up
                 $('.usertable table tbody').empty();
                 pages_back = 0;

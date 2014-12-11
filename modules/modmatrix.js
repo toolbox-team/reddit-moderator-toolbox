@@ -1,7 +1,6 @@
 function modmatrix() {
 
 var modlog = new TB.Module('Mod Log Matrix');
-
 modlog.shortname = 'ModMatrix'; // backwards compatibility
 
 ////Default settings
@@ -734,7 +733,7 @@ modlog.dateToUTC = function (date) {
 modlog.init = function () {
     if (!TBUtils.isModLogPage) return;
 
-    $.log('Running Mod Matrix Module');
+    modlog.log('Running Mod Matrix Module');
     modlog.run();
 
     var $body = $('body');
@@ -808,7 +807,7 @@ modlog.init = function () {
                     if (!$this.find('.description').attr('id')) {
                         commentCount = commentCount + 1;
                     }
-                    $.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
+                    modlog.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
                     // lets add a little buffer just to be sure
                 }
             });

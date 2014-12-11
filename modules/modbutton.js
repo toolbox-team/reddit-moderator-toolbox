@@ -374,7 +374,7 @@ modbutton.init = function init() {
             banDuration = '';
         }
         else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
-            $.log('Including time in ban message');
+            modbutton.log('Including time in ban message');
             banMessage = banMessage + '  \n \n\
 *You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
         }
@@ -434,16 +434,16 @@ modbutton.init = function init() {
             if (failedSubs.length > 0) {
                 var retry = confirm(failedSubs.length + " failed.  Would you like to retry them?");
                 if (retry) {
-                    $.log('retrying');
+                    modbutton.log('retrying');
                     massAction(failedSubs);
                 }
                 else {
-                    $.log('not retrying');
+                    modbutton.log('not retrying');
                     $('.mod-popup').remove();
                 }
             }
             else {
-                $.log('complete');
+                modbutton.log('complete');
                 $('.mod-popup').remove();
             }
         }
@@ -453,7 +453,7 @@ modbutton.init = function init() {
             $status.text("API ratelimit sleeping for: " + seconds + " seconds");
             TB.utils.pageOverlay("API ratelimit sleeping for: " + seconds + " seconds");
             setTimeout(function () {
-                $.log('resuming');
+                modbutton.log('resuming');
                 $timer.play();
             }, delay);
         }
@@ -470,18 +470,18 @@ modbutton.init = function init() {
 
                 TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + subreddit, undefined);
 
-                $.log('banning from: ' + subreddit);
+                modbutton.log('banning from: ' + subreddit);
                 if(banning) {
                     TBUtils.banUser(user, subreddit, banReason, banMessage, banDuration, function (success, response) {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();
-                                $.log('ratelimited');
+                                modbutton.log('ratelimited');
                                 rateLimit(response.json.ratelimit);
                             }
                         }
                         else {
-                            $.log('missed one');
+                            modbutton.log('missed one');
                             failedSubs.push(subreddit);
                         }
                     });
@@ -491,12 +491,12 @@ modbutton.init = function init() {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();
-                                $.log('ratelimited');
+                                modbutton.log('ratelimited');
                                 rateLimit(response.json.ratelimit);
                             }
                         }
                         else {
-                            $.log('missed one');
+                            modbutton.log('missed one');
                             failedSubs.push(subreddit);
                         }
                     });
@@ -505,7 +505,7 @@ modbutton.init = function init() {
                 actionCount++;
 
                 if (actionCount === subs.length) {
-                    $.log('completed ban round');
+                    modbutton.log('completed ban round');
                     completeCheck(failedSubs);
                 }
 
@@ -522,7 +522,7 @@ modbutton.init = function init() {
         var $popup = $(this).parents('.mod-popup'),
             thing_id = $popup.find('.thing_id').text();
 
-        $.log(thing_id);
+        modbutton.log(thing_id);
     });
 
     // send a message to the user.
@@ -628,7 +628,7 @@ modbutton.init = function init() {
                 $status.text("saved user flair");
             }
             else {
-                $.log(err.responseText);
+                modbutton.log(err.responseText);
                 $status.text(err.responseText);
             }
         });

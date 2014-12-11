@@ -1,7 +1,6 @@
 function domaintagger() {
 //Setup
 var tagger = new TB.Module('Domain Tagger');
-
 tagger.shortname = 'DTagger';
 
 ////Default settings
@@ -35,7 +34,7 @@ tagger.init = function domainTaggerInit() {
             if (succ) {
                 run();
             } else {
-                $.log(err.responseText);
+                tagger.log(err.responseText);
             }
         });
     }

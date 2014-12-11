@@ -27,7 +27,7 @@ realtime.init = function realtimeInit() {
 
     // Add new things
     function getNewThings() {
-        $.log("realtime gettingnewthings");
+        realtime.log("realtime gettingnewthings");
 
         if (!$('#realtime:checked').length) return;
         timeout = setTimeout(getNewThings, delay);
@@ -92,7 +92,7 @@ realtime.init = function realtimeInit() {
 
     // Toggle realtime view on/off
     $checkbox.on('click', function () {
-        $.log("realtime checked: " + $checkbox.is(':checked'));
+        realtime.log("realtime checked: " + $checkbox.is(':checked'));
 
         clearTimeout(timeout);
         if ($checkbox.is(':checked')) getNewThings();

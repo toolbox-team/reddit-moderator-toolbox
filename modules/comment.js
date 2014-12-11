@@ -1,14 +1,13 @@
-function comments() {
+function commentsMod() {
 
-var commentsMod = new TB.Module('Comments');
+var comments = new TB.Module('Comments');
+comments.shortname = 'Comments'; // historical precedent for settings
 
-commentsMod.shortname = 'CommentsMod'; // historical precedent for settings
-
-commentsMod.settings["enabled"]["default"] = true;
-commentsMod.config["betamode"] = false;
+comments.settings["enabled"]["default"] = true;
+comments.config["betamode"] = false;
 // removalReasons.config["needs_mod_subs"] = true;
 
-commentsMod.register_setting(
+comments.register_setting(
     "hideRemoved", {
         "type": "boolean",
         "default": false,
@@ -16,7 +15,7 @@ commentsMod.register_setting(
         "hidden": false,
         "title": "Hide removed comments by default."
     });
-commentsMod.register_setting(
+comments.register_setting(
     "approvecomments", {
         "type": "boolean",
         "default": false,
@@ -24,7 +23,7 @@ commentsMod.register_setting(
         "hidden": false,
         "title": "Show approve button on all comments."
     });
-commentsMod.register_setting(
+comments.register_setting(
     "spamremoved", {
         "type": "boolean",
         "default": false,
@@ -32,7 +31,7 @@ commentsMod.register_setting(
         "hidden": false,
         "title": "Show spam button on comments removed as ham."
     });
-commentsMod.register_setting(
+comments.register_setting(
     "hamspammed", {
         "type": "boolean",
         "default": false,
@@ -40,7 +39,7 @@ commentsMod.register_setting(
         "hidden": false,
         "title": "Show remove (not spam) button on comments removed as spam."
     });
-commentsMod.register_setting(
+comments.register_setting(
     "highlighted", {
         "type": "list",
         "default": [],
@@ -48,7 +47,7 @@ commentsMod.register_setting(
         "hidden": false,
         "title": "Highlight keywords, keywords should entered separated by a comma without spaces"
     });
-commentsMod.register_setting(
+comments.register_setting(
     "highlightTitles", {
         "type": "boolean",
         "default": true,
@@ -57,7 +56,7 @@ commentsMod.register_setting(
         "title": "Also highlight titles of submissions."
     });
 
-commentsMod.init = function commentsModInit() {
+comments.init = function commentsModInit() {
     var $body = $('body');
 
     // Perform comment actions on pages where you are mod and which are not modmail.
@@ -67,10 +66,10 @@ commentsMod.init = function commentsModInit() {
         //
         // preload some generic variables
         //
-        var hideRemoved = commentsMod.setting('hideRemoved'),
-            approveComments = commentsMod.setting('approvecomments'),
-            spamRemoved = commentsMod.setting('spamremoved'),
-            hamSpammed = commentsMod.setting('hamspammed');
+        var hideRemoved = comments.setting('hideRemoved'),
+            approveComments = comments.setting('approvecomments'),
+            spamRemoved = comments.setting('spamremoved'),
+            hamSpammed = comments.setting('hamspammed');
 
         $body.on('click', '#tb-toggle-removed', function () {
             var $comment_spam = $('.tb-comment-spam');
@@ -94,7 +93,7 @@ commentsMod.init = function commentsModInit() {
                 removedCounter = removedCounter + 1;
             });
 
-            $.log(removedCounter);
+            comments.log(removedCounter);
 
             if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
                 $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
@@ -167,12 +166,12 @@ commentsMod.init = function commentsModInit() {
                 });
             }
 
-            if (commentsMod.setting('highlighted').length > 0) {
-                var highlighted = commentsMod.setting('highlighted');
+            if (comments.setting('highlighted').length > 0) {
+                var highlighted = comments.setting('highlighted');
 
                 $body.find('.md p').highlight(highlighted);
 
-                if (commentsMod.setting('highlightTitles')) {
+                if (comments.setting('highlightTitles')) {
                     $body.find('a.title').highlight(highlighted);
                 }
             }
@@ -652,12 +651,12 @@ commentsMod.init = function commentsModInit() {
     commentSearch();
 };
 
-TB.register_module(commentsMod);
+TB.register_module(comments);
 }
 
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        comments();
+        commentsMod();
     });
 })();

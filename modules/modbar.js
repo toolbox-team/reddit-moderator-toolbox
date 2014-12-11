@@ -1,7 +1,7 @@
 function tbmodbar() {
 
 var modbar = new TB.Module('Toolbox UI (modbar)');
-modbar.shortname = 'Modbar';
+modbar.shortname = 'ModBar';
 
 modbar.settings["enabled"]["default"] = true;
 modbar.config["needs_mod_subs"] = true;
@@ -283,7 +283,7 @@ if (unmoderatedOn) {
 // Run console input
     $('.tb-debug-input').keyup(function (e) {
         if (e.keyCode == 13) {
-            $.log(eval($(this).val()));
+            modbar.log(eval($(this).val()));
             $(this).val(''); // clear line
         }
     });

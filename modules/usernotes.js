@@ -6,18 +6,26 @@ usernotes.shortname = "UserNotes";
 ////Default settings
 usernotes.settings['enabled']['default'] = true;
 
+usernotes.register_setting('unManager', {
+    'type': 'boolean',
+    'default': false,
+    'betamode': true,
+    'title': 'Enable User Notes Manager.'
+});
+
 usernotes.init = function () {
     var subs = [],
         $body = $('body');
 
-    if (window.location.href.indexOf('/about/usernotes') > -1) {
+    if (window.location.href.indexOf('/about/usernotes') > -1 && usernotes.setting('unManager')) {
 
         //userNotes.log(TBUtils.post_site);  // that should work?
-        var sub = $('.pagename a:first').html();
-        var $siteTable = $('.content');
+        var sub = $('.pagename a:first').html(),
+            $siteTable = $('.content'),
+            subUsenotes;
+
         $siteTable.html('');
         $(document).prop('title', 'usernotes - /r/' + sub);
-
 
         function getSubNotes(currsub) {
             usernotes.log('getting notes: ' + currsub);
@@ -51,6 +59,7 @@ usernotes.init = function () {
         }
 
         function showSubNotes(notes) {
+            subUsenotes = notes;
             usernotes.log('showing notes');
 
             var userCount = Object.keys(notes.users).length,
@@ -62,7 +71,8 @@ usernotes.init = function () {
 
                 var userHTML = '\
                 <div class="tb-un-user un-{{user}}">\
-                    <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>\
+                    <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
+                    <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
                     <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
                     <div class="tb-usernotes">\
                     </div>\
@@ -95,7 +105,7 @@ usernotes.init = function () {
 
                     var infoHTML = '\
                         <div class="tb-un-info">\
-                            <span class="user">There are {{usercount}} users with {{notecount}} notes.</span>\
+                            <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                         </div></br></br>';
 
                     var infocontent = TBUtils.template(infoHTML, {
@@ -132,10 +142,25 @@ usernotes.init = function () {
 
                     $userSpan.after($status);
                 });
+            });
 
+            // Delete all notes for user.
+            $body.find('.tb-un-delete').on('click', function(){
+                var $this = $(this),
+                    user = $this.attr('data-user'),
+                    $userSpan = $this.parent();
+
+                var r = confirm('This will delete all notes for /u/'+ user +'.  Would you like to proceed?');
+                if (r == true) {
+                    usernotes.log("deleting notes for " + user);
+                    delete subUsenotes.users[user];
+                    TBUtils.noteCache[sub] = subUsenotes;
+                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted all notes for /u/" + user);
+                    $userSpan.remove();
+                    TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
+                }
             });
         }
-
     }
 
     TBUtils.getModSubs(function () {
@@ -594,7 +619,7 @@ usernotes.init = function () {
 
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
                     new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(this.note) +
-                    '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconClose + '" /></td></tr>');
+                    '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconDelete + '" /></td></tr>');
                     if (this.link) {
                         popup.find('#utagger-date-' + i).wrap('<a href="' + unsquashPermalink(subreddit, this.link) + '">');
                     }

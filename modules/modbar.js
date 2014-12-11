@@ -382,13 +382,13 @@ if (unmoderatedOn) {
 
         if ($.isEmptyObject(shortcuts)) {
             $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
+<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a></td></tr>\
 ').appendTo('.tb-window-content-shortcuts-table');
 
         } else {
             $.each(shortcuts, function (index, value) {
                 shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
-<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
+<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a></td></tr>\
 <br><br>';
                 //console.log(shortcutinput);
                 $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
@@ -486,7 +486,7 @@ See the License for the specific language governing permissions and limitations 
     // add a shortcut
     $body.on('click', '.tb-add-shortcuts', function () {
         $('<tr class="tb-window-content-shortcuts-tr"><td><input type="text" name="name"> </td><td> <input type="text" name="url">  <td><td class="tb-window-content-shortcuts-td-remove"> \
-<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconClose + '" /></a></td></tr>\
+<a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a></td></tr>\
 ').appendTo('.tb-window-content-shortcuts-table');
     });
 

@@ -333,7 +333,7 @@ function initwrapper() {
 
     TBUtils.alert = function (message, callback) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
-        $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconNoteClose + '" class="note-close" title="Close" />');
+        $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconClose + '" class="note-close" title="Close" />');
         $noteDiv.appendTo('body');
 
         $noteDiv.click(function (e) {

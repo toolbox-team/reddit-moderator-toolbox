@@ -21,10 +21,12 @@ usernotes.init = function () {
 
         //userNotes.log(TBUtils.post_site);  // that should work?
         var sub = $('.pagename a:first').html(),
-            $siteTable = $('.content'),
+            $contentClear = $('.content'),
             subUsenotes;
 
-        $siteTable.html('');
+        $contentClear.html('<div id="tb-un-note-content-wrap"></div>"');
+
+        var $siteTable = $contentClear.find('#tb-un-note-content-wrap');
         $('.pagename').html( $('.pagename').html().replace(': page not found', ''));//(': page not found', '<ul class="tabmenu"></ul>'));
         $(document).prop('title', 'usernotes - /r/' + sub);
 
@@ -72,12 +74,14 @@ usernotes.init = function () {
 
                 var userHTML = '\
                 <div class="tb-un-user un-{{user}}">\
+                    <div class="tb-un-user-header">\
                     <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
                     <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
                     <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
+                    </div>\
                     <div class="tb-usernotes">\
                     </div>\
-                </div></br></br>';
+                </div>';
 
                 var usercontent = TB.utils.template(userHTML, {
                     'user': user
@@ -88,9 +92,9 @@ usernotes.init = function () {
                 $.each(val.notes, function (key, val) {
                     noteCount++;
 
-                    var noteHTML = '<div>&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>\
+                    var noteHTML = '<div class="tb-un-note-details"><a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a> &nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>\
                         &nbsp;-&nbsp;<span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date">on {{date}}</span>\
-                        &nbsp;<a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a></div>';
+                        &nbsp;</div>';
 
                     var notecontent = TB.utils.template(noteHTML, {
                         'user': user,

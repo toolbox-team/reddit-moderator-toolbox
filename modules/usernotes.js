@@ -30,31 +30,31 @@ usernotes.init = function () {
 
         function getSubNotes(currsub) {
             usernotes.log('getting notes: ' + currsub);
-            if (TBUtils.noteCache[currsub] !== undefined) {
-                showSubNotes(TBUtils.noteCache[currsub], currsub);
+            if (TB.utils.noteCache[currsub] !== undefined) {
+                showSubNotes(TB.utils.noteCache[currsub], currsub);
                 return;
             }
 
-            if (!currsub || TBUtils.noNotes.indexOf(currsub) != -1) return;
+            if (!currsub || TB.utils.noNotes.indexOf(currsub) != -1) return;
 
-            TBUtils.readFromWiki(currsub, 'usernotes', true, function (resp) {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+            TB.utils.readFromWiki(currsub, 'usernotes', true, function (resp) {
+                if (!resp || resp === TB.utils.WIKI_PAGE_UNKNOWN) {
                     return TB.ui.longLoadSpinner(false);
                 }
 
-                if (resp === TBUtils.NO_WIKI_PAGE) {
-                    TBUtils.noNotes.push(currsub);
+                if (resp === TB.utils.NO_WIKI_PAGE) {
+                    TB.utils.noNotes.push(currsub);
                     return TB.ui.longLoadSpinner(false);
                 }
 
                 if (!resp || resp.length < 1) {
-                    TBUtils.noNotes.push(currsub);
+                    TB.utils.noNotes.push(currsub);
                     return TB.ui.longLoadSpinner(false);
                 }
 
                 resp = convertNotes(resp);
 
-                TBUtils.noteCache[currsub] = resp;
+                TB.utils.noteCache[currsub] = resp;
                 showSubNotes(resp, currsub);
             });
         }
@@ -79,7 +79,7 @@ usernotes.init = function () {
                     </div>\
                 </div></br></br>';
 
-                var usercontent = TBUtils.template(userHTML, {
+                var usercontent = TB.utils.template(userHTML, {
                     'user': user
                 });
 
@@ -88,20 +88,23 @@ usernotes.init = function () {
                 $.each(val.notes, function (key, val) {
                     noteCount++;
 
-                    var noteHTML = '<div>&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;\
-                        <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a></div>';
+                    var noteHTML = '<div>&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>\
+                        &nbsp;-&nbsp;<span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date">on {{date}}</span>\
+                        &nbsp;<a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a></div>';
 
-                    var notecontent = TBUtils.template(noteHTML, {
+                    var notecontent = TB.utils.template(noteHTML, {
                         'user': user,
                         'key': key,
                         'note': val.note,
-                        'link': (val.link) ? unsquashPermalink(sub, val.link) : ''
+                        'link': (val.link) ? unsquashPermalink(sub, val.link) : '',
+                        'mod': val.mod,
+                        'date': new Date(val.time).toLocaleString()
                     });
 
                     $siteTable.find('.un-' + user).append(notecontent);
                 });
 
-                usernotes.log(userCount +' '+(count));
+                usernotes.log('Getting user: ' + count +' of '+ userCount);
                 if ((count++) === userCount) {
                     TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
@@ -110,13 +113,14 @@ usernotes.init = function () {
                             <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                         </div></br></br>';
 
-                    var infocontent = TBUtils.template(infoHTML, {
+                    var infocontent = TB.utils.template(infoHTML, {
                         'usercount': userCount,
                         'notecount': noteCount
                     });
 
                     $siteTable.prepend(infocontent);
 
+                    // Set events after all items are loaded.
                     noteManagerRun();
                 }
             });
@@ -138,7 +142,7 @@ usernotes.init = function () {
                 usernotes.log('refreshing user: ' + user);
                 TB.utils.aboutUser(user, function(succ){
 
-                    var $status = TBUtils.template('&nbsp;<span class="status">[{{status}}]</span>', {
+                    var $status = TB.utils.template('&nbsp;<span class="status">[{{status}}]</span>', {
                         'status': succ ? 'active' : 'deleted'
                     });
 
@@ -156,14 +160,14 @@ usernotes.init = function () {
                 if (r == true) {
                     usernotes.log("deleting notes for " + user);
                     delete subUsenotes.users[user];
-                    TBUtils.noteCache[sub] = subUsenotes;
+                    TB.utils.noteCache[sub] = subUsenotes;
                     postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted all notes for /u/" + user);
                     $userSpan.remove();
                     TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
                 }
             });
 
-            // Delete all notes for user.
+            // Delete individual notes for user.
             $body.find('.tb-un-notedelete').on('click', function(){
                 var $this = $(this),
                     user = $this.attr('data-user'),
@@ -172,12 +176,10 @@ usernotes.init = function () {
 
                     usernotes.log("deleting note for " + user);
                     subUsenotes.users[user].notes.splice(note, 1);
-                    TBUtils.noteCache[sub] = subUsenotes;
-                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted all notes for /u/" + user);
+                    TB.utils.noteCache[sub] = subUsenotes;
+                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted a note for /u/" + user);
                     $noteSpan.remove();
-                    TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
-
-
+                    TB.ui.textFeedback('Deleted note for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
             });
         }
     }
@@ -401,7 +403,7 @@ usernotes.init = function () {
                         "t": deflateTime(note.time),
                         "m": mgr.create("users", note.mod),
                         "l": note.link,
-                        "w": mgr.create("warnings", note.type),
+                        "w": mgr.create("warnings", note.type)
                     };
                 })
             };
@@ -463,7 +465,7 @@ usernotes.init = function () {
             "time": inflateTime(note.t),
             "mod": mgr.get("users", note.m),
             "link": note.l,
-            "type": mgr.get("warnings", note.w),
+            "type": mgr.get("warnings", note.w)
         };
     }
 

@@ -47,8 +47,8 @@ modbar.init = function coreInit() {
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+        if (TB.storage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-');
         }
     }
 

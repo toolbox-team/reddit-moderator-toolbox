@@ -281,7 +281,7 @@ usernotes.init = function () {
             notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes)));
             notes.ver = TBUtils.notesSchema;
             return notes;
-        } else if (notes.ver == 4) {
+        } else if (notes.ver == 4 || notes.ver == 5) {
             return inflateNotes(notes);
         }
 

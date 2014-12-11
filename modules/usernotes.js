@@ -7,7 +7,8 @@ usernotes.shortname = "UserNotes";
 usernotes.settings['enabled']['default'] = true;
 
 usernotes.init = function () {
-    var subs = [];
+    var subs = [],
+        $body = $('body');
 
     if (window.location.href.indexOf('/about/usernotes') > -1) {
 
@@ -15,6 +16,8 @@ usernotes.init = function () {
         var sub = $('.pagename a:first').html();
         var $siteTable = $('.content');
         $siteTable.html('');
+        $(document).prop('title', 'usernotes - /r/' + sub);
+
 
         function getSubNotes(currsub) {
             usernotes.log('getting notes: ' + currsub);
@@ -50,7 +53,6 @@ usernotes.init = function () {
         function showSubNotes(notes) {
             usernotes.log('showing notes');
 
-
             var userCount = Object.keys(notes.users).length,
                 noteCount = 0,
                 count = 1;
@@ -60,6 +62,7 @@ usernotes.init = function () {
 
                 var userHTML = '\
                 <div class="tb-un-user un-{{user}}">\
+                    <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>\
                     <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
                     <div class="tb-usernotes">\
                     </div>\
@@ -101,16 +104,38 @@ usernotes.init = function () {
                     });
 
                     $siteTable.prepend(infocontent);
+
+                    noteManagerRun();
                 }
-
             });
-
         }
 
         TB.ui.longLoadSpinner(true, "Loading usernotes", TB.ui.FEEDBACK_NEUTRAL);
         setTimeout(function () {
-            getSubNotes(sub); // wait a sec to make sure TB is loaded.
+            getSubNotes(sub); // wait a sec to make sure spinner is loaded.
         }, 500);
+
+        function noteManagerRun() {
+
+            // Update user status.
+            $body.find('.tb-un-refresh').on('click', function(){
+                var $this = $(this),
+                    user = $this.attr('data-user'),
+                    $userSpan = $this.parent().find('.user');
+
+                usernotes.log('refreshing user: ' + user);
+                TB.utils.aboutUser(user, function(succ){
+
+                    var $status = TBUtils.template('&nbsp;<span class="status">[{{status}}]</span>', {
+                        'status': succ ? 'active' : 'deleted'
+                    });
+
+                    $userSpan.after($status);
+                });
+
+            });
+        }
+
     }
 
     TBUtils.getModSubs(function () {
@@ -375,7 +400,7 @@ usernotes.init = function () {
             return {
                 "name": mgr.get("users", user.u),
                 "notes": user.ns.map(function (note) {
-                    var note = inflateNote(mgr, note);
+                    note = inflateNote(mgr, note);
                     if (note.link) {
                         note.link = "l," + note.link;
                     }
@@ -464,7 +489,7 @@ usernotes.init = function () {
         });
     }
 
-    var $body = $('body');
+
 
     $body.on('click', '#add-user-tag', function (e) {
         var thing = $(e.target).closest('.thing .entry'),

@@ -1150,6 +1150,20 @@ function initwrapper() {
         });
     };
 
+    TBUtils.aboutUser = function (user, callback) {
+        $.get('/user/'+ user +'/about.json', {
+            uh: TBUtils.modhash
+        })
+            .success(function (response) {
+                if (typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error.responseText);
+            });
+    };
+
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};

@@ -204,7 +204,7 @@ banlist.init = function init() {
         $userInput.keyup();
     }
 
-    if (TB.storage.getSetting('BanList', 'automatic', false)) {
+    if (banlist.setting('automatic')) {
         liveFilter();
     } else {
         $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');

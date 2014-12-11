@@ -81,24 +81,23 @@ modmail.modmailpro = function () {
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
-        inbox = TB.storage.getSetting('ModMailPro', 'inboxstyle', PRIORITY),
+        inbox = modmail.setting('inboxstyle'),
         now = new Date().getTime(),
         buffer = 5 * 60000, // 5mins
-        lastVisited = TB.storage.getSetting('ModMailPro', 'lastvisited', now),
-        visitedBuffer = TB.storage.getSetting('ModMailPro', 'visitedbuffer', -1), // I think this may be broken.
+        lastVisited = TB.storage.getSetting('ModMail', 'lastvisited', now),
+        visitedBuffer = TB.storage.getSetting('ModMail', 'visitedbuffer', -1), // I think this may be broken.
         newCount = 0,
-        collapsed = TB.storage.getSetting('ModMailPro', 'defaultcollapse', false),
-        expandReplies = TB.storage.getSetting('ModMailPro', 'expandreplies', false),
-        noRedModmail = TB.storage.getSetting('ModMailPro', 'noredmodmail', true),
-        hideInviteSpam = TB.storage.getSetting('ModMailPro', 'hideinvitespam', false),
-        highlightNew = TB.storage.getSetting('ModMailPro', 'highlightnew', true),
+        collapsed = modmail.setting('defaultcollapse'),
+        expandReplies = modmail.setting('expandreplies'),
+        noRedModmail = modmail.setting('noredmodmail'),
+        hideInviteSpam = modmail.setting('hideinvitespam'),
+        highlightNew = modmail.setting('highlightnew'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
-    //newLoadedMessages = 0, //Because flowwit is a doesn't respect your reddit prefs. (TODO: make use of flowwit's callback.)
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-        threadAlways = TB.storage.getSetting('ModMailPro', 'autothread', false);
+        threadAlways = modmail.setting('autothread');
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -148,7 +147,7 @@ modmail.modmailpro = function () {
             replied.push(id);
         }
 
-        TB.storage.setSetting('ModMailPro', 'replied', replied);
+        TB.storage.setSetting('ModMail', 'replied', replied);
 
         setReplied();
     });
@@ -262,7 +261,7 @@ modmail.modmailpro = function () {
                     var thread = $(".message-parent[data-fullname='" + attrib + "']");
                     if (thread.length > 1) {
                         $sender.remove();
-                        return
+                        return;
                     } else {
                         processThread(thread);
                         //window.dispatchEvent(event);
@@ -295,8 +294,8 @@ modmail.modmailpro = function () {
             // Update time stamps, but only if it has been more than five minutes since the last update.
             //console.log(now > visitedBuffer);
             if (now > visitedBuffer) {
-                TB.storage.setSetting('ModMailPro', 'lastvisited', now);
-                TB.storage.setSetting('ModMailPro', 'visitedbuffer', now + buffer);
+                TB.storage.setSetting('ModMail', 'lastvisited', now);
+                TB.storage.setSetting('ModMail', 'visitedbuffer', now + buffer);
             }
 
             // If set collapse all threads on load.
@@ -320,7 +319,7 @@ modmail.modmailpro = function () {
             setView();
         });
         // Add borders if enabled. 
-        if (TB.storage.getSetting('ModMailPro', 'subredditcolor', true)) {
+        if (modmail.setting('subredditcolor')) {
             colorBorderMail();
         }
     }
@@ -561,7 +560,7 @@ modmail.modmailpro = function () {
         }
 
         // Save new filter list.
-        TB.storage.setSetting('ModMailPro', 'filteredsubs', filtersubs);
+        TB.storage.setSetting('ModMail', 'filteredsubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -580,11 +579,11 @@ modmail.modmailpro = function () {
     }
 
     function getFilteredSubs() {
-        return TB.storage.getSetting('ModMailPro', 'filteredsubs', []);
+        return TB.storage.getSetting('ModMail', 'filteredsubs', []);
     }
 
     function getRepliedThreads() {
-        return TB.storage.getSetting('ModMailPro', 'replied', []);
+        return TB.storage.getSetting('ModMail', 'replied', []);
     }
 
     function showThreads(items, byID) {
@@ -674,8 +673,7 @@ modmail.modmailpro = function () {
 
 modmail.realtimemail = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
-    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) ||
-        location.pathname.match(/\/r\/?/) || !TB.storage.getSetting('ModMailPro', 'autoload', false)) return;
+    if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
 
     var delay = 30000, // Default .5 min delay between requests.
         refreshLimit = 15, // Default five items per request.
@@ -701,7 +699,7 @@ modmail.realtimemail = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (TB.storage.getSetting('ModMailPro', 'autoload', false) && TB.storage.getSetting('Notifier', 'enabled', true)) {
+    if (modmail.setting('autoload') && TB.storage.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
             var count = TB.storage.getSetting('Notifier', 'modmailcount', 0);
             if (count > 0) {

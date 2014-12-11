@@ -275,15 +275,15 @@ tbconfig.init = function () {
                 saveButton = $wikiContentArea.find('.save-wiki-data');
 
 
-            if (TB.storage.getSetting('SyntaxHighlighter', 'enabled', true)) {
+            if (tbconfig.setting('enabled')) {
                 $body.addClass('mod-toolbox-ace');
                 $(textArea).hide();
                 $(textAreaDiv).show();
 
-                var selectedTheme = TB.storage.getSetting('SyntaxHighlighter', 'selectedTheme', 'monokai'),
+                var selectedTheme = tbconfig.setting('selectedTheme'),
                     configEditor = ace.edit('edit-wikidata-' + page + '-div');
 
-                configEditor.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+                configEditor.getSession().setUseWrapMode(tbconfig.setting('enableWordWrap'));
                 configEditor.setTheme('ace/theme/' + selectedTheme);
 
                 if (page === 'automoderator') {

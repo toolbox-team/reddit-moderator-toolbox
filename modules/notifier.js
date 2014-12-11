@@ -86,29 +86,28 @@ notifier.register_setting("unmoderatednotifications", {
 });
 
 notifier.init = function notifierMod_init() {
-    var $body = $('body');
 
     //
     // preload some generic variables
     //
-    var modNotifications = TB.storage.getSetting('Notifier', 'modnotifications', true),  // these need to be converted to booleans.
-        messageNotifications = TB.storage.getSetting('Notifier', 'messagenotifications', true), // these need to be converted to booleans.
-        modmailNotifications = TB.storage.getSetting('Notifier', 'modmailnotifications', true),
-        unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
-        consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
-        straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
+    var modNotifications = notifier.setting('modnotifications'),  // these need to be converted to booleans.
+        messageNotifications = notifier.setting('messagenotifications'), // these need to be converted to booleans.
+        modmailNotifications = notifier.setting('modmailnotifications'),
+        unmoderatedNotifications = notifier.setting('unmoderatednotifications'),
+        consolidatedMessages = notifier.setting('consolidatedmessages'),
+        straightToInbox = notifier.setting('straightToInbox'),
         modSubreddits = notifier.setting('modsubreddits'),
         unmoderatedSubreddits = notifier.setting('unmoderatedsubreddits'),
         modmailSubreddits = notifier.setting('modmailsubreddits'),
 
-        modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
+        modmailSubredditsFromPro = notifier.setting('modmailsubredditsfrompro'),
 
         modmailFilteredSubreddits = modmailSubreddits,  //wat?
-        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
+        notifierEnabled = notifier.setting('enabled'),
         unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
-        messageunreadlink = TB.storage.getSetting('Notifier', 'messageunreadlink', false),
-        modmailunreadlink = TB.storage.getSetting('Notifier', 'modmailunreadlink', false);
+        messageunreadlink = notifier.setting('messageunreadlink'),
+        modmailunreadlink = notifier.setting('modmailunreadlink');
 
     // private
     var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
@@ -122,53 +121,23 @@ notifier.init = function notifierMod_init() {
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
         modmailFilteredSubreddits = 'mod';
-        if (TB.storage.getSetting('ModMailPro', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMailPro', 'filteredsubs', []).join('-');
+        if (TB.storage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
+            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-');
         }
     }
 
-    // convert some settings values
-    // TODO: add a fixer in the first run function for next release and drop this section
-    if (modNotifications == 'on') {
-        TB.storage.setSetting('Notifier', 'modnotifications', true);
-        modNotifications = true;
-    } else if (modNotifications == 'off') {
-        TB.storage.setSetting('Notifier', 'modnotifications', false);
-        modNotifications = false;
-    }
-
-    if (messageNotifications == 'on') {
-        TB.storage.setSetting('Notifier', 'messagenotifications', true);
-        messageNotifications = true;
-    } else if (messageNotifications == 'off') {
-        TB.storage.setSetting('Notifier', 'messagenotifications', true);
-        messageNotifications = false;
-    }
-
+    var messageunreadurl = '/message/inbox/';
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
-    } else {
-        messageunreadurl = '/message/inbox/';
     }
 
     // this is a placeholder from issue #217
     // TODO: provide an option for this once we fix modmailpro filtering
-    modmailunreadurl = '/message/moderator/';
+    var modmailunreadurl = '/message/moderator/';
     if (modmailunreadlink) {
         // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
         modmailunreadurl += 'unread/';
-    } else {
-        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
     }
-
-    // cache settings.
-    var shortLength = TB.storage.getCache('Notifier', 'shortlength', 15),
-        longLength = TB.storage.getCache('Notifier', 'longlength', 45);
-
-
-    //
-    // UI elements
-
 
     //
     // Counters and notifications
@@ -601,7 +570,7 @@ notifier.init = function notifierMod_init() {
                     messageAuthor = json.data.children[i].data.author;
 
                 var isInviteSpam = false;
-                if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
+                if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
                     isInviteSpam = true;
                 }
 
@@ -623,7 +592,7 @@ notifier.init = function notifierMod_init() {
                     $.each(json.data.children, function (i, value) {
 
                         var isInviteSpam = false;
-                        if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
 
@@ -659,7 +628,7 @@ notifier.init = function notifierMod_init() {
                     $.each(json.data.children, function (i, value) {
 
                         var isInviteSpam = false;
-                        if (TB.storage.getSetting('ModMailPro', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
+                        if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
                             isInviteSpam = true;
                         }
 

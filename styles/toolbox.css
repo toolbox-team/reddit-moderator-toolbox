@@ -1780,3 +1780,25 @@ span.tb-config-intro {
 	margin-top: -10px;
 	color: #888;
 }
+
+/* modbar */
+
+.mod-toolbox  #tb-toolbar-mysubs:hover, .mod-toolbox  #tb-personal-notes-button:hover {
+    background: #9FBAD6;
+
+}
+
+.mod-toolbox  #tb-toolbar-mysubs {
+    background: #C7D6E6;
+    border-left: 1px dotted #A8B5C2;
+    border-right: 1px dotted #A8B5C2;
+    padding: 6px 3px 3px 3px;
+}
+
+
+.mod-toolbox  #tb-personal-notes-button {
+    background: #C7D6E6;
+    border-left: 1px dotted #A8B5C2;
+    border-right: 1px dotted #A8B5C2;
+    padding: 6px 3px 3px 3px;
+}

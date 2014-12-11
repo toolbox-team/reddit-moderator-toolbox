@@ -27,17 +27,17 @@ usernotes.init = function () {
 
             TBUtils.readFromWiki(currsub, 'usernotes', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                    return;
+                    return TB.ui.longLoadSpinner(false);
                 }
 
                 if (resp === TBUtils.NO_WIKI_PAGE) {
                     TBUtils.noNotes.push(currsub);
-                    return;
+                    return TB.ui.longLoadSpinner(false);
                 }
 
                 if (!resp || resp.length < 1) {
                     TBUtils.noNotes.push(currsub);
-                    return;
+                    return TB.ui.longLoadSpinner(false);
                 }
 
                 resp = convertNotes(resp);
@@ -48,14 +48,19 @@ usernotes.init = function () {
         }
 
         function showSubNotes(notes) {
+            usernotes.log('showing notes');
 
+
+            var userCount = Object.keys(notes.users).length,
+                noteCount = 0,
+                count = 1;
             $.each(notes.users, function (key, val) {
 
                 var user = val.name;
 
                 var userHTML = '\
                 <div class="tb-un-user un-{{user}}">\
-                    <span class="user"><a href="https://www.reddit.com/user/{{user}}">{{user}}</a></span>\
+                    <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
                     <div class="tb-usernotes">\
                     </div>\
                 </div></br></br>';
@@ -67,6 +72,7 @@ usernotes.init = function () {
                 $siteTable.append(usercontent);
 
                 $.each(val.notes, function (key, val) {
+                    noteCount++;
                     usernotes.log(key);
                     usernotes.log(val);
 
@@ -74,20 +80,37 @@ usernotes.init = function () {
 
                     var notecontent = TBUtils.template(noteHTML, {
                         'note': val.note,
-                        'link': unsquashPermalink(sub, val.link)
+                        'link': (val.link) ? unsquashPermalink(sub, val.link) : ''
                     });
 
                     $siteTable.find('.un-' + user).append(notecontent);
                 });
 
+                usernotes.log(userCount +' '+(count));
+                if ((count++) === userCount) {
+                    TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
-                //
+                    var infoHTML = '\
+                        <div class="tb-un-info">\
+                            <span class="user">There are {{usercount}} users with {{notecount}} notes.</span>\
+                        </div></br></br>';
+
+                    var infocontent = TBUtils.template(infoHTML, {
+                        'usercount': userCount,
+                        'notecount': noteCount
+                    });
+
+                    $siteTable.prepend(infocontent);
+                }
 
             });
 
         }
 
-        getSubNotes(sub);
+        TB.ui.longLoadSpinner(true, "Loading usernotes", TB.ui.FEEDBACK_NEUTRAL);
+        setTimeout(function () {
+            getSubNotes(sub); // wait a sec to make sure TB is loaded.
+        }, 500);
     }
 
     TBUtils.getModSubs(function () {

@@ -25,6 +25,7 @@ usernotes.init = function () {
             subUsenotes;
 
         $siteTable.html('');
+        $('.pagename').html( $('.pagename').html().replace(': page not found', ''));//(': page not found', '<ul class="tabmenu"></ul>'));
         $(document).prop('title', 'usernotes - /r/' + sub);
 
         function getSubNotes(currsub) {
@@ -86,12 +87,13 @@ usernotes.init = function () {
 
                 $.each(val.notes, function (key, val) {
                     noteCount++;
-                    usernotes.log(key);
-                    usernotes.log(val);
 
-                    var noteHTML = '&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span></br>';
+                    var noteHTML = '<div>&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;\
+                        <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a></div>';
 
                     var notecontent = TBUtils.template(noteHTML, {
+                        'user': user,
+                        'key': key,
                         'note': val.note,
                         'link': (val.link) ? unsquashPermalink(sub, val.link) : ''
                     });
@@ -159,6 +161,23 @@ usernotes.init = function () {
                     $userSpan.remove();
                     TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
                 }
+            });
+
+            // Delete all notes for user.
+            $body.find('.tb-un-notedelete').on('click', function(){
+                var $this = $(this),
+                    user = $this.attr('data-user'),
+                    note = $this.attr('data-note'),
+                    $noteSpan = $this.parent();
+
+                    usernotes.log("deleting note for " + user);
+                    subUsenotes.users[user].notes.splice(note, 1);
+                    TBUtils.noteCache[sub] = subUsenotes;
+                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted all notes for /u/" + user);
+                    $noteSpan.remove();
+                    TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
+
+
             });
         }
     }

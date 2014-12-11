@@ -3,6 +3,7 @@
 //Reset toolbox settings support
 (function () {
     if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') > -1) {
+        var domain = window.location.hostname.split('.')[0];
         var r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
         if (r == true) {
             //
@@ -29,7 +30,7 @@
 
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
-                    window.location.href = "//reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
+                    window.location.href = "//"+ domain +".reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
                 }, 1000);
             }
 

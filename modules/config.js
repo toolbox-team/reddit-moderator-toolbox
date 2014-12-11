@@ -8,71 +8,34 @@ tbconfig.settings['enabled']['default'] = true;
 
 tbconfig.init = function () {
 
-    var $body = $('body');
+    //if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
+    //    return;
+    //}
 
-    // set up some variables.
-    var toolbox = $('#moderation_tools').find('.content .icon-menu'),
-        configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>',
-        subreddit = TBUtils.post_site,
+
+    // Set up some base variables
+    var $body = $('body'),
         config = TBUtils.config;
 
-    // only load on definite subreddits
-    if (!subreddit) {
-        tbconfig.log('Aborting: invalid subreddit');
-        return;
-    }
-
-    TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
-        if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-            tbconfig.log('Failed: wiki config');
-            return;
-        }
-
-        config = resp;
-        init();
-    });
-
-    function init() {
-        $(toolbox).append(configLink);
-    }
-
-    $body.on('click', '.toolbox-edit', function () {
-        showSettings();
-    });
-
-    function postToWiki(page, data, reason, isJSON, updateAM) {
-        tbconfig.log("posting to wiki");
-        TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-        TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
-            tbconfig.log("save succ = " + succ);
-            if (!succ) {
-                tbconfig.log(err.responseText);
-                TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
-            } else {
-                tbconfig.log("clearing cache");
-                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
-                TBUtils.clearCache();
-            }
-        });
-    }
-
+    // With the following function we will create the UI when we need it.
     // Create the window overlay.
-    function showSettings() {
+    // Create the window overlay.
+        function showSettings(subredditConfig, configData) {
 
 
         $overlay = TB.ui.overlay(
-            'Toolbox Configuration - /r/' + subreddit,
+            'Toolbox Configuration - /r/' + subredditConfig,
             [
                 {
                     title: 'Settings Home',
                     tooltip: 'Pointers and handy links.',
                     content: '\
                     <span class="tb-config-intro">\
-                    Through this window you can edit the settings for /r/' + subreddit + '. </br>\
+                    Through this window you can edit the settings for /r/' + subredditConfig + '. </br>\
                     </br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
                     </br>\
-                    </br><a href="/r/' + subreddit + '/w/pages/">All Wiki Pages</a>\
-                    </br><a href="/r/' + subreddit + '/about/usernotes/">Manage Usernotes</a>\
+                    </br><a href="/r/' + subredditConfig + '/w/pages/">All Wiki Pages</a>\
+                    </br><a href="/r/' + subredditConfig + '/about/usernotes/">Manage Usernotes</a>\
                     \
                     </span>\
                     ',
@@ -117,43 +80,43 @@ tbconfig.init = function () {
                         <td>\
                             get reason from /r/:\
                         </td><td>\
-                            <input class="getfrom" type="text" value="' + (config.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+                            <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
                         </tr><tr>\
                         <td>\
                             logsub /r/:\
                         </td><td>\
-                            <input class="logsub" type="text" value="' + (config.removalReasons.logsub || '') + '"/>\
+                            <input class="logsub" type="text" value="' + (configData.removalReasons.logsub || '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                            pmsubject:\
                         </td><td>\
-                           <input class="pmsubject" type="text" value="' + (config.removalReasons.pmsubject || '') + '"/>\
+                           <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject || '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             logtitle:\
                         </td><td>\
-                            <input class="logtitle" type="text" value="' + (config.removalReasons.logtitle || '') + '"/>\
+                            <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle || '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             bantitle:\
                         </td><td>\
-                            <input class="bantitle" type="text" value="' + (config.removalReasons.bantitle || '') + '"/>\
+                            <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle || '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             logreason:\
                         </td><td>\
-                            <input class="logreason" type="text" value="' + (config.removalReasons.logreason || '') + '"/>\
+                            <input class="logreason" type="text" value="' + (configData.removalReasons.logreason || '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>Header:</td>\
-                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(config.removalReasons.header || '')) + '</textarea></td>\
+                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.header || '')) + '</textarea></td>\
                         </tr><tr>\
                         <td>Footer:</td>\
-                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(config.removalReasons.footer || '')) + '</textarea></td>\
+                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.footer || '')) + '</textarea></td>\
                         </tr>\
                     </table>\
                 ',
@@ -207,226 +170,305 @@ tbconfig.init = function () {
     }
 
 
-    $body.on('click', '.tb-settings .close', function () {
-        $('.tb-settings').remove();
-        $body.css('overflow', 'auto');
-    });
+    // Now we want to figure out if we are on a subreddit, or not.
+    // If we are on a subreddit we mod, add a button to the moderation tools box.
+        var subreddit;
+        if (TBUtils.post_site && TBUtils.isMod) {
+            subreddit = TBUtils.post_site;
+            // Load the data we need from the wiki.
+            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    tbconfig.log('Failed: wiki config');
+                } else {
+                    // At this point we are good to go! Let's add a button!
+                    config = resp;
+
+                    var toolbox = $('#moderation_tools').find('.content .icon-menu'),
+                        configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>';
+                    $(toolbox).append(configLink);
+                }
+            });
+
+        // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
+        } else if (TBUtils.isModpage) {
+
+            $body.find('.subscription-box ul li').each(function () {
+                var $this = $(this),
+                    itemSubreddit = $this.find('a.title').text();
+
+                $this.find('a.title').after('<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="' + itemSubreddit + '" title="toolbox configuration for /r/' + itemSubreddit + ' subreddit"><img src="data:image/png;base64,' + TBui.iconWrench + '"/>tb config</a>');
 
 
-    // Functions to be used later on when we play with the content of tabs.
-
-    function wikiTabContent(tabname) {
-
-        var page;
-
-        switch (tabname) {
-            case 'edit_toolbox_config':
-                page = 'toolbox';
-                break;
-            case 'edit_user_notes':
-                page = 'usernotes';
-                break;
-            case 'edit_automoderator_config':
-                page = 'automoderator';
-                break;
+            });
         }
-        var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
-            textArea = $wikiContentArea.find('.edit-wikidata'),
-            textAreaDiv = $wikiContentArea.find('#edit-wikidata-' + page + '-div'),
-            saveButton = $wikiContentArea.find('.save-wiki-data');
+    // Oh dear! One of the buttons we created is clicked! What do we do!!?!
+    // If it is on a subreddit we already know the sub and can just activate the whole bunch.
+        $body.on('click', '.toolbox-edit', function () {
+            showSettings(subreddit,config);
+        });
+
+    // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
+        $body.on('click', '.toolbox-edit-from-multi', function () {
+            subreddit = $(this).data('subreddit');
+
+            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+                console.log(resp);
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    tbconfig.log('Failed: wiki config');
+                    TB.ui.textFeedback('Failed to load wiki config for /r/' + subreddit , TB.ui.FEEDBACK_NEGATIVE);
+                    return;
+                }
+                config = resp;
+
+                showSettings(subreddit,config);
 
 
-        if (TB.storage.getSetting('SyntaxHighlighter', 'enabled', true)) {
-            $body.addClass('mod-toolbox-ace');
-            $(textArea).hide();
-            $(textAreaDiv).show();
+            });
 
-            var selectedTheme = TB.storage.getSetting('SyntaxHighlighter', 'selectedTheme', 'monokai'),
-                configEditor = ace.edit('edit-wikidata-' + page + '-div');
+        });
 
-            configEditor.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
-            configEditor.setTheme('ace/theme/' + selectedTheme);
+    // First before we do all the cool stuff, let's assume that people at one point also want to close the damn thing.
 
-            if (page === 'automoderator') {
-                configEditor.getSession().setMode('ace/mode/yaml');
+        $body.on('click', '.tb-settings .close', function () {
+            $('.tb-settings').remove();
+            $body.css('overflow', 'auto');
+        });
+
+    // now we can play around!
+
+    // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
+        function postToWiki(page, data, reason, isJSON, updateAM) {
+            tbconfig.log("posting to wiki");
+            TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
+            TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
+                tbconfig.log("save succ = " + succ);
+                if (!succ) {
+                    tbconfig.log(err.responseText);
+                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
+                } else {
+                    tbconfig.log("clearing cache");
+                    TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
+                    TBUtils.clearCache();
+                }
+            });
+        }
+
+    // This function fetches all data for the wiki tabs.
+        function wikiTabContent(tabname) {
+
+            var page;
+
+            switch (tabname) {
+                case 'edit_toolbox_config':
+                    page = 'toolbox';
+                    break;
+                case 'edit_user_notes':
+                    page = 'usernotes';
+                    break;
+                case 'edit_automoderator_config':
+                    page = 'automoderator';
+                    break;
+            }
+            var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
+                textArea = $wikiContentArea.find('.edit-wikidata'),
+                textAreaDiv = $wikiContentArea.find('#edit-wikidata-' + page + '-div'),
+                saveButton = $wikiContentArea.find('.save-wiki-data');
+
+
+            if (TB.storage.getSetting('SyntaxHighlighter', 'enabled', true)) {
+                $body.addClass('mod-toolbox-ace');
+                $(textArea).hide();
+                $(textAreaDiv).show();
+
+                var selectedTheme = TB.storage.getSetting('SyntaxHighlighter', 'selectedTheme', 'monokai'),
+                    configEditor = ace.edit('edit-wikidata-' + page + '-div');
+
+                configEditor.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+                configEditor.setTheme('ace/theme/' + selectedTheme);
+
+                if (page === 'automoderator') {
+                    configEditor.getSession().setMode('ace/mode/yaml');
+                } else {
+                    configEditor.getSession().setMode('ace/mode/json');
+                }
+
+                $(textArea).val('getting wiki data...');
+                configEditor.getSession().setValue('getting wiki data...');
+
+                configEditor.getSession().on('change', function () {
+                    textArea.val(configEditor.getSession().getValue());
+                });
+
+
+                TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+                    if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                        $(textArea).val('error getting wiki data.');
+                        configEditor.getSession().setValue('error getting wiki data.');
+                        return;
+                    }
+
+                    if (resp === TBUtils.NO_WIKI_PAGE) {
+                        $(textArea).val('');
+                        configEditor.getSession().setValue('');
+                        $(saveButton).show();
+                        $(saveButton).attr('page', page);
+                        return;
+                    }
+
+                    resp = TBUtils.unescapeJSON(resp);
+
+                    // Found it, show it.
+                    $(textArea).val(resp);
+                    configEditor.getSession().setValue(resp);
+                    $(saveButton).show();
+                    $(saveButton).attr('page', page);
+                });
             } else {
-                configEditor.getSession().setMode('ace/mode/json');
+                // load the text area, but not the save button.
+                $(textArea).val('getting wiki data...');
+
+                TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+                    if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                        $(textArea).val('error getting wiki data.');
+                        return;
+                    }
+
+                    if (resp === TBUtils.NO_WIKI_PAGE) {
+                        $(textArea).val('');
+                        $(saveButton).show();
+                        $(saveButton).attr('page', page);
+                        return;
+                    }
+
+                    resp = TBUtils.unescapeJSON(resp);
+
+                    // Found it, show it.
+                    $(textArea).val(resp);
+                    $(saveButton).show();
+                    $(saveButton).attr('page', page);
+                });
+            }
+        }
+
+    // With this function we'll fetch the removal reasons!
+        function removalReasonsContent() {
+
+            if (config.removalReasons && config.removalReasons.reasons.length > 0) {
+
+                var i = 0;
+                $(config.removalReasons.reasons).each(function () {
+                    var label = decodeURIComponent(this.text);
+                    if (label == '') {
+                        label = '<span style="color: #cecece">(no reason)</span>';
+                    } else {
+                        if (label.length > 200) {
+                            label = label.substring(0, 197) + '...';
+                        }
+                        label = TBUtils.htmlEncode(label);
+                    }
+
+                    var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '<span style="color: #cecece">(no reason)</span>',
+                        removalReasonTitle = config.removalReasons.reasons[i].title || '',
+                        removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
+                        removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
+
+                    var removalReasonTemplate = '\
+                    <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">\
+                        <td class="removal-reasons-buttons">\
+                            <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>\
+                            <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
+                        </td>\
+                        <td class="removal-reasons-content" data-reason="{{i}}">\
+                            <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="reason-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
+                            <span class="removal-reason-edit">\
+                                <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
+                                <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\
+                                <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
+                                <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
+                                <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
+                                <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel editing reason">\
+                            </span>\
+                        </td>\
+                    </tr>';
+
+                    var removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
+                        'i': i,
+                        'subreddit': subreddit,
+                        'i++': (i++),
+                        'label': label,
+                        'removalReasonText': removalReasonText,
+                        'removalReasonTitle': removalReasonTitle,
+                        'removalReasonFlairText': removalReasonFlairText,
+                        'removalReasonFlairCSS': removalReasonFlairCSS,
+                        'uiCommentRemove': TBui.iconCommentRemove,
+                        'uiCommentEdit': TBui.iconCommentsEdit
+                    });
+
+                    var $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');
+
+                    $removalReasonsList.append(removalReasonTemplateHTML);
+                });
+
             }
 
-            $(textArea).val('getting wiki data...');
-            configEditor.getSession().setValue('getting wiki data...');
-
-            configEditor.getSession().on('change', function () {
-                textArea.val(configEditor.getSession().getValue());
-            });
-
-
-            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
-                if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                    $(textArea).val('error getting wiki data.');
-                    configEditor.getSession().setValue('error getting wiki data.');
-                    return;
-                }
-
-                if (resp === TBUtils.NO_WIKI_PAGE) {
-                    $(textArea).val('');
-                    configEditor.getSession().setValue('');
-                    $(saveButton).show();
-                    $(saveButton).attr('page', page);
-                    return;
-                }
-
-                resp = TBUtils.unescapeJSON(resp);
-
-                // Found it, show it.
-                $(textArea).val(resp);
-                configEditor.getSession().setValue(resp);
-                $(saveButton).show();
-                $(saveButton).attr('page', page);
-            });
-        } else {
-            // load the text area, but not the save button.
-            $(textArea).val('getting wiki data...');
-
-            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
-                if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                    $(textArea).val('error getting wiki data.');
-                    return;
-                }
-
-                if (resp === TBUtils.NO_WIKI_PAGE) {
-                    $(textArea).val('');
-                    $(saveButton).show();
-                    $(saveButton).attr('page', page);
-                    return;
-                }
-
-                resp = TBUtils.unescapeJSON(resp);
-
-                // Found it, show it.
-                $(textArea).val(resp);
-                $(saveButton).show();
-                $(saveButton).attr('page', page);
-            });
         }
-    }
 
-    function removalReasonsContent() {
+    // Mod macros are also nice to have!
 
-        if (config.removalReasons && config.removalReasons.reasons.length > 0) {
+        function modMacrosContent() {
+            if (config.modMacros && config.modMacros.length > 0) {
 
-            var i = 0;
-            $(config.removalReasons.reasons).each(function () {
-                var label = decodeURIComponent(this.text);
-                if (label == '') {
-                    label = '<span style="color: #cecece">(no reason)</span>';
-                } else {
-                    if (label.length > 200) {
-                        label = label.substring(0, 197) + '...';
+                $(config.modMacros).each(function (i, item) {
+                    var label = decodeURIComponent(item.text);
+                    if (label == '') {
+                        label = '<span style="color: #cecece">(no macro)</span>';
+                    } else {
+                        if (label.length > 200) {
+                            label = label.substring(0, 197) + '...';
+                        }
+                        label = TBUtils.htmlEncode(label);
                     }
-                    label = TBUtils.htmlEncode(label);
-                }
+                    var modMacroText = decodeURIComponent(config.modMacros[i].text) || '<span style="color: #cecece">(no macro)</span>',
+                        modMacroTitle = config.modMacros[i].title || '';
 
-                var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '<span style="color: #cecece">(no reason)</span>',
-                    removalReasonTitle = config.removalReasons.reasons[i].title || '',
-                    removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
-                    removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
+                    var modMacroTemplate = '\
+                    <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">\
+                        <td class="mod-macros-buttons">\
+                            <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiMacroEdit}}"></a> <br>\
+                            <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiMacroRemove}}"></a>\
+                        </td>\
+                        <td class="mod-macros-content" data-macro="{{i}}">\
+                            <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>\
+                            <span class="mod-macro-edit">\
+                                <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
+                                <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" />\
+                                <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
+                                <input class="save-edit-macro" type="button" value="Save macro"><input class="cancel-edit-macro" type="button" value="Cancel editing macro">\
+                            </span>\
+                        </td>\
+                    </tr>';
 
-                var removalReasonTemplate = '\
-                <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">\
-                    <td class="removal-reasons-buttons">\
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>\
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
-                    </td>\
-                    <td class="removal-reasons-content" data-reason="{{i}}">\
-                        <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="reason-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
-                        <span class="removal-reason-edit">\
-                            <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
-                            <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\
-                            <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
-                            <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel editing reason">\
-                        </span>\
-                    </td>\
-                </tr>';
+                    var modMacroTemplateHTML = TBUtils.template(modMacroTemplate, {
+                        'i': i,
+                        'subreddit': subreddit,
+                        'label': label,
+                        'modMacroText': modMacroText,
+                        'modMacroTitle': modMacroTitle,
+                        'uiMacroRemove': TBui.iconCommentRemove,
+                        'uiMacroEdit': TBui.iconCommentsEdit
+                    });
 
-                var removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
-                    'i': i,
-                    'subreddit': subreddit,
-                    'i++': (i++),
-                    'label': label,
-                    'removalReasonText': removalReasonText,
-                    'removalReasonTitle': removalReasonTitle,
-                    'removalReasonFlairText': removalReasonFlairText,
-                    'removalReasonFlairCSS': removalReasonFlairCSS,
-                    'uiCommentRemove': TBui.iconCommentRemove,
-                    'uiCommentEdit': TBui.iconCommentsEdit
+                    var $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');
+                    $removalReasonsList.append(modMacroTemplateHTML);
+
                 });
 
-                var $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');
 
-                $removalReasonsList.append(removalReasonTemplateHTML);
-            });
+            }
 
         }
 
-    }
-
-    function modMacrosContent() {
-        if (config.modMacros && config.modMacros.length > 0) {
-
-            $(config.modMacros).each(function (i, item) {
-                var label = decodeURIComponent(item.text);
-                if (label == '') {
-                    label = '<span style="color: #cecece">(no macro)</span>';
-                } else {
-                    if (label.length > 200) {
-                        label = label.substring(0, 197) + '...';
-                    }
-                    label = TBUtils.htmlEncode(label);
-                }
-                var modMacroText = decodeURIComponent(config.modMacros[i].text) || '<span style="color: #cecece">(no macro)</span>',
-                    modMacroTitle = config.modMacros[i].title || '';
-
-                var modMacroTemplate = '\
-                <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">\
-                    <td class="mod-macros-buttons">\
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiMacroEdit}}"></a> <br>\
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiMacroRemove}}"></a>\
-                    </td>\
-                    <td class="mod-macros-content" data-macro="{{i}}">\
-                        <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>\
-                        <span class="mod-macro-edit">\
-                            <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
-                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" />\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-macro" type="button" value="Save macro"><input class="cancel-edit-macro" type="button" value="Cancel editing macro">\
-                        </span>\
-                    </td>\
-                </tr>';
-
-                var modMacroTemplateHTML = TBUtils.template(modMacroTemplate, {
-                    'i': i,
-                    'subreddit': subreddit,
-                    'label': label,
-                    'modMacroText': modMacroText,
-                    'modMacroTitle': modMacroTitle,
-                    'uiMacroRemove': TBui.iconCommentRemove,
-                    'uiMacroEdit': TBui.iconCommentsEdit
-                });
-
-                var $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');
-                $removalReasonsList.append(modMacroTemplateHTML);
-
-            });
-
-
-        }
-
-    }
-
-    // Let's do some stuff with all those nice tabs we generated!
+    // Now we have all our data and the functions in place to use it, let's use it!
 
     // Toolbox config WIKI tab
     $body.on('click', '.tb-window-tabs .edit_toolbox_config', function () {
@@ -870,6 +912,10 @@ tbconfig.init = function () {
             }
         });
     });
+
+
+
+
 }; // TBConfig.init()
 
 TB.register_module(tbconfig);

@@ -3,16 +3,16 @@
 // By: /u/DEADBEEF
 // ===============
 
-function realtime() {
+function realtimeInit() {
 
-var realtimeReddit = new TB.Module('Realtime Reddit');
-realtimeReddit.shortname = 'Realtime';
+var realtime = new TB.Module('Realtime Reddit');
+realtime.shortname = 'Realtime';
 
-realtimeReddit.settings["enabled"]["default"] = false;
-realtimeReddit.config["betamode"] = true;
+realtime.settings["enabled"]["default"] = false;
+realtime.config["betamode"] = true;
 //realtimeReddit.config["needs_mod_subs"] = true;
 
-realtimeReddit.init = function realtimeInit() {
+realtime.init = function realtimeInit() {
 
     // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
     if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
@@ -112,7 +112,7 @@ realtimeReddit.init = function realtimeInit() {
     }
 };
 
-TB.register_module(realtimeReddit);
+TB.register_module(realtimeInit);
 }
 
 (function () {

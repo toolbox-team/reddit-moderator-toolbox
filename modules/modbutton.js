@@ -2,6 +2,7 @@ function modbutton() {
 // @copyright 2014 Toolbox Devs, dakta
 
 var modButton = new TB.Module('Mod Button');
+modButton.shortname('ModButton');
 
 modButton.settings["enabled"]["default"] = true;
 modButton.config["betamode"] = false;
@@ -11,8 +12,6 @@ modButton.register_setting(
     "sublist", {
         "type": "sublist",
         "default": [],
-        "betamode": false,
-        "hidden": false,
         "title": "Saved subs (for quick access)"
     });
 // can't call this inside because it doesn't know the default value yet
@@ -25,23 +24,18 @@ modButton.register_setting(
     "rememberlastaction", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Remember last action"
     });
 modButton.register_setting(
     "lastaction", {
         "type": "text",
         "default": "ban",
-        "betamode": false,
-        "hidden": true,
+        "hidden": true
     });
 modButton.register_setting(
     "globalbutton", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Enable Global Action button"
     });
 

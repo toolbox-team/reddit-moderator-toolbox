@@ -6,7 +6,6 @@ macros.shortname = 'ModMacros';
 
 macros.settings["enabled"]["default"] = false;
 macros.config["betamode"] = true;
-macros.config["needs_mod_subs"] = true;
 
 macros.init = function macrosInit() {
 

@@ -1,20 +1,11 @@
 function usernotes() {
 //Setup
-var userNotes = new TB.Module('User Notes');
+var usernotes = new TB.Module('User Notes');
 
 ////Default settings
-userNotes.settings['enabled']['default'] = true;
+usernotes.settings['enabled']['default'] = true;
 
-// userNotes.register_setting('displaytype', {
-//     'type': 'selector',
-//     'values': ["Post border", "Domain background", "Domain border"],
-//     'default': "post_border",
-//     'betamode': true,
-//     'hidden': false,
-//     'title': "Tag location"
-// });
-
-userNotes.init = function () {
+usernotes.init = function () {
     var subs = [];
 
     if (window.location.href.indexOf('/about/usernotes/') > -1) {
@@ -25,7 +16,7 @@ userNotes.init = function () {
         $siteTable.html('');
 
         function getSubNotes(currsub) {
-            userNotes.log('getting notes: ' + currsub);
+            usernotes.log('getting notes: ' + currsub);
             if (TBUtils.noteCache[currsub] !== undefined) {
                 showSubNotes(TBUtils.noteCache[currsub], currsub);
                 return;
@@ -75,8 +66,8 @@ userNotes.init = function () {
                 $siteTable.append(usercontent);
 
                 $.each(val.notes, function (key, val) {
-                    userNotes.log(key);
-                    userNotes.log(val);
+                    usernotes.log(key);
+                    usernotes.log(val);
 
                     var noteHTML = '&nbsp;-&nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span></br>';
 
@@ -704,7 +695,7 @@ userNotes.init = function () {
     });
 }; // userNotes.init()
 
-TB.register_module(userNotes);
+TB.register_module(usernotes);
 
 } // usernotes() wrapper
 

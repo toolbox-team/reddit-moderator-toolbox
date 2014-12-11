@@ -1,31 +1,29 @@
 function historybutton() {
-var historyButton = new TB.Module('History Button');
+var history = new TB.Module('History Button');
+history.shortname = 'HButton';
 
 // Add history button to all users.
-historyButton.addUserHistoryLink = function () {
+history.addUserHistoryLink = function () {
     $(this).append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
 };
 
 // This should be a setting, methinks.
-historyButton.SPAM_REPORT_SUB = 'spam';
+history.SPAM_REPORT_SUB = 'spam';
 
-historyButton.settings["enabled"]["default"] = true;
-historyButton.config["betamode"] = false;
+history.settings["enabled"]["default"] = true;
 
-historyButton.register_setting(
+history.register_setting(
     "sortmodqueue", {
         "type": "boolean",
         "default": true,
-        "betamode": false,
-        "hidden": false,
         "title": "Post user summary when submitting spam reports"
     });
 
-historyButton.init = function () {
+history.init = function () {
     var $body = $('body');
     var self = this;
 
-    var rtsComment = historyButton.setting('rtscomment');
+    var rtsComment = history.setting('rtscomment');
 
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
@@ -265,7 +263,7 @@ historyButton.init = function () {
         var link = 'https://www.reddit.com/user/' + author,
             title = 'Overview for ' + author;
 
-        TBUtils.postLink(link, title, historyButton.SPAM_REPORT_SUB, function (successful, submission) {
+        TBUtils.postLink(link, title, history.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
                 $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
                 $rtsLink.hide();
@@ -274,7 +272,7 @@ historyButton.init = function () {
                     $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
                     $rtsLink.hide();
                     if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                        rtsLink.href = '/r/' + historyButton.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                        rtsLink.href = '/r/' + history.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
                     }
                     return;
                 }
@@ -309,7 +307,7 @@ historyButton.init = function () {
     });
 };
 
-TB.register_module(historyButton);
+TB.register_module(history);
 }
 
 (function () {

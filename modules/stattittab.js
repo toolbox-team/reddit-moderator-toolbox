@@ -2,12 +2,12 @@ function stattittab() {
 
 // @copyright  2013+, LowSociety, dakta
 
-var stattitTab = new TB.Module('Stattit Tab');
+var stattit = new TB.Module('Stattit Tab');
+stattit.shortname('Stattit');
 
-stattitTab.settings["enabled"]["default"] = true;
-stattitTab.config["betamode"] = false;
+stattit.settings["enabled"]["default"] = true;
 
-stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
+stattit.getSectionFromUrl = function getSectionFromUrl(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
     var matches = regex.exec(url);
 
@@ -18,7 +18,7 @@ stattitTab.getSectionFromUrl = function getSectionFromUrl(url) {
     }
 };
 
-stattitTab.init = function init() {
+stattit.init = function init() {
     var page = this.getSectionFromUrl(window.location.href);
 
     if (page == null) {
@@ -48,7 +48,7 @@ stattitTab.init = function init() {
     tabList.appendChild(listItem);
 };
 
-TB.register_module(stattitTab);
+TB.register_module(stattit);
 }
 
 (function () {

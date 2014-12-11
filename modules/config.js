@@ -1,11 +1,11 @@
 function tbconfig() {
 //Setup
-    var TBConfig = new TB.Module('Toolbox Config');
-    TBConfig.shortname = 'TBConfig'; // for backwards compatibility
+    var config = new TB.Module('Toolbox Config');
+    config.shortname = 'TBConfig'; // for backwards compatibility
     //Default settings
-    TBConfig.settings['enabled']['default'] = true;
+    config.settings['enabled']['default'] = true;
 
-    TBConfig.init = function () {
+    config.init = function () {
 
         var $body = $('body');
 
@@ -17,13 +17,13 @@ function tbconfig() {
 
         // only load on definite subreddits
         if (!subreddit) {
-            TBConfig.log('Aborting: invalid subreddit');
+            config.log('Aborting: invalid subreddit');
             return;
         }
 
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                TBConfig.log('Failed: wiki config');
+                config.log('Failed: wiki config');
                 return;
             }
 
@@ -518,7 +518,7 @@ function tbconfig() {
                 if ($body.hasClass('toolbox-wiki-edited')) {
                     TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                            TBConfig.log('Failed: wiki config');
+                            config.log('Failed: wiki config');
                             return;
                         }
 
@@ -702,7 +702,7 @@ function tbconfig() {
                 if ($body.hasClass('toolbox-wiki-edited')) {
                     TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                            TBConfig.log('Failed: wiki config');
+                            config.log('Failed: wiki config');
                             return;
                         }
 
@@ -873,7 +873,7 @@ function tbconfig() {
         });
     }; // TBConfig.init()
 
-    TB.register_module(TBConfig);
+    TB.register_module(config);
 } // tbconfig() wrapper
 
 (function() {

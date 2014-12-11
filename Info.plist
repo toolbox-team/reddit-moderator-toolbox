@@ -54,7 +54,6 @@
 				<string>modules/syntax.js</string>
 				<string>modules/frame.js</string>
 				<string>modules/modmaillite.js</string>
-				<string>modules/devtools.js</string>
 				<string>modules/macros.js</string>
 				<string>modules/realtime.js</string>
 				<string>modules/nukecomments.js</string>

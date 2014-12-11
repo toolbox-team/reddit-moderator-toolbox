@@ -1,69 +1,71 @@
 function modmailpro() {
 //Setup
-var modMailPro = new TB.Module('Mod Mail Pro');
+var modmail = new TB.Module('Mod Mail Pro');
+modmail.shortname('ModMail');
+
 
 ////Default settings
-modMailPro.settings["enabled"]["default"] = true;
-modMailPro.config["betamode"] = false;
-modMailPro.config["needs_mod_subs"] = true;
+modmail.settings["enabled"]["default"] = true;
+modmail.config["betamode"] = false;
+modmail.config["needs_mod_subs"] = true;
 
-modMailPro.register_setting('inboxstyle', {
+modmail.register_setting('inboxstyle', {
     'type': 'selector',
     'values': ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered'],
     'default': 'priority',
     'title': 'Default inbox view'
 });
 
-modMailPro.register_setting('defaultcollapse', {
+modmail.register_setting('defaultcollapse', {
     'type': 'boolean',
     'default': false,
     'title': 'Collapse all mod mail threads by default.'
 });
 
-modMailPro.register_setting('noredmodmail', {
+modmail.register_setting('noredmodmail', {
     'type': 'boolean',
     'default': true,
     'title': 'Show removed threads with red titles.'
 });
 
-modMailPro.register_setting('highlightnew', {
+modmail.register_setting('highlightnew', {
     'type': 'boolean',
     'default': true,
     'title': 'Highlight new threads and replies.'
 });
 
-modMailPro.register_setting('expandreplies', {
+modmail.register_setting('expandreplies', {
     'type': 'boolean',
     'default': false,
     'title': 'Expand all replies when expanding threads.'
 });
 
-modMailPro.register_setting('hideinvitespam', {
+modmail.register_setting('hideinvitespam', {
     'type': 'boolean',
     'default': false,
     'title': 'Filter mod invited and added threads.'
 });
 
-modMailPro.register_setting('autoload', {
+modmail.register_setting('autoload', {
     'type': 'boolean',
     'default': false,
     'hidden': !TB.storage.getSetting('Notifier', 'enabled', true),
     'title': 'Automatically load new mod mail when received.'
 });
 
-modMailPro.register_setting('autothread', {
+modmail.register_setting('autothread', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
-modMailPro.register_setting('subredditcolor', {
+modmail.register_setting('subredditcolor', {
     'type': 'boolean',
     'default': false,
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
-modMailPro.init = function () {
+modmail.init = function () {
     if (!TBUtils.isModmail) return;
 
     this.modmailpro();
@@ -72,7 +74,7 @@ modMailPro.init = function () {
     this.modmailSwitch();
 };
 
-modMailPro.modmailpro = function () {
+modmail.modmailpro = function () {
     var $body = $('body');
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
@@ -670,7 +672,7 @@ modMailPro.modmailpro = function () {
 };
 
 
-modMailPro.realtimemail = function () {
+modmail.realtimemail = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) ||
         location.pathname.match(/\/r\/?/) || !TB.storage.getSetting('ModMailPro', 'autoload', false)) return;
@@ -727,7 +729,7 @@ modMailPro.realtimemail = function () {
 };
 
 
-modMailPro.compose = function () {
+modmail.compose = function () {
     var COMPOSE = "compose-message",
     //mySubs = [],
         composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
@@ -760,7 +762,7 @@ modMailPro.compose = function () {
 };
 
 
-modMailPro.modmailSwitch = function () {
+modmail.modmailSwitch = function () {
     switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>');
 
     TBUtils.getModSubs(function () {
@@ -787,7 +789,7 @@ modMailPro.modmailSwitch = function () {
     }
 };
 
-TB.register_module(modMailPro);
+TB.register_module(modmail);
 } // modmailpro() wrapper
 
 (function () {

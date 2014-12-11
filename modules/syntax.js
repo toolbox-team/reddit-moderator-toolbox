@@ -2,19 +2,19 @@ function syntax() {
 
 // syntax highlighter with ACE, by creesch
 
-var syntaxHighlighter = new TB.Module('Syntax Highlighter');
+var syntax = new TB.Module('Syntax Highlighter');
+syntax.shortname('Syntax');
 
-syntaxHighlighter.settings["enabled"]["default"] = true;
-syntaxHighlighter.config["betamode"] = false;
+syntax.settings["enabled"]["default"] = true;
 
-syntaxHighlighter.register_setting(
+syntax.register_setting(
     "enableWordWrap", {
         "type": "boolean",
         "default": true,
         "hidden": false,
         "title": "Enable word wrap in editor"
     });
-syntaxHighlighter.register_setting(
+syntax.register_setting(
     'selectedTheme', {
         "type": "syntaxTheme",
         "default": 'monokai',
@@ -22,10 +22,10 @@ syntaxHighlighter.register_setting(
         "title": "Syntax highlight theme selection"
     });
 
-syntaxHighlighter.settings["enabled"]["default"] = true; // on by default
+syntax.settings["enabled"]["default"] = true; // on by default
 
 // we reference this from tbobject for settings generation
-syntaxHighlighter.themeSelect = '\
+syntax.themeSelect = '\
 <select id="theme_selector">\
 <option value="ambiance">ambiance</option>\
 <option value="chaos">chaos</option>\
@@ -64,7 +64,7 @@ syntaxHighlighter.themeSelect = '\
 </select>\
 ';
 
-syntaxHighlighter.init = function init() {
+syntax.init = function init() {
     var selectedTheme = this.setting('selectedTheme'),
         enableWordWrap = this.setting('enableWordWrap');
 
@@ -151,7 +151,7 @@ syntaxHighlighter.init = function init() {
 
 };
 
-TB.register_module(syntaxHighlighter);
+TB.register_module(syntax);
 }
 
 (function () {

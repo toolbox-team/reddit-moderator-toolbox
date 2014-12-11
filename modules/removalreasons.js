@@ -1,21 +1,18 @@
 function removalreasons() {
 
-var removalReasons = new TB.Module('Removal Reasons');
+var reasons = new TB.Module('Removal Reasons');
+reasons.shortname('RReasons');
 
-removalReasons.settings["enabled"]["default"] = true;
-removalReasons.config["betamode"] = false;
-// removalReasons.config["needs_mod_subs"] = true;
+reasons.settings["enabled"]["default"] = true;
 
-removalReasons.register_setting(
+reasons.register_setting(
     "commentreasons", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Enable removal reasons for comments."
     });
 
-removalReasons.init = function removalReasonsInit() {
+reasons.init = function removalReasonsInit() {
 
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
@@ -109,7 +106,7 @@ removalReasons.init = function removalReasonsInit() {
 
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !removalReasons.setting('commentreasons'))
+        if (thingclasses.match(/\bcomment\b/) && !reasons.setting('commentreasons'))
             return;
 
         // Get link/comment attributes
@@ -657,7 +654,7 @@ removalReasons.init = function removalReasonsInit() {
     });
 };
 
-TB.register_module(removalReasons);
+TB.register_module(reasons);
 } // end removalreasons()
 
 (function () {

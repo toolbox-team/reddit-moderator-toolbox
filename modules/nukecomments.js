@@ -11,13 +11,13 @@ function nukecomments() {
 // ==/UserScript==
 
 //Setup
-var nukeComments = new TB.Module('Comment Nuke');
+var nuke = new TB.Module('Comment Nuke');
 
-nukeComments.shortname = 'Nuke';
+nuke.shortname = 'Nuke';
 
 ////Default settings
-nukeComments.settings["enabled"]["default"] = false;
-nukeComments.config["betamode"] = true;
+nuke.settings["enabled"]["default"] = false;
+nuke.config["betamode"] = true;
 
 // TBConfig.register_setting('displaytype', {
 //     'type': 'selector',
@@ -28,7 +28,7 @@ nukeComments.config["betamode"] = true;
 //     'title': "Tag location"
 // });
 
-nukeComments.init = function () {
+nuke.init = function () {
 
 	delete_function = function (thread_root) {
 		var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
@@ -130,7 +130,7 @@ nukeComments.init = function () {
 	}
 };
 
-TB.register_module(nukeComments);
+TB.register_module(nuke);
 } // nukecomments() wrapper
 
 (function () {

@@ -1,34 +1,33 @@
 function notifiermod() {
 
-var notifierMod = new TB.Module('Notifier');
+var notifier = new TB.Module('Notifier');
 
-notifierMod.settings["enabled"]["default"] = true;
-notifierMod.config["betamode"] = false;
-notifierMod.config["needs_mod_subs"] = true;
+notifier.settings["enabled"]["default"] = true;
+notifier.config["needs_mod_subs"] = true;
 
 
 // First show the options for filtering of subreddits.
-notifierMod.register_setting("modsubreddits", {
+notifier.register_setting("modsubreddits", {
     "type": "text",
     "default": 'mod',
     "title": "Multireddit of subs you want displayed in the modqueue counter"
 });
 
-notifierMod.register_setting("unmoderatedsubreddits", {
+notifier.register_setting("unmoderatedsubreddits", {
     "type": "text",
     "default": "mod",
     "title": "Multireddit of subs you want displayed in the unmoderated counter"
 });
 
 
-notifierMod.register_setting("modmailsubreddits", {
+notifier.register_setting("modmailsubreddits", {
     "type": "text",
     "default": 'mod',
-    "hidden": notifierMod.setting('modmailsubredditsfrompro'),
+    "hidden": notifier.setting('modmailsubredditsfrompro'),
     "title": "Multireddit of subs you want displayed in the modmail counter"
 });
 
-notifierMod.register_setting("modmailsubredditsfrompro", {
+notifier.register_setting("modmailsubredditsfrompro", {
     "type": "boolean",
     "default": false,
     "title": "Use filtered subreddits from ModMail Pro"
@@ -36,36 +35,36 @@ notifierMod.register_setting("modmailsubredditsfrompro", {
 
 // Do we want notifications and where do they link to?
 
-notifierMod.register_setting("messagenotifications", {
+notifier.register_setting("messagenotifications", {
     "type": "boolean",
     "default": true,
     "title": "Get notifications for new messages"
 });
 
-notifierMod.register_setting("messageunreadlink", {
+notifier.register_setting("messageunreadlink", {
     "type": "boolean",
     "default": false,
     "title": "Link to /message/unread/ if unread messages are present"
 });
 
-notifierMod.register_setting("modmailnotifications", {
+notifier.register_setting("modmailnotifications", {
     "type": "boolean",
     "default": true,
     "title": "Get modmail notifications"
 });
-notifierMod.register_setting("modmailunreadlink", {
+notifier.register_setting("modmailunreadlink", {
     "type": "boolean",
     "default": false,
     "title": "Link to /message/moderator/unread/ if unread modmail is present"
 });
 
-notifierMod.register_setting("straightToInbox", {
+notifier.register_setting("straightToInbox", {
     "type": "boolean",
     "default": false,
     "title": "When clicking a comment notification go to the inbox"
 });
 
-notifierMod.register_setting("consolidatedmessages", {
+notifier.register_setting("consolidatedmessages", {
     "type": "boolean",
     "default": true,
     "title": "Consolidate notifications (x new messages) instead of individual notifications"
@@ -73,19 +72,19 @@ notifierMod.register_setting("consolidatedmessages", {
 
 // Do we want queue notifications?
 
-notifierMod.register_setting("modnotifications", {
+notifier.register_setting("modnotifications", {
     "type": "boolean",
     "default": true,
     "title": "Get modqueue notifications"
 });
 
-notifierMod.register_setting("unmoderatednotifications", {
+notifier.register_setting("unmoderatednotifications", {
     "type": "boolean",
     "default": false,
     "title": "Get unmoderated queue notifications"
 });
 
-notifierMod.init = function notifierMod_init() {
+notifier.init = function notifierMod_init() {
     var $body = $('body');
 
     //
@@ -97,9 +96,9 @@ notifierMod.init = function notifierMod_init() {
         unmoderatedNotifications = TB.storage.getSetting('Notifier', 'unmoderatednotifications', false),
         consolidatedMessages = TB.storage.getSetting('Notifier', 'consolidatedmessages', true),
         straightToInbox = TB.storage.getSetting('Notifier', 'straightToInbox', false),
-        modSubreddits = notifierMod.setting('modsubreddits'),
-        unmoderatedSubreddits = notifierMod.setting('unmoderatedsubreddits'),
-        modmailSubreddits = notifierMod.setting('modmailsubreddits'),
+        modSubreddits = notifier.setting('modsubreddits'),
+        unmoderatedSubreddits = notifier.setting('unmoderatedsubreddits'),
+        modmailSubreddits = notifier.setting('modmailsubreddits'),
 
         modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
 
@@ -702,7 +701,7 @@ notifierMod.init = function notifierMod_init() {
 
 };
 
-TB.register_module(notifierMod);
+TB.register_module(notifier);
 } // notifier() wrapper
 
 (function () {

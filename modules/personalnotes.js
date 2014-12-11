@@ -1,22 +1,20 @@
 function personalnotes() {
+    var notes = new TB.Module('Personal Notes');
 
+    notes.shortname = 'PersonalNotes';
 
-    var personalNotes = new TB.Module('Personal Notes');
+    notes.settings["enabled"]["default"] = true;
+    notes.config["betamode"] = true;
 
-    personalNotes.shortname = 'personalNotes'; // historical precedent for settings
-
-    personalNotes.settings["enabled"]["default"] = true;
-    personalNotes.config["betamode"] = true;
-
-    personalNotes.register_setting("notewiki", {
+    notes.register_setting("notewiki", {
         "type": "text",
         "default": '',
         "title": "Subreddit you want to use to store your personal notes."
     });
 
-    personalNotes.init = function personalNotesInit() {
+    notes.init = function personalNotesInit() {
         var $body = $('body'),
-            notewiki = personalNotes.setting('notewiki'),
+            notewiki = notes.setting('notewiki'),
             notesArray = [],
             notesPopupContent;
 
@@ -286,7 +284,7 @@ function personalnotes() {
 
     };
 
-TB.register_module(personalNotes);
+TB.register_module(notes);
 }
 
 (function () {

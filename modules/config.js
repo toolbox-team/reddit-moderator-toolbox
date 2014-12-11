@@ -518,7 +518,7 @@ tbconfig.init = function () {
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                        config.log('Failed: wiki config');
+                        tbconfig.log('Failed: wiki config');
                         return;
                     }
 
@@ -701,7 +701,7 @@ tbconfig.init = function () {
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                        config.log('Failed: wiki config');
+                        tbconfig.log('Failed: wiki config');
                         return;
                     }
 

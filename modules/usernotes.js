@@ -9,7 +9,7 @@ usernotes.settings['enabled']['default'] = true;
 usernotes.init = function () {
     var subs = [];
 
-    if (window.location.href.indexOf('/about/usernotes/') > -1) {
+    if (window.location.href.indexOf('/about/usernotes') > -1) {
 
         //userNotes.log(TBUtils.post_site);  // that should work?
         var sub = $('.pagename a:first').html();

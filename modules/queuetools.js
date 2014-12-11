@@ -62,6 +62,15 @@ queue.register_setting('expand-reports', {
     'title': "Automatically expand reports on mod pages."
 });
 
+queue.register_setting(
+    'botCheckmark', {
+        'type': 'list',
+        'default': ['automoderator'],
+        'betamode': false,
+        'hidden': false,
+        'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces'
+    });
+
 
 queue.init = function () {
     var $body = $('body');
@@ -643,9 +652,44 @@ queue.init = function () {
         }
     }
 
-    if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || $('body.moderator').length)) {
+    if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
         $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
     }
+    
+    // Let's make bot approved posts stand out!
+    var checkmarkLength = queue.setting('botCheckmark').length;
+    if (TBUtils.isMod && checkmarkLength > 0) {
+    
+      
+        var baseCss; 
+        checkmarkLength = checkmarkLength - 1;
+        $.each(queue.setting('botCheckmark'), function (i, val) {
+        
+            switch(i) {
+            case 0:
+                baseCss = 'img.approval-checkmark[title*="approved by ' + val + '"], \n'; 
+                break;
+            case checkmarkLength:
+                baseCss += 'img.approval-checkmark[title*="approved by ' + val + '"] \n';
+                break;                
+            default:
+                baseCss += 'img.approval-checkmark[title*="approved by ' + val + '"], \n' 
+            }        
+        });
+        
+        baseCss += '\
+            { \n\
+                display: inline-block; \n\
+                padding-left: 16px; \n\
+                padding-top: 5px; \n\
+                background-image: url("data:image/png;base64,' + TBui.iconBot + '"); \n\
+                background-repeat: no-repeat; \n\
+            } \n';
+        
+        $('head').append('<style>' + baseCss + '</style>');
+    
+    }
+
 }; // queueTools.init()
 
 TB.register_module(queue);

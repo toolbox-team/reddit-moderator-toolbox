@@ -12,10 +12,16 @@ usernotes.register_setting('unManager', {
     'betamode': true,
     'title': 'Enable User Notes Manager.'
 });
+usernotes.register_setting('maxChars', {
+    'type': 'number',
+    'default': 20,
+    'title': 'Max characters to display in current note tag.'
+});
 
 usernotes.init = function () {
     var subs = [],
-        $body = $('body');
+        $body = $('body'),
+        maxChars = usernotes.setting('maxChars');
 
     if (window.location.href.indexOf('/about/usernotes') > -1 && usernotes.setting('unManager')) {
 
@@ -509,24 +515,31 @@ usernotes.init = function () {
             var user = TBUtils.getThingInfo(thing).user;
 
             var u = getUser(notes.users, user);
-            var usertag = $(thing).find('.add-user-tag-' + subreddit);
+            var $usertag = $(thing).find('.add-user-tag-' + subreddit);
 
             // Only happens if you delete the last note.
             if (u === undefined || u.notes.length < 1) {
-                $(usertag).css('color', '');
-                $(usertag).text('N');
+                $usertag.css('color', '');
+                $usertag.text('N');
                 return;
             }
 
-            note = u.notes[0].note;
-            if (note.length > 53)
-                note = note.substring(0, 50) + "...";
-            $(usertag).html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
+            var noteData = u.notes[0],
+                note = noteData.note;
+
+            // Add title before note concat.
+            $usertag.attr('title', note + ' (' + new Date(noteData.time).toLocaleString() + ')');
+
+            if (note.length > maxChars) {
+                note = note.substring(0, (maxChars + 3)) + "...";
+            }
+            $usertag.html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
+
 
             var type = u.notes[0].type;
             if (!type) type = 'none';
 
-            $(usertag).css('color', TBUtils.getTypeInfo(type).color);
+            $usertag.css('color', TBUtils.getTypeInfo(type).color);
 
         });
     }

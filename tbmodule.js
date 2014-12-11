@@ -21,7 +21,7 @@ TB = {
             setTimeout(function init() {
                 if (TB.storage.isLoaded === true) {
 
-                    $.log("TBObject has TBStorage, loading modules...");
+                    $.log("TBModule has TBStorage, loading modules", false, "TBinit");
                     // call every module's init() method on page load
                     for (var i = 0; i < TB.moduleList.length; i++) {
                         var module = TB.modules[TB.moduleList[i]];
@@ -44,7 +44,7 @@ TB = {
 
                         // lock 'n load
                         if (module.setting('enabled')) {
-                            $.log('Loading ' + module.name + ' module');
+                            $.log('Loading ' + module.name + ' module', false, 'TBinit');
                             module.init();
                             // unnecessary; we do it in TB.utils.getModSubs now
                             // if (module.config["needs_mod_subs"]) {
@@ -59,7 +59,7 @@ TB = {
 
                     }
                 } else {
-                    console.log("no storage, looping", true);
+                    $.log("no storage, looping", false, "TBModule");
                     initLoop();
                 }
             }, 50);
@@ -391,7 +391,7 @@ TB.Module.prototype = {
 
 (function TBinit() {
     window.addEventListener("TBUtilsLoaded", function () {
-        $.log("TBObject has TBUtils", false, "TBinit");
+        $.log("TBModule has TBUtils", false, "TBinit");
         tbobject();
 
         var event = new CustomEvent("TBObjectLoaded");

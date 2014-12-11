@@ -697,7 +697,7 @@ userNotes.init = function () {
 
     $body.on('keyup', '.utagger-user-note', function (event) {
         if (event.keyCode == 13) {
-            $.log("Enter pressed!", true);
+            $.log("Enter pressed!");
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }

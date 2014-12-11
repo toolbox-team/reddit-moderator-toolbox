@@ -136,7 +136,7 @@ function initwrapper() {
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
         // 3.0 is a BRAVE NEW WORLD.  No Version chnages.
-        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true);
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes');
 
 
         // End: version changes.
@@ -891,7 +891,7 @@ function initwrapper() {
                     callback(true);
             })
             .error(function (error) {
-                $.log(error, true);
+                $.log(error);
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });

@@ -35,7 +35,7 @@ domainTagger.init = function domainTaggerInit() {
             if (succ) {
                 run();
             } else {
-                $.log(err.responseText, true);
+                $.log(err.responseText);
             }
         });
     }

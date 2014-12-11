@@ -381,7 +381,7 @@ modButton.init = function init() {
             banDuration = '';
         }
         else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
-            $.log('Including time in ban message', true);
+            $.log('Including time in ban message');
             banMessage = banMessage + '  \n \n\
 *You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
         }
@@ -635,7 +635,7 @@ modButton.init = function init() {
                 $status.text("saved user flair");
             }
             else {
-                $.log(err.responseText, true);
+                $.log(err.responseText);
                 $status.text(err.responseText);
             }
         });

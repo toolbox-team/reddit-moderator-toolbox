@@ -78,7 +78,7 @@ function storageWrapper() {
     TBStorage.domain = window.location.hostname.split('.')[0];
     TBStorage.bnwShim = JSON.parse(localStorage[TBStorage.BNW_SHIM_KEY] || 'false');
 
-    $.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
+    //$.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
 
     // We'll see about this idea after some testing.
     /*

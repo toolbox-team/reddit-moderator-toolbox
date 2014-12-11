@@ -94,7 +94,7 @@ commentsMod.init = function commentsModInit() {
                 removedCounter = removedCounter + 1;
             });
 
-            $.log(removedCounter, true);
+            $.log(removedCounter);
 
             if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
                 $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');

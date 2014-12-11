@@ -1,7 +1,7 @@
 // Seriously, don't use this shit.  This is just a mockup of the concept for a reddit api lib not tied to TB.
 
 (function (redditapi) {
-    console.log('reddit api');
+    //console.log('reddit api');
 
     //Private variables
     var modhash = $("form.logout input[name=uh]").val(),

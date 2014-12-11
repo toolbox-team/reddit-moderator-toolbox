@@ -99,7 +99,7 @@ function personalnotes() {
             TBUtils.postToWiki('notes/' + page, subreddit, data, reason, false, false, function done(succ, err) {
                 $.log("save succ = " + succ);
                 if (!succ) {
-                    $.log(err.responseText, true);
+                    $.log(err.responseText);
                     TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 } else {
                     $.log("clearing cache");

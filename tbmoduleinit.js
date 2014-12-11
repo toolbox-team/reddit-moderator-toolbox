@@ -3,7 +3,7 @@
 
 (function TBObjectInit() {
     window.addEventListener("TBObjectLoaded", function () {
-        $.log("TBObject loaded, getting TBStorage", false, 'TBObjectInit');
+        $.log("TBModule loaded, getting TBStorage", false, 'TBinit');
         TB.init();
     });
 })();

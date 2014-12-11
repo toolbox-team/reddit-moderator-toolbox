@@ -1,18 +1,18 @@
 function removalreasons() {
 
-var reasons = new TB.Module('Removal Reasons');
-reasons.shortname = 'RReasons';
+var removal = new TB.Module('Removal Reasons');
+removal.shortname = 'RReasons';
 
-reasons.settings["enabled"]["default"] = true;
+removal.settings["enabled"]["default"] = true;
 
-reasons.register_setting(
+removal.register_setting(
     "commentreasons", {
         "type": "boolean",
         "default": false,
         "title": "Enable removal reasons for comments."
     });
 
-reasons.init = function removalReasonsInit() {
+removal.init = function removalReasonsInit() {
 
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
@@ -106,7 +106,7 @@ reasons.init = function removalReasonsInit() {
 
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !reasons.setting('commentreasons'))
+        if (thingclasses.match(/\bcomment\b/) && !removal.setting('commentreasons'))
             return;
 
         // Get link/comment attributes
@@ -183,7 +183,7 @@ reasons.init = function removalReasonsInit() {
         }
 
         function createPopup() {
-            reasons.log("Creating removal reason popup");
+            removal.log("Creating removal reason popup");
 
             // Options
             var logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none',
@@ -587,7 +587,7 @@ reasons.init = function removalReasonsInit() {
 
             // Reply to submission/comment
             if (notifyByReply) {
-                reasons.log("Sending removal message by comment reply.");
+                removal.log("Sending removal message by comment reply.");
                 TBUtils.postComment(data.fullname, reason, function (successful, response) {
                     if (successful) {
                         // Check if reddit actually returned an error
@@ -623,7 +623,7 @@ reasons.init = function removalReasonsInit() {
                 var text = reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]';
 
                 if (notifyAsSub) {
-                    reasons.log("Sending removal message by PM as " + data.subreddit);
+                    removal.log("Sending removal message by PM as " + data.subreddit);
                     TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
                         if (successful) {
                             removePopup(popup);
@@ -634,7 +634,7 @@ reasons.init = function removalReasonsInit() {
                     });
                 }
                 else {
-                    reasons.log("Sending removal message by PM as current user");
+                    removal.log("Sending removal message by PM as current user");
                     TBUtils.sendPM(data.author, subject, text, function (successful, response) {
                         if (successful) {
                             removePopup(popup);
@@ -654,7 +654,7 @@ reasons.init = function removalReasonsInit() {
     });
 };
 
-TB.register_module(reasons);
+TB.register_module(removal);
 } // end removalreasons()
 
 (function () {

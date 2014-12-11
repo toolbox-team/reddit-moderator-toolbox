@@ -46,7 +46,7 @@ removal.init = function removalReasonsInit() {
             return;
         }
 
-        reasons.log('getting config: ' + subreddit);
+        removal.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -62,7 +62,7 @@ removal.init = function removalReasonsInit() {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            reasons.log('returning: cache');
+            removal.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -70,7 +70,7 @@ removal.init = function removalReasonsInit() {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                reasons.log('failed: wiki config');
+                removal.log('failed: wiki config');
                 callback(false);
                 return;
             }
@@ -81,19 +81,19 @@ removal.init = function removalReasonsInit() {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                reasons.log('trying: get from, no cache');
+                removal.log('trying: get from, no cache');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                reasons.log('returning: no cache');
+                removal.log('returning: no cache');
                 callback(reasons);
                 return;
             }
 
-            reasons.log('failed: all');
+            removal.log('failed: all');
             callback(false);
         });
     }

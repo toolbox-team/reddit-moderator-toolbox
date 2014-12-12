@@ -19,7 +19,6 @@ tbconfig.init = function () {
 
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
-    // Create the window overlay.
         function showSettings(subredditConfig, configData) {
 
 
@@ -80,46 +79,45 @@ tbconfig.init = function () {
                         <td>\
                             get reason from /r/:\
                         </td><td>\
-                            <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom || '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+                            <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
                         </tr><tr>\
                         <td>\
                             logsub /r/:\
                         </td><td>\
-                            <input class="logsub" type="text" value="' + (configData.removalReasons.logsub || '') + '"/>\
+                            <input class="logsub" type="text" value="' + (configData.removalReasons.logsub ? configData.removalReasons.logsub : '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                            pmsubject:\
                         </td><td>\
-                           <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject || '') + '"/>\
+                           <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             logtitle:\
                         </td><td>\
-                            <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle || '') + '"/>\
+                            <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             bantitle:\
                         </td><td>\
-                            <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle || '') + '"/>\
+                            <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>\
                             logreason:\
                         </td><td>\
-                            <input class="logreason" type="text" value="' + (configData.removalReasons.logreason || '') + '"/>\
+                            <input class="logreason" type="text" value="' + (configData.removalReasons.logreason ? configData.removalReasons.logreason : '') + '"/>\
                         </td>\
                         </tr><tr>\
                         <td>Header:</td>\
-                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.header || '')) + '</textarea></td>\
+                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
                         </tr><tr>\
                         <td>Footer:</td>\
-                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.footer || '')) + '</textarea></td>\
+                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                         </tr>\
-                    </table>\
-                ',
+                    </table>',
                     footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'
                 },
                 {
@@ -183,12 +181,13 @@ tbconfig.init = function () {
                     // At this point we are good to go! Let's add a button!
                     config = resp;
 
-                    var toolbox = $('#moderation_tools').find('.content .icon-menu'),
-                        configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>';
-                    $(toolbox).append(configLink);
+
                 }
             });
 
+            var toolbox = $('#moderation_tools').find('.content .icon-menu'),
+                configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>';
+            $(toolbox).append(configLink);
         // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
         } else if (TBUtils.isModpage) {
 
@@ -215,12 +214,17 @@ tbconfig.init = function () {
                 console.log(resp);
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
                     tbconfig.log('Failed: wiki config');
-                    TB.ui.textFeedback('Failed to load wiki config for /r/' + subreddit , TB.ui.FEEDBACK_NEGATIVE);
-                    return;
-                }
-                config = resp;
 
-                showSettings(subreddit,config);
+                    config = TBUtils.config;
+                    showSettings(subreddit,config);
+                    return;
+                } else {
+                    config = resp;
+
+                    showSettings(subreddit, config);
+                }
+
+
 
 
             });
@@ -275,15 +279,15 @@ tbconfig.init = function () {
                 saveButton = $wikiContentArea.find('.save-wiki-data');
 
 
-            if (tbconfig.setting('enabled')) {
+            if (TB.storage.getSetting('Syntax', 'enabled')) {
                 $body.addClass('mod-toolbox-ace');
                 $(textArea).hide();
                 $(textAreaDiv).show();
 
-                var selectedTheme = tbconfig.setting('selectedTheme'),
+                var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme'),
                     configEditor = ace.edit('edit-wikidata-' + page + '-div');
 
-                configEditor.getSession().setUseWrapMode(tbconfig.setting('enableWordWrap'));
+                configEditor.getSession().setUseWrapMode(TB.storage.getSetting('Syntax', 'enableWordWrap'));
                 configEditor.setTheme('ace/theme/' + selectedTheme);
 
                 if (page === 'automoderator') {

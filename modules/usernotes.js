@@ -172,20 +172,22 @@ usernotes.init = function () {
         function noteManagerRun() {
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', function(){
+            $body.find('.tb-un-refresh').on('click', function() {
                 var $this = $(this),
                     user = $this.attr('data-user'),
                     $userSpan = $this.parent().find('.user');
+                if (!$this.hasClass('tb-un-refreshed')) {
+                    $this.addClass('tb-un-refreshed')
+                    usernotes.log('refreshing user: ' + user);
+                TB.utils.aboutUser(user, function (succ) {
 
-                usernotes.log('refreshing user: ' + user);
-                TB.utils.aboutUser(user, function(succ){
-
-                    var $status = TB.utils.template('&nbsp;<span class="status">[{{status}}]</span>', {
+                    var $status = TB.utils.template('&nbsp;<span class="status">[the status of this user account is: {{status}}]</span>', {
                         'status': succ ? 'active' : 'deleted'
                     });
 
                     $userSpan.after($status);
                 });
+                }
             });
 
             // Delete all notes for user.

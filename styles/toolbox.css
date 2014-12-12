@@ -1710,8 +1710,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 /* config.js */
 
-span.tb-config-intro {
+.mod-toolbox span.tb-config-intro {
     max-width: 59em;
+}
+
+.mod-toolbox .tb-window-tabs a {
+    cursor: pointer;
 }
 
 .mod-toolbox .tb-window-header .buttons {
@@ -1781,6 +1785,10 @@ span.tb-config-intro {
 	font-size: 11px;
 	margin-top: -10px;
 	color: #888;
+}
+
+.mod-toolbox  #tb-search-suggest-list td {
+    cursor: pointer;
 }
 
 /* modbar */

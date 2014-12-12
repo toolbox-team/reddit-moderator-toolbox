@@ -68,7 +68,7 @@ modmail.register_setting('subredditcolor', {
 modmail.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': false,
-    'title': 'Fade the recipient of a modmail so it is much more clear WHO send it. '
+    'title': 'Fade the recipient of a modmail so it is much more clear who send it. '
 });
 
 
@@ -350,8 +350,11 @@ modmail.modmailpro = function () {
 
     function fadeRecipient() {
         $body.find('.tagline .head').each(function() {
-            if ($(this).find('a.author').length > 1) {
-                $(this).find('a.author').eq(0).css('opacity', '.6');
+            var $this = $(this);
+            if ($this.find('a.author').length > 1) {
+                $this.find('a.author').eq(0).css('opacity', '.6');
+            } else if(/^to /.test($this.text())) {
+                $this.find('a.author').css('opacity', '.6');
             }
         });
     }

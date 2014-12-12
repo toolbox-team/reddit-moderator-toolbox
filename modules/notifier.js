@@ -85,6 +85,44 @@ notifier.register_setting("unmoderatednotifications", {
     "title": "Get unmoderated queue notifications"
 });
 
+/// Private storage settings.
+notifier.register_setting("unreadmessagecount", {
+    "type": "number",
+    "default": 0,
+    'hidden': true
+});
+notifier.register_setting("modqueuecount", {
+    "type": "number",
+    "default": 0,
+    'hidden': true
+});
+notifier.register_setting("unmoderatedcount", {
+    "type": "number",
+    "default": 0,
+    'hidden': true
+});
+notifier.register_setting("modmailcount", {
+    "type": "number",
+    "default": 0,
+    'hidden': true
+});
+notifier.register_setting("checkinterval", {
+    "type": "number",
+    "default": 1 * 60 * 1000, // 60 secs.
+    'hidden': true
+});
+notifier.register_setting("lastchecked", {
+    "type": "number",
+    "default": -1,
+    'hidden': true
+});
+notifier.register_setting("lastseenunmoderated", {
+    "type": "number",
+    "default": -1,
+    'hidden': true
+});
+
+
 notifier.init = function notifierMod_init() {
 
     //
@@ -110,13 +148,13 @@ notifier.init = function notifierMod_init() {
         modmailunreadlink = notifier.setting('modmailunreadlink');
 
     // private
-    var checkInterval = TB.storage.getSetting('Notifier', 'checkinterval', 1 * 60 * 1000), //default to check every minute for new stuff.
+    var checkInterval = notifier.setting('checkinterval'), //default to check every minute for new stuff.
         newLoad = true,
         now = new Date().getTime(),
-        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0);
+        unreadMessageCount = notifier.setting('unreadmessagecount'),
+        modqueueCount = notifier.setting('modqueuecount'),
+        unmoderatedCount = notifier.setting('unmoderatedcount'),
+        modmailCount = notifier.setting('modmailcount');
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
@@ -149,8 +187,8 @@ notifier.init = function notifierMod_init() {
         notifier.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
-        TB.storage.setSetting('Notifier', 'lastseenmodmail', now);
-        modmailCount = TB.storage.setSetting('Notifier', 'modmailcount', 0);
+        notifier.setting('lastseenmodmail', now);
+        notifier.setting('modmailcount', 0);
 
         $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function (json) {
             $.each(json.data.children, function (i, value) {
@@ -167,7 +205,7 @@ notifier.init = function notifierMod_init() {
 
     function getmessages() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-        var lastchecked = TB.storage.getSetting('Notifier', 'lastchecked', -1),
+        var lastchecked = notifier.setting( 'lastchecked'),
             author = '',
             body_html = '';
 
@@ -176,10 +214,10 @@ notifier.init = function notifierMod_init() {
 
 
         // Update counters.
-        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0);
-        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0);
-        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0);
-        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0);
+        unreadMessageCount = notifier.setting('unreadmessagecount');
+        modqueueCount = notifier.setting('modqueuecount');
+        unmoderatedCount = notifier.setting('unmoderatedcount');
+        modmailCount = notifier.setting('modmailcount');
 
         //
         // Update methods
@@ -258,7 +296,7 @@ notifier.init = function notifierMod_init() {
 
         //$.log('updating totals');
         // We're checking now.
-        TB.storage.setSetting('Notifier', 'lastchecked', now);
+        notifier.setting('lastchecked', now);
 
         //
         // Messages
@@ -282,7 +320,7 @@ notifier.init = function notifierMod_init() {
         // getting unread messages
         $.getJSON('/message/unread.json').done(function (json) {
             var count = json.data.children.length || 0;
-            TB.storage.setSetting('Notifier', 'unreadmessagecount', count);
+            notifier.setting('unreadmessagecount', count);
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
@@ -365,11 +403,10 @@ notifier.init = function notifierMod_init() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                TB.storage.setSetting('Notifier', 'unreadpushed', pushedunread);
-
-
+                notifier.setting('unreadpushed', pushedunread);
             }
         });
+
 
         //
         // Modqueue
@@ -476,7 +513,7 @@ notifier.init = function notifierMod_init() {
 
 
             }
-            TB.storage.setSetting('Notifier', 'modqueuecount', count);
+            notifier.setting('modqueuecount', count);
         });
 
         //
@@ -489,7 +526,7 @@ notifier.init = function notifierMod_init() {
 
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
-                    var lastSeen = TB.storage.getSetting('Notifier', 'lastseenunmoderated', -1);
+                    var lastSeen = notifier.setting( 'lastseenunmoderated');
 
                     if (consolidatedMessages) {
                         var notificationbody, queuecount = 0, xmoreUnmod = 0;
@@ -535,10 +572,10 @@ notifier.init = function notifierMod_init() {
                         });
                     }
 
-                    TB.storage.setSetting('Notifier', 'lastseenunmoderated', now);
+                    notifier.setting('lastseenunmoderated', now);
                 }
 
-                TB.storage.setSetting('Notifier', 'unmoderatedcount', count);
+                notifier.setting('unmoderatedcount', count);
 
                 if (unmoderatedOn) {
                     updateUnmodCount(count);
@@ -554,7 +591,7 @@ notifier.init = function notifierMod_init() {
 
             var count = json.data.children.length || 0;
             if (count === 0) {
-                TB.storage.setSetting('Notifier', 'modmailcount', count);
+                notifier.setting('modmailcount', count);
                 updateModMailCount(count);
                 return;
             }
@@ -581,8 +618,6 @@ notifier.init = function notifierMod_init() {
                     }
                 }
             }
-
-            //$.log('New messages: ', newCount);
 
             if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
                 var notificationbody, messagecount = 0, xmoreModMail = 0;
@@ -652,7 +687,7 @@ notifier.init = function notifierMod_init() {
                 }
             }
 
-            TB.storage.setSetting('Notifier', 'modmailcount', newCount);
+            notifier.setting('modmailcount', newCount);
             updateModMailCount(newCount);
 
         });
@@ -663,10 +698,10 @@ notifier.init = function notifierMod_init() {
         setInterval(getmessages, checkInterval);
         getmessages();
     } else { // todo: this is a temp hack until 2.2
-        TB.storage.setSetting('Notifier', 'unreadmessagecount', 0);
-        TB.storage.setSetting('Notifier', 'modqueuecount', 0);
-        TB.storage.setSetting('Notifier', 'unmoderatedcount', 0);
-        TB.storage.setSetting('Notifier', 'modmailcount', 0);
+        notifier.setting('unreadmessagecount', 0);
+        notifier.setting('modqueuecount', 0);
+        notifier.setting('unmoderatedcount', 0);
+        notifier.setting('modmailcount', 0);
     }
 
 };

@@ -119,15 +119,20 @@ macros.init = function macrosInit() {
     function editMacro(dropdown, info, comment, topLevel) {
         // get some placement variables
 
-        var offset = dropdown.offset(),
+        var $usertext = dropdown.closest('.usertext-edit')
+
+        var offset = $usertext.offset(),
             offsetLeft = offset.left,
-            offsetTop = offset.top + 23;
+            offsetTop = offset.top,
+            minHeight = $usertext.outerHeight(),
+            editMinWidth = $usertext.outerWidth(),
+            editMinHeight = minHeight- 74;
 
         $macroPopup = TB.ui.popup(
             'Edit macro',
             [
                 {
-                    title: "Edit Macro",
+                    title: 'Edit Macro',
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Edit macro',
                     content: '<textarea class="macro-edit-area" data-toplevel="'+ topLevel +'" data-id="' + info.id + '">' + comment + '</textarea>',
@@ -139,10 +144,16 @@ macros.init = function macrosInit() {
             'macro-' + info.id // id
         ).appendTo('body')
             .css({
-                "left": offsetLeft + 'px',
-                "top": offsetTop + 'px',
+                'left': offsetLeft + 'px',
+                'top': offsetTop + 'px',
+                'min-height': minHeight + 'px',
                 display: 'block'
             });
+
+        $macroPopup.find('.macro-edit-area').css({
+            'min-height': editMinHeight + 'px',
+            'min-width': editMinWidth + 'px'
+        });
     }
 
     $body.on('click', '.macro-popup .close', function (e) {

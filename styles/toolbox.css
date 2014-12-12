@@ -1840,3 +1840,14 @@ span.tb-config-intro {
 .mod-toolbox .tb-un-note-details span.mod, .mod-toolbox .tb-un-note-details span.date {
     color: #A8A8A8;
 }
+
+/* macro.js */
+
+.macro-popup .tb-popup-content {
+    margin-bottom: 30px;
+}
+
+.macro-popup .tb-popup-footer {
+    position: absolute;
+    bottom: 0;
+}

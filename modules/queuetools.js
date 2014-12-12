@@ -56,7 +56,7 @@ queue.register_setting('reports-ascending', {
     'title': "Sort ascending."
 });
 
-queue.register_setting('expand-reports', {
+queue.register_setting('expandReports', {
     'type': 'boolean',
     'default': false,
     'title': "Automatically expand reports on mod pages."
@@ -532,14 +532,14 @@ queue.init = function () {
         });
 
         // Call History Button module init if it's not already enabled
-        if (!TB.modules.HistoryButton.setting('enabled')) {
-            TB.modules.HistoryButton.init();
+        if (!TB.modules.HButton.setting('enabled')) {
+            TB.modules.HButton.init();
         }
 
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
             // Expand reports on the new page, we leave the ones the user might already has collapsed alone. 
-            if (queue.setting('expand-reports')) {
+            if (queue.setting('expandReports')) {
                 $(things).find('.reported-stamp').siblings('.report-reasons').show();
             }
             //add class to processed threads.
@@ -647,7 +647,7 @@ queue.init = function () {
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage) {
         addModtools();
-        if(queue.setting('expand-reports')) {
+        if(queue.setting('expandReports')) {
             $('.reported-stamp').siblings('.report-reasons').show();
         }
     }

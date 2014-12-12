@@ -4,38 +4,38 @@ function modbutton() {
 var modbutton = new TB.Module('Mod Button');
 modbutton.shortname = 'ModButton';
 
-modbutton.settings["enabled"]["default"] = true;
-modbutton.config["needs_mod_subs"] = true;
+modbutton.settings['enabled']['default'] = true;
+modbutton.config['needs_mod_subs'] = true;
 
 modbutton.register_setting(
-    "sublist", {
-        "type": "sublist",
-        "default": [],
-        "title": "Saved subs (for quick access)"
+    'sublist', {
+        'type': 'sublist',
+        'default': [],
+        'title': 'Saved subs (for quick access)'
     });
 // can't call this inside because it doesn't know the default value yet
 // can't call it plain because it uses TB.utils.mySubs
 TB.utils.getModSubs(function modbuttoninit() {
-    modbutton.settings['sublist']["args"] = [TB.utils.mySubs, modbutton.setting('sublist')];
+    modbutton.settings['sublist']['args'] = [TB.utils.mySubs, modbutton.setting('sublist')];
 });
 
 modbutton.register_setting(
-    "rememberlastaction", {
-        "type": "boolean",
-        "default": false,
-        "title": "Remember last action"
+    'rememberlastaction', {
+        'type': 'boolean',
+        'default': false,
+        'title': 'Remember last action'
     });
 modbutton.register_setting(
-    "lastaction", {
-        "type": "text",
-        "default": "ban",
-        "hidden": true
+    'lastaction', {
+        'type': 'text',
+        'default': 'ban',
+        'hidden': true
     });
 modbutton.register_setting(
-    "globalbutton", {
-        "type": "boolean",
-        "default": false,
-        "title": "Enable Global Action button"
+    'globalbutton', {
+        'type': 'boolean',
+        'default': false,
+        'title': 'Enable Global Action button'
     });
 
 var $body = $('body');
@@ -137,7 +137,7 @@ modbutton.init = function init() {
     modbutton.run();
 
     // NER support.
-    window.addEventListener("TBNewThings", function () {
+    window.addEventListener('TBNewThings', function () {
         modbutton.run();
     });
 
@@ -168,7 +168,7 @@ modbutton.init = function init() {
             'Mod Actions  - /u/' + user,
             [
                 {
-                    title: "Role",
+                    title: 'Role',
                     id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
                     content: (subreddit
@@ -203,8 +203,8 @@ modbutton.init = function init() {
                     <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
-                    title: "User Flair",
-                    tooltip: "Edit User Flair.",
+                    title: 'User Flair',
+                    tooltip: 'Edit User Flair.',
                     content: '\
                         <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
                         <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
@@ -213,8 +213,8 @@ modbutton.init = function init() {
                     <button class="flair-save">Save Flair</button>'
                 },
                 {
-                    title: "Send Message",
-                    tooltip: "Send a message from the subreddit.",
+                    title: 'Send Message',
+                    tooltip: 'Send a message from the subreddit.',
                     content: '\
                         <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>\
                         <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>\
@@ -266,7 +266,7 @@ modbutton.init = function init() {
 
             // Show if current user is banned, and why. - thanks /u/LowSociety
             // TODO: Display *when* they were banned, along with ban note. #194
-            $.get("/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
+            $.get('/r/' + subreddit + '/about/banned/.json', {user: user}, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
@@ -274,22 +274,22 @@ modbutton.init = function init() {
 
                         var timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
 
-                        $popup.find(".current-sub").append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
-                        $popup.find(".current-sub .already-banned").append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
+                        $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
+                        $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
 
-                        $popup.find("select.mod-action option[data-api=unfriend][data-action=banned]").attr("selected", "selected");
-                        $popup.find(".ban-note").val(banned[i].note);
+                        $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
+                        $popup.find('.ban-note').val(banned[i].note);
                         $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                        $.get("/r/" + subreddit + "/about/log/.json", {
+                        $.get('/r/' + subreddit + '/about/log/.json', {
                             type: 'banuser',
                             limit: '1000'
                         }, function (data) {
                             var logged = data.data.children;
                             for (var i = 0; i < logged.length; i++) {
                                 if (logged[i].data.target_fullname == user_fullname) {
-                                    $popup.find(".current-sub .already-banned a").attr('href', '/u/' + logged[i].data.mod).text(logged[i].data.mod);
+                                    $popup.find('.current-sub .already-banned a').attr('href', '/u/' + logged[i].data.mod).text(logged[i].data.mod);
                                     break;
                                 }
                             }
@@ -412,10 +412,10 @@ modbutton.init = function init() {
         else {
             var confirmban;
             if (actionName === 'ban' || actionName === 'unban') {
-                confirmban = confirm("This will " + actionName + " /u/" + user + " from every subreddit you moderate.   \nAre you sure?");
+                confirmban = confirm('This will ' + actionName + ' /u/' + user + ' from every subreddit you moderate.   \nAre you sure?');
             }
             else {
-                confirmban = confirm("This will " + actionName + " /u/" + user + " on every subreddit you moderate.   \nAre you sure?");
+                confirmban = confirm('This will ' + actionName + ' /u/' + user + ' on every subreddit you moderate.   \nAre you sure?');
             }
 
             if (confirmban) {
@@ -432,7 +432,7 @@ modbutton.init = function init() {
             $timer.stop();
             TB.utils.pageOverlay(null, false);
             if (failedSubs.length > 0) {
-                var retry = confirm(failedSubs.length + " failed.  Would you like to retry them?");
+                var retry = confirm(failedSubs.length + ' failed.  Would you like to retry them?');
                 if (retry) {
                     modbutton.log('retrying');
                     massAction(failedSubs);
@@ -450,8 +450,8 @@ modbutton.init = function init() {
 
         function rateLimit(seconds) {
             var delay = seconds * 1000;
-            $status.text("API ratelimit sleeping for: " + seconds + " seconds");
-            TB.utils.pageOverlay("API ratelimit sleeping for: " + seconds + " seconds");
+            $status.text('API ratelimit sleeping for: ' + seconds + ' seconds');
+            TB.utils.pageOverlay('API ratelimit sleeping for: ' + seconds + ' seconds');
             setTimeout(function () {
                 modbutton.log('resuming');
                 $timer.play();
@@ -464,7 +464,7 @@ modbutton.init = function init() {
             var actionCount = 0;
 
             // Ban dem trolls.
-            TB.utils.pageOverlay("", true);
+            TB.utils.pageOverlay('', true);
             $timer = $.timer(function () {
                 var subreddit = $(subs).get(actionCount);
 
@@ -597,7 +597,7 @@ modbutton.init = function init() {
             text = $popup.find('.flair-text').val(),
             css_class = $popup.find('.flair-class').val();
 
-        $status.text("saving user flair...");
+        $status.text('saving user flair...');
 
         /*
          if (!text && !css_class) {
@@ -625,7 +625,7 @@ modbutton.init = function init() {
 
         TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
             if(success) {
-                $status.text("saved user flair");
+                $status.text('saved user flair');
             }
             else {
                 modbutton.log(err.responseText);
@@ -639,7 +639,7 @@ TB.register_module(modbutton);
 }
 
 (function () {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener('TBObjectLoaded', function () {
         modbutton();
     });
 })();

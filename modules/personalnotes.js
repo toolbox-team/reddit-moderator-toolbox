@@ -124,6 +124,7 @@ notes.init = function personalNotesInit() {
         // Making sure the ui is only created once.
         if ($this.hasClass('tb-notes-activated')) {
         } else {
+            $this.addClass('tb-notes-activated');
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
             TBUtils.getModSubs(function() {
 

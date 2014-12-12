@@ -17,11 +17,17 @@ usernotes.register_setting('maxChars', {
     'default': 20,
     'title': 'Max characters to display in current note tag.'
 });
+usernotes.register_setting('showDate', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show date in note preview.'
+});
 
 usernotes.init = function () {
     var subs = [],
         $body = $('body'),
-        maxChars = usernotes.setting('maxChars');
+        maxChars = usernotes.setting('maxChars'),
+        showDate = usernotes.setting('showDate');
 
     if (window.location.href.indexOf('/about/usernotes') > -1 && usernotes.setting('unManager')) {
 
@@ -525,14 +531,20 @@ usernotes.init = function () {
             }
 
             var noteData = u.notes[0],
-                note = noteData.note;
+                note = noteData.note,
+                date = new Date(noteData.time);
 
             // Add title before note concat.
-            $usertag.attr('title', note + ' (' + new Date(noteData.time).toLocaleString() + ')');
+            $usertag.attr('title', note + ' (' + date.toLocaleString() + ')');
 
             if (note.length > maxChars) {
                 note = note.substring(0, (maxChars + 3)) + "...";
             }
+
+            if (showDate) {
+                note = note + ' (' + date.toLocaleDateString({year: 'numeric', month: 'numeric', day: 'numeric'}) + ')';
+            }
+
             $usertag.html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
 

@@ -279,7 +279,7 @@ tbconfig.init = function () {
                 saveButton = $wikiContentArea.find('.save-wiki-data');
 
 
-            if (TB.storage.getSetting('Syntax', 'enabled')) {
+            if (TB.storage.getSetting('Syntax', 'enabled', true)) {
                 $body.addClass('mod-toolbox-ace');
                 $(textArea).hide();
                 $(textAreaDiv).show();

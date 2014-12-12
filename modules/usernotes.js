@@ -85,7 +85,7 @@ usernotes.init = function () {
                 var user = val.name;
 
                 var userHTML = '\
-                <div class="tb-un-user un-{{user}}">\
+                <div class="tb-un-user un-{{user}}" data-user="{{user}}">\
                     <div class="tb-un-user-header">\
                     <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
                     <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
@@ -105,8 +105,12 @@ usernotes.init = function () {
                     noteCount++;
 
                     var noteHTML = '<div class="tb-un-note-details"><a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a> &nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>\
-                        &nbsp;-&nbsp;<span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date">on {{date}}</span>\
+                        &nbsp;-&nbsp;<span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>\
                         &nbsp;</div>';
+
+                    var timeUTC =  Math.round(val.time/1000),
+                        timeISO = TBUtils.timeConverterISO(timeUTC),
+                        timeHuman = TBUtils.timeConverterRead(timeUTC);
 
                     var notecontent = TB.utils.template(noteHTML, {
                         'user': user,
@@ -114,7 +118,8 @@ usernotes.init = function () {
                         'note': val.note,
                         'link': (val.link) ? unsquashPermalink(sub, val.link) : '',
                         'mod': val.mod,
-                        'date': new Date(val.time).toLocaleString()
+                        'timeUTC': timeHuman,
+                        'timeISO': timeISO
                     });
 
                     $siteTable.find('.un-' + user).append(notecontent);
@@ -127,6 +132,7 @@ usernotes.init = function () {
                     var infoHTML = '\
                         <div class="tb-un-info">\
                             <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
+                            <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                         </div></br></br>';
 
                     var infocontent = TB.utils.template(infoHTML, {
@@ -140,7 +146,23 @@ usernotes.init = function () {
                     noteManagerRun();
                 }
             });
+            $body.find('#tb-unote-user-search').keyup(function () {
+                var userSearchValue = $(this).val();
+                $body.find('#tb-un-note-content-wrap .tb-un-user').each(function () {
+                    var $this = $(this),
+                        userName = $this.data('user');
+
+                    if (userName.toUpperCase().indexOf(userSearchValue.toUpperCase()) < 0) {
+                        $this.hide();
+                    } else {
+                        $this.show();
+                    }
+                });
+            });
+            $("time.timeago").timeago();
         }
+
+
 
         TB.ui.longLoadSpinner(true, "Loading usernotes", TB.ui.FEEDBACK_NEUTRAL);
         setTimeout(function () {
@@ -198,7 +220,11 @@ usernotes.init = function () {
                     TB.ui.textFeedback('Deleted note for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
             });
         }
+
+
     }
+
+
 
     TBUtils.getModSubs(function () {
         run();

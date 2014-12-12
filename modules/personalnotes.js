@@ -40,13 +40,8 @@ notes.init = function personalNotesInit() {
             ],
             '',
             'personal-notes-popup' // class
-        ).appendTo('body')
-            .css({
-                'left': '305px',
-                'bottom': '31px',
-                'display': 'block',
-                'position': 'fixed'
-            });
+        ).appendTo('body');
+
     }
 
 

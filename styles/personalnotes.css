@@ -60,3 +60,10 @@
 .mod-toolbox .tb-personal-note-link {
     font-size: 14px;
 }
+
+.mod-toolbox .personal-notes-popup {
+    left : 305px;
+    bottom : 31px;
+    display : block;
+    position : fixed;
+}

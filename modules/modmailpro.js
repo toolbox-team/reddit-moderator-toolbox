@@ -65,7 +65,7 @@ modmail.register_setting('subredditcolor', {
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
-modmail.register_setting('faderecipient', {
+modmail.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': false,
     'title': 'Fade the recipient of a modmail so it is much more clear WHO send it. '
@@ -330,7 +330,7 @@ modmail.modmailpro = function () {
             colorBorderMail();
         }
         // Fade the recipient of a modmail so it is much more clear WHO send it.
-        if (modmail.setting('faderecipient')) {
+        if (modmail.setting('fadeRecipient')) {
             fadeRecipient();
         }
     }

@@ -10,17 +10,17 @@ usernotes.register_setting('unManager', {
     'type': 'boolean',
     'default': false,
     'betamode': true,
-    'title': 'Enable User Notes Manager.'
-});
-usernotes.register_setting('maxChars', {
-    'type': 'number',
-    'default': 20,
-    'title': 'Max characters to display in current note tag.'
+    'title': 'Enable User Notes Manager'
 });
 usernotes.register_setting('showDate', {
     'type': 'boolean',
     'default': false,
-    'title': 'Show date in note preview.'
+    'title': 'Show date in note preview'
+});
+usernotes.register_setting('maxChars', {
+    'type': 'number',
+    'default': 20,
+    'title': 'Max characters to display in current note tag (excluding date)'
 });
 
 usernotes.init = function () {

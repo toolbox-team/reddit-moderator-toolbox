@@ -128,13 +128,15 @@ macros.init = function macrosInit() {
             editMinWidth = $usertext.outerWidth(),
             editMinHeight = minHeight- 74;
 
+        var title = dropdown.find('option:selected').text();
+        console.log(title)
         $macroPopup = TB.ui.popup(
-            'Edit macro',
+            'Mod Macro: ' + title,
             [
                 {
-                    title: 'Mod Macro',
+                    title: 'Mod Macro:',
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
-                    tooltip: 'Mod Macro',
+                    tooltip: 'Mod Macro:' + title,
                     content: '<textarea class="macro-edit-area" data-toplevel="'+ topLevel +'" data-id="' + info.id + '">' + comment + '</textarea>',
                     footer: '<button class="macro-send">Send Message</button>'
                 }
@@ -207,7 +209,6 @@ macros.init = function macrosInit() {
             comment = unescape($this.val()),
             topLevel = (e.target.className === 'tb-top-macro-select'),
             info;
-
             // disable the select box to prevent a mess with creating multiple popup boxes.
             $this.prop('disabled', 'disabled');
             // If it's a top-level reply we need to find the post's info.

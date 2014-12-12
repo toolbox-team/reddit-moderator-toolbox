@@ -23,11 +23,7 @@ notes.init = function personalNotesInit() {
     notewiki = notewiki.replace(/\//g, '');
     notewiki = notewiki.toLowerCase();
 
-    // We can't expect people to get the capitalizing right.
-    var mySubsLowerCase = [];
-    $(TBUtils.mySubs).each(function () {
-        mySubsLowerCase.push(this.toLowerCase());
-    });
+
 
     // Here we create the popup containing all relevant information
     function createPersonalNotesPopup(notesPopupContent) {
@@ -46,7 +42,7 @@ notes.init = function personalNotesInit() {
             'personal-notes-popup' // class
         ).appendTo('body')
             .css({
-                'left': '290px',
+                'left': '305px',
                 'bottom': '31px',
                 'display': 'block',
                 'position': 'fixed'
@@ -130,6 +126,12 @@ notes.init = function personalNotesInit() {
         } else {
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
             TBUtils.getModSubs(function() {
+
+                // We can't expect people to get the capitalizing right.
+                var mySubsLowerCase = [];
+                $(TBUtils.mySubs).each(function () {
+                    mySubsLowerCase.push(this.toLowerCase());
+                });
 
                 // Empty subreddit.
                 if (notewiki === '') {

@@ -457,8 +457,10 @@ See the License for the specific language governing permissions and limitations 
 
     // Open the settings
     $body.on('click', '.tb-toolbarsettings', function () {
-        showSettings();
-        TB.injectSettings();
+        TB.utils.getModSubs(function(){
+            showSettings();
+            TB.injectSettings();
+        });
     });
 
     // change tabs

@@ -525,6 +525,7 @@ function initwrapper() {
 
 
     TBUtils.getModSubs = function (callback) {
+        //$.log('getting mod subs');
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
             // time to refresh
@@ -593,6 +594,9 @@ function initwrapper() {
                 // Update the cache.
                 TBStorage.setCache('Utils', 'moderatedsubs', TBUtils.mySubs);
                 TBStorage.setCache('Utils', 'moderatedsubsdata', TBUtils.mySubsData);
+
+                callback();
+                // no idea what the following shit is.
                 // Go!
                 while (getModSubsCallbacks.length > 0) {
                     // call them in the order they were added

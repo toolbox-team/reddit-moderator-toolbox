@@ -950,11 +950,11 @@ function initwrapper() {
             });
     };
 
-    TBUtils.banUser = function (user, subreddit, banReason, banMessage, banDuration, callback) {
+    TBUtils.friendUser = function (user, action, subreddit, banReason, banMessage, banDuration, callback) {
         $.post('/api/friend', {
             api_type: 'json',
             uh: TBUtils.modhash,
-            type: 'banned',
+            type: action,
             name: user,
             r: subreddit,
             note: banReason,
@@ -971,11 +971,11 @@ function initwrapper() {
             });
     };
 
-    TBUtils.unbanUser = function (user, subreddit, callback) {
+    TBUtils.unfriendUser = function (user, action, subreddit, callback) {
         $.post('/api/unfriend', {
             api_type: 'json',
             uh: TBUtils.modhash,
-            type: 'banned',
+            type: action,
             name: user,
             r: subreddit
         })

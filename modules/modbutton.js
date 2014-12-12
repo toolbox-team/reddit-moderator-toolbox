@@ -363,6 +363,7 @@ modbutton.init = function init() {
             api = $selected.attr('data-api'),
             action = $selected.attr('data-action'),
             actionName = $selected.val(),
+            settingState = api == 'friend',
             $status = $popup.find('.status'),
             banReason = $popup.find('.ban-note').val(),
             banMessage = $popup.find('textarea.ban-message').val(),
@@ -384,7 +385,6 @@ modbutton.init = function init() {
         // Check dem values.
         if (!api)
             return $status.text('error, no action selected');
-        var banning = (api == 'friend');
 
         if (!$(this).hasClass('global-button')) {
 
@@ -471,8 +471,8 @@ modbutton.init = function init() {
                 TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + subreddit, undefined);
 
                 modbutton.log('banning from: ' + subreddit);
-                if(banning) {
-                    TBUtils.banUser(user, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                if(settingState) {
+                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();
@@ -487,7 +487,7 @@ modbutton.init = function init() {
                     });
                 }
                 else {
-                    TBUtils.unbanUser(user, subreddit, function (success, response) {
+                    TBUtils.unfriendUser(user, action, subreddit, function (success, response) {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();

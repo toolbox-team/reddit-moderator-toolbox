@@ -65,6 +65,13 @@ modmail.register_setting('subredditcolor', {
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
+modmail.register_setting('faderecipient', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Fade the recipient of a modmail so it is much more clear WHO send it. '
+});
+
+
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
 
@@ -322,6 +329,10 @@ modmail.modmailpro = function () {
         if (modmail.setting('subredditcolor')) {
             colorBorderMail();
         }
+        // Fade the recipient of a modmail so it is much more clear WHO send it.
+        if (modmail.setting('faderecipient')) {
+            fadeRecipient();
+        }
     }
     
     // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for. 
@@ -335,7 +346,15 @@ modmail.modmailpro = function () {
                 $this.addClass('tb-subreddit-color');
             }    
         });
-    }     
+    }
+
+    function fadeRecipient() {
+        $body.find('.tagline .head').each(function() {
+            if ($(this).find('a.author').length > 1) {
+                $(this).find('a.author').eq(0).css('opacity', '.6');
+            }
+        });
+    }
     
     function processThread(thread) {
         var $thread = $(thread);

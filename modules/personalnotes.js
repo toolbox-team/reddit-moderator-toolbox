@@ -123,90 +123,94 @@ notes.init = function personalNotesInit() {
     $body.on('click', '#tb-personal-notes-button', function () {
         var $this = $(this);
 
+
+
         // Making sure the ui is only created once.
         if ($this.hasClass('tb-notes-activated')) {
         } else {
-            $this.addClass('tb-notes-activated');
+            // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
+            TBUtils.getModSubs(function() {
 
-            // Empty subreddit.
-            if (notewiki === '') {
-                notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
-                createPersonalNotesPopup(notesPopupContent);
+                // Empty subreddit.
+                if (notewiki === '') {
+                    notesPopupContent = '<span class="error">You have not set a subreddit in your settings to store your notes on.</span>';
+                    createPersonalNotesPopup(notesPopupContent);
 
-                // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
-            } else if ($.inArray(notewiki, mySubsLowerCase) === -1) {
-                notesPopupContent = '<span class="error">You are not a mod of /r/' + notewiki + '.</span>';
-                createPersonalNotesPopup(notesPopupContent);
-            } else {
+                    // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
+                } else if ($.inArray(notewiki, mySubsLowerCase) === -1) {
+                    notesPopupContent = '<span class="error">You are not a mod of /r/' + notewiki + '.</span>';
+                    createPersonalNotesPopup(notesPopupContent);
+                } else {
 
-                // build a template, we only need to insert one variable but this is cleaner and more feature proof.
-                var notesPopupContentTemplate = '\
-                <table>\
-                    <tr>\
-                        <td id="tb-personal-notes-listing">\
-                            <div id="tb-personal-notes-list">\
-                                {{notesList}}\
-                            </div>\
-                            <div id="tb-new-personal-note-div">\
-                                <label for="tb-new-personal-note">\
-                                    Create note:\
-                                </label> \
-                                <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
-                                <input type="button" id="create-personal-note" value="create note">\
-                            </div>\
-                            \
-                        </td>\
-                        <td id="tb-personal-notes-content">\
-                            <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
-                            <textarea id="tb-personal-notes-editarea"></textarea>\
-                        </td>\
-                    </tr>\
-                </table>\
-                ';
+                    // build a template, we only need to insert one variable but this is cleaner and more feature proof.
+                    var notesPopupContentTemplate = '\
+                    <table>\
+                        <tr>\
+                            <td id="tb-personal-notes-listing">\
+                                <div id="tb-personal-notes-list">\
+                                    {{notesList}}\
+                                </div>\
+                                <div id="tb-new-personal-note-div">\
+                                    <label for="tb-new-personal-note">\
+                                        Create note:\
+                                    </label> \
+                                    <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
+                                    <input type="button" id="create-personal-note" value="create note">\
+                                </div>\
+                                \
+                            </td>\
+                            <td id="tb-personal-notes-content">\
+                                <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
+                                <textarea id="tb-personal-notes-editarea"></textarea>\
+                            </td>\
+                        </tr>\
+                    </table>\
+                    ';
 
-                // Lets get a list of notes!
-                $.getJSON('/r/' + notewiki + '/wiki/pages.json')
-                    .success(function (json) {
-                        notesArray = [];
-                        var notesList,
-                            count = json.data.length || 0;
+                    // Lets get a list of notes!
+                    $.getJSON('/r/' + notewiki + '/wiki/pages.json')
+                        .success(function (json) {
+                            notesArray = [];
+                            var notesList,
+                                count = json.data.length || 0;
 
-                        if (count === 0) {
-                            notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
-                        } else {
-                            var notecount = 0,
-                                noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
-
-
-                            $.each(json.data, function (i, value) {
-                                if (/notes\//.test(value)) {
-                                    value = value.replace('notes/', '');
-                                    notecount++;
-                                    notesArray.push(value);
-                                    noteListConstruction += '<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="' + value + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="' + value + '">' + value + '</a> </li> \n'
-                                }
-                            });
-
-                            if (notecount === 0) {
+                            if (count === 0) {
                                 notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
                             } else {
-                                noteListConstruction += '</ul>';
-                                notesList = noteListConstruction;
+                                var notecount = 0,
+                                    noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
+
+
+                                $.each(json.data, function (i, value) {
+                                    if (/notes\//.test(value)) {
+                                        value = value.replace('notes/', '');
+                                        notecount++;
+                                        notesArray.push(value);
+                                        noteListConstruction += '<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="' + value + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="' + value + '">' + value + '</a> </li> \n'
+                                    }
+                                });
+
+                                if (notecount === 0) {
+                                    notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
+                                } else {
+                                    noteListConstruction += '</ul>';
+                                    notesList = noteListConstruction;
+                                }
+
                             }
 
-                        }
+                            notesPopupContent = TBUtils.template(notesPopupContentTemplate, {
+                                'notesList': notesList
+                            });
+                            createPersonalNotesPopup(notesPopupContent);
+                        })
+                        .error(function (error) {
+                            TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
+                            $this.removeClass('tb-notes-activated');
 
-                        notesPopupContent = TBUtils.template(notesPopupContentTemplate, {
-                            'notesList': notesList
                         });
-                        createPersonalNotesPopup(notesPopupContent);
-                    })
-                    .error(function (error) {
-                        TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
-                        $this.removeClass('tb-notes-activated');
-
-                    });
-            }
+                }
+            });
         }
     });
 

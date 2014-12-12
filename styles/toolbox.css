@@ -1,4 +1,6 @@
-
+.mod-toolbox  {
+    overflow-x: hidden;
+}
 /* RES compatibility fix */
 
 .res #BigEditor {

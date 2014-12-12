@@ -50,3 +50,13 @@
 .mod-toolbox .tb-personal-note-link.tb-personal-notes-active {
     font-weight: bold;
 }
+
+.mod-toolbox .tb-personal-note-delete img {
+    width: 13px;
+    opacity: 0.8;
+    margin-bottom: -3px;
+}
+
+.mod-toolbox .tb-personal-note-link {
+    font-size: 14px;
+}

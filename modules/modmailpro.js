@@ -76,6 +76,16 @@ modmail.register_setting('lastvisited', {
     'default': new Date().getTime(),
     'hidden': true
 });
+modmail.register_setting("replied", {
+    "type": "list",
+    "default": '[]',
+    'hidden': true
+});
+modmail.register_setting("filteredsubs", {
+    "type": "list",
+    "default": '[]',
+    'hidden': true
+});
 
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
@@ -111,17 +121,16 @@ modmail.modmailpro = function () {
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-        allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
-        priorityLink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
-        filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
-        repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
-        unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
-        unansweredlink = $('<li><a class="unansweredlink" href="javascript:;" view="' + UNANSWERED + '">unanswered</a></li>'),
-        collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
-        unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
-        mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
+        $allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
+        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
+        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
+        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
+        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
+        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" view="' + UNANSWERED + '">unanswered</a></li>'),
+        $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
+        $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
+        $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
 
-    // TODO: promote to TBUtils.
     var selectedCSS = {
         "color": "orangered",
         "font-weight": "bold"
@@ -135,17 +144,17 @@ modmail.modmailpro = function () {
     var menuList = $('.menuarea ul.flat-list').html('');
 
     // Add menu items.
-    menuList.append(allLink);
-    menuList.append($(priorityLink).prepend(separator));
-    menuList.append($(filteredLink).prepend(separator));
-    menuList.append($(repliedLink).prepend(separator));
-    menuList.append($(unreadLink).prepend(separator));
-    menuList.append($(unansweredlink).prepend(separator));
-    menuList.append($(collapseLink).prepend(spacer));
+    menuList.append($allLink);
+    menuList.append($priorityLink.prepend(separator));
+    menuList.append($filteredLink.prepend(separator));
+    menuList.append($repliedLink.prepend(separator));
+    menuList.append($unreadLink.prepend(separator));
+    menuList.append($unansweredLink.prepend(separator));
+    menuList.append($collapseLink.prepend(spacer));
 
-    mmpMenu.append($(unreadCount).prepend(spacer));
+    $mmpMenu.append($unreadCount.prepend(spacer));
 
-    menuList.after(mmpMenu);
+    menuList.after($mmpMenu);
 
     $body.on('click', '.save', function (e) {
         var parent = $(e.target).closest('.message-parent'),
@@ -157,7 +166,7 @@ modmail.modmailpro = function () {
             replied.push(id);
         }
 
-        TB.storage.setSetting('ModMail', 'replied', replied);
+        modmail.setting('replied', replied);
 
         setReplied();
     });
@@ -168,28 +177,28 @@ modmail.modmailpro = function () {
 
         // Neither a switch nor === will work correctly.
         if (inbox == ALL) {
-            $(allLink).closest('li').addClass('selected');
+            $allLink.closest('li').addClass('selected');
             hideThreads(a); // basically hideThreads(none);
             return;
 
         } else if (inbox == PRIORITY) {
-            $(priorityLink).closest('li').addClass('selected');
+            $priorityLink.closest('li').addClass('selected');
             hideThreads(filteredSubs);
 
         } else if (inbox == FILTERED) {
-            $(filteredLink).closest('li').addClass('selected');
+            $filteredLink.closest('li').addClass('selected');
             showThreads(filteredSubs);
 
         } else if (inbox == REPLIED) {
-            $(repliedLink).closest('li').addClass('selected');
+            $repliedLink.closest('li').addClass('selected');
             showThreads(getRepliedThreads(), true);
 
         } else if (inbox == UNREAD) {
-            $(unreadLink).closest('li').addClass('selected');
+            $unreadLink.closest('li').addClass('selected');
             showThreads(unreadThreads, true);
 
         } else if (inbox == UNANSWERED) {
-            $(unansweredlink).closest('li').addClass('selected');
+            $unansweredLink.closest('li').addClass('selected');
             showThreads(unansweredThreads, true);
         }
 
@@ -567,8 +576,9 @@ modmail.modmailpro = function () {
     }
 
     $body.on('click', '.filter-sub-link', function (e) {
-        var subname = getSubname($(e.target).closest('.message-parent'));
-        var filtersubs = getFilteredSubs();
+        var subname = getSubname($(e.target).closest('.message-parent')),
+            filtersubs = getFilteredSubs(),
+            $filterCount = $('.filter-count');
 
         // Add sub to filtered subs.
         if ($.inArray(subname, filtersubs) === -1) {
@@ -578,7 +588,7 @@ modmail.modmailpro = function () {
         }
 
         // Save new filter list.
-        TB.storage.setSetting('ModMail', 'filteredsubs', filtersubs);
+        modmail.setting('filteredsubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -587,8 +597,8 @@ modmail.modmailpro = function () {
         setFilterLinks();
 
         // Update filter count in settings.
-        $('.filter-count').text(filtersubs.length);
-        $('.filter-count').attr('title', filtersubs.join(', '));
+        $filterCount.text(filtersubs.length);
+        $filterCount.attr('title', filtersubs.join(', '));
     });
 
     function getSubname(sub) {
@@ -597,11 +607,11 @@ modmail.modmailpro = function () {
     }
 
     function getFilteredSubs() {
-        return TB.storage.getSetting('ModMail', 'filteredsubs', []);
+        return modmail.setting('filteredsubs');
     }
 
     function getRepliedThreads() {
-        return TB.storage.getSetting('ModMail', 'replied', []);
+        return modmail.setting('replied');
     }
 
     function showThreads(items, byID) {

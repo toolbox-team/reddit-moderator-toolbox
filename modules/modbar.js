@@ -330,7 +330,7 @@ if (unmoderatedOn) {
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
     </p>\
     <p '+ ((debugMode && !TB.utils.devMoeLock) ? '' : 'style="display:none;"') +'>\
-        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> Dev Mode: don\'t ever turn this on</label>\
+        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '>DEVMODE: DON\'T EVER ENABLE THIS!</label>\
     </p>\
     <p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\

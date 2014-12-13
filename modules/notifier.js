@@ -126,7 +126,16 @@ notifier.register_setting("lastseenmodmail", {
     "default": -1,
     'hidden': true
 });
-
+notifier.register_setting("unreadpushed", {
+    "type": "list",
+    "default": '[]',
+    'hidden': true
+});
+notifier.register_setting("modqueuepushed", {
+    "type": "list",
+    "default": '[]',
+    'hidden': true
+});
 
 notifier.init = function notifierMod_init() {
 
@@ -334,7 +343,7 @@ notifier.init = function notifierMod_init() {
 
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pushedunread = TB.storage.getSetting('Notifier', 'unreadpushed', []);
+                var pushedunread = notifier.setting('unreadpushed');
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     var notificationbody, messagecount = 0;
@@ -408,7 +417,7 @@ notifier.init = function notifierMod_init() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                TB.storage.setSetting('Notifier', 'unreadpushed', pushedunread);
+                notifier.setting('unreadpushed', pushedunread);
             }
         });
 
@@ -437,7 +446,7 @@ notifier.init = function notifierMod_init() {
                 //$.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pusheditems = TB.storage.setSetting('Notifier', 'modqueuepushed', []);
+                var pusheditems = notifier.setting('modqueuepushed');
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     //$.log('here we go!');
@@ -514,7 +523,7 @@ notifier.init = function notifierMod_init() {
                 if (pusheditems.length > 100) {
                     pusheditems.splice(0, 100 - pusheditems.length);
                 }
-                TB.storage.setSetting('Notifier', 'modqueuepushed', pusheditems);
+                notifier.setting('modqueuepushed', pusheditems);
 
 
             }

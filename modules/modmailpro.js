@@ -71,22 +71,10 @@ modmail.register_setting('fadeRecipient', {
     'title': 'Fade the recipient of a modmail so it is much more clear who send it. '
 });
 
-modmail.register_setting('showNewBuffer', {
-    'type': 'number',
-    'default': 10,
-    'title': 'Buffer for how long to show mail as new on mod mail page (in minutes)',
-    'hidden': true // for now.
-});
-
 /// Private setting storage
 modmail.register_setting('lastvisited', {
     'type': 'number',
     'default': new Date().getTime(),
-    'hidden': true
-});
-modmail.register_setting('visitedbuffer', {
-    'type': 'number',
-    'default': 0,
     'hidden': true
 });
 
@@ -108,9 +96,7 @@ modmail.modmailpro = function () {
         ADDED = "moderator added",
         inbox = modmail.setting('inboxstyle'),
         now = new Date().getTime(),
-        buffer = TB.utils.minutesToMilliseconds(modmail.setting('showNewBuffer')),
         lastVisited =  modmail.setting('lastvisited'),
-        visitedBuffer =  modmail.setting('visitedbuffer'),
         newCount = 0,
         collapsed = modmail.setting('defaultcollapse'),
         expandReplies = modmail.setting('expandreplies'),
@@ -286,21 +272,18 @@ modmail.modmailpro = function () {
                     var thread = $(".message-parent[data-fullname='" + attrib + "']");
                     if (thread.length > 1) {
                         $sender.remove();
-                        return;
                     } else {
                         processThread(thread);
                         //window.dispatchEvent(event);
                     }
                 }, 500);
             }
-            return;
         } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
             setTimeout(function () {
                 modmail.log('LMC go');
                 processThread($sender);
                 window.dispatchEvent(event);
             }, 500);
-            return;
         }
     });     
 
@@ -310,18 +293,14 @@ modmail.modmailpro = function () {
         unprocessedThreads = $('.message-parent:not(.mmp-processed)');
         modmail.log(unprocessedThreads.length);
 
+
         // Add filter link to each title, if it doesn't already have one.
         TBUtils.forEachChunked(unprocessedThreads, 25, 350, function (thread) {
             //$.log('running batch');
             processThread(thread);
         }, function complete() {
 
-            // Update time stamps, but only if it has been more than five minutes since the last update.
-            //console.log(now > visitedBuffer);
-            if (now > visitedBuffer) {
-                modmail.setting('lastvisited', now);
-                modmail.setting('visitedbuffer', now + buffer);
-            }
+            modmail.setting('lastvisited', now);
 
             // If set collapse all threads on load.
             if (collapsed) {

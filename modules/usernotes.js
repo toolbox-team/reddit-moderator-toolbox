@@ -331,7 +331,11 @@ usernotes.init = function () {
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
         if ($(userattrs).length > 0) {
-            $(userattrs).after(tag);
+            if(TBUtils.isModmail && $(userattrs).length > 1) {
+                $(userattrs).eq(1).after(tag);
+            } else {
+                $(userattrs).after(tag);
+            }
         } else {
             $(thing).find('.head').append(tag);
         }

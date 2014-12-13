@@ -122,7 +122,7 @@ TB = {
 
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting == "enabled") {
-                        if (options.hasOwnProperty("hidden") && options["hidden"]) continue;
+                        if (options.hasOwnProperty("hidden") && options["hidden"]  && !TB.utils.devMode) continue;
 
                         // blank slate
                         var $setting = $('<p></p>');
@@ -151,7 +151,7 @@ TB = {
 
                     // hide hidden settings, ofc
                     if (options.hasOwnProperty("hidden")
-                        && options["hidden"]
+                        && options["hidden"]  && !TB.utils.devMode
                     ) {
                         continue;
                     }

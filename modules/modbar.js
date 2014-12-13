@@ -34,6 +34,7 @@ modbar.init = function coreInit() {
         modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
+        devMode = TBUtils.devMode,
         consoleShowing = TB.storage.getSetting('Modbar', 'consoleshowing', false),
         lockscroll = TB.storage.getSetting('Modbar', 'lockscroll', false),
         messageunreadlink = TB.storage.getSetting('Modbar', 'messageunreadlink', false),
@@ -328,6 +329,9 @@ if (unmoderatedOn) {
     <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
     </p>\
+    <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
+        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> Dev Mode: don\'t ever turn this on</label>\
+    </p>\
     <p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
     </p>\
@@ -501,6 +505,7 @@ See the License for the specific language governing permissions and limitations 
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
+        TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
 
         TB.storage.setSetting('Utils', 'skiplocalconsole', $("#browserConsole").prop('checked'));
 

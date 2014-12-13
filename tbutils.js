@@ -59,6 +59,7 @@ function initwrapper() {
     TBUtils.isExtension = true;
     TBUtils.log = [];
     TBUtils.debugMode = TBStorage.getSetting('Utils', 'debugMode', false);
+    TBUtils.devMode = TBStorage.getSetting('Utils', 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting('Utils', 'betaMode', false);
     TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;

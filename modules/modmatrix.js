@@ -7,16 +7,6 @@ modlog.shortname = 'ModMatrix'; // backwards compatibility
 modlog.settings['enabled']['default'] = true;
 modlog.settings['betamode'] = false;
 
-// modLogMatrix.register_setting('displaytype', {
-//     'type': 'selector',
-//     'values': ["Post border", "Domain background", "Domain border"],
-//     'default': "post_border",
-//     'betamode': true,
-//     'hidden': false,
-//     'title': "Tag location"
-// });
-
-
 modlog.version = 2.0;
 modlog.limit = 300;
 modlog.after = null;

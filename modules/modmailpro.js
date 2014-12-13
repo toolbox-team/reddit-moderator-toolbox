@@ -74,7 +74,6 @@ modmail.register_setting('fadeRecipient', {
 modmail.register_setting('lastvisited', {
     'type': 'number',
     'default': new Date().getTime(),
-    'title': '(lastvisited)',
     'hidden': true
 });
 

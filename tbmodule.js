@@ -160,33 +160,34 @@ TB = {
 
                     // blank slate
                     var $setting = $('<p></p>'),
-                        execAfterInject = [];
+                        execAfterInject = [],
+                        title = (options.title) ? options.title : '(' + setting +')';
 
                     // automagical handling of input types
                     switch (options.type) {
                         case "boolean":
-                            $setting.append($('<label><input type="checkbox" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));
+                            $setting.append($('<label><input type="checkbox" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + title + '</label>'));
                             break;
                         case "number":
-                            $setting.append($('<label><input type="number" value="' + module.setting(setting) + '" min="' + options.min + '" max="' + options.max + '" step="' + options.step + '"> ' + options.title + '</label>'));
+                            $setting.append($('<label><input type="number" value="' + module.setting(setting) + '" min="' + options.min + '" max="' + options.max + '" step="' + options.step + '"> ' + title + '</label>'));
                             break;
                         case "text":
                         case "list":
-                            $setting.append(options.title + ':<br />');
+                            $setting.append(title + ':<br />');
                             $setting.append($('<input type="text" value="' + module.setting(setting) + '">'));
                             break;
                         case "sublist":
-                            $setting.append(options.title + ':<br />');
+                            $setting.append(title + ':<br />');
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, options.args)); // first arg sets `this` inside func
                             break;
                         case "selector":
                             var v = module.setting(setting);
                             $.log("Current setting: " + v);
-                            $setting.append(options.title + ':<br />');
+                            $setting.append(title + ':<br />');
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
                         case "syntaxTheme":
-                            $setting.append(options.title + ':<br/>');
+                            $setting.append(title + ':<br/>');
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', module.shortname + '_syntax_theme');
                             $setting.append($('\
@@ -229,7 +230,7 @@ body {\n\
                             });
                             break;
                         case "number":
-                            $setting.append(options.title + ': <input type="number" value="' + module.setting(setting) + '">');
+                            $setting.append(title + ': <input type="number" value="' + module.setting(setting) + '">');
                             break;
                         default:
                             // what in the world would we do here? maybe raw JSON?

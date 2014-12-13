@@ -27,7 +27,6 @@ modbutton.register_setting('rememberlastaction', {
 modbutton.register_setting('lastaction', {
     'type': 'text',
     'default': 'ban',
-    'title': '(lastaction)',
     'hidden': true
 });
 modbutton.register_setting('globalbutton', {

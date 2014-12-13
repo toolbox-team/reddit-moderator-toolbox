@@ -10,48 +10,36 @@ comments.register_setting(
     "hideRemoved", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Hide removed comments by default."
     });
 comments.register_setting(
     "approvecomments", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Show approve button on all comments."
     });
 comments.register_setting(
     "spamremoved", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Show spam button on comments removed as ham."
     });
 comments.register_setting(
     "hamspammed", {
         "type": "boolean",
         "default": false,
-        "betamode": false,
-        "hidden": false,
         "title": "Show remove (not spam) button on comments removed as spam."
     });
 comments.register_setting(
     "highlighted", {
         "type": "list",
         "default": [],
-        "betamode": false,
-        "hidden": false,
         "title": "Highlight keywords, keywords should entered separated by a comma without spaces"
     });
 comments.register_setting(
     "highlightTitles", {
         "type": "boolean",
         "default": true,
-        "betamode": false,
-        "hidden": false,
         "title": "Also highlight titles of submissions."
     });
 

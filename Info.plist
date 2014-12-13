@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Toolbox Team</string>
 	<key>Builder Version</key>
-	<string>10600.1.25</string>
+	<string>10600.1.25.1</string>
 	<key>CFBundleDisplayName</key>
 	<string>reddit Moderator Toolbox</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.3</string>
+	<string>3.0</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>Chrome</key>
 	<dict/>
 	<key>Content</key>
@@ -74,7 +74,7 @@
 	<key>DeveloperIdentifier</key>
 	<string>42X34WDLP5</string>
 	<key>ExtensionInfoDictionaryVersion</key>
-	<string>1.0</string>
+	<string>2.0</string>
 	<key>Permissions</key>
 	<dict>
 		<key>Website Access</key>

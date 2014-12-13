@@ -1020,8 +1020,8 @@ body .thing.flaired {
     position: fixed;
     bottom: 30px;
     right: 20px;
-    width: 700px;
-    height: 286px;
+    min-width: 700px;
+    min-height: 286px;
     padding: 0 !important;
     background-color: #FFF;
     border: solid 1px #808080;

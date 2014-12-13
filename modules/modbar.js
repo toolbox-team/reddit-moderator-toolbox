@@ -141,6 +141,8 @@ if (unmoderatedOn) {
 
     $console.appendTo('body').hide();
 
+    $console.drag('.tb-debug-header');
+
     $body.append(modBar);
 
     // moderated subreddits button.

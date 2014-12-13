@@ -739,8 +739,8 @@ modmail.realtimemail = function () {
 
     // Add new things
     function getNewThings(limit) {
-        TB.storage.setSetting('Notifier', 'lastseenmodmail', new Date().getTime());
-        TB.storage.setSetting('Notifier', 'modmailcount', 0);
+        TB.storage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
+        TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
         modmail.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {

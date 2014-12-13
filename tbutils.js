@@ -15,14 +15,14 @@ function initwrapper() {
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
         now = new Date().getTime(),
 
-        shortLength = TBStorage.getSetting('Utils', 'shortlength', 15),
-        longLength = TBStorage.getSetting('Utils', 'longlength', 45),
+        shortLength = TBStorage.getSetting('Utils', 'shortLength', 15),
+        longLength = TBStorage.getSetting('Utils', 'longLength', 45),
 
-        lastgetLong = TBStorage.getCache('Utils', 'lastgetlong', -1),
-        lastgetShort = TBStorage.getCache('Utils', 'lastgetshort', -1),
-        cacheName = TBStorage.getCache('Utils', 'cachename', ''),
-        seenNotes = TBStorage.getSetting('Utils', 'seennotes', []),
-        lastVersion = TBStorage.getSetting('Utils', 'lastversion', 0),
+        lastgetLong = TBStorage.getCache('Utils', 'lastGetLong', -1),
+        lastgetShort = TBStorage.getCache('Utils', 'lastGetShort', -1),
+        cacheName = TBStorage.getCache('Utils', 'cacheName', ''),
+        seenNotes = TBStorage.getSetting('Utils', 'seenNotes', []),
+        lastVersion = TBStorage.getSetting('Utils', 'lastVersion', 0),
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
@@ -72,7 +72,7 @@ function initwrapper() {
 
 
     // Do settings echo before anything else.  If it fails, exit toolbox.
-    var ret = TBStorage.setSetting('Utils', 'echotest', ECHO);
+    var ret = TBStorage.setSetting('Utils', 'echoTest', ECHO);
     if (ret !== ECHO) {
         alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
         return;
@@ -80,56 +80,56 @@ function initwrapper() {
 
 
     // Get cached info.
-    TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache('Utils', 'notecache', {});
-    TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache('Utils', 'configcache', {});
-    TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache('Utils', 'noconfig', []);
-    TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache('Utils', 'nonotes', []);
-    TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache('Utils', 'moderatedsubs', []);
-    TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache('Utils', 'moderatedsubsdata', []);
+    TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache('Utils', 'noteCache', {});
+    TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache('Utils', 'configCache', {});
+    TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache('Utils', 'noConfig', []);
+    TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache('Utils', 'noNotes', []);
+    TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache('Utils', 'moderatedSubs', []);
+    TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache('Utils', 'moderatedSubsData', []);
 
 
     // Update cache vars as needed.
     if (newLogin) {
-        TBStorage.setCache('Utils', 'cachename', TBUtils.logged);
+        TBStorage.setCache('Utils', 'cacheName', TBUtils.logged);
     }
 
     if (getnewLong) {
-        TBStorage.setCache('Utils', 'lastgetlong', now);
+        TBStorage.setCache('Utils', 'lastGetLong', now);
     }
 
     if (getnewShort) {
-        TBStorage.setCache('Utils', 'lastgetshort', now);
+        TBStorage.setCache('Utils', 'lastGetShort', now);
     }
 
-    var pushedunread = TBStorage.getSetting('Notifier', 'unreadpushed', []);
+    var pushedunread = TBStorage.getSetting('Notifier', 'unreadPushed', []);
     if (pushedunread.length > 250) {
         pushedunread.splice(150, (pushedunread.length - 150));
-        TBStorage.setSetting('Notifier', 'unreadpushed', pushedunread);
+        TBStorage.setSetting('Notifier', 'unreadPushed', pushedunread);
     }
 
-    var pusheditems = TBStorage.getSetting('Notifier', 'modqueuepushed', []);
+    var pusheditems = TBStorage.getSetting('Notifier', 'modqueuePushed', []);
     if (pusheditems.length > 250) {
         pusheditems.splice(150, (pusheditems.length - 150));
-        TBStorage.setSetting('Notifier', 'modqueuepushed', pusheditems);
+        TBStorage.setSetting('Notifier', 'modqueuePushed', pusheditems);
     }
 
-    var repliedModmail = TBStorage.getSetting('ModMailPro', 'replied', []);
+    var repliedModmail = TBStorage.getSetting('ModMail', 'replied', []);
     if (repliedModmail.length > 250) {
         pusheditems.splice(150, (repliedModmail.length - 150));
-        TBStorage.setSetting('Notifier', 'replied', repliedModmail);
+        TBStorage.setSetting('ModMail', 'replied', repliedModmail);
     }
 
     if (seenNotes.length > 250) {
         $.log("clearing seen notes");
         seenNotes.splice(150, (seenNotes.length - 150));
-        TBStorage.setSetting('Utils', 'seennotes', seenNotes);
+        TBStorage.setSetting('Utils', 'seenNotes', seenNotes);
     }
 
 
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
         TBUtils.firstRun = true; // for use by other modules.
-        TBStorage.setSetting('Utils', 'lastversion', TBUtils.shortVersion); //set last version to this version.
+        TBStorage.setSetting('Utils', 'lastVersion', TBUtils.shortVersion); //set last version to this version.
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -143,8 +143,8 @@ function initwrapper() {
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        //TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
-        //TBStorage.setSetting('Notifier', 'modmailcount', 0);
+        //TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
+        //TBStorage.setSetting('Notifier', 'modmailCount', 0);
         TBStorage.setSetting('Utils', 'debugMode', false);
         TBStorage.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;
@@ -343,11 +343,11 @@ function initwrapper() {
 
         function show() {
             if ($.inArray(note.id, seenNotes) === -1) {
-                TBStorage.setSetting('Utils', 'notelastshown', now);
+                //TBStorage.setSetting('Utils', 'noteLastShown', now);
 
                 TBUtils.alert(note.text, function (resp) {
                     seenNotes.push(note.id);
-                    TBStorage.setSetting('Utils', 'seennotes', seenNotes);
+                    TBStorage.setSetting('Utils', 'seenNotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
                 });
             }
@@ -583,8 +583,8 @@ function initwrapper() {
                 TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
                 TBUtils.mySubsData = TBUtils.sortBy(TBUtils.mySubsData, 'subscribers');
                 // Update the cache.
-                TBStorage.setCache('Utils', 'moderatedsubs', TBUtils.mySubs);
-                TBStorage.setCache('Utils', 'moderatedsubsdata', TBUtils.mySubsData);
+                TBStorage.setCache('Utils', 'moderatedSubs', TBUtils.mySubs);
+                TBStorage.setCache('Utils', 'moderatedSubsData', TBUtils.mySubsData);
 
                 callback();
                 // no idea what the following shit is.
@@ -1357,12 +1357,12 @@ function initwrapper() {
 
 
         // Cache data.
-        TBStorage.setCache('Utils', 'configcache', TBUtils.configCache);
-        TBStorage.setCache('Utils', 'notecache', TBUtils.noteCache);
-        TBStorage.setCache('Utils', 'noconfig', TBUtils.noConfig);
-        TBStorage.setCache('Utils', 'nonotes', TBUtils.noNotes);
-        TBStorage.setCache('Utils', 'moderatedsubs', TBUtils.mySubs);
-        TBStorage.setCache('Utils', 'moderatedsubsdata', TBUtils.mySubsData);
+        TBStorage.setCache('Utils', 'configCache', TBUtils.configCache);
+        TBStorage.setCache('Utils', 'noteCache', TBUtils.noteCache);
+        TBStorage.setCache('Utils', 'noConfig', TBUtils.noConfig);
+        TBStorage.setCache('Utils', 'noNotes', TBUtils.noNotes);
+        TBStorage.setCache('Utils', 'moderatedSubs', TBUtils.mySubs);
+        TBStorage.setCache('Utils', 'moderatedSubsData', TBUtils.mySubsData);
 
         // Just in case.
         TBStorage.unloading();

@@ -6,9 +6,6 @@
         var domain = window.location.hostname.split('.')[0];
         var r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
         if (r == true) {
-            //
-            // TODO clear chrome storage here.
-            //
 
             function clearLocal() {
 
@@ -71,11 +68,11 @@ function storageWrapper() {
     if (!$("form.logout input[name=uh]").val()) return; // not logged in.
 
     // Type safe keys.
-    TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safetostore';
-    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwShim2';
+    TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safeToStore';
+    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwBeta';
 
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
-    TBStorage.userBrowserStorage = getSetting('Storage', 'usebrowserstorage', true);
+    TBStorage.userBrowserStorage = getSetting('Storage', 'useBrowserStorage', true);
     TBStorage.domain = window.location.hostname.split('.')[0];
     TBStorage.bnwShim = JSON.parse(localStorage[TBStorage.BNW_SHIM_KEY] || 'false');
 

@@ -1,6 +1,6 @@
 (function ($) {
     $.fn.log = function (message, caller, orignalMessage) {
-        if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skiplocalconsole'] || 'false')) {
+        if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skipLocalConsole'] || 'false')) {
             TBUtils.log.push(message);
         } else {
             console.log(' [' + caller + ']: ');

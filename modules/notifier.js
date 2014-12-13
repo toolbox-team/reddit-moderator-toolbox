@@ -7,27 +7,27 @@ notifier.settings['enabled']['default'] = true;
 
 
 // First show the options for filtering of subreddits.
-notifier.register_setting('modsubreddits', {
+notifier.register_setting('modSubreddits', {
     'type': 'text',
     'default': 'mod',
     'title': 'Multireddit of subs you want displayed in the modqueue counter'
 });
 
-notifier.register_setting('unmoderatedsubreddits', {
+notifier.register_setting('unmoderatedSubreddits', {
     'type': 'text',
     'default': 'mod',
     'title': 'Multireddit of subs you want displayed in the unmoderated counter'
 });
 
 
-notifier.register_setting('modmailsubreddits', {
+notifier.register_setting('modmailSubreddits', {
     'type': 'text',
     'default': 'mod',
-    'hidden': notifier.setting('modmailsubredditsfrompro'),
+    'hidden': notifier.setting('modmailSubredditsFromPro'),
     'title': 'Multireddit of subs you want displayed in the modmail counter'
 });
 
-notifier.register_setting('modmailsubredditsfrompro', {
+notifier.register_setting('modmailSubredditsFromPro', {
     'type': 'boolean',
     'default': false,
     'title': 'Use filtered subreddits from ModMail Pro'
@@ -35,24 +35,24 @@ notifier.register_setting('modmailsubredditsfrompro', {
 
 // Do we want notifications and where do they link to?
 
-notifier.register_setting('messagenotifications', {
+notifier.register_setting('messageNotifications', {
     'type': 'boolean',
     'default': true,
     'title': 'Get notifications for new messages'
 });
 
-notifier.register_setting('messageunreadlink', {
+notifier.register_setting('messageUnreadLink', {
     'type': 'boolean',
     'default': false,
     'title': 'Link to /message/unread/ if unread messages are present'
 });
 
-notifier.register_setting('modmailnotifications', {
+notifier.register_setting('modmailNotifications', {
     'type': 'boolean',
     'default': true,
     'title': 'Get modmail notifications'
 });
-notifier.register_setting('modmailunreadlink', {
+notifier.register_setting('modmailUnreadLink', {
     'type': 'boolean',
     'default': false,
     'title': 'Link to /message/moderator/unread/ if unread modmail is present'
@@ -64,7 +64,7 @@ notifier.register_setting('straightToInbox', {
     'title': 'When clicking a comment notification go to the inbox'
 });
 
-notifier.register_setting('consolidatedmessages', {
+notifier.register_setting('consolidatedMessages', {
     'type': 'boolean',
     'default': true,
     'title': 'Consolidate notifications (x new messages) instead of individual notifications'
@@ -72,66 +72,66 @@ notifier.register_setting('consolidatedmessages', {
 
 // Do we want queue notifications?
 
-notifier.register_setting('modnotifications', {
+notifier.register_setting('modNotifications', {
     'type': 'boolean',
     'default': true,
     'title': 'Get modqueue notifications'
 });
 
-notifier.register_setting('unmoderatednotifications', {
+notifier.register_setting('unmoderatedNotifications', {
     'type': 'boolean',
     'default': false,
     'title': 'Get unmoderated queue notifications'
 });
 
-notifier.register_setting('checkinterval', {
+notifier.register_setting('checkInterval', {
     'type': 'number',
     'default': 1, // 60 secs.
     'title': 'Interval to check for new items (time in minutes).'
 });
 
 /// Private storage settings.
-notifier.register_setting('unreadmessagecount', {
+notifier.register_setting('unreadMessageCount', {
     'type': 'number',
     'default': 0,
     'hidden': true
 });
-notifier.register_setting('modqueuecount', {
+notifier.register_setting('modqueueCount', {
     'type': 'number',
     'default': 0,
     'hidden': true
 });
-notifier.register_setting('unmoderatedcount', {
+notifier.register_setting('unmoderatedCount', {
     'type': 'number',
     'default': 0,
     'hidden': true
 });
-notifier.register_setting('modmailcount', {
+notifier.register_setting('modmailCount', {
     'type': 'number',
     'default': 0,
     'hidden': true
 });
-notifier.register_setting('lastchecked', {
+notifier.register_setting('lastChecked', {
     'type': 'number',
     'default': -1,
     'hidden': true
 });
-notifier.register_setting('lastseenunmoderated', {
+notifier.register_setting('lastSeenUnmoderated', {
     'type': 'number',
     'default': -1,
     'hidden': true
 });
-notifier.register_setting('lastseenmodmail', {
+notifier.register_setting('lastSeenModmail', {
     'type': 'number',
     'default': -1,
     'hidden': true
 });
-notifier.register_setting('unreadpushed', {
+notifier.register_setting('unreadPushed', {
     'type': 'list',
     'default': '[]',
     'hidden': true
 });
-notifier.register_setting('modqueuepushed', {
+notifier.register_setting('modqueuePushed', {
     'type': 'list',
     'default': '[]',
     'hidden': true
@@ -142,33 +142,33 @@ notifier.init = function notifierMod_init() {
     //
     // preload some generic variables
     //
-    var modNotifications = notifier.setting('modnotifications'),  // these need to be converted to booleans.
-        messageNotifications = notifier.setting('messagenotifications'), // these need to be converted to booleans.
-        modmailNotifications = notifier.setting('modmailnotifications'),
-        unmoderatedNotifications = notifier.setting('unmoderatednotifications'),
-        consolidatedMessages = notifier.setting('consolidatedmessages'),
+    var modNotifications = notifier.setting('modNotifications'),  // these need to be converted to booleans.
+        messageNotifications = notifier.setting('messageNotifications'), // these need to be converted to booleans.
+        modmailNotifications = notifier.setting('modmailNotifications'),
+        unmoderatedNotifications = notifier.setting('unmoderatedNotifications'),
+        consolidatedMessages = notifier.setting('consolidatedMessages'),
         straightToInbox = notifier.setting('straightToInbox'),
-        modSubreddits = notifier.setting('modsubreddits'),
-        unmoderatedSubreddits = notifier.setting('unmoderatedsubreddits'),
-        modmailSubreddits = notifier.setting('modmailsubreddits'),
+        modSubreddits = notifier.setting('modSubreddits'),
+        unmoderatedSubreddits = notifier.setting('unmoderatedSubreddits'),
+        modmailSubreddits = notifier.setting('modmailSubreddits'),
 
-        modmailSubredditsFromPro = notifier.setting('modmailsubredditsfrompro'),
+        modmailSubredditsFromPro = notifier.setting('modmailSubredditsFromPro'),
 
         modmailFilteredSubreddits = modmailSubreddits,  //wat?
         notifierEnabled = notifier.setting('enabled'),
         unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
-        messageunreadlink = notifier.setting('messageunreadlink'),
-        modmailunreadlink = notifier.setting('modmailunreadlink');
+        messageunreadlink = notifier.setting('messageUnreadLink'),
+        modmailunreadlink = notifier.setting('modmailUnreadLink');
 
     // private
-    var checkInterval = TB.utils.minutesToMilliseconds(notifier.setting('checkinterval')),//setting is in seconds, convet to milliseconds.
+    var checkInterval = TB.utils.minutesToMilliseconds(notifier.setting('checkInterval')),//setting is in seconds, convet to milliseconds.
         newLoad = true,
         now = new Date().getTime(),
-        unreadMessageCount = notifier.setting('unreadmessagecount'),
-        modqueueCount = notifier.setting('modqueuecount'),
-        unmoderatedCount = notifier.setting('unmoderatedcount'),
-        modmailCount = notifier.setting('modmailcount');
+        unreadMessageCount = notifier.setting('unreadMessageCount'),
+        modqueueCount = notifier.setting('modqueueCount'),
+        unmoderatedCount = notifier.setting('unmoderatedCount'),
+        modmailCount = notifier.setting('modmailCount');
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
@@ -201,8 +201,8 @@ notifier.init = function notifierMod_init() {
         notifier.log('clearing all unread stuff');
 
         // We have nothing unread if we're on the mod mail page.
-        notifier.setting('lastseenmodmail', now);
-        notifier.setting('modmailcount', 0);
+        notifier.setting('lastSeenModmail', now);
+        notifier.setting('modmailCount', 0);
 
         $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function (json) {
             $.each(json.data.children, function (i, value) {
@@ -219,7 +219,7 @@ notifier.init = function notifierMod_init() {
 
     function getmessages() {
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-        var lastchecked = notifier.setting( 'lastchecked'),
+        var lastchecked = notifier.setting('lastChecked'),
             author = '',
             body_html = '';
 
@@ -228,10 +228,10 @@ notifier.init = function notifierMod_init() {
 
 
         // Update counters.
-        unreadMessageCount = notifier.setting('unreadmessagecount');
-        modqueueCount = notifier.setting('modqueuecount');
-        unmoderatedCount = notifier.setting('unmoderatedcount');
-        modmailCount = notifier.setting('modmailcount');
+        unreadMessageCount = notifier.setting('unreadMessageCount');
+        modqueueCount = notifier.setting('modqueueCount');
+        unmoderatedCount = notifier.setting('unmoderatedCount');
+        modmailCount = notifier.setting('modmailCount');
 
         //
         // Update methods
@@ -310,7 +310,7 @@ notifier.init = function notifierMod_init() {
 
         //$.log('updating totals');
         // We're checking now.
-        notifier.setting('lastchecked', now);
+        notifier.setting('lastChecked', now);
 
         //
         // Messages
@@ -334,7 +334,7 @@ notifier.init = function notifierMod_init() {
         // getting unread messages
         $.getJSON('/message/unread.json').done(function (json) {
             var count = json.data.children.length || 0;
-            notifier.setting('unreadmessagecount', count);
+            notifier.setting('unreadMessageCount', count);
             updateMessagesCount(count);
             if (count === 0) return;
             // Are we allowed to show a popup?
@@ -343,7 +343,7 @@ notifier.init = function notifierMod_init() {
 
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pushedunread = notifier.setting('unreadpushed');
+                var pushedunread = notifier.setting('unreadPushed');
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     var notificationbody, messagecount = 0;
@@ -417,7 +417,7 @@ notifier.init = function notifierMod_init() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                notifier.setting('unreadpushed', pushedunread);
+                notifier.setting('unreadPushed', pushedunread);
             }
         });
 
@@ -446,7 +446,7 @@ notifier.init = function notifierMod_init() {
                 //$.log('test');
                 // set up an array in which we will load the last 100 items that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
-                var pusheditems = notifier.setting('modqueuepushed');
+                var pusheditems = notifier.setting('modqueuePushed');
                 //$.log(consolidatedMessages);
                 if (consolidatedMessages) {
                     //$.log('here we go!');
@@ -523,11 +523,11 @@ notifier.init = function notifierMod_init() {
                 if (pusheditems.length > 100) {
                     pusheditems.splice(0, 100 - pusheditems.length);
                 }
-                notifier.setting('modqueuepushed', pusheditems);
+                notifier.setting('modqueuePushed', pusheditems);
 
 
             }
-            notifier.setting('modqueuecount', count);
+            notifier.setting('modqueueCount', count);
         });
 
         //
@@ -540,7 +540,7 @@ notifier.init = function notifierMod_init() {
 
 
                 if (unmoderatedNotifications && count > unmoderatedCount) {
-                    var lastSeen = notifier.setting( 'lastseenunmoderated');
+                    var lastSeen = notifier.setting('lastSeenUnmoderated');
 
                     if (consolidatedMessages) {
                         var notificationbody, queuecount = 0, xmoreUnmod = 0;
@@ -586,10 +586,10 @@ notifier.init = function notifierMod_init() {
                         });
                     }
 
-                    notifier.setting('lastseenunmoderated', now);
+                    notifier.setting('lastSeenUnmoderated', now);
                 }
 
-                notifier.setting('unmoderatedcount', count);
+                notifier.setting('unmoderatedCount', count);
 
                 if (unmoderatedOn) {
                     updateUnmodCount(count);
@@ -605,12 +605,12 @@ notifier.init = function notifierMod_init() {
 
             var count = json.data.children.length || 0;
             if (count === 0) {
-                notifier.setting('modmailcount', count);
+                notifier.setting('modmailCount', count);
                 updateModMailCount(count);
                 return;
             }
 
-            var lastSeen = notifier.setting('lastseenmodmail'),
+            var lastSeen = notifier.setting('lastSeenModmail'),
                 newIdx = '',
                 title = '',
                 text = '',
@@ -701,7 +701,7 @@ notifier.init = function notifierMod_init() {
                 }
             }
 
-            notifier.setting('modmailcount', newCount);
+            notifier.setting('modmailCount', newCount);
             updateModMailCount(newCount);
 
         });
@@ -712,10 +712,10 @@ notifier.init = function notifierMod_init() {
         setInterval(getmessages, checkInterval);
         getmessages();
     } else { // todo: this is a temp hack until 2.2
-        notifier.setting('unreadmessagecount', 0);
-        notifier.setting('modqueuecount', 0);
-        notifier.setting('unmoderatedcount', 0);
-        notifier.setting('modmailcount', 0);
+        notifier.setting('unreadMessageCount', 0);
+        notifier.setting('modqueueCount', 0);
+        notifier.setting('unmoderatedCount', 0);
+        notifier.setting('modmailCount', 0);
     }
 
 };

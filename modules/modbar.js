@@ -72,7 +72,7 @@ modbar.init = function modbarInit() {
         betaMode = TBUtils.betaMode,
         devMode = TBUtils.devMode,
 
-        settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
+        settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
         browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false),
         shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
         longLength = TB.storage.getSetting('Utils', 'longlength', 45),
@@ -450,8 +450,8 @@ See the License for the specific language governing permissions and limitations 
         // Just to be safe.
         sub = sub.replace('/r/', '').replace('/', '');
 
-        // Save the sub, firest.
-        TB.storage.setSetting('Utils', 'settingsub', sub);
+        // Save the sub, first.
+        TB.storage.setSetting('Utils', 'settingSub', sub);
 
         if ($(e.target).hasClass('tb-settings-import')) {
             TBUtils.importSettings(sub, function () {
@@ -516,7 +516,7 @@ See the License for the specific language governing permissions and limitations 
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
         TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
 
-        TB.storage.setSetting('Utils', 'skiplocalconsole', $("#browserConsole").prop('checked'));
+        TB.storage.setSetting('Utils', 'skipLocalConsole', $("#browserConsole").prop('checked'));
 
 
         // Save shortcuts
@@ -540,8 +540,8 @@ See the License for the specific language governing permissions and limitations 
         }
 
         // save cache settings.
-        TB.storage.setSetting('Utils', 'longlength', $("input[name=longLength]").val());
-        TB.storage.setSetting('Utils', 'shortlength', $("input[name=shortLength]").val());
+        TB.storage.setSetting('Utils', 'longLength', $("input[name=longLength]").val());
+        TB.storage.setSetting('Utils', 'shortLength', $("input[name=shortLength]").val());
 
         if ($("#clearcache").prop('checked')) {
             TBUtils.clearCache();

@@ -4,7 +4,6 @@ var queue = new TB.Module('Queue Tools');
 queue.shortname = 'QueueTools';
 
 queue.settings["enabled"]["default"] = true;
-queue.config["needs_mod_subs"] = true;
 
 queue.register_setting(
     "hideactioneditems", {

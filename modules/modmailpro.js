@@ -7,7 +7,6 @@ modmail.shortname = 'ModMail';
 ////Default settings
 modmail.settings["enabled"]["default"] = true;
 modmail.config["betamode"] = false;
-modmail.config["needs_mod_subs"] = true;
 
 modmail.register_setting('inboxstyle', {
     'type': 'selector',

@@ -10,7 +10,6 @@ realtime.shortname = 'Realtime';
 
 realtime.settings["enabled"]["default"] = false;
 realtime.config["betamode"] = true;
-//realtimeReddit.config["needs_mod_subs"] = true;
 
 realtime.init = function realtimeInit() {
 

@@ -5,7 +5,6 @@ comments.shortname = 'Comments'; // historical precedent for settings
 
 comments.settings["enabled"]["default"] = true;
 comments.config["betamode"] = false;
-// removalReasons.config["needs_mod_subs"] = true;
 
 comments.register_setting(
     "hideRemoved", {

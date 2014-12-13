@@ -4,7 +4,6 @@ var notifier = new TB.Module('Notifier');
 notifier.shortname = 'Notifier';
 
 notifier.settings["enabled"]["default"] = true;
-notifier.config["needs_mod_subs"] = true;
 
 
 // First show the options for filtering of subreddits.

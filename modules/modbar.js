@@ -4,9 +4,8 @@ var modbar = new TB.Module('Toolbox UI (modbar)');
 modbar.shortname = 'ModBar';
 
 modbar.settings["enabled"]["default"] = true;
-modbar.config["needs_mod_subs"] = true;
 
-// How about you don't disable core?  No other module should ever do this.
+// How about you don't disable modbar?  No other module should ever do this.
 modbar.settings["enabled"]["hidden"] = true;
 
 modbar.init = function coreInit() {

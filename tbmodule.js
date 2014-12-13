@@ -172,6 +172,12 @@ TB = {
                         case "number":
                             $setting.append($('<label><input type="number" value="' + module.setting(setting) + '" min="' + options.min + '" max="' + options.max + '" step="' + options.step + '"> ' + title + '</label>'));
                             break;
+                        case "array":
+                        case "JSON":
+                            var json = JSON.stringify(module.setting(setting), null, 0);
+                            $setting.append(title + ':<br />');
+                            $setting.append($('<textarea rows="1">' +  json + '</textarea>')); //No matter shat I do, I can't get JSON to work with an input.
+                            break;
                         case "text":
                         case "list":
                             $setting.append(title + ':<br />');
@@ -230,9 +236,6 @@ body {\n\
                                 });
                             });
                             break;
-                        case "number":
-                            $setting.append(title + ': <input type="number" value="' + module.setting(setting) + '">');
-                            break;
                         default:
                             // what in the world would we do here? maybe raw JSON?
                             break;
@@ -289,6 +292,10 @@ body {\n\
                                 break;
                             case 'number':
                                 value = JSON.parse($this.find('input').val());
+                                break;
+                            case "array":
+                            case "JSON":
+                                value = JSON.parse($this.find('textarea').val());
                                 break;
                             case 'text':
                                 value = $this.find('input').val();

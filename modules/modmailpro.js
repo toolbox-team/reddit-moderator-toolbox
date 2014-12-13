@@ -77,13 +77,13 @@ modmail.register_setting('lastVisited', {
     'hidden': true
 });
 modmail.register_setting('replied', {
-    'type': 'list',
-    'default': '[]',
+    'type': 'array',
+    'default': [],
     'hidden': true
 });
 modmail.register_setting('filteredSubs', {
-    'type': 'list',
-    'default': '[]',
+    'type': 'array',
+    'default': [],
     'hidden': true
 });
 

@@ -1,7 +1,7 @@
 function tbmodbar() {
 
 var modbar = new TB.Module('Toolbox UI (modbar)');
-modbar.shortname = 'ModBar';
+modbar.shortname = 'Modbar';
 
 modbar.settings['enabled']['default'] = true;
 
@@ -28,11 +28,11 @@ modbar.register_setting('enableTopLink', {
 });
 
 // private settings.    // there is no JSON setting type.
-//modbar.register_setting('shortcuts', {
-//    'type': 'string',
-//    'default': '{}',
-//    'hidden': true
-//});
+modbar.register_setting('shortcuts', {
+    'type': 'JSON',
+    'default': {},
+    'hidden': true
+});
 modbar.register_setting('modbarHidden', {
     'type': 'boolean',
     'default': false,
@@ -60,7 +60,7 @@ modbar.init = function modbarInit() {
     //
     // preload some generic variables
     //
-    var shortcuts = TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
+    var shortcuts = modbar.setting('shortcuts'),//TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
         modbarHidden = modbar.setting('modbarHidden'),
         compactHide = modbar.setting('compactHide'),
         unmoderatedOn = modbar.setting('unmoderatedOn'),
@@ -524,7 +524,7 @@ See the License for the specific language governing permissions and limitations 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');
         if ($shortcuts.length === 0) {
-            TB.storage.setSetting('Modbar', 'shortcuts', {}); // no JSON setting type.
+            modbar.setting('shortcuts', {}); // no JSON setting type.
         } else {
             shortcuts = {};
 
@@ -538,7 +538,7 @@ See the License for the specific language governing permissions and limitations 
                 }
             });
 
-            TB.storage.setSetting('Modbar', 'shortcuts', shortcuts);
+            modbar.setting('shortcuts', shortcuts);
         }
 
         // save cache settings.

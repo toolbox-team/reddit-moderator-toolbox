@@ -69,7 +69,7 @@ function storageWrapper() {
 
     // Type safe keys.
     TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safeToStore';
-    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwBeta';
+    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwBeta1';
 
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'useBrowserStorage', true);

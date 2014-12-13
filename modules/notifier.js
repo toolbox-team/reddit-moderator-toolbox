@@ -127,13 +127,13 @@ notifier.register_setting('lastSeenModmail', {
     'hidden': true
 });
 notifier.register_setting('unreadPushed', {
-    'type': 'list',
-    'default': '[]',
+    'type': 'array',
+    'default': [],
     'hidden': true
 });
 notifier.register_setting('modqueuePushed', {
-    'type': 'list',
-    'default': '[]',
+    'type': 'array',
+    'default': [],
     'hidden': true
 });
 

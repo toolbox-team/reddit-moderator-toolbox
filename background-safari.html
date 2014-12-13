@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<script>
+
+    function respondToMessage(event) {
+        // use a switch statement and a generic function
+        // so we can handle all our messages
+        switch (event.name) {
+            case 'tb-getsettings': {
+                if (typeof localStorage['tbsettings'] !== 'undefined') {
+                    sendResponse(JSON.parse(localStorage['tbsettings']), event);
+                } else {
+                    sendResponse({}, event);
+                }
+                break;
+            }
+            case 'tb-setsettings': {
+                if (safari.application.privateBrowsing.enabled) {
+                    console.log('private browser. Not storing.');
+                } else {
+                    localStorage['tbsettings'] = JSON.stringify(event.message);
+                }
+                break;
+            }
+            case 'tb-clearsettings': {
+                delete localStorage['tbsettings'];
+                sendResponse(localStorage['tbsettings'], event);
+                break;
+            }
+        }
+    }
+
+    // lifted from RES, thanks @andytuba
+    function sendResponse(data, event) {
+        if (!event.target.page) {
+            setTimeout(function() {
+                sendResponse(data, event);
+            }, 20);
+        } else {
+            event.target.page.dispatchMessage(event.name, data);
+        }
+    }
+
+    safari.application.addEventListener('message', respondToMessage, false);
+
+</script>
+</head>
+</html>

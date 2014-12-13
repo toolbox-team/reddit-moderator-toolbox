@@ -2,6 +2,7 @@
 
 //Reset toolbox settings support
 (function () {
+
     if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') > -1) {
         var domain = window.location.hostname.split('.')[0];
         var r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
@@ -40,6 +41,22 @@
                     }, 1000);
                 });
 
+            // Safari
+            } else if (typeof (safari) !== "undefined") {
+                function safariMessageHandler(event) {
+                    switch (event.name) {
+                        case 'tb-clearsettings': {
+                            // Wait a sec for stuff to clear.
+                            setTimeout(function () {
+                                clearLocal();
+                            }, 1000);
+                            break;
+                        }
+                    }
+                }
+                safari.self.addEventListener('message', safariMessageHandler, false);
+
+                safari.self.tab.dispatchMessage('tb-clearsettings', null);
             // Firefox
             } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
                 self.port.emit('tb-clearsettings');
@@ -136,8 +153,33 @@ function storageWrapper() {
         if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
             TBStorage.browser = OPERA;
         }
-    } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
+    // } else if (Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0) {
+    //     TBStorage.browser = SAFARI;
+    // }
+    } else if (typeof (safari) !== "undefined") {
         TBStorage.browser = SAFARI;
+    }
+
+    function safariHandleMessage(event) {
+        var tbsettings = event.message;
+        switch (event.name) {
+            case 'tb-getsettings':
+                if (tbsettings !== undefined) {
+                    if ((tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
+                        objectToSettings(tbsettings, function () {
+                            SendInit();
+                        });
+                    } else {
+                        SendInit();
+                    }
+                } else {
+                    SendInit();
+                }
+                break;
+            default:
+                // uhh?
+                break;
+        }
     }
 
     if (TBStorage.userBrowserStorage && TBStorage.browser === CHROME) {
@@ -156,6 +198,11 @@ function storageWrapper() {
                 SendInit();
             }
         });
+    } else if (TBStorage.userBrowserStorage && TBStorage.browser === SAFARI) {
+        // Ask for settings.
+        safari.self.tab.dispatchMessage('tb-getsettings', null);
+        // wait for reply.
+        safari.self.addEventListener('message', safariHandleMessage, false);
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
         // Ask for settings.
         self.port.emit('tb-getsettings');
@@ -270,6 +317,10 @@ function storageWrapper() {
                 chrome.storage.local.set({
                     'tbsettings': sObject
                 });
+            });
+        } else if (TBStorage.browser === SAFARI) {
+            settingsToObject(function (sObject) {
+                safari.self.tab.dispatchMessage('tb-setsettings', sObject);
             });
         } else if (TBStorage.browser === FIREFOX) {
             // firefox

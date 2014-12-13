@@ -329,7 +329,7 @@ if (unmoderatedOn) {
     <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
     </p>\
-    <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
+    <p '+ ((debugMode && !TB.utils.devMoeLock) ? '' : 'style="display:none;"') +'>\
         <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> Dev Mode: don\'t ever turn this on</label>\
     </p>\
     <p>\

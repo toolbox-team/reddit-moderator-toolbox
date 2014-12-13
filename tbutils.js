@@ -1425,7 +1425,12 @@ function initwrapper() {
         //check dev sub, if debugMode
         if (TBUtils.debugMode) {
             TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
+                    TBUtils.devMode = false;
+                    TBUtils.devMoeLock = true;
+                    return;
+                }
+
                 if (resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
                     TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
                         if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");

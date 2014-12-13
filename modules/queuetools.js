@@ -528,7 +528,7 @@ queue.init = function () {
         });
 
         // Call History Button module init if it's not already enabled
-        if (!TB.modules.HButton.setting('enabled')) {
+        if (!TB.storage.setSetting('HButton', 'enabled', true)) {
             TB.modules.HButton.init();
         }
 

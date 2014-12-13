@@ -143,8 +143,8 @@ function initwrapper() {
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-        TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
-        TBStorage.setSetting('Notifier', 'modmailcount', 0);
+        //TBStorage.setSetting('Notifier', 'lastseenmodmail', now); // don't spam 100 new mod mails on first install.
+        //TBStorage.setSetting('Notifier', 'modmailcount', 0);
         TBStorage.setSetting('Utils', 'debugMode', false);
         TBStorage.setSetting('Utils', 'betaMode', false);
         TBUtils.debugMode = false;
@@ -187,19 +187,6 @@ function initwrapper() {
         removalReasons: '',
         modMacros: ''
     };
-
-
-    TBUtils.setSetting = function (module, setting, value) {
-        $.log("TBUtils.setSetting is depricated.  Use: TB.storage.setSetting");
-        return TBStorage.setSetting(module, setting, value);
-    };
-
-
-    TBUtils.getSetting = function (module, setting, defaultVal) {
-        $.log("TBUtils.getSetting is depricated.  Use: TB.storage.getSetting");
-        return TBStorage.getSetting(module, setting, defaultVal);
-    };
-
 
     TBUtils.getTypeInfo = function (warningType) {
         var typeInfo = {
@@ -301,15 +288,6 @@ function initwrapper() {
         return tpl.replace(/{{([^}]+)}}/g, function (match, variable) {
             return variables[variable];
         });
-    };
-
-    TBUtils.textFeedback = function (feedbackText, feedbackKind) {
-        TBui.textFeedback(feedbackText, feedbackKind);
-    };
-
-    // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-    TBUtils.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind) {
-        TBui.longLoadSpinner(createOrDestroy, feedbackText, feedbackKind);
     };
 
     // TODO: This should probably be removed in the future since text feedback can now take of this.

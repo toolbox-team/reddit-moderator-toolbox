@@ -3,74 +3,87 @@ function tbmodbar() {
 var modbar = new TB.Module('Toolbox UI (modbar)');
 modbar.shortname = 'ModBar';
 
-modbar.settings["enabled"]["default"] = true;
+modbar.settings['enabled']['default'] = true;
 
 // How about you don't disable modbar?  No other module should ever do this.
-modbar.settings["enabled"]["hidden"] = true;
+//modbar.settings['enabled']['hidden'] = true;
 
-modbar.init = function coreInit() {
+modbar.register_setting('compacthide', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true,
+    'title': 'Use compact mode for mod bar'
+});
+modbar.register_setting('unmoderatedon', {
+    'type': 'boolean',
+    'default': true,
+    'hidden': true,
+    'title': 'Show icon for unmoderated'
+});
+modbar.register_setting('enableTopLink', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true,
+    'title': 'Show top link in modbar'
+});
+
+// private settings.    // there is no JSON setting type.
+//modbar.register_setting('shortcuts', {
+//    'type': 'string',
+//    'default': '{}',
+//    'hidden': true
+//});
+modbar.register_setting('modbarhidden', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+});
+modbar.register_setting('consoleshowing', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+});
+modbar.register_setting('lockscroll', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+});
+
+modbar.init = function modbarInit() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
-    var $body = $('body');
+    var $body = $('body'),
+        footer = $('.footer-parent');
+
     $body.addClass('mod-toolbox');
 
     //
     // preload some generic variables
     //
-    var modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
+    var shortcuts = TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
+        modbarHidden = modbar.setting('modbarhidden'),
+        compactHide = modbar.setting('compacthide'),
+        unmoderatedOn = modbar.setting('unmoderatedon'),
+        consoleShowing = modbar.setting('consoleshowing'),
+        lockscroll = modbar.setting('lockscroll'),
+        enableTopLink = modbar.setting('enableTopLink'),
+
+        debugMode = TBUtils.debugMode,
+        betaMode = TBUtils.betaMode,
+        devMode = TBUtils.devMode,
+
+        settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
+        browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false),
+        shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
+        longLength = TB.storage.getSetting('Utils', 'longlength', 45),
+
+        modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
         unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
-        modmailSubreddits = TB.storage.getSetting('Notifier', 'modmailsubreddits', 'mod'),
-        modmailSubredditsFromPro = TB.storage.getSetting('Notifier', 'modmailsubredditsfrompro', false),
-        modmailFilteredSubreddits = modmailSubreddits,
-        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        shortcuts = TB.storage.getSetting('Modbar', 'shortcuts', {}),
-        modbarHidden = TB.storage.getSetting('Modbar', 'modbarhidden', false),
-        compactHide = TB.storage.getSetting('Modbar', 'compacthide', false),
-        unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true),
-        footer = $('.footer-parent'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
-        debugMode = TBUtils.debugMode,
-        betaMode = TBUtils.betaMode,
-        devMode = TBUtils.devMode,
-        consoleShowing = TB.storage.getSetting('Modbar', 'consoleshowing', false),
-        lockscroll = TB.storage.getSetting('Modbar', 'lockscroll', false),
-        messageunreadlink = TB.storage.getSetting('Modbar', 'messageunreadlink', false),
-        modmailunreadlink = TB.storage.getSetting('Modbar', 'modmailunreadlink', false),
-        settingSub = TB.storage.getSetting('Utils', 'settingsub', ''),
-        enableTopLink = TB.storage.getSetting('Modbar', 'enableTopLink', false),
-        browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false);
-
-
-    // use filter subs from MMP, if appropriate
-    if (modmailSubredditsFromPro) {
-        modmailFilteredSubreddits = 'mod';
-        if (TB.storage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
-            modmailFilteredSubreddits += '-' + TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-');
-        }
-    }
-
-    if (messageunreadlink) {
-        messageunreadurl = '/message/unread/';
-    } else {
-        messageunreadurl = '/message/inbox/';
-    }
-
-    // this is a placeholder from issue #217
-    // TODO: provide an option for this once we fix modmailpro filtering
-    modmailunreadurl = '/message/moderator/'
-    if (modmailunreadlink) {
-        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
-        modmailunreadurl += 'unread/';
-    } else {
-        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
-    }
-
-    // cache settings.
-    var shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
-        longLength = TB.storage.getSetting('Utils', 'longlength', 45);
+        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
 
 
     //
@@ -78,7 +91,7 @@ modbar.init = function coreInit() {
     //
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
-    var modbar = $('\
+    var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
 <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
 <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGear + '" title="toolbox settings"/></a>\
@@ -88,8 +101,6 @@ modbar.init = function coreInit() {
 <span id="tb-toolbarcounters">\
     <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
     <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-    <!-- <a title="modmail" href="/r/' + modmailFilteredSubreddits + '/message/moderator/" id="tb-modmail" class="nohavemail"></a> -->\
-    <!-- <a href="/r/' + modmailFilteredSubreddits + '/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a> -->\
     <a title="modmail" href="/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
     <a href="/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
     <a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
@@ -100,7 +111,7 @@ modbar.init = function coreInit() {
 
     // Add unmoderated icon if it is enabled.
 if (unmoderatedOn) {
-    modbar.find('#tb-toolbarcounters').append('\
+    modBar.find('#tb-toolbarcounters').append('\
     <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
     <a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
     ');
@@ -130,7 +141,7 @@ if (unmoderatedOn) {
 
     $console.appendTo('body').hide();
 
-    $body.append(modbar);
+    $body.append(modBar);
 
     // moderated subreddits button.
     $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
@@ -212,15 +223,15 @@ if (unmoderatedOn) {
 
     function toggleMenuBar(hidden) {
         if (hidden) {
-            $(modbar).hide();
+            $(modBar).hide();
             $(modbarhid).show();
             $console.hide(); // hide the console, but don't change consoleShowing.
         } else {
-            $(modbar).show();
+            $(modBar).show();
             $(modbarhid).hide();
             if (consoleShowing) $console.show();
         }
-        TB.storage.setSetting('Modbar', 'modbarhidden', hidden);
+        modbar.setting('modbarhidden', hidden);
     }
 
     toggleMenuBar(modbarHidden);
@@ -258,13 +269,13 @@ if (unmoderatedOn) {
         }
 
         consoleShowing = !consoleShowing;
-        TB.storage.setSetting('Modbar', 'consoleshowing', consoleShowing);
+        modbar.setting('consoleshowing', consoleShowing);
     });
 
     // Set console scroll
     $body.on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
-        TB.storage.setSetting('Modbar', 'lockscroll', lockscroll);
+        modbar.setting('lockscroll', lockscroll);
     });
 
     /*
@@ -329,9 +340,6 @@ if (unmoderatedOn) {
     <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
     </p>\
-    <p '+ ((debugMode && !TB.utils.devMoeLock) ? '' : 'style="display:none;"') +'>\
-        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '>DEVMODE: DON\'T EVER ENABLE THIS!</label>\
-    </p>\
     <p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
     </p>\
@@ -354,8 +362,6 @@ if (unmoderatedOn) {
     <div class="tb-help-main-content">Edit Toolbox general settings</div>\
     </div>\
     ');
-        // // we really shouldn't set these inline.
-        // $toolboxSettings.find('input[name=modmailsubreddits]').prop('disabled', modmailSubredditsFromPro);
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
@@ -425,6 +431,9 @@ You may obtain a copy of the License at </p>\
 <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
 <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>\
 See the License for the specific language governing permissions and limitations under the License.</p>\
+<p '+ ((debugMode && !TB.utils.devMoeLock) ? '' : 'style="display:none;"') +'>\
+    <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
+</p>\
 <div class="tb-help-main-content">This is a about page!</div>\
 </div>';
 
@@ -499,9 +508,9 @@ See the License for the specific language governing permissions and limitations 
     $body.on('click', '.tb-save', function () {
 
         // TODO: Check if the settings below work as intended.
-        TB.storage.setSetting('Modbar', 'compacthide', $("#compactHide").prop('checked'));
-        TB.storage.setSetting('Modbar', 'enableTopLink', $("#enableTopLink").prop('checked'));
-        TB.storage.setSetting('Modbar', 'unmoderatedon', $("#unmoderatedOn").prop('checked'));
+        modbar.setting('compacthide', $("#compactHide").prop('checked'));
+        modbar.setting('enableTopLink', $("#enableTopLink").prop('checked'));
+        modbar.setting('unmoderatedon', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
@@ -513,7 +522,7 @@ See the License for the specific language governing permissions and limitations 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');
         if ($shortcuts.length === 0) {
-            TB.storage.setSetting('Modbar', 'shortcuts', {});
+            TB.storage.setSetting('Modbar', 'shortcuts', {}); // no JSON setting type.
         } else {
             shortcuts = {};
 

@@ -1663,12 +1663,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 /* notifier temp fix TODO: proper grouping in tbobject */
 
-#tb-Notifier-messagenotifications, #tb-Notifier-modmailnotifications {
+#tb-Notifier-messageNotifications, #tb-Notifier-modmailNotifications {
     display: inline-block;
     width: 250px;
 }
 
-#tb-Notifier-messageunreadlink, #tb-Notifier-modmailunreadlink {
+#tb-Notifier-messageUnreadLink, #tb-Notifier-modmailUnreadLink {
     display: inline-block;
     width: 450px;
 }

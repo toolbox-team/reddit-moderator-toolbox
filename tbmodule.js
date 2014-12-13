@@ -167,21 +167,21 @@ TB = {
                     // automagical handling of input types
                     switch (options.type) {
                         case "boolean":
-                            $setting.append($('<label><input type="checkbox" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + title + '</label>'));
+                            $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(' '+title));
                             break;
                         case "number":
-                            $setting.append($('<label><input type="number" value="' + module.setting(setting) + '" min="' + options.min + '" max="' + options.max + '" step="' + options.step + '"> ' + title + '</label>'));
+                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(' '+title));
                             break;
                         case "array":
                         case "JSON":
                             var json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(title + ':<br />');
-                            $setting.append($('<textarea rows="1">' +  json + '</textarea>')); //No matter shat I do, I can't get JSON to work with an input.
+                            $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
                         case "text":
                         case "list":
                             $setting.append(title + ':<br />');
-                            $setting.append($('<input type="text" value="' + module.setting(setting) + '">'));
+                            $setting.append($('<input type="text" />').val(module.setting(setting)));
                             break;
                         case "sublist":
                             $setting.append(title + ':<br />');
@@ -238,9 +238,13 @@ body {\n\
                             break;
                         default:
                             // what in the world would we do here? maybe raw JSON?
+                            // yes, we do raw JSON
+                            var json = JSON.stringify(module.setting(setting), null, 0);
+                            $setting.append(title + ':<br />');
+                            $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
                     }
-                    $setting = $('<span></span>').attr('class', 'setting-item').append($setting);
+                    $setting = $('<span>').attr('class', 'setting-item').append($setting);
                     $setting.attr('id', 'tb-' + module.shortname + '-' + setting);
                     $setting.data('module', module.shortname);
                     $setting.data('setting', setting);
@@ -318,7 +322,7 @@ body {\n\
                                 value = $this.find('#' + module.shortname + '_syntax_theme').val();
                                 break;
                             default:
-                                value = JSON.parse($this.find('input').val());
+                                value = JSON.parse($this.find('textarea').val());
                                 break;
                         }
 

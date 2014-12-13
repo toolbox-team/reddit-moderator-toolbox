@@ -36,6 +36,14 @@ modbutton.register_setting('lastAction', {
     'hidden': true
 });
 
+// example setting with unknown type, uses default case
+modbutton.register_setting('fooBarTestSetting', {
+    'type': 'foo',
+    'default': [],
+    'title': 'Test setting unknown type'
+});
+
+
 
 var $body = $('body');
 

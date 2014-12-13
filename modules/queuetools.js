@@ -3,62 +3,57 @@ function queuetools() {
 var queue = new TB.Module('Queue Tools');
 queue.shortname = 'QueueTools';
 
-queue.settings["enabled"]["default"] = true;
+queue.settings['enabled']['default'] = true;
 
-queue.register_setting(
-    "hideactioneditems", {
-        "type": "boolean",
-        "default": false,
-        "title": "Hide items after mod action"
-    });
-queue.register_setting(
-    "ignoreonapprove", {
-        "type": "boolean",
-        "default": false,
-        "title": "Ignore reports on approved items"
-    });
-queue.register_setting(
-    "linktoqueues", {
-        "type": "boolean",
-        "default": false,
-        "title": "Link to subreddit queue on mod pages"
-    });
-queue.register_setting(
-    "sortmodqueue", {
-        "type": "boolean",
-        "default": false,
-        "title": "Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)"
-    });
-queue.register_setting(
-    "sortunmoderated", {
-        "type": "boolean",
-        "default": false,
-        "title": "Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)"
-    });
-queue.register_setting('reports-order', {
-    'type': 'selector',
-    'values': ["age", "score", "reports"],
-    'default': "age",
-    'title': "Tag location"
+queue.register_setting('hideActionedItems', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Hide items after mod action'
 });
-queue.register_setting('reports-threshold', {
+queue.register_setting('ignoreOnApprove', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Ignore reports on approved items'
+});
+queue.register_setting('linkToQueues', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Link to subreddit queue on mod pages'
+});
+queue.register_setting('sortModqueue', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)'
+});
+queue.register_setting('sortUnmoderated', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)'
+});
+queue.register_setting('reportsOrder', {
+    'type': 'selector',
+    'values': ['age', 'score', 'reports'],
+    'default': 'age',
+    'title': 'Tag location'
+});
+queue.register_setting('reportsThreshold', {
     'type': 'number',
     'min': 0,
     'max': null,
     'step': 1,
     'default': 1,
-    'title': "Reports threshold"
+    'title': 'Reports threshold'
 });
-queue.register_setting('reports-ascending', {
+queue.register_setting('reportsAscending', {
     'type': 'boolean',
     'default': false,
-    'title': "Sort ascending."
+    'title': 'Sort ascending.'
 });
 
 queue.register_setting('expandReports', {
     'type': 'boolean',
     'default': false,
-    'title': "Automatically expand reports on mod pages."
+    'title': 'Automatically expand reports on mod pages.'
 });
 
 queue.register_setting('botCheckmark', {
@@ -73,11 +68,11 @@ queue.init = function () {
 
     // Cached data
     var notEnabled = [],
-        hideActionedItems = queue.setting('hideactioneditems'),
-        ignoreOnApprove = queue.setting('ignoreonapprove'),
-        sortModQueue = queue.setting('sortmodqueue'),
-        sortUnmoderated = queue.setting('sortunmoderated'),
-        linkToQueues = queue.setting('linktoqueues');
+        hideActionedItems = queue.setting('hideActionedItems'),
+        ignoreOnApprove = queue.setting('ignoreOnApprove'),
+        sortModQueue = queue.setting('sortModqueue'),
+        sortUnmoderated = queue.setting('sortUnmoderated'),
+        linkToQueues = queue.setting('linkToQueues');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -148,9 +143,9 @@ queue.init = function () {
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = queue.setting('reports-threshold'),
-            listingOrder = queue.setting('reports-order'),
-            sortAscending = queue.setting('reports-ascending'),
+            reportsThreshold = queue.setting('reportsThreshold'),
+            listingOrder = queue.setting('reportsOrder'),
+            sortAscending = queue.setting('reportsAscending'),
             viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !!location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -297,8 +292,8 @@ queue.init = function () {
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            queue.setting('reports-ascending', sortAscending);
-            queue.setting('reports-order', order);
+            queue.setting('reportsAscending', sortAscending);
+            queue.setting('reportsOrder', order);
 
             $sortOrder.text(order);
             sortThings(order, sortAscending);
@@ -472,12 +467,12 @@ queue.init = function () {
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            queue.setting('reports-threshold', threshold);
+            queue.setting('reportsThreshold', threshold);
             setThreshold($things);
         });
 
         function setThreshold(things) {
-            var threshold = queue.setting('reports-threshold');
+            var threshold = queue.setting('reportsThreshold');
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
                     $(this).closest('.thing').hide();

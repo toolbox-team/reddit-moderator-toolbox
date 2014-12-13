@@ -5,7 +5,7 @@ function stattittab() {
 var stattit = new TB.Module('Stattit Tab');
 stattit.shortname = 'Stattit';
 
-stattit.settings["enabled"]["default"] = true;
+stattit.settings['enabled']['default'] = true;
 
 stattit.getSectionFromUrl = function getSectionFromUrl(url) {
     var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);

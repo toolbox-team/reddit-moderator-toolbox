@@ -6,16 +6,16 @@ tagger.shortname = 'DTagger';
 ////Default settings
 tagger.settings['enabled']['default'] = false;
 
-tagger.register_setting('displaytype', {
+tagger.register_setting('displayType', {
     'type': 'selector',
-    'values': ["Post border", "Domain background", "Domain border"],
-    'default': "post_border",
-    'title': "Tag location"
+    'values': ['Post border', 'Domain background', 'Domain border'],
+    'default': 'post_border',
+    'title': 'Tag location'
 });
 
 tagger.init = function domainTaggerInit() {
     //Get settings
-    var tagType = this.setting('displaytype');
+    var tagType = this.setting('displayType');
     //$.log("Domain tag type: " + tagType);
 
     //Module body
@@ -112,7 +112,7 @@ tagger.init = function domainTaggerInit() {
 
             $.grep(config.domainTags, function (d) {
                 if (domain.indexOf(d.name) !== -1) {
-                    switch (tagger.setting('displaytype')) {
+                    switch (tagger.setting('displayType')) {
                         case "domain_background":
                             $domain.css({
                                 'background-color': d.color,

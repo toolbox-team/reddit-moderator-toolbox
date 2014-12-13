@@ -15,8 +15,8 @@ var nuke = new TB.Module('Comment Nuke');
 nuke.shortname = 'Nuke';
 
 ////Default settings
-nuke.settings["enabled"]["default"] = false;
-nuke.config["betamode"] = true;
+nuke.settings['enabled']['default'] = false;
+nuke.config['betamode'] = true;
 
 nuke.init = function () {
 

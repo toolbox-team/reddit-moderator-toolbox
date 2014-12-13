@@ -2,14 +2,13 @@
 // http://userscripts-mirror.org/scripts/show/129928
 // By: /u/DEADBEEF
 // ===============
-
 function realtimeInit() {
 
 var realtime = new TB.Module('Realtime Reddit');
 realtime.shortname = 'Realtime';
 
-realtime.settings["enabled"]["default"] = false;
-realtime.config["betamode"] = true;
+realtime.settings['enabled']['default'] = false;
+realtime.config['betamode'] = true;
 
 realtime.init = function realtimeInit() {
 

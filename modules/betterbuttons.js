@@ -1,20 +1,20 @@
 function betterbuttons() {
 
 var buttons = new TB.Module('Better Buttons');
-buttons.shortname = "BButtons";
+buttons.shortname = 'BButtons';
 
 //Default settings
-buttons.settings["enabled"]["default"] = false;
+buttons.settings['enabled']['default'] = false;
 
-buttons.register_setting("enablemodsave", {
-    "type": "boolean",
-    "default": true,
-    "title": "Enable mod-save button"
+buttons.register_setting('enableModSave', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Enable mod-save button'
 });
-buttons.register_setting("enabledistinguishtoggle", {
-    "type": "boolean",
-    "default": true,
-    "title": "Enable distinguish toggling"
+buttons.register_setting('enableDistinguishToggle', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Enable distinguish toggling'
 });
 
 buttons.initModSave = function initModSave() {
@@ -109,10 +109,10 @@ buttons.initDistinguishToggle = function initDistinguishToggle() {
 };
 
 buttons.init = function betterButtonInit() {
-    if (this.setting('enablemodsave'))
+    if (buttons.setting('enableModSave'))
         buttons.initModSave();
 
-    if (this.setting('enabledistinguishtoggle'))
+    if (buttons.setting('enableDistinguishToggle'))
         buttons.initDistinguishToggle();
 };
 

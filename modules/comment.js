@@ -3,45 +3,39 @@ function commentsMod() {
 var comments = new TB.Module('Comments');
 comments.shortname = 'Comments'; // historical precedent for settings
 
-comments.settings["enabled"]["default"] = true;
-comments.config["betamode"] = false;
+comments.settings['enabled']['default'] = true;
+comments.config['betamode'] = false;
 
-comments.register_setting(
-    "hideRemoved", {
-        "type": "boolean",
-        "default": false,
-        "title": "Hide removed comments by default."
-    });
-comments.register_setting(
-    "approvecomments", {
-        "type": "boolean",
-        "default": false,
-        "title": "Show approve button on all comments."
-    });
-comments.register_setting(
-    "spamremoved", {
-        "type": "boolean",
-        "default": false,
-        "title": "Show spam button on comments removed as ham."
-    });
-comments.register_setting(
-    "hamspammed", {
-        "type": "boolean",
-        "default": false,
-        "title": "Show remove (not spam) button on comments removed as spam."
-    });
-comments.register_setting(
-    "highlighted", {
-        "type": "list",
-        "default": [],
-        "title": "Highlight keywords, keywords should entered separated by a comma without spaces"
-    });
-comments.register_setting(
-    "highlightTitles", {
-        "type": "boolean",
-        "default": true,
-        "title": "Also highlight titles of submissions."
-    });
+comments.register_setting('hideRemoved', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Hide removed comments by default.'
+});
+comments.register_setting('approveComments', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show approve button on all comments.'
+});
+comments.register_setting('spamRemoved', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show spam button on comments removed as ham.'
+});
+comments.register_setting('hamSpammed', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show remove (not spam) button on comments removed as spam.'
+});
+comments.register_setting('highlighted', {
+    'type': 'list',
+    'default': [],
+    'title': 'Highlight keywords, keywords should entered separated by a comma without spaces'
+});
+comments.register_setting( 'highlightTitles', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Also highlight titles of submissions.'
+});
 
 comments.init = function commentsModInit() {
     var $body = $('body');
@@ -54,9 +48,9 @@ comments.init = function commentsModInit() {
         // preload some generic variables
         //
         var hideRemoved = comments.setting('hideRemoved'),
-            approveComments = comments.setting('approvecomments'),
-            spamRemoved = comments.setting('spamremoved'),
-            hamSpammed = comments.setting('hamspammed');
+            approveComments = comments.setting('approveComments'),
+            spamRemoved = comments.setting('spamRemoved'),
+            hamSpammed = comments.setting('hamSpammed');
 
         $body.on('click', '#tb-toggle-removed', function () {
             var $comment_spam = $('.tb-comment-spam');

@@ -1,7 +1,7 @@
 function usernotes() {
 //Setup
 var usernotes = new TB.Module('User Notes');
-usernotes.shortname = "UserNotes";
+usernotes.shortname = 'UserNotes';
 
 ////Default settings
 usernotes.settings['enabled']['default'] = true;

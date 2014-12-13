@@ -5,22 +5,20 @@ function syntax() {
 var syntax = new TB.Module('Syntax Highlighter');
 syntax.shortname = 'Syntax';
 
-syntax.settings["enabled"]["default"] = true;
+syntax.settings['enabled']['default'] = true;
 
-syntax.register_setting(
-    "enableWordWrap", {
-        "type": "boolean",
-        "default": true,
-        "title": "Enable word wrap in editor"
-    });
-syntax.register_setting(
-    'selectedTheme', {
-        "type": "syntaxTheme",
-        "default": 'monokai',
-        "title": "Syntax highlight theme selection"
-    });
+syntax.register_setting('enableWordWrap', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Enable word wrap in editor'
+});
+syntax.register_setting('selectedTheme', {
+    'type': 'syntaxTheme',
+    'default': 'monokai',
+    'title': 'Syntax highlight theme selection'
+});
 
-syntax.settings["enabled"]["default"] = true; // on by default
+syntax.settings['enabled']['default'] = true; // on by default
 
 // we reference this from tbobject for settings generation
 syntax.themeSelect = '\

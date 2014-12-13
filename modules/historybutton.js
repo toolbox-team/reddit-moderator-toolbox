@@ -10,20 +10,19 @@ history.addUserHistoryLink = function () {
 // This should be a setting, methinks.
 history.SPAM_REPORT_SUB = 'spam';
 
-history.settings["enabled"]["default"] = true;
+history.settings['enabled']['default'] = true;
 
-history.register_setting(
-    "sortmodqueue", {
-        "type": "boolean",
-        "default": true,
-        "title": "Post user summary when submitting spam reports"
-    });
+history.register_setting('rtsComment', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Post user summary when submitting spam reports'
+});
 
 history.init = function () {
     var $body = $('body');
     var self = this;
 
-    var rtsComment = history.setting('rtscomment');
+    var rtsComment = history.setting('rtsComment');
 
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');

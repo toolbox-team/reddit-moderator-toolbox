@@ -2,13 +2,13 @@ function banlist() {
 var banlist = new TB.Module('Ban List');
 banlist.shortname = 'BanList';
 
-banlist.settings["enabled"]["default"] = true;
-banlist.config["betamode"] = false; // this module is not in beta
+banlist.settings['enabled']['default'] = true;
+banlist.config['betamode'] = false; // this module is not in beta
 
 banlist.register_setting('automatic', {
-    "type": "boolean",
-    "default": false,
-    "title": "Automatically pre-load the whole ban list for live filtering."
+    'type': 'boolean',
+    'default': false,
+    'title': 'Automatically pre-load the whole ban list for live filtering.'
 });
 
 // extracts a url parameter value from a URL string

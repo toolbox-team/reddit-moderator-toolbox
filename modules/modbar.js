@@ -8,13 +8,13 @@ modbar.settings['enabled']['default'] = true;
 // How about you don't disable modbar?  No other module should ever do this.
 //modbar.settings['enabled']['hidden'] = true;
 
-modbar.register_setting('compacthide', {
+modbar.register_setting('compactHide', {
     'type': 'boolean',
     'default': false,
     'hidden': true,
     'title': 'Use compact mode for mod bar'
 });
-modbar.register_setting('unmoderatedon', {
+modbar.register_setting('unmoderatedOn', {
     'type': 'boolean',
     'default': true,
     'hidden': true,
@@ -33,17 +33,17 @@ modbar.register_setting('enableTopLink', {
 //    'default': '{}',
 //    'hidden': true
 //});
-modbar.register_setting('modbarhidden', {
+modbar.register_setting('modbarHidden', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
-modbar.register_setting('consoleshowing', {
+modbar.register_setting('consoleShowing', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
-modbar.register_setting('lockscroll', {
+modbar.register_setting('lockScroll', {
     'type': 'boolean',
     'default': false,
     'hidden': true
@@ -61,11 +61,11 @@ modbar.init = function modbarInit() {
     // preload some generic variables
     //
     var shortcuts = TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
-        modbarHidden = modbar.setting('modbarhidden'),
-        compactHide = modbar.setting('compacthide'),
-        unmoderatedOn = modbar.setting('unmoderatedon'),
-        consoleShowing = modbar.setting('consoleshowing'),
-        lockscroll = modbar.setting('lockscroll'),
+        modbarHidden = modbar.setting('modbarHidden'),
+        compactHide = modbar.setting('compactHide'),
+        unmoderatedOn = modbar.setting('unmoderatedOn'),
+        consoleShowing = modbar.setting('consoleShowing'),
+        lockscroll = modbar.setting('lockScroll'),
         enableTopLink = modbar.setting('enableTopLink'),
 
         debugMode = TBUtils.debugMode,
@@ -231,7 +231,7 @@ if (unmoderatedOn) {
             $(modbarhid).hide();
             if (consoleShowing) $console.show();
         }
-        modbar.setting('modbarhidden', hidden);
+        modbar.setting('modbarHidden', hidden);
     }
 
     toggleMenuBar(modbarHidden);
@@ -269,13 +269,13 @@ if (unmoderatedOn) {
         }
 
         consoleShowing = !consoleShowing;
-        modbar.setting('consoleshowing', consoleShowing);
+        modbar.setting('consoleShowing', consoleShowing);
     });
 
     // Set console scroll
     $body.on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
-        modbar.setting('lockscroll', lockscroll);
+        modbar.setting('lockScroll', lockscroll);
     });
 
     /*
@@ -508,9 +508,9 @@ See the License for the specific language governing permissions and limitations 
     $body.on('click', '.tb-save', function () {
 
         // TODO: Check if the settings below work as intended.
-        modbar.setting('compacthide', $("#compactHide").prop('checked'));
+        modbar.setting('compactHide', $("#compactHide").prop('checked'));
         modbar.setting('enableTopLink', $("#enableTopLink").prop('checked'));
-        modbar.setting('unmoderatedon', $("#unmoderatedOn").prop('checked'));
+        modbar.setting('unmoderatedOn', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));

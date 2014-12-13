@@ -4,8 +4,8 @@ function modmacros() {
 var macros = new TB.Module('Mod Macros');
 macros.shortname = 'ModMacros';
 
-macros.settings["enabled"]["default"] = false;
-macros.config["betamode"] = true;
+macros.settings['enabled']['default'] = false;
+macros.config['betamode'] = true;
 
 macros.init = function macrosInit() {
 

@@ -3,14 +3,13 @@ function removalreasons() {
 var removal = new TB.Module('Removal Reasons');
 removal.shortname = 'RReasons';
 
-removal.settings["enabled"]["default"] = true;
+removal.settings['enabled']['default'] = true;
 
-removal.register_setting(
-    "commentreasons", {
-        "type": "boolean",
-        "default": false,
-        "title": "Enable removal reasons for comments."
-    });
+removal.register_setting('commentReasons', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Enable removal reasons for comments.'
+});
 
 removal.init = function removalReasonsInit() {
 
@@ -106,7 +105,7 @@ removal.init = function removalReasonsInit() {
 
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !removal.setting('commentreasons'))
+        if (thingclasses.match(/\bcomment\b/) && !removal.setting('commentReasons'))
             return;
 
         // Get link/comment attributes

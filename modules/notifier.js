@@ -3,137 +3,137 @@ function notifiermod() {
 var notifier = new TB.Module('Notifier');
 notifier.shortname = 'Notifier';
 
-notifier.settings["enabled"]["default"] = true;
+notifier.settings['enabled']['default'] = true;
 
 
 // First show the options for filtering of subreddits.
-notifier.register_setting("modsubreddits", {
-    "type": "text",
-    "default": 'mod',
-    "title": "Multireddit of subs you want displayed in the modqueue counter"
+notifier.register_setting('modsubreddits', {
+    'type': 'text',
+    'default': 'mod',
+    'title': 'Multireddit of subs you want displayed in the modqueue counter'
 });
 
-notifier.register_setting("unmoderatedsubreddits", {
-    "type": "text",
-    "default": "mod",
-    "title": "Multireddit of subs you want displayed in the unmoderated counter"
+notifier.register_setting('unmoderatedsubreddits', {
+    'type': 'text',
+    'default': 'mod',
+    'title': 'Multireddit of subs you want displayed in the unmoderated counter'
 });
 
 
-notifier.register_setting("modmailsubreddits", {
-    "type": "text",
-    "default": 'mod',
-    "hidden": notifier.setting('modmailsubredditsfrompro'),
-    "title": "Multireddit of subs you want displayed in the modmail counter"
+notifier.register_setting('modmailsubreddits', {
+    'type': 'text',
+    'default': 'mod',
+    'hidden': notifier.setting('modmailsubredditsfrompro'),
+    'title': 'Multireddit of subs you want displayed in the modmail counter'
 });
 
-notifier.register_setting("modmailsubredditsfrompro", {
-    "type": "boolean",
-    "default": false,
-    "title": "Use filtered subreddits from ModMail Pro"
+notifier.register_setting('modmailsubredditsfrompro', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Use filtered subreddits from ModMail Pro'
 });
 
 // Do we want notifications and where do they link to?
 
-notifier.register_setting("messagenotifications", {
-    "type": "boolean",
-    "default": true,
-    "title": "Get notifications for new messages"
+notifier.register_setting('messagenotifications', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Get notifications for new messages'
 });
 
-notifier.register_setting("messageunreadlink", {
-    "type": "boolean",
-    "default": false,
-    "title": "Link to /message/unread/ if unread messages are present"
+notifier.register_setting('messageunreadlink', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Link to /message/unread/ if unread messages are present'
 });
 
-notifier.register_setting("modmailnotifications", {
-    "type": "boolean",
-    "default": true,
-    "title": "Get modmail notifications"
+notifier.register_setting('modmailnotifications', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Get modmail notifications'
 });
-notifier.register_setting("modmailunreadlink", {
-    "type": "boolean",
-    "default": false,
-    "title": "Link to /message/moderator/unread/ if unread modmail is present"
-});
-
-notifier.register_setting("straightToInbox", {
-    "type": "boolean",
-    "default": false,
-    "title": "When clicking a comment notification go to the inbox"
+notifier.register_setting('modmailunreadlink', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Link to /message/moderator/unread/ if unread modmail is present'
 });
 
-notifier.register_setting("consolidatedmessages", {
-    "type": "boolean",
-    "default": true,
-    "title": "Consolidate notifications (x new messages) instead of individual notifications"
+notifier.register_setting('straightToInbox', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'When clicking a comment notification go to the inbox'
+});
+
+notifier.register_setting('consolidatedmessages', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Consolidate notifications (x new messages) instead of individual notifications'
 });
 
 // Do we want queue notifications?
 
-notifier.register_setting("modnotifications", {
-    "type": "boolean",
-    "default": true,
-    "title": "Get modqueue notifications"
+notifier.register_setting('modnotifications', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Get modqueue notifications'
 });
 
-notifier.register_setting("unmoderatednotifications", {
-    "type": "boolean",
-    "default": false,
-    "title": "Get unmoderated queue notifications"
+notifier.register_setting('unmoderatednotifications', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Get unmoderated queue notifications'
 });
 
-notifier.register_setting("checkinterval", {
-    "type": "number",
-    "default": 1, // 60 secs.
-    'title': "Interval to check for new items (time in minutes)."
+notifier.register_setting('checkinterval', {
+    'type': 'number',
+    'default': 1, // 60 secs.
+    'title': 'Interval to check for new items (time in minutes).'
 });
 
 /// Private storage settings.
-notifier.register_setting("unreadmessagecount", {
-    "type": "number",
-    "default": 0,
+notifier.register_setting('unreadmessagecount', {
+    'type': 'number',
+    'default': 0,
     'hidden': true
 });
-notifier.register_setting("modqueuecount", {
-    "type": "number",
-    "default": 0,
+notifier.register_setting('modqueuecount', {
+    'type': 'number',
+    'default': 0,
     'hidden': true
 });
-notifier.register_setting("unmoderatedcount", {
-    "type": "number",
-    "default": 0,
+notifier.register_setting('unmoderatedcount', {
+    'type': 'number',
+    'default': 0,
     'hidden': true
 });
-notifier.register_setting("modmailcount", {
-    "type": "number",
-    "default": 0,
+notifier.register_setting('modmailcount', {
+    'type': 'number',
+    'default': 0,
     'hidden': true
 });
-notifier.register_setting("lastchecked", {
-    "type": "number",
-    "default": -1,
+notifier.register_setting('lastchecked', {
+    'type': 'number',
+    'default': -1,
     'hidden': true
 });
-notifier.register_setting("lastseenunmoderated", {
-    "type": "number",
-    "default": -1,
+notifier.register_setting('lastseenunmoderated', {
+    'type': 'number',
+    'default': -1,
     'hidden': true
 });
-notifier.register_setting("lastseenmodmail", {
-    "type": "number",
-    "default": -1,
+notifier.register_setting('lastseenmodmail', {
+    'type': 'number',
+    'default': -1,
     'hidden': true
 });
-notifier.register_setting("unreadpushed", {
-    "type": "list",
-    "default": '[]',
+notifier.register_setting('unreadpushed', {
+    'type': 'list',
+    'default': '[]',
     'hidden': true
 });
-notifier.register_setting("modqueuepushed", {
-    "type": "list",
-    "default": '[]',
+notifier.register_setting('modqueuepushed', {
+    'type': 'list',
+    'default': '[]',
     'hidden': true
 });
 

@@ -7,33 +7,35 @@ modbutton.shortname = 'ModButton';
 modbutton.settings['enabled']['default'] = true;
 modbutton.config['needs_mod_subs'] = true;
 
-modbutton.register_setting(
-    'sublist', {
-        'type': 'sublist',
-        'default': [],
-        'title': 'Saved subs (for quick access)'
-    });
+modbutton.register_setting('savedSubs', {
+    'type': 'sublist',
+    'default': [],
+    'title': 'Saved subs (for quick access)'
+});
 // can't call this inside because it doesn't know the default value yet
 // can't call it plain because it uses TB.utils.mySubs
 TB.utils.getModSubs(function modbuttoninit() {
-    modbutton.settings['sublist']['args'] = [TB.utils.mySubs, modbutton.setting('sublist')];
+    modbutton.settings['savedSubs']['args'] = [TB.utils.mySubs, modbutton.setting('savedSubs')];
 });
 
-modbutton.register_setting('rememberlastaction', {
+modbutton.register_setting('rememberLastAction', {
     'type': 'boolean',
     'default': false,
     'title': 'Remember last action'
 });
-modbutton.register_setting('lastaction', {
-    'type': 'text',
-    'default': 'ban',
-    'hidden': true
-});
-modbutton.register_setting('globalbutton', {
+modbutton.register_setting('globalButton', {
     'type': 'boolean',
     'default': false,
     'title': 'Enable Global Action button'
 });
+
+// private storage
+modbutton.register_setting('lastAction', {
+    'type': 'text',
+    'default': 'ban',
+    'hidden': true
+});
+
 
 var $body = $('body');
 
@@ -123,10 +125,10 @@ modbutton.init = function init() {
     modbutton.saveButton = 'Save';
     modbutton.OTHER = 'other-sub';
 
-    modbutton.savedSubs = modbutton.setting('sublist');
+    modbutton.savedSubs = modbutton.setting('savedSubs');
 
-    var rememberLastAction = modbutton.setting('rememberlastaction'),
-        showglobal = modbutton.setting('globalbutton');
+    var rememberLastAction = modbutton.setting('rememberLastAction'),
+        showglobal = modbutton.setting('globalButton');
 
     modbutton.savedSubs = TB.utils.saneSort(modbutton.savedSubs);
 
@@ -144,7 +146,7 @@ modbutton.init = function init() {
         $(benbutton).text('loading...');
 
         var display = (modbutton.savedSubs.length < 1) ? 'none' : '',
-            lastaction = modbutton.setting('lastaction'),
+            lastaction = modbutton.setting('lastAction'),
             info = TB.utils.getThingInfo(this, true),
             subreddit = info.subreddit,
             user = info.user,
@@ -377,7 +379,7 @@ modbutton.init = function init() {
 *You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
         }
 
-        modbutton.setting('lastaction', actionName);
+        modbutton.setting('lastAction', actionName);
 
         // Check dem values.
         if (!api)

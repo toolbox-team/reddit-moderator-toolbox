@@ -2,18 +2,18 @@ function personalnotes() {
 var notes = new TB.Module('Personal Notes');
 notes.shortname = 'PNotes';
 
-notes.settings["enabled"]["default"] = false;
-notes.config["betamode"] = true;
+notes.settings['enabled']['default'] = false;
+notes.config['betamode'] = true;
 
-notes.register_setting("notewiki", {
-    "type": "text",
-    "default": '',
-    "title": "Subreddit you want to use to store your personal notes."
+notes.register_setting('noteWiki', {
+    'type': 'text',
+    'default': '',
+    'title': 'Subreddit you want to use to store your personal notes.'
 });
 
 notes.init = function personalNotesInit() {
     var $body = $('body'),
-        notewiki = notes.setting('notewiki'),
+        notewiki = notes.setting('noteWiki'),
         notesArray = [],
         notesPopupContent;
 

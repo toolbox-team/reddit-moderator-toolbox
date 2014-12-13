@@ -5,60 +5,60 @@ modmail.shortname = 'ModMail';
 
 
 ////Default settings
-modmail.settings["enabled"]["default"] = true;
-modmail.config["betamode"] = false;
+modmail.settings['enabled']['default'] = true;
+modmail.config['betamode'] = false;
 
-modmail.register_setting('inboxstyle', {
+modmail.register_setting('inboxStyle', {
     'type': 'selector',
     'values': ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered'],
     'default': 'priority',
     'title': 'Default inbox view'
 });
 
-modmail.register_setting('defaultcollapse', {
+modmail.register_setting('defaultCollapse', {
     'type': 'boolean',
     'default': false,
     'title': 'Collapse all mod mail threads by default.'
 });
 
-modmail.register_setting('noredmodmail', {
+modmail.register_setting('noRedModmail', {
     'type': 'boolean',
     'default': true,
     'title': 'Show removed threads with red titles.'
 });
 
-modmail.register_setting('highlightnew', {
+modmail.register_setting('highlightNew', {
     'type': 'boolean',
     'default': true,
     'title': 'Highlight new threads and replies.'
 });
 
-modmail.register_setting('expandreplies', {
+modmail.register_setting('expandReplies', {
     'type': 'boolean',
     'default': false,
     'title': 'Expand all replies when expanding threads.'
 });
 
-modmail.register_setting('hideinvitespam', {
+modmail.register_setting('hideInviteSpam', {
     'type': 'boolean',
     'default': false,
     'title': 'Filter mod invited and added threads.'
 });
 
-modmail.register_setting('autoload', {
+modmail.register_setting('autoLoad', {
     'type': 'boolean',
     'default': false,
     'hidden': !TB.storage.getSetting('Notifier', 'enabled', true),
     'title': 'Automatically load new mod mail when received.'
 });
 
-modmail.register_setting('autothread', {
+modmail.register_setting('autoThread', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
-modmail.register_setting('subredditcolor', {
+modmail.register_setting('subredditColor', {
     'type': 'boolean',
     'default': false,
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
@@ -71,19 +71,19 @@ modmail.register_setting('fadeRecipient', {
 });
 
 /// Private setting storage
-modmail.register_setting('lastvisited', {
+modmail.register_setting('lastVisited', {
     'type': 'number',
     'default': new Date().getTime(),
     'hidden': true
 });
-modmail.register_setting("replied", {
-    "type": "list",
-    "default": '[]',
+modmail.register_setting('replied', {
+    'type': 'list',
+    'default': '[]',
     'hidden': true
 });
-modmail.register_setting("filteredsubs", {
-    "type": "list",
-    "default": '[]',
+modmail.register_setting('filteredSubs', {
+    'type': 'list',
+    'default': '[]',
     'hidden': true
 });
 
@@ -103,21 +103,21 @@ modmail.modmailpro = function () {
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
-        inbox = modmail.setting('inboxstyle'),
+        inbox = modmail.setting('inboxStyle'),
         now = new Date().getTime(),
-        lastVisited =  modmail.setting('lastvisited'),
+        lastVisited =  modmail.setting('lastVisited'),
         newCount = 0,
-        collapsed = modmail.setting('defaultcollapse'),
-        expandReplies = modmail.setting('expandreplies'),
-        noRedModmail = modmail.setting('noredmodmail'),
-        hideInviteSpam = modmail.setting('hideinvitespam'),
-        highlightNew = modmail.setting('highlightnew'),
+        collapsed = modmail.setting('defaultCollapse'),
+        expandReplies = modmail.setting('expandReplies'),
+        noRedModmail = modmail.setting('noRedModmail'),
+        hideInviteSpam = modmail.setting('hideInviteSpam'),
+        highlightNew = modmail.setting('highlightNew'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-        threadAlways = modmail.setting('autothread');
+        threadAlways = modmail.setting('autoThread');
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -308,7 +308,7 @@ modmail.modmailpro = function () {
             processThread(thread);
         }, function complete() {
 
-            modmail.setting('lastvisited', now);
+            modmail.setting('lastVisited', now);
 
             // If set collapse all threads on load.
             if (collapsed) {
@@ -331,7 +331,7 @@ modmail.modmailpro = function () {
             setView();
         });
         // Add borders if enabled. 
-        if (modmail.setting('subredditcolor')) {
+        if (modmail.setting('subredditColor')) {
             colorBorderMail();
         }
         // Fade the recipient of a modmail so it is much more clear WHO send it.
@@ -588,7 +588,7 @@ modmail.modmailpro = function () {
         }
 
         // Save new filter list.
-        modmail.setting('filteredsubs', filtersubs);
+        modmail.setting('filteredSubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -607,7 +607,7 @@ modmail.modmailpro = function () {
     }
 
     function getFilteredSubs() {
-        return modmail.setting('filteredsubs');
+        return modmail.setting('filteredSubs');
     }
 
     function getRepliedThreads() {
@@ -727,7 +727,7 @@ modmail.realtimemail = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (modmail.setting('autoload') && TB.storage.getSetting('Notifier', 'enabled', true)) {
+    if (modmail.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
             var count = TB.storage.getSetting('Notifier', 'modmailcount', 0);
             if (count > 0) {

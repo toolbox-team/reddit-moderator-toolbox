@@ -189,7 +189,6 @@ TB = {
                             break;
                         case "selector":
                             var v = module.setting(setting);
-                            $.log("Current setting: " + v);
                             $setting.append(title + ':<br />');
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;

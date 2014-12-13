@@ -18,15 +18,6 @@ nuke.shortname = 'Nuke';
 nuke.settings["enabled"]["default"] = false;
 nuke.config["betamode"] = true;
 
-// TBConfig.register_setting('displaytype', {
-//     'type': 'selector',
-//     'values': ["Post border", "Domain background", "Domain border"],
-//     'default': "post_border",
-//     'betamode': true,
-//     'hidden': false,
-//     'title': "Tag location"
-// });
-
 nuke.init = function () {
 
 	delete_function = function (thread_root) {

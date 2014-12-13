@@ -19,24 +19,22 @@ TB.utils.getModSubs(function modbuttoninit() {
     modbutton.settings['sublist']['args'] = [TB.utils.mySubs, modbutton.setting('sublist')];
 });
 
-modbutton.register_setting(
-    'rememberlastaction', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Remember last action'
-    });
-modbutton.register_setting(
-    'lastaction', {
-        'type': 'text',
-        'default': 'ban',
-        'hidden': true
-    });
-modbutton.register_setting(
-    'globalbutton', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Enable Global Action button'
-    });
+modbutton.register_setting('rememberlastaction', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Remember last action'
+});
+modbutton.register_setting('lastaction', {
+    'type': 'text',
+    'default': 'ban',
+    'title': '(lastaction)',
+    'hidden': true
+});
+modbutton.register_setting('globalbutton', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Enable Global Action button'
+});
 
 var $body = $('body');
 

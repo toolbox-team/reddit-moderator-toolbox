@@ -11,14 +11,12 @@ syntax.register_setting(
     "enableWordWrap", {
         "type": "boolean",
         "default": true,
-        "hidden": false,
         "title": "Enable word wrap in editor"
     });
 syntax.register_setting(
     'selectedTheme', {
         "type": "syntaxTheme",
         "default": 'monokai',
-        "hidden": false,
         "title": "Syntax highlight theme selection"
     });
 

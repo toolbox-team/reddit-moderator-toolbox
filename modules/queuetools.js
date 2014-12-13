@@ -61,14 +61,11 @@ queue.register_setting('expandReports', {
     'title': "Automatically expand reports on mod pages."
 });
 
-queue.register_setting(
-    'botCheckmark', {
-        'type': 'list',
-        'default': ['automoderator'],
-        'betamode': false,
-        'hidden': false,
-        'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces'
-    });
+queue.register_setting('botCheckmark', {
+    'type': 'list',
+    'default': ['automoderator'],
+    'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces'
+});
 
 
 queue.init = function () {

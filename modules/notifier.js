@@ -94,36 +94,43 @@ notifier.register_setting("checkinterval", {
 notifier.register_setting("unreadmessagecount", {
     "type": "number",
     "default": 0,
+    'title': '(unreadmessagecount)',
     'hidden': true
 });
 notifier.register_setting("modqueuecount", {
     "type": "number",
     "default": 0,
+    'title': '(modqueuecount)',
     'hidden': true
 });
 notifier.register_setting("unmoderatedcount", {
     "type": "number",
     "default": 0,
+    'title': '(unmoderatedcount)',
     'hidden': true
 });
 notifier.register_setting("modmailcount", {
     "type": "number",
     "default": 0,
+    'title': '(modmailcount)',
     'hidden': true
 });
 notifier.register_setting("lastchecked", {
     "type": "number",
     "default": -1,
+    'title': '(lastchecked)',
     'hidden': true
 });
 notifier.register_setting("lastseenunmoderated", {
     "type": "number",
     "default": -1,
+    'title': '(lastseenunmoderated)',
     'hidden': true
 });
 notifier.register_setting("lastseenmodmail", {
     "type": "number",
     "default": -1,
+    'title': '(lastseenmodmail)',
     'hidden': true
 });
 

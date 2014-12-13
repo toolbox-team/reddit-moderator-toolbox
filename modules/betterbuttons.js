@@ -9,15 +9,11 @@ buttons.settings["enabled"]["default"] = false;
 buttons.register_setting("enablemodsave", {
     "type": "boolean",
     "default": true,
-    "betamode": false,
-    "hidden": false,
     "title": "Enable mod-save button"
 });
 buttons.register_setting("enabledistinguishtoggle", {
     "type": "boolean",
     "default": true,
-    "betamode": false,
-    "hidden": false,
     "title": "Enable distinguish toggling"
 });
 

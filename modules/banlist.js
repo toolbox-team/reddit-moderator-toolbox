@@ -97,7 +97,7 @@ banlist.init = function init() {
                     banlist.log("  last page");
                     banlist_updating = false;
                     banlist_last_update = Date.now();
-                    TB.utils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                 }
             },
             error: function (data) {
@@ -109,7 +109,7 @@ banlist.init = function init() {
                 } else {
                     // Did we get logged out during the process, or some other error?
                     banlist_updating = false;
-                    TB.utils.longLoadSpinner(false);
+                    TB.ui.longLoadSpinner(false);
                     $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                 }
             }
@@ -168,9 +168,9 @@ banlist.init = function init() {
                 || (banlist_last_update + time_to_update) <= Date.now())
             ) {
                 banlist_updating = true;
-                TB.utils.longLoadSpinner(true);
+                TB.ui.longLoadSpinner(true);
 
-                banlist.log("Updating now")
+                banlist.log("Updating now");
                 // clean up
                 $('.usertable table tbody').empty();
                 pages_back = 0;

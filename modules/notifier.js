@@ -85,6 +85,12 @@ notifier.register_setting("unmoderatednotifications", {
     "title": "Get unmoderated queue notifications"
 });
 
+notifier.register_setting("checkinterval", {
+    "type": "number",
+    "default": 60, // 60 secs.
+    'title': "Interval to check for new items (time in seconds)."
+});
+
 /// Private storage settings.
 notifier.register_setting("unreadmessagecount", {
     "type": "number",
@@ -104,11 +110,6 @@ notifier.register_setting("unmoderatedcount", {
 notifier.register_setting("modmailcount", {
     "type": "number",
     "default": 0,
-    'hidden': true
-});
-notifier.register_setting("checkinterval", {
-    "type": "number",
-    "default": 1 * 60 * 1000, // 60 secs.
     'hidden': true
 });
 notifier.register_setting("lastchecked", {
@@ -148,7 +149,7 @@ notifier.init = function notifierMod_init() {
         modmailunreadlink = notifier.setting('modmailunreadlink');
 
     // private
-    var checkInterval = notifier.setting('checkinterval'), //default to check every minute for new stuff.
+    var checkInterval = (notifier.setting('checkinterval') * 1000),//setting is in seconds, convet to milliseconds.
         newLoad = true,
         now = new Date().getTime(),
         unreadMessageCount = notifier.setting('unreadmessagecount'),
@@ -403,7 +404,7 @@ notifier.init = function notifierMod_init() {
                 if (pushedunread.length > 100) {
                     pushedunread.splice(0, 100 - pushedunread.length);
                 }
-                notifier.setting('unreadpushed', pushedunread);
+                TB.storage.setSetting('Notifier', 'unreadpushed', pushedunread);
             }
         });
 

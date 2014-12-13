@@ -122,6 +122,11 @@ notifier.register_setting("lastseenunmoderated", {
     "default": -1,
     'hidden': true
 });
+notifier.register_setting("lastseenmodmail", {
+    "type": "number",
+    "default": -1,
+    'hidden': true
+});
 
 
 notifier.init = function notifierMod_init() {
@@ -597,7 +602,7 @@ notifier.init = function notifierMod_init() {
                 return;
             }
 
-            var lastSeen = TB.storage.getSetting('Notifier', 'lastseenmodmail', -1),
+            var lastSeen = notifier.setting('lastseenmodmail'),
                 newIdx = '',
                 title = '',
                 text = '',

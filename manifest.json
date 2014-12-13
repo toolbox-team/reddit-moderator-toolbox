@@ -57,8 +57,6 @@
 		"modules/removalreasons.js",
 		"modules/historybutton.js",
 		"modules/syntax.js",
-		"modules/frame.js",
-		"modules/modmaillite.js",
 		"modules/macros.js",
 		"modules/realtime.js",
 		"modules/nukecomments.js",

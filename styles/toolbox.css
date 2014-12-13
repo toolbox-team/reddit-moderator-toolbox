@@ -1791,6 +1791,23 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     cursor: pointer;
 }
 
+
+/* Module disabled */
+
+.mod-toolbox  .tb-window-tabs a.tb-module-disabled {
+    background-color: #D6D9DD;
+    color: #808080;
+}
+
+.mod-toolbox .tb-window-content span.tb-module-disabled {
+    font-size: 14px;
+    display: block;
+    padding: 4px;
+    background-color: #F7F7F7;
+    color: #808080;
+    font-weight: bold;
+}
+
 /* modbar */
 
 .mod-toolbox  #tb-toolbar-mysubs:hover, .mod-toolbox  #tb-personal-notes-button:hover {

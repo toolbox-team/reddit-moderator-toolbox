@@ -131,7 +131,7 @@ if (unmoderatedOn) {
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
         <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
     </div>\
-    <div class="tb-debug-footer" comment="for the looks">\
+    <div class="tb-debug-footer">\
         <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
         <!--input class="tb-console-copy" type="button" value="copy text"-->\
         <input class="tb-console-clear" type="button" value="clear console">\
@@ -367,7 +367,7 @@ if (unmoderatedOn) {
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
 
         // Settings to toggle the modules
@@ -377,7 +377,7 @@ if (unmoderatedOn) {
     </div>\
     ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
-        $('<a href="javascript:;" class="tb-window-content-modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-modules" data-module="modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
 
         // Edit shortcuts
@@ -406,7 +406,7 @@ if (unmoderatedOn) {
             });
         }
 
-        $('<a href="javascript:;" class="tb-window-content-shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-shortcuts" data-module="shortcuts">Shortcuts</a>').appendTo('.tb-window-tabs');
 
         // About page
         var htmlabout = '\
@@ -440,7 +440,7 @@ See the License for the specific language governing permissions and limitations 
 </div>';
 
         $(htmlabout).appendTo('.tb-window-content').hide();
-        $('<a href="javascript:;" class="tb-window-content-about">About</a>').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-about" data-module="about">About</a>').appendTo('.tb-window-tabs');
 
         //	$("input[name=shortcuts]").val(unescape(shortcuts));
     }
@@ -479,7 +479,7 @@ See the License for the specific language governing permissions and limitations 
 
     // change tabs
     $body.on('click', '.tb-window-tabs a:not(.active)', function () {
-        var tab = $(this).attr('class'),
+        var tab = $(this).attr('data-module'),
             $tb_help_mains = $('.tb-help-main');
 
         $('.tb-window-tabs a').removeClass('active');
@@ -491,7 +491,7 @@ See the License for the specific language governing permissions and limitations 
             $tb_help_mains.data('module', $(this).data('module'));
         }
         $('.tb-window-content').children().hide();
-        $('div.' + tab).show();
+        $('div.tb-window-content-' + tab).show();
     });
 
     // remove a shortcut

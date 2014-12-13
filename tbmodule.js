@@ -104,7 +104,8 @@ TB = {
                 //
 
                 var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
-                    $tab = $('<a href="javascript:;" class="tb-window-content-' + module.shortname.toLowerCase() + '">' + module.name + '</a>'),
+                    moduleIsEnabled = false,
+                    $tab = $('<a href="javascript:;" class="tb-window-content-' + module.shortname.toLowerCase() + '" data-module="' + module.shortname.toLowerCase() + '">' + module.name + '</a>'),
                     $settings = $('<div class="tb-window-content-' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-help-main-content"></div></div>');
 
                 $tab.data('module', module.shortname);
@@ -129,7 +130,7 @@ TB = {
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));
 
                         $('.tb-window-content .tb-window-content-modules').append($setting);
-
+                        moduleIsEnabled =  (module.setting(setting) ? true : false);
                         // don't need this on the module's tab, too
                         continue;
                     }
@@ -247,6 +248,11 @@ body {\n\
                 // if ($settings.find('input').length > 0) {
                 if (moduleHasSettingTab) {
                     // attach tab and content
+                    if(!moduleIsEnabled) {
+                        $tab.addClass('tb-module-disabled');
+                        $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.')
+                        $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>')
+                    }
                     $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
                     $('.tb-settings .tb-window-content').append($settings);
 

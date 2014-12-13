@@ -87,8 +87,8 @@ notifier.register_setting("unmoderatednotifications", {
 
 notifier.register_setting("checkinterval", {
     "type": "number",
-    "default": 60, // 60 secs.
-    'title': "Interval to check for new items (time in seconds)."
+    "default": 1, // 60 secs.
+    'title': "Interval to check for new items (time in minutes)."
 });
 
 /// Private storage settings.
@@ -149,7 +149,7 @@ notifier.init = function notifierMod_init() {
         modmailunreadlink = notifier.setting('modmailunreadlink');
 
     // private
-    var checkInterval = (notifier.setting('checkinterval') * 1000),//setting is in seconds, convet to milliseconds.
+    var checkInterval = TB.utils.minutesToMilliseconds(notifier.setting('checkinterval')),//setting is in seconds, convet to milliseconds.
         newLoad = true,
         now = new Date().getTime(),
         unreadMessageCount = notifier.setting('unreadmessagecount'),

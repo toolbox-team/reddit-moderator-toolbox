@@ -233,6 +233,18 @@ function initwrapper() {
         return typeInfo;
     };
 
+    //
+    TBUtils.minutesToMilliseconds = function(mins) {
+        var oneMin = 60000,
+            milliseconds = mins * 60 * 1000;
+
+        // Never return less than one min.
+        if (milliseconds < oneMin) {
+            milliseconds = oneMin
+        }
+
+        return milliseconds;
+    };
 
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function (UNIX_timestamp) {

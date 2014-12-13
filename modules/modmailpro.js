@@ -71,6 +71,24 @@ modmail.register_setting('fadeRecipient', {
     'title': 'Fade the recipient of a modmail so it is much more clear who send it. '
 });
 
+modmail.register_setting('showNewBuffer', {
+    'type': 'number',
+    'default': 10,
+    'title': 'Buffer for how long to show mail as new on mod mail page (in minutes)',
+    'hidden': true // for now.
+});
+
+/// Private setting storage
+modmail.register_setting('lastvisited', {
+    'type': 'number',
+    'default': new Date().getTime(),
+    'hidden': true
+});
+modmail.register_setting('visitedbuffer', {
+    'type': 'number',
+    'default': 0,
+    'hidden': true
+});
 
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
@@ -90,9 +108,9 @@ modmail.modmailpro = function () {
         ADDED = "moderator added",
         inbox = modmail.setting('inboxstyle'),
         now = new Date().getTime(),
-        buffer = 5 * 60000, // 5mins
-        lastVisited = TB.storage.getSetting('ModMail', 'lastvisited', now),
-        visitedBuffer = TB.storage.getSetting('ModMail', 'visitedbuffer', -1), // I think this may be broken.
+        buffer = TB.utils.minutesToMilliseconds(modmail.setting('showNewBuffer')),
+        lastVisited =  modmail.setting('lastvisited'),
+        visitedBuffer =  modmail.setting('visitedbuffer'),
         newCount = 0,
         collapsed = modmail.setting('defaultcollapse'),
         expandReplies = modmail.setting('expandreplies'),
@@ -301,8 +319,8 @@ modmail.modmailpro = function () {
             // Update time stamps, but only if it has been more than five minutes since the last update.
             //console.log(now > visitedBuffer);
             if (now > visitedBuffer) {
-                TB.storage.setSetting('ModMail', 'lastvisited', now);
-                TB.storage.setSetting('ModMail', 'visitedbuffer', now + buffer);
+                modmail.setting('lastvisited', now);
+                modmail.setting('visitedbuffer', now + buffer);
             }
 
             // If set collapse all threads on load.

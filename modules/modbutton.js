@@ -12,11 +12,6 @@ modbutton.register_setting('savedSubs', {
     'default': [],
     'title': 'Saved subs (for quick access)'
 });
-// can't call this inside because it doesn't know the default value yet
-// can't call it plain because it uses TB.utils.mySubs
-TB.utils.getModSubs(function modbuttoninit() {
-    modbutton.settings['savedSubs']['args'] = [TB.utils.mySubs, modbutton.setting('savedSubs')];
-});
 
 modbutton.register_setting('rememberLastAction', {
     'type': 'boolean',

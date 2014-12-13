@@ -185,7 +185,7 @@ TB = {
                             break;
                         case "sublist":
                             $setting.append(title + ':<br />');
-                            $setting.append(TB.ui.selectMultiple.apply(TB.ui, options.args)); // first arg sets `this` inside func
+                            $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
                             break;
                         case "selector":
                             var v = module.setting(setting);

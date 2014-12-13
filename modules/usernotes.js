@@ -17,6 +17,11 @@ usernotes.register_setting('showDate', {
     'default': false,
     'title': 'Show date in note preview'
 });
+usernotes.register_setting('showOnModPages', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show current usernote on ban/contrib/mod pages'
+});
 usernotes.register_setting('maxChars', {
     'type': 'number',
     'default': 20,
@@ -27,7 +32,8 @@ usernotes.init = function () {
     var subs = [],
         $body = $('body'),
         maxChars = usernotes.setting('maxChars'),
-        showDate = usernotes.setting('showDate');
+        showDate = usernotes.setting('showDate'),
+        showOnModPages =  usernotes.setting('showOnModPages');
 
     if (window.location.href.indexOf('/about/usernotes') > -1 && usernotes.setting('unManager')) {
 
@@ -222,11 +228,7 @@ usernotes.init = function () {
                     TB.ui.textFeedback('Deleted note for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
             });
         }
-
-
     }
-
-
 
     TBUtils.getModSubs(function () {
         run();
@@ -548,12 +550,28 @@ usernotes.init = function () {
             return;
         }
 
-        var things = $('div.thing .entry[subreddit=' + subreddit + ']');
-        TBUtils.forEachChunked(things, 25, 250, function (thing) {
-            var user = TBUtils.getThingInfo(thing).user;
+        usernotes.log('running');
 
-            var u = getUser(notes.users, user);
-            var $usertag = $(thing).find('.add-user-tag-' + subreddit);
+        var things = $('div.thing .entry[subreddit=' + subreddit + ']');
+        if (showOnModPages && TB.utils.isEditUserPage) {
+            var $userSpan = $('span.user'),
+                tag = '<span class="usernote-span-' +
+                subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
+                subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';
+
+            usernotes.log('running on ban page');
+            things = $userSpan.find('a:first');
+            $userSpan.append(tag);
+        }
+
+        TBUtils.forEachChunked(things, 25, 250, function (thing) {
+            var user = TBUtils.getThingInfo(thing).user,
+                u = getUser(notes.users, user),
+                $usertag = $(thing).find('.add-user-tag-' + subreddit);
+
+            if (TB.utils.isEditUserPage) {
+                $usertag = $(thing).parent().find('.add-user-tag-' + subreddit);
+            }
 
             // Only happens if you delete the last note.
             if (u === undefined || u.notes.length < 1) {
@@ -595,8 +613,6 @@ usernotes.init = function () {
             TBUtils.forEachChunked(subs, 10, 500, processSub);
         });
     }
-
-
 
     $body.on('click', '#add-user-tag', function (e) {
         var thing = $(e.target).closest('.thing .entry'),

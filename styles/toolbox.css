@@ -1878,3 +1878,31 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     position: absolute;
     bottom: 0;
 }
+
+
+/* Livedocs css in case someone disabled css on reddit */
+
+body[class*="wiki-page-livedocs"] * {
+    font-size: 14px !important;
+}
+
+body[class*="wiki-page-livedocs"]  div#header,
+body[class*="wiki-page-livedocs"] div.side,
+body[class*="wiki-page-livedocs"] a[name=content],
+body[class*="wiki-page-livedocs"] .pageactions,
+body[class*="wiki-page-livedocs"] .footer-parent,
+body[class*="wiki-page-livedocs"] #tb-bottombar
+{
+    display: none !important;
+}
+
+body[class*="wiki-page-livedocs"]  .content {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+body[class*="wiki-page-livedocs"] .wiki-page-content,
+body[class*="wiki-page-livedocs"] h1.wikititle {
+    margin: 5px !important;
+}

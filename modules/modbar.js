@@ -317,7 +317,7 @@ if (unmoderatedOn) {
         </div>\
         <div class="tb-window-tabs"></div>\
         <div class="tb-window-content"></div>\
-        <div class="tb-window-footer" comment="for the looks"><input class="tb-save" type="button" value="save"></div>\
+        <div class="tb-window-footer"><input class="tb-save" type="button" value="save"></div>\
     </div></div>\
     ';
         $(html).appendTo('body').show();
@@ -564,39 +564,8 @@ See the License for the specific language governing permissions and limitations 
             module = $this.data('module'),
             $tab = $('.' + tab);
 
-        if (module && TBUtils.browser === 'firefox') {
+        if (module) {
             window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-        } else {
-            var helpwindow = window.open('', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-        }
-
-        if (module && TBUtils.browser !== 'firefox') {
-                // we do fancy stuff here
-                    var htmlcontent = 'Loading...';
-
-                // We should use this, eventually...
-                TBUtils.readFromWiki('toolbox', 'livedocs/' + module, false, function (result) {
-                    var parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer(SnuOwnd.DEFAULT_BODY_FLAGS | SnuOwnd.HTML_ALLOW_ELEMENT_WHITELIST));
-
-                    var html = '\
-                <!DOCTYPE html>\
-                <html>\
-                <head>\
-                <style>\
-                body {\
-                font: normal x-small verdana,arial,helvetica,sans-serif;\
-                }\
-                </style>\
-                </head>\
-                <body>\
-                <div class="help-content" id="help-content">' + parser.render(result) + '</div>\
-                </body>\
-                </html>\
-            ';
-                    helpwindow.document.write(html);
-                    helpwindow.focus();
-
-                });
 
         } else if(TBUtils.browser !== 'firefox') {
             var htmlcontent = $tab.find('.tb-help-main-content').html();

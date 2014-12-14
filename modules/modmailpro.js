@@ -384,17 +384,17 @@ modmail.modmailpro = function () {
             }).wrap('<span class="message-title">');
         }
 
-        var infoArea = $thread.find('.info-area');
+        var $infoArea = $thread.find('.info-area');
         var spacer = '<span> </span>';
 
-        $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a> <span>').appendTo(infoArea);
+        $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a> <span>').appendTo($infoArea);
 
         if (count > 0) {
             if ($thread.hasClass('moremessages')) {
                 count = count + '+';
                 moreCommentThreads.push(threadID);
             }
-            $('<span class="message-count">' + count + ' </span>' + spacer).appendTo(infoArea);
+            $('<span class="message-count">' + count + ' </span>' + spacer).appendTo($infoArea);
         } else {
             unansweredThreads.push(threadID);
 
@@ -407,7 +407,7 @@ modmail.modmailpro = function () {
             }
         }
 
-        $('<span class="replied-tag"></span>' + spacer).appendTo(infoArea);
+        $('<span class="replied-tag"></span>' + spacer).appendTo($infoArea);
 
         $thread.find('.correspondent.reddit.rounded a').parent().prepend(
             '<a href="javascript:;" class="collapse-link">[-]</a> ');
@@ -419,33 +419,43 @@ modmail.modmailpro = function () {
             }
         }
 
-        // Don't parse all entries if we don't need to.
-        if (noRedModmail || highlightNew || subredditColor || fadeRecipient) {
-            TBUtils.forEachChunked(entries, 25, 250, function (entry) {
-                if (noRedModmail) {
-                    var message = $(entry).parent();
+        // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
+        if (subredditColor) {
+            var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
+                colorForSub = TBUtils.stringToColor(subredditName);
 
-                    if (message.hasClass('spam')) {
-                        $(message).css('background-color', 'transparent');
-                        $(message).find('.entry:first .head').css('color', 'red');
+            $thread.css('border-left', 'solid 3px ' + colorForSub);
+            $thread.addClass('tb-subreddit-color');
+        }
+
+        // Don't parse all entries if we don't need to.
+        if (noRedModmail || highlightNew || fadeRecipient) {
+            TBUtils.forEachChunked(entries, 25, 250, function (entry) {
+                var $entry = $(entry);
+                if (noRedModmail) {
+                    var $message = $entry.parent();
+
+                    if ($message.hasClass('spam')) {
+                        $message.css('background-color', 'transparent');
+                        $message.find('.entry:first .head').css('color', 'red');
                     }
                 }
 
                 if (highlightNew && !newThread) {
-                    var timestamp = new Date($(entry).find('.head time').attr('datetime')).getTime();
+                    var timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
                     if (timestamp > lastVisited) {
                         if ($.inArray(threadID, unreadThreads == -1)) {
                             unreadThreads.push(threadID);
                         }
 
-                        $(entry).find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
+                        $entry.find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
 
                         // Expand thread / highlight new
-                        if (message.hasClass('collapsed')) {
-                            $(entry).find('.expand:first').click();
+                        if ($message.hasClass('collapsed')) {
+                            $entry.find('.expand:first').click();
                         }
-                        $(infoArea).css('background-color', 'lightgreen');
+                        $infoArea.css('background-color', 'lightgreen');
 
                         newCount++;
                         $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
@@ -454,24 +464,11 @@ modmail.modmailpro = function () {
 
                 // Fade the recipient of a modmail so it is much more clear WHO send it.
                 if (fadeRecipient) {
-                    var $head = $(entry).find('.tagline .head');
+                    var $head = $entry.find('.tagline .head');
                     if ($head.find('a.author').length > 1) {
                         $head.find('a.author').eq(0).css('opacity', '.6');
                     } else if(/^to /.test($head.text())) {
                         $head.find('a.author').css('opacity', '.6');
-                    }
-                }
-
-                // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
-                if (subredditColor) {
-                    var $parentThing = $(entry).closest('.thing');
-                    if ($parentThing.hasClass('message-parent')) {
-                        if (!$parentThing.hasClass('tb-subreddit-color')) {
-                            var subredditName = $parentThing.find('.correspondent a[href*="moderator/inbox"]').text(),
-                                colorForSub = TBUtils.stringToColor(subredditName);
-                            $parentThing.css('border-left', 'solid 3px ' + colorForSub);
-                            $parentThing.addClass('tb-subreddit-color');
-                        }
                     }
                 }
             });
@@ -480,7 +477,7 @@ modmail.modmailpro = function () {
         // Deal with realtime threads.
         if (newThread) {
             $thread.removeClass('realtime-new');
-            $(infoArea).css('background-color', 'yellow');
+            $infoArea.css('background-color', 'yellow');
             setView($thread);
             setFilterLinks($thread);
 

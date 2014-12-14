@@ -18,10 +18,23 @@ nuke.shortname = 'Nuke';
 nuke.settings['enabled']['default'] = false;
 nuke.config['betamode'] = true;
 
+nuke.register_setting('hideAfterNuke', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Hide nuked comments after they are removed'
+});
+
+nuke.register_setting('confirmNuke', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Show a confirmation window before nuking a comment chain'
+});
+
 nuke.init = function () {
 
 	delete_function = function (thread_root) {
 		var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
+		var $rootElmnt = $(elmnts[0]).closest('.thing');
 		TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
 		for (var i = 0; i < elmnts.length; i++) {
 			setTimeout(
@@ -33,6 +46,9 @@ nuke.init = function () {
 						event.initUIEvent('click', true, true, window, 1);
 						_elmnt.dispatchEvent(event);
 						if (_idx == elmnts.length) {
+							if(nuke.setting('hideAfterNuke')) {
+                                $rootElmnt.hide(750);
+							}
 							nuke.log("kill spinner");
 							TB.ui.longLoadSpinner(false);
 							TB.ui.textFeedback('all comments removed', 'positive');
@@ -92,7 +108,8 @@ nuke.init = function () {
 						var delete_button = divels[_i].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
 						// form input[value="removed"]~span.option.error a.yes -- finds the yes for normal deleting comments.
 						// a.pretty-button.neutral finds the 'remove' button for flagged comments
-						if (confirm("Are you sure you want to nuke the following " + delete_button.length + comment_str)) {
+                        
+						if (!nuke.setting('confirmNuke') || confirm("Are you sure you want to nuke the following " + delete_button.length + comment_str)) {
 
 							for (var indx = 0; indx < continue_thread.length; indx++) {
 								var elmnt = continue_thread[indx];

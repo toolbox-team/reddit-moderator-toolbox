@@ -577,7 +577,7 @@ usernotes.init = function () {
             return;
         }
 
-        usernotes.log('running');
+        //usernotes.log('running');
 
         var things = $('div.thing .entry[subreddit=' + subreddit + ']');
         if (showOnModPages && TB.utils.isEditUserPage) {
@@ -591,7 +591,7 @@ usernotes.init = function () {
             $userSpan.append(tag);
         }
 
-        TBUtils.forEachChunked(things, 25, 250, function (thing) {
+        TBUtils.forEachChunked(things, 20, 300, function (thing) {
             var user = TBUtils.getThingInfo(thing).user,
                 u = getUser(notes.users, user),
                 $usertag = $(thing).find('.add-user-tag-' + subreddit);
@@ -636,8 +636,8 @@ usernotes.init = function () {
     function run() {
         var things = $('div.thing .entry:not(.ut-processed)');
 
-        TBUtils.forEachChunked(things, 25, 500, processThing, function () {
-            TBUtils.forEachChunked(subs, 10, 500, processSub);
+        TBUtils.forEachChunked(things, 20, 650, processThing, function () {
+            TBUtils.forEachChunked(subs, 10, 650, processSub);
         });
     }
 

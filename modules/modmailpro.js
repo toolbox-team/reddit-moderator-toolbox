@@ -117,7 +117,8 @@ modmail.modmailpro = function () {
         unreadThreads = [],
         unansweredThreads = [],
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-        threadAlways = modmail.setting('autoThread');
+        threadAlways = modmail.setting('autoThread'),
+        sentFromMMP = false;
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -259,6 +260,10 @@ modmail.modmailpro = function () {
 
     // NER support.
     window.addEventListener("TBNewThings", function () {
+        if (sentFromMMP) {
+            sentFromMMP = false;
+            return;
+        }
         initialize();
     });
 
@@ -290,6 +295,7 @@ modmail.modmailpro = function () {
             setTimeout(function () {
                 modmail.log('LMC go');
                 processThread($sender);
+                sentFromMMP = true;
                 window.dispatchEvent(event);
             }, 500);
         }
@@ -661,7 +667,7 @@ modmail.modmailpro = function () {
             threads = $('.message-parent');
         }
 
-        TBUtils.forEachChunked(threads, 35, 250, function (thread) {
+        TBUtils.forEachChunked(threads, 25, 250, function (thread) {
             $(thread).find('.entry').hide();
             $(thread).find('.expand-btn').hide();
         });
@@ -729,7 +735,7 @@ modmail.realtimemail = function () {
     // Run RTMM.
     if (modmail.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
-            var count = TB.storage.getSetting('Notifier', 'modmailcount', 0);
+            var count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
             if (count > 0) {
                 $(refreshLink).css(selectedCSS);
                 getNewThings(count);

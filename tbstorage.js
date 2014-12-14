@@ -19,12 +19,13 @@
                     });
 
                 // Cache.
-                Object.keys(sessionStorage)
+                Object.keys(localStorage)
                     .forEach(function (key) {
-                        if (/^(Toolbox.)/.test(key)) {
-                            sessionStorage.removeItem(key);
+                        if (/^(TBCache.)/.test(key)) {
+                            localStorage.removeItem(key);
                         }
                     });
+
 
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
@@ -237,17 +238,19 @@ function storageWrapper() {
 
     TBStorage.clearCache = function () {
 
-        Object.keys(sessionStorage)
+        Object.keys(localStorage)
             .forEach(function (key) {
-                sessionStorage.removeItem(key);
+                if (/^(TBCache.)/.test(key)) {
+                    localStorage.removeItem(key);
+                }
             });
 
-        setCache('Utils', 'configcache', {});
-        setCache('Utils', 'notecache', {});
-        setCache('Utils', 'noconfig', []);
-        setCache('Utils', 'nonotes', []);
-        setCache('Utils', 'moderatedsubs', []);
-        setCache('Utils', 'moderatedsubsdata', []);
+        setCache('Utils', 'configCache', {});
+        setCache('Utils', 'noteCache', {});
+        setCache('Utils', 'noConfig', []);
+        setCache('Utils', 'noNotes', []);
+        setCache('Utils', 'moderatedSubs', []);
+        setCache('Utils', 'moderatedSubsData', []);
     };
 
     function SendInit() {
@@ -368,14 +371,14 @@ function storageWrapper() {
     }
 
     function getCache(module, setting, defaultVal) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
+        var storageKey = 'TBCache.' + module + '.' + setting;
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
-        if (sessionStorage[storageKey] === undefined) {
+        if (localStorage[storageKey] === undefined) {
             return defaultVal;
         } else {
-            var storageString = sessionStorage[storageKey];
+            var storageString = localStorage[storageKey];
             try {
                 result = JSON.parse(storageString);
             } catch (e) {
@@ -394,9 +397,9 @@ function storageWrapper() {
     }
 
     function setCache(module, setting, value) {
-        var storageKey = 'Toolbox.' + module + '.' + setting;
+        var storageKey = 'TBCache.' + module + '.' + setting;
 
-        sessionStorage[storageKey] = JSON.stringify(value);
+        localStorage[storageKey] = JSON.stringify(value);
 
         return getSetting(module, setting);
     }

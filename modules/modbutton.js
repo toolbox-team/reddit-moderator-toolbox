@@ -71,7 +71,7 @@ modbutton.run = function run() {
     }
 
     var $things = $('div.thing .entry:not(.mod-button)');
-    TB.utils.forEachChunked($things, 15, 500, modbutton.processThing);
+    TB.utils.forEachChunked($things, 15, 650, modbutton.processThing);
 
     // WIP selector for adding modbutton for #207
     // lifted from RES, with modifications. thanks /u/honestbleeps

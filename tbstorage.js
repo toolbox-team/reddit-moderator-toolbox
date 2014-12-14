@@ -171,8 +171,6 @@ function storageWrapper() {
             }
         });
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === SAFARI) {
-        // Ask for settings.
-        safari.self.tab.dispatchMessage('tb-getsettings', null);
         // wait for reply.
         safari.self.addEventListener('message', function(event) {
             var tbsettings = event.message;
@@ -189,6 +187,9 @@ function storageWrapper() {
                 SendInit();
             }
         }, false);
+
+        // Ask for settings.
+        safari.self.tab.dispatchMessage('tb-getsettings', null);
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
         // Ask for settings.
         self.port.emit('tb-getsettings');

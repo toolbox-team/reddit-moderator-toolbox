@@ -55,7 +55,6 @@
                 safari.self.tab.dispatchMessage('tb-clearsettings', null);
             // Firefox
             } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
-                self.port.emit('tb-clearsettings');
                 self.port.on('tb-clearsettings-reply', function () {
                     // Wait a sec for stuff to clear.
                     setTimeout(function () {
@@ -63,6 +62,7 @@
                     }, 1000);
                 });
 
+                self.port.emit('tb-clearsettings');
             // Donno, fuck it.
             } else {
                 // Wait a sec for stuff to clear.
@@ -191,9 +191,6 @@ function storageWrapper() {
         // Ask for settings.
         safari.self.tab.dispatchMessage('tb-getsettings', null);
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === FIREFOX) {
-        // Ask for settings.
-        self.port.emit('tb-getsettings');
-
         // wait for reply.
         self.port.on('tb-settings-reply', function (tbsettings) {
             if (tbsettings !== null) {
@@ -208,6 +205,9 @@ function storageWrapper() {
                 SendInit();
             }
         });
+
+        // Ask for settings.
+        self.port.emit('tb-getsettings');
     } else {
         SendInit();
     }

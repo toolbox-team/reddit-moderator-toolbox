@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0</string>
+	<string>3.0b1</string>
 	<key>CFBundleVersion</key>
 	<string>3</string>
 	<key>Chrome</key>
@@ -77,7 +77,7 @@
 	<key>DeveloperIdentifier</key>
 	<string>42X34WDLP5</string>
 	<key>ExtensionInfoDictionaryVersion</key>
-	<string>2.0</string>
+	<string>1.0</string>
 	<key>Permissions</key>
 	<dict>
 		<key>Website Access</key>

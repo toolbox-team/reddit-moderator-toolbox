@@ -80,18 +80,21 @@ usernotes.init = function () {
         }
 
         function showSubNotes(notes) {
+            // The reason for all the complex counting, not using forEachChunked param counter,
+            // and the dumb loop that loadingDone() has is because there is a one in a million chance
+            // that the last user processed could have like 200 notes.  If that happens, forEachChunked
+            // will run it's complete callback *before* $.each(currUserNotes...) has finished processing
+            // those 200 notes.  See: https://github.com/creesch/reddit-moderator-toolbox/issues/385
+
             subUsenotes = notes;
             usernotes.log('showing notes');
 
             var userCount = Object.keys(notes.users).length,
                 noteCount = 0,
-                count = 1;
-            $.each(notes.users, function (key, val) {
+                processedCount = 0;
 
-                var user = val.name;
-
-                var userHTML = '\
-                <div class="tb-un-user un-{{user}}" data-user="{{user}}">\
+            var userHTML = '\
+                <div class="tb-un-user" data-user="{{user}}">\
                     <div class="tb-un-user-header">\
                     <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
                     <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
@@ -101,71 +104,87 @@ usernotes.init = function () {
                     </div>\
                 </div>';
 
-                var usercontent = TB.utils.template(userHTML, {
-                    'user': user
-                });
+            var noteHTML = '\
+                <div class="tb-un-note-details">\
+                    <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>&nbsp;\
+                    <span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;-&nbsp;\
+                    <span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>&nbsp;\
+                </div>';
 
-                $siteTable.append(usercontent);
-
-                $.each(val.notes, function (key, val) {
-                    noteCount++;
-
-                    var noteHTML = '<div class="tb-un-note-details"><a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a> &nbsp;<span class="note"><a href="{{link}}">{{note}}</a></span>\
-                        &nbsp;-&nbsp;<span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>\
-                        &nbsp;</div>';
-
-                    var timeUTC =  Math.round(val.time/1000),
-                        timeISO = TBUtils.timeConverterISO(timeUTC),
-                        timeHuman = TBUtils.timeConverterRead(timeUTC);
-
-                    var notecontent = TB.utils.template(noteHTML, {
-                        'user': user,
-                        'key': key,
-                        'note': val.note,
-                        'link': (val.link) ? unsquashPermalink(sub, val.link) : '',
-                        'mod': val.mod,
-                        'timeUTC': timeHuman,
-                        'timeISO': timeISO
+            TBUtils.forEachChunked(Object.keys(notes.users), 10, 100, function (user, counter) {
+                    var usercontent = TB.utils.template(userHTML, {
+                        'user': user
                     });
 
-                    $siteTable.find('.un-' + user).append(notecontent);
-                });
+                    $siteTable.append(usercontent);
 
-                usernotes.log('Getting user: ' + count +' of '+ userCount);
-                if ((count++) === userCount) {
-                    TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
+                    var currUserNotes = notes.users[user].notes,
+                        currNotes = (currUserNotes.length - 1);
 
-                    var infoHTML = '\
+                    if (currNotes == -1) {
+                        processedCount++;
+                    }
+
+                    $.each(currUserNotes, function (key, val) {
+                        noteCount++;
+
+                        var timeUTC = Math.round(val.time / 1000),
+                            timeISO = TBUtils.timeConverterISO(timeUTC),
+                            timeHuman = TBUtils.timeConverterRead(timeUTC);
+
+                        var notecontent = TB.utils.template(noteHTML, {
+                            'user': user,
+                            'key': key,
+                            'note': val.note,
+                            'link': (val.link) ? unsquashPermalink(sub, val.link) : '',
+                            'mod': val.mod,
+                            'timeUTC': timeHuman,
+                            'timeISO': timeISO
+                        });
+
+                        $siteTable.find('div[data-user="' + user + '"]').append(notecontent);
+
+                        if (currNotes === key) {
+                            processedCount++;
+                            TB.ui.textFeedback("Loading user " + processedCount + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
+                        }
+                    });
+                },
+
+                function () {
+
+                    function loadingDone() {
+
+                        if (processedCount !== userCount) {
+                            console.log('Timeout: ' + processedCount + ' ' + userCount);
+                            setTimeout(function () {
+                                loadingDone();
+                            }, 10000)
+
+                        } else {
+                            TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
+
+                            var infoHTML = '\
                         <div class="tb-un-info">\
                             <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                             <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                         </div></br></br>';
 
-                    var infocontent = TB.utils.template(infoHTML, {
-                        'usercount': userCount,
-                        'notecount': noteCount
-                    });
+                            var infocontent = TB.utils.template(infoHTML, {
+                                'usercount': userCount,
+                                'notecount': noteCount
+                            });
 
-                    $siteTable.prepend(infocontent);
+                            $siteTable.prepend(infocontent);
 
-                    // Set events after all items are loaded.
-                    noteManagerRun();
-                }
-            });
-            $body.find('#tb-unote-user-search').keyup(function () {
-                var userSearchValue = $(this).val();
-                $body.find('#tb-un-note-content-wrap .tb-un-user').each(function () {
-                    var $this = $(this),
-                        userName = $this.data('user').toString(); // all numeric usernames are converted to an int and barf on .indexOf.
-
-                    if (userName.toUpperCase().indexOf(userSearchValue.toUpperCase()) < 0) {
-                        $this.hide();
-                    } else {
-                        $this.show();
+                            // Set events after all items are loaded.
+                            noteManagerRun();
+                        }
                     }
+
+                    loadingDone();
+
                 });
-            });
-            $("time.timeago").timeago();
         }
 
 
@@ -176,6 +195,16 @@ usernotes.init = function () {
         }, 500);
 
         function noteManagerRun() {
+            $("time.timeago").timeago();  //what dies this do?
+
+            // Live search
+            $body.find('#tb-unote-user-search').keyup(function () {
+                var userSearchValue = new RegExp($(this).val().toUpperCase());
+
+                $body.find('.tb-un-user').each(function (key, thing) {
+                    userSearchValue.test($(thing).attr('data-user').toUpperCase())? $(this).show() : $(this).hide();
+                });
+            });
 
             // Update user status.
             $body.find('.tb-un-refresh').on('click', function() {

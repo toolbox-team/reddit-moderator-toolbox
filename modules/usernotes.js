@@ -325,7 +325,7 @@ usernotes.init = function () {
             subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<a class="add-user-tag-' +
             subreddit + '" id="add-user-tag" "href="javascript:;">N</a>]</span>';
 
-        $(thing).attr('subreddit', subreddit);
+        $(thing).attr('data-subreddit', subreddit);
 
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
@@ -549,7 +549,7 @@ usernotes.init = function () {
 
         //usernotes.log('running');
 
-        var things = $('div.thing .entry[subreddit=' + subreddit + ']');
+        var things = $('div.thing .entry[data-subreddit=' + subreddit + ']');
         if (showOnModPages && TB.utils.isEditUserPage) {
             var $userSpan = $('span.user'),
                 tag = '<span class="usernote-span-' +
@@ -714,7 +714,7 @@ usernotes.init = function () {
 
                     popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + this.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
                     new Date(this.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(this.note) +
-                    '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconDelete + '" /></td></tr>');
+                    '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" data-noteid="' + this.time + '" src="data:image/png;base64,' + TBui.iconDelete + '" /></td></tr>');
                     if (this.link) {
                         popup.find('#utagger-date-' + i).wrap('<a href="' + unsquashPermalink(subreddit, this.link) + '">');
                     }
@@ -738,7 +738,7 @@ usernotes.init = function () {
             $unote = $popup.find('.utagger-user-note'),
             subreddit = $unote.attr('data-subreddit'),
             user = $unote.attr('data-user'),
-            noteid = $(e.target).attr('noteid'),
+            noteid = $(e.target).attr('data-noteid'),
             noteText = $unote.val(),
             deleteNote = (e.target.className == 'utagger-remove-note'),
             type = $popup.find('.utagger-type-input:checked').val(),

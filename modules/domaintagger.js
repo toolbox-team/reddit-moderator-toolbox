@@ -65,7 +65,7 @@ tagger.init = function domainTaggerInit() {
             return;
         }
 
-        $(thing).attr('subreddit', subreddit);
+        $(thing).attr('data-subreddit', subreddit);
 
         $(thing).find('span.domain:first').after(tag);
 
@@ -104,7 +104,7 @@ tagger.init = function domainTaggerInit() {
         }
 
         // looks like we have domain tags
-        var $things = $('div.thing[subreddit=' + subreddit + ']');
+        var $things = $('div.thing[data-subreddit=' + subreddit + ']');
         TBUtils.forEachChunked($things, 25, 250, function (thing) {
             var $entry = $(thing).find('.entry');
             var $domain = $(thing).find('span.domain:first');
@@ -154,7 +154,7 @@ tagger.init = function domainTaggerInit() {
                 </div>\
                 <div class="dtagger-popup-content">\
                     <p>\
-                        <input type="text" class="domain-name" value="' + $domain + '" subreddit="' + $subreddit + '"/>\
+                        <input type="text" class="domain-name" value="' + $domain + '" data-subreddit="' + $subreddit + '"/>\
                         <select class="domain-color">\
                             <option value="none">none</option>\
                         </select>\
@@ -181,7 +181,7 @@ tagger.init = function domainTaggerInit() {
 
     $body.on('click', '.save-domain', function () {
         var popup = $(this).closest('.dtagger-popup'),
-            subreddit = popup.find('.domain-name').attr('subreddit');
+            subreddit = popup.find('.domain-name').attr('data-subreddit');
 
         var domainTag = {
             name: popup.find('.domain-name').val(),

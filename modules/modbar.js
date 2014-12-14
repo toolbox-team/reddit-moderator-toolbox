@@ -6,7 +6,7 @@ modbar.shortname = 'Modbar';
 modbar.settings['enabled']['default'] = true;
 
 // How about you don't disable modbar?  No other module should ever do this.
-//modbar.settings['enabled']['hidden'] = true;
+modbar.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
 modbar.register_setting('compactHide', {
     'type': 'boolean',

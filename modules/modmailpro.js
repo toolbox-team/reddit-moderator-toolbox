@@ -112,6 +112,8 @@ modmail.modmailpro = function () {
         noRedModmail = modmail.setting('noRedModmail'),
         hideInviteSpam = modmail.setting('hideInviteSpam'),
         highlightNew = modmail.setting('highlightNew'),
+        fadeRecipient = modmail.setting('fadeRecipient'),
+        subredditColor = modmail.setting('subredditColor'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -336,40 +338,10 @@ modmail.modmailpro = function () {
             setReplied(unprocessedThreads);
             setView();
         });
-        // Add borders if enabled. 
-        if (modmail.setting('subredditColor')) {
-            colorBorderMail();
-        }
-        // Fade the recipient of a modmail so it is much more clear WHO send it.
-        if (modmail.setting('fadeRecipient')) {
-            fadeRecipient();
-        }
-    }
-    
-    // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for. 
-    function colorBorderMail() {    
-        $('body').find('.thing.message-parent').each(function() {
-        var $this = $(this);
-            if (!$this.hasClass('tb-subreddit-color')) {
-                var subredditName = $this.find('.correspondent a[href*="moderator/inbox"]').text(), 
-                    subredditColor = TBUtils.stringToColor(subredditName);
-                $this.css('border-left', 'solid 3px ' + subredditColor);
-                $this.addClass('tb-subreddit-color');
-            }    
-        });
-    }
 
-    function fadeRecipient() {
-        $body.find('.tagline .head').each(function() {
-            var $this = $(this);
-            if ($this.find('a.author').length > 1) {
-                $this.find('a.author').eq(0).css('opacity', '.6');
-            } else if(/^to /.test($this.text())) {
-                $this.find('a.author').css('opacity', '.6');
-            }
-        });
     }
     
+
     function processThread(thread) {
         var $thread = $(thread);
         if ($thread.hasClass('mmp-processed')) {
@@ -448,7 +420,7 @@ modmail.modmailpro = function () {
         }
 
         // Don't parse all entries if we don't need to.
-        if (noRedModmail || highlightNew) {
+        if (noRedModmail || highlightNew || subredditColor || fadeRecipient) {
             TBUtils.forEachChunked(entries, 25, 250, function (entry) {
                 if (noRedModmail) {
                     var message = $(entry).parent();
@@ -477,6 +449,29 @@ modmail.modmailpro = function () {
 
                         newCount++;
                         $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
+                    }
+                }
+
+                // Fade the recipient of a modmail so it is much more clear WHO send it.
+                if (fadeRecipient) {
+                    var $head = $(entry).find('.tagline .head');
+                    if ($head.find('a.author').length > 1) {
+                        $head.find('a.author').eq(0).css('opacity', '.6');
+                    } else if(/^to /.test($head.text())) {
+                        $head.find('a.author').css('opacity', '.6');
+                    }
+                }
+
+                // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
+                if (subredditColor) {
+                    var $parentThing = $(entry).closest('.thing');
+                    if ($parentThing.hasClass('message-parent')) {
+                        if (!$parentThing.hasClass('tb-subreddit-color')) {
+                            var subredditName = $parentThing.find('.correspondent a[href*="moderator/inbox"]').text(),
+                                colorForSub = TBUtils.stringToColor(subredditName);
+                            $parentThing.css('border-left', 'solid 3px ' + colorForSub);
+                            $parentThing.addClass('tb-subreddit-color');
+                        }
                     }
                 }
             });

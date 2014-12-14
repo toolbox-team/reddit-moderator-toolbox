@@ -80,18 +80,11 @@ usernotes.init = function () {
         }
 
         function showSubNotes(notes) {
-            // The reason for all the complex counting, not using forEachChunked param counter,
-            // and the dumb loop that loadingDone() has is because there is a one in a million chance
-            // that the last user processed could have like 200 notes.  If that happens, forEachChunked
-            // will run it's complete callback *before* $.each(currUserNotes...) has finished processing
-            // those 200 notes.  See: https://github.com/creesch/reddit-moderator-toolbox/issues/385
-
             subUsenotes = notes;
             usernotes.log('showing notes');
 
             var userCount = Object.keys(notes.users).length,
-                noteCount = 0,
-                processedCount = 0;
+                noteCount = 0;
 
             var userHTML = '\
                 <div class="tb-un-user" data-user="{{user}}">\
@@ -118,14 +111,9 @@ usernotes.init = function () {
 
                     $siteTable.append(usercontent);
 
-                    var currUserNotes = notes.users[user].notes,
-                        currNotes = (currUserNotes.length - 1);
+                    TB.ui.textFeedback("Loading user " + counter + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
 
-                    if (currNotes == -1) {
-                        processedCount++;
-                    }
-
-                    $.each(currUserNotes, function (key, val) {
+                    $.each(notes.users[user].notes, function (key, val) {
                         noteCount++;
 
                         var timeUTC = Math.round(val.time / 1000),
@@ -143,45 +131,27 @@ usernotes.init = function () {
                         });
 
                         $siteTable.find('div[data-user="' + user + '"]').append(notecontent);
-
-                        if (currNotes === key) {
-                            processedCount++;
-                            TB.ui.textFeedback("Loading user " + processedCount + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
-                        }
                     });
                 },
 
                 function () {
+                    TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
-                    function loadingDone() {
-
-                        if (processedCount !== userCount) {
-                            console.log('Timeout: ' + processedCount + ' ' + userCount);
-                            setTimeout(function () {
-                                loadingDone();
-                            }, 10000)
-
-                        } else {
-                            TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
-
-                            var infoHTML = '\
+                    var infoHTML = '\
                         <div class="tb-un-info">\
                             <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                             <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                         </div></br></br>';
 
-                            var infocontent = TB.utils.template(infoHTML, {
-                                'usercount': userCount,
-                                'notecount': noteCount
-                            });
+                    var infocontent = TB.utils.template(infoHTML, {
+                        'usercount': userCount,
+                        'notecount': noteCount
+                    });
 
-                            $siteTable.prepend(infocontent);
+                    $siteTable.prepend(infocontent);
 
-                            // Set events after all items are loaded.
-                            noteManagerRun();
-                        }
-                    }
-                    loadingDone();
+                    // Set events after all items are loaded.
+                    noteManagerRun();
                 });
         }
 

@@ -313,7 +313,7 @@ if (unmoderatedOn) {
     <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
         <div class="tb-window-header">\
             Toolbox Settings\
-            <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" data-currentpage="" title="Help">?</a> - <a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
+            <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a> - <a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
         </div>\
         <div class="tb-window-tabs"></div>\
         <div class="tb-window-content"></div>\
@@ -368,7 +368,7 @@ if (unmoderatedOn) {
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
-        $('.tb-help-main').attr('data-currentpage', 'tb-window-content-toolbox');
+        $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
 
         // Settings to toggle the modules
         var htmlmodules = '\
@@ -485,7 +485,7 @@ See the License for the specific language governing permissions and limitations 
         $('.tb-window-tabs a').removeClass('active');
         $(this).addClass('active');
 
-        $tb_help_mains.attr('data-currentpage', tab);
+        $tb_help_mains.attr('currentpage', tab);
         // if we have module name, give that to the help button
         if ($(this).data('module')) {
             $tb_help_mains.data('module', $(this).data('module'));
@@ -560,7 +560,7 @@ See the License for the specific language governing permissions and limitations 
 
     $body.on('click', '.tb-help-main', function () {
         var $this = $(this),
-            tab = $(this).attr('data-currentpage'),
+            tab = $(this).attr('currentpage'),
             module = $this.data('module'),
             $tab = $('.' + tab);
 

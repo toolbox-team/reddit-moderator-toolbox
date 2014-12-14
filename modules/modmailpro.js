@@ -124,12 +124,12 @@ modmail.modmailpro = function () {
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-        $allLink = $('<li><a class="alllink" href="javascript:;" data-view="' + ALL + '">all</a></li>'),
-        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" data-view="' + PRIORITY + '">priority</a></li>'),
-        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" data-view="' + FILTERED + '">filtered</a></li>'),
-        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" data-view="' + REPLIED + '">replied</a></li>'),
-        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" data-view="' + UNREAD + '">unread</a></li>'),
-        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" data-view="' + UNANSWERED + '">unanswered</a></li>'),
+        $allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
+        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
+        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
+        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
+        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
+        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" view="' + UNANSWERED + '">unanswered</a></li>'),
         $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
@@ -222,7 +222,7 @@ modmail.modmailpro = function () {
         // Just unselect all, then select the caller.
         $(menuList).find('li').removeClass('selected');
 
-        inbox = $(e.target).attr('data-view');
+        inbox = $(e.target).attr('view');
 
         setView();
     });
@@ -575,7 +575,8 @@ modmail.modmailpro = function () {
 
     $body.on('click', '.filter-sub-link', function (e) {
         var subname = getSubname($(e.target).closest('.message-parent')),
-            filtersubs = getFilteredSubs();
+            filtersubs = getFilteredSubs(),
+            $filterCount = $('.filter-count');
 
         // Add sub to filtered subs.
         if ($.inArray(subname, filtersubs) === -1) {
@@ -592,6 +593,10 @@ modmail.modmailpro = function () {
 
         // Relabel links
         setFilterLinks();
+
+        // Update filter count in settings.
+        $filterCount.text(filtersubs.length);
+        $filterCount.attr('title', filtersubs.join(', '));
     });
 
     function getSubname(sub) {

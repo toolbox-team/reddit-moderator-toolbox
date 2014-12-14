@@ -181,9 +181,7 @@ usernotes.init = function () {
                             noteManagerRun();
                         }
                     }
-
                     loadingDone();
-
                 });
         }
 
@@ -212,16 +210,16 @@ usernotes.init = function () {
                     user = $this.attr('data-user'),
                     $userSpan = $this.parent().find('.user');
                 if (!$this.hasClass('tb-un-refreshed')) {
-                    $this.addClass('tb-un-refreshed')
+                    $this.addClass('tb-un-refreshed');
                     usernotes.log('refreshing user: ' + user);
-                TB.utils.aboutUser(user, function (succ) {
+                    TB.utils.aboutUser(user, function (succ) {
 
-                    var $status = TB.utils.template('&nbsp;<span class="status">[the status of this user account is: {{status}}]</span>', {
-                        'status': succ ? 'active' : 'deleted'
+                        var $status = TB.utils.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
+                            'status': succ ? 'active' : 'deleted'
+                        });
+
+                        $userSpan.after($status);
                     });
-
-                    $userSpan.after($status);
-                });
                 }
             });
 

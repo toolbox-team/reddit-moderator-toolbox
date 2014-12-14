@@ -9,7 +9,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>reddit Moderator Toolbox</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.codefromabove.toolbox</string>
+	<string>com.reddit.toolbox</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>

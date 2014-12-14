@@ -22,25 +22,24 @@ nuke.init = function () {
 
 	delete_function = function (thread_root) {
 		var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
-		TB.utils.longLoadSpinner(true,'removing comments','neutral');
+		TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
 		for (var i = 0; i < elmnts.length; i++) {
 			setTimeout(
 				(function (_elmnt, _idx) {
 					return function () {
-						TB.utils.textFeedback('removing comment ' + _idx + '/' + elmnts.length,'neutral');
+						TB.ui.textFeedback('removing comment ' + _idx + '/' + elmnts.length, 'neutral');
 						nuke.log('removing comment ' + _idx + '/' + elmnts.length, false, 'nuke');
 						var event = document.createEvent('UIEvents');
 						event.initUIEvent('click', true, true, window, 1);
 						_elmnt.dispatchEvent(event);
 						if (_idx == elmnts.length) {
 							nuke.log("kill spinner");
-							TB.utils.longLoadSpinner(false);
-							TB.utils.textFeedback('all comments removed','positive');
+							TB.ui.longLoadSpinner(false);
+							TB.ui.textFeedback('all comments removed', 'positive');
 						}
 					}
-				})(elmnts[i], (i+1)), 1500 * i); // 1.5s timeout prevents overloading reddit.
+				})(elmnts[i], (i + 1)), 1500 * i); // 1.5s timeout prevents overloading reddit.
 		}
-
 	};
 
 	if (document.querySelector('body.moderator')) { // only execute if you are a moderator

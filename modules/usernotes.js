@@ -156,7 +156,7 @@ usernotes.init = function () {
                 var userSearchValue = $(this).val();
                 $body.find('#tb-un-note-content-wrap .tb-un-user').each(function () {
                     var $this = $(this),
-                        userName = $this.data('user');
+                        userName = $this.data('user').toString(); // all numeric usernames are converted to an int and barf on .indexOf.
 
                     if (userName.toUpperCase().indexOf(userSearchValue.toUpperCase()) < 0) {
                         $this.hide();

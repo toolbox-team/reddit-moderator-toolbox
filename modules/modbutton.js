@@ -5,7 +5,7 @@ var modbutton = new TB.Module('Mod Button');
 modbutton.shortname = 'ModButton';
 
 modbutton.settings['enabled']['default'] = true;
-modbutton.config['needs_mod_subs'] = true;
+//modbutton.config['needs_mod_subs'] = true;
 
 modbutton.register_setting('savedSubs', {
     'type': 'sublist',
@@ -32,11 +32,11 @@ modbutton.register_setting('lastAction', {
 });
 
 // example setting with unknown type, uses default case
-modbutton.register_setting('fooBarTestSetting', {
-    'type': 'foo',
-    'default': [],
-    'title': 'Test setting unknown type'
-});
+//modbutton.register_setting('fooBarTestSetting', {
+//    'type': 'foo',
+//    'default': [],
+//    'title': 'Test setting unknown type'
+//});
 
 
 
@@ -135,8 +135,10 @@ modbutton.init = function init() {
 
     modbutton.savedSubs = TB.utils.saneSort(modbutton.savedSubs);
 
-    // it's Go Time™!
-    modbutton.run();
+    TB.utils.getModSubs(function(){
+        // it's Go Time™!
+        modbutton.run();
+    });
 
     // NER support.
     window.addEventListener('TBNewThings', function () {

@@ -202,7 +202,7 @@ if (unmoderatedOn) {
             }
         }, 500);
 
-        if (consoleShowing) {
+        if (consoleShowing && debugMode) {
             $console.show();
         }
 

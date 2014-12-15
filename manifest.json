@@ -26,7 +26,6 @@
 		"styles/modmatrix.css",
 		"styles/removalreasons.css",
 		"styles/personalnotes.css",
-		"styles/modmaillite.css",
 		"styles/queuetools.css"
 	  ],
 	  "js": [
@@ -50,7 +49,6 @@
 		"modules/usernotes.js",
 		"modules/modbutton.js",
 		"modules/modmailpro.js",
-		"modules/modmaillite.js",
 		"modules/stattittab.js",
 		"modules/comment.js",
 		"modules/config.js",

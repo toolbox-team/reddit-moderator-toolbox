@@ -47,7 +47,6 @@
 				<string>modules/usernotes.js</string>
 				<string>modules/modbutton.js</string>
 				<string>modules/modmailpro.js</string>
-				<string>modules/modmaillite.js</string>
 				<string>modules/stattittab.js</string>
 				<string>modules/comment.js</string>
 				<string>modules/config.js</string>
@@ -70,7 +69,6 @@
 			<string>styles/modmatrix.css</string>
 			<string>styles/removalreasons.css</string>
 			<string>styles/personalnotes.css</string>
-			<string>styles/modmaillite.css</string>
 			<string>styles/queuetools.css</string>
 		</array>
 	</dict>

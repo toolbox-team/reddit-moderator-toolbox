@@ -411,10 +411,6 @@ comments.init = function commentsModInit() {
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
-            TBUtils.getModSubs(function () {
-                populateSearchSuggestion();
-            });
-
             function populateSearchSuggestion() {
 
                 $(TBUtils.mySubs).each(function () {
@@ -422,6 +418,10 @@ comments.init = function commentsModInit() {
                 <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
                 });
             }
+
+            TBUtils.getModSubs(function () {
+                populateSearchSuggestion();
+            });
 
             $body.on('focus', '#subredditsearch', function () {
                 var offset = $(this).offset();
@@ -465,13 +465,15 @@ comments.init = function commentsModInit() {
             });
 
 
+
             $body.on('submit', '#tb-searchuser', function (event) {
+
                 var subredditsearch = $body.find('#subredditsearch').val(),
                     usersearch = $('#header-bottom-left .pagename').text();
 
                 subredditsearch = subredditsearch.replace(/\/?r\//g, '');
                 subredditsearch = TBUtils.htmlEncode(subredditsearch);
-                event.preventDefault();
+
 
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
@@ -624,7 +626,7 @@ comments.init = function commentsModInit() {
                 }
 
                 searchComments(usersearch, subredditsearch);
-
+                return false;
             });
         }
     }

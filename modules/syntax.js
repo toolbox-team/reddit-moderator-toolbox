@@ -76,6 +76,8 @@ syntax.init = function init() {
         editor.setTheme("ace/theme/" + selectedTheme);
         if (TBUtils.browser == 'chrome') {
             ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
+        } else if (TBUtils.browser == 'safari') {
+            ace.config.set('workerPath', safari.extension.baseURI+'/libs/')
         } else if (TBUtils.browser == 'firefox') {
             session.setUseWorker(false);
         }

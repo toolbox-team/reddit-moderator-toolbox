@@ -19,8 +19,6 @@ realtime.init = function realtimeInit() {
     $('.tabmenu').append('<li><a><label>realtime:<input id="realtime" class="tb-realtime-checkbox" type="checkbox" title="Toggle realtime mode" /></label></a></li>');
 
     var timeout, delay = 5000,
-        $sitetable = $('#siteTable').css('top', 0),
-        initialPosition = $sitetable.css('position'),
         $checkbox = $('.tb-realtime-checkbox');
 
     // Add new things
@@ -90,6 +88,14 @@ realtime.init = function realtimeInit() {
 
     // Toggle realtime view on/off
     $checkbox.on('click', function () {
+        var $body = $('body'),
+            siteTableMargin = $body.find('.side').outerWidth() + 10,
+            $sitetable = $('#siteTable').css({
+                'top': 0,
+                'margin-right': siteTableMargin + 'px'
+            }),
+            initialPosition = $sitetable.css('position');
+
         realtime.log("realtime checked: " + $checkbox.is(':checked'));
 
         clearTimeout(timeout);

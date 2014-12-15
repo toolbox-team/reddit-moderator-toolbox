@@ -49,6 +49,7 @@
 		"modules/usernotes.js",
 		"modules/modbutton.js",
 		"modules/modmailpro.js",
+		"modules/modmaillite.js",
 		"modules/stattittab.js",
 		"modules/comment.js",
 		"modules/config.js",

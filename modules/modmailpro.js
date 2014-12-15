@@ -600,8 +600,7 @@ modmail.modmailpro = function () {
     });
 
     function getSubname(sub) {
-        return $(sub).find('.correspondent.reddit.rounded a').text().replace('/r/', '').replace('[-]', '')
-            .replace('[+]', '').trim().toLowerCase();
+        return TB.utils.cleanSubredditName($(sub).find('.correspondent.reddit.rounded a').text()).toLowerCase();
     }
 
     function getFilteredSubs() {

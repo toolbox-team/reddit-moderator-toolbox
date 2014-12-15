@@ -163,7 +163,7 @@ queue.init = function () {
                 TBUtils.getModSubs(function () {
                     $('.thing .subreddit').each(function () {
                         // Just to be safe.
-                        var sub = $(this).text().replace('/r/', '').replace('/', '');
+                        var sub = TB.utils.cleanSubredditName($(this).text());
                         if ($.inArray(sub, TBUtils.mySubs) === -1) {
                             $(this).parents('.thing').remove();
                         }

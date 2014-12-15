@@ -515,6 +515,11 @@ function initwrapper() {
     };
 
 
+    TBUtils.cleanSubredditName = function(dirtySub) {
+        return dirtySub.replace('/r/', '').replace('/', '').replace('[-]', '').replace('[+]', '').trim();
+    };
+
+
     TBUtils.getModSubs = function (callback) {
         //$.log('getting mod subs');
         // If it has been more than ten minutes, refresh mod cache.
@@ -666,7 +671,7 @@ function initwrapper() {
         // A recent reddit change makes subreddit names sometimes start with "/r/".
         // Mod mail subreddit names additionally end with "/".
         // reddit pls, need consistency
-        subreddit = subreddit.replace('/r/', '').replace('/', '').replace('[-]', '').replace('[+]', '').trim();
+        subreddit = TBUtils.cleanSubredditName(subreddit);
 
         // Not a mod, reset current sub.
         if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
@@ -697,7 +702,6 @@ function initwrapper() {
         //$.log(info);
         return info;
     };
-
 
     TBUtils.replaceTokens = function (info, content) {
         $.log(info);

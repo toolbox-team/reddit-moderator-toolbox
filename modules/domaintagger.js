@@ -141,9 +141,11 @@ tagger.init = function domainTaggerInit() {
 
     $body.on('click', '.add-domain-tag', function (e) {
         // TODO: This should use getThingInfo(), but I don't want to introduce any bugs for 2.0 by messing with it.
-        var $thing = $(e.target).closest('.thing');
-        var $domain = $($thing).find('span.domain:first').text().replace('(', '').replace(')', '').toLocaleLowerCase();
-        var $subreddit = ($($thing).find('a.subreddit').text() || $('.titlebox h1.redditname a').text()).replace('/r/', '');
+        var $thing = $(e.target).closest('.thing'),
+            $domain = $($thing).find('span.domain:first').text().replace('(', '').replace(')', '').toLocaleLowerCase(),
+            $subreddit = ($($thing).find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
+
+        $subreddit = TB.utils.cleanSubredditName($subreddit);
 
         // Make box & add subreddit radio buttons
         var $popup = $('\

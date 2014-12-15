@@ -450,7 +450,7 @@ See the License for the specific language governing permissions and limitations 
         if (!sub) return;
 
         // Just to be safe.
-        sub = sub.replace('/r/', '').replace('/', '');
+        sub = TB.utils.cleanSubredditName(sub);
 
         // Save the sub, first.
         TB.storage.setSetting('Utils', 'settingSub', sub);

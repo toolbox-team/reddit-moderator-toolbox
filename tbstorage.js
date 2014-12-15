@@ -286,8 +286,8 @@ function storageWrapper() {
             .forEach(function (fullKey) {
                 if (/^(Toolbox.)/.test(fullKey)) {
                     if (fullKey === TBStorage.SAFE_STORE_KEY) return;
-                    var key = fullKey.split(".");
-                    setting = getSetting(key[1], key[2], null);
+                    var key = fullKey.split("."),
+                        setting = getSetting(key[1], key[2], null);
                     //console.log(fullKey);
                     if (setting !== undefined) {
                         settingsObject[fullKey] = setting;

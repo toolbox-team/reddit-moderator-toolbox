@@ -1372,7 +1372,7 @@ function initwrapper() {
         TBStorage.unloading();
 
 
-        localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
+        //localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
         if (TBStorage.bnwShim) {
             localStorage[TBStorage.BNW_SHIM_KEY] = true;

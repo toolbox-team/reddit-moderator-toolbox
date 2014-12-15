@@ -372,7 +372,7 @@ tbconfig.init = function () {
                         label = TBUtils.htmlEncode(label);
                     }
 
-                    var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '<span style="color: #cecece">(no reason)</span>',
+                    var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '',
                         removalReasonTitle = config.removalReasons.reasons[i].title || '',
                         removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                         removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
@@ -433,7 +433,7 @@ tbconfig.init = function () {
                         }
                         label = TBUtils.htmlEncode(label);
                     }
-                    var modMacroText = decodeURIComponent(config.modMacros[i].text) || '<span style="color: #cecece">(no macro)</span>',
+                    var modMacroText = decodeURIComponent(config.modMacros[i].text) || '',
                         modMacroTitle = config.modMacros[i].title || '';
 
                     var modMacroTemplate = '\
@@ -851,14 +851,14 @@ tbconfig.init = function () {
 
     });
 
-    // Adding a new reason
+    // Adding a new macro
     $body.on('click', '#tb-add-mod-macro', function () {
 
         $(this).hide();
         $body.find('#tb-add-mod-macro-form').show();
     });
 
-    // Save new reason
+    // Save new macro
     $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function () {
         var macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
             macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),

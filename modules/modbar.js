@@ -73,7 +73,7 @@ modbar.init = function modbarInit() {
         devMode = TBUtils.devMode,
 
         settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-        browserConsole = TB.storage.getSetting('Utils', 'skiplocalconsole', false),
+        browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
         shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
         longLength = TB.storage.getSetting('Utils', 'longlength', 45),
 

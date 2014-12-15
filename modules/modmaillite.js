@@ -213,6 +213,16 @@ modmaillite.init = function mmlInit() {
                     }
                 }
 
+                // Fade the recipient of a modmail so it is much more clear WHO send it.
+                if (fadeRecipient) {
+                    var $head = $entry.find('.tagline .head');
+                    if ($head.find('a.author').length > 1) {
+                        $head.find('a.author').eq(0).css('opacity', '.6');
+                    } else if(/^to /.test($head.text())) {
+                        $head.find('a.author').css('opacity', '.6');
+                    }
+                }
+
                 if (i > done) return false;
                 if (i === done) {
                     return false;
@@ -330,7 +340,7 @@ modmaillite.init = function mmlInit() {
                 });
             }
         } else {
-            $message.val('thread view');
+            $message.val('flat view');
             firstMessage.removeClass("threaded-modmail");
             firstMessage.find(".thing").each(function () {
                 $(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));

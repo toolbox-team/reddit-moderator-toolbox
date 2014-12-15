@@ -70,6 +70,7 @@
 			<string>styles/modmatrix.css</string>
 			<string>styles/removalreasons.css</string>
 			<string>styles/personalnotes.css</string>
+			<string>styles/modmaillite.css</string>
 			<string>styles/queuetools.css</string>
 		</array>
 	</dict>

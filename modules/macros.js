@@ -138,7 +138,7 @@ macros.init = function macrosInit() {
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Mod Macro:' + title,
                     content: '<textarea class="macro-edit-area" data-toplevel="'+ topLevel +'" data-id="' + info.id + '">' + comment + '</textarea>',
-                    footer: '<button class="macro-send">Send Message</button>'
+                    footer: '<button class="macro-send">Post Macro</button>'
                 }
             ],
             '',

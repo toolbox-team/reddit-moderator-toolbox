@@ -492,7 +492,7 @@ notifier.init = function notifierMod_init() {
                     if (queuecount === 1) {
                         TBUtils.notification('One new modqueue item!', notificationbody, '/r/' + modSubreddits + '/about/modqueue');
 
-                    } else {
+                    } else if (queuecount > 1) {
                         TBUtils.notification(queuecount.toString() + ' new modqueue items!', notificationbody, '/r/' + modSubreddits + '/about/modqueue');
                     }
 

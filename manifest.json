@@ -26,6 +26,7 @@
 		"styles/modmatrix.css",
 		"styles/removalreasons.css",
 		"styles/personalnotes.css",
+		"styles/modmaillite.css",
 		"styles/queuetools.css"
 	  ],
 	  "js": [

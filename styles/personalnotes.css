@@ -1,10 +1,14 @@
+.mod-toolbox .tb-popup.personal-notes-popup {
+max-width: 95%;
+}
+
 .mod-toolbox .personal-notes-popup table {
     min-height: 200px
 
 }
 
 .mod-toolbox #tb-personal-notes-listing {
-    width: 100px;
+    width: 130px;
     border-right: solid 1px gray;
     vertical-align: top;
     padding: 3px 3px 3px 0;

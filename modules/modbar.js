@@ -77,8 +77,8 @@ modbar.init = function modbarInit() {
         shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
         longLength = TB.storage.getSetting('Utils', 'longlength', 45),
 
-        modSubreddits = TB.storage.getSetting('Notifier', 'modsubreddits', 'mod'),
-        unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedsubreddits', 'mod'),
+        modSubreddits = TB.storage.getSetting('Notifier', 'modmailSubreddits', 'mod'),
+        unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
@@ -91,6 +91,8 @@ modbar.init = function modbarInit() {
     //
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
+
+
     var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
 <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
@@ -110,6 +112,7 @@ modbar.init = function modbarInit() {
 ');
 
     // Add unmoderated icon if it is enabled.
+
 if (unmoderatedOn) {
     modBar.find('#tb-toolbarcounters').append('\
     <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\

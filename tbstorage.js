@@ -253,6 +253,82 @@ function storageWrapper() {
         setCache('Utils', 'moderatedSubsData', []);
     };
 
+    TBStorage.verifiedSettingsSave = function(callback) {
+        // Allow manual saves from all domains.
+        if (!TBStorage.userBrowserStorage) return callback(true);
+
+        // Don't re-store the settings after a save on the the refresh that follows.
+        localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
+
+        if (TBStorage.browser === CHROME) {
+            settingsToObject(function (sObject) {
+                var settingsObject = sObject;
+
+                // save settings
+                chrome.storage.local.set({
+                    'tbsettings': sObject
+                }, function () {
+
+                    // now verify them
+                    chrome.storage.local.get('tbsettings', function (returnObject) {
+                        if (returnObject.tbsettings && returnObject.tbsettings !== undefined
+                            && isEquivalent(returnObject.tbsettings, settingsObject)) {
+                            callback(true);
+                        } else {
+                            $.log('Settings could not be verified', false, 'TBStorage');
+                            callback(false);
+                        }
+                    });
+                });
+
+            });
+
+        } else if (TBStorage.browser === SAFARI) {
+            settingsToObject(function (sObject) {
+                var settingsObject = sObject;
+
+                // save settings
+                safari.self.tab.dispatchMessage('tb-setsettings', sObject);
+
+                // verify settings
+                safari.self.addEventListener('message', function (event) {
+                    var tbsettings = event.message;
+                    if (event.name === 'tb-getsettings' && tbsettings !== undefined
+                        && isEquivalent(tbsettings, settingsObject)) {
+                        callback(true);
+                    } else {
+                        $.log('Settings could not be verified', false, 'TBStorage');
+                        callback(false);
+                    }
+                }, false);
+
+                // Ask for settings.
+                safari.self.tab.dispatchMessage('tb-getsettings', null);
+            });
+
+        } else if (TBStorage.browser === FIREFOX) {
+            settingsToObject(function (sObject) {
+                var settingsObject = sObject;
+
+                // save settings
+                self.port.emit('tb-setsettings', sObject);
+
+                // verify settings
+                self.port.on('tb-settings-reply', function (tbsettings) {
+                    if (tbsettings !== null && isEquivalent(tbsettings, settingsObject)) {
+                        callback(true);
+                    } else {
+                        $.log('Settings could not be verified', false, 'TBStorage');
+                        callback(false);
+                    }
+                });
+
+                // Ask for settings.
+                self.port.emit('tb-getsettings');
+            });
+        }
+    };
+
     function SendInit() {
         //TBLoadUtils
         var event = new CustomEvent("TBLoadUtils");
@@ -402,6 +478,45 @@ function storageWrapper() {
         localStorage[storageKey] = JSON.stringify(value);
 
         return getSetting(module, setting);
+    }
+
+    // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
+    // added recursive object checks - al
+    function isEquivalent(a, b) {
+        // Create arrays of property names
+        var aProps = Object.getOwnPropertyNames(a);
+        var bProps = Object.getOwnPropertyNames(b);
+
+        // If number of properties is different,
+        // objects are not equivalent
+        if (aProps.length != bProps.length) {
+            $.log('length :' + aProps.length + ' ' + bProps.length);
+            return false;
+        }
+
+        for (var i = 0; i < aProps.length; i++) {
+            var propName = aProps[i];
+            var propA = a[propName];
+            var propB = b[propName];
+
+            // If values of same property are not equal,
+            // objects are not equivalent
+            if (propA !== propB) {
+                if (typeof propA === 'object' && typeof propB === 'object') {
+                    if (!isEquivalent(propA, propB)){
+                        $.log('prop :' + propA + ' ' + propB);
+                        return false;
+                    }
+                } else{
+                    $.log('prop :' + propA + ' ' + propB);
+                    return false;
+                }
+            }
+        }
+
+        // If we made it this far, objects
+        // are considered equivalent
+        return true;
     }
 
 }(TBStorage = window.TBStorage || {}));

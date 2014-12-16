@@ -554,10 +554,17 @@ See the License for the specific language governing permissions and limitations 
 
         $('.tb-settings').remove();
         $body.css('overflow', 'auto');
-        if (!devMode) {
-            window.location.reload();
-        }
 
+        TB.storage.verifiedSettingsSave(function(succ){
+            if (succ){
+                TB.ui.textFeedback("Settings saved and verified", TB.ui.FEEDBACK_POSITIVE);
+                setTimeout(function () {
+                    if (!devMode) window.location.reload();
+                }, 1000);
+            } else{
+                TB.ui.textFeedback("Save could not be verified", TB.ui.FEEDBACK_NEGATIVE);
+            }
+        });
     });
 
 

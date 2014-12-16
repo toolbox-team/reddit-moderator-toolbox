@@ -29,7 +29,7 @@ modmaillite.init = function mmlInit() {
         threadAlways = settingsShim('autoThread'),
         subredditColor = settingsShim('subredditColor');
 
-    //settingsShim('lastVisited', now);
+    settingsShim('lastVisited', now);
     $('.menuarea').html('');
     $('clearleft').remove();
 

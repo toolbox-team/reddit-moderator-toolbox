@@ -390,8 +390,12 @@ text-align: left;
 
 .tb-window-header-options {
     display: inline-block;
-    float: right;
-    position: relative;
+    position: absolute;
+    background-color: #C7D6E6;
+    line-height: 24px;
+    border-left: 1px solid #A8B5C2;
+    right: 0px;
+    top: 0px;
 }
 
 .mod-toolbox .tb-close {
@@ -779,6 +783,10 @@ img.note-close {
 .mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
     background-color: #9FBAD6;
 }
+
+
+
+
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
     padding: 0 5px 0 5px;
@@ -1767,9 +1775,29 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 .mod-toolbox .tb-window-header .buttons {
+    display: inline-block;
     position: absolute;
-    top: 4px;
-    right: 4px;
+    background-color: #C7D6E6;
+    line-height: 24px;
+    border-left: 1px solid #A8B5C2;
+    right: 0px;
+    top: 0px;
+}
+
+.mod-toolbox .tb-page-overlay a.tb-close,
+.mod-toolbox .tb-page-overlay a.tb-help-main {
+    padding: 4px 6px;
+
+}
+
+.mod-toolbox .tb-page-overlay a.close:hover,
+.mod-toolbox .tb-page-overlay a.tb-close:hover,
+.mod-toolbox .tb-page-overlay a.tb-help-main:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox .tb-page-overlay .buttons a.close {
+    padding: 4px 6px;
 }
 
 .mod-toolbox #tb-removal-reasons-list,

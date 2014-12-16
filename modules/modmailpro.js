@@ -58,6 +58,12 @@ modmail.register_setting('autoThread', {
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
+modmail.register_setting('autoThreadLoad', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Automatically thread replies on page load. (Note: slows page loading time)'
+});
+
 modmail.register_setting('subredditColor', {
     'type': 'boolean',
     'default': false,
@@ -67,7 +73,7 @@ modmail.register_setting('subredditColor', {
 modmail.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': true,
-    'title': 'Fade the recipient of a modmail so it is much more clear who send it. '
+    'title': 'Fade the recipient of a modmail so it is much more clear who sent it. '
 });
 
 /// Private setting storage
@@ -119,7 +125,8 @@ modmail.modmailpro = function () {
         unreadThreads = [],
         unansweredThreads = [],
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-        threadAlways = modmail.setting('autoThread'),
+        threadAlways = modmail.setting('autoThreadLoad'),
+        threadOnExpand = threadAlways || modmail.setting('autoThread'),
         sentFromMMP = false;
 
     var separator = '<span class="separator">|</span>',
@@ -252,7 +259,7 @@ modmail.modmailpro = function () {
                 parent.find('.expand-btn:first')[0].click();
             }
 
-            if (threadAlways){
+            if (threadOnExpand){
                 parent.find('.tb-thread-view')[0].click();
             }
         }
@@ -488,6 +495,11 @@ modmail.modmailpro = function () {
             }
             $thread.fadeIn("slow");
         }
+        
+        //Thread the message if required
+        if(threadAlways) {
+            threadModmail(threadID);
+        }
     }
 
     function collapse() {
@@ -685,7 +697,7 @@ modmail.modmailpro = function () {
                 $(thread).find('.expand-btn:first')[0].click();
             }
 
-            if (threadAlways){
+            if (threadOnExpand){
                 $(thread).find('.tb-thread-view')[0].click();
             }
         });

@@ -74,15 +74,15 @@ modbar.init = function modbarInit() {
 
         settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
         browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
-        shortLength = TB.storage.getSetting('Utils', 'shortlength', 15),
-        longLength = TB.storage.getSetting('Utils', 'longlength', 45),
+        shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
+        longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
         modSubreddits = TB.storage.getSetting('Notifier', 'modmailSubreddits', 'mod'),
         unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
-        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadmessagecount', 0),
-        modqueueCount = TB.storage.getSetting('Notifier', 'modqueuecount', 0),
-        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedcount', 0),
-        modmailCount = TB.storage.getSetting('Notifier', 'modmailcount', 0),
+        unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadMessageCount', 0),
+        modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
+        unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
+        modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
 
 

@@ -108,6 +108,7 @@ removal.init = function removalReasonsInit() {
         if (thingclasses.match(/\bcomment\b/) && !removal.setting('commentReasons'))
             return;
 
+
         // Get link/comment attributes
         var button = $(this),
             thing = button.closest('.thing'),
@@ -126,7 +127,7 @@ removal.init = function removalReasonsInit() {
             };
 
         // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
-        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1) {
+        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1 || TBUtils.isModmail) {
             return;
         }
 

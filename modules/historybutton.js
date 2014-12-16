@@ -2,11 +2,6 @@ function historybutton() {
 var history = new TB.Module('History Button');
 history.shortname = 'HButton';
 
-// Add history button to all users.
-history.addUserHistoryLink = function () {
-    $(this).append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
-};
-
 // This should be a setting, methinks.
 history.SPAM_REPORT_SUB = 'spam';
 
@@ -19,24 +14,26 @@ history.register_setting('rtsComment', {
 });
 
 history.init = function () {
-    var $body = $('body');
-    var self = this;
-
-    var rtsComment = history.setting('rtsComment');
+    var $body = $('body'),
+        self = this,
+        rtsComment = history.setting('rtsComment');
 
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
-    $('.thing .entry .userattrs').each(self.addUserHistoryLink);
+    function run()
+    {
+        $('.thing .entry .userattrs:not(.tb-history)').each(function(){
+            var $this = $(this);
+            $this.addClass('tb-history');
+            $this.append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
+        });
+    }
+    run();
 
     // NER support.
     window.addEventListener("TBNewThings", function () {
-        $body.find('.thing .entry .userattrs').each(function () {
-            $this = $(this);
-            if (!$this.find('.user-history-button').length) {
-                $this.each(self.addUserHistoryLink); // using each since that carries correctly over to the current function.
-            }
-        });
+        run();
     });
 
     // Open inline context

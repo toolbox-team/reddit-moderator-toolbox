@@ -1864,7 +1864,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 .mod-toolbox  #tb-toolbar-mysubs {
-    background: #C7D6E6;
+    background: rgba(199, 214, 230, 0.8);
     border-left: 1px dotted #A8B5C2;
     border-right: 1px dotted #A8B5C2;
     padding: 7px 3px 3px 3px;
@@ -1872,7 +1872,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 
 .mod-toolbox  #tb-personal-notes-button {
-    background: #C7D6E6;
+    background: rgba(199, 214, 230, 0.8);
     border-left: 1px dotted #A8B5C2;
     border-right: 1px dotted #A8B5C2;
     padding: 7px 3px 3px 3px;

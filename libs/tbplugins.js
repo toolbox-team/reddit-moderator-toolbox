@@ -646,9 +646,7 @@ Object.defineProperty(Array.prototype, "clean", {
                     z = $drag.css('z-index');
 
                 $drag.css({
-                    'z-index': 100000,
-                    'bottom': 'inherit',
-                    'right': 'inherit'
+                    'z-index': 100000
                 });
 
                 $(document.documentElement)
@@ -657,6 +655,11 @@ Object.defineProperty(Array.prototype, "clean", {
                             left: x + e.pageX,
                             top: y + e.pageY
                         });
+                        $drag.css({
+                            'bottom': 'inherit',
+                            'right': 'inherit'
+                        });
+
                     })
                     .one('mouseup', function() {
                         $(this).off('mousemove.drag');

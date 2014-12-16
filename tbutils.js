@@ -848,13 +848,21 @@ function initwrapper() {
                 }
 
                 if (isJSON) {
+                  try{
                     wikiData = JSON.parse(wikiData);
                     if (wikiData) {
                         callback(wikiData);
                     } else {
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                    return;
+                  }
+                  catch(err)
+                  {
+                    // we should really have a INVAILD_DATA error for this.
+                    $.log(err, false, 'TBUtils')
+                    callback(TBUtils.NO_WIKI_PAGE);
+                  }
+                  return;
                 }
 
                 // We have valid data, but it's not JSON.
@@ -862,7 +870,8 @@ function initwrapper() {
 
             })
             .fail(function (jqXHR, textStatus, e) {
-                if (!jqXHR.responseText) {
+              $.log('Wiki page error: ' + e, false, 'TBUtils')
+                if (jqXHR.responseText  === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;
                 }
@@ -1342,8 +1351,10 @@ function initwrapper() {
     // NER, load more comments, and mod frame support.
     $('div.content').on('DOMNodeInserted', function (e) {
         var $target = $(e.target), $parentNode = $(e.target.parentNode);
-        if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") || $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
-        $.log("TBNewThings firing" + ($target.hasClass('flowwit')) ? ' (flowitt)' : '');
+        if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") ||
+          $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+
+        $.log('TBNewThings firing from: ' + $target.attr('class'), false, 'TBUtils');
 
         // Wait a sec for stuff to load.
         setTimeout(function () {

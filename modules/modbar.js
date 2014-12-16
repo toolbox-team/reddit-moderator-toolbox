@@ -127,24 +127,28 @@ if (unmoderatedOn) {
 <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,' + ((compactHide) ? TBui.iconGripper : TBui.iconShow) + '" /></a>\
 </div>');
 
-    var $console = $('\
-<div class="tb-debug-window">\
-    <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
-    <div class="tb-debug-content">\
-        <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
-        <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
-    </div>\
-    <div class="tb-debug-footer">\
-        <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
-        <!--input class="tb-console-copy" type="button" value="copy text"-->\
-        <input class="tb-console-clear" type="button" value="clear console">\
-    </div>\
-</div>\
-');
 
-    $console.appendTo('body').hide();
+    if (debugMode) {
 
-    $console.drag('#tb-debug-header-handle');
+        var $console = $('\
+    <div class="tb-debug-window">\
+        <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
+        <div class="tb-debug-content">\
+            <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
+            <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
+        </div>\
+        <div class="tb-debug-footer">\
+            <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
+            <!--input class="tb-console-copy" type="button" value="copy text"-->\
+            <input class="tb-console-clear" type="button" value="clear console">\
+        </div>\
+    </div>\
+    ');
+
+        $console.appendTo('body').hide();
+
+        $console.drag('#tb-debug-header-handle');
+    }
 
     $body.append(modBar);
 
@@ -234,7 +238,7 @@ if (unmoderatedOn) {
         } else {
             $(modBar).show();
             $(modbarhid).hide();
-            if (consoleShowing) $console.show();
+            if (consoleShowing && debugMode) $console.show();
         }
         modbar.setting('modbarHidden', hidden);
     }

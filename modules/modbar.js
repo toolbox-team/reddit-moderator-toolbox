@@ -129,7 +129,7 @@ if (unmoderatedOn) {
 
     var $console = $('\
 <div class="tb-debug-window">\
-    <div class="tb-debug-header"> Debug Console <span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
+    <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
     <div class="tb-debug-content">\
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
         <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
@@ -144,7 +144,7 @@ if (unmoderatedOn) {
 
     $console.appendTo('body').hide();
 
-    $console.drag('.tb-debug-header');
+    $console.drag('#tb-debug-header-handle');
 
     $body.append(modBar);
 

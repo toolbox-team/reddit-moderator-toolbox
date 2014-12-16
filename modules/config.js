@@ -113,10 +113,10 @@ tbconfig.init = function () {
                         </td>\
                         </tr><tr>\
                         <td>Header:</td>\
-                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
+                        <td><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
                         </tr><tr>\
                         <td>Footer:</td>\
-                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURI(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
+                        <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                         </tr>\
                     </table>',
                     footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'

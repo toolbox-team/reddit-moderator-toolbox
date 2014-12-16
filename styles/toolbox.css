@@ -741,25 +741,47 @@ img.note-close {
     z-index: 2147483640;
 }
 
+
 .tb-popup-header {
     right: 0;
     left: 0;
+    text-align: left;
+    position: relative;
+    height: 20px;
+    line-height: 20px;
     display: block;
     background-color: #CEE3F8;
-    text-align: center;
     font-weight: bold;
-    padding: 4px !important;
+    padding: 0 21px 0 0 !important;
     font-size: small;
     border-bottom: solid 1px #A8B5C2;
 }
 .tb-popup-header .tb-popup-title {
-    margin: 0 14px;
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+    padding: 0 4px 0 4px;
 }
 
+
 .mod-toolbox .tb-popup .tb-popup-header .buttons {
+    display: inline-block;
     position: absolute;
-    top: 4px;
-    right: 4px;
+    right: 0px !important;
+    top: 0px !important;
+    background-color: #C7D6E6;
+    line-height: 20px;
+    border-left: 1px solid #A8B5C2;
+}
+
+.mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
+    padding: 0 5px 0 5px;
 }
 
 .tb-popup-tabs {
@@ -1036,9 +1058,12 @@ body .thing.flaired {
     background-color: #CEE3F8;
     text-align: center;
     font-weight: bold;
-    padding: 4px !important;
+    padding: 0 !important;
     font-size: small;
     border-bottom: solid 1px #A8B5C2;
+    position: relative;
+    height: 20px;
+    line-height: 20px;
 }
 
 .mod-toolbox .tb-debug-content {
@@ -1061,13 +1086,22 @@ body .thing.flaired {
 
 .mod-toolbox .tb-debug-header-options {
     display: inline-block;
-    float: right;
-    position: relative;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #C7D6E6;
+    line-height: 20px;
+    border-left: 1px solid #A8B5C2;
 }
+
+.mod-toolbox .tb-debug-header-options:hover {
+    background-color: #9FBAD6;
+}
+
 
 .mod-toolbox .tb-debug-console {
     width: 100%;
-    height: 200px;
+    height: 220px;
     font: normal small CONSOLAS, COURIER,"COURIER NEW";
     -webkit-appearance: textarea;
     background-color: white;
@@ -1086,6 +1120,20 @@ body .thing.flaired {
     width: 100%;
     box-sizing: border-box;
 }
+
+
+.mod-toolbox #tb-debug-header-handle {
+    position: absolute;
+    left: 0px;
+    top: 0;
+    display: inline-block;
+    right: 20px;
+}
+
+.mod-toolbox #tb-debug-hide {
+    padding: 0 5px 0 5px;
+}
+
 
 /* various reddit css fixes for mods */
 

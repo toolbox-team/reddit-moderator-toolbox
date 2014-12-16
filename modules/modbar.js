@@ -424,6 +424,7 @@ if (unmoderatedOn) {
 <h3>Credits:</h3>\
 <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
+<a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>\
 <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
 <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
 <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\

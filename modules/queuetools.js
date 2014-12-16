@@ -58,8 +58,8 @@ queue.register_setting('expandReports', {
 
 queue.register_setting('botCheckmark', {
     'type': 'list',
-    'default': ['automoderator'],
-    'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces'
+    'default': ['AutoModerator'],
+    'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
 });
 
 

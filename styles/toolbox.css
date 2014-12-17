@@ -28,7 +28,7 @@
     font-size:11px;
     color: #696969;
     padding: 2px !important;
-    border-top: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
     left: 0;
     right: 0;
 }
@@ -46,8 +46,8 @@
     font-size: 11px;
     color: #696969;
     padding: 2px !important;
-    border-top: solid 1px #A8B5C2;
-    border-right: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
+    border-right: solid 1px #B6C9DD;
     left: 0;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .mod-toolbox .articleFrame {
-	border: solid 1px #808080;
+	border: solid 1px #A2BAD3;
 	position: relative;
 	width: 70%;
 	margin-left: 60px;
@@ -160,7 +160,7 @@
     background-color: rgba(206, 227, 248, 1);
     font-size: 11px;
     color: #696969;
-    border: 1px solid #A8B5C2;
+    border: 1px solid #B6C9DD;
     box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 	text-align: center;
 }
@@ -280,7 +280,7 @@ text-align: left;
     margin-left: auto !important;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
+    border: solid 1px #A2BAD3;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     font-size: small;
 }
@@ -297,7 +297,7 @@ text-align: left;
     margin-left: 50px !important;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
+    border: solid 1px #A2BAD3;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
@@ -316,11 +316,11 @@ text-align: left;
     font-weight: bold;
     padding: 4px !important;
     font-size: small;
-    border-bottom: solid 1px #A8B5C2;
+    border-bottom: solid 1px #B6C9DD;
 }
 
 .mod-toolbox .tb-window-tabs {
-    border-bottom: solid 1px #A8B5C2;
+    border-bottom: solid 1px #B6C9DD;
     background-color: #C7D6E6;
     font-size: 11px !important;
 }
@@ -342,13 +342,17 @@ text-align: left;
 
 .mod-toolbox .tb-personal-settings .tb-window-tabs a {
     width: 109px;
-    border-bottom: 1px dotted #A8B5C2;
+    border-bottom: 1px dotted #FFF;
+}
+
+.mod-toolbox .tb-personal-settings .tb-window-tabs a:nth-last-of-type(1) {
+	border-bottom: 0;
 }
 
 .mod-toolbox .tb-window-spacer {
     background-color: #8d9caa;
     display: inline-block;
-    border-right: dotted 1px #A8B5C2;
+    border-right: 1px dotted #A8B5C2;
     height: 34px;
     line-height: 34px;
 }
@@ -385,7 +389,7 @@ text-align: left;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
 }
 
 .tb-window-header-options {
@@ -393,7 +397,7 @@ text-align: left;
     position: absolute;
     background-color: #C7D6E6;
     line-height: 24px;
-    border-left: 1px solid #A8B5C2;
+    border-left: 1px solid #B6C9DD;
     right: 0px;
     top: 0px;
 }
@@ -580,7 +584,7 @@ img.note-close {
     font-size: 11px;
     color: #000;
     padding: 2px !important;
-    border: solid 1px #A8B5C2;
+    border: solid 1px #B6C9DD;
     top: auto;
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
@@ -594,7 +598,7 @@ img.note-close {
     max-width: 900px;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
+    border: solid 1px #A2BAD3;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     position: absolute;
     z-index: 10000;
@@ -609,7 +613,7 @@ img.note-close {
     font-weight: bold;
     padding: 4px !important;
     font-size: small;
-    border-bottom: solid 1px #A8B5C2;
+    border-bottom: solid 1px #B6C9DD;
 }
 
 .dtagger-popup-content {
@@ -626,7 +630,7 @@ img.note-close {
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
 }
 
 .dtagger-popup-options {
@@ -739,7 +743,7 @@ img.note-close {
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
+    border: solid 1px #A2BAD3;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     position: absolute;
     z-index: 2147483640;
@@ -758,7 +762,7 @@ img.note-close {
     font-weight: bold;
     padding: 0 21px 0 0 !important;
     font-size: small;
-    border-bottom: solid 1px #A8B5C2;
+    border-bottom: solid 1px #B6C9DD;
 }
 .tb-popup-header .tb-popup-title {
     position: relative;
@@ -777,7 +781,7 @@ img.note-close {
     top: 0px !important;
     background-color: #C7D6E6;
     line-height: 20px;
-    border-left: 1px solid #A8B5C2;
+    border-left: 1px solid #B6C9DD;
 }
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
@@ -793,7 +797,7 @@ img.note-close {
 }
 
 .tb-popup-tabs {
-    border-bottom: 1px solid #A8B5C2;
+    border-bottom: 1px solid #B6C9DD;
     background-color: #C7D6E6;
 }
 
@@ -845,7 +849,7 @@ img.note-close {
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
 }
 
 .tb-popup .status {
@@ -1058,7 +1062,7 @@ body .thing.flaired {
     min-height: 286px;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
+    border: solid 1px #A2BAD3;
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
     z-index: 10001;
 }
@@ -1072,7 +1076,7 @@ body .thing.flaired {
     font-weight: bold;
     padding: 0 !important;
     font-size: small;
-    border-bottom: solid 1px #A8B5C2;
+    border-bottom: solid 1px #B6C9DD;
     position: relative;
     height: 20px;
     line-height: 20px;
@@ -1093,7 +1097,7 @@ body .thing.flaired {
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #A8B5C2;
+    border-top: solid 1px #B6C9DD;
 }
 
 .mod-toolbox .tb-debug-header-options {
@@ -1103,7 +1107,7 @@ body .thing.flaired {
     top: 0;
     background-color: #C7D6E6;
     line-height: 20px;
-    border-left: 1px solid #A8B5C2;
+    border-left: 1px solid #B6C9DD;
 }
 
 .mod-toolbox .tb-debug-header-options:hover {
@@ -1321,6 +1325,18 @@ Night mod "fixes", it is dark alright
 
 --------------------------*/
 
+.mod-toolbox.res-nightmode #tb-my-subreddits {
+    background-color: #6E7A86;
+    color: #B5B5B5;
+    border: 1px solid #A8B5C2;
+    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
+}
+
+
+.mod-toolbox.res-nightmode #tb-my-subreddits td a {
+    color: #2C4C6C;
+}
+
 .mod-toolbox.res-nightmode .thing.spam, .mod-toolbox.res-nightmode .thing.spam {
     background-color: #621c1c;
 }
@@ -1427,6 +1443,14 @@ border: solid 1px #808080;
     color: #369;
 }
 
+.mod-toolbox.res-nightmode .tb-personal-settings .tb-window-content {
+	background-color: #878787;
+}
+
+.mod-toolbox.res-nightmode .tb-window-content span.tb-module-disabled {
+	background-color: #B8B8B8;
+}
+
 div.sticky {
     background-color: rgba(206, 227, 248, 0.86);
     color: #696969;
@@ -1511,12 +1535,7 @@ div.sticky {
 }
 
 .mod-toolbox.res-nightmode .mod-popup-footer {
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    display: block;
     background-color: #6e7a86;
-    text-align: center;
     border-top: solid 1px #39526b;
 }
 
@@ -1542,6 +1561,45 @@ div.sticky {
     width: 225px;
     border-bottom: 1px dotted gray;
     padding: 5px;
+}
+
+
+.mod-toolbox.res-nightmode .tb-popup-header {
+    background-color: #6e7a86;
+    border-bottom: solid 1px #39526b;
+}
+
+.mod-toolbox.res-nightmode .tb-popup-tabs {
+    border-bottom: 1px solid #39526b;
+    background-color: #828B96;
+}
+
+.mod-toolbox.res-nightmode .tb-popup-tabs a {
+    background-color: #828B96;
+    border-right: 1px dotted #39526b;
+    color: #393E44;
+}
+
+.mod-toolbox.res-nightmode .tb-popup-footer {
+    background-color: #6e7a86;
+    border-top: solid 1px #39526b;
+}
+
+.mod-toolbox.res-nightmode .tb-popup {
+background-color: #878787;
+}
+
+.mod-toolbox.res-nightmode #tb-personal-notes-button, .mod-toolbox.res-nightmode #tb-personal-notes-button:hover {
+background: none;
+}
+
+.mod-toolbox.res-nightmode #tb-search-suggest tr {
+background: #A3A3A3;
+}
+
+.mod-toolbox.res-nightmode .menuarea.modtools {
+background-color: rgba(110, 122, 134, 0.86);
+border-color: #808080;
 }
 
 .mod-toolbox.res-nightmode .mod-popup .current-sub {
@@ -1694,7 +1752,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     background-color: rgba(226, 238, 250, 1);
     font-size: 11px;
     color: #696969;
-    border: 1px solid #A8B5C2;
+    border: 1px solid #B6C9DD;
     text-align: left;
     z-index: 501;
 }
@@ -1746,7 +1804,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     min-width: 150px;
     text-align: center;
     background-color: #CEE3F8;
-    border: 1px solid #A8B5C2;
+    border: 1px solid #B6C9DD;
     box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 }
 
@@ -1783,7 +1841,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     position: absolute;
     background-color: #C7D6E6;
     line-height: 24px;
-    border-left: 1px solid #A8B5C2;
+    border-left: 1px solid #B6C9DD;
     right: 0px;
     top: 0px;
 }
@@ -1986,5 +2044,3 @@ body[class*="wiki-page-livedocs"] .wiki-page-content,
 body[class*="wiki-page-livedocs"] h1.wikititle {
     margin: 5px !important;
 }
-
-

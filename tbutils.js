@@ -942,7 +942,7 @@ function initwrapper() {
     TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
         $.post('/api/flair', {
             api_type: 'json',
-            user: user,
+            name: user,
             r: subreddit,
             text: text,
             css_class: cssClass,

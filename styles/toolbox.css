@@ -834,6 +834,10 @@ img.note-close {
     padding: 3px;
 }
 
+.mod-popup .flair-text {
+    width: initial;
+}
+
 .tb-popup-footer {
     width: 100%;
     height: 30px;
@@ -1982,3 +1986,5 @@ body[class*="wiki-page-livedocs"] .wiki-page-content,
 body[class*="wiki-page-livedocs"] h1.wikititle {
     margin: 5px !important;
 }
+
+

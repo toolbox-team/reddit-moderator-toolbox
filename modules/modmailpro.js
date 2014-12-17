@@ -92,6 +92,11 @@ modmail.register_setting('filteredSubs', {
     'default': [],
     'hidden': true
 });
+modmail.register_setting('subredditColorSalt', {
+    'type': 'text',
+    'default': "PJSalt",
+    'hidden': true
+});
 
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
@@ -120,6 +125,7 @@ modmail.modmailpro = function () {
         highlightNew = modmail.setting('highlightNew'),
         fadeRecipient = modmail.setting('fadeRecipient'),
         subredditColor = modmail.setting('subredditColor'),
+        subredditColorSalt = modmail.setting('subredditColorSalt'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -429,7 +435,7 @@ modmail.modmailpro = function () {
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
         if (subredditColor) {
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
-                colorForSub = TBUtils.stringToColor(subredditName);
+                colorForSub = TBUtils.stringToColor(subredditName+subredditColorSalt);
 
             $thread.css('border-left', 'solid 3px ' + colorForSub);
             $thread.addClass('tb-subreddit-color');

@@ -433,11 +433,12 @@ modmail.modmailpro = function () {
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
-        if (subredditColor) {
+        if (subredditColor) {   
+        
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
                 colorForSub = TBUtils.stringToColor(subredditName+subredditColorSalt);
 
-            $thread.css('border-left', 'solid 3px ' + colorForSub);
+            $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
         }
 

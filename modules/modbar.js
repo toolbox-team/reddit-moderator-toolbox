@@ -441,7 +441,7 @@ You may obtain a copy of the License at </p>\
 <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
 <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>\
 See the License for the specific language governing permissions and limitations under the License.</p>\
-<p '+ ((debugMode && !TB.utils.devMoeLock) ? '' : 'style="display:none;"') +'>\
+<p '+ ((debugMode && !TB.utils.devModeLock) ? '' : 'style="display:none;"') +'>\
     <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
 </p>\
 <div class="tb-help-main-content">This is a about page!</div>\

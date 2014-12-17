@@ -1420,7 +1420,7 @@ function initwrapper() {
             TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
                     TBUtils.devMode = false;
-                    TBUtils.devMoeLock = true;
+                    TBUtils.devModeLock = true;
                     return;
                 }
 

@@ -311,7 +311,15 @@
             var $add_item = $available_list.find('option:selected');
 
             // Don't add the sub twice.
-            if (!($selected_list.find('option[value="' + $add_item.val() + '"]') > 0)) {
+            var exists = false;
+            $selected_list.find('option').each(function(){
+                if (this.value === $add_item.val()) {
+                    exists = true;
+                    return false;
+                }
+            });
+
+            if (!exists) {
                 $selected_list.append($add_item.clone());
             }
         });

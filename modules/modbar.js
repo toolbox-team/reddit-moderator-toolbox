@@ -84,6 +84,14 @@ modbar.init = function modbarInit() {
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
+        
+    var randomQuotes = new Array("Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.", 
+                                 "Simple solution, don't use nightmode....", 
+                                 "Nightmode users are a buncha nerds.", 
+                                 "Oh, so that's where that code went, I thought i had lost it somehow.",
+                                 "Are all close buttons pretty now?!?!?"),    
+        randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
+   
 
 
     //
@@ -421,6 +429,7 @@ if (unmoderatedOn) {
 <h3>About:</h3>	<a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a> <br>\
     made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
     <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a> and <a href="/user/noeatnosleep">/u/noeatnosleep</a><br><br>\
+    "<i>'  + randomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
   <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
 <!--h3>Special thanks to:</h3>\

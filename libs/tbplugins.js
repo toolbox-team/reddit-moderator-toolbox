@@ -3,7 +3,7 @@
         if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skipLocalConsole'] || 'false')) {
             TBUtils.log.push(message);
         } else {
-            console.log(' [' + caller + ']: ');
+            console.log(message);
 
         }
     };

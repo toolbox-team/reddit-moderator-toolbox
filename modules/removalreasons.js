@@ -186,7 +186,8 @@ removal.init = function removalReasonsInit() {
             removal.log("Creating removal reason popup");
 
             // Options
-            var logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none',
+            var selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
+                logDisplay = data.logSub && data.logTitle.indexOf('{reason}') >= 0 ? '' : 'none', // if {reason}  is present we want to fill it.
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
@@ -236,8 +237,8 @@ removal.init = function removalReasonsInit() {
                              (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked="1"' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
                             <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
                             <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
-                            <span style="display:' + logDisplay + '"> / \
-                                <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none</label> \
+                            <span style="display:' + selectNoneDisplay + '"> / \
+                                <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
                             </span> \
                         </div> \
                         <div id="log-reason" style="display:' + logDisplay + '"> \
@@ -528,7 +529,7 @@ removal.init = function removalReasonsInit() {
 
         // If logSub is not empty, log the removal and send a PM/comment
         if (data.logSub) {
-        
+
             // Finalize log reasons
             if (logTitle.indexOf('{reason}') >= 0) {
                 // Check if a log reason is selected

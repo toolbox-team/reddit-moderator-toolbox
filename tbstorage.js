@@ -420,7 +420,8 @@ function storageWrapper() {
             try {
                 result = JSON.parse(storageString);
             } catch (e) {
-                result = storageString;
+                $.log(storageKey + ' is corrupted.  Sending default.', false, 'TBStorage');
+                result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
             }
 
             // send back the default if, somehow, someone stored `null`
@@ -458,7 +459,8 @@ function storageWrapper() {
             try {
                 result = JSON.parse(storageString);
             } catch (e) {
-                result = storageString;
+                $.log(storageKey + ' is corrupted.  Sending default.', false, 'TBStorage');
+                result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
             }
 
             // send back the default if, somehow, someone stored `null`

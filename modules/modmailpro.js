@@ -86,11 +86,6 @@ modmail.register_setting('filteredSubs', {
     'default': [],
     'hidden': true
 });
-modmail.register_setting('subredditColorSalt', {
-    'type': 'text',
-    'default': "PJSalt",
-    'hidden': true
-});
 
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
@@ -119,7 +114,6 @@ modmail.modmailpro = function () {
         highlightNew = modmail.setting('highlightNew'),
         fadeRecipient = modmail.setting('fadeRecipient'),
         subredditColor = modmail.setting('subredditColor'),
-        subredditColorSalt = modmail.setting('subredditColorSalt'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -429,7 +423,7 @@ modmail.modmailpro = function () {
         if (subredditColor) {   
         
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
-                colorForSub = TBUtils.stringToColor(subredditName+subredditColorSalt);
+                colorForSub = TBUtils.stringToColor(subredditName);
 
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');

@@ -83,7 +83,7 @@ function storageWrapper() {
 
     // Type safe keys.
     TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safeToStore';
-    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwBeta4';
+    TBStorage.BNW_SHIM_KEY = 'Toolbox.Storage.bnwBetaFour';
 
     TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
     TBStorage.userBrowserStorage = getSetting('Storage', 'useBrowserStorage', true);
@@ -117,6 +117,9 @@ function storageWrapper() {
         if (TBStorage.domain === 'www') {
             shimming = true;
             shortcuts = localStorage['Toolbox.Notifier.shortcuts2'] || null;
+            if(!shortcuts) {
+                shortcuts = localStorage['Toolbox.Modbar.shortcuts'] || null;
+            }
         }
 
         // Clear all storage.

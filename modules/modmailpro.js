@@ -67,7 +67,7 @@ modmail.register_setting('subredditColor', {
 modmail.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': true,
-    'title': 'Fade the recipient of a modmail so it is much more clear who send it. '
+    'title': 'Fade the recipient of a modmail so it is much more clear who sent it. '
 });
 
 /// Private setting storage

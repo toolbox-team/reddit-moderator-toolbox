@@ -127,7 +127,7 @@ TB = {
 
                         // blank slate
                         var $setting = $('<p></p>');
-                        $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label>'));
+                        $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
                         $('.tb-window-content .tb-window-content-modules').append($setting);
                         moduleIsEnabled =  (module.setting(setting) ? true : false);

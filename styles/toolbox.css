@@ -1930,7 +1930,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 
-/* Module disabled */
+/* Module settings stuff */
 
 .mod-toolbox  .tb-window-tabs a.tb-module-disabled {
     background-color: #D6D9DD;
@@ -1943,6 +1943,10 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     padding: 4px;
     background-color: #F7F7F7;
     color: #808080;
+    font-weight: bold;
+}
+
+.mod-toolbox .tb-window-content a.tb-help-toggle {
     font-weight: bold;
 }
 

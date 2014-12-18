@@ -582,6 +582,11 @@ See the License for the specific language governing permissions and limitations 
     });
 
 
+    $body.on('click', '.tb-help-toggle', function () {
+        var module = $(this).attr('data-module');
+        window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+
+    });
     $body.on('click', '.tb-help-main', function () {
         var $this = $(this),
             tab = $(this).attr('currentpage'),

@@ -192,7 +192,7 @@ removal.init = function removalReasonsInit() {
                 footerDisplay = data.footer ? '' : 'none';
 
             var reasonType = TB.storage.getCache('RReasons', 'reasonType', 'none');
-            var reasonAsSub = (TB.storage.getCache('RReasons', 'reasonAsSub', 'false') != 'false');
+            var reasonAsSub = TB.storage.getCache('RReasons', 'reasonAsSub', 'false');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -376,7 +376,7 @@ removal.init = function removalReasonsInit() {
     });
 
     $body.on('click', '.reason-as-sub', function () {
-        TB.storage.setCache('RReasons', 'reasonAsSub', this.value);
+        TB.storage.setCache('RReasons', 'reasonAsSub', $(this).prop('checked'));
     });
 
     // 'no reason' button clicked
@@ -403,7 +403,7 @@ removal.init = function removalReasonsInit() {
     $body.on('click', '.reason-popup .save', function () {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
-            notifyAsSub = popup.find('.reason-as-sub').val() != false,
+            notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
             checked = popup.find('.reason-check:checked'),
             status = popup.find('.status'),
             attrs = popup.find('attrs'),

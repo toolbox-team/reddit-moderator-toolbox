@@ -63,7 +63,7 @@ nuke.init = function () {
 
 		function run() {
 			var nuke_button = new Array();
-			var divels = document.querySelectorAll('div.noncollapsed:not(.nuke-processed)');
+			var divels = document.querySelectorAll('div.comment:not(.nuke-processed)');
 			var comment_ids = new Array();
 			var use_image = false;
 			// create img DOM element to clone

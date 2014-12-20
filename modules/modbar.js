@@ -383,7 +383,7 @@ if (unmoderatedOn) {
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
         $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
-        $('.tb-help-main').attr('currentpage', 'tb-window-content-toolbox');
+        $('.tb-help-main').attr('currentpage', 'toolbox');
 
         // Settings to toggle the modules
         var htmlmodules = '\
@@ -589,33 +589,12 @@ See the License for the specific language governing permissions and limitations 
     });
     $body.on('click', '.tb-help-main', function () {
         var $this = $(this),
-            tab = $(this).attr('currentpage'),
-            module = $this.data('module'),
-            $tab = $('.' + tab);
+            module = $this.attr('currentpage');
 
-        if (module) {
+
             window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
 
-        } else if(TBUtils.browser !== 'firefox') {
-            var htmlcontent = $tab.find('.tb-help-main-content').html();
-            var html = '\
-        <!DOCTYPE html>\
-        <html>\
-        <head>\
-        <style>\
-        body {\
-        font: normal x-small verdana,arial,helvetica,sans-serif;\
-        }\
-        </style>\
-        </head>\
-        <body>\
-        <div class="help-content" id="help-content">' + htmlcontent + '</div>\
-        </body>\
-        </html>\
-    ';
-            helpwindow.document.write(html);
-            helpwindow.focus();
-        }
+
 
 
     });

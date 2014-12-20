@@ -34,7 +34,7 @@ queue.register_setting('reportsOrder', {
     'type': 'selector',
     'values': ['age', 'score', 'reports'],
     'default': 'age',
-    'title': 'Tag location'
+    'title': 'Sort by'
 });
 queue.register_setting('reportsThreshold', {
     'type': 'number',
@@ -242,8 +242,8 @@ queue.init = function () {
         var $things = $('.thing');
         $things.addClass('mte-processed');
 
-        // Add context & history stuff TODO: Figure out what the hell this did. History has been moved to historybutton though. 
-        
+        // Add context & history stuff TODO: Figure out what the hell this did. History has been moved to historybutton though.
+
         //$body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
         //$('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
         //   $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
@@ -308,7 +308,7 @@ queue.init = function () {
         $('#select-all').click(function () {
             $('.thing:visible input[type=checkbox]').prop('checked', allSelected = this.checked);
         });
-        
+
         $body.on('click', '.thing input[type=checkbox]', function () {
             $('#select-all').prop('checked', allSelected = !$('.thing:visible input[type=checkbox]').not(':checked').length);
         });
@@ -368,25 +368,25 @@ queue.init = function () {
             }
             things.filter(selector).find('input[type=checkbox]').prop('checked', true);
         });
-        
+
         $('.hide-selected').click(function () {
             $('.thing:visible:has(input:checked)').hide();
             $('.thing input[type=checkbox]').prop('checked', false);
         });
-        
+
         $('.unhide-selected').click(function () {
             $things.show();
         });
-        
-        // Expand reports on click. 
+
+        // Expand reports on click.
         $('.expand-reports').click(function () {
             $('.reported-stamp').siblings('.report-reasons').show();
         });
-        
+
         $('.collapse-reports').click(function () {
             $('.reported-stamp').siblings('.report-reasons').hide();
         });
-        
+
         // Mass spam/remove/approve
         $('.pretty-button.action').click(function () {
             var approve = this.type == 'positive',
@@ -529,7 +529,7 @@ queue.init = function () {
 
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
-            // Expand reports on the new page, we leave the ones the user might already has collapsed alone. 
+            // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
             if (queue.setting('expandReports')) {
                 $(things).find('.reported-stamp').siblings('.report-reasons').show();
             }
@@ -646,28 +646,28 @@ queue.init = function () {
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
         $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
     }
-    
+
     // Let's make bot approved posts stand out!
     var checkmarkLength = queue.setting('botCheckmark').length;
     if (TBUtils.isMod && checkmarkLength > 0) {
-    
-      
-        var baseCss; 
+
+
+        var baseCss;
         checkmarkLength = checkmarkLength - 1;
         $.each(queue.setting('botCheckmark'), function (i, val) {
-        
+
             switch(i) {
             case 0:
-                baseCss = 'img.approval-checkmark[title*="approved by ' + val + '"], \n'; 
+                baseCss = 'img.approval-checkmark[title*="approved by ' + val + '"], \n';
                 break;
             case checkmarkLength:
                 baseCss += 'img.approval-checkmark[title*="approved by ' + val + '"] \n';
-                break;                
+                break;
             default:
-                baseCss += 'img.approval-checkmark[title*="approved by ' + val + '"], \n' 
-            }        
+                baseCss += 'img.approval-checkmark[title*="approved by ' + val + '"], \n'
+            }
         });
-        
+
         baseCss += '\
             { \n\
                 display: inline-block; \n\
@@ -676,9 +676,9 @@ queue.init = function () {
                 background-image: url("data:image/png;base64,' + TBui.iconBot + '"); \n\
                 background-repeat: no-repeat; \n\
             } \n';
-        
+
         $('head').append('<style>' + baseCss + '</style>');
-    
+
     }
 
 }; // queueTools.init()

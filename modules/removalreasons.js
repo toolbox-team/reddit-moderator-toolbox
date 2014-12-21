@@ -191,8 +191,8 @@ removal.init = function removalReasonsInit() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = TB.storage.getCache('RReasons', 'reasonType', 'none');
-            var reasonAsSub = TB.storage.getCache('RReasons', 'reasonAsSub', 'false');
+            var reasonType = TB.storage.getCache('RReasons', 'reasonType', null);
+            var reasonAsSub = TB.storage.getCache('RReasons', 'reasonAsSub', false);
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -234,7 +234,7 @@ removal.init = function removalReasonsInit() {
                         </div> \
                         <div id="buttons"> \
                             <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
-                             (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked="1"' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
+                             (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
                             <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
                             <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
                             <span style="display:' + selectNoneDisplay + '"> / \
@@ -570,11 +570,10 @@ removal.init = function removalReasonsInit() {
         // Function to send PM and comment
         function sendRemovalMessage(logLink) {
             // If there is no message to send, don't send one.
-            if (reasonlength < 1)
-                return removePopup(popup);
+            if (reasonlength < 1) return status.text(NO_REASON_ERROR);
 
             // Check if a valid notification type is selected
-            if (!notifyBy || (logLink == null && notifyBy == 'none')) {
+            if ((!notifyBy && !notifyAsSub) || (logLink == null && notifyBy == 'none')) {
                 popup.find('#buttons').addClass('error-highlight');
                 return status.text(NO_REPLY_TYPE_ERROR);
             }

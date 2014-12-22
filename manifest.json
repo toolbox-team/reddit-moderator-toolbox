@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "reddit Moderator Toolbox",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "permissions": [
 	"https://*.reddit.com/",
 	"http://*.reddit.com/",
@@ -26,6 +26,7 @@
 		"styles/modmatrix.css",
 		"styles/removalreasons.css",
 		"styles/personalnotes.css",
+		"styles/modmaillite.css",
 		"styles/queuetools.css"
 	  ],
 	  "js": [
@@ -61,6 +62,7 @@
 		"modules/realtime.js",
 		"modules/nukecomments.js",
 		"modules/personalnotes.js",
+		"modules/modmaillite.js",
 		"modules/queuetools.js",
 		"tbmoduleinit.js"
 	  ]

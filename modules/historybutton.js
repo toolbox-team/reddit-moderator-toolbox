@@ -23,11 +23,30 @@ history.init = function () {
 
     function run()
     {
-        $('.thing .entry .userattrs:not(.tb-history)').each(function(){
-            var $this = $(this);
-            $this.addClass('tb-history');
-            $this.append('[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]');
-        });
+        var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]</span>';
+
+        if(TBUtils.isModmail) {
+            $('.thing .entry .head:not(.tb-history)').each(function(){
+                var $this = $(this),
+                    $userattrs = $this.find('.userattrs');
+
+                $this.addClass('tb-history');
+
+                if($userattrs.length > 1) {
+                    $userattrs.eq(1).after(UserButtonHTML);
+                } else {
+                    $userattrs.after(UserButtonHTML);
+                }
+
+            });
+        } else {
+            $('.thing .entry .userattrs:not(.tb-history)').each(function(){
+                var $this = $(this);
+                $this.addClass('tb-history');
+                $this.after(UserButtonHTML);
+            });
+        }
+
     }
     run();
 

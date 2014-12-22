@@ -559,9 +559,11 @@ modbutton.init = function init() {
             else {
                 if (response.json.errors.length) {
                     $callbackSpan.text(response.json.errors[1]);
+                    TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
                     TB.ui.longLoadSpinner(false);
                 }
                 else {
+                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE);
                     $callbackSpan.text('message sent');
                     $callbackSpan.css('color', 'green');
                     TB.ui.longLoadSpinner(false);

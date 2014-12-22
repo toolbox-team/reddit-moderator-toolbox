@@ -26,7 +26,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [];
 
@@ -36,7 +36,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.0.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 300; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'A BRAVE NEW WORLD';
+    TBUtils.releaseName = '???';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 4;
     TBUtils.minNotesSchema = 0;

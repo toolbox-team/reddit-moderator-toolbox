@@ -89,7 +89,8 @@ modbar.init = function modbarInit() {
                                  "Simple solution, don't use nightmode....", 
                                  "Nightmode users are a buncha nerds.", 
                                  "Oh, so that's where that code went, I thought i had lost it somehow.",
-                                 "Are all close buttons pretty now?!?!?"),    
+                                 "Are all close buttons pretty now?!?!?",
+                                 "As a Business Analyst myself..."),    
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 

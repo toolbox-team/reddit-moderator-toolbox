@@ -65,6 +65,7 @@
 		"modules/modmaillite.js",
 		"modules/queuetools.js",
 		"modules/betterbuttons.js",
+		"modules/bagel.js",
 		"tbmoduleinit.js"
 	  ]
 	}

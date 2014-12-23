@@ -320,7 +320,7 @@
             });
 
             if (!exists) {
-                $selected_list.append($add_item.clone());
+                $selected_list.append($add_item.clone()).val($add_item.val());
             }
         });
 

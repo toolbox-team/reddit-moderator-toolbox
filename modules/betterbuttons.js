@@ -11,6 +11,7 @@ buttons.register_setting('enableModSave', {
     'default': true,
     'title': 'Enable mod-save button'
 });
+
 buttons.register_setting('enableDistinguishToggle', {
     'type': 'boolean',
     'default': true,

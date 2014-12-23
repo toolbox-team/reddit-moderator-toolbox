@@ -64,6 +64,7 @@
 		"modules/personalnotes.js",
 		"modules/modmaillite.js",
 		"modules/queuetools.js",
+		"modules/betterbuttons.js",
 		"tbmoduleinit.js"
 	  ]
 	}

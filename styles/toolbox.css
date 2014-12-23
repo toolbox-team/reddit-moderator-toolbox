@@ -97,12 +97,12 @@
 }
 
 .mod-toolbox .articleFrame {
-	border: solid 1px #A2BAD3;
-	position: relative;
-	width: 70%;
-	margin-left: 60px;
-	resize: both;
-	display: none;
+    border: solid 1px #A2BAD3;
+    position: relative;
+    width: 70%;
+    margin-left: 60px;
+    resize: both;
+    display: none;
 }
 
 .mod-toolbox #tb-modqueue {
@@ -162,7 +162,7 @@
     color: #696969;
     border: 1px solid #B6C9DD;
     box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
-	text-align: center;
+    text-align: center;
 }
 
 #tb-my-subreddit-list {
@@ -263,12 +263,12 @@ text-align: left;
 .mod-toolbox ul.inline-list li:nth-last-child(2):after { content: ', and';}
 
 .mod-toolbox .tb-overlay-label {
-	width: auto;
+    width: auto;
     padding: 40px 5px 5px 5px;
-	font-weight: bold;
-	text-shadow: 0 0 4px #FFF;
-	left: 0;
-	right: 0;
+    font-weight: bold;
+    text-shadow: 0 0 4px #FFF;
+    left: 0;
+    right: 0;
     text-align: center;
 }
 
@@ -346,7 +346,7 @@ text-align: left;
 }
 
 .mod-toolbox .tb-personal-settings .tb-window-tabs a:nth-last-of-type(1) {
-	border-bottom: 0;
+    border-bottom: 0;
 }
 
 .mod-toolbox .tb-window-spacer {
@@ -856,7 +856,7 @@ img.note-close {
 }
 
 .tb-popup-error {
-	color: red;
+    color: red;
 }
 
 .mod-popup .subreddit-message {
@@ -905,13 +905,13 @@ img.note-close {
 }
 
 .mod-popup .ban-message {
-	padding: 1px;
-	width: 100%;
+    padding: 1px;
+    width: 100%;
 }
 
 .mod-popup .ban-duration {
-	padding: 2px;
-	width: 82px;
+    padding: 2px;
+    width: 82px;
 }
 
 .mod-popup .edit-subreddits {
@@ -1377,7 +1377,7 @@ border: solid 1px #808080;
 
 .mod-toolbox.res-nightmode .tb-overlay-label {
 
-	text-shadow: 0 0 4px #878787;
+    text-shadow: 0 0 4px #878787;
 }
 
 .mod-toolbox.res-nightmode .tb-window-wrapper {
@@ -1444,11 +1444,11 @@ border: solid 1px #808080;
 }
 
 .mod-toolbox.res-nightmode .tb-personal-settings .tb-window-content {
-	background-color: #878787;
+    background-color: #878787;
 }
 
 .mod-toolbox.res-nightmode .tb-window-content span.tb-module-disabled {
-	background-color: #B8B8B8;
+    background-color: #B8B8B8;
 }
 
 div.sticky {
@@ -1719,26 +1719,26 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 
 .thing.threaded-modmail .child, .thing.threaded-modmail .entry {
-	border-left : 2px solid #efefef!important;
-	margin-left : 0!important;
+    border-left : 2px solid #efefef!important;
+    margin-left : 0!important;
 }
 .thing.threaded-modmail .child .thing {
-	padding-left: 20px!important;
+    padding-left: 20px!important;
 }
 
 .mod-toolbox .mmp-processed .message-count {
-	background-color: rgba(0, 0, 0, 0);
-	color: #369;
-	display: inline;
-	padding: 0;
-	margin: 0;
-	font-size: 12px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #369;
+    display: inline;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
 }
 
 /* This should probably be somewhere else */
 
 #moderation_tools .icon-menu .toolbox-edit {
-	margin-left: 6px;
+    margin-left: 6px;
 }
 
 /* Comment search */
@@ -1920,9 +1920,9 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 /* comment.js */
 
 .mod-toolbox  .comment-nest-info {
-	font-size: 11px;
-	margin-top: -10px;
-	color: #888;
+    font-size: 11px;
+    margin-top: -10px;
+    color: #888;
 }
 
 .mod-toolbox  #tb-search-suggest-list td {

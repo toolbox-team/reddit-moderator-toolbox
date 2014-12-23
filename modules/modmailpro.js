@@ -58,6 +58,12 @@ modmail.register_setting('autoThread', {
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
+modmail.register_setting('autoThreadOnLoad', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Automatically thread replies on page load. (Note: slows page load time)'
+});
+
 modmail.register_setting('subredditColor', {
     'type': 'boolean',
     'default': false,
@@ -119,7 +125,8 @@ modmail.modmailpro = function () {
         unreadThreads = [],
         unansweredThreads = [],
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-        threadAlways = modmail.setting('autoThread'),
+        threadAlways = modmail.setting('autoThreadOnLoad'),
+        threadOnExpand = threadAlways || modmail.setting('autoThread'),
         sentFromMMP = false;
 
     var separator = '<span class="separator">|</span>',
@@ -252,7 +259,7 @@ modmail.modmailpro = function () {
                 parent.find('.expand-btn:first')[0].click();
             }
 
-            if (threadAlways){
+            if (threadOnExpand){
                 parent.find('.tb-thread-view')[0].click();
             }
         }
@@ -341,7 +348,6 @@ modmail.modmailpro = function () {
 
     }
     
-
     function processThread(thread) {
         var $thread = $(thread);
         if ($thread.hasClass('mmp-processed')) {
@@ -488,6 +494,11 @@ modmail.modmailpro = function () {
                 $thread.find('.collapse-link').text('[+]');
             }
             $thread.fadeIn("slow");
+        }
+        
+        //Thread the message if required
+        if(threadAlways) {
+            threadModmail(threadID);
         }
     }
 
@@ -686,7 +697,7 @@ modmail.modmailpro = function () {
                 $(thread).find('.expand-btn:first')[0].click();
             }
 
-            if (threadAlways){
+            if (threadOnExpand){
                 $(thread).find('.tb-thread-view')[0].click();
             }
         });

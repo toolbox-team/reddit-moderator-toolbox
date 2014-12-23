@@ -238,7 +238,7 @@ history.init = function () {
                     populateHistory(after);
                 } else {
                     TB.ui.longLoadSpinner(false);
-					contentBox.find('.rts-report').show();
+                    contentBox.find('.rts-report').show();
                     if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
                         contentBox.find('.error').html('no submissions');
                     } else {

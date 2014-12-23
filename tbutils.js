@@ -136,9 +136,15 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.0 is a BRAVE NEW WORLD.  No Version chnages.
-        $.log('Running ' + TBUtils.toolboxVersion + ' changes');
+        // 3.0.1 version changes
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, 'TBUtils');
 
+        var botCheck = TBStorage.getSetting('QueueTools', 'botCheckmark', ['AutoModerator']),
+            index = botCheck.indexOf('automoderator');
+        if (index > -1){
+            botCheck[index] = 'AutoModerator';
+            TBStorage.setSetting('QueueTools', 'botCheckmark', botCheck);
+        }
 
         // End: version changes.
 
@@ -682,19 +688,22 @@ function initwrapper() {
             user = '';
         }
 
-        var approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
-        approved_by = approved_text.match(/by\s(.+?)\s/) || '';
+        var approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '',
+            approved_by = approved_text.match(/by\s(.+?)\s/) || '';
 
         var info = {
             subreddit: subreddit,
             user: user,
+            author: user,
             permalink: permalink,
+            url: permalink,
             domain: domain,
             id: id,
             approved_by: approved_by,
             title: title,
             kind: kind,
             postlink: postlink,
+            link: postlink,
             banned_by: banned_by,
             spam: spam,
             ham: ham

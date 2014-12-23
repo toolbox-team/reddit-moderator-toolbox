@@ -77,7 +77,7 @@ modbar.init = function modbarInit() {
         shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
         longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
-        modSubreddits = TB.storage.getSetting('Notifier', 'modmailSubreddits', 'mod'),
+        modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
         unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadMessageCount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
@@ -85,11 +85,13 @@ modbar.init = function modbarInit() {
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
         
-    var randomQuotes = new Array("Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.", 
-                                 "Simple solution, don't use nightmode....", 
-                                 "Nightmode users are a buncha nerds.", 
-                                 "Oh, so that's where that code went, I thought i had lost it somehow.",
-                                 "Are all close buttons pretty now?!?!?"),    
+    var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+                         "Simple solution, don't use nightmode....",
+                         "Nightmode users are a buncha nerds.",
+                         "Oh, so that's where that code went, I thought i had lost it somehow.",
+                         "Are all close buttons pretty now?!?!?",
+                         "As a Business Analyst myself...",
+                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!"],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 
@@ -233,6 +235,7 @@ if (unmoderatedOn) {
     $(footer).prepend(modbarhid);
 
     // Always default to hidden.
+
     if (compactHide) {
         modbarHidden = true;
         $('#tb-bottombar-image').hide();
@@ -242,11 +245,11 @@ if (unmoderatedOn) {
         if (hidden) {
             $(modBar).hide();
             $(modbarhid).show();
-            $console.hide(); // hide the console, but don't change consoleShowing.
+            $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
         } else {
             $(modBar).show();
             $(modbarhid).hide();
-            if (consoleShowing && debugMode) $console.show();
+            if (consoleShowing && debugMode) $body.find('.tb-debug-window').show();
         }
         modbar.setting('modbarHidden', hidden);
     }
@@ -268,11 +271,11 @@ if (unmoderatedOn) {
 
     if (compactHide) {
         $(modbarhid)
-            .mouseenter(function () {
-                $('#tb-bottombar-image').show();
+            .mouseover(function () {
+                $body.find('#tb-bottombar-image').show();
             })
-            .mouseleave(function () {
-                $('#tb-bottombar-image').hide();
+            .mouseout(function () {
+                $body.find('#tb-bottombar-image').hide();
             });
     }
 

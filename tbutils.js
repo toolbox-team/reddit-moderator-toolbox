@@ -136,9 +136,15 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.0 is a BRAVE NEW WORLD.  No Version chnages.
-        $.log('Running ' + TBUtils.toolboxVersion + ' changes');
+        // 3.0.1 version changes
+        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, 'TBUtils');
 
+        var botCheck = TBStorage.getSetting('QueueTools', 'botCheckmark', ['AutoModerator']),
+            index = botCheck.indexOf('automoderator');
+        if (index > -1){
+            botCheck[index] = 'AutoModerator';
+            TBStorage.setSetting('QueueTools', 'botCheckmark', botCheck);
+        }
 
         // End: version changes.
 

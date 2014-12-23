@@ -694,6 +694,7 @@ function initwrapper() {
         var info = {
             subreddit: subreddit,
             user: user,
+            author: user,
             permalink: permalink,
             domain: domain,
             id: id,

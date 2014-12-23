@@ -204,7 +204,7 @@ usernotes.init = function () {
                     usernotes.log("deleting notes for " + user);
                     delete subUsenotes.users[user];
                     TB.utils.noteCache[sub] = subUsenotes;
-                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted all notes for /u/" + user);
+                    postToWiki(sub, subUsenotes, "deleted all notes for /u/" + user);
                     $userSpan.remove();
                     TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
                 }
@@ -220,7 +220,7 @@ usernotes.init = function () {
                     usernotes.log("deleting note for " + user);
                     subUsenotes.users[user].notes.splice(note, 1);
                     TB.utils.noteCache[sub] = subUsenotes;
-                    postToWiki(sub, subUsenotes, "/u/" + TB.utils.logged + " deleted a note for /u/" + user);
+                    postToWiki(sub, subUsenotes, "deleted a note for /u/" + user);
                     $noteSpan.remove();
                     TB.ui.textFeedback('Deleted note for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
             });

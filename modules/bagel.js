@@ -6,7 +6,7 @@ buttons.shortname = 'Bagels';
 //Default settings
 buttons.settings['enabled']['default'] = true;
 
-buttons.register_setting('enableModSave', {
+buttons.register_setting('bagelType', {
     'type': 'selector',
     'values': ['Plain', 'Seasame Seed', 'Poppy Seed', 'Onion', 'Everything'],
     'default': 'plain',

@@ -77,7 +77,7 @@ modbar.init = function modbarInit() {
         shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
         longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
-        modSubreddits = TB.storage.getSetting('Notifier', 'modmailSubreddits', 'mod'),
+        modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
         unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
         unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadMessageCount', 0),
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),

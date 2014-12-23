@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Toolbox Team</string>
 	<key>Builder Version</key>
-	<string>10600.1.25.1</string>
+	<string>10600.2.5</string>
 	<key>CFBundleDisplayName</key>
 	<string>reddit Moderator Toolbox</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>3.1</string>
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Global Page</key>
@@ -92,6 +92,8 @@
 			<string>Some</string>
 		</dict>
 	</dict>
+	<key>Update Manifest URL</key>
+	<string>https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/UpdateManifest.plist</string>
 	<key>Website</key>
 	<string>http://reddit.com/r/toolbox</string>
 </dict>

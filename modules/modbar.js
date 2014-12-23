@@ -85,12 +85,13 @@ modbar.init = function modbarInit() {
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
         
-    var randomQuotes = new Array("Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.", 
-                                 "Simple solution, don't use nightmode....", 
-                                 "Nightmode users are a buncha nerds.", 
-                                 "Oh, so that's where that code went, I thought i had lost it somehow.",
-                                 "Are all close buttons pretty now?!?!?",
-                                 "As a Business Analyst myself..."),    
+    var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+                         "Simple solution, don't use nightmode....",
+                         "Nightmode users are a buncha nerds.",
+                         "Oh, so that's where that code went, I thought i had lost it somehow.",
+                         "Are all close buttons pretty now?!?!?",
+                         "As a Business Analyst myself...",
+                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!"],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 

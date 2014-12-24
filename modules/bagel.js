@@ -4,7 +4,7 @@ var bagels = new TB.Module('Bagels');
 bagels.shortname = 'Bagels';
 
 //Default settings
-bagels.settings['enabled']['default'] = true;
+bagels.settings['enabled']['default'] = false;
 
 bagels.register_setting('bagelType', {
     'type': 'selector',

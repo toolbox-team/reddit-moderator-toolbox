@@ -527,10 +527,43 @@ modmail.modmailpro = function () {
                 // Fade the recipient of a modmail so it is much more clear WHO send it.
                 if (fadeRecipient) {
                     var $head = $entry.find('.tagline .head');
+
+                    // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
+
+                    // If there are two usernames we'll fade out the first one.
                     if ($head.find('a.author').length > 1) {
-                        $head.find('a.author').eq(0).css('opacity', '.6');
+                        var $fadedRecipient = $head.find('a.author').eq(0);
+
+                        $fadedRecipient.attr('style', 'color: #888 !important');
+                        if ($fadedRecipient.hasClass('moderator')) {
+                            $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                        }
+
+                        if ($fadedRecipient.hasClass('admin')) {
+                            $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                        }
+
+                        // RES Stuff and userattrs
+                        $head.find('.RESUserTag').eq(0).hide();
+                        $head.find('.voteWeight').eq(0).hide();
+                        $head.find('.userattrs').eq(0).hide();
+
+                    // If it is just one username we'll only fade it out if the line contains "to" since that's us.
                     } else if(/^to /.test($head.text())) {
-                        $head.find('a.author').css('opacity', '.6');
+                        var $fadedRecipient = $head.find('a.author')
+                        $fadedRecipient.attr('style', 'color: #888 !important');
+                        if ($fadedRecipient.hasClass('moderator')) {
+                            $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                        }
+
+                        if ($fadedRecipient.hasClass('admin')) {
+                            $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                        }
+
+                        // RES Stuff and userattrs
+                        $head.find('.RESUserTag').hide();
+                        $head.find('.voteWeight').hide();
+                        $head.find('.userattrs').hide();
                     }
                 }
             }, function(){

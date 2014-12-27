@@ -103,6 +103,7 @@ modmail.init = function () {
 };
 
 modmail.modmailpro = function () {
+    var start = new Date().getTime();
     var $body = $('body');
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
@@ -127,7 +128,8 @@ modmail.modmailpro = function () {
         unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
         threadAlways = modmail.setting('autoThreadOnLoad'),
         threadOnExpand = threadAlways || modmail.setting('autoThread'),
-        sentFromMMP = false;
+        sentFromMMP = false,
+        lmcSupport = false;
 
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
@@ -180,6 +182,18 @@ modmail.modmailpro = function () {
 
         setReplied();
     });
+
+    // TODO: add to tbutils or tbmodule... not sure which just yet.
+    function perfCounter(startTime, note){
+        if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
+
+        var nowTime = new Date().getTime(),
+            secs = (nowTime - startTime) / 1000;
+
+        modmail.log(note + ' in: ' + secs + ' seconds');
+
+        return nowTime;
+    }
 
     function setView() {
         var a = [], //hacky-hack for 'all' view.
@@ -267,85 +281,119 @@ modmail.modmailpro = function () {
 
     initialize();
 
-    // NER support.
-    window.addEventListener("TBNewThings", function () {
-        if (sentFromMMP) {
-            sentFromMMP = false;
-            return;
-        }
-        initialize();
-    });
+    function addLmcSupport() {
+        if (lmcSupport) return;
+        lmcSupport = true;
 
+        // RES NER support.
+        $body.find('div.content').on('DOMNodeInserted', function (e) {
+            if (!e.target.className) return;
 
-    // RES NER support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        var $sender = $(e.target);
-        var event = new CustomEvent("TBNewThings");
+            var $sender = $(e.target);
 
-        if (!$sender.hasClass('message-parent')) {
-            return; //not RES, not flowwit, not load more comments, not realtime.
-        }
+            if (!$sender.hasClass('message-parent')) {
+                //modmail.log('node return: ' + e.target.className);
+                return; //not RES, not flowwit, not load more comments, not realtime.
+            }
 
-        if ($sender.hasClass('realtime-new')) { //new thread
-            var attrib = $sender.attr('data-fullname');
-            if (attrib) {
+            var event = new CustomEvent("TBNewThings");
+            modmail.log('node check');
+
+            if ($sender.hasClass('realtime-new')) { //new thread
+                var attrib = $sender.attr('data-fullname');
+                if (attrib) {
+                    setTimeout(function () {
+                        modmail.log('realtime go');
+                        var thread = $(".message-parent[data-fullname='" + attrib + "']");
+                        if (thread.length > 1) {
+                            $sender.remove();
+                        } else {
+                            processThread(thread);
+                            //window.dispatchEvent(event);
+                        }
+                    }, 500);
+                }
+            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
                 setTimeout(function () {
-                    modmail.log('realtime go');
-                    var thread = $(".message-parent[data-fullname='" + attrib + "']");
-                    if (thread.length > 1) {
-                        $sender.remove();
-                    } else {
-                        processThread(thread);
-                        //window.dispatchEvent(event);
-                    }
+                    modmail.log('LMC go');
+                    processThread($sender);
+                    sentFromMMP = true;
+                    window.dispatchEvent(event);
                 }, 500);
             }
-        } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
-            setTimeout(function () {
-                modmail.log('LMC go');
-                processThread($sender);
-                sentFromMMP = true;
-                window.dispatchEvent(event);
-            }, 500);
-        }
-    });     
+        });
+
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            if (sentFromMMP) {
+                sentFromMMP = false;
+                return;
+            }
+            initialize();
+        });
+    }
 
     function initialize() {
         modmail.log('MMP init');
 
-        unprocessedThreads = $('.message-parent:not(.mmp-processed)');
-        modmail.log(unprocessedThreads.length);
+        var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
+            slowThread = unprocessedThreads.slice(0, 10);
 
+        if (collapsed){
+            $body.find('.entry').hide();
+            $body.find('.expand-btn').hide();
+        }
+
+        modmail.log('Unprocessed Threads' + unprocessedThreads.length);
+
+        start = perfCounter(start, "pre-init time");
 
         // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(unprocessedThreads, 25, 350, function (thread) {
-            //$.log('running batch');
+        TBUtils.forEachChunked(slowThread, 1, 100, function (thread, count, array) {
+            modmail.log('running thread batch: ' + count + ' of ' + array.length);
+            modmail.log('Processing: ' + TB.utils.getThingInfo(thread).user);
             processThread(thread);
-        }, function complete() {
 
-            modmail.setting('lastVisited', now);
+        }, function slowComplete() {
+            // Add filter link to each title, if it doesn't already have one.
+            TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 50, function (thread, count, array) {
+                modmail.log('running thread batch: ' + count + ' of ' + array.length);
+                modmail.log('Processing: ' + TB.utils.getThingInfo(thread).user);
+                processThread(thread);
 
-            // If set collapse all threads on load.
-            if (collapsed) {
-                collapseall(unprocessedThreads);
-            }
+            }, function fastComplete() {
 
-            // If we're on the unread page, don't filter anything.
-            if (unreadPage) {
-                var entries = $('.entry');
-                var newCount = entries.length;
-                inbox = ALL;
-                menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
-                $(entries).click();
-            }
+                modmail.log('batch complete');
+                start = perfCounter(start, "proc threads time");
 
-            // Set views.
-            setFilterLinks(unprocessedThreads);
-            setReplied(unprocessedThreads);
-            setView();
+                modmail.setting('lastVisited', now);
+
+                // If set expand link.
+                if (collapsed) {
+                    var $link = $('.collapse-all-link');
+                    $link.css(selectedCSS);
+                    $link.text('expand all');
+                }
+
+                // If we're on the unread page, don't filter anything.
+                if (unreadPage) {
+                    var entries = $('.entry');
+                    var newCount = entries.length;
+                    inbox = ALL;
+                    menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
+                    $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
+                    $(entries).click();
+                }
+
+                // Set views.
+                setFilterLinks(unprocessedThreads);
+                setReplied(unprocessedThreads);
+                setView();
+
+                //finally, add LMC support
+                addLmcSupport();
+            });
         });
-
     }
     
     function processThread(thread) {
@@ -353,6 +401,8 @@ modmail.modmailpro = function () {
         if ($thread.hasClass('mmp-processed')) {
             return;
         }
+
+        var threadStart = new Date().getTime();
 
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
@@ -362,13 +412,17 @@ modmail.modmailpro = function () {
             count = (entries.length - 1),
             subreddit = getSubname(thread),
             newThread = $thread.hasClass('realtime-new'),
-            subject = $thread.find(".subject");
+            subject = $thread.find(".subject"),
+            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[-]') + '</a> ');
 
         $('<span class="info-area correspondent"></span>').insertAfter($thread.find('.correspondent:first'));
 
         // add threading options
         var flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "#").appendTo(subject).hide();
         var threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "#").appendTo(subject);
+        if (collapsed) {
+            threadTrigger.hide();
+        }
 
         flatTrigger.click(function () {
             flatModmail(threadID);
@@ -397,7 +451,7 @@ modmail.modmailpro = function () {
 
         if (count > 0) {
             if ($thread.hasClass('moremessages')) {
-                count = count + '+';
+                count = count.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
             $('<span class="message-count">' + count + ' </span>' + spacer).appendTo($infoArea);
@@ -415,8 +469,7 @@ modmail.modmailpro = function () {
 
         $('<span class="replied-tag"></span>' + spacer).appendTo($infoArea);
 
-        $thread.find('.correspondent.reddit.rounded a').parent().prepend(
-            '<a href="javascript:;" class="collapse-link">[-]</a> ');
+        $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
 
         if (noRedModmail) {
             if ($thread.hasClass('spam')) {
@@ -437,7 +490,9 @@ modmail.modmailpro = function () {
 
         // Don't parse all entries if we don't need to.
         if (noRedModmail || highlightNew || fadeRecipient) {
-            TBUtils.forEachChunked(entries, 25, 250, function (entry) {
+            TBUtils.forEachChunked(entries, 5, 200, function (entry, idx, array) {
+                //modmail.log('running entry batch: ' + idx + ' of ' + array.length);
+
                 var $entry = $(entry);
                 if (noRedModmail) {
                     var $message = $entry.parent();
@@ -478,11 +533,14 @@ modmail.modmailpro = function () {
                         $head.find('a.author').css('opacity', '.6');
                     }
                 }
+            }, function(){
+                //modmail.log('entry batch complete')
             });
         }
 
         // Deal with realtime threads.
         if (newThread) {
+            modmail.log('New thread!');
             $thread.removeClass('realtime-new');
             $infoArea.css('background-color', 'yellow');
             setView($thread);
@@ -491,8 +549,8 @@ modmail.modmailpro = function () {
             if (collapsed) {
                 $thread.find('.entry').hide();
                 $thread.find('.expand-btn').hide();
-                $thread.find('.collapse-link').text('[+]');
             }
+
             $thread.fadeIn("slow");
         }
         
@@ -500,6 +558,8 @@ modmail.modmailpro = function () {
         if(threadAlways) {
             threadModmail(threadID);
         }
+
+        perfCounter(threadStart, "thread proc time");
     }
 
     function collapse() {
@@ -660,10 +720,10 @@ modmail.modmailpro = function () {
     function collapseall(threads) {
         modmail.log('collapsing all');
         collapsed = true;
-        var link = ('.collapse-all-link');
+        var $link = $('.collapse-all-link');
 
         // make look selected.
-        $(link).css(selectedCSS);
+        $link.css(selectedCSS);
 
         // Hide threads.
         if (threads === undefined) {
@@ -675,16 +735,16 @@ modmail.modmailpro = function () {
             $(thread).find('.expand-btn').hide();
         });
 
-        $(link).text('expand all');
+        $link.text('expand all');
         $('.collapse-link').text('[+]');
     }
 
     function expandall() {
         collapsed = false;
-        var link = ('.collapse-all-link');
+        var $link = $('.collapse-all-link');
 
         // make look unselected.
-        $(link).css(unselectedCSS);
+        $link.css(unselectedCSS);
 
         // Show threads.
         var threads = $('.message-parent');
@@ -702,7 +762,7 @@ modmail.modmailpro = function () {
             }
         });
 
-        $(link).text('collapse all');
+        $link.text('collapse all');
         $('.collapse-link').text('[-]');
     }
 };

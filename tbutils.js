@@ -725,26 +725,29 @@ function initwrapper() {
 
     // Prevent page lock while parsing things.  (stolen from RES)
     TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
-        if (array === null) return;
-        if (chunkSize === null || chunkSize < 1) return;
-        if (delay === null || delay < 0) return;
-        if (call === null) return;
+        if (array === null) finish();
+        if (chunkSize === null || chunkSize < 1) finish();
+        if (delay === null || delay < 0) finish();
+        if (call === null) finish();
         var counter = 0;
         //var length = array.length;
 
         function doChunk() {
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
-                if (ret === false) return;
+                if (ret === false) finish();
             }
             if (counter < array.length) {
                 window.setTimeout(doChunk, delay);
             } else {
-                if (complete) complete();
+                finish();
             }
         }
-
         window.setTimeout(doChunk, delay);
+
+        function finish() {
+            return complete ? complete() : false;
+        }
     };
 
     // Reddit API stuff

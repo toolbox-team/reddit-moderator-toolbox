@@ -63,9 +63,10 @@
 		"modules/nukecomments.js",
 		"modules/personalnotes.js",
 		"modules/modmaillite.js",
-		"modules/queuetools.js",
 		"modules/betterbuttons.js",
 		"modules/bagel.js",
+		"modules/flyingsnoo.js",
+		"modules/queuetools.js",
 		"tbmoduleinit.js"
 	  ]
 	}

@@ -11,7 +11,20 @@ removal.register_setting('commentReasons', {
     'title': 'Enable removal reasons for comments.'
 });
 
-removal.init = function removalReasonsInit() {
+// Storage settings.
+removal.register_setting('reasonType', {
+    'type': 'string',
+    'default': '',
+    'hidden': true
+});
+removal.register_setting('reasonAsSub', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+});
+
+
+    removal.init = function removalReasonsInit() {
 
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
@@ -191,8 +204,8 @@ removal.init = function removalReasonsInit() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = TB.storage.getCache('RReasons', 'reasonType', null);
-            var reasonAsSub = TB.storage.getCache('RReasons', 'reasonAsSub', false);
+            var reasonType = removal.setting('reasonType');
+            var reasonAsSub = removal.setting('reasonAsSub');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -372,11 +385,11 @@ removal.init = function removalReasonsInit() {
 
     // Toggle PM/reply/both notification method
     $body.on('click', '.reason-type', function () {
-        TB.storage.setCache('RReasons', 'reasonType', this.value);
+       removal.setting('reasonType', this.value);
     });
 
     $body.on('click', '.reason-as-sub', function () {
-        TB.storage.setCache('RReasons', 'reasonAsSub', $(this).prop('checked'));
+        removal.setting('reasonAsSub', $(this).prop('checked'));
     });
 
     // 'no reason' button clicked

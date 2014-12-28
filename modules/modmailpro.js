@@ -544,8 +544,7 @@ modmail.modmailpro = function () {
                         }
 
                         // RES Stuff and userattrs
-                        $head.find('.RESUserTag').eq(0).hide();
-                        $head.find('.voteWeight').eq(0).hide();
+                        $head.addClass('tb-remove-res-two');
                         $head.find('.userattrs').eq(0).hide();
 
                     // If it is just one username we'll only fade it out if the line contains "to" since that's us.
@@ -561,8 +560,7 @@ modmail.modmailpro = function () {
                         }
 
                         // RES Stuff and userattrs
-                        $head.find('.RESUserTag').hide();
-                        $head.find('.voteWeight').hide();
+                        $head.addClass('tb-remove-res-one');
                         $head.find('.userattrs').hide();
                     }
                 }

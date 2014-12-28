@@ -2048,3 +2048,13 @@ body[class*="wiki-page-livedocs"] .wiki-page-content,
 body[class*="wiki-page-livedocs"] h1.wikititle {
     margin: 5px !important;
 }
+
+
+/* MMP remove res stuff if needed */
+.mod-toolbox .tb-remove-res-two b:nth-of-type(1) .RESUserTag,
+.mod-toolbox .tb-remove-res-two b:nth-of-type(1) .voteWeight,
+.mod-toolbox .tb-remove-res-one .voteWeight,
+.mod-toolbox .tb-remove-res-one .RESUserTag
+{
+    display: none;
+}

@@ -184,7 +184,7 @@ function initwrapper() {
     };
 
 
-    TBUtils.warningType = ['spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
+    TBUtils.warningType = ['gooduser', 'spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
 
 
     TBUtils.config = {
@@ -202,6 +202,9 @@ function initwrapper() {
         };
 
         switch (String(warningType)) { //not sure why it gets passed as an array.
+            case 'gooduser':
+                typeInfo = {color: 'green', name: 'Contributor', text: 'Good Contributor'};
+                break;
             case 'spamwatch':
                 typeInfo = {color: 'fuchsia', name: 'Watching', text: 'Spam Watch'};
                 break;

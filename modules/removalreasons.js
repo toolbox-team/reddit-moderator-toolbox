@@ -10,6 +10,11 @@ removal.register_setting('commentReasons', {
     'default': false,
     'title': 'Enable removal reasons for comments.'
 });
+removal.register_setting('alwaysShow', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show an empty removal reason box for subreddits that don\'t have removal reasons.'
+});
 
 // Storage settings.
 removal.register_setting('reasonType', {
@@ -20,6 +25,13 @@ removal.register_setting('reasonType', {
 removal.register_setting('reasonAsSub', {
     'type': 'boolean',
     'default': false,
+    'hidden': true
+});
+// Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
+// May make this a user setting, one day.
+removal.register_setting('customRemovalReason', {
+    'type': 'string',
+    'default': '%3Ctextarea%20id%3D%22customTextarea%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
     'hidden': true
 });
 
@@ -49,6 +61,9 @@ removal.register_setting('reasonAsSub', {
     // Cached data
     var notEnabled = [];
 
+    // Settings.
+    var alwaysShow = removal.setting('alwaysShow');
+
     function getRemovalReasons(subreddit, callback) {
 
 
@@ -67,7 +82,7 @@ removal.register_setting('reasonAsSub', {
 
             // If we need to get them from another sub, recurse.
             if (reasons && reasons.getfrom) {
-                getRemovalReasons(reasons.getfrom, callback); //this may not work.
+                getRemovalReasons(reasons.getfrom, callback);
                 return;
             }
         }
@@ -160,7 +175,34 @@ removal.register_setting('reasonAsSub', {
                 // Removal reasons not enabled
                 if (!response || response.reasons.length < 1) {
                     notEnabled.push(data.subreddit);
-                    return;
+
+                    // we're done, unless the user has always show set.
+                    if (!alwaysShow) return;
+
+                    // Otherwise, setup a completely empty reason.
+                    removal.log('Using custom reason');
+
+                    var customReasons = {
+                        pmsubject: '',
+                        logreason: '',
+                        header: '',
+                        footer: '',
+                        logsub: '',
+                        logtitle: '',
+                        bantitle: '',
+                        getfrom: '',
+                        reasons: []
+                    };
+                    var reason = {
+                        text: removal.setting('customRemovalReason'),
+                        flairText: '',
+                        flairCSS: '',
+                        title: ''
+                    };
+                    customReasons.reasons.push(reason);
+
+                    //Set response to our empty reason.
+                    response = customReasons;
                 }
 
                 // Click yes on the removal

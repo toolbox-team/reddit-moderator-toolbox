@@ -435,8 +435,8 @@ if (unmoderatedOn) {
     "<i>'  + randomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
   <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
-<!--h3>Special thanks to:</h3>\
-  <a href="/user/largenocream">/u/largenocream</a> - Usernotes ver 3 schema and converter<br><br-->\
+<h3>Special thanks to:</h3>\
+  <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
 <h3>Credits:</h3>\
 <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\

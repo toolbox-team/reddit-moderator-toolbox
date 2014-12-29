@@ -38,7 +38,7 @@ function initwrapper() {
     TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.releaseName = 'A BRAVER NEWER WORLD';
     TBUtils.configSchema = 1;
-    TBUtils.notesSchema = 4;
+    TBUtils.notesSchema = 5;
     TBUtils.minNotesSchema = 0;
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';

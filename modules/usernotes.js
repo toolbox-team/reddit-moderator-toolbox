@@ -472,7 +472,7 @@ usernotes.init = function () {
             notes.users[name] = {
                 "name": name,
                 "notes": user.ns.map(function (note) {
-                    return inflateNote(mgr, note);
+                    return inflateNote(deflated.ver, mgr, note);
                 })
             };
         });
@@ -493,7 +493,7 @@ usernotes.init = function () {
             return {
                 "name": mgr.get("users", user.u),
                 "notes": user.ns.map(function (note) {
-                    note = inflateNote(mgr, note);
+                    note = inflateNote(deflated.ver, mgr, note);
                     if (note.link) {
                         note.link = "l," + note.link;
                     }
@@ -506,10 +506,10 @@ usernotes.init = function () {
     }
 
     // Inflates a single note
-    function inflateNote(mgr, note) {
+    function inflateNote(version, mgr, note) {
         return {
             "note": TBUtils.htmlDecode(note.n),
-            "time": inflateTime(note.t),
+            "time": inflateTime(version, note.t),
             "mod": mgr.get("users", note.m),
             "link": note.l,
             "type": mgr.get("warnings", note.w)
@@ -517,8 +517,8 @@ usernotes.init = function () {
     }
 
     //Date/time utilities
-    function inflateTime(time) {
-        if (TBUtils.notesSchema >= 5 && time.toString().length <= 10) {
+    function inflateTime(version, time) {
+        if (version >= 5 && time.toString().length <= 10) {
             time *= 1000;
         }
         return time;

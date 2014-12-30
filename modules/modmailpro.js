@@ -70,10 +70,16 @@ modmail.register_setting('subredditColor', {
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
+modmail.register_setting('subredditColorSalt', {
+    'type': 'text',
+    'default': "PJSalt",
+    'title': 'Salt the value used to determine the subreddit color'
+});
+
 modmail.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': true,
-    'title': 'Fade the recipient of a modmail so it is much more clear who sent it. '
+    'title': 'Fade the recipient of a modmail so it is much more clear who sent it.'
 });
 
 /// Private setting storage
@@ -121,6 +127,7 @@ modmail.modmailpro = function () {
         highlightNew = modmail.setting('highlightNew'),
         fadeRecipient = modmail.setting('fadeRecipient'),
         subredditColor = modmail.setting('subredditColor'),
+        subredditColorSalt = modmail.set('subredditColorSalt'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -479,10 +486,10 @@ modmail.modmailpro = function () {
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
-        if (subredditColor) {   
+        if (subredditColor) {
         
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
-                colorForSub = TBUtils.stringToColor(subredditName);
+                colorForSub = TBUtils.stringToColor(subredditName+subredditColorSalt);
 
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');

@@ -655,9 +655,9 @@ function initwrapper() {
             // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
             // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
 
-            // There are two users in the tagline, the second one is the user sending the message so we want to target that user.
+            // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
             if ($entry.find('.tagline .head a.author').length > 1) {
-                user = $entry.find('.tagline .head a.author').eq(1).text();
+                user = $entry.find('.tagline .head a.author').eq(0).text();
             }
 
             // If there is only one use present and it says "to" it means that this is not the user sending the message.

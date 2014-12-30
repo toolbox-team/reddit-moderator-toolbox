@@ -336,7 +336,7 @@ usernotes.init = function () {
         var userattrs = $(thing).find('.userattrs');
         if ($(userattrs).length > 0) {
             if(TBUtils.isModmail && $(userattrs).length > 1) {
-                $(userattrs).eq(1).after(tag);
+                $(userattrs).eq(0).after(tag);
             } else {
                 $(userattrs).after(tag);
             }

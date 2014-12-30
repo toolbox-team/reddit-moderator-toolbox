@@ -539,7 +539,7 @@ modmail.modmailpro = function () {
 
                     // If there are two usernames we'll fade out the first one.
                     if ($head.find('a.author').length > 1) {
-                        var $fadedRecipient = $head.find('a.author').eq(0);
+                        var $fadedRecipient = $head.find('a.author').eq(1);
 
                         $fadedRecipient.attr('style', 'color: #888 !important');
                         if ($fadedRecipient.hasClass('moderator')) {
@@ -552,7 +552,7 @@ modmail.modmailpro = function () {
 
                         // RES Stuff and userattrs
                         $head.addClass('tb-remove-res-two');
-                        $head.find('.userattrs').eq(0).hide();
+                        $head.find('.userattrs').eq(1).hide();
 
                     // If it is just one username we'll only fade it out if the line contains "to" since that's us.
                     } else if(/^to /.test($head.text())) {

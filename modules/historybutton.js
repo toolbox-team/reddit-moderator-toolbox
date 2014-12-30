@@ -33,7 +33,7 @@ history.init = function () {
                 $this.addClass('tb-history');
 
                 if($userattrs.length > 1) {
-                    $userattrs.eq(1).after(UserButtonHTML);
+                    $userattrs.eq(0).after(UserButtonHTML);
                 } else {
                     $userattrs.after(UserButtonHTML);
                 }

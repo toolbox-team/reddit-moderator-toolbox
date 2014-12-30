@@ -1,3 +1,7 @@
 .message.message-parent.mmp-collapsed .subject {
     margin-bottom: 0;
 }
+
+.info-area {
+    height: 15px;
+}

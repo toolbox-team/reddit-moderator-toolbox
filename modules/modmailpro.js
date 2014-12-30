@@ -266,7 +266,7 @@ modmail.modmailpro = function () {
     $body.on('click', '.collapse-link', function () {
         var $this = $(this),
             $parent = $this.closest('.message-parent');
-        if ($this.text() === '[-]') {
+        if ($this.text() === '[−]') {
             $parent.find('.entry').hide();
             $parent.find('.expand-btn').hide();
             $this.text('[+]');
@@ -274,7 +274,7 @@ modmail.modmailpro = function () {
         } else {
             $parent.find('.entry').show();
             $parent.find('.expand-btn').show();
-            $this.text('[-]');
+            $this.text('[−]');
             $parent.removeClass('mmp-collapsed');
 
             //Show all comments
@@ -422,7 +422,7 @@ modmail.modmailpro = function () {
             subreddit = getSubname(thread),
             newThread = $thread.hasClass('realtime-new'),
             subject = $thread.find(".subject"),
-            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[-]') + '</a> ');
+            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> ');
 
         $('<span class="info-area correspondent"></span>').insertAfter($thread.find('.correspondent:first'));
 
@@ -803,7 +803,7 @@ modmail.modmailpro = function () {
         });
 
         $link.text('collapse all');
-        $('.collapse-link').text('[-]');
+        $('.collapse-link').text('[−]');
     }
 };
 

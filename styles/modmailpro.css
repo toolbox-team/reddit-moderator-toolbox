@@ -1,7 +1,21 @@
+.message .collapse-link {
+    margin-right: 6px;
+}
+
 .message.message-parent.mmp-collapsed .subject {
     margin-bottom: 0;
 }
 
-.info-area {
-    height: 15px;
+.message .subject .correspondent:first-child {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    margin-right: 0;
+}
+
+.message .subject .info-area {
+    border-bottom-right-radius: 7px;
+    border-left: medium none !important;
+    border-top-right-radius: 7px;
+    height: 17px;
+    padding: 2px 8px;
 }

@@ -75,6 +75,7 @@
 			<string>styles/personalnotes.css</string>
 			<string>styles/modmaillite.css</string>
 			<string>styles/queuetools.css</string>
+			<string>styles/modmailpro.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

@@ -2058,3 +2058,8 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 {
     display: none;
 }
+
+#tb-config-help {
+    float: right;
+    padding-right: 10px;
+}

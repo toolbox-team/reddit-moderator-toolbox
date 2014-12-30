@@ -125,7 +125,8 @@ tbconfig.init = function () {
                     title: 'edit removal reasons',
                     tooltip: 'Edit and add your removal reasons here.',
                     content: '\
-                    <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a></br>\
+                    <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a>\
+                    <a href="javascript:;" id="tb-config-help" data-module="rreasons">[help]</a></br>\
                     <span id="tb-add-removal-reason-form">\
                         <textarea class="edit-area"></textarea><br/>\
                         <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
@@ -143,7 +144,8 @@ tbconfig.init = function () {
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
                     content: '\
-                    <a href="javascript:;" id="tb-add-mod-macro"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new mod macro</a></br>\
+                    <a href="javascript:;" id="tb-add-mod-macro"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new mod macro</a>\
+                    <a href="javascript:;" id="tb-config-help" data-module="modmacros">[help]</a></br>\
                     <span id="tb-add-mod-macro-form">\
                         <textarea class="edit-area"></textarea><br/>\
                         <input type="text" class="macro-title" name="macro-title" placeholder="macro title" />\
@@ -168,6 +170,12 @@ tbconfig.init = function () {
         $body.css('overflow', 'hidden');
     }
 
+    // Help click event.
+    $body.on('click', '#tb-config-help', function () {
+        var module = $(this).attr('data-module');
+        window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+
+    });
 
     // Now we want to figure out if we are on a subreddit, or not.
     // If we are on a subreddit we mod, add a button to the moderation tools box.

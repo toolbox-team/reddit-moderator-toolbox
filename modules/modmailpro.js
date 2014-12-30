@@ -344,6 +344,7 @@ modmail.modmailpro = function () {
 
     function initialize() {
         modmail.log('MMP init');
+        TB.ui.longLoadSpinner(true); //not working?
 
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
             slowThread = unprocessedThreads.slice(0, 10);
@@ -401,6 +402,8 @@ modmail.modmailpro = function () {
 
                 //finally, add LMC support
                 addLmcSupport();
+
+                TB.ui.longLoadSpinner(false);
             });
         });
     }
@@ -422,29 +425,17 @@ modmail.modmailpro = function () {
             subreddit = getSubname(thread),
             newThread = $thread.hasClass('realtime-new'),
             subject = $thread.find(".subject"),
-            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> ');
+            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
+            $subredditArea = $thread.find('.correspondent:first');
 
-        $('<span class="info-area correspondent"></span>').insertAfter($thread.find('.correspondent:first'));
+        $subredditArea.after('<span class="info-area correspondent"></span>');
 
         // add threading options
-        var flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "#").appendTo(subject).hide();
-        var threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "#").appendTo(subject);
+        var flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "javascript:;").appendTo(subject).hide();
+        var threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "javascript:;").appendTo(subject);
         if (collapsed) {
             threadTrigger.hide();
         }
-
-        flatTrigger.click(function () {
-            flatModmail(threadID);
-            $(this).hide();
-            threadTrigger.show();
-            return false;
-        });
-        threadTrigger.click(function () {
-            threadModmail(threadID);
-            $(this).hide();
-            flatTrigger.show();
-            return false;
-        });
 
         // Only one feature needs thread, so disable it because it's costly.
         if (hideInviteSpam) {
@@ -456,7 +447,7 @@ modmail.modmailpro = function () {
         var $infoArea = $thread.find('.info-area');
         var spacer = '<span> </span>';
 
-        $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a> <span>').appendTo($infoArea);
+        $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;<span>').appendTo($infoArea);
 
         if (count > 0) {
             if ($thread.hasClass('moremessages')) {
@@ -527,6 +518,7 @@ modmail.modmailpro = function () {
                             $entry.find('.expand:first').click();
                         }
                         $infoArea.css('background-color', 'lightgreen');
+                        $subredditArea.css('background-color', 'lightgreen');
 
                         newCount++;
                         $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
@@ -583,6 +575,8 @@ modmail.modmailpro = function () {
             modmail.log('New thread!');
             $thread.removeClass('realtime-new');
             $infoArea.css('background-color', 'yellow');
+            $subredditArea.css('background-color', 'lightgreen');
+
             setView($thread);
             setFilterLinks($thread);
 
@@ -684,6 +678,25 @@ modmail.modmailpro = function () {
             }
         });
     }
+
+    // Threading methods.
+    $body.on('click', '.tb-flat-view', function() {
+        var $this = $(this),
+            $message = $this.closest('.message-parent');
+
+        flatModmail($message.data('fullname'));
+        $this.hide();
+        $message.find('.tb-thread-view').show();
+    });
+
+    $body.on('click', '.tb-thread-view', function() {
+        var $this = $(this),
+            $message = $this.closest('.message-parent');
+
+        threadModmail($message.data('fullname'));
+        $this.hide();
+        $message.find('.tb-flat-view').show();
+    });
 
     $body.on('click', '.filter-sub-link', function (e) {
         var subname = getSubname($(e.target).closest('.message-parent')),

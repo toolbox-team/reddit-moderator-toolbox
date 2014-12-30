@@ -130,7 +130,7 @@ usernotes.init = function () {
                             'timeISO': timeISO
                         });
 
-                        $siteTable.find('div[data-user="' + user + '"]').append(notecontent);
+                        $siteTable.find('div[data-user="' + user + '"] .tb-usernotes').append(notecontent);
                     });
                 },
 
@@ -205,7 +205,7 @@ usernotes.init = function () {
                     delete subUsenotes.users[user];
                     TB.utils.noteCache[sub] = subUsenotes;
                     postToWiki(sub, subUsenotes, "deleted all notes for /u/" + user);
-                    $userSpan.remove();
+                    $userSpan.parent().remove();
                     TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
                 }
             });

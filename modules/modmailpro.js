@@ -265,23 +265,25 @@ modmail.modmailpro = function () {
 
     $body.on('click', '.collapse-link', function () {
         var $this = $(this),
-            parent = $this.closest('.message-parent');
+            $parent = $this.closest('.message-parent');
         if ($this.text() === '[-]') {
-            parent.find('.entry').hide();
-            parent.find('.expand-btn').hide();
+            $parent.find('.entry').hide();
+            $parent.find('.expand-btn').hide();
             $this.text('[+]');
+            $parent.addClass('mmp-collapsed');
         } else {
-            parent.find('.entry').show();
-            parent.find('.expand-btn').show();
+            $parent.find('.entry').show();
+            $parent.find('.expand-btn').show();
             $this.text('[-]');
+            $parent.removeClass('mmp-collapsed');
 
             //Show all comments
             if (expandReplies) {
-                parent.find('.expand-btn:first')[0].click();
+                $parent.find('.expand-btn:first')[0].click();
             }
 
             if (threadOnExpand){
-                parent.find('.tb-thread-view')[0].click();
+                $parent.find('.tb-thread-view')[0].click();
             }
         }
     });

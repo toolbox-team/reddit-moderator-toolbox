@@ -27,7 +27,8 @@
 		"styles/removalreasons.css",
 		"styles/personalnotes.css",
 		"styles/modmaillite.css",
-		"styles/queuetools.css"
+		"styles/queuetools.css",
+		"styles/modmailpro.css"
 	  ],
 	  "js": [
 		"libs/jquery-2.1.1.js",

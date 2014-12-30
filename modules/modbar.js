@@ -84,14 +84,16 @@ modbar.init = function modbarInit() {
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
-        
+
+    // todo: move the quotes array to TBUtils.
     var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-                         "Simple solution, don't use nightmode....",
-                         "Nightmode users are a buncha nerds.",
-                         "Oh, so that's where that code went, I thought i had lost it somehow.",
-                         "Are all close buttons pretty now?!?!?",
-                         "As a Business Analyst myself...",
-                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!"],
+                        "Simple solution, don't use nightmode....",
+                        "Nightmode users are a buncha nerds.",
+                        "Oh, so that's where that code went, I thought i had lost it somehow.",
+                        "Are all close buttons pretty now?!?!?",
+                        "As a Business Analyst myself...",
+                        "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+                        "You are now an approvened submitter"],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 

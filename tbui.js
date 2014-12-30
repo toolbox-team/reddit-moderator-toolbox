@@ -335,7 +335,7 @@
         return $select_multiple;
     };
 
-    TBui.textFeedback = function (feedbackText, feedbackKind) {
+    TBui.textFeedback = function (feedbackText, feedbackKind, displayTimed, displayDuration) {
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
             var $body = $('body');
@@ -360,10 +360,12 @@
             });
 
             // And fade out nicely after 3 seconds.
-            $body.find('#tb-feedback-window').delay(3000).fadeOut();
+            if (displayTimed === undefined || (displayTimed !== undefined && displayTimed)) {
+                $feedbackWindow.delay(displayDuration !== undefined ? displayDuration : 3000).fadeOut();
+            }
         }
     };
-
+    
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
     TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind) {
         if (createOrDestroy !== undefined) {

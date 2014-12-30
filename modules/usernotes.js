@@ -291,6 +291,8 @@ usernotes.init = function () {
     }
 
     function postToWiki(sub, json, reason) {
+        TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL, false);
+        
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
 
@@ -298,9 +300,12 @@ usernotes.init = function () {
         TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
                 usernotes.log("Success!");
+                TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, true, 2000);
                 run();
-            } else {
+            } 
+            else {
                 usernotes.log("Failure: " + err);
+                TBui.textFeedback("Save failed: "+err, TBui.FEEDBACK_NEGATIVE, true, 5000);
             }
         });
     }
@@ -793,6 +798,8 @@ usernotes.init = function () {
             "users": {}
         };
 
+        TBui.textFeedback("Adding new user note...", TBui.FEEDBACK_NEUTRAL, false);
+        
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                 return;
@@ -831,17 +838,20 @@ usernotes.init = function () {
 
                         postToWiki(subreddit, notes, 'delete note ' + noteid + ' on user ' + user);
                         // Add.
-                    } else {
+                    }
+                    else {
                         u.notes.unshift(note);
                         postToWiki(subreddit, notes, 'create new note on user ' + user);
                     }
 
                     // Adding a note for previously unknown user
-                } else if (u === undefined && !deleteNote) {
+                }
+                else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
                     postToWiki(subreddit, notes, 'create new note on new user ' + user);
                 }
-            } else {
+            }
+            else {
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;

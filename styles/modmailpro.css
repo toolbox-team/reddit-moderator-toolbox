@@ -6,6 +6,10 @@
     margin-bottom: 0;
 }
 
+.message .subject .correspondent {
+    line-height: 17px;
+}
+
 .message .subject .correspondent:first-child {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;

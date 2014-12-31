@@ -577,7 +577,7 @@ modmail.modmailpro = function () {
             modmail.log('New thread!');
             $thread.removeClass('realtime-new');
             $infoArea.css('background-color', 'yellow');
-            $subredditArea.css('background-color', 'lightgreen');
+            $subredditArea.css('background-color', 'yellow');
 
             setView($thread);
             setFilterLinks($thread);

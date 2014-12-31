@@ -241,6 +241,11 @@ modmail.modmailpro = function () {
                 addLmcSupport();
 
                 TB.ui.longLoadSpinner(false);
+
+                // Because realtime or LMC may have pulled mor therads during init.
+                if ($('.message-parent:not(.mmp-processed)').length > 0) {
+                    initialize();
+                }
             });
         });
     }

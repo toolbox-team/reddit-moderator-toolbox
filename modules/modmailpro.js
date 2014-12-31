@@ -14,6 +14,12 @@ modmail.register_setting('inboxStyle', {
     'title': 'Default inbox view'
 });
 
+modmail.register_setting('filteredSubs', {
+    'type': 'sublist',
+    'default': '[]',
+    'title': 'Subreddits to filter from priority view.'
+});
+
 modmail.register_setting('defaultCollapse', {
     'type': 'boolean',
     'default': false,
@@ -63,6 +69,12 @@ modmail.register_setting('autoThreadOnLoad', {
     'title': 'Automatically thread replies on page load. (Note: slows page load time)'
 });
 
+modmail.register_setting('fadeRecipient', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Fade the recipient of a modmail so it is much more clear who sent it.'
+});
+
 modmail.register_setting('subredditColor', {
     'type': 'boolean',
     'default': false,
@@ -72,13 +84,8 @@ modmail.register_setting('subredditColor', {
 modmail.register_setting('subredditColorSalt', {
     'type': 'text',
     'default': "PJSalt",
-    'title': 'Salt the value used to determine the subreddit color'
-});
-
-modmail.register_setting('fadeRecipient', {
-    'type': 'boolean',
-    'default': true,
-    'title': 'Fade the recipient of a modmail so it is much more clear who sent it.'
+    'title': 'Salt the value used to determine the subreddit color',
+    'hidden': !modmail.setting('subredditColor')
 });
 
 /// Private setting storage
@@ -92,19 +99,13 @@ modmail.register_setting('replied', {
     'default': [],
     'hidden': true
 });
-modmail.register_setting('filteredSubs', {
-    'type': 'array',
-    'default': [],
-    'hidden': true
-});
 
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
 
     this.modmailpro();
     this.realtimemail();
-    this.compose();
-    this.modmailSwitch();
+    this.mailDropDorpDowns();
 };
 
 modmail.modmailpro = function () {
@@ -320,13 +321,15 @@ modmail.modmailpro = function () {
                             $sender.remove();
                         } else {
                             processThread(thread);
-                            //window.dispatchEvent(event);
+                            sentFromMMP = true;
+                            window.dispatchEvent(event);
                         }
                     }, 500);
                 }
-            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load mor comments'
+            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
                 setTimeout(function () {
                     modmail.log('LMC go');
+                    $sender.addClass('lmc-thread');
                     processThread($sender);
                     sentFromMMP = true;
                     window.dispatchEvent(event);
@@ -426,6 +429,7 @@ modmail.modmailpro = function () {
             count = (entries.length - 1),
             subreddit = getSubname(thread),
             newThread = $thread.hasClass('realtime-new'),
+            lmcThread = $thread.hasClass('lmc-thread'),
             subject = $thread.find(".subject"),
             $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
             $subredditArea = $thread.find('.correspondent:first');
@@ -588,6 +592,23 @@ modmail.modmailpro = function () {
             }
 
             $thread.fadeIn("slow");
+        }
+
+        // Deal with LMC threads
+        if (lmcThread) {
+            $collapseLink.text('[−]');
+            if (threadOnExpand) {
+                threadModmail(threadID);
+                flatTrigger.show(); //no idea why we need to do this, really.
+            } else {
+                threadTrigger.show();
+            }
+
+            if (expandReplies) {
+                $thread.find('.expand-btn:first')[0].click();
+            }
+
+            setFilterLinks($thread);
         }
         
         //Thread the message if required
@@ -879,25 +900,30 @@ modmail.realtimemail = function () {
 };
 
 
-modmail.compose = function () {
-    var COMPOSE = "compose-message",
-    //mySubs = [],
-        composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value=' + COMPOSE + '>compose mod mail</option></select></li>'),
-        composeURL = '/message/compose?to=%2Fr%2F';
+modmail.mailDropDorpDowns = function () {
+    var COMPOSE = 'compose-message',
+        SWITCH = 'switch-modmail',
+        composeURL = '/message/compose?to=%2Fr%2F',
+        $composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
+        $switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="'+ SWITCH +'">switch mod mail</option></select></li>'),
+        $mmpMenu = $('.mmp-menu');
 
     TBUtils.getModSubs(function () {
-        populateCompose();
+        populateDropDowns();
     });
 
-    function populateCompose() {
-        $('.mmp-menu').append($(composeSelect).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
+    function populateDropDowns() {
+        $mmpMenu.append($composeSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
+        $mmpMenu.append($switchSelect.prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
         $(TBUtils.mySubs).each(function () {
-            $('.compose-mail')
-                .append($('<option>', {
+            $('.compose-mail').append($('<option>', {
                     value: this
-                })
-                    .text('/r/' + this));
+                }).text(this));
+
+            $('.switch-mail').append($('<option>', {
+                    value: this
+                }).text(this));
         });
 
         $('.compose-mail').change(function () {
@@ -905,35 +931,15 @@ modmail.compose = function () {
             var sub = $this.val();
             if (sub !== COMPOSE) {
                 window.open(composeURL + $this.val());
-                $(composeSelect).val(COMPOSE);
+                $(this).val(COMPOSE);
             }
         });
-    }
-};
 
-
-modmail.modmailSwitch = function () {
-    switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="modmailswitch">switch mod mail</option></select></li>');
-
-    TBUtils.getModSubs(function () {
-        populateSwitch();
-    });
-
-    function populateSwitch() {
-        $('.mmp-menu').append($(switchSelect).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
-
-        $(TBUtils.mySubs).each(function () {
-            $('.switch-mail')
-                .append($('<option>', {
-                    value: this
-                })
-                    .text('/r/' + this));
-        });
         $('.switch-mail').change(function () {
             var sub = $(this).val();
-            if (sub !== 'modmailswitch') {
+            if (sub !== SWITCH) {
                 window.open('/r/' + sub + '/message/moderator/inbox');
-                $(switchSelect).val('modmailswtich');
+                $(this).val(SWITCH);
             }
         });
     }

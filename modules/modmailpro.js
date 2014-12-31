@@ -177,174 +177,7 @@ modmail.modmailpro = function () {
 
     menuList.after($mmpMenu);
 
-    $body.on('click', '.save', function (e) {
-        var parent = $(e.target).closest('.message-parent'),
-            id = $(parent).attr('data-fullname'),
-            replied = getRepliedThreads();
-
-        // Add sub to filtered subs.
-        if ($.inArray(id, replied) === -1 && id !== null) {
-            replied.push(id);
-        }
-
-        modmail.setting('replied', replied);
-
-        setReplied();
-    });
-
-    // TODO: add to tbutils or tbmodule... not sure which just yet.
-    function perfCounter(startTime, note) {
-        if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
-
-        var nowTime = new Date().getTime(),
-            secs = (nowTime - startTime) / 1000;
-
-        modmail.log(note + ' in: ' + secs + ' seconds');
-
-        return nowTime;
-    }
-
-    function setView() {
-        var a = [], //hacky-hack for 'all' view.
-            filteredSubs = getFilteredSubs();
-
-        // Neither a switch nor === will work correctly.
-        if (inbox == ALL) {
-            $allLink.closest('li').addClass('selected');
-            hideThreads(a); // basically hideThreads(none);
-            return;
-
-        } else if (inbox == PRIORITY) {
-            $priorityLink.closest('li').addClass('selected');
-            hideThreads(filteredSubs);
-
-        } else if (inbox == FILTERED) {
-            $filteredLink.closest('li').addClass('selected');
-            showThreads(filteredSubs);
-
-        } else if (inbox == REPLIED) {
-            $repliedLink.closest('li').addClass('selected');
-            showThreads(getRepliedThreads(), true);
-
-        } else if (inbox == UNREAD) {
-            $unreadLink.closest('li').addClass('selected');
-            showThreads(unreadThreads, true);
-
-        } else if (inbox == UNANSWERED) {
-            $unansweredLink.closest('li').addClass('selected');
-            showThreads(unansweredThreads, true);
-        }
-
-        // Hide invite spam.
-        if (hideInviteSpam && inbox != UNREAD) {
-            $('.invitespam').each(function () {
-                var $this = $(this);
-                if ($this.hasClass('new')) {
-                    $this.find('.entry').click();
-                }
-
-                $this.hide();
-            });
-        }
-    }
-
-    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
-        // Just unselect all, then select the caller.
-        $(menuList).find('li').removeClass('selected');
-
-        inbox = $(e.target).attr('view');
-
-        setView();
-    });
-
-    $body.on('click', '.collapse-all-link', function () {
-        if (collapsed) {
-            expandall();
-        } else {
-            collapseall();
-        }
-    });
-
-    $body.on('click', '.collapse-link', function () {
-        var $this = $(this),
-            $parent = $this.closest('.message-parent');
-        if ($this.text() === '[−]') {
-            $parent.find('.entry').hide();
-            $parent.find('.expand-btn').hide();
-            $this.text('[+]');
-            $parent.addClass('mmp-collapsed');
-        } else {
-            $parent.find('.entry').show();
-            $parent.find('.expand-btn').show();
-            $this.text('[−]');
-            $parent.removeClass('mmp-collapsed');
-
-            //Show all comments
-            if (expandReplies) {
-                $parent.find('.expand-btn:first')[0].click();
-            }
-
-            if (threadOnExpand) {
-                $parent.find('.tb-thread-view')[0].click();
-            }
-        }
-    });
-
     initialize();
-
-    function addLmcSupport() {
-        if (lmcSupport) return;
-        lmcSupport = true;
-
-        // RES NER support.
-        $body.find('div.content').on('DOMNodeInserted', function (e) {
-            if (!e.target.className) return;
-
-            var $sender = $(e.target);
-
-            if (!$sender.hasClass('message-parent')) {
-                //modmail.log('node return: ' + e.target.className);
-                return; //not RES, not flowwit, not load more comments, not realtime.
-            }
-
-            var event = new CustomEvent("TBNewThings");
-            modmail.log('node check');
-
-            if ($sender.hasClass('realtime-new')) { //new thread
-                var attrib = $sender.attr('data-fullname');
-                if (attrib) {
-                    setTimeout(function () {
-                        modmail.log('realtime go');
-                        var thread = $(".message-parent[data-fullname='" + attrib + "']");
-                        if (thread.length > 1) {
-                            $sender.remove();
-                        } else {
-                            processThread(thread);
-                            sentFromMMP = true;
-                            window.dispatchEvent(event);
-                        }
-                    }, 500);
-                }
-            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
-                setTimeout(function () {
-                    modmail.log('LMC go');
-                    $sender.addClass('lmc-thread');
-                    processThread($sender);
-                    sentFromMMP = true;
-                    window.dispatchEvent(event);
-                }, 500);
-            }
-        });
-
-        // NER support.
-        window.addEventListener("TBNewThings", function () {
-            if (sentFromMMP) {
-                sentFromMMP = false;
-                return;
-            }
-            initialize();
-        });
-    }
 
     function initialize() {
         modmail.log('MMP init');
@@ -621,6 +454,117 @@ modmail.modmailpro = function () {
         perfCounter(threadStart, "thread proc time");
     }
 
+    function addLmcSupport() {
+        if (lmcSupport) return;
+        lmcSupport = true;
+
+        // RES NER support.
+        $body.find('div.content').on('DOMNodeInserted', function (e) {
+            if (!e.target.className) return;
+
+            var $sender = $(e.target);
+
+            if (!$sender.hasClass('message-parent')) {
+                //modmail.log('node return: ' + e.target.className);
+                return; //not RES, not flowwit, not load more comments, not realtime.
+            }
+
+            var event = new CustomEvent("TBNewThings");
+            modmail.log('node check');
+
+            if ($sender.hasClass('realtime-new')) { //new thread
+                var attrib = $sender.attr('data-fullname');
+                if (attrib) {
+                    setTimeout(function () {
+                        modmail.log('realtime go');
+                        var thread = $(".message-parent[data-fullname='" + attrib + "']");
+                        if (thread.length > 1) {
+                            $sender.remove();
+                        } else {
+                            processThread(thread);
+                            sentFromMMP = true;
+                            window.dispatchEvent(event);
+                        }
+                    }, 500);
+                }
+            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
+                setTimeout(function () {
+                    modmail.log('LMC go');
+                    $sender.addClass('lmc-thread');
+                    processThread($sender);
+                    sentFromMMP = true;
+                    window.dispatchEvent(event);
+                }, 500);
+            }
+        });
+
+        // NER support.
+        window.addEventListener("TBNewThings", function () {
+            if (sentFromMMP) {
+                sentFromMMP = false;
+                return;
+            }
+            initialize();
+        });
+    }
+
+
+    // TODO: add to tbutils or tbmodule... not sure which just yet.
+    function perfCounter(startTime, note) {
+        if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
+
+        var nowTime = new Date().getTime(),
+            secs = (nowTime - startTime) / 1000;
+
+        modmail.log(note + ' in: ' + secs + ' seconds');
+
+        return nowTime;
+    }
+
+    function setView() {
+        var a = [], //hacky-hack for 'all' view.
+            filteredSubs = getFilteredSubs();
+
+        // Neither a switch nor === will work correctly.
+        if (inbox == ALL) {
+            $allLink.closest('li').addClass('selected');
+            hideThreads(a); // basically hideThreads(none);
+            return;
+
+        } else if (inbox == PRIORITY) {
+            $priorityLink.closest('li').addClass('selected');
+            hideThreads(filteredSubs);
+
+        } else if (inbox == FILTERED) {
+            $filteredLink.closest('li').addClass('selected');
+            showThreads(filteredSubs);
+
+        } else if (inbox == REPLIED) {
+            $repliedLink.closest('li').addClass('selected');
+            showThreads(getRepliedThreads(), true);
+
+        } else if (inbox == UNREAD) {
+            $unreadLink.closest('li').addClass('selected');
+            showThreads(unreadThreads, true);
+
+        } else if (inbox == UNANSWERED) {
+            $unansweredLink.closest('li').addClass('selected');
+            showThreads(unansweredThreads, true);
+        }
+
+        // Hide invite spam.
+        if (hideInviteSpam && inbox != UNREAD) {
+            $('.invitespam').each(function () {
+                var $this = $(this);
+                if ($this.hasClass('new')) {
+                    $this.find('.entry').click();
+                }
+
+                $this.hide();
+            });
+        }
+    }
+
     function collapse() {
         $(this).parents(".thing:first").find("> .child").hide();
     }
@@ -704,51 +648,6 @@ modmail.modmailpro = function () {
             }
         });
     }
-
-    // Threading methods.
-    $body.on('click', '.tb-flat-view', function () {
-        var $this = $(this),
-            $message = $this.closest('.message-parent');
-
-        flatModmail($message.data('fullname'));
-        $this.hide();
-        $message.find('.tb-thread-view').show();
-    });
-
-    $body.on('click', '.tb-thread-view', function () {
-        var $this = $(this),
-            $message = $this.closest('.message-parent');
-
-        threadModmail($message.data('fullname'));
-        $this.hide();
-        $message.find('.tb-flat-view').show();
-    });
-
-    $body.on('click', '.filter-sub-link', function (e) {
-        var subname = getSubname($(e.target).closest('.message-parent')),
-            filtersubs = getFilteredSubs(),
-            $filterCount = $('.filter-count');
-
-        // Add sub to filtered subs.
-        if ($.inArray(subname, filtersubs) === -1) {
-            filtersubs.push(subname);
-        } else {
-            filtersubs.splice(filtersubs.indexOf(subname), 1);
-        }
-
-        // Save new filter list.
-        modmail.setting('filteredSubs', filtersubs);
-
-        // Refilter if in filter mode.
-        setView();
-
-        // Relabel links
-        setFilterLinks();
-
-        // Update filter count in settings.
-        $filterCount.text(filtersubs.length);
-        $filterCount.attr('title', filtersubs.join(', '));
-    });
 
     function getSubname(sub) {
         return TB.utils.cleanSubredditName($(sub).find('.correspondent.reddit.rounded a').text()).toLowerCase();
@@ -844,6 +743,109 @@ modmail.modmailpro = function () {
         $link.text('collapse all');
         $('.collapse-link').text('[−]');
     }
+
+    /// EVENTS ///
+    $body.on('click', '.save', function (e) {
+        var parent = $(e.target).closest('.message-parent'),
+            id = $(parent).attr('data-fullname'),
+            replied = getRepliedThreads();
+
+        // Add sub to filtered subs.
+        if ($.inArray(id, replied) === -1 && id !== null) {
+            replied.push(id);
+        }
+
+        modmail.setting('replied', replied);
+
+        setReplied();
+    });
+
+    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
+        // Just unselect all, then select the caller.
+        $(menuList).find('li').removeClass('selected');
+
+        inbox = $(e.target).attr('view');
+
+        setView();
+    });
+
+    $body.on('click', '.collapse-all-link', function () {
+        if (collapsed) {
+            expandall();
+        } else {
+            collapseall();
+        }
+    });
+
+    $body.on('click', '.collapse-link', function () {
+        var $this = $(this),
+            $parent = $this.closest('.message-parent');
+        if ($this.text() === '[−]') {
+            $parent.find('.entry').hide();
+            $parent.find('.expand-btn').hide();
+            $this.text('[+]');
+            $parent.addClass('mmp-collapsed');
+        } else {
+            $parent.find('.entry').show();
+            $parent.find('.expand-btn').show();
+            $this.text('[−]');
+            $parent.removeClass('mmp-collapsed');
+
+            //Show all comments
+            if (expandReplies) {
+                $parent.find('.expand-btn:first')[0].click();
+            }
+
+            if (threadOnExpand) {
+                $parent.find('.tb-thread-view')[0].click();
+            }
+        }
+    });
+
+    // Threading methods.
+    $body.on('click', '.tb-flat-view', function () {
+        var $this = $(this),
+            $message = $this.closest('.message-parent');
+
+        flatModmail($message.data('fullname'));
+        $this.hide();
+        $message.find('.tb-thread-view').show();
+    });
+
+    $body.on('click', '.tb-thread-view', function () {
+        var $this = $(this),
+            $message = $this.closest('.message-parent');
+
+        threadModmail($message.data('fullname'));
+        $this.hide();
+        $message.find('.tb-flat-view').show();
+    });
+
+    $body.on('click', '.filter-sub-link', function (e) {
+        var subname = getSubname($(e.target).closest('.message-parent')),
+            filtersubs = getFilteredSubs(),
+            $filterCount = $('.filter-count');
+
+        // Add sub to filtered subs.
+        if ($.inArray(subname, filtersubs) === -1) {
+            filtersubs.push(subname);
+        } else {
+            filtersubs.splice(filtersubs.indexOf(subname), 1);
+        }
+
+        // Save new filter list.
+        modmail.setting('filteredSubs', filtersubs);
+
+        // Refilter if in filter mode.
+        setView();
+
+        // Relabel links
+        setFilterLinks();
+
+        // Update filter count in settings.
+        $filterCount.text(filtersubs.length);
+        $filterCount.attr('title', filtersubs.join(', '));
+    });
 };
 
 

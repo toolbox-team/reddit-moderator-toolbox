@@ -3,7 +3,6 @@ function modmailpro() {
 var modmail = new TB.Module('Mod Mail Pro');
 modmail.shortname = 'ModMail';
 
-
 ////Default settings
 modmail.settings['enabled']['default'] = true;
 modmail.config['betamode'] = false;
@@ -111,6 +110,9 @@ modmail.init = function () {
 modmail.modmailpro = function () {
     var start = new Date().getTime();
     var $body = $('body');
+    
+    // Allow CSS to be applied if MMP is enabled
+    $body.addClass("tb-modmail-pro");
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
 

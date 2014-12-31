@@ -1,22 +1,22 @@
-.message .collapse-link {
+.tb-modmail-pro .message .collapse-link {
     margin-right: 6px;
 }
 
-.message.message-parent.mmp-collapsed .subject {
+.tb-modmail-pro .message.message-parent.mmp-collapsed .subject {
     margin-bottom: 0;
 }
 
-.message .subject .correspondent {
+.tb-modmail-pro .message .subject .correspondent {
     line-height: 17px;
 }
 
-.message .subject .correspondent:first-child {
+.tb-modmail-pro .message .subject .correspondent:first-child {
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
     margin-right: 0;
 }
 
-.message .subject .info-area {
+.tb-modmail-pro .message .subject .info-area {
     border-bottom-right-radius: 7px;
     border-left: medium none !important;
     border-top-right-radius: 7px;

@@ -93,7 +93,8 @@ modbar.init = function modbarInit() {
                         "Are all close buttons pretty now?!?!?",
                         "As a Business Analyst myself...",
                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
-                        "You are now an approvened submitter"],
+                        "You are now an approvened submitter",
+                        "Translate creesch's Kligon settings to Elglis."],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 
@@ -433,7 +434,8 @@ if (unmoderatedOn) {
 <div class="tb-window-content-about">\
 <h3>About:</h3>	<a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a> <br>\
     made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
-    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a> and <a href="/user/noeatnosleep">/u/noeatnosleep</a><br><br>\
+    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>, \
+    <a href="/user/noeatnosleep">/u/noeatnosleep</a> and <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
     "<i>'  + randomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
   <a href="/user/psdtwk">/u/psdtwk</a><br><br>\

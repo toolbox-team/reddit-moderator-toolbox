@@ -111,7 +111,7 @@ modmail.init = function () {
 modmail.modmailpro = function () {
     var start = new Date().getTime();
     var $body = $('body');
-    
+
     // Allow CSS to be applied if MMP is enabled
     $body.addClass("tb-modmail-pro");
 
@@ -121,7 +121,7 @@ modmail.modmailpro = function () {
         ADDED = "moderator added",
         inbox = modmail.setting('inboxStyle'),
         now = new Date().getTime(),
-        lastVisited =  modmail.setting('lastVisited'),
+        lastVisited = modmail.setting('lastVisited'),
         newCount = 0,
         collapsed = modmail.setting('defaultCollapse'),
         expandReplies = modmail.setting('expandReplies'),
@@ -193,7 +193,7 @@ modmail.modmailpro = function () {
     });
 
     // TODO: add to tbutils or tbmodule... not sure which just yet.
-    function perfCounter(startTime, note){
+    function perfCounter(startTime, note) {
         if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
 
         var nowTime = new Date().getTime(),
@@ -284,7 +284,7 @@ modmail.modmailpro = function () {
                 $parent.find('.expand-btn:first')[0].click();
             }
 
-            if (threadOnExpand){
+            if (threadOnExpand) {
                 $parent.find('.tb-thread-view')[0].click();
             }
         }
@@ -353,7 +353,7 @@ modmail.modmailpro = function () {
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
             slowThread = unprocessedThreads.slice(0, 10);
 
-        if (collapsed){
+        if (collapsed) {
             $body.find('.entry').hide();
             $body.find('.expand-btn').hide();
         }
@@ -411,7 +411,7 @@ modmail.modmailpro = function () {
             });
         });
     }
-    
+
     function processThread(thread) {
         var $thread = $(thread);
         if ($thread.hasClass('mmp-processed')) {
@@ -488,9 +488,9 @@ modmail.modmailpro = function () {
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
         if (subredditColor) {
-        
+
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
-                colorForSub = TBUtils.stringToColor(subredditName+subredditColorSalt);
+                colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
 
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
@@ -557,8 +557,8 @@ modmail.modmailpro = function () {
                         $head.addClass('tb-remove-res-two');
                         $head.find('.userattrs').eq(1).hide();
 
-                    // If it is just one username we'll only fade it out if the line contains "to" since that's us.
-                    } else if(/^to /.test($head.text())) {
+                        // If it is just one username we'll only fade it out if the line contains "to" since that's us.
+                    } else if (/^to /.test($head.text())) {
                         $fadedRecipient = $head.find('a.author');
                         $fadedRecipient.attr('style', 'color: #888 !important');
 
@@ -612,9 +612,9 @@ modmail.modmailpro = function () {
 
             setFilterLinks($thread);
         }
-        
+
         //Thread the message if required
-        if(threadAlways) {
+        if (threadAlways) {
             threadModmail(threadID);
         }
 
@@ -624,6 +624,7 @@ modmail.modmailpro = function () {
     function collapse() {
         $(this).parents(".thing:first").find("> .child").hide();
     }
+
     function noncollapse() {
         $(this).parents(".thing:first").find("> .child").show();
     }
@@ -705,7 +706,7 @@ modmail.modmailpro = function () {
     }
 
     // Threading methods.
-    $body.on('click', '.tb-flat-view', function() {
+    $body.on('click', '.tb-flat-view', function () {
         var $this = $(this),
             $message = $this.closest('.message-parent');
 
@@ -714,7 +715,7 @@ modmail.modmailpro = function () {
         $message.find('.tb-thread-view').show();
     });
 
-    $body.on('click', '.tb-thread-view', function() {
+    $body.on('click', '.tb-thread-view', function () {
         var $this = $(this),
             $message = $this.closest('.message-parent');
 
@@ -835,7 +836,7 @@ modmail.modmailpro = function () {
                 $(thread).find('.expand-btn:first')[0].click();
             }
 
-            if (threadOnExpand){
+            if (threadOnExpand) {
                 $(thread).find('.tb-thread-view')[0].click();
             }
         });
@@ -907,7 +908,7 @@ modmail.mailDropDorpDowns = function () {
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',
         $composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
-        $switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="'+ SWITCH +'">switch mod mail</option></select></li>'),
+        $switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="' + SWITCH + '">switch mod mail</option></select></li>'),
         $mmpMenu = $('.mmp-menu');
 
     TBUtils.getModSubs(function () {
@@ -920,12 +921,12 @@ modmail.mailDropDorpDowns = function () {
 
         $(TBUtils.mySubs).each(function () {
             $('.compose-mail').append($('<option>', {
-                    value: this
-                }).text(this));
+                value: this
+            }).text(this));
 
             $('.switch-mail').append($('<option>', {
-                    value: this
-                }).text(this));
+                value: this
+            }).text(this));
         });
 
         $('.compose-mail').change(function () {

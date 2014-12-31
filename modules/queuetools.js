@@ -62,6 +62,12 @@ queue.register_setting('botCheckmark', {
     'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
 });
 
+queue.register_setting('kitteh', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Kitteh?'
+});
+
 
 queue.init = function () {
     var $body = $('body');
@@ -83,6 +89,10 @@ queue.init = function () {
         } else if (TBUtils.isUnmoderatedPage) {
             QUEUE_URL = 'about/unmoderated/';
         }
+    }
+
+    if (TBUtils.isModpage && queue.setting('kitteh')) {
+        $body.find('p#noresults').addClass('tb-kitteh')
     }
 
     // Ideally, this should be moved somewhere else to be common with the removal reasons module

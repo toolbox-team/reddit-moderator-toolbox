@@ -38,7 +38,7 @@ function initwrapper() {
     TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.releaseName = 'A BRAVER NEWER WORLD';
     TBUtils.configSchema = 1;
-    TBUtils.notesSchema = 4;
+    TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;
     TBUtils.notesMaxSchema = 5;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';

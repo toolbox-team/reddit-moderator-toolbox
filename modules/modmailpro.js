@@ -135,7 +135,6 @@ modmail.modmailpro = function () {
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
-        unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
         threadAlways = modmail.setting('autoThreadOnLoad'),
         threadOnExpand = threadAlways || modmail.setting('autoThread'),
         sentFromMMP = false,
@@ -392,8 +391,8 @@ modmail.modmailpro = function () {
 
                 // If we're on the unread page, don't filter anything.
                 if (unreadPage) {
-                    var entries = $('.entry');
-                    var newCount = entries.length;
+                    var entries = $('.entry'),
+                        newCount = entries.length;
                     inbox = ALL;
                     menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
                     $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
@@ -424,43 +423,44 @@ modmail.modmailpro = function () {
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
 
-        var threadID = $thread.attr('data-fullname'),
-            entries = $thread.find('.entry'),
-            count = (entries.length - 1),
-            subreddit = getSubname(thread),
+        var $entries = $thread.find('.entry'),
+            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
+            $infoArea = $('<span class="info-area correspondent"></span>'),
+            $subredditArea = $thread.find('.correspondent:first'),
+            $flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "javascript:;").appendTo(subject).hide(),
+            $threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "javascript:;").appendTo(subject),
+
+            threadID = $thread.attr('data-fullname'),
+            replyCount = ($entries.length - 1),
+            spacer = '<span> </span>',
+            subreddit = getSubname($thread),
             newThread = $thread.hasClass('realtime-new'),
             lmcThread = $thread.hasClass('lmc-thread'),
-            subject = $thread.find(".subject"),
-            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
-            $subredditArea = $thread.find('.correspondent:first');
+            subject = $thread.find(".subject");
 
-        $subredditArea.after('<span class="info-area correspondent"></span>');
+        // Add MMP UI
+        $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
+        $subredditArea.after($infoArea);
+        $infoArea.append('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;<span>');
 
-        // add threading options
-        var flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "javascript:;").appendTo(subject).hide();
-        var threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "javascript:;").appendTo(subject);
         if (collapsed) {
-            threadTrigger.hide();
+            $threadTrigger.hide();
         }
 
-        // Only one feature needs thread, so disable it because it's costly.
+        // Only one feature needs this, so disable it because it's costly.
         if (hideInviteSpam) {
             $thread.find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
             }).wrap('<span class="message-title">');
         }
 
-        var $infoArea = $thread.find('.info-area');
-        var spacer = '<span> </span>';
-
-        $('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;<span>').appendTo($infoArea);
-
-        if (count > 0) {
+        if (replyCount > 0) {
             if ($thread.hasClass('moremessages')) {
-                count = count.toString() + '+';
+                replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
-            $('<span class="message-count">' + count + ' </span>' + spacer).appendTo($infoArea);
+            $infoArea.append('<span class="message-count">' + replyCount + ' </span>' + spacer);
+
         } else {
             unansweredThreads.push(threadID);
 
@@ -473,9 +473,8 @@ modmail.modmailpro = function () {
             }
         }
 
-        $('<span class="replied-tag"></span>' + spacer).appendTo($infoArea);
-
-        $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
+        // Has to be added after 'message-count'
+        $infoArea.append('<span class="replied-tag"></span>' + spacer);
 
         if (noRedModmail) {
             if ($thread.hasClass('spam')) {
@@ -496,7 +495,7 @@ modmail.modmailpro = function () {
 
         // Don't parse all entries if we don't need to.
         if (noRedModmail || highlightNew || fadeRecipient) {
-            TBUtils.forEachChunked(entries, 5, 200, function (entry, idx, array) {
+            TBUtils.forEachChunked($entries, 5, 200, function (entry, idx, array) {
                 //modmail.log('running entry batch: ' + idx + ' of ' + array.length);
 
                 var $entry = $(entry);
@@ -533,13 +532,14 @@ modmail.modmailpro = function () {
 
                 // Fade the recipient of a modmail so it is much more clear WHO send it.
                 if (fadeRecipient) {
-                    var $head = $entry.find('.tagline .head');
+                    var $head = $entry.find('.tagline .head'),
+                        $fadedRecipient;
 
                     // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
 
                     // If there are two usernames we'll fade out the first one.
                     if ($head.find('a.author').length > 1) {
-                        var $fadedRecipient = $head.find('a.author').eq(1);
+                        $fadedRecipient = $head.find('a.author').eq(1);
 
                         $fadedRecipient.attr('style', 'color: #888 !important');
                         if ($fadedRecipient.hasClass('moderator')) {
@@ -556,8 +556,9 @@ modmail.modmailpro = function () {
 
                     // If it is just one username we'll only fade it out if the line contains "to" since that's us.
                     } else if(/^to /.test($head.text())) {
-                        var $fadedRecipient = $head.find('a.author')
+                        $fadedRecipient = $head.find('a.author');
                         $fadedRecipient.attr('style', 'color: #888 !important');
+
                         if ($fadedRecipient.hasClass('moderator')) {
                             $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
                         }
@@ -571,8 +572,6 @@ modmail.modmailpro = function () {
                         $head.find('.userattrs').hide();
                     }
                 }
-            }, function(){
-                //modmail.log('entry batch complete')
             });
         }
 
@@ -599,9 +598,9 @@ modmail.modmailpro = function () {
             $collapseLink.text('[−]');
             if (threadOnExpand) {
                 threadModmail(threadID);
-                flatTrigger.show(); //no idea why we need to do this, really.
+                $flatTrigger.show(); //no idea why we need to do this, really.
             } else {
-                threadTrigger.show();
+                $threadTrigger.show();
             }
 
             if (expandReplies) {

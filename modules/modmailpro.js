@@ -427,24 +427,27 @@ modmail.modmailpro = function () {
             $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
             $infoArea = $('<span class="info-area correspondent"></span>'),
             $subredditArea = $thread.find('.correspondent:first'),
-            $flatTrigger = $("<a></a>").addClass("expand-btn tb-flat-view").text("flat view").attr("href", "javascript:;").appendTo(subject).hide(),
-            $threadTrigger = $("<a></a>").addClass("expand-btn tb-thread-view").text("threaded view").attr("href", "javascript:;").appendTo(subject),
+            $subject = $thread.find(".subject"),
+            $flatTrigger = $('<a href="javascript:;" class="expand-btn tb-flat-view">flat view</a>').hide(),
+            $threadTrigger = $('<a href="javascript:;" class="expand-btn tb-thread-view">threaded view</a>').hide(),
 
             threadID = $thread.attr('data-fullname'),
             replyCount = ($entries.length - 1),
             spacer = '<span> </span>',
             subreddit = getSubname($thread),
             newThread = $thread.hasClass('realtime-new'),
-            lmcThread = $thread.hasClass('lmc-thread'),
-            subject = $thread.find(".subject");
+            lmcThread = $thread.hasClass('lmc-thread');
+
 
         // Add MMP UI
         $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
         $subredditArea.after($infoArea);
         $infoArea.append('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;<span>');
+        $subject.append($flatTrigger);
+        $subject.append($threadTrigger);
 
-        if (collapsed) {
-            $threadTrigger.hide();
+        if (!collapsed) {
+            $threadTrigger.show();
         }
 
         // Only one feature needs this, so disable it because it's costly.

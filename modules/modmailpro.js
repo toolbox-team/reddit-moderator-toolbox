@@ -203,7 +203,7 @@ modmail.modmailpro = function () {
 
         }, function slowComplete() {
             // Add filter link to each title, if it doesn't already have one.
-            TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 50, function (thread, count, array) {
+            TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 70, function (thread, count, array) {
                 modmail.log('running thread batch: ' + count + ' of ' + array.length);
                 modmail.log('Processing: ' + TB.utils.getThingInfo(thread).user);
                 processThread(thread);
@@ -256,32 +256,35 @@ modmail.modmailpro = function () {
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
 
+        var $infoArea =
+            $('<span class="info-area correspondent">\
+                <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
+                <span class="message-count"></span><span class="replied-tag"></span>\
+            </span>');
+
         var $entries = $thread.find('.entry'),
-            $collapseLink = $('<a href="javascript:;" class="collapse-link">' + (collapsed ? '[+]' : '[−]') + '</a> '),
-            $infoArea = $('<span class="info-area correspondent"></span>'),
+            $collapseLink = $('<a href="javascript:;" class="collapse-link">[−]</a> '),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $flatTrigger = $('<a href="javascript:;" class="expand-btn tb-flat-view">flat view</a>').hide(),
-            $threadTrigger = $('<a href="javascript:;" class="expand-btn tb-thread-view">threaded view</a>').hide(),
+            $threadTrigger = $('<a href="javascript:;" class="expand-btn tb-thread-view">threaded view</a>'),
 
             threadID = $thread.attr('data-fullname'),
             replyCount = ($entries.length - 1),
-            spacer = '<span> </span>',
             subreddit = getSubname($thread),
             newThread = $thread.hasClass('realtime-new'),
             lmcThread = $thread.hasClass('lmc-thread');
 
+        if (collapsed) {
+            $collapseLink.text('[+]');
+            $threadTrigger.hide();
+        }
 
         // Add MMP UI
         $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
         $subredditArea.after($infoArea);
-        $infoArea.append('</span><a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;<span>');
         $subject.append($flatTrigger);
         $subject.append($threadTrigger);
-
-        if (!collapsed) {
-            $threadTrigger.show();
-        }
 
         // Only one feature needs this, so disable it because it's costly.
         if (hideInviteSpam) {
@@ -295,7 +298,7 @@ modmail.modmailpro = function () {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
-            $infoArea.append('<span class="message-count">' + replyCount + ' </span>' + spacer);
+            $infoArea.find('.message-count').text(replyCount);
 
         } else {
             unansweredThreads.push(threadID);
@@ -308,9 +311,6 @@ modmail.modmailpro = function () {
                 }
             }
         }
-
-        // Has to be added after 'message-count'
-        $infoArea.append('<span class="replied-tag"></span>' + spacer);
 
         if (noRedModmail) {
             if ($thread.hasClass('spam')) {
@@ -643,7 +643,7 @@ modmail.modmailpro = function () {
                 id = $this.attr('data-fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
-                $this.find('.replied-tag').text('R');
+                $this.find('.replied-tag').html('&nbsp;R');
                 $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });

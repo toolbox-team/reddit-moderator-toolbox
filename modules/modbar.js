@@ -94,7 +94,8 @@ modbar.init = function modbarInit() {
                         "As a Business Analyst myself...",
                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
                         "You are now an approvened submitter",
-                        "Translate creesch's Kligon settings to Elglis."],
+                        "Translate creesch's Kligon settings to Elglis.",
+                        "Cuz Uncle Jessy was hot and knew the Beach Boys"],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 

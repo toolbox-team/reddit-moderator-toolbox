@@ -525,7 +525,7 @@ function initwrapper() {
 
 
     TBUtils.cleanSubredditName = function(dirtySub) {
-        return dirtySub.replace('/r/', '').replace('/', '').replace('[-]', '').replace('[+]', '').trim();
+        return dirtySub.replace('/r/', '').replace('/', '').replace('[−]', '').replace('[+]', '').trim();
     };
 
 

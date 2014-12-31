@@ -16,7 +16,7 @@ modmail.register_setting('inboxStyle', {
 
 modmail.register_setting('filteredSubs', {
     'type': 'sublist',
-    'default': '[]',
+    'default': [],
     'title': 'Subreddits to filter from priority view.'
 });
 

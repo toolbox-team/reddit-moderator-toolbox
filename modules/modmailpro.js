@@ -84,7 +84,7 @@ modmail.register_setting('subredditColor', {
 modmail.register_setting('subredditColorSalt', {
     'type': 'text',
     'default': "PJSalt",
-    'title': 'Salt the value used to determine the subreddit color',
+    'title': 'Text to randomly change the subreddit color',
     'hidden': !modmail.setting('subredditColor')
 });
 

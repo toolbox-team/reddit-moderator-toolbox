@@ -161,6 +161,14 @@ modmail.modmailpro = function () {
         "font-weight": "normal"
     };
 
+    var infoArea =
+        '<span class="info-area correspondent">\
+            <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
+            <span class="message-count"></span><span class="replied-tag"></span>\
+        </span>';
+
+    collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
+
     // Find and clear menu list.
     var menuList = $('.menuarea ul.flat-list').html('');
 
@@ -194,6 +202,9 @@ modmail.modmailpro = function () {
         modmail.log('Unprocessed Threads' + unprocessedThreads.length);
 
         start = perfCounter(start, "pre-init time");
+
+        unprocessedThreads.find('.correspondent:first').after(infoArea);
+        unprocessedThreads.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
 
         // Add filter link to each title, if it doesn't already have one.
         TBUtils.forEachChunked(slowThread, 1, 100, function (thread, count, array) {
@@ -261,14 +272,9 @@ modmail.modmailpro = function () {
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
 
-        var $infoArea =
-            $('<span class="info-area correspondent">\
-                <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
-                <span class="message-count"></span><span class="replied-tag"></span>\
-            </span>');
-
-        var $entries = $thread.find('.entry'),
-            $collapseLink = $('<a href="javascript:;" class="collapse-link">[−]</a> '),
+        var $infoArea = $thread.find('.info-area'),
+            $entries = $thread.find('.entry'),
+            $collapseLink = $thread.find(".collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $flatTrigger = $('<a href="javascript:;" class="expand-btn tb-flat-view">flat view</a>').hide(),
@@ -286,8 +292,6 @@ modmail.modmailpro = function () {
         }
 
         // Add MMP UI
-        $thread.find('.correspondent.reddit.rounded a').parent().prepend($collapseLink);
-        $subredditArea.after($infoArea);
         $subject.append($flatTrigger);
         $subject.append($threadTrigger);
 

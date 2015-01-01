@@ -88,6 +88,13 @@ modmail.register_setting('subredditColorSalt', {
     'hidden': !modmail.setting('subredditColor')
 });
 
+modmail.register_setting('customLimit', {
+    'type': 'number',
+    'default': 0, // 0 = ueser's default.
+    'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
+});
+
+
 /// Private setting storage
 modmail.register_setting('lastVisited', {
     'type': 'number',
@@ -100,12 +107,6 @@ modmail.register_setting('replied', {
     'hidden': true
 });
 
-modmail.register_setting('customLimit', {
-    'type': 'number',
-    'default': 0, // 60 secs.
-    'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
-});
-
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
 
@@ -115,8 +116,10 @@ modmail.init = function () {
 };
 
 modmail.modmailpro = function () {
-    var start = new Date().getTime();
     var $body = $('body');
+
+    var start = new Date().getTime(),
+        userStart = start;
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
 
@@ -267,6 +270,16 @@ modmail.modmailpro = function () {
                 // Because realtime or LMC may have pulled mor therads during init.
                 if ($('.message-parent:not(.mmp-processed)').length > 0) {
                     initialize();
+                } else {
+
+                    // Mod mail is done loading.  Tell the user how quick and awesome we are.
+                    var nowTime = new Date().getTime(),
+                        secs = (nowTime - userStart) / 1000;
+
+                    // Round time
+                    secs = Math.round(secs * 100) / 100;
+
+                    TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000 , TB.ui.DISPLAY_BOTTOM);
                 }
             });
         });

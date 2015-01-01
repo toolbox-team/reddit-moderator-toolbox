@@ -880,7 +880,7 @@ function initwrapper() {
                   catch(err)
                   {
                     // we should really have a INVAILD_DATA error for this.
-                    $.log(err, false, 'TBUtils')
+                    $.log(err, false, 'TBUtils');
                     callback(TBUtils.NO_WIKI_PAGE);
                   }
                   return;
@@ -891,7 +891,7 @@ function initwrapper() {
 
             })
             .fail(function (jqXHR, textStatus, e) {
-              $.log('Wiki page error: ' + e, false, 'TBUtils')
+              $.log('Wiki error (' + subreddit + '/' + page +'): '  + e, false, 'TBUtils');
                 if (jqXHR.responseText  === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;

@@ -178,6 +178,7 @@ TB = {
                             $setting.append(title + ':<br />');
                             $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
+                        case "subreddit":
                         case "text":
                         case "list":
                             $setting.append(title + ':<br />');
@@ -299,6 +300,9 @@ body {\n\
                             case "array":
                             case "JSON":
                                 value = JSON.parse($this.find('textarea').val());
+                                break;
+                            case "subreddit":
+                                value = TB.utils.cleanSubredditName($this.find('input').val());
                                 break;
                             case 'text':
                                 value = $this.find('input').val();

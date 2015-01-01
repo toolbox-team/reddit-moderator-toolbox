@@ -6,7 +6,7 @@ notes.settings['enabled']['default'] = false;
 notes.config['betamode'] = true;
 
 notes.register_setting('noteWiki', {
-    'type': 'text',
+    'type': 'subreddit',
     'default': '',
     'title': 'Subreddit you want to use to store your personal notes.'
 });

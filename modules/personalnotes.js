@@ -17,13 +17,7 @@ notes.init = function personalNotesInit() {
         notesArray = [],
         notesPopupContent;
 
-    // lets make sure that variations on /r/subreddit don't mess up things.
-    notewiki = notewiki.trim();
-    notewiki = notewiki.replace(/\/?r\//g, '');
-    notewiki = notewiki.replace(/\//g, '');
     notewiki = notewiki.toLowerCase();
-
-
 
     // Here we create the popup containing all relevant information
     function createPersonalNotesPopup(notesPopupContent) {

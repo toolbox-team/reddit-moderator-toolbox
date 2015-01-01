@@ -83,7 +83,8 @@ modbar.init = function modbarInit() {
         modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
-        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true);
+        notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
 
     // todo: move the quotes array to TBUtils.
     var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
@@ -106,6 +107,11 @@ modbar.init = function modbarInit() {
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
+    var modMailUrl = '/message/moderator/'
+    if(parseInt(modmailCustomLimit)> 0) {
+        modMailUrl += '?limit=' + modmailCustomLimit;
+        $('#modmail').attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
+    }
 
     var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
@@ -117,8 +123,8 @@ modbar.init = function modbarInit() {
 <span id="tb-toolbarcounters">\
     <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
     <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-    <a title="modmail" href="/message/moderator/" id="tb-modmail" class="nohavemail"></a>\
-    <a href="/message/moderator/" class="tb-toolbar" id="tb-modmailcount"></a>\
+    <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
+    <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
     <a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
     <a href="/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
 </span>\

@@ -159,7 +159,8 @@ notifier.init = function notifierMod_init() {
         unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
         messageunreadlink = notifier.setting('messageUnreadLink'),
-        modmailunreadlink = notifier.setting('modmailUnreadLink');
+        modmailunreadlink = notifier.setting('modmailUnreadLink'),
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
 
     // private
     var checkInterval = TB.utils.minutesToMilliseconds(notifier.setting('checkInterval')),//setting is in seconds, convet to milliseconds.
@@ -190,6 +191,13 @@ notifier.init = function notifierMod_init() {
         // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
         modmailunreadurl += 'unread/';
     }
+
+    if(parseInt(modmailCustomLimit) > 0) {
+        console.log('hi');
+        modmailunreadurl += '?limit=' + modmailCustomLimit;
+    }
+
+
 
     //
     // Counters and notifications
@@ -285,7 +293,13 @@ notifier.init = function notifierMod_init() {
                 $tb_modmail.attr('class', 'nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
                 // $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator');
-                $tb_modmail.attr('href', '/message/moderator');
+                if(parseInt(modmailCustomLimit) > 0) {
+                    console.log('hi');
+                    $tb_modmail.attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
+                } else {
+                    $tb_modmail.attr('href', '/message/moderator');
+                }
+
             } else {
                 $modmail.attr('class', 'havemail');
                 $modmail.attr('title', 'new mail!');

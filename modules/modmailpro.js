@@ -100,6 +100,12 @@ modmail.register_setting('replied', {
     'hidden': true
 });
 
+modmail.register_setting('customLimit', {
+    'type': 'number',
+    'default': 0, // 60 secs.
+    'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
+});
+
 modmail.init = function () {
     if (!TBUtils.isModmail) return;
 

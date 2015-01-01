@@ -222,6 +222,8 @@ modmail.modmailpro = function () {
             processThread(thread);
 
         }, function slowComplete() {
+            if (highlightNew) highlightNewThreads(unprocessedThreads);
+
             // Add filter link to each title, if it doesn't already have one.
             TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 70, function (thread, count, array) {
                 modmail.log('running thread batch: ' + count + ' of ' + array.length);
@@ -351,78 +353,50 @@ modmail.modmailpro = function () {
         }
 
         // Don't parse all entries if we don't need to.
-        if (highlightNew || fadeRecipient) {
+        if (fadeRecipient) {
             TBUtils.forEachChunked($entries, 5, 200, function (entry, idx, array) {
                 //modmail.log('running entry batch: ' + idx + ' of ' + array.length);
 
-                var $entry = $(entry);
-
-                if (highlightNew && !newThread) {
-                    var timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
-
-                    if (timestamp > lastVisited) {
-                        if ($.inArray(threadID, unreadThreads == -1)) {
-                            unreadThreads.push(threadID);
-                        }
-                        
-                        $entry.addClass('new');
-                        $entry.find('.head').prepend($('<span>').addClass('tb-label new-highlight').text('[NEW]'));
-
-                        // Expand thread / highlight new
-                        if ($message.hasClass('collapsed')) {
-                            $entry.find('.expand:first').click();
-                        }
-                        
-                        //TODO: get rid of these
-                        $infoArea.css('background-color', 'lightgreen');
-                        $subredditArea.css('background-color', 'lightgreen');
-
-                        newCount++;
-                        $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
-                    }
-                }
-
                 // Fade the recipient of a modmail so it is much more clear WHO send it.
-                if (fadeRecipient) {
-                    var $head = $entry.find('.tagline .head'),
-                        $fadedRecipient;
+                var $entry = $(entry),
+                    $head = $entry.find('.tagline .head'),
+                    $fadedRecipient;
 
-                    // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
+                // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
 
-                    // If there are two usernames we'll fade out the first one.
-                    if ($head.find('a.author').length > 1) {
-                        $fadedRecipient = $head.find('a.author').eq(1);
+                // If there are two usernames we'll fade out the first one.
+                if ($head.find('a.author').length > 1) {
+                    $fadedRecipient = $head.find('a.author').eq(1);
 
-                        $fadedRecipient.attr('style', 'color: #888 !important');
-                        if ($fadedRecipient.hasClass('moderator')) {
-                            $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                        }
-
-                        if ($fadedRecipient.hasClass('admin')) {
-                            $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                        }
-
-                        // RES Stuff and userattrs
-                        $head.addClass('tb-remove-res-two');
-                        $head.find('.userattrs').eq(1).hide();
-
-                        // If it is just one username we'll only fade it out if the line contains "to" since that's us.
-                    } else if (/^to /.test($head.text())) {
-                        $fadedRecipient = $head.find('a.author');
-                        $fadedRecipient.attr('style', 'color: #888 !important');
-
-                        if ($fadedRecipient.hasClass('moderator')) {
-                            $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                        }
-
-                        if ($fadedRecipient.hasClass('admin')) {
-                            $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                        }
-
-                        // RES Stuff and userattrs
-                        $head.addClass('tb-remove-res-one');
-                        $head.find('.userattrs').hide();
+                    $fadedRecipient.attr('style', 'color: #888 !important');
+                    if ($fadedRecipient.hasClass('moderator')) {
+                        $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
                     }
+
+                    if ($fadedRecipient.hasClass('admin')) {
+                        $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                    }
+
+                    // RES Stuff and userattrs
+                    $head.addClass('tb-remove-res-two');
+                    $head.find('.userattrs').eq(1).hide();
+
+                    // If it is just one username we'll only fade it out if the line contains "to" since that's us.
+                } else if (/^to /.test($head.text())) {
+                    $fadedRecipient = $head.find('a.author');
+                    $fadedRecipient.attr('style', 'color: #888 !important');
+
+                    if ($fadedRecipient.hasClass('moderator')) {
+                        $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                    }
+
+                    if ($fadedRecipient.hasClass('admin')) {
+                        $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                    }
+
+                    // RES Stuff and userattrs
+                    $head.addClass('tb-remove-res-one');
+                    $head.find('.userattrs').hide();
                 }
             });
         }
@@ -516,6 +490,44 @@ modmail.modmailpro = function () {
                 return;
             }
             initialize();
+        });
+    }
+
+    function highlightNewThreads($threads) {
+
+        $threads.find('.entry:last').each(function (key, entry) {
+            var $entry = $(entry),
+                timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
+
+            if (timestamp > lastVisited) {
+
+                var $newThread = $entry.closest('.message-parent');
+
+                $newThread.find('.info-area').css('background-color', 'lightgreen');
+                $newThread.find('.correspondent:first').css('background-color', 'lightgreen');
+                $newThread.addClass('new-messages');
+
+                unreadThreads.push($newThread.data('fullname'));
+            }
+        });
+
+        TB.utils.forEachChunked($('.new-messages').find('.entry'), 10, 250, function (entry) {
+            var $entry = $(entry),
+                timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
+
+            if (timestamp > lastVisited) {
+
+                $entry.find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
+
+                // Expand thread / highlight new
+                if ($entry.parent().hasClass('collapsed')) {
+                    $entry.find('.expand:first').click();
+                }
+
+                newCount++;
+            }
+        }, function () {
+            $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
         });
     }
 

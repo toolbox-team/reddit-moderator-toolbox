@@ -36,7 +36,7 @@ usernotes.init = function () {
 
     if (usernotes.setting('unManagerLink') && TBUtils.post_site && TBUtils.isMod) {
         var toolbox = $('#moderation_tools').find('.content .icon-menu'),
-            managerLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span>\
+            managerLink = '<li><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '"/><span class="separator"></span>\
                     <a href="/r/'+ TBUtils.post_site +'/about/usernotes" class="tb-un-manager" title="usernotes mamager for subreddit">usernotes</a></li>';
         $(toolbox).append(managerLink);
     }

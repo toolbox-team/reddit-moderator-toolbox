@@ -282,7 +282,7 @@ if (unmoderatedOn) {
 
     // Append shortcuts
     $.each(shortcuts, function (index, value) {
-        var shortcut = $('<span>- <a href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
+        var shortcut = $('<span>- <a href="' + TBUtils.htmlEncode(decodeURIComponent(value)) + '">' + TBUtils.htmlEncode(decodeURIComponent(index)) + '</a> </span>');
 
         $(shortcut).appendTo('#tb-toolbarshortcuts');
     });
@@ -401,7 +401,7 @@ if (unmoderatedOn) {
     <div class="tb-window-content-toolbox">\
     <p>\
         Import/export toolbox settings to a wiki page:<br>\
-        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(decodeURIComponent(settingSub)) + '">\
         <input class="tb-settings-import" type="button" value="import">\
         <input class="tb-settings-export" type="button" value="export">\
         <b> Important:</b> This will reload the page without saving!\
@@ -471,7 +471,7 @@ if (unmoderatedOn) {
 
         } else {
             $.each(shortcuts, function (index, value) {
-                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(unescape(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
+                shortcutinput = '<tr class="tb-window-content-shortcuts-tr"><td><input type="text" value="' + TBUtils.htmlEncode(decodeURIComponent(index)) + '" name="name"> </td><td> <input type="text" value="' + TBUtils.htmlEncode(decodeURIComponent(value)) + '" name="url"> <td><td class="tb-window-content-shortcuts-td-remove">\
 <a class="tb-remove-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a></td></tr>\
 <br><br>';
                 //console.log(shortcutinput);
@@ -518,7 +518,7 @@ See the License for the specific language governing permissions and limitations 
         $(htmlabout).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-about" data-module="about">About</a>').appendTo('.tb-window-tabs');
 
-        //	$("input[name=shortcuts]").val(unescape(shortcuts));
+        //	$("input[name=shortcuts]").val(decodeURIComponent(shortcuts));
     }
 
     $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {

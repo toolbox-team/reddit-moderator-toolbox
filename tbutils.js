@@ -39,7 +39,8 @@ function initwrapper() {
     TBUtils.releaseName = 'A BRAVER NEWER WORLD';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
-    TBUtils.minNotesSchema = 0;
+    TBUtils.notesMinSchema = 2;
+    TBUtils.notesMaxSchema = 5;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -525,7 +526,7 @@ function initwrapper() {
 
 
     TBUtils.cleanSubredditName = function(dirtySub) {
-        return dirtySub.replace('/r/', '').replace('/', '').replace('[-]', '').replace('[+]', '').trim();
+        return dirtySub.replace('/r/', '').replace('/', '').replace('[−]', '').replace('[+]', '').trim();
     };
 
 

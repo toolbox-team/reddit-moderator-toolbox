@@ -466,15 +466,15 @@ usernotes.init = function () {
 
     // Decompress notes from the database into a more useful format
     function inflateNotes(deflated) {
-        var notes = {
-            ver: TBUtils.notesSchema,
+        var inflated = {
+            ver: deflated.ver,
             users: {}
         };
 
         var mgr = new ConstManager(deflated.constants);
 
         $.each(deflated.users, function (name, user) {
-            notes.users[name] = {
+            inflated.users[name] = {
                 "name": name,
                 "notes": user.ns.map(function (note) {
                     return inflateNote(deflated.ver, mgr, note);
@@ -482,7 +482,7 @@ usernotes.init = function () {
             };
         });
 
-        return notes;
+        return inflated;
     }
 
     // Decompress notes from the database into a more useful format (MIGRATION ONLY)
@@ -537,17 +537,25 @@ usernotes.init = function () {
     }
 
     function setNotes(notes, subreddit) {
-        //$.log("notes = " + notes);
-        //$.log("notes.ver = " + notes.ver);
+        // Check if the version of loaded notes is within the supported versions
+        if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
+            usernotes.log("Failed usernotes version check:");
+            usernotes.log("\tnotes.ver: "+notes.ver);
+            usernotes.log("\tTBUtils.notesSchema: "+TBUtils.notesSchema);
+            usernotes.log("\tTBUtils.notesMinSchema: "+TBUtils.notesMinSchema);
+            usernotes.log("\tTBUtils.notesMaxSchema: "+TBUtils.notesMaxSchema);
 
-        // schema check.
-        if (notes.ver > TBUtils.notesSchema) {
-
-            // Remove the option to add notes.
+            // Remove the option to add notes
             $('.usernote-span-' + subreddit).remove();
 
-            TBUtils.alert("You are using a version of toolbox that cannot read a newer usernote data format.  Please update your extension.", function (clicked) {
-                if (clicked) window.open("/r/toolbox/wiki/download");
+            // Alert the user
+            var msg = notes.ver > TBUtils.notesMaxSchema ?
+                "You are using a version of toolbox that cannot read a newer usernote data format. Please update your extension." :
+            "You are using a version of toolbox that cannot read an old usernote data format, schema v"+notes.ver+".";
+
+            TBUtils.alert(msg, function (clicked) {
+                if (clicked)
+                    window.open("/r/toolbox/wiki/download");
             });
             return;
         }

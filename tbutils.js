@@ -327,7 +327,7 @@ function initwrapper() {
         $body.find('.tb-overlay-label').html(text);
         // Also pass the text to the new text feedback
         if (text !== null) {
-            TBui.textFeedback(text, 'neutral');
+            TBui.textFeedback(text, TB.ui.FEEDBACK_NEUTRAL, true, 1500);
         }
 
     };

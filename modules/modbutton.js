@@ -563,7 +563,7 @@ modbutton.init = function init() {
                     TB.ui.longLoadSpinner(false);
                 }
                 else {
-                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, true, 1500);
                     $callbackSpan.text('message sent');
                     $callbackSpan.css('color', 'green');
                     TB.ui.longLoadSpinner(false);

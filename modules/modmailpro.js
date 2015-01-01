@@ -181,7 +181,7 @@ modmail.modmailpro = function () {
 
     function initialize() {
         modmail.log('MMP init');
-        TB.ui.longLoadNonPersistent(true); //not working?
+        TB.ui.longLoadNonPersistent(true);
 
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
             slowThread = unprocessedThreads.slice(0, 10);

@@ -133,6 +133,10 @@
     TBui.FEEDBACK_POSITIVE = 'positive';
     TBui.FEEDBACK_NEGATIVE = 'negative';
 
+    TBui.DISPLAY_CENTER = 'center';
+    TBui.DISPLAY_BOTTOM = 'bottom';
+    TBui.DISPLAY_CURSOR = 'cursor';
+
 
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class) {
@@ -336,7 +340,9 @@
         return $select_multiple;
     };
 
-    TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration) {
+    TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration, displayLocation) {
+        if (!displayLocation) displayLocation = TBui.DISPLAY_CENTER;
+
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
             var $body = $('body');
@@ -350,15 +356,45 @@
             // Add the element to the page.
             $body.append(feedbackElement);
 
-            //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-            var $feedbackWindow = $body.find('#tb-feedback-window'),
-                feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
-                feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
 
-            $feedbackWindow.css({
-                'margin-left': '-' + feedbackLeftMargin + 'px',
-                'margin-top': '-' + feedbackTopMargin + 'px'
-            });
+
+            //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
+            var $feedbackWindow = $body.find('#tb-feedback-window');
+
+                switch (displayLocation){
+                    case TBui.DISPLAY_CENTER:
+                        var feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
+                            feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
+
+                        $feedbackWindow.css({
+                            'margin-left': '-' + feedbackLeftMargin + 'px',
+                            'margin-top': '-' + feedbackTopMargin + 'px',
+                            'z-index': 1000001
+                        });
+                    break;
+                    case TBui.DISPLAY_BOTTOM:
+                        $feedbackWindow.css({
+                            'left': '5px',
+                            'bottom': '40px',
+                            'top': 'auto',
+                            'position': 'fixed',
+                            'z-index': 1000001
+                        });
+                    break;
+                    case TBui.DISPLAY_CURSOR:
+                        $(document).mousemove(function(e) {
+                            posX = e.pageX;
+                            posY = e.pageY;
+
+                            $feedbackWindow.css({
+                                left: posX - $feedbackWindow.width() + 155,
+                                top: posY - $feedbackWindow.height() - 15,
+                                'position': 'fixed',
+                                'z-index': 1000001
+                            });
+                        });
+                    break;
+                }
 
             // And fade out nicely after 3 seconds.
             $feedbackWindow.delay(displayDuration !== undefined ? displayDuration : 3000).fadeOut();
@@ -367,7 +403,7 @@
     };
     
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration) {
+    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
@@ -405,7 +441,7 @@
     };
 
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations, this variant will NOT warn when you leave the page.
-    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration) {
+    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet

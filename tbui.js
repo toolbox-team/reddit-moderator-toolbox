@@ -336,7 +336,7 @@
         return $select_multiple;
     };
 
-    TBui.textFeedback = function (feedbackText, feedbackKind, displayTimed, displayDuration) {
+    TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration) {
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
             var $body = $('body');
@@ -361,14 +361,13 @@
             });
 
             // And fade out nicely after 3 seconds.
-            if (displayTimed === undefined || (displayTimed !== undefined && displayTimed)) {
-                $feedbackWindow.delay(displayDuration !== undefined ? displayDuration : 3000).fadeOut();
-            }
+            $feedbackWindow.delay(displayDuration !== undefined ? displayDuration : 3000).fadeOut();
+
         }
     };
     
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackTimed, feedbackDuration) {
+    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
@@ -400,13 +399,13 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind, feedbackTimed, feedbackDuration);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration);
             }
         }
     };
 
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations, this variant will NOT warn when you leave the page.
-    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackTimed, feedbackDuration) {
+    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
@@ -439,7 +438,7 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind, feedbackTimed, feedbackDuration);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration);
             }
         }
     };

@@ -170,7 +170,7 @@ modmail.modmailpro = function () {
             <span class="message-count"></span><span class="replied-tag"></span>\
         </span>';
 
-    collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
+    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
 
     // Find and clear menu list.
     var menuList = $('.menuarea ul.flat-list').html('');
@@ -297,9 +297,17 @@ modmail.modmailpro = function () {
             newThread = $thread.hasClass('realtime-new'),
             lmcThread = $thread.hasClass('lmc-thread');
 
+        // Add back UI for new threads.
+        if (newThread || lmcThread) {
+            $thread.find('.correspondent:first').after(infoArea);
+            $thread.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
+
+            $infoArea = $thread.find('.info-area');
+            $collapseLink = $thread.find(".collapse-link");
+        }
+
         modmail.log("\tNum entries: " + $entries.length);
         modmail.log("\tNum replies: "+replyCount);
-        
         if (collapsed) {
             $collapseLink.text('[+]');
             $threadTrigger.hide();

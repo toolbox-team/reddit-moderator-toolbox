@@ -6,11 +6,10 @@ usernotes.shortname = 'UserNotes';
 ////Default settings
 usernotes.settings['enabled']['default'] = true;
 
-usernotes.register_setting('unManager', {
+usernotes.register_setting('unManagerLink', {
     'type': 'boolean',
-    'default': false,
-    'betamode': true,
-    'title': 'Enable User Notes Manager'
+    'default': true,
+    'title': 'Show usernotes manager in modbox'
 });
 usernotes.register_setting('showDate', {
     'type': 'boolean',
@@ -35,7 +34,14 @@ usernotes.init = function () {
         showDate = usernotes.setting('showDate'),
         showOnModPages =  usernotes.setting('showOnModPages');
 
-    if (window.location.href.indexOf('/about/usernotes') > -1 && usernotes.setting('unManager')) {
+    if (usernotes.setting('unManagerLink') && TBUtils.post_site && TBUtils.isMod) {
+        var toolbox = $('#moderation_tools').find('.content .icon-menu'),
+            managerLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span>\
+                    <a href="/r/'+ TBUtils.post_site +'/about/usernotes" class="tb-un-manager" title="usernotes mamager for subreddit">usernotes</a></li>';
+        $(toolbox).append(managerLink);
+    }
+
+    if (window.location.href.indexOf('/about/usernotes') > -1) {
 
         //userNotes.log(TBUtils.post_site);  // that should work?
         var sub = $('.pagename a:first').html(),

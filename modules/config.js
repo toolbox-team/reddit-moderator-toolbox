@@ -16,7 +16,7 @@ tbconfig.init = function () {
     // Set up some base variables
     var $body = $('body'),
         config = TBUtils.config,
-        unManager = TB.storage.getSetting('UserNotes', 'unManager', false);
+        unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
 
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
@@ -35,7 +35,7 @@ tbconfig.init = function () {
                     </br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
                     </br>\
                     </br><a href="/r/' + subredditConfig + '/w/pages/">All Wiki Pages</a>\
-                    </br><a '+ ((unManager) ? '' : 'style="display:none;"') +' href="/r/' + subredditConfig + '/about/usernotes/">Manage Usernotes</a>\
+                    </br><a '+ ((unManager) ? 'style="display:none;"' : '') +' href="/r/' + subredditConfig + '/about/usernotes/">Manage Usernotes</a>\
                     \
                     </span>\
                     ',

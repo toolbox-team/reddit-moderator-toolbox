@@ -148,21 +148,17 @@
 }
 
 .mod-toolbox #tb-my-subreddits {
-    z-index: 100;
-    position: fixed;
-    display: none;
-    bottom: 31px;
-    left: 20px;
-    max-height: 65%;
+    max-height: 65vh;
     width: 265px;
     padding: 0;
     overflow: auto;
-    background-color: rgba(206, 227, 248, 1);
     font-size: 11px;
     color: #696969;
-    border: 1px solid #B6C9DD;
-    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
     text-align: center;
+}
+
+.mod-toolbox .subreddits-you-mod-popup .tb-popup-footer {
+    height: 10px;
 }
 
 #tb-my-subreddit-list {

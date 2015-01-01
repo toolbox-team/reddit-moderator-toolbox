@@ -167,38 +167,89 @@ if (unmoderatedOn) {
     $body.append(modBar);
 
     // moderated subreddits button.
-    $body.append('<div id="tb-my-subreddits" style="display: none;"><h1>Subreddits you moderate</h1> <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> <span class="tb-livefilter-count"></span><br><table id="tb-my-subreddit-list"></table>');
+
+
+    var subList = '',
+        livefilterCount,
+        subList,
+        mySubsTemplate = '  <div id="tb-my-subreddits">\
+                                <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
+                                <span class="tb-livefilter-count">{{livefilterCount}}</span>\
+                                <br>\
+                                <table id="tb-my-subreddit-list">{{subList}}</table>\
+                            </div>';
+
+
     $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
+
+
     TBUtils.getModSubs(function notifierinit() {
         $(TBUtils.mySubsData).each(function () {
-            $body.find('#tb-my-subreddits table').append('\
+            subList = subList + '\
     <tr data-subreddit="' + this.subreddit + '"><td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td> \
     <td class="tb-my-subreddits-subreddit"><a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
     <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
     <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
-    ');
+    ';
         });
-        $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length + '/' + TBUtils.mySubs.length);
+        livefilterCount = TBUtils.mySubs.length;
     });
+
+
+
+    modSubsPopupContent = TBUtils.template(mySubsTemplate, {
+        'livefilterCount': livefilterCount,
+        'subList': subList
+    });
+
 
     $body.on('click', '#tb-toolbar-mysubs', function () {
-        $body.find('#tb-my-subreddits').toggle();
-    });
+        var $this = $(this);
+        if(!$this.hasClass('tb-mysubs-activated'))
+        {
+            $this.addClass('tb-mysubs-activated');
+            TB.ui.popup(
+                'Subreddits you moderate',
+                [
+                    {
+                        title: 'Subreddits you moderate',
+                        id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
+                        tooltip: 'Subreddits you moderate',
+                        content: modSubsPopupContent,
+                        footer: ''
+                    }
+                ],
+                '',
+                'subreddits-you-mod-popup' // class
+            ).appendTo('body').css({
+                    'position': 'fixed',
+                    'bottom': '31px',
+                    'left': '20px',
+                });
+        }
 
-    $body.find('#tb-livefilter-input').keyup(function () {
-        var LiveSearchValue = $(this).val();
-        $body.find('#tb-my-subreddits table tr').each(function () {
-            var $this = $(this),
-                subredditName = $this.attr('data-subreddit');
+        $body.find('#tb-livefilter-input').keyup(function () {
+            var LiveSearchValue = $(this).val();
+            $body.find('#tb-my-subreddits table tr').each(function () {
+                var $this = $(this),
+                    subredditName = $this.attr('data-subreddit');
 
-            if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-                $this.hide();
-            } else {
-                $this.show();
-            }
-            $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
+                $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+            });
         });
     });
+
+    $body.on('click', '.subreddits-you-mod-popup .close', function () {
+        $(this).closest('.subreddits-you-mod-popup').remove();
+        $body.find('#tb-toolbar-mysubs').removeClass('tb-mysubs-activated');
+    });
+
+
 
     if (TBUtils.firstRun) {
         $('.tb-first-run').show();

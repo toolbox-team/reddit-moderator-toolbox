@@ -368,7 +368,7 @@
     };
     
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
-    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind) {
+    TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackTimed, feedbackDuration) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
@@ -400,13 +400,13 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackTimed, feedbackDuration);
             }
         }
     };
 
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations, this variant will NOT warn when you leave the page.
-    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind) {
+    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackTimed, feedbackDuration) {
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
@@ -439,7 +439,7 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackTimed, feedbackDuration);
             }
         }
     };

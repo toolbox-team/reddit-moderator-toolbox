@@ -23,3 +23,22 @@
     height: 17px;
     padding: 2px 8px;
 }
+
+/* New messages */
+
+.tb-modmail-pro .message .entry.new .tb-label.new-highlight {
+    background-color: lightgreen;
+    color: black;
+} 
+
+/* No red mod mail! */
+
+.tb-modmail-pro.tb-no-red-modmail .message.spam,
+.tb-modmail-pro.tb-no-red-modmail .message.spam .entry {
+    background-color: transparent;
+}
+
+.tb-modmail-pro.tb-no-red-modmail .message.spam p.subject,
+.tb-modmail-pro.tb-no-red-modmail .message.spam div.entry .head {
+    color: red !important;
+}

@@ -112,9 +112,6 @@ modmail.modmailpro = function () {
     var start = new Date().getTime();
     var $body = $('body');
 
-    // Allow CSS to be applied if MMP is enabled
-    $body.addClass("tb-modmail-pro");
-
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
 
     var INVITE = "moderator invited",
@@ -186,7 +183,13 @@ modmail.modmailpro = function () {
     menuList.after($mmpMenu);
 
     initialize();
-
+    
+    // Set some settings affecting all messages (and enable modmail pro CSS)
+    $body.addClass('tb-modmail-pro');
+    if (noRedModmail) {
+        $body.addClass('tb-no-red-modmail');
+    }
+    
     function initialize() {
         modmail.log('MMP init');
         TB.ui.longLoadNonPersistent(true);
@@ -286,6 +289,9 @@ modmail.modmailpro = function () {
             newThread = $thread.hasClass('realtime-new'),
             lmcThread = $thread.hasClass('lmc-thread');
 
+        modmail.log("\tNum entries: " + $entries.length);
+        modmail.log("\tNum replies: "+replyCount);
+        
         if (collapsed) {
             $collapseLink.text('[+]');
             $threadTrigger.hide();
@@ -299,17 +305,24 @@ modmail.modmailpro = function () {
         if (hideInviteSpam) {
             $thread.find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
-            }).wrap('<span class="message-title">');
+            }).wrap($('<span>').addClass('message-title'));
         }
 
         if (replyCount > 0) {
+            modmail.log("\tHas replies");
             if ($thread.hasClass('moremessages')) {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
             $infoArea.find('.message-count').text(replyCount);
 
-        } else {
+            //Thread the message if required
+            if (threadAlways) {
+                threadModmail(threadID);
+            }
+
+        }
+        else {
             unansweredThreads.push(threadID);
 
             // Only hide invite spam with no replies.
@@ -318,13 +331,6 @@ modmail.modmailpro = function () {
                 if (title === INVITE || title === ADDED) {
                     $thread.addClass('invitespam');
                 }
-            }
-        }
-
-        if (noRedModmail) {
-            if ($thread.hasClass('spam')) {
-                $thread.css('background-color', 'transparent');
-                $thread.find('.subject').css('color', 'red');
             }
         }
 
@@ -339,19 +345,11 @@ modmail.modmailpro = function () {
         }
 
         // Don't parse all entries if we don't need to.
-        if (noRedModmail || highlightNew || fadeRecipient) {
+        if (highlightNew || fadeRecipient) {
             TBUtils.forEachChunked($entries, 5, 200, function (entry, idx, array) {
                 //modmail.log('running entry batch: ' + idx + ' of ' + array.length);
 
                 var $entry = $(entry);
-                if (noRedModmail) {
-                    var $message = $entry.parent();
-
-                    if ($message.hasClass('spam')) {
-                        $message.css('background-color', 'transparent');
-                        $message.find('.entry:first .head').css('color', 'red');
-                    }
-                }
 
                 if (highlightNew && !newThread) {
                     var timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
@@ -360,13 +358,16 @@ modmail.modmailpro = function () {
                         if ($.inArray(threadID, unreadThreads == -1)) {
                             unreadThreads.push(threadID);
                         }
-
-                        $entry.find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
+                        
+                        $entry.addClass('new');
+                        $entry.find('.head').prepend($('<span>').addClass('tb-label new-highlight').text('[NEW]'));
 
                         // Expand thread / highlight new
                         if ($message.hasClass('collapsed')) {
                             $entry.find('.expand:first').click();
                         }
+                        
+                        //TODO: get rid of these
                         $infoArea.css('background-color', 'lightgreen');
                         $subredditArea.css('background-color', 'lightgreen');
 
@@ -453,11 +454,6 @@ modmail.modmailpro = function () {
             }
 
             setFilterLinks($thread);
-        }
-
-        //Thread the message if required
-        if (threadAlways) {
-            threadModmail(threadID);
         }
 
         perfCounter(threadStart, "thread proc time");
@@ -583,34 +579,36 @@ modmail.modmailpro = function () {
     }
 
     function threadModmail(fullname) {
-        var firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
+        var $firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
 
-        if (firstMessage.hasClass("hasThreads")) {
-            firstMessage.find(".thing").each(function () {
+        if ($firstMessage.hasClass("hasThreads")) {
+            $firstMessage.find(".thing").each(function () {
                 var parent = $("div.thing.id-" + $(this).data("parent"));
                 $(this).appendTo(parent.find("> .child"));
             });
-        } else {
+        }
+        else {
             var id = fullname.substring(3);
+            
             $.getJSON("//www.reddit.com/message/messages/" + id + ".json", null, function (data) {
                 var messages = data.data.children[0].data.replies.data.children;
 
                 for (var i = 0; i < messages.length; i++) {
                     var item = messages[i].data;
 
-                    var message = $("div.thing.id-" + item.name);
-                    var dummy = $("<div></div>").addClass("modmail-dummy-" + item.name);
-                    var parent = $("div.thing.id-" + item.parent_id);
+                    var $message = $("div.thing.id-" + item.name);
+                    var $dummy = $("<div></div>").addClass("modmail-dummy-" + item.name);
+                    var $parent = $("div.thing.id-" + item.parent_id);
 
-                    message.data("parent", item.parent_id);
+                    $message.data("parent", item.parent_id);
 
-                    dummy.insertAfter(message);
-                    message.appendTo(parent.find("> .child"));
+                    $dummy.insertAfter($message);
+                    $message.appendTo($parent.find("> .child"));
 
-                    message.find("> .entry .noncollapsed .expand").bind("click", collapse);
-                    message.find("> .entry .collapsed .expand").bind("click", noncollapse);
+                    $message.find("> .entry .noncollapsed .expand").bind("click", collapse);
+                    $message.find("> .entry .collapsed .expand").bind("click", noncollapse);
 
-                    firstMessage.addClass("hasThreads");
+                    $firstMessage.addClass("hasThreads");
                 }
             });
         }

@@ -34,7 +34,7 @@ notes.init = function personalNotesInit() {
             'personal-notes-popup' // class
         ).appendTo('body');
 
-        $body.find('.personal-notes-popup').drag('.tb-popup-title');
+        $body.find('.personal-notes-popup').drag('.personal-notes-popup .tb-popup-title');
     }
 
 

@@ -13,11 +13,9 @@ notes.register_setting('noteWiki', {
 
 notes.init = function personalNotesInit() {
     var $body = $('body'),
-        notewiki = notes.setting('noteWiki'),
+        notewiki = notes.setting('noteWiki').toLowerCase(),
         notesArray = [],
         notesPopupContent;
-
-    notewiki = notewiki.toLowerCase();
 
     // Here we create the popup containing all relevant information
     function createPersonalNotesPopup(notesPopupContent) {

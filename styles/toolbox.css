@@ -607,13 +607,43 @@ img.note-close {
 .dtagger-popup-header {
     right: 0;
     left: 0;
+    text-align: left;
+    position: relative;
+    height: 20px;
+    line-height: 20px;
     display: block;
     background-color: #CEE3F8;
-    text-align: center;
     font-weight: bold;
-    padding: 4px !important;
+    padding: 0 21px 0 0 !important;
     font-size: small;
     border-bottom: solid 1px #B6C9DD;
+}
+.dtagger-popup-header .dtagger-popup-title {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+
+
+.mod-toolbox .dtagger-popup .dtagger-popup-header .buttons {
+    display: inline-block;
+    position: absolute;
+    right: 0px !important;
+    top: 0px !important;
+    background-color: #C7D6E6;
+    line-height: 20px;
+    border-left: 1px solid #B6C9DD;
+}
+
+.mod-toolbox .dtagger-popup .dtagger-popup-header .buttons:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox .dtagger-popup .dtagger-popup-header .buttons a.close {
+    padding: 0 5px 0 5px;
 }
 
 .dtagger-popup-content {
@@ -661,10 +691,6 @@ img.note-close {
 
 .dtagger-popup th {
     padding-right: 10px !important;
-}
-
-.dtagger-popup .buttons {
-    padding-top: 10px !important;
 }
 
 .add-domain-tag:hover {
@@ -787,10 +813,6 @@ img.note-close {
 .mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
     background-color: #9FBAD6;
 }
-
-
-
-
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
     padding: 0 5px 0 5px;

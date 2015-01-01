@@ -151,8 +151,8 @@ tagger.init = function domainTaggerInit() {
         var $popup = $('\
             <div class="dtagger-popup">\
                 <div class="dtagger-popup-header">\
-                    Domain Tagger - /r/' + $subreddit + '\
-                    <span class="close right"><a href="javascript:;">✕</a></span>\
+                <div class="dtagger-popup-title">Domain Tagger - /r/' + $subreddit + '</div>\
+                    <span class="buttons"><a class="close" href="javascript:;">✕</a></span>\
                 </div>\
                 <div class="dtagger-popup-content">\
                     <p>\

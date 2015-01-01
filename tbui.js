@@ -1,5 +1,6 @@
 (function (TBui) {
     TBui.longLoadArray = [];
+    TBui.longLoadArrayNonPersistent  = [];
 
     // Icons
     TBui.iconWrench = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -373,7 +374,11 @@
             // if requested and the element is not present yet
             if (createOrDestroy && TBui.longLoadArray.length == 0) {
 
-                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '10px');
+                $('head').append('<style id="tb-long-load-style">\
+                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {\
+                    bottom: 10px !important\
+                }\
+                </style>');
                 $('.footer-parent').append('<div id="tb-loading"></div>');
                 TBui.longLoadArray.push('load');
 
@@ -383,13 +388,52 @@
 
                 // if done and the only instance
             } else if (!createOrDestroy && TBui.longLoadArray.length == 1) {
-                $('#tb-bottombar, #tb-bottombar-hidden').css('bottom', '0px');
+                $('head').find('#tb-long-load-style').remove();
                 $('#tb-loading').remove();
                 TBui.longLoadArray.pop();
 
                 // if done but other process still running
             } else if (!createOrDestroy && TBui.longLoadArray.length > 1) {
                 TBui.longLoadArray.pop();
+
+            }
+
+            // Support for text feedback removing the need to fire two function calls from a module.
+            if (feedbackText !== undefined && feedbackKind !== undefined) {
+                TBui.textFeedback(feedbackText, feedbackKind);
+            }
+        }
+    };
+
+    // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
+    TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind) {
+        if (createOrDestroy !== undefined) {
+
+            // if requested and the element is not present yet
+            if (createOrDestroy && TBui.longLoadArrayNonPersistent.length == 0) {
+
+                $('head').append('<style id="tb-long-load-style-non-persistent">\
+                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {\
+                    bottom: 10px !important\
+                }\
+                </style>');
+
+                $('.footer-parent').append('<div id="tb-loading-non-persistent"></div>');
+                TBui.longLoadArrayNonPersistent.push('load');
+
+                // if requested and the element is already present
+            } else if (createOrDestroy && TBui.longLoadArrayNonPersistent.length > 0) {
+                TBui.longLoadArrayNonPersistent.push('load');
+
+                // if done and the only instance
+            } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length == 1) {
+                $('head').find('#tb-long-load-style-non-persistent').remove();
+                $('#tb-loading-non-persistent').remove();
+                TBui.longLoadArrayNonPersistent.pop();
+
+                // if done but other process still running
+            } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length > 1) {
+                TBui.longLoadArrayNonPersistent.pop();
 
             }
 

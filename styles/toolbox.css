@@ -1272,7 +1272,7 @@ height: 300px;
 }
 
 /* toolbox loading */
-#tb-loading {
+#tb-loading, #tb-loading-non-persistent {
     left:0;
     right: 0;
     bottom: 0;

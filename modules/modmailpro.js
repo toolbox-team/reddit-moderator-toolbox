@@ -348,7 +348,7 @@ modmail.modmailpro = function () {
 
     function initialize() {
         modmail.log('MMP init');
-        TB.ui.longLoadSpinner(true); //not working?
+        TB.ui.longLoadNonPersistent(true); //not working?
 
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
             slowThread = unprocessedThreads.slice(0, 10);
@@ -407,7 +407,7 @@ modmail.modmailpro = function () {
                 //finally, add LMC support
                 addLmcSupport();
 
-                TB.ui.longLoadSpinner(false);
+                TB.ui.longLoadNonPersistent(false);
             });
         });
     }

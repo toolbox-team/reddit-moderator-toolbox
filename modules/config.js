@@ -195,7 +195,7 @@ tbconfig.init = function () {
             });
 
             var toolbox = $('#moderation_tools').find('.content .icon-menu'),
-                configLink = '<li><img src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>';
+                configLink = '<li><img class="tb-moderation-tools-icons" src="data:image/png;base64,' + TBui.iconWrench + '"/><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit">toolbox configuration</a></li>';
             $(toolbox).append(configLink);
         // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
         } else if (TBUtils.isModpage) {

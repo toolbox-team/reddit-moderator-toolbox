@@ -7,6 +7,9 @@
     margin-bottom: 25px !important;
 }
 
+.mod-toolbox .tb-moderation-tools-icons {
+    margin-bottom: -3px;
+}
 
 .debuginfo {
     height: 40px;

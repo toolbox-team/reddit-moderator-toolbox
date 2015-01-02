@@ -1,4 +1,4 @@
-function notifiermod() {
+function loadmodule() {
 
 var self = new TB.Module('Notifier');
 self.shortname = 'Notifier';
@@ -739,6 +739,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        notifiermod();
+        loadmodule();
     });
 })();

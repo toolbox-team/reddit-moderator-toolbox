@@ -1,4 +1,4 @@
-function modmailpro() {
+function loadmodule() {
 //Setup
 var self = new TB.Module('Mod Mail Pro');
 self.shortname = 'ModMail';
@@ -1026,6 +1026,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        modmailpro();
+        loadmodule();
     });
 })();

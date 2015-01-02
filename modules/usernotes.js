@@ -1,4 +1,4 @@
-function usernotes() {
+function loadmodule() {
 //Setup
 var self = new TB.Module('User Notes');
 self.shortname = 'UserNotes';
@@ -895,7 +895,7 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        usernotes();
+        loadmodule();
     });
 })();
 

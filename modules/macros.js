@@ -1,4 +1,4 @@
-function modmacros() {
+function loadmodule() {
 
 
 var self = new TB.Module('Mod Macros');
@@ -233,6 +233,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        modmacros();
+        loadmodule();
     });
 })();

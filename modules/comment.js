@@ -1,4 +1,4 @@
-function commentsMod() {
+function loadmodule() {
 
 var self = new TB.Module('Comments');
 self.shortname = 'Comments'; // historical precedent for settings
@@ -639,6 +639,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        commentsMod();
+        loadmodule();
     });
 })();

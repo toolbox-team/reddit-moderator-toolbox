@@ -2,7 +2,7 @@
 // http://userscripts-mirror.org/scripts/show/129928
 // By: /u/DEADBEEF
 // ===============
-function realtimeInit() {
+function loadmodule() {
 
 var self = new TB.Module('Realtime Reddit');
 self.shortname = 'Realtime';
@@ -122,6 +122,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        realtimeInit();
+        loadmodule();
     });
 })();

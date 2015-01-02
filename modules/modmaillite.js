@@ -1,4 +1,4 @@
-function mml() {
+function loadmodule() {
 var self = new TB.Module('Mod Mail Lite');
 self.shortname = 'ModMailLite';
 
@@ -401,6 +401,6 @@ TB.register_module(self);
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
         //if (TBUtils.isModmail) $('#siteTable').hide();
-        mml();
+        loadmodule();
     });
 })();

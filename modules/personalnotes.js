@@ -1,4 +1,4 @@
-function personalnotes() {
+function loadmodule() {
 var self = new TB.Module('Personal Notes');
 self.shortname = 'PNotes';
 
@@ -276,6 +276,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        personalnotes();
+        loadmodule();
     });
 })();

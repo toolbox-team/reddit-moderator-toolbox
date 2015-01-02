@@ -1,4 +1,4 @@
-function tbmodbar() {
+function loadmodule() {
 
 var self = new TB.Module('Toolbox UI (modbar)');
 self.shortname = 'Modbar';
@@ -677,6 +677,6 @@ TB.register_module(self);
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        tbmodbar();
+        loadmodule();
     });
 })();

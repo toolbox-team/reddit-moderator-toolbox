@@ -1,4 +1,4 @@
-function queuetools() {
+function loadmodule() {
 
 var self = new TB.Module('Queue Tools');
 self.shortname = 'QueueTools';
@@ -699,6 +699,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        queuetools();
+        loadmodule();
     });
 })();

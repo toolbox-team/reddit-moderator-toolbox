@@ -1,5 +1,5 @@
 .tb-modmail-pro .message .collapse-link {
-    margin-right: 6px;
+    margin-right: 4px;
 }
 
 .tb-modmail-pro .message.message-parent.mmp-collapsed .subject {
@@ -38,6 +38,8 @@
 .tb-modmail-pro .message.new-messages .new-label {
     display: inline;
     color: black;
+    
+    margin-right: 2px;
 }
 
 /* No red mod mail! */

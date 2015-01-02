@@ -170,7 +170,7 @@ self.modmailpro = function () {
     var infoArea =
         '<span class="info-area correspondent">\
             <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
-            <span class="message-count"></span><span class="replied-tag"></span>\
+            <span class="tb-message-count"></span><span class="replied-tag"></span>\
         </span>';
 
     var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
@@ -269,7 +269,7 @@ self.modmailpro = function () {
                 } else {
 
                     // Mod mail is done loading.  Tell the user how quick and awesome we are.
-                    var nowTime = new Date().getTime(),
+                    var nowTime = performance.now(),
                         secs = (nowTime - userStart) / 1000;
 
                     // Round time
@@ -299,7 +299,7 @@ self.modmailpro = function () {
         self.startProfile("info");
         self.startProfile("jquery");
 
-        var $infoArea = $thread.find('> .subject > .info-area'),
+        var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
             $collapseLink = $thread.find(".collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
@@ -350,7 +350,7 @@ self.modmailpro = function () {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
-            $infoArea.find('.message-count').text(replyCount);
+            $infoArea.find('.tb-message-count').text(replyCount);
 
             //Thread the message if required
             if (threadAlways) {
@@ -646,6 +646,8 @@ self.modmailpro = function () {
     }
 
     function threadModmail(fullname) {
+        self.startProfile("threading");
+        
         var $firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
 
         if ($firstMessage.hasClass("hasThreads")) {
@@ -679,6 +681,8 @@ self.modmailpro = function () {
                 }
             });
         }
+
+        self.endProfile("threading");
     }
 
     function flatModmail(fullname) {
@@ -942,7 +946,7 @@ self.realtimemail = function () {
         "font-weight": "normal"
     };
 
-    // Add refresh buttion.
+    // Add refresh button.
     $(refreshLink).click(function () {
         $(refreshLink).css(selectedCSS);
         getNewThings(refreshLimit);

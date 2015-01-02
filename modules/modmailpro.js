@@ -329,8 +329,8 @@ self.modmailpro = function () {
         self.log("\tNum replies: "+replyCount);
         if (collapsed) {
             $collapseLink.text('[+]');
-            $flatTrigger.css('display', 'none');
-            $threadTrigger.css('display', 'none');
+            $flatTrigger[0].style.display = 'none';
+            $threadTrigger[0].style.display = 'none';
         }
 
         self.endProfile("info");

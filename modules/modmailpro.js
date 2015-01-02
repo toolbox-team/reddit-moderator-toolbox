@@ -304,8 +304,9 @@ self.modmailpro = function () {
             $collapseLink = $thread.find(".collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
-            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view").css('display', 'none'),
-            $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view");
+            $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
+            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view");
+
         
         self.endProfile("jquery");
         
@@ -328,14 +329,15 @@ self.modmailpro = function () {
         self.log("\tNum replies: "+replyCount);
         if (collapsed) {
             $collapseLink.text('[+]');
-            $threadTrigger.hide();
+            $flatTrigger.css('display', 'none');
+            $threadTrigger.css('display', 'none');
         }
 
         self.endProfile("info");
 
         // Add MMP UI
-        $subject.append($flatTrigger);
         $subject.append($threadTrigger);
+        $subject.append($flatTrigger);
 
         // Only one feature needs this, so disable it because it's costly.
         if (hideInviteSpam) {
@@ -454,9 +456,6 @@ self.modmailpro = function () {
             $collapseLink.text('[−]');
             if (threadOnExpand) {
                 threadModmail(threadID);
-                $flatTrigger.show(); //no idea why we need to do this, really.
-            } else {
-                $threadTrigger.show();
             }
 
             if (expandReplies) {
@@ -886,7 +885,6 @@ self.modmailpro = function () {
             $message = $this.closest('.message-parent');
 
         flatModmail($message.data('fullname'));
-        $this.hide();
         $message.find('.tb-thread-view').show();
     });
 
@@ -895,7 +893,6 @@ self.modmailpro = function () {
             $message = $this.closest('.message-parent');
 
         threadModmail($message.data('fullname'));
-        $this.hide();
         $message.find('.tb-flat-view').show();
     });
 

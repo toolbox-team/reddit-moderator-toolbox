@@ -881,19 +881,11 @@ self.modmailpro = function () {
 
     // Threading methods.
     $body.on('click', '.tb-flat-view', function () {
-        var $this = $(this),
-            $message = $this.closest('.message-parent');
-
-        flatModmail($message.data('fullname'));
-        $message.find('.tb-thread-view').show();
+        flatModmail($(this).closest('.message-parent').data('fullname'));
     });
 
     $body.on('click', '.tb-thread-view', function () {
-        var $this = $(this),
-            $message = $this.closest('.message-parent');
-
-        threadModmail($message.data('fullname'));
-        $message.find('.tb-flat-view').show();
+        threadModmail($(this).closest('.message-parent').data('fullname'));
     });
 
     $body.on('click', '.filter-sub-link', function (e) {

@@ -96,7 +96,8 @@ self.init = function modbarInit() {
                         "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
                         "You are now an approvened submitter",
                         "Translate creesch's Kligon settings to Elglis.",
-                        "Cuz Uncle Jessy was hot and knew the Beach Boys"],
+                        "Cuz Uncle Jessy was hot and knew the Beach Boys",
+                        "Don't worry too much. There's always extra pieces."],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
 

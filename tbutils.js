@@ -733,7 +733,7 @@ function initwrapper() {
 
 
     // Prevent page lock while parsing things.  (stolen from RES)
-    TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete) {
+    TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete, start) {
         if (array === null) finish();
         if (chunkSize === null || chunkSize < 1) finish();
         if (delay === null || delay < 0) finish();
@@ -742,6 +742,10 @@ function initwrapper() {
         //var length = array.length;
 
         function doChunk() {
+            if (counter == 0 && start) {
+                start();
+            }
+            
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
                 if (ret === false) finish();

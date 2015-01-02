@@ -16,12 +16,25 @@
     margin-right: 0;
 }
 
+.message .subject .info-area {
+    display: none;
+}
+
 .tb-modmail-pro .message .subject .info-area {
+    display: inline;
     border-bottom-right-radius: 7px;
     border-left: medium none !important;
     border-top-right-radius: 7px;
     height: 17px;
     padding: 2px 8px;
+}
+
+.message .subject .collapse-link {
+    display: none;
+}
+
+.tb-modmail-pro .message .subject .collapse-link {
+    display: inline;
 }
 
 /* New messages */
@@ -39,7 +52,8 @@
     display: inline;
     color: black;
     
-    margin-right: 2px;
+    margin-right: 4px;
+    padding: 1px;
 }
 
 /* No red mod mail! */
@@ -52,4 +66,19 @@
 .tb-modmail-pro.tb-no-red-modmail .message.spam p.subject,
 .tb-modmail-pro.tb-no-red-modmail .message.spam>div.entry>.tagline>.head {
     color: red !important;
+}
+
+/* Recipient fading */
+
+.tb-modmail-pro.tb-fade-recipient .message .entry .recipient {
+    background-color: transparent !important;
+    color: #888 !important;
+}
+
+.tb-modmail-pro.tb-fade-recipient .message .entry .recipient.moderator {
+    color: #588858 !important;
+}
+
+.tb-modmail-pro.tb-fade-recipient .message .entry .recipient.admin {
+    color: #B20606 !important;
 }

@@ -106,6 +106,16 @@ self.register_setting('replied', {
     'default': [],
     'hidden': true
 });
+self.register_setting('threadProcessRate', {
+    'type': 'number',
+    'default': 100,
+    'hidden': true
+});
+self.register_setting('entryProcessRate', {
+    'type': 'number',
+    'default': 50,
+    'hidden': true
+});
 
 self.init = function () {
     if (!TBUtils.isModmail) return;
@@ -116,13 +126,13 @@ self.init = function () {
 };
 
 self.modmailpro = function () {
-    var start = performance.now(),
-                userStart = start;
+    var start = performance.now();
 
     var $body = $('body');
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
-
+    
+    self.startProfile('settings-access');
     var INVITE = "moderator invited",
         ADDED = "moderator added",
         inbox = self.setting('inboxStyle'),
@@ -137,6 +147,8 @@ self.modmailpro = function () {
         fadeRecipient = self.setting('fadeRecipient'),
         subredditColor = self.setting('subredditColor'),
         subredditColorSalt = self.setting('subredditColorSalt'),
+        threadProcessRate = self.setting('threadProcessRate'),
+        entryProcessRate = self.setting('entryProcessRate'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -145,7 +157,9 @@ self.modmailpro = function () {
         threadOnExpand = threadAlways || self.setting('autoThread'),
         sentFromMMP = false,
         lmcSupport = false;
+    self.endProfile('settings-access');
 
+    self.startProfile('common-element-gen');
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
         $allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
@@ -157,7 +171,16 @@ self.modmailpro = function () {
         $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
+    
+    var infoArea =
+        '<span class="info-area correspondent">\
+            <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
+            <span class="tb-message-count"></span><span class="replied-tag"></span>\
+        </span>';
 
+    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
+    
+    //TODO: move to CSS
     var selectedCSS = {
         "color": "orangered",
         "font-weight": "bold"
@@ -166,122 +189,122 @@ self.modmailpro = function () {
         "color": "#369",
         "font-weight": "normal"
     };
-
-    var infoArea =
-        '<span class="info-area correspondent">\
-            <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
-            <span class="tb-message-count"></span><span class="replied-tag"></span>\
-        </span>';
-
-    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
+    
+    self.endProfile('common-element-gen');
 
     // Find and clear menu list.
-    var menuList = $('.menuarea ul.flat-list').html('');
+    self.startProfile('menu-gen');
+    var $menuList = $('.menuarea ul.flat-list').html('');
 
     // Add menu items.
-    menuList.append($allLink);
-    menuList.append($priorityLink.prepend(separator));
-    menuList.append($filteredLink.prepend(separator));
-    menuList.append($repliedLink.prepend(separator));
-    menuList.append($unreadLink.prepend(separator));
-    menuList.append($unansweredLink.prepend(separator));
-    menuList.append($collapseLink.prepend(spacer));
+    $menuList.append($allLink);
+    $menuList.append($priorityLink.prepend(separator));
+    $menuList.append($filteredLink.prepend(separator));
+    $menuList.append($repliedLink.prepend(separator));
+    $menuList.append($unreadLink.prepend(separator));
+    $menuList.append($unansweredLink.prepend(separator));
+    $menuList.append($collapseLink.prepend(spacer));
 
     $mmpMenu.append($unreadCount.prepend(spacer));
 
-    menuList.after($mmpMenu);
+    $menuList.after($mmpMenu);
+    self.endProfile('menu-gen');
 
+    self.startProfile('initialize');
     initialize();
     
     // Processing functions
     
     function initialize() {
         self.log('MMP init');
+        
         TB.ui.longLoadNonPersistent(true);
-
+        
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-            slowThread = unprocessedThreads.slice(0, 10);
-
+            slowThread = unprocessedThreads.slice(0, 6),
+            fastThreads = unprocessedThreads.slice(6);
+        
         if (collapsed) {
-            $body.find('.entry').hide();
-            $body.find('.expand-btn').hide();
+            $body.find('.entry').css('display', 'none');
+            $body.find('.expand-btn').css('display', 'none');
         }
 
         self.log('Unprocessed Threads' + unprocessedThreads.length);
 
-        start = perfCounter(start, "pre-init time");
-
+        self.startProfile('add-ui-unprocessed');
         unprocessedThreads.find('.correspondent:first').after(infoArea);
         unprocessedThreads.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
+        self.endProfile('add-ui-unprocessed');
 
         // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(slowThread, 1, 100, function (thread, count, array) {
-            self.log('running thread batch: ' + count + ' of ' + array.length);
-            self.log('Processing: ' + TB.utils.getThingInfo(thread).user);
-            processThread(thread);
-
-        }, function slowComplete() {
-            if (highlightNew) highlightNewThreads(unprocessedThreads);
-
-            // Add filter link to each title, if it doesn't already have one.
-            TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 70, function (thread, count, array) {
-                self.log('running thread batch: ' + count + ' of ' + array.length);
-                self.log('Processing: ' + TB.utils.getThingInfo(thread).user);
+        TBUtils.forEachChunked(slowThread, 1, threadProcessRate,
+            function (thread, count, array) {
+                self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
+                self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
                 processThread(thread);
-
-            }, function fastComplete() {
-
-                self.log('batch complete');
-                start = perfCounter(start, "proc threads time");
-
-                self.setting('lastVisited', now);
-
-                // If set expand link.
-                if (collapsed) {
-                    var $link = $('.collapse-all-link');
-                    $link.css(selectedCSS);
-                    $link.text('expand all');
-                }
-
-                // If we're on the unread page, don't filter anything.
-                if (unreadPage) {
-                    var entries = $('.entry'),
-                        newCount = entries.length;
-                    inbox = ALL;
-                    menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                    $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
-                    $(entries).click();
-                }
-
-                // Set views.
-                setFilterLinks(unprocessedThreads);
-                setReplied(unprocessedThreads);
-                setView();
-
-                //finally, add LMC support
-                addLmcSupport();
-
-                TB.ui.longLoadNonPersistent(false);
-
-                // Because realtime or LMC may have pulled more threads during init.
-                if ($('.message-parent:not(.mmp-processed)').length > 0) {
-                    initialize();
-                } else {
-
-                    // Mod mail is done loading.  Tell the user how quick and awesome we are.
-                    var nowTime = performance.now(),
-                        secs = (nowTime - userStart) / 1000;
-
-                    // Round time
-                    secs = Math.round(secs * 100) / 100;
-
-                    TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000 , TB.ui.DISPLAY_BOTTOM);
-                }
+            },
+            function slowComplete() {
+                self.endProfile('slow-process');
                 
-                // Done with everything!
-                finalize();
+                if (highlightNew)
+                    highlightNewThreads(unprocessedThreads);
+    
+                // Add filter link to each title, if it doesn't already have one.
+                TBUtils.forEachChunked(fastThreads, 1, threadProcessRate/2,
+                    function (thread, count, array) {
+                        self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
+                        self.log('User = ' + TB.utils.getThingInfo(thread).user);
+                        processThread(thread);
+                    },
+                    function fastComplete() {
+                        self.endProfile('fast-process');
+                        self.log('Batch complete');
+                        
+                        self.setting('lastVisited', now);
+                        
+                        // If set expand link.
+                        if (collapsed) {
+                            var $link = $('.collapse-all-link');
+                            $link.css(selectedCSS);
+                            $link.text('expand all');
+                        }
+                        
+                        // If we're on the unread page, don't filter anything.
+                        if (unreadPage) {
+                            var entries = $('.entry'),
+                                newCount = entries.length;
+                            inbox = ALL;
+                            $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
+                            $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
+                            $(entries).click();
+                        }
+                        
+                        // Set views.
+                        setFilterLinks(unprocessedThreads);
+                        setReplied(unprocessedThreads);
+                        setView();
+                        
+                        //finally, add LMC support
+                        addLmcSupport();
+                        
+                        TB.ui.longLoadNonPersistent(false);
+                        
+                        // Because realtime or LMC may have pulled more threads during init.
+                        if ($('.message-parent:not(.mmp-processed)').length > 0) {
+                            initialize();
+                        }
+                        // Mod mail done loading
+                        else {
+                            finalize();
+                        }
+                    },
+                    function fastStart() {
+                        self.startProfile('fast-process');
+                    });
+            },
+            function slowStart() {
+                self.startProfile('slow-process');
             });
-        });
     }
 
     function processThread(thread) {
@@ -289,15 +312,12 @@ self.modmailpro = function () {
         if ($thread.hasClass('mmp-processed')) {
             return;
         }
+        $thread.addClass('mmp-processed');
 
         var threadStart = performance.now();
         self.startProfile("thread");
-
-        // Set-up MMP info area.
-        $thread.addClass('mmp-processed');
-        
-        self.startProfile("info");
-        self.startProfile("jquery");
+        self.startProfile("thread-info");
+        self.startProfile("thread-jquery");
 
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
@@ -308,7 +328,7 @@ self.modmailpro = function () {
             $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view");
 
         
-        self.endProfile("jquery");
+        self.endProfile("thread-jquery");
         
         var threadID = $thread.attr('data-fullname'),
             replyCount = ($entries.length - 1),
@@ -325,15 +345,15 @@ self.modmailpro = function () {
             $collapseLink = $thread.find(".collapse-link");
         }
 
-        self.log("\tNum entries: " + $entries.length);
-        self.log("\tNum replies: "+replyCount);
+        self.log("\tNum entries = " + $entries.length);
+        self.log("\tNum replies = " + replyCount);
         if (collapsed) {
             $collapseLink.text('[+]');
             $flatTrigger[0].style.display = 'none';
             $threadTrigger[0].style.display = 'none';
         }
 
-        self.endProfile("info");
+        self.endProfile("thread-info");
 
         // Add MMP UI
         $subject.append($threadTrigger);
@@ -341,13 +361,16 @@ self.modmailpro = function () {
 
         // Only one feature needs this, so disable it because it's costly.
         if (hideInviteSpam) {
+            self.startProfile("thread-hide-invite-spam");
+            
             $thread.find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
             }).wrap($('<span>').addClass('message-title'));
+
+            self.endProfile("thread-hide-invite-spam");
         }
 
         if (replyCount > 0) {
-            self.log("\tHas replies");
             if ($thread.hasClass('moremessages')) {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
@@ -373,64 +396,59 @@ self.modmailpro = function () {
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
-        self.startProfile("sr-color");
         if (subredditColor) {
-
+            self.startProfile("thread-sr-color");
+            
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
                 colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
 
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
+
+            self.endProfile("thread-sr-color");
         }
-        self.endProfile("sr-color");
 
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
-            TBUtils.forEachChunked($entries, 5, 200, function (entry, idx, array) {
-                //modmail.log('running entry batch: ' + idx + ' of ' + array.length);
-
-                // Fade the recipient of a modmail so it is much more clear WHO send it.
-                var $entry = $(entry),
-                    $head = $entry.find('.tagline .head'),
-                    $fadedRecipient;
-
-                // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
-
-                // If there are two usernames we'll fade out the first one.
-                if ($head.find('a.author').length > 1) {
-                    $fadedRecipient = $head.find('a.author').eq(1);
-
-                    $fadedRecipient.attr('style', 'color: #888 !important');
-                    if ($fadedRecipient.hasClass('moderator')) {
-                        $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
+            TBUtils.forEachChunked($entries, 5, entryProcessRate,
+                function (entry, idx, array) {
+                    self.startProfile('fade-recipient-internal');
+                    
+                    // Fade the recipient of a modmail so it is much more clear WHO send it.
+                    var $entry = $(entry),
+                        $head = $entry.find('.tagline .head'),
+                        $fadedRecipient;
+    
+                    // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
+    
+                    // If there are two usernames we'll fade out the first one.
+                    if ($head.find('a.author').length > 1) {
+                        $fadedRecipient = $head.find('a.author').eq(1);
+                        $fadedRecipient.addClass('recipient');
+                        
+                        // RES Stuff and userattrs
+                        $head.addClass('tb-remove-res-two');
+                        $head.find('.userattrs').eq(1).css('display', 'none');
                     }
-
-                    if ($fadedRecipient.hasClass('admin')) {
-                        $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                    }
-
-                    // RES Stuff and userattrs
-                    $head.addClass('tb-remove-res-two');
-                    $head.find('.userattrs').eq(1).hide();
-
                     // If it is just one username we'll only fade it out if the line contains "to" since that's us.
-                } else if (/^to /.test($head.text())) {
-                    $fadedRecipient = $head.find('a.author');
-                    $fadedRecipient.attr('style', 'color: #888 !important');
-
-                    if ($fadedRecipient.hasClass('moderator')) {
-                        $fadedRecipient.attr('style', 'color: #588858 !important; background-color: rgba(0, 0, 0, 0) !important;');
+                    else if (/^to /.test($head.text())) {
+                        $fadedRecipient = $head.find('a.author');
+                        $fadedRecipient.addClass('recipient');
+                        
+                        // RES Stuff and userattrs
+                        $head.addClass('tb-remove-res-one');
+                        $head.find('.userattrs').css('display', 'none');
                     }
-
-                    if ($fadedRecipient.hasClass('admin')) {
-                        $fadedRecipient.attr('style', 'color: #B20606 !important; background-color: rgba(0, 0, 0, 0) !important;');
-                    }
-
-                    // RES Stuff and userattrs
-                    $head.addClass('tb-remove-res-one');
-                    $head.find('.userattrs').hide();
+                    
+                    self.endProfile('fade-recipient-internal');
+                },
+                function complete() {
+                    self.endProfile('fade-recipient');
+                },
+                function starting() {
+                    self.startProfile('fade-recipient');
                 }
-            });
+            );
         }
 
         // Deal with realtime threads.
@@ -444,8 +462,8 @@ self.modmailpro = function () {
             setFilterLinks($thread);
 
             if (collapsed) {
-                $thread.find('.entry').hide();
-                $thread.find('.expand-btn').hide();
+                $thread.find('.entry').css('display', 'none');
+                $thread.find('.expand-btn').css('display', 'none');
             }
 
             $thread.fadeIn("slow");
@@ -466,7 +484,7 @@ self.modmailpro = function () {
         }
 
         self.endProfile("thread");
-        perfCounter(threadStart, "thread proc time");
+        perfCounter(threadStart, "Thread process time");
     }
 
     function addLmcSupport() {
@@ -524,7 +542,8 @@ self.modmailpro = function () {
     }
 
     function highlightNewThreads($threads) {
-
+        self.startProfile('highlightNewThreads');
+        
         $threads.find('.entry:last').each(function (key, entry) {
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
@@ -541,7 +560,7 @@ self.modmailpro = function () {
             }
         });
 
-        TB.utils.forEachChunked($('.new-messages').find('.entry'), 10, 250, function (entry) {
+        TB.utils.forEachChunked($('.new-messages').find('.entry'), 10, threadProcessRate, function (entry) {
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
@@ -558,6 +577,8 @@ self.modmailpro = function () {
             }
         }, function () {
             $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
+
+            self.endProfile('highlightNewThreads');
         });
     }
 
@@ -567,9 +588,22 @@ self.modmailpro = function () {
         if (noRedModmail) {
             $body.addClass('tb-no-red-modmail');
         }
+        if (fadeRecipient) {
+            $body.addClass('tb-fade-recipient');
+        }
+
+        // Tell the user how quick and awesome we are.
+        var nowTime = performance.now(),
+            secs = (nowTime - start) / 1000;
+
+        // Round time
+        secs = Math.round(secs * 100) / 100;
+
+        TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000 , TB.ui.DISPLAY_BOTTOM);
 
         // Profiling results
-
+        self.endProfile('initialize');
+        
         self.log("Profiling results: modmail");
         self.log("--------------------------");
         self.getProfiles().forEach(function (profile, key) {
@@ -631,7 +665,7 @@ self.modmailpro = function () {
                     $this.find('.entry').click();
                 }
 
-                $this.hide();
+                $this.css('display', 'none');
             });
         }
     }
@@ -839,7 +873,7 @@ self.modmailpro = function () {
 
     $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
         // Just unselect all, then select the caller.
-        $(menuList).find('li').removeClass('selected');
+        $($menuList).find('li').removeClass('selected');
 
         inbox = $(e.target).attr('view');
 

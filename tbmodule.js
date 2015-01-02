@@ -398,6 +398,9 @@ TB.Module = function Module(name) {
         startTimes = new Map();
 
     this.startProfile = function (key) {
+        if (!TB.utils.debugMode)
+            return;
+        
         startTimes.set(key, performance.now());
         
         // New key: add a new profile
@@ -411,6 +414,9 @@ TB.Module = function Module(name) {
     };
 
     this.endProfile = function (key) {
+        if (!TB.utils.debugMode)
+            return;
+        
         // Never started profiling for the key
         if (!startTimes.has(key))
             return;

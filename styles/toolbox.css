@@ -1747,7 +1747,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     padding-left: 20px!important;
 }
 
-.mod-toolbox .mmp-processed .message-count {
+.mod-toolbox .mmp-processed .tb-message-count {
     background-color: rgba(0, 0, 0, 0);
     color: #369;
     display: inline;

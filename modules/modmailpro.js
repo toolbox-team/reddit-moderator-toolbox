@@ -297,16 +297,19 @@ self.modmailpro = function () {
         $thread.addClass('mmp-processed');
         
         self.startProfile("info");
-        
-        var $infoArea = $thread.find('.info-area'),
+        self.startProfile("jquery");
+
+        var $infoArea = $thread.find('> .subject > .info-area'),
             $entries = $thread.find('.entry'),
             $collapseLink = $thread.find(".collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
-            $flatTrigger = $('<a href="javascript:;" class="expand-btn tb-flat-view">flat view</a>').hide(),
-            $threadTrigger = $('<a href="javascript:;" class="expand-btn tb-thread-view">threaded view</a>'),
-
-            threadID = $thread.attr('data-fullname'),
+            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view").css('display', 'none'),
+            $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view");
+        
+        self.endProfile("jquery");
+        
+        var threadID = $thread.attr('data-fullname'),
             replyCount = ($entries.length - 1),
             subreddit = getSubname($thread),
             newThread = $thread.hasClass('realtime-new'),
@@ -572,7 +575,7 @@ self.modmailpro = function () {
         self.log("--------------------------");
         self.getProfiles().forEach(function (profile, key) {
             self.log(key + ":");
-            self.log("\tTime  = "+profile.time);
+            self.log("\tTime  = "+profile.time.toFixed(4));
             self.log("\tCalls = "+profile.calls);
         });
         self.log("--------------------------");

@@ -26,10 +26,19 @@
 
 /* New messages */
 
-.tb-modmail-pro .message .entry.new .tb-label.new-highlight {
+.tb-modmail-pro .message.new-messages .new-highlight {
     background-color: lightgreen;
+}
+
+.message.new-messages .new-label {
+    /* Magical render optimization */
+    display: none;
+}
+
+.tb-modmail-pro .message.new-messages .new-label {
+    display: inline;
     color: black;
-} 
+}
 
 /* No red mod mail! */
 

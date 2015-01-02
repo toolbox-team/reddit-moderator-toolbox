@@ -116,10 +116,10 @@ modmail.init = function () {
 };
 
 modmail.modmailpro = function () {
-    var $body = $('body');
+    var start = performance.now(),
+                userStart = start;
 
-    var start = new Date().getTime(),
-        userStart = start;
+    var $body = $('body');
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
 
@@ -193,11 +193,7 @@ modmail.modmailpro = function () {
 
     initialize();
     
-    // Set some settings affecting all messages (and enable modmail pro CSS)
-    $body.addClass('tb-modmail-pro');
-    if (noRedModmail) {
-        $body.addClass('tb-no-red-modmail');
-    }
+    // Processing functions
     
     function initialize() {
         modmail.log('MMP init');
@@ -267,7 +263,7 @@ modmail.modmailpro = function () {
 
                 TB.ui.longLoadNonPersistent(false);
 
-                // Because realtime or LMC may have pulled mor therads during init.
+                // Because realtime or LMC may have pulled more threads during init.
                 if ($('.message-parent:not(.mmp-processed)').length > 0) {
                     initialize();
                 } else {
@@ -281,6 +277,9 @@ modmail.modmailpro = function () {
 
                     TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000 , TB.ui.DISPLAY_BOTTOM);
                 }
+                
+                // Done with everything!
+                finalize();
             });
         });
     }
@@ -291,11 +290,14 @@ modmail.modmailpro = function () {
             return;
         }
 
-        var threadStart = new Date().getTime();
+        var threadStart = performance.now();
+        modmail.startProfile("thread");
 
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
-
+        
+        modmail.startProfile("info");
+        
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
             $collapseLink = $thread.find(".collapse-link"),
@@ -325,6 +327,8 @@ modmail.modmailpro = function () {
             $collapseLink.text('[+]');
             $threadTrigger.hide();
         }
+
+        modmail.endProfile("info");
 
         // Add MMP UI
         $subject.append($flatTrigger);
@@ -364,6 +368,7 @@ modmail.modmailpro = function () {
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
+        modmail.startProfile("sr-color");
         if (subredditColor) {
 
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
@@ -372,6 +377,7 @@ modmail.modmailpro = function () {
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
         }
+        modmail.endProfile("sr-color");
 
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
@@ -457,6 +463,7 @@ modmail.modmailpro = function () {
             setFilterLinks($thread);
         }
 
+        modmail.endProfile("thread");
         perfCounter(threadStart, "thread proc time");
     }
 
@@ -524,8 +531,8 @@ modmail.modmailpro = function () {
 
                 var $newThread = $entry.closest('.message-parent');
 
-                $newThread.find('.info-area').css('background-color', 'lightgreen');
-                $newThread.find('.correspondent:first').css('background-color', 'lightgreen');
+                $newThread.find('.info-area').addClass('new-highlight');
+                $newThread.find('.correspondent:first').addClass('new-highlight');
                 $newThread.addClass('new-messages');
 
                 unreadThreads.push($newThread.data('fullname'));
@@ -538,7 +545,7 @@ modmail.modmailpro = function () {
 
             if (timestamp > lastVisited) {
 
-                $entry.find('.head').prepend('<span style="background-color:lightgreen; color:black">[NEW]</span><span>&nbsp;</span>');
+                $entry.find('.head').prepend($('<span>').addClass('new-label new-highlight').text('[NEW]'));
 
                 // Expand thread / highlight new
                 if ($entry.parent().hasClass('collapsed')) {
@@ -552,12 +559,30 @@ modmail.modmailpro = function () {
         });
     }
 
+    function finalize() {
+        // Set some settings affecting all messages (and enable modmail pro CSS)
+        $body.addClass('tb-modmail-pro');
+        if (noRedModmail) {
+            $body.addClass('tb-no-red-modmail');
+        }
+
+        // Profiling results
+
+        modmail.log("Profiling results: modmail");
+        modmail.log("--------------------------");
+        modmail.getProfiles().forEach(function (profile, key) {
+            modmail.log(key + ":");
+            modmail.log("\tTime  = "+profile.time);
+            modmail.log("\tCalls = "+profile.calls);
+        });
+        modmail.log("--------------------------");
+    }
 
     // TODO: add to tbutils or tbmodule... not sure which just yet.
     function perfCounter(startTime, note) {
         if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
 
-        var nowTime = new Date().getTime(),
+        var nowTime = performance.now(),
             secs = (nowTime - startTime) / 1000;
 
         modmail.log(note + ' in: ' + secs + ' seconds');

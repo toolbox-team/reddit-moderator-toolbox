@@ -391,7 +391,42 @@ TB.Module = function Module(name) {
         if (skip === undefined) skip = false;
         $.log(message, skip, this.shortname);
     };
+    
+    // Profiling
 
+    var profile = new Map(),
+        startTimes = new Map();
+
+    this.startProfile = function (key) {
+        startTimes.set(key, performance.now());
+        
+        // New key: add a new profile
+        if (!profile.has(key)) {
+            profile.set(key, { time: 0, calls: 1 });
+        }
+        // Existing key: increment calls
+        else {
+            profile.get(key).calls++;
+        }
+    };
+
+    this.endProfile = function (key) {
+        // Never started profiling for the key
+        if (!startTimes.has(key))
+            return;
+
+        // Get spent time
+        var diff = performance.now() - startTimes.get(key);
+        startTimes.delete(key);
+
+        // Must have been started, so the object exists
+        profile.get(key).time += diff;
+    };
+    
+    this.getProfiles = function () {
+        return profile;
+    };
+    
     // PUBLIC: placeholder init(), just in case
     this.init = function init() {
         // pass

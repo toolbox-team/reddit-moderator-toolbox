@@ -1,4 +1,4 @@
-function loadmodule() {
+function removalreasons() {
 
 var self = new TB.Module('Removal Reasons');
 self.shortname = 'RReasons';
@@ -714,6 +714,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        loadmodule();
+        removalreasons();
     });
 })();

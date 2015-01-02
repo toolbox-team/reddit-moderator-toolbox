@@ -1,4 +1,4 @@
-function loadmodule() {
+function tbConfig() {
 //Setup
 var self = new TB.Module('Toolbox Config');
 self.shortname = 'TBConfig'; // for backwards compatibility
@@ -936,6 +936,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener('TBUtilsLoaded', function () {
-        loadmodule();
+        tbConfig();
     });
 })();

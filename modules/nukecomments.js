@@ -1,4 +1,4 @@
-function loadmodule() {
+function nukecomments() {
 
 // Adapted from:
 // ==UserScript==
@@ -150,6 +150,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        nukecomments();
     });
 })();

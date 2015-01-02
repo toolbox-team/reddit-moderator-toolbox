@@ -1,4 +1,4 @@
-function loadmodule() {
+function stattittab() {
 
 // @copyright  2013+, LowSociety, dakta
 
@@ -53,6 +53,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        stattittab();
     });
 })();

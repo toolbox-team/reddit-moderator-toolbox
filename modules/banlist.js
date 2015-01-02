@@ -1,4 +1,4 @@
-function loadmodule() {
+function banlist() {
 var self = new TB.Module('Ban List');
 self.shortname = 'BanList';
 
@@ -218,6 +218,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        banlist();
     });
 })();

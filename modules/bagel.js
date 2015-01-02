@@ -1,4 +1,4 @@
-function loadmodule() {
+function make_bagels() {
 
 var self = new TB.Module('Bagels');
 self.shortname = 'Bagels';
@@ -22,6 +22,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        make_bagels();
     });
 })();

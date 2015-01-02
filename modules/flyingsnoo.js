@@ -1,4 +1,4 @@
-function loadmodule() {
+function flyingsnoo() {
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
@@ -134,6 +134,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        flyingsnoo();
     });
 })();

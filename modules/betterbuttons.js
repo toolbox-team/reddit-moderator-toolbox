@@ -1,4 +1,4 @@
-function loadmodule() {
+function betterbuttons() {
 
 var self = new TB.Module('Better Buttons');
 self.shortname = 'BButtons';
@@ -122,6 +122,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        betterbuttons();
     });
 })();

@@ -1,4 +1,4 @@
-function loadmodule() {
+function syntax() {
 
 // syntax highlighter with ACE, by creesch
 
@@ -154,6 +154,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        syntax();
     });
 })();

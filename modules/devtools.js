@@ -1,4 +1,4 @@
-function loadmodule() {
+function devtools() {
 // Developer Tools, for managing /r/toolbox/w/tbnotes (etc.)
 
 var self = new TB.Module('Developer Tools');
@@ -10,6 +10,6 @@ self.setting('devmode', true);
 
 (function () {
     window.addEventListener('TBObjectLoaded', function () {
-        loadmodule();
+        devtools();
     });
 })();

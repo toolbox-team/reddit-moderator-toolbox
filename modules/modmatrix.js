@@ -1,4 +1,4 @@
-function loadmodule() {
+function modmatrix() {
 
 var self = new TB.Module('Mod Log Matrix');
 self.shortname = 'ModMatrix'; // backwards compatibility
@@ -857,6 +857,6 @@ TB.register_module(self);
 (function () {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        loadmodule();
+        modmatrix();
     });
 })();

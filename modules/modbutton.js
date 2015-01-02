@@ -1,4 +1,4 @@
-function loadmodule() {
+function modbutton() {
 // @copyright 2014 Toolbox Devs, dakta
 
 var self = new TB.Module('Mod Button');
@@ -646,6 +646,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener('TBObjectLoaded', function () {
-        loadmodule();
+        modbutton();
     });
 })();

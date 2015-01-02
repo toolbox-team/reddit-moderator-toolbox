@@ -1,4 +1,4 @@
-function loadmodule() {
+function historybutton() {
 var self = new TB.Module('History Button');
 self.shortname = 'HButton';
 
@@ -326,6 +326,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        historybutton();
     });
 })();

@@ -1,4 +1,4 @@
-function loadmodule() {
+function domaintagger() {
 //Setup
 var self = new TB.Module('Domain Tagger');
 self.shortname = 'DTagger';
@@ -254,6 +254,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        loadmodule();
+        domaintagger();
     });
 })();

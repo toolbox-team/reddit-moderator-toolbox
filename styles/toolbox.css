@@ -1747,15 +1747,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     padding-left: 20px!important;
 }
 
-.mod-toolbox .mmp-processed .tb-message-count {
-    background-color: rgba(0, 0, 0, 0);
-    color: #369;
-    display: inline;
-    padding: 0;
-    margin: 0;
-    font-size: 12px;
-}
-
 /* This should probably be somewhere else */
 
 #moderation_tools .icon-menu .toolbox-edit {

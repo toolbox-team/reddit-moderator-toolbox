@@ -55,6 +55,7 @@
 		"modules/comment.js",
 		"modules/config.js",
 		"modules/modmatrix.js",
+		"modules/modtalkadvisory.js",
 		"modules/banlist.js",
 		"modules/removalreasons.js",
 		"modules/historybutton.js",

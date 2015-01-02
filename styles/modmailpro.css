@@ -50,6 +50,6 @@
 }
 
 .tb-modmail-pro.tb-no-red-modmail .message.spam p.subject,
-.tb-modmail-pro.tb-no-red-modmail .message.spam div.entry .head {
+.tb-modmail-pro.tb-no-red-modmail .message.spam>div.entry>.tagline>.head {
     color: red !important;
 }

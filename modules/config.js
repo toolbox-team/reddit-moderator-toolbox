@@ -55,6 +55,7 @@ self.init = function () {
                     title: 'edit user notes',
                     tooltip: 'Edit raw JSON for subreddit usernotes.',
                     content: '\
+                    <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>\
                     <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
                     <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                     <br>\

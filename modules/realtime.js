@@ -4,13 +4,13 @@
 // ===============
 function realtimeInit() {
 
-var realtime = new TB.Module('Realtime Reddit');
-realtime.shortname = 'Realtime';
+var self = new TB.Module('Realtime Reddit');
+self.shortname = 'Realtime';
 
-realtime.settings['enabled']['default'] = false;
-realtime.config['betamode'] = true;
+self.settings['enabled']['default'] = false;
+self.config['betamode'] = true;
 
-realtime.init = function realtimeInit() {
+self.init = function realtimeInit() {
 
     // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
     if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
@@ -23,7 +23,7 @@ realtime.init = function realtimeInit() {
 
     // Add new things
     function getNewThings() {
-        realtime.log("realtime gettingnewthings");
+        self.log("realtime gettingnewthings");
 
         if (!$('#realtime:checked').length) return;
         timeout = setTimeout(getNewThings, delay);
@@ -96,7 +96,7 @@ realtime.init = function realtimeInit() {
             }),
             initialPosition = $sitetable.css('position');
 
-        realtime.log("realtime checked: " + $checkbox.is(':checked'));
+        self.log("realtime checked: " + $checkbox.is(':checked'));
 
         clearTimeout(timeout);
         if ($checkbox.is(':checked')) getNewThings();
@@ -116,7 +116,7 @@ realtime.init = function realtimeInit() {
     }
 };
 
-TB.register_module(realtime);
+TB.register_module(self);
 }
 
 (function () {

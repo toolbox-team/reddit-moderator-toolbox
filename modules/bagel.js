@@ -1,23 +1,23 @@
 function make_bagels() {
 
-var bagels = new TB.Module('Bagels');
-bagels.shortname = 'Bagels';
+var self = new TB.Module('Bagels');
+self.shortname = 'Bagels';
 
 //Default settings
-bagels.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = false;
 
-bagels.register_setting('bagelType', {
+self.register_setting('bagelType', {
     'type': 'selector',
     'values': ['Plain', 'Seasame Seed', 'Poppy Seed', 'Onion', 'Everything'],
     'default': 'plain',
     'title': 'Bagel type'
 });
 
-bagels.init = function betterButtonInit() {
+self.init = function betterButtonInit() {
     $('body').append('<img src="http://i.imgur.com/yRhb6HG.png" style="position: fixed; left: calc(50% - 200px); z-index: 2147483647; top: 200px;" />');
 };
 
-TB.register_module(bagels);
+TB.register_module(self);
 }
 
 (function() {

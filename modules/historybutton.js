@@ -1,22 +1,21 @@
 function historybutton() {
-var history = new TB.Module('History Button');
-history.shortname = 'HButton';
+var self = new TB.Module('History Button');
+self.shortname = 'HButton';
 
 // This should be a setting, methinks.
-history.SPAM_REPORT_SUB = 'spam';
+self.SPAM_REPORT_SUB = 'spam';
 
-history.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-history.register_setting('rtsComment', {
+self.register_setting('rtsComment', {
     'type': 'boolean',
     'default': true,
     'title': 'Post user summary when submitting spam reports'
 });
 
-history.init = function () {
+self.init = function () {
     var $body = $('body'),
-        self = this,
-        rtsComment = history.setting('rtsComment');
+        rtsComment = self.setting('rtsComment');
 
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
@@ -278,7 +277,7 @@ history.init = function () {
         var link = 'https://www.reddit.com/user/' + author,
             title = 'Overview for ' + author;
 
-        TBUtils.postLink(link, title, history.SPAM_REPORT_SUB, function (successful, submission) {
+        TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
                 $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
                 $rtsLink.hide();
@@ -287,7 +286,7 @@ history.init = function () {
                     $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
                     $rtsLink.hide();
                     if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                        rtsLink.href = '/r/' + history.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
+                        rtsLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
                     }
                     return;
                 }
@@ -322,7 +321,7 @@ history.init = function () {
     });
 };
 
-TB.register_module(history);
+TB.register_module(self);
 }
 
 (function () {

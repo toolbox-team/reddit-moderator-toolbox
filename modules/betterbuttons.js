@@ -1,25 +1,25 @@
 function betterbuttons() {
 
-var buttons = new TB.Module('Better Buttons');
-buttons.shortname = 'BButtons';
+var self = new TB.Module('Better Buttons');
+self.shortname = 'BButtons';
 
 //Default settings
-buttons.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = false;
 
-buttons.register_setting('enableModSave', {
+self.register_setting('enableModSave', {
     'type': 'boolean',
     'default': true,
     'title': 'Enable mod-save button'
 });
 
-buttons.register_setting('enableDistinguishToggle', {
+self.register_setting('enableDistinguishToggle', {
     'type': 'boolean',
     'default': true,
     'title': 'Enable distinguish toggling'
 });
 
-buttons.initModSave = function initModSave() {
-    buttons.log("Adding mod save buttons");
+self.initModSave = function initModSave() {
+    self.log("Adding mod save buttons");
 
     //Watches for changes in the DOM
     var commentObserver = new MutationObserver(function (mutations) {
@@ -29,14 +29,14 @@ buttons.initModSave = function initModSave() {
                     var item = mutation.addedNodes[i];
                     //Check if the added element is a comment
                     if ($(item).is('div.comment')) {
-                        buttons.log($(item));
-                        buttons.log("");
+                        self.log($(item));
+                        self.log("");
 
                         //Distinguish the comment
                         var things = $(item).find('form[action="/post/distinguish"] > .option > a');
-                        buttons.log(things);
-                        buttons.log("");
-                        buttons.log(things.first());
+                        self.log(things);
+                        self.log("");
+                        self.log(things.first());
                         things.first().click();
 
                         //Stop watching for changes
@@ -55,7 +55,7 @@ buttons.initModSave = function initModSave() {
 
     //Add actions to the mod save buttons
     $('body').on('click', 'button.save-mod', function (e) {
-        buttons.log("Mod save clicked!");
+        self.log("Mod save clicked!");
         commentObserver.observe(document.body, {
             childList: true,
             subtree: true,
@@ -66,7 +66,7 @@ buttons.initModSave = function initModSave() {
     });
 };
 
-buttons.initDistinguishToggle = function initDistinguishToggle() {
+self.initDistinguishToggle = function initDistinguishToggle() {
     //Get a comment's distinguish state
     function getDistinguishState(post) {
         var author = $(post).find('a.author').first();
@@ -81,7 +81,7 @@ buttons.initDistinguishToggle = function initDistinguishToggle() {
         $(this).find('.option > a').get(distinguished ? 1 : 0).click();
     }
 
-    buttons.log("Adding distinguish toggle events");
+    self.log("Adding distinguish toggle events");
 
     //Add distinguish button listeners
     $('.thing .buttons').on('click', 'form[action="/post/distinguish"]', distinguishClicked);
@@ -109,15 +109,15 @@ buttons.initDistinguishToggle = function initDistinguishToggle() {
     });
 };
 
-buttons.init = function betterButtonInit() {
-    if (buttons.setting('enableModSave'))
-        buttons.initModSave();
+self.init = function betterButtonInit() {
+    if (self.setting('enableModSave'))
+        self.initModSave();
 
-    if (buttons.setting('enableDistinguishToggle'))
-        buttons.initDistinguishToggle();
+    if (self.setting('enableDistinguishToggle'))
+        self.initDistinguishToggle();
 };
 
-TB.register_module(buttons);
+TB.register_module(self);
 }
 
 (function() {

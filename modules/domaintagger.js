@@ -1,19 +1,19 @@
 function domaintagger() {
 //Setup
-var tagger = new TB.Module('Domain Tagger');
-tagger.shortname = 'DTagger';
+var self = new TB.Module('Domain Tagger');
+self.shortname = 'DTagger';
 
 ////Default settings
-tagger.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = false;
 
-tagger.register_setting('displayType', {
+self.register_setting('displayType', {
     'type': 'selector',
     'values': ['Post border', 'Domain background', 'Domain border'],
     'default': 'post_border',
     'title': 'Tag location'
 });
 
-tagger.init = function domainTaggerInit() {
+self.init = function domainTaggerInit() {
     //Get settings
     var tagType = this.setting('displayType');
     //$.log("Domain tag type: " + tagType);
@@ -34,7 +34,7 @@ tagger.init = function domainTaggerInit() {
             if (succ) {
                 run();
             } else {
-                tagger.log(err.responseText);
+                self.log(err.responseText);
             }
         });
     }
@@ -112,7 +112,7 @@ tagger.init = function domainTaggerInit() {
 
             $.grep(config.domainTags, function (d) {
                 if (domain.indexOf(d.name) !== -1) {
-                    switch (tagger.setting('displayType')) {
+                    switch (self.setting('displayType')) {
                         case "domain_background":
                             $domain.css({
                                 'background-color': d.color,
@@ -249,7 +249,7 @@ tagger.init = function domainTaggerInit() {
     });
 };
 
-TB.register_module(tagger);
+TB.register_module(self);
 }
 
 (function () {

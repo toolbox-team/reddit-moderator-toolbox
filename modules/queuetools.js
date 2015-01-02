@@ -1,42 +1,42 @@
 function queuetools() {
 
-var queue = new TB.Module('Queue Tools');
-queue.shortname = 'QueueTools';
+var self = new TB.Module('Queue Tools');
+self.shortname = 'QueueTools';
 
-queue.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-queue.register_setting('hideActionedItems', {
+self.register_setting('hideActionedItems', {
     'type': 'boolean',
     'default': false,
     'title': 'Hide items after mod action'
 });
-queue.register_setting('ignoreOnApprove', {
+self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
     'title': 'Ignore reports on approved items'
 });
-queue.register_setting('linkToQueues', {
+self.register_setting('linkToQueues', {
     'type': 'boolean',
     'default': false,
     'title': 'Link to subreddit queue on mod pages'
 });
-queue.register_setting('sortModqueue', {
+self.register_setting('sortModqueue', {
     'type': 'boolean',
     'default': false,
     'title': 'Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)'
 });
-queue.register_setting('sortUnmoderated', {
+self.register_setting('sortUnmoderated', {
     'type': 'boolean',
     'default': false,
     'title': 'Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)'
 });
-queue.register_setting('reportsOrder', {
+self.register_setting('reportsOrder', {
     'type': 'selector',
     'values': ['age', 'score', 'reports'],
     'default': 'age',
     'title': 'Sort by'
 });
-queue.register_setting('reportsThreshold', {
+self.register_setting('reportsThreshold', {
     'type': 'number',
     'min': 0,
     'max': null,
@@ -44,41 +44,41 @@ queue.register_setting('reportsThreshold', {
     'default': 1,
     'title': 'Reports threshold'
 });
-queue.register_setting('reportsAscending', {
+self.register_setting('reportsAscending', {
     'type': 'boolean',
     'default': false,
     'title': 'Sort ascending.'
 });
 
-queue.register_setting('expandReports', {
+self.register_setting('expandReports', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically expand reports on mod pages.'
 });
 
-queue.register_setting('botCheckmark', {
+self.register_setting('botCheckmark', {
     'type': 'list',
     'default': ['AutoModerator'],
     'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
 });
 
-queue.register_setting('kitteh', {
+self.register_setting('kitteh', {
     'type': 'boolean',
     'default': true,
     'title': 'Kitteh?'
 });
 
 
-queue.init = function () {
+self.init = function () {
     var $body = $('body');
 
     // Cached data
     var notEnabled = [],
-        hideActionedItems = queue.setting('hideActionedItems'),
-        ignoreOnApprove = queue.setting('ignoreOnApprove'),
-        sortModQueue = queue.setting('sortModqueue'),
-        sortUnmoderated = queue.setting('sortUnmoderated'),
-        linkToQueues = queue.setting('linkToQueues');
+        hideActionedItems = self.setting('hideActionedItems'),
+        ignoreOnApprove = self.setting('ignoreOnApprove'),
+        sortModQueue = self.setting('sortModqueue'),
+        sortUnmoderated = self.setting('sortUnmoderated'),
+        linkToQueues = self.setting('linkToQueues');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -91,14 +91,14 @@ queue.init = function () {
         }
     }
 
-    if (TBUtils.isModpage && queue.setting('kitteh')) {
+    if (TBUtils.isModpage && self.setting('kitteh')) {
         $body.find('p#noresults').addClass('tb-kitteh')
     }
 
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
     function getRemovalReasons(subreddit, callback) {
-        queue.log('getting config: ' + subreddit);
+        self.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -114,7 +114,7 @@ queue.init = function () {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            queue.log('returning: cache');
+            self.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -122,7 +122,7 @@ queue.init = function () {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                queue.log('failed: wiki config');
+                self.log('failed: wiki config');
                 callback(false);
                 return;
             }
@@ -133,19 +133,19 @@ queue.init = function () {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                queue.log('trying: get from, no cache');
+                self.log('trying: get from, no cache');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                queue.log('returning: no cache');
+                self.log('returning: no cache');
                 callback(reasons);
                 return;
             }
 
-            queue.log('falied: all');
+            self.log('falied: all');
             callback(false);
         });
     }
@@ -153,9 +153,9 @@ queue.init = function () {
     // Add modtools buttons to page.
     function addModtools() {
         var numberRX = /-?\d+/,
-            reportsThreshold = queue.setting('reportsThreshold'),
-            listingOrder = queue.setting('reportsOrder'),
-            sortAscending = queue.setting('reportsAscending'),
+            reportsThreshold = self.setting('reportsThreshold'),
+            listingOrder = self.setting('reportsOrder'),
+            sortAscending = self.setting('reportsAscending'),
             viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !!location.pathname.match(/\/about\/reports/),
             allSelected = false;
@@ -302,8 +302,8 @@ queue.init = function () {
 
             if (toggleAsc) sortAscending = !sortAscending;
 
-            queue.setting('reportsAscending', sortAscending);
-            queue.setting('reportsOrder', order);
+            self.setting('reportsAscending', sortAscending);
+            self.setting('reportsOrder', order);
 
             $sortOrder.text(order);
             sortThings(order, sortAscending);
@@ -477,12 +477,12 @@ queue.init = function () {
             if (isNaN(threshold)) return;
 
             $(this).val(threshold);
-            queue.setting('reportsThreshold', threshold);
+            self.setting('reportsThreshold', threshold);
             setThreshold($things);
         });
 
         function setThreshold(things) {
-            var threshold = queue.setting('reportsThreshold');
+            var threshold = self.setting('reportsThreshold');
             things.show().find('.reported-stamp').text(function (_, str) {
                 if (str.match(/\d+/) < threshold)
                     $(this).closest('.thing').hide();
@@ -503,7 +503,7 @@ queue.init = function () {
 
         // NER support.
         window.addEventListener("TBNewThings", function () {
-            queue.log("proc new things");
+            self.log("proc new things");
             var things = $(".thing").not(".mte-processed");
 
             processNewThings(things);
@@ -540,7 +540,7 @@ queue.init = function () {
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
             // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
-            if (queue.setting('expandReports')) {
+            if (self.setting('expandReports')) {
                 $(things).find('.reported-stamp').siblings('.report-reasons').show();
             }
             //add class to processed threads.
@@ -567,12 +567,12 @@ queue.init = function () {
         if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
             var prefix = '', page = '', type = '';
             if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
-                queue.log('sorting unmod');
+                self.log('sorting unmod');
                 prefix = 'umq-';
                 page = 'unmoderated';
                 //type = 'unmod-';
             } else if (TBUtils.isModQueuePage && sortModQueue) {
-                queue.log('sorting mod queue');
+                self.log('sorting mod queue');
                 prefix = 'mq-';
                 page = 'modqueue';
                 //type = 'mod-';
@@ -648,7 +648,7 @@ queue.init = function () {
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage) {
         addModtools();
-        if(queue.setting('expandReports')) {
+        if(self.setting('expandReports')) {
             $('.reported-stamp').siblings('.report-reasons').show();
         }
     }
@@ -658,13 +658,13 @@ queue.init = function () {
     }
 
     // Let's make bot approved posts stand out!
-    var checkmarkLength = queue.setting('botCheckmark').length;
+    var checkmarkLength = self.setting('botCheckmark').length;
     if (TBUtils.isMod && checkmarkLength > 0) {
 
 
         var baseCss;
         checkmarkLength = checkmarkLength - 1;
-        $.each(queue.setting('botCheckmark'), function (i, val) {
+        $.each(self.setting('botCheckmark'), function (i, val) {
 
             switch(i) {
             case 0:
@@ -693,7 +693,7 @@ queue.init = function () {
 
 }; // queueTools.init()
 
-TB.register_module(queue);
+TB.register_module(self);
 }// queuetools() wrapper
 
 (function () {

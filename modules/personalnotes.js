@@ -1,19 +1,19 @@
 function personalnotes() {
-var notes = new TB.Module('Personal Notes');
-notes.shortname = 'PNotes';
+var self = new TB.Module('Personal Notes');
+self.shortname = 'PNotes';
 
-notes.settings['enabled']['default'] = false;
-notes.config['betamode'] = true;
+self.settings['enabled']['default'] = false;
+self.config['betamode'] = true;
 
-notes.register_setting('noteWiki', {
+self.register_setting('noteWiki', {
     'type': 'subreddit',
     'default': '',
     'title': 'Subreddit you want to use to store your personal notes.'
 });
 
-notes.init = function personalNotesInit() {
+self.init = function personalNotesInit() {
     var $body = $('body'),
-        notewiki = notes.setting('noteWiki').toLowerCase(),
+        notewiki = self.setting('noteWiki').toLowerCase(),
         notesArray = [],
         notesPopupContent;
 
@@ -73,15 +73,15 @@ notes.init = function personalNotesInit() {
     }
 
     function saveNoteWiki(page, subreddit, data, reason, newnote) {
-        notes.log("posting to wiki");
+        self.log("posting to wiki");
         TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
         TBUtils.postToWiki('notes/' + page, subreddit, data, reason, false, false, function done(succ, err) {
-            notes.log("save succ = " + succ);
+            self.log("save succ = " + succ);
             if (!succ) {
-                notes.log(err.responseText);
+                self.log(err.responseText);
                 TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
             } else {
-                notes.log("clearing cache");
+                self.log("clearing cache");
                 TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
 
                 if (newnote) {
@@ -270,7 +270,7 @@ notes.init = function personalNotesInit() {
     });
 };
 
-TB.register_module(notes);
+TB.register_module(self);
 }
 
 (function () {

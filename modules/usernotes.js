@@ -1,40 +1,40 @@
 function usernotes() {
 //Setup
-var usernotes = new TB.Module('User Notes');
-usernotes.shortname = 'UserNotes';
+var self = new TB.Module('User Notes');
+self.shortname = 'UserNotes';
 
 ////Default settings
-usernotes.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-usernotes.register_setting('unManagerLink', {
+self.register_setting('unManagerLink', {
     'type': 'boolean',
     'default': true,
     'title': 'Show usernotes manager in modbox'
 });
-usernotes.register_setting('showDate', {
+self.register_setting('showDate', {
     'type': 'boolean',
     'default': false,
     'title': 'Show date in note preview'
 });
-usernotes.register_setting('showOnModPages', {
+self.register_setting('showOnModPages', {
     'type': 'boolean',
     'default': false,
     'title': 'Show current usernote on ban/contrib/mod pages'
 });
-usernotes.register_setting('maxChars', {
+self.register_setting('maxChars', {
     'type': 'number',
     'default': 20,
     'title': 'Max characters to display in current note tag (excluding date)'
 });
 
-usernotes.init = function () {
+self.init = function () {
     var subs = [],
         $body = $('body'),
-        maxChars = usernotes.setting('maxChars'),
-        showDate = usernotes.setting('showDate'),
-        showOnModPages =  usernotes.setting('showOnModPages');
+        maxChars = self.setting('maxChars'),
+        showDate = self.setting('showDate'),
+        showOnModPages =  self.setting('showOnModPages');
 
-    if (usernotes.setting('unManagerLink') && TBUtils.post_site && TBUtils.isMod) {
+    if (self.setting('unManagerLink') && TBUtils.post_site && TBUtils.isMod) {
         var toolbox = $('#moderation_tools').find('.content .icon-menu'),
             managerLink = '<li><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '" class="tb-moderation-tools-icons"/><span class="separator"></span>\
                     <a href="/r/'+ TBUtils.post_site +'/about/usernotes" class="tb-un-manager" title="edit usernotes for this subreddit">usernotes</a></li>';
@@ -55,7 +55,7 @@ usernotes.init = function () {
         $(document).prop('title', 'usernotes - /r/' + sub);
 
         function getSubNotes(currsub) {
-            usernotes.log('getting notes: ' + currsub);
+            self.log('getting notes: ' + currsub);
             if (TB.utils.noteCache[currsub] !== undefined) {
                 showSubNotes(TB.utils.noteCache[currsub], currsub);
                 return;
@@ -87,7 +87,7 @@ usernotes.init = function () {
 
         function showSubNotes(notes) {
             subUsenotes = notes;
-            usernotes.log('showing notes');
+            self.log('showing notes');
 
             var userCount = Object.keys(notes.users).length,
                 noteCount = 0;
@@ -187,7 +187,7 @@ usernotes.init = function () {
                     $userSpan = $this.parent().find('.user');
                 if (!$this.hasClass('tb-un-refreshed')) {
                     $this.addClass('tb-un-refreshed');
-                    usernotes.log('refreshing user: ' + user);
+                    self.log('refreshing user: ' + user);
                     TB.utils.aboutUser(user, function (succ) {
 
                         var $status = TB.utils.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
@@ -207,7 +207,7 @@ usernotes.init = function () {
 
                 var r = confirm('This will delete all notes for /u/'+ user +'.  Would you like to proceed?');
                 if (r == true) {
-                    usernotes.log("deleting notes for " + user);
+                    self.log("deleting notes for " + user);
                     delete subUsenotes.users[user];
                     TB.utils.noteCache[sub] = subUsenotes;
                     postToWiki(sub, subUsenotes, "deleted all notes for /u/" + user);
@@ -223,7 +223,7 @@ usernotes.init = function () {
                     note = $this.attr('data-note'),
                     $noteSpan = $this.parent();
 
-                    usernotes.log("deleting note for " + user);
+                    self.log("deleting note for " + user);
                     subUsenotes.users[user].notes.splice(note, 1);
                     TB.utils.noteCache[sub] = subUsenotes;
                     postToWiki(sub, subUsenotes, "deleted a note for /u/" + user);
@@ -302,15 +302,15 @@ usernotes.init = function () {
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
 
-        usernotes.log("Saving usernotes to wiki...");
+        self.log("Saving usernotes to wiki...");
         TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
-                usernotes.log("Success!");
+                self.log("Success!");
                 TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, true, 2000);
                 run();
             } 
             else {
-                usernotes.log("Failure: " + err);
+                self.log("Failure: " + err);
                 TBui.textFeedback("Save failed: "+err, TBui.FEEDBACK_NEGATIVE, true, 5000);
             }
         });
@@ -545,11 +545,11 @@ usernotes.init = function () {
     function setNotes(notes, subreddit) {
         // Check if the version of loaded notes is within the supported versions
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
-            usernotes.log("Failed usernotes version check:");
-            usernotes.log("\tnotes.ver: "+notes.ver);
-            usernotes.log("\tTBUtils.notesSchema: "+TBUtils.notesSchema);
-            usernotes.log("\tTBUtils.notesMinSchema: "+TBUtils.notesMinSchema);
-            usernotes.log("\tTBUtils.notesMaxSchema: "+TBUtils.notesMaxSchema);
+            self.log("Failed usernotes version check:");
+            self.log("\tnotes.ver: "+notes.ver);
+            self.log("\tTBUtils.notesSchema: "+TBUtils.notesSchema);
+            self.log("\tTBUtils.notesMinSchema: "+TBUtils.notesMinSchema);
+            self.log("\tTBUtils.notesMaxSchema: "+TBUtils.notesMaxSchema);
 
             // Remove the option to add notes
             $('.usernote-span-' + subreddit).remove();
@@ -575,7 +575,7 @@ usernotes.init = function () {
                 subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
                 subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';
 
-            usernotes.log('running on ban page');
+            self.log('running on ban page');
             things = $userSpan.find('a:first');
             $userSpan.append(tag);
         }
@@ -881,14 +881,14 @@ usernotes.init = function () {
 
     $body.on('keyup', '.utagger-user-note', function (event) {
         if (event.keyCode == 13) {
-            usernotes.log("Enter pressed!");
+            self.log("Enter pressed!");
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }
     });
 }; // userNotes.init()
 
-TB.register_module(usernotes);
+TB.register_module(self);
 
 } // usernotes() wrapper
 

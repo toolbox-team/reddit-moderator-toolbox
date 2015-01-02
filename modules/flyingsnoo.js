@@ -4,12 +4,12 @@ function flyingsnoo() {
 // @copyright  2014+, LowSociety
 
 //Setup
-var snoo = new TB.Module('Flying Snoo');
-snoo.shortname = 'Snoo';
+var self = new TB.Module('Flying Snoo');
+self.shortname = 'Snoo';
 
 ////Default settings
-snoo.settings['enabled']['default'] = true;
-snoo.settings['enabled']['hidden'] = true;  // it's an easter egg.
+self.settings['enabled']['default'] = true;
+self.settings['enabled']['hidden'] = true;  // it's an easter egg.
 
 //snoo.register_setting('displayType', {
 //    'type': 'selector',
@@ -18,7 +18,7 @@ snoo.settings['enabled']['hidden'] = true;  // it's an easter egg.
 //    'title': 'Tag location'
 //});
 
-snoo.init = function snooInit() {
+self.init = function snooInit() {
     if (!TB.utils.isUserPage) return;
 
     $(".profile-page .footer-parent").click(function () {
@@ -129,7 +129,7 @@ snoo.init = function snooInit() {
 
 };
 
-TB.register_module(snoo);
+TB.register_module(self);
 }
 
 (function () {

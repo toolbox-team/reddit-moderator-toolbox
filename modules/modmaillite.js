@@ -1,17 +1,17 @@
 function mml() {
-var modmaillite = new TB.Module('Mod Mail Lite');
-modmaillite.shortname = 'ModMailLite';
+var self = new TB.Module('Mod Mail Lite');
+self.shortname = 'ModMailLite';
 
-modmaillite.settings['enabled']['default'] = false;
-modmaillite.config['betamode'] = true;
+self.settings['enabled']['default'] = false;
+self.config['betamode'] = true;
 
-modmaillite.init = function mmlInit() {
+self.init = function mmlInit() {
     if (!TB.utils.isModmail) return;
 
     // Never allow if MMP is on.
     if (settingsShim('enabled')) {
         TB.ui.textFeedback("Mod Mail Lite disabled", TB.ui.FEEDBACK_NEGATIVE);
-        modmaillite.setting('enabled', false);
+        self.setting('enabled', false);
         return;
     }
 
@@ -394,7 +394,7 @@ modmaillite.init = function mmlInit() {
     }
 };
 
-TB.register_module(modmaillite);
+TB.register_module(self);
 }
 
 (function() {

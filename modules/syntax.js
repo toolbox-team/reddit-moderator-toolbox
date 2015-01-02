@@ -2,26 +2,26 @@ function syntax() {
 
 // syntax highlighter with ACE, by creesch
 
-var syntax = new TB.Module('Syntax Highlighter');
-syntax.shortname = 'Syntax';
+var self = new TB.Module('Syntax Highlighter');
+self.shortname = 'Syntax';
 
-syntax.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-syntax.register_setting('enableWordWrap', {
+self.register_setting('enableWordWrap', {
     'type': 'boolean',
     'default': true,
     'title': 'Enable word wrap in editor'
 });
-syntax.register_setting('selectedTheme', {
+self.register_setting('selectedTheme', {
     'type': 'syntaxTheme',
     'default': 'monokai',
     'title': 'Syntax highlight theme selection'
 });
 
-syntax.settings['enabled']['default'] = true; // on by default
+self.settings['enabled']['default'] = true; // on by default
 
 // we reference this from tbobject for settings generation
-syntax.themeSelect = '\
+self.themeSelect = '\
 <select id="theme_selector">\
 <option value="ambiance">ambiance</option>\
 <option value="chaos">chaos</option>\
@@ -60,7 +60,7 @@ syntax.themeSelect = '\
 </select>\
 ';
 
-syntax.init = function init() {
+self.init = function init() {
     var selectedTheme = this.setting('selectedTheme'),
         enableWordWrap = this.setting('enableWordWrap');
 
@@ -149,7 +149,7 @@ syntax.init = function init() {
 
 };
 
-TB.register_module(syntax);
+TB.register_module(self);
 }
 
 (function () {

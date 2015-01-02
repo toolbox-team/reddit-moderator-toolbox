@@ -1,11 +1,11 @@
 function devtools() {
 // Developer Tools, for managing /r/toolbox/w/tbnotes (etc.)
 
-var devTools = new TB.Module('Developer Tools');
-devTools.settings['enabled']['default'] = false;
+var self = new TB.Module('Developer Tools');
+self.settings['enabled']['default'] = false;
 
-devTools.setting('betamode', false);
-devTools.setting('devmode', true);
+self.setting('betamode', false);
+self.setting('devmode', true);
 }
 
 (function () {

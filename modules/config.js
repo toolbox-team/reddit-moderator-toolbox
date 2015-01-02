@@ -1,12 +1,12 @@
 function tbConfig() {
 //Setup
-var tbconfig = new TB.Module('Toolbox Config');
-tbconfig.shortname = 'TBConfig'; // for backwards compatibility
+var self = new TB.Module('Toolbox Config');
+self.shortname = 'TBConfig'; // for backwards compatibility
 
 //Default settings
-tbconfig.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-tbconfig.init = function () {
+self.init = function () {
 
     //if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
     //    return;
@@ -185,7 +185,7 @@ tbconfig.init = function () {
             // Load the data we need from the wiki.
             TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                    tbconfig.log('Failed: wiki config');
+                    self.log('Failed: wiki config');
                 } else {
                     // At this point we are good to go! Let's add a button!
                     config = resp;
@@ -222,7 +222,7 @@ tbconfig.init = function () {
             TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                 console.log(resp);
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                    tbconfig.log('Failed: wiki config');
+                    self.log('Failed: wiki config');
 
                     config = TBUtils.config;
                     showSettings(subreddit,config);
@@ -251,15 +251,15 @@ tbconfig.init = function () {
 
     // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
         function postToWiki(page, data, reason, isJSON, updateAM) {
-            tbconfig.log("posting to wiki");
+            self.log("posting to wiki");
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
             TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
-                tbconfig.log("save succ = " + succ);
+                self.log("save succ = " + succ);
                 if (!succ) {
-                    tbconfig.log(err.responseText);
+                    self.log(err.responseText);
                     TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
                 } else {
-                    tbconfig.log("clearing cache");
+                    self.log("clearing cache");
                     TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
                     TBUtils.clearCache();
                 }
@@ -573,7 +573,7 @@ tbconfig.init = function () {
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                        tbconfig.log('Failed: wiki config');
+                        self.log('Failed: wiki config');
                         return;
                     }
 
@@ -756,7 +756,7 @@ tbconfig.init = function () {
             if ($body.hasClass('toolbox-wiki-edited')) {
                 TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                        tbconfig.log('Failed: wiki config');
+                        self.log('Failed: wiki config');
                         return;
                     }
 
@@ -931,7 +931,7 @@ tbconfig.init = function () {
 
 }; // TBConfig.init()
 
-TB.register_module(tbconfig);
+TB.register_module(self);
 } // tbconfig() wrapper
 
 (function() {

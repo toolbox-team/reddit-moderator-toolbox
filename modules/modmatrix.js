@@ -1,32 +1,32 @@
 function modmatrix() {
 
-var modlog = new TB.Module('Mod Log Matrix');
-modlog.shortname = 'ModMatrix'; // backwards compatibility
+var self = new TB.Module('Mod Log Matrix');
+self.shortname = 'ModMatrix'; // backwards compatibility
 
 ////Default settings
-modlog.settings['enabled']['default'] = true;
-modlog.settings['betamode'] = false;
+self.settings['enabled']['default'] = true;
+self.settings['betamode'] = false;
 
-modlog.version = 2.0;
-modlog.limit = 300;
-modlog.after = null;
-modlog.subredditUrl = null;
-modlog.subredditName = null;
+self.version = 2.0;
+self.limit = 300;
+self.after = null;
+self.subredditUrl = null;
+self.subredditName = null;
 
-modlog.firstEntry = null;
-modlog.lastEntry = null;
+self.firstEntry = null;
+self.lastEntry = null;
 
-modlog.subredditModerators = null;
-modlog.subredditActions = null;
-modlog.total = 0;
+self.subredditModerators = null;
+self.subredditActions = null;
+self.total = 0;
 
-modlog.isMulti = false;
+self.isMulti = false;
 
 // These need moved into TB.ui.
-modlog.downSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQklEQVQoU2NkoAAwUqCXYVQziaGHLcD+4zEDRT2u0MZmAIZafFGFbABWdYTiGWQATjWENOMNQoo1M5EYQ3DlFNkMAOsiBBL3uxzDAAAAAElFTkSuQmCC";
-modlog.upSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQ0lEQVQoU2NkoAAwUqCXAaSZiVwDKLaZXIvBzsYH/gMlcarBpxmkEQawqsOlGVkjTgOwacamEasBhPyMN0BGNZOY1gDYfgQSUTVBXwAAAABJRU5ErkJggg==";
+self.downSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQklEQVQoU2NkoAAwUqCXYVQziaGHLcD+4zEDRT2u0MZmAIZafFGFbABWdYTiGWQATjWENOMNQoo1M5EYQ3DlFNkMAOsiBBL3uxzDAAAAAElFTkSuQmCC";
+self.upSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQ0lEQVQoU2NkoAAwUqCXAaSZiVwDKLaZXIvBzsYH/gMlcarBpxmkEQawqsOlGVkjTgOwacamEasBhPyMN0BGNZOY1gDYfgQSUTVBXwAAAABJRU5ErkJggg==";
 
-modlog.run = function () {
+self.run = function () {
     this.addButton();
 
     var subredditUrl = this.getSubredditUrl();
@@ -53,10 +53,10 @@ modlog.run = function () {
     this.subredditName = matches[1];
 
     if (location.hash != null && location.hash == "#matrix")
-        modlog.renderMatrix();
+        self.renderMatrix();
 };
 
-modlog.addButton = function () {
+self.addButton = function () {
 
     // The reason for the <span> is in case the user has both report matrix AND report gen: http://i.imgur.com/Izbm6Rh.png,
     // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
@@ -68,17 +68,17 @@ modlog.addButton = function () {
 
     $('.reddit-moderationlog').click(function (e) {
         e.preventDefault();
-        modlog.renderMatrix();
+        self.renderMatrix();
         return false;
     });
 };
 
-modlog.currentSorting = {
+self.currentSorting = {
     index: null,
     direction: 1
 };
 
-modlog.sort = function (index, direction) {
+self.sort = function (index, direction) {
     var rows = $("#mod-matrix tbody tr");
 
     direction = direction != null ? direction : (index == this.currentSorting.index ? this.currentSorting.direction * -1 : index === 0 ? -1 : 1);
@@ -111,10 +111,10 @@ modlog.sort = function (index, direction) {
 
     var header = $("#mod-matrix thead");
     header.find(".sorting-icon").remove();
-    $(header.find("th").get(index)).append('<img src="data:image/png;base64,' + (direction == -1 ? modlog.upSortingIcon : modlog.downSortingIcon) + '" alt="" class="sorting-icon" />');
+    $(header.find("th").get(index)).append('<img src="data:image/png;base64,' + (direction == -1 ? self.upSortingIcon : self.downSortingIcon) + '" alt="" class="sorting-icon" />');
 };
 
-modlog.renderMatrix = function () {
+self.renderMatrix = function () {
     var siteTable = $("#siteTable");
 
     $(".drop-choices.lightdrop a").each(function () {
@@ -164,16 +164,16 @@ modlog.renderMatrix = function () {
     var modMatrixSettings = $("#mod-matrix-settings");
 
     $('.reddit-moderationlog').unbind('click').click(function () {
-        modlog.getActions();
+        self.getActions();
     });
 
     header.find("th").click(function () {
-        modlog.sort($(this).index());
+        self.sort($(this).index());
     });
 
     modMatrixSettings.find("form").bind("submit", function (e) {
         e.preventDefault();
-        modlog.submitForm(this);
+        self.submitForm(this);
 
         return false;
     });
@@ -292,7 +292,7 @@ modlog.renderMatrix = function () {
 
     // Automatic refresh the table when action filter is changed. Same thing with mod filter, as long as there are fewer than 20 mods
     modMatrixSettings.find(".action-filter" + (modMatrixSettings.find(".mod-filter").length < 20 ? ", .mod-filter" : "")).change(function () {
-        modlog.refreshTable();
+        self.refreshTable();
     });
 
     // Show labels
@@ -311,7 +311,7 @@ modlog.renderMatrix = function () {
     // Highlight percentages
     modMatrixSettings.find("table").append('<tr><td><label for="highlightpercentages">highlight percentages below:</label></td><td><input id="highlightpercentages" type="number" value="0" min="0" max="100" /></td></tr>');
     $("#highlightpercentages").change(function () {
-        modlog.highlightPercentages()
+        self.highlightPercentages()
     });
 
     $("#mod-matrix-settings form").append('<input type="submit" value="generate" />');
@@ -338,7 +338,7 @@ modlog.renderMatrix = function () {
     //this.getActions();
 };
 
-modlog.highlightPercentages = function () {
+self.highlightPercentages = function () {
     var matrix = $("#mod-matrix");
     var threshold = parseInt($("#highlightpercentages").val());
     $("#mod-matrix tr").removeClass("highlight");
@@ -350,8 +350,8 @@ modlog.highlightPercentages = function () {
     });
 };
 
-modlog.submitForm = function (form) {
-    modlog.resetData();
+self.submitForm = function (form) {
+    self.resetData();
 
     var from = $(form).find("input[name=from]").val();
     var to = $(form).find("input[name=to]").val();
@@ -362,35 +362,35 @@ modlog.submitForm = function (form) {
     toDate.setDate(toDate.getDate() + 1);
     var toUTC = this.dateToUTC(toDate);
 
-    modlog.maxDate = toUTC.getTime();
-    modlog.minDate = fromUTC.getTime();
+    self.maxDate = toUTC.getTime();
+    self.minDate = fromUTC.getTime();
 
     this.getRecursiveActions(null, null);
 };
 
-modlog.resetData = function () {
-    modlog.after = null;
-    modlog.firstEntry = null;
-    modlog.lastEntry = null;
-    modlog.subredditActions = this.getSubredditActions();
-    modlog.subredditModerators = this.getSubredditModerators();
-    modlog.modFilter = [];
-    modlog.actionFilter = [];
-    modlog.total = 0;
-    modlog.iterations = 0;
+self.resetData = function () {
+    self.after = null;
+    self.firstEntry = null;
+    self.lastEntry = null;
+    self.subredditActions = this.getSubredditActions();
+    self.subredditModerators = this.getSubredditModerators();
+    self.modFilter = [];
+    self.actionFilter = [];
+    self.total = 0;
+    self.iterations = 0;
     $("#mod-matrix .action-number").text("0");
 };
 
-modlog.getRecursiveActions = function (data, hasMoreData) {
-    modlog.iterations += 1;
+self.getRecursiveActions = function (data, hasMoreData) {
+    self.iterations += 1;
     if (hasMoreData == null || hasMoreData == true) {
-        modlog.getActions(modlog.getRecursiveActions);
+        self.getActions(self.getRecursiveActions);
     } else {
-        modlog.refreshTable();
+        self.refreshTable();
     }
 };
 
-modlog.createModeratorRow = function (moderator) {
+self.createModeratorRow = function (moderator) {
     var body = $("#mod-matrix tbody");
     if (body.find("tr.moderator-" + moderator).length > 0)
         return;
@@ -407,13 +407,13 @@ modlog.createModeratorRow = function (moderator) {
     body.append(row);
 };
 
-modlog.dataCache = [];
+self.dataCache = [];
 
-modlog.clearCache = function () {
-    modlog.dataCache = [];
+self.clearCache = function () {
+    self.dataCache = [];
 };
 
-modlog.getActions = function (callback) {
+self.getActions = function (callback) {
     var requestData = {
         limit: this.limit,
         count: (this.iterations - 1) * this.limit
@@ -429,55 +429,55 @@ modlog.getActions = function (callback) {
     var cacheKey = url + "?" + JSON.stringify(requestData);
 
     if (this.dataCache[cacheKey] != null) {
-        modlog.processData(this.dataCache[cacheKey], callback);
+        self.processData(this.dataCache[cacheKey], callback);
     } else {
         $.getJSON(url, requestData, function (response) {
             TBUtils.log.push("Got " + requestData.count + " to " + (requestData.count + requestData.limit));
             var data = response.data;
-            modlog.processData(data, callback);
-            modlog.dataCache[cacheKey] = data;
+            self.processData(data, callback);
+            self.dataCache[cacheKey] = data;
         })
             .fail(function (jqxhr, textStatus, error) {
                 TBUtils.log.push("Mod log request " + requestData.count + "to " + (requestData.count + requestData.limit) + " failed (" + jqxhr.status + "), " + textStatus + ": " + error);
                 if (jqxhr.status == 504) {
                     TBUtils.log.push("Retrying mod log request...");
-                    modlog.getActions(callback);
+                    self.getActions(callback);
                 }
                 else {
                     //End and display what we have with an error
-                    modlog.processData(null, callback);
+                    self.processData(null, callback);
                 }
             })
     }
 };
 
-modlog.updateFilters = function () {
-    modlog.modFilter = [];
+self.updateFilters = function () {
+    self.modFilter = [];
     if (!$("#modmatrixmodfilter-all").is(":checked")) {
         var modFilters = $("#mod-matrix-settings .mod-filter:checked");
 
         modFilters.each(function () {
             if ($(this).val() != "") {
-                modlog.modFilter.push($(this).val());
+                self.modFilter.push($(this).val());
             }
         });
     }
-    modlog.actionFilter = [];
+    self.actionFilter = [];
     if (!$("#modmatrixactionfilter-all").is(":checked")) {
         var actionFilters = $("#mod-matrix-settings .action-filter:checked");
 
         actionFilters.each(function () {
             if ($(this).val() != "") {
-                modlog.actionFilter.push($(this).val());
+                self.actionFilter.push($(this).val());
             }
         });
     }
 };
 
-modlog.refreshTable = function () {
+self.refreshTable = function () {
     this.updateFilters();
-    var hasModFilter = modlog.modFilter != null && !$.isEmptyObject(modlog.modFilter),
-        hasActionFilter = modlog.actionFilter != null && !$.isEmptyObject(modlog.actionFilter);
+    var hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter),
+        hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter);
     var actionTotals = {};
     var matrix = $("#mod-matrix");
 
@@ -485,7 +485,7 @@ modlog.refreshTable = function () {
 
     // Mod numbers
     for (var mod in this.subredditModerators) {
-        var moderator = modlog.subredditModerators[mod];
+        var moderator = self.subredditModerators[mod];
         var modRow = matrix.find(".moderator-" + mod + "");
         var total = 0;
         for (var action in moderator) {
@@ -493,7 +493,7 @@ modlog.refreshTable = function () {
             var cell = modRow.find(".action-" + action + " .action-number").text(value);
             total += value;
         }
-        modRow.toggleClass("filtered", hasModFilter && $.inArray(mod, modlog.modFilter) == -1);
+        modRow.toggleClass("filtered", hasModFilter && $.inArray(mod, self.modFilter) == -1);
         //matrix.find(".moderator-" + mod + " .action-total").text(total);
     }
     //modLogMatrix.filterModeratorActions();
@@ -501,7 +501,7 @@ modlog.refreshTable = function () {
     // Action totals
     for (var action in this.subredditActions) {
         //var total = actionTotals[action] || 0;
-        matrix.find(".action-" + action + "").toggleClass("filtered", hasActionFilter && $.inArray(action, modlog.actionFilter) == -1);
+        matrix.find(".action-" + action + "").toggleClass("filtered", hasActionFilter && $.inArray(action, self.actionFilter) == -1);
         var total = 0;
         matrix.find("tbody .action-" + action + " .action-number:visible").each(function () {
             total += parseInt($(this).text());
@@ -540,9 +540,9 @@ modlog.refreshTable = function () {
     }
 };
 
-modlog.processData = function (data, callback) {
-    var hasModFilter = modlog.modFilter != null && !$.isEmptyObject(modlog.modFilter),
-        hasActionFilter = modlog.actionFilter != null && !$.isEmptyObject(modlog.actionFilter);
+self.processData = function (data, callback) {
+    var hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter),
+        hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter);
     var matrix = $("#mod-matrix");
     var finished = data == null,
         errored = finished;
@@ -553,14 +553,14 @@ modlog.processData = function (data, callback) {
 
             var action = item.action;
             var mod = item.mod;
-            var moderator = modlog.subredditModerators[mod];
+            var moderator = self.subredditModerators[mod];
 
-            if (modlog.minDate != null && modlog.minDate > item.created_utc * 1000) {
+            if (self.minDate != null && self.minDate > item.created_utc * 1000) {
                 //console.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
                 finished = true;
                 break;
             } else if (
-                (modlog.maxDate != null && modlog.maxDate < item.created_utc * 1000)
+                (self.maxDate != null && self.maxDate < item.created_utc * 1000)
             // (hasModFilter && $.inArray(mod, modLogMatrix.modFilter) == -1) ||
             // (hasActionFilter && $.inArray(action, modLogMatrix.actionFilter)  == -1)
             ) {
@@ -568,17 +568,17 @@ modlog.processData = function (data, callback) {
                 continue;
             }
 
-            if (modlog.firstEntry == null) {
-                modlog.firstEntry = item;
-                if (i != 0 || modlog.after != null) {
-                    modlog.beforeFirst = data.children[i - 1].data;
+            if (self.firstEntry == null) {
+                self.firstEntry = item;
+                if (i != 0 || self.after != null) {
+                    self.beforeFirst = data.children[i - 1].data;
                 }
             }
 
             if (moderator == null) {
                 moderator = {total: 0};
-                modlog.subredditModerators[mod] = moderator;
-                modlog.createModeratorRow(mod);
+                self.subredditModerators[mod] = moderator;
+                self.createModeratorRow(mod);
             }
 
             var actionCount = moderator[action] ? moderator[action] + 1 : 1;
@@ -586,8 +586,8 @@ modlog.processData = function (data, callback) {
             moderator[action] = actionCount;
 
             //modLogMatrix.subredditActions[action].total += 1;
-            modlog.total += 1;
-            modlog.lastEntry = item;
+            self.total += 1;
+            self.lastEntry = item;
 
             //Update html
             // matrix.find(".moderator-" + mod + " .action-" + action + "").text(moderator[action]);
@@ -599,20 +599,20 @@ modlog.processData = function (data, callback) {
         var lastEntry = data.children[data.children.length - 1].data;
 
         // Are we finished, or should we keep going?
-        if (data.after == modlog.after || data.after == null || finished == true) {
+        if (data.after == self.after || data.after == null || finished == true) {
             finished = true;
         } else {
-            modlog.after = data.after;
+            self.after = data.after;
         }
     }
 
     // Show statistics
-    if (finished && modlog.firstEntry != null && modlog.lastEntry != null) {
-        var lastEntryDate = new Date(modlog.lastEntry.created_utc * 1000);
-        var firstEntryDate = new Date(modlog.firstEntry.created_utc * 1000);
-        $("#mod-matrix-statistics").html("showing <strong>" + modlog.total + " actions</strong> between <strong title=\"" + lastEntryDate + "\">" + lastEntryDate.toDateString().toLowerCase() + "</strong> and <strong title=\"" + firstEntryDate + "\">" + firstEntryDate.toDateString().toLowerCase() + "</strong> " + (errored ? "(<span style='color:red'>error occured</span>)" : "") + " | <a id=\"exporttocsv\">export table to CSV</a>");
-        $("#exporttocsv").click(modlog.exportToCSV).attr({
-            "download": modlog.subredditName + "-modlog.csv",
+    if (finished && self.firstEntry != null && self.lastEntry != null) {
+        var lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
+        var firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
+        $("#mod-matrix-statistics").html("showing <strong>" + self.total + " actions</strong> between <strong title=\"" + lastEntryDate + "\">" + lastEntryDate.toDateString().toLowerCase() + "</strong> and <strong title=\"" + firstEntryDate + "\">" + firstEntryDate.toDateString().toLowerCase() + "</strong> " + (errored ? "(<span style='color:red'>error occured</span>)" : "") + " | <a id=\"exporttocsv\">export table to CSV</a>");
+        $("#exporttocsv").click(self.exportToCSV).attr({
+            "download": self.subredditName + "-modlog.csv",
             target: "_blank"
         });
     } else {
@@ -626,7 +626,7 @@ modlog.processData = function (data, callback) {
     }
 };
 
-modlog.exportToCSV = function () {
+self.exportToCSV = function () {
     var table = $("#mod-matrix");
 
     var header = "";
@@ -658,11 +658,11 @@ modlog.exportToCSV = function () {
     this.href = 'data:text/csv;charset=utf-8,' + escape(string || 'sep=, \r\n');
 };
 
-modlog.getSubredditUrl = function () {
+self.getSubredditUrl = function () {
     return $("#header .hover.pagename.redditname a").attr("href");
 };
 
-modlog.getSubredditModerators = function () {
+self.getSubredditModerators = function () {
     var modItems = $(".drop-choices.lightdrop:not(.modaction-drop) a");
 
     modItems = $.makeArray(modItems);
@@ -690,7 +690,7 @@ modlog.getSubredditModerators = function () {
     return moderators;
 };
 
-modlog.getSubredditActions = function () {
+self.getSubredditActions = function () {
     var actionItems = $(".drop-choices.lightdrop.modaction-drop a");
 
     var actions = {};
@@ -700,14 +700,14 @@ modlog.getSubredditActions = function () {
             return;
 
         var actionLink = $(this).attr("href");
-        var actionCode = modlog.getQuerystringByName("type", actionLink);
+        var actionCode = self.getQuerystringByName("type", actionLink);
         actions[actionCode] = {"title": $(this).text(), "className": actionCode};
     });
 
     return actions;
 };
 
-modlog.getQuerystringByName = function (name, url) {
+self.getQuerystringByName = function (name, url) {
     if (url == null)
         url = location.search;
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -716,16 +716,16 @@ modlog.getQuerystringByName = function (name, url) {
     return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
 };
 
-modlog.dateToUTC = function (date) {
+self.dateToUTC = function (date) {
     return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 };
 
 
-modlog.init = function () {
+self.init = function () {
     if (!TBUtils.isModLogPage) return;
 
-    modlog.log('Running Mod Matrix Module');
-    modlog.run();
+    self.log('Running Mod Matrix Module');
+    self.run();
 
     var $body = $('body');
 
@@ -798,7 +798,7 @@ modlog.init = function () {
                     if (!$this.find('.description').attr('id')) {
                         commentCount = commentCount + 1;
                     }
-                    modlog.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
+                    self.log('commentcount: ' + commentCount + ' ratelimit: ' + ratelimit);
                     // lets add a little buffer just to be sure
                 }
             });
@@ -851,7 +851,7 @@ modlog.init = function () {
 };
 
 
-TB.register_module(modlog);
+TB.register_module(self);
 }
 
 (function () {

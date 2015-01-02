@@ -1,41 +1,41 @@
 function removalreasons() {
 
-var removal = new TB.Module('Removal Reasons');
-removal.shortname = 'RReasons';
+var self = new TB.Module('Removal Reasons');
+self.shortname = 'RReasons';
 
-removal.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
-removal.register_setting('commentReasons', {
+self.register_setting('commentReasons', {
     'type': 'boolean',
     'default': false,
     'title': 'Enable removal reasons for comments.'
 });
-removal.register_setting('alwaysShow', {
+self.register_setting('alwaysShow', {
     'type': 'boolean',
     'default': false,
     'title': 'Show an empty removal reason box for subreddits that don\'t have removal reasons.'
 });
 
 // Storage settings.
-removal.register_setting('reasonType', {
+self.register_setting('reasonType', {
     'type': 'string',
     'default': '',
     'hidden': true
 });
-removal.register_setting('reasonAsSub', {
+self.register_setting('reasonAsSub', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
 // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
 // May make this a user setting, one day.
-removal.register_setting('customRemovalReason', {
+self.register_setting('customRemovalReason', {
     'type': 'string',
     'default': '%3Ctextarea%20id%3D%22customTextarea%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
     'hidden': true
 });
 
-removal.init = function removalReasonsInit() {
+self.init = function removalReasonsInit() {
 
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
@@ -61,7 +61,7 @@ removal.init = function removalReasonsInit() {
     var notEnabled = [];
 
     // Settings.
-    var alwaysShow = removal.setting('alwaysShow');
+    var alwaysShow = self.setting('alwaysShow');
 
     function getRemovalReasons(subreddit, callback) {
 
@@ -72,7 +72,7 @@ removal.init = function removalReasonsInit() {
             return;
         }
 
-        removal.log('getting config: ' + subreddit);
+        self.log('getting config: ' + subreddit);
         var reasons = '';
 
         // See if we have the reasons in the cache.
@@ -88,7 +88,7 @@ removal.init = function removalReasonsInit() {
 
         // If we have removal reasons, send them back.
         if (reasons) {
-            removal.log('returning: cache');
+            self.log('returning: cache');
             callback(reasons);
             return;
         }
@@ -96,7 +96,7 @@ removal.init = function removalReasonsInit() {
         // OK, they are not cached.  Try the wiki.
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                removal.log('failed: wiki config');
+                self.log('failed: wiki config');
                 callback(false);
                 return;
             }
@@ -107,19 +107,19 @@ removal.init = function removalReasonsInit() {
 
             // Again, check if there is a fallback sub, and recurse.
             if (reasons && reasons.getfrom) {
-                removal.log('trying: get from, no cache');
+                self.log('trying: get from, no cache');
                 getRemovalReasons(reasons.getfrom, callback); //this may not work.
                 return;
             }
 
             // Last try, or return false.
             if (reasons) {
-                removal.log('returning: no cache');
+                self.log('returning: no cache');
                 callback(reasons);
                 return;
             }
 
-            removal.log('failed: all');
+            self.log('failed: all');
             callback(false);
         });
     }
@@ -132,7 +132,7 @@ removal.init = function removalReasonsInit() {
 
         // Ignore if a comment and comment reasons disabled
         var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !removal.setting('commentReasons'))
+        if (thingclasses.match(/\bcomment\b/) && !self.setting('commentReasons'))
             return;
 
 
@@ -179,7 +179,7 @@ removal.init = function removalReasonsInit() {
                     if (!alwaysShow) return;
 
                     // Otherwise, setup a completely empty reason.
-                    removal.log('Using custom reason');
+                    self.log('Using custom reason');
 
                     var customReasons = {
                         pmsubject: '',
@@ -193,7 +193,7 @@ removal.init = function removalReasonsInit() {
                         reasons: []
                     };
                     var reason = {
-                        text: removal.setting('customRemovalReason'),
+                        text: self.setting('customRemovalReason'),
                         flairText: '',
                         flairCSS: '',
                         title: ''
@@ -237,7 +237,7 @@ removal.init = function removalReasonsInit() {
         }
 
         function createPopup() {
-            removal.log("Creating removal reason popup");
+            self.log("Creating removal reason popup");
 
             // Options
             var selectNoneDisplay = data.logSub ? '' : 'none', // if there is no {reason} in the title but we still want to only log we'll need that "none" radio button.
@@ -245,8 +245,8 @@ removal.init = function removalReasonsInit() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = removal.setting('reasonType');
-            var reasonAsSub = removal.setting('reasonAsSub');
+            var reasonType = self.setting('reasonType');
+            var reasonAsSub = self.setting('reasonAsSub');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -426,11 +426,11 @@ removal.init = function removalReasonsInit() {
 
     // Toggle PM/reply/both notification method
     $body.on('click', '.reason-type', function () {
-        removal.setting('reasonType', this.value);
+        self.setting('reasonType', this.value);
     });
 
     $body.on('click', '.reason-as-sub', function () {
-        removal.setting('reasonAsSub', $(this).prop('checked'));
+        self.setting('reasonAsSub', $(this).prop('checked'));
     });
 
     // 'no reason' button clicked
@@ -641,7 +641,7 @@ removal.init = function removalReasonsInit() {
 
             // Reply to submission/comment
             if (notifyByReply) {
-                removal.log("Sending removal message by comment reply.");
+                self.log("Sending removal message by comment reply.");
                 TBUtils.postComment(data.fullname, reason, function (successful, response) {
                     if (successful) {
                         // Check if reddit actually returned an error
@@ -677,7 +677,7 @@ removal.init = function removalReasonsInit() {
                 var text = reason + '\n\n---\n[[Link to your ' + data.kind + '](' + data.url + ')]';
 
                 if (notifyAsSub) {
-                    removal.log("Sending removal message by PM as " + data.subreddit);
+                    self.log("Sending removal message by PM as " + data.subreddit);
                     TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
                         if (successful) {
                             removePopup(popup);
@@ -688,7 +688,7 @@ removal.init = function removalReasonsInit() {
                     });
                 }
                 else {
-                    removal.log("Sending removal message by PM as current user");
+                    self.log("Sending removal message by PM as current user");
                     TBUtils.sendPM(data.author, subject, text, function (successful, response) {
                         if (successful) {
                             removePopup(popup);
@@ -708,7 +708,7 @@ removal.init = function removalReasonsInit() {
     });
 };
 
-TB.register_module(removal);
+TB.register_module(self);
 } // end removalreasons()
 
 (function () {

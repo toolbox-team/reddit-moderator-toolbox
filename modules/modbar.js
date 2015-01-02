@@ -1,26 +1,26 @@
 function tbmodbar() {
 
-var modbar = new TB.Module('Toolbox UI (modbar)');
-modbar.shortname = 'Modbar';
+var self = new TB.Module('Toolbox UI (modbar)');
+self.shortname = 'Modbar';
 
-modbar.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
 // How about you don't disable modbar?  No other module should ever do this.
-modbar.settings['enabled']['hidden'] = true; // Don't disable it, either!
+self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
-modbar.register_setting('compactHide', {
+self.register_setting('compactHide', {
     'type': 'boolean',
     'default': false,
     'hidden': true,
     'title': 'Use compact mode for mod bar'
 });
-modbar.register_setting('unmoderatedOn', {
+self.register_setting('unmoderatedOn', {
     'type': 'boolean',
     'default': true,
     'hidden': true,
     'title': 'Show icon for unmoderated'
 });
-modbar.register_setting('enableTopLink', {
+self.register_setting('enableTopLink', {
     'type': 'boolean',
     'default': false,
     'hidden': true,
@@ -28,28 +28,28 @@ modbar.register_setting('enableTopLink', {
 });
 
 // private settings.    // there is no JSON setting type.
-modbar.register_setting('shortcuts', {
+self.register_setting('shortcuts', {
     'type': 'JSON',
     'default': {},
     'hidden': true
 });
-modbar.register_setting('modbarHidden', {
+self.register_setting('modbarHidden', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
-modbar.register_setting('consoleShowing', {
+self.register_setting('consoleShowing', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
-modbar.register_setting('lockScroll', {
+self.register_setting('lockScroll', {
     'type': 'boolean',
     'default': false,
     'hidden': true
 });
 
-modbar.init = function modbarInit() {
+self.init = function modbarInit() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
     var $body = $('body'),
@@ -60,13 +60,13 @@ modbar.init = function modbarInit() {
     //
     // preload some generic variables
     //
-    var shortcuts = modbar.setting('shortcuts'),//TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
-        modbarHidden = modbar.setting('modbarHidden'),
-        compactHide = modbar.setting('compactHide'),
-        unmoderatedOn = modbar.setting('unmoderatedOn'),
-        consoleShowing = modbar.setting('consoleShowing'),
-        lockscroll = modbar.setting('lockScroll'),
-        enableTopLink = modbar.setting('enableTopLink'),
+    var shortcuts = self.setting('shortcuts'),//TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
+        modbarHidden = self.setting('modbarHidden'),
+        compactHide = self.setting('compactHide'),
+        unmoderatedOn = self.setting('unmoderatedOn'),
+        consoleShowing = self.setting('consoleShowing'),
+        lockscroll = self.setting('lockScroll'),
+        enableTopLink = self.setting('enableTopLink'),
 
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
@@ -312,7 +312,7 @@ if (unmoderatedOn) {
             $(modbarhid).hide();
             if (consoleShowing && debugMode) $body.find('.tb-debug-window').show();
         }
-        modbar.setting('modbarHidden', hidden);
+        self.setting('modbarHidden', hidden);
     }
 
     toggleMenuBar(modbarHidden);
@@ -350,13 +350,13 @@ if (unmoderatedOn) {
         }
 
         consoleShowing = !consoleShowing;
-        modbar.setting('consoleShowing', consoleShowing);
+        self.setting('consoleShowing', consoleShowing);
     });
 
     // Set console scroll
     $body.on('click', '#tb-console-lockscroll', function () {
         lockscroll = !lockscroll;
-        modbar.setting('lockScroll', lockscroll);
+        self.setting('lockScroll', lockscroll);
     });
 
     /*
@@ -375,7 +375,7 @@ if (unmoderatedOn) {
 // Run console input
     $('.tb-debug-input').keyup(function (e) {
         if (e.keyCode == 13) {
-            modbar.log(eval($(this).val()));
+            self.log(eval($(this).val()));
             $(this).val(''); // clear line
         }
     });
@@ -592,9 +592,9 @@ See the License for the specific language governing permissions and limitations 
     $body.on('click', '.tb-save', function () {
 
         // TODO: Check if the settings below work as intended.
-        modbar.setting('compactHide', $("#compactHide").prop('checked'));
-        modbar.setting('enableTopLink', $("#enableTopLink").prop('checked'));
-        modbar.setting('unmoderatedOn', $("#unmoderatedOn").prop('checked'));
+        self.setting('compactHide', $("#compactHide").prop('checked'));
+        self.setting('enableTopLink', $("#enableTopLink").prop('checked'));
+        self.setting('unmoderatedOn', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
@@ -606,7 +606,7 @@ See the License for the specific language governing permissions and limitations 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');
         if ($shortcuts.length === 0) {
-            modbar.setting('shortcuts', {}); // no JSON setting type.
+            self.setting('shortcuts', {}); // no JSON setting type.
         } else {
             shortcuts = {};
 
@@ -620,7 +620,7 @@ See the License for the specific language governing permissions and limitations 
                 }
             });
 
-            modbar.setting('shortcuts', shortcuts);
+            self.setting('shortcuts', shortcuts);
         }
 
         // save cache settings.
@@ -670,7 +670,7 @@ See the License for the specific language governing permissions and limitations 
         $body.css('overflow', 'auto');
     });
 };
-TB.register_module(modbar);
+TB.register_module(self);
 }
 
 (function() {

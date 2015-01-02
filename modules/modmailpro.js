@@ -1,94 +1,94 @@
 function modmailpro() {
 //Setup
-var modmail = new TB.Module('Mod Mail Pro');
-modmail.shortname = 'ModMail';
+var self = new TB.Module('Mod Mail Pro');
+self.shortname = 'ModMail';
 
 ////Default settings
-modmail.settings['enabled']['default'] = true;
-modmail.config['betamode'] = false;
+self.settings['enabled']['default'] = true;
+self.config['betamode'] = false;
 
-modmail.register_setting('inboxStyle', {
+self.register_setting('inboxStyle', {
     'type': 'selector',
     'values': ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered'],
     'default': 'priority',
     'title': 'Default inbox view'
 });
 
-modmail.register_setting('filteredSubs', {
+self.register_setting('filteredSubs', {
     'type': 'sublist',
     'default': [],
     'title': 'Subreddits to filter from priority view.'
 });
 
-modmail.register_setting('defaultCollapse', {
+self.register_setting('defaultCollapse', {
     'type': 'boolean',
     'default': false,
     'title': 'Collapse all mod mail threads by default.'
 });
 
-modmail.register_setting('noRedModmail', {
+self.register_setting('noRedModmail', {
     'type': 'boolean',
     'default': true,
     'title': 'Show removed threads with red titles.'
 });
 
-modmail.register_setting('highlightNew', {
+self.register_setting('highlightNew', {
     'type': 'boolean',
     'default': true,
     'title': 'Highlight new threads and replies.'
 });
 
-modmail.register_setting('expandReplies', {
+self.register_setting('expandReplies', {
     'type': 'boolean',
     'default': false,
     'title': 'Expand all replies when expanding threads.'
 });
 
-modmail.register_setting('hideInviteSpam', {
+self.register_setting('hideInviteSpam', {
     'type': 'boolean',
     'default': false,
     'title': 'Filter mod invited and added threads.'
 });
 
-modmail.register_setting('autoLoad', {
+self.register_setting('autoLoad', {
     'type': 'boolean',
     'default': false,
     'hidden': !TB.storage.getSetting('Notifier', 'enabled', true),
     'title': 'Automatically load new mod mail when received.'
 });
 
-modmail.register_setting('autoThread', {
+self.register_setting('autoThread', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
-modmail.register_setting('autoThreadOnLoad', {
+self.register_setting('autoThreadOnLoad', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically thread replies on page load. (Note: slows page load time)'
 });
 
-modmail.register_setting('fadeRecipient', {
+self.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': true,
     'title': 'Fade the recipient of a modmail so it is much more clear who sent it.'
 });
 
-modmail.register_setting('subredditColor', {
+self.register_setting('subredditColor', {
     'type': 'boolean',
     'default': false,
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
-modmail.register_setting('subredditColorSalt', {
+self.register_setting('subredditColorSalt', {
     'type': 'text',
     'default': "PJSalt",
     'title': 'Text to randomly change the subreddit color',
-    'hidden': !modmail.setting('subredditColor')
+    'hidden': !self.setting('subredditColor')
 });
 
-modmail.register_setting('customLimit', {
+self.register_setting('customLimit', {
     'type': 'number',
     'default': 0, // 0 = ueser's default.
     'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
@@ -96,18 +96,18 @@ modmail.register_setting('customLimit', {
 
 
 /// Private setting storage
-modmail.register_setting('lastVisited', {
+self.register_setting('lastVisited', {
     'type': 'number',
     'default': new Date().getTime(),
     'hidden': true
 });
-modmail.register_setting('replied', {
+self.register_setting('replied', {
     'type': 'array',
     'default': [],
     'hidden': true
 });
 
-modmail.init = function () {
+self.init = function () {
     if (!TBUtils.isModmail) return;
 
     this.modmailpro();
@@ -115,7 +115,7 @@ modmail.init = function () {
     this.mailDropDorpDowns();
 };
 
-modmail.modmailpro = function () {
+self.modmailpro = function () {
     var start = performance.now(),
                 userStart = start;
 
@@ -125,24 +125,24 @@ modmail.modmailpro = function () {
 
     var INVITE = "moderator invited",
         ADDED = "moderator added",
-        inbox = modmail.setting('inboxStyle'),
+        inbox = self.setting('inboxStyle'),
         now = new Date().getTime(),
-        lastVisited = modmail.setting('lastVisited'),
+        lastVisited = self.setting('lastVisited'),
         newCount = 0,
-        collapsed = modmail.setting('defaultCollapse'),
-        expandReplies = modmail.setting('expandReplies'),
-        noRedModmail = modmail.setting('noRedModmail'),
-        hideInviteSpam = modmail.setting('hideInviteSpam'),
-        highlightNew = modmail.setting('highlightNew'),
-        fadeRecipient = modmail.setting('fadeRecipient'),
-        subredditColor = modmail.setting('subredditColor'),
-        subredditColorSalt = modmail.setting('subredditColorSalt'),
+        collapsed = self.setting('defaultCollapse'),
+        expandReplies = self.setting('expandReplies'),
+        noRedModmail = self.setting('noRedModmail'),
+        hideInviteSpam = self.setting('hideInviteSpam'),
+        highlightNew = self.setting('highlightNew'),
+        fadeRecipient = self.setting('fadeRecipient'),
+        subredditColor = self.setting('subredditColor'),
+        subredditColorSalt = self.setting('subredditColorSalt'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
-        threadAlways = modmail.setting('autoThreadOnLoad'),
-        threadOnExpand = threadAlways || modmail.setting('autoThread'),
+        threadAlways = self.setting('autoThreadOnLoad'),
+        threadOnExpand = threadAlways || self.setting('autoThread'),
         sentFromMMP = false,
         lmcSupport = false;
 
@@ -196,7 +196,7 @@ modmail.modmailpro = function () {
     // Processing functions
     
     function initialize() {
-        modmail.log('MMP init');
+        self.log('MMP init');
         TB.ui.longLoadNonPersistent(true);
 
         var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
@@ -207,7 +207,7 @@ modmail.modmailpro = function () {
             $body.find('.expand-btn').hide();
         }
 
-        modmail.log('Unprocessed Threads' + unprocessedThreads.length);
+        self.log('Unprocessed Threads' + unprocessedThreads.length);
 
         start = perfCounter(start, "pre-init time");
 
@@ -216,8 +216,8 @@ modmail.modmailpro = function () {
 
         // Add filter link to each title, if it doesn't already have one.
         TBUtils.forEachChunked(slowThread, 1, 100, function (thread, count, array) {
-            modmail.log('running thread batch: ' + count + ' of ' + array.length);
-            modmail.log('Processing: ' + TB.utils.getThingInfo(thread).user);
+            self.log('running thread batch: ' + count + ' of ' + array.length);
+            self.log('Processing: ' + TB.utils.getThingInfo(thread).user);
             processThread(thread);
 
         }, function slowComplete() {
@@ -225,16 +225,16 @@ modmail.modmailpro = function () {
 
             // Add filter link to each title, if it doesn't already have one.
             TBUtils.forEachChunked($('.message-parent:not(.mmp-processed)'), 1, 70, function (thread, count, array) {
-                modmail.log('running thread batch: ' + count + ' of ' + array.length);
-                modmail.log('Processing: ' + TB.utils.getThingInfo(thread).user);
+                self.log('running thread batch: ' + count + ' of ' + array.length);
+                self.log('Processing: ' + TB.utils.getThingInfo(thread).user);
                 processThread(thread);
 
             }, function fastComplete() {
 
-                modmail.log('batch complete');
+                self.log('batch complete');
                 start = perfCounter(start, "proc threads time");
 
-                modmail.setting('lastVisited', now);
+                self.setting('lastVisited', now);
 
                 // If set expand link.
                 if (collapsed) {
@@ -291,12 +291,12 @@ modmail.modmailpro = function () {
         }
 
         var threadStart = performance.now();
-        modmail.startProfile("thread");
+        self.startProfile("thread");
 
         // Set-up MMP info area.
         $thread.addClass('mmp-processed');
         
-        modmail.startProfile("info");
+        self.startProfile("info");
         
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
@@ -321,14 +321,14 @@ modmail.modmailpro = function () {
             $collapseLink = $thread.find(".collapse-link");
         }
 
-        modmail.log("\tNum entries: " + $entries.length);
-        modmail.log("\tNum replies: "+replyCount);
+        self.log("\tNum entries: " + $entries.length);
+        self.log("\tNum replies: "+replyCount);
         if (collapsed) {
             $collapseLink.text('[+]');
             $threadTrigger.hide();
         }
 
-        modmail.endProfile("info");
+        self.endProfile("info");
 
         // Add MMP UI
         $subject.append($flatTrigger);
@@ -342,7 +342,7 @@ modmail.modmailpro = function () {
         }
 
         if (replyCount > 0) {
-            modmail.log("\tHas replies");
+            self.log("\tHas replies");
             if ($thread.hasClass('moremessages')) {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
@@ -368,7 +368,7 @@ modmail.modmailpro = function () {
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
-        modmail.startProfile("sr-color");
+        self.startProfile("sr-color");
         if (subredditColor) {
 
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
@@ -377,7 +377,7 @@ modmail.modmailpro = function () {
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
         }
-        modmail.endProfile("sr-color");
+        self.endProfile("sr-color");
 
         // Don't parse all entries if we don't need to.
         if (fadeRecipient) {
@@ -430,7 +430,7 @@ modmail.modmailpro = function () {
 
         // Deal with realtime threads.
         if (newThread) {
-            modmail.log('New thread!');
+            self.log('New thread!');
             $thread.removeClass('realtime-new');
             $infoArea.css('background-color', 'yellow');
             $subredditArea.css('background-color', 'yellow');
@@ -463,7 +463,7 @@ modmail.modmailpro = function () {
             setFilterLinks($thread);
         }
 
-        modmail.endProfile("thread");
+        self.endProfile("thread");
         perfCounter(threadStart, "thread proc time");
     }
 
@@ -483,13 +483,13 @@ modmail.modmailpro = function () {
             }
 
             var event = new CustomEvent("TBNewThings");
-            modmail.log('node check');
+            self.log('node check');
 
             if ($sender.hasClass('realtime-new')) { //new thread
                 var attrib = $sender.attr('data-fullname');
                 if (attrib) {
                     setTimeout(function () {
-                        modmail.log('realtime go');
+                        self.log('realtime go');
                         var thread = $(".message-parent[data-fullname='" + attrib + "']");
                         if (thread.length > 1) {
                             $sender.remove();
@@ -502,7 +502,7 @@ modmail.modmailpro = function () {
                 }
             } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
                 setTimeout(function () {
-                    modmail.log('LMC go');
+                    self.log('LMC go');
                     $sender.addClass('lmc-thread');
                     processThread($sender);
                     sentFromMMP = true;
@@ -568,14 +568,14 @@ modmail.modmailpro = function () {
 
         // Profiling results
 
-        modmail.log("Profiling results: modmail");
-        modmail.log("--------------------------");
-        modmail.getProfiles().forEach(function (profile, key) {
-            modmail.log(key + ":");
-            modmail.log("\tTime  = "+profile.time);
-            modmail.log("\tCalls = "+profile.calls);
+        self.log("Profiling results: modmail");
+        self.log("--------------------------");
+        self.getProfiles().forEach(function (profile, key) {
+            self.log(key + ":");
+            self.log("\tTime  = "+profile.time);
+            self.log("\tCalls = "+profile.calls);
         });
-        modmail.log("--------------------------");
+        self.log("--------------------------");
     }
 
     // TODO: add to tbutils or tbmodule... not sure which just yet.
@@ -585,7 +585,7 @@ modmail.modmailpro = function () {
         var nowTime = performance.now(),
             secs = (nowTime - startTime) / 1000;
 
-        modmail.log(note + ' in: ' + secs + ' seconds');
+        self.log(note + ' in: ' + secs + ' seconds');
 
         return nowTime;
     }
@@ -725,11 +725,11 @@ modmail.modmailpro = function () {
     }
 
     function getFilteredSubs() {
-        return modmail.setting('filteredSubs');
+        return self.setting('filteredSubs');
     }
 
     function getRepliedThreads() {
-        return modmail.setting('replied');
+        return self.setting('replied');
     }
 
     function showThreads(items, byID) {
@@ -767,7 +767,7 @@ modmail.modmailpro = function () {
     }
 
     function collapseall(threads) {
-        modmail.log('collapsing all');
+        self.log('collapsing all');
         collapsed = true;
         var $link = $('.collapse-all-link');
 
@@ -826,7 +826,7 @@ modmail.modmailpro = function () {
             replied.push(id);
         }
 
-        modmail.setting('replied', replied);
+        self.setting('replied', replied);
 
         setReplied();
     });
@@ -905,7 +905,7 @@ modmail.modmailpro = function () {
         }
 
         // Save new filter list.
-        modmail.setting('filteredSubs', filtersubs);
+        self.setting('filteredSubs', filtersubs);
 
         // Refilter if in filter mode.
         setView();
@@ -920,7 +920,7 @@ modmail.modmailpro = function () {
 };
 
 
-modmail.realtimemail = function () {
+self.realtimemail = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
 
@@ -948,7 +948,7 @@ modmail.realtimemail = function () {
     menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
     // Run RTMM.
-    if (modmail.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
+    if (self.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
         setInterval(function () {
             var count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
             if (count > 0) {
@@ -963,7 +963,7 @@ modmail.realtimemail = function () {
         TB.storage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
         TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
-        modmail.log('real time a gogo: ' + limit);
+        self.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {
             if (!resp) return;
             var $things = $(resp).find('.message-parent').addClass('realtime-new').hide();
@@ -976,7 +976,7 @@ modmail.realtimemail = function () {
 };
 
 
-modmail.mailDropDorpDowns = function () {
+self.mailDropDorpDowns = function () {
     var COMPOSE = 'compose-message',
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',
@@ -1021,7 +1021,7 @@ modmail.mailDropDorpDowns = function () {
     }
 };
 
-TB.register_module(modmail);
+TB.register_module(self);
 } // modmailpro() wrapper
 
 (function () {

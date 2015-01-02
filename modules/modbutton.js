@@ -1,31 +1,31 @@
 function modbutton() {
 // @copyright 2014 Toolbox Devs, dakta
 
-var modbutton = new TB.Module('Mod Button');
-modbutton.shortname = 'ModButton';
+var self = new TB.Module('Mod Button');
+self.shortname = 'ModButton';
 
-modbutton.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 //modbutton.config['needs_mod_subs'] = true;
 
-modbutton.register_setting('savedSubs', {
+self.register_setting('savedSubs', {
     'type': 'sublist',
     'default': [],
     'title': 'Saved subs (for quick access)'
 });
 
-modbutton.register_setting('rememberLastAction', {
+self.register_setting('rememberLastAction', {
     'type': 'boolean',
     'default': false,
     'title': 'Remember last action'
 });
-modbutton.register_setting('globalButton', {
+self.register_setting('globalButton', {
     'type': 'boolean',
     'default': false,
     'title': 'Enable Global Action button'
 });
 
 // private storage
-modbutton.register_setting('lastAction', {
+self.register_setting('lastAction', {
     'type': 'text',
     'default': 'ban',
     'hidden': true
@@ -43,23 +43,23 @@ modbutton.register_setting('lastAction', {
 var $body = $('body');
 
 // Add mod button to all users
-modbutton.processThing = function processThing(thing) {
+self.processThing = function processThing(thing) {
     if (!$(thing).hasClass('mod-button')) {
         // Add the class so we don't add buttons twice.
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        $(thing).find('.buttons > li:last').before('<li><a href="javascript:;" class="global-mod-button">' + modbutton.buttonName + '</a></li>');
+        $(thing).find('.buttons > li:last').before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
     }
 };
 
 // need this for RES NER support
-modbutton.run = function run() {
+self.run = function run() {
     // do it differently on the about mod page.
     if (TB.utils.isEditUserPage) {
 
         $('span.user').each(function () {
-            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + modbutton.buttonName + '</a></span>');
+            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></span>');
         });
 
         return;
@@ -71,7 +71,7 @@ modbutton.run = function run() {
     }
 
     var $things = $('div.thing .entry:not(.mod-button)');
-    TB.utils.forEachChunked($things, 15, 650, modbutton.processThing);
+    TB.utils.forEachChunked($things, 15, 650, self.processThing);
 
     // WIP selector for adding modbutton for #207
     // lifted from RES, with modifications. thanks /u/honestbleeps
@@ -81,7 +81,7 @@ modbutton.run = function run() {
 /**
  *  updates the current savedsubs' listings in the mod button
  */
-modbutton.updateSavedSubs = function updateSavedSubs() {
+self.updateSavedSubs = function updateSavedSubs() {
     //
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
     //
@@ -100,9 +100,9 @@ modbutton.updateSavedSubs = function updateSavedSubs() {
 
         // repopulate the saved sub dropdowns with all the subs we mod
         $popup.find('.edit-subreddits .savedSubs').remove();
-        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, modbutton.savedSubs).addClass('savedSubs'));
+        $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, self.savedSubs).addClass('savedSubs'));
 
-        $.each(modbutton.savedSubs, function (i, subreddit) {
+        $.each(self.savedSubs, function (i, subreddit) {
             // only subs we moderate
             // and not the current sub
             if ($.inArray(subreddit, TB.utils.mySubs) != -1
@@ -115,7 +115,7 @@ modbutton.updateSavedSubs = function updateSavedSubs() {
     });
 
     $.each(TB.utils.mySubs, function (i, subreddit) {
-        $popups.find('select.' + modbutton.OTHER)
+        $popups.find('select.' + self.OTHER)
             .append($('<option>', {
                 value: subreddit
             })
@@ -123,26 +123,26 @@ modbutton.updateSavedSubs = function updateSavedSubs() {
     });
 };
 
-modbutton.init = function init() {
-    modbutton.buttonName = 'mod';
-    modbutton.saveButton = 'Save';
-    modbutton.OTHER = 'other-sub';
+self.init = function init() {
+    self.buttonName = 'mod';
+    self.saveButton = 'Save';
+    self.OTHER = 'other-sub';
 
-    modbutton.savedSubs = modbutton.setting('savedSubs');
+    self.savedSubs = self.setting('savedSubs');
 
-    var rememberLastAction = modbutton.setting('rememberLastAction'),
-        showglobal = modbutton.setting('globalButton');
+    var rememberLastAction = self.setting('rememberLastAction'),
+        showglobal = self.setting('globalButton');
 
-    modbutton.savedSubs = TB.utils.saneSort(modbutton.savedSubs);
+    self.savedSubs = TB.utils.saneSort(self.savedSubs);
 
     TB.utils.getModSubs(function(){
         // it's Go Time™!
-        modbutton.run();
+        self.run();
     });
 
     // NER support.
     window.addEventListener('TBNewThings', function () {
-        modbutton.run();
+        self.run();
     });
 
     // Mod button clicked
@@ -150,8 +150,8 @@ modbutton.init = function init() {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
 
-        var display = (modbutton.savedSubs.length < 1) ? 'none' : '',
-            lastaction = modbutton.setting('lastAction'),
+        var display = (self.savedSubs.length < 1) ? 'none' : '',
+            lastaction = self.setting('lastAction'),
             info = TB.utils.getThingInfo(this, true),
             subreddit = info.subreddit,
             user = info.user,
@@ -186,8 +186,8 @@ modbutton.init = function init() {
                     <div class="saved-subs">\
                     </div>\
                     <div class="other-subs">\
-                        <input type="checkbox" class="action-sub ' + modbutton.OTHER + '-checkbox name="action-sub" value="' + modbutton.OTHER + '">\
-                        <select class="' + modbutton.OTHER + '" for="action-' + modbutton.OTHER + '"><option value="' + modbutton.OTHER + '">(select subreddit)</option></select>\
+                        <input type="checkbox" class="action-sub ' + self.OTHER + '-checkbox name="action-sub" value="' + self.OTHER + '">\
+                        <select class="' + self.OTHER + '" for="action-' + self.OTHER + '"><option value="' + self.OTHER + '">(select subreddit)</option></select>\
                     </div>\
                     <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
                     <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
@@ -203,7 +203,7 @@ modbutton.init = function init() {
                         <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                         <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                     </select>\
-                    <button class="save">' + modbutton.saveButton + '</button>\
+                    <button class="save">' + self.saveButton + '</button>\
                     <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
@@ -326,11 +326,11 @@ modbutton.init = function init() {
         }
 
         // render the saved subs lists
-        modbutton.updateSavedSubs();
+        self.updateSavedSubs();
 
         // custom sub changed.
-        $popup.find('select.' + modbutton.OTHER).change(function () {
-            $popup.find('.' + modbutton.OTHER + '-checkbox').prop('checked', ($(this).val() !== modbutton.OTHER));
+        $popup.find('select.' + self.OTHER).change(function () {
+            $popup.find('.' + self.OTHER + '-checkbox').prop('checked', ($(this).val() !== self.OTHER));
         });
 
         // show/hide ban reason text feild.
@@ -353,7 +353,7 @@ modbutton.init = function init() {
         });
 
         // reset button name.
-        $(benbutton).text(modbutton.buttonName);
+        $(benbutton).text(self.buttonName);
 
         return false;
     });
@@ -379,12 +379,12 @@ modbutton.init = function init() {
             banDuration = '';
         }
         else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
-            modbutton.log('Including time in ban message');
+            self.log('Including time in ban message');
             banMessage = banMessage + '  \n \n\
 *You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
         }
 
-        modbutton.setting('lastAction', actionName);
+        self.setting('lastAction', actionName);
 
         // Check dem values.
         if (!api)
@@ -394,12 +394,12 @@ modbutton.init = function init() {
 
             // Get dem ban subs.
             $popup.find('.action-sub:checkbox:checked').each(function () {
-                if ($(this).val() !== modbutton.OTHER) {
+                if ($(this).val() !== self.OTHER) {
                     subreddits.push($(this).val());
                 }
                 else {
-                    var subname = $('.' + modbutton.OTHER + ' option:selected').val();
-                    if (subname !== modbutton.OTHER) {
+                    var subname = $('.' + self.OTHER + ' option:selected').val();
+                    if (subname !== self.OTHER) {
                         subreddits.push(subname);
 
                     }
@@ -438,16 +438,16 @@ modbutton.init = function init() {
             if (failedSubs.length > 0) {
                 var retry = confirm(failedSubs.length + ' failed.  Would you like to retry them?');
                 if (retry) {
-                    modbutton.log('retrying');
+                    self.log('retrying');
                     massAction(failedSubs);
                 }
                 else {
-                    modbutton.log('not retrying');
+                    self.log('not retrying');
                     $('.mod-popup').remove();
                 }
             }
             else {
-                modbutton.log('complete');
+                self.log('complete');
                 $('.mod-popup').remove();
             }
         }
@@ -457,7 +457,7 @@ modbutton.init = function init() {
             $status.text('API ratelimit sleeping for: ' + seconds + ' seconds');
             TB.utils.pageOverlay('API ratelimit sleeping for: ' + seconds + ' seconds');
             setTimeout(function () {
-                modbutton.log('resuming');
+                self.log('resuming');
                 $timer.play();
             }, delay);
         }
@@ -474,18 +474,18 @@ modbutton.init = function init() {
 
                 TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + subreddit, undefined);
 
-                modbutton.log('banning from: ' + subreddit);
+                self.log('banning from: ' + subreddit);
                 if(settingState) {
                     TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();
-                                modbutton.log('ratelimited');
+                                self.log('ratelimited');
                                 rateLimit(response.json.ratelimit);
                             }
                         }
                         else {
-                            modbutton.log('missed one');
+                            self.log('missed one');
                             failedSubs.push(subreddit);
                         }
                     });
@@ -495,12 +495,12 @@ modbutton.init = function init() {
                         if (success) {
                             if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
                                 $timer.pause();
-                                modbutton.log('ratelimited');
+                                self.log('ratelimited');
                                 rateLimit(response.json.ratelimit);
                             }
                         }
                         else {
-                            modbutton.log('missed one');
+                            self.log('missed one');
                             failedSubs.push(subreddit);
                         }
                     });
@@ -509,7 +509,7 @@ modbutton.init = function init() {
                 actionCount++;
 
                 if (actionCount === subs.length) {
-                    modbutton.log('completed ban round');
+                    self.log('completed ban round');
                     completeCheck(failedSubs);
                 }
 
@@ -526,7 +526,7 @@ modbutton.init = function init() {
         var $popup = $(this).parents('.mod-popup'),
             thing_id = $popup.find('.thing_id').text();
 
-        modbutton.log(thing_id);
+        self.log(thing_id);
     });
 
     // send a message to the user.
@@ -634,14 +634,14 @@ modbutton.init = function init() {
                 $status.text('saved user flair');
             }
             else {
-                modbutton.log(err.responseText);
+                self.log(err.responseText);
                 $status.text(err.responseText);
             }
         });
     });
 };
 
-TB.register_module(modbutton);
+TB.register_module(self);
 }
 
 (function () {

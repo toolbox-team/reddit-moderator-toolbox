@@ -1,11 +1,11 @@
 function banlist() {
-var banlist = new TB.Module('Ban List');
-banlist.shortname = 'BanList';
+var self = new TB.Module('Ban List');
+self.shortname = 'BanList';
 
-banlist.settings['enabled']['default'] = true;
-banlist.config['betamode'] = false; // this module is not in beta
+self.settings['enabled']['default'] = true;
+self.config['betamode'] = false; // this module is not in beta
 
-banlist.register_setting('automatic', {
+self.register_setting('automatic', {
     'type': 'boolean',
     'default': false,
     'title': 'Automatically pre-load the whole ban list for live filtering.'
@@ -14,11 +14,11 @@ banlist.register_setting('automatic', {
 // extracts a url parameter value from a URL string
 // from http://stackoverflow.com/a/15780907/362042
 // TODO: move to tbutils
-banlist.getURLParameter = function getURLParameter(url, name) {
+self.getURLParameter = function getURLParameter(url, name) {
     return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url) || [, null])[1];
 };
 
-banlist.init = function init() {
+self.init = function init() {
     if (!(location.pathname.match(/\/about\/(?:banned)\/?/)
         || location.pathname.match(/\/about\/(?:contributors)\/?/))
     ) {
@@ -37,7 +37,7 @@ banlist.init = function init() {
         after = typeof after !== 'undefined' ? after : '';
         pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
 
-        banlist.log("_get_next_ban_page(" + after + ")");
+        self.log("_get_next_ban_page(" + after + ")");
 
         var parameters = {'limit': 1000, 'after': after};
 
@@ -51,12 +51,12 @@ banlist.init = function init() {
             dataType: 'html',
             async: true,
             success: function (data) {
-                banlist.log("  success!");
-                banlist.log("  " + pages_back + " pages back");
+                self.log("  success!");
+                self.log("  " + pages_back + " pages back");
                 var response_page = $(data);
                 // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                 // var $new_banlist = $('.usertable', response_page);
-                banlist.log($('.usertable table tbody tr', response_page).length);
+                self.log($('.usertable table tbody tr', response_page).length);
                 if ($('.usertable table tbody tr', response_page).length > 0) {
                     $('.usertable table tbody tr', response_page).each(function () {
                         // workaround for known bug in listings where "next" button is available on last page
@@ -81,9 +81,9 @@ banlist.init = function init() {
                 }
 
                 after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
-                banlist.log(after_url);
-                after = banlist.getURLParameter(after_url, 'after');
-                banlist.log(after);
+                self.log(after_url);
+                after = self.getURLParameter(after_url, 'after');
+                self.log(after);
                 if (after) {
                     // hit the API hard the first 10, to make it more responsive on small subs
                     if (pages_back < 10) {
@@ -94,15 +94,15 @@ banlist.init = function init() {
                         setTimeout(_get_next_ban_page, sleep, after, pages_back);
                     }
                 } else {
-                    banlist.log("  last page");
+                    self.log("  last page");
                     banlist_updating = false;
                     banlist_last_update = Date.now();
                     TB.ui.longLoadSpinner(false);
                 }
             },
             error: function (data) {
-                banlist.log("  failed");
-                banlist.log(data.status);
+                self.log("  failed");
+                self.log(data.status);
                 if (data.status == 504) {
                     // "504, post some more"
                     this.success(data);
@@ -170,7 +170,7 @@ banlist.init = function init() {
                 banlist_updating = true;
                 TB.ui.longLoadSpinner(true);
 
-                banlist.log("Updating now");
+                self.log("Updating now");
                 // clean up
                 $('.usertable table tbody').empty();
                 pages_back = 0;
@@ -201,7 +201,7 @@ banlist.init = function init() {
         $userInput.keyup();
     }
 
-    if (banlist.setting('automatic')) {
+    if (self.setting('automatic')) {
         liveFilter();
     } else {
         $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
@@ -213,7 +213,7 @@ banlist.init = function init() {
     }
 };
 
-TB.register_module(banlist);
+TB.register_module(self);
 }
 
 (function() {

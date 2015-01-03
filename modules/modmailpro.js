@@ -220,15 +220,17 @@ self.modmailpro = function () {
         
         TB.ui.longLoadNonPersistent(true);
         
-        var unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-            slowThread = unprocessedThreads.slice(0, 6),
-            fastThreads = unprocessedThreads.slice(6);
+        // Enable as much CSS can be done at this point
+        enablePureCSSFeatures();
         
+        // Collapse everything if enabled
         if (collapsed) {
             $body.find('.entry').css('display', 'none');
             $body.find('.expand-btn').css('display', 'none');
         }
 
+        // Process threads
+        var unprocessedThreads = $('.message-parent:not(.mmp-processed)');
         self.log('Unprocessed Threads' + unprocessedThreads.length);
 
         self.startProfile('add-ui-unprocessed');
@@ -237,76 +239,76 @@ self.modmailpro = function () {
         self.endProfile('add-ui-unprocessed');
 
         // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(slowThread, 1, threadProcessRate,
+        TBUtils.forEachChunked(unprocessedThreads, 2, threadProcessRate,
             function (thread, count, array) {
                 self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
                 self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
                 processThread(thread);
             },
-            function slowComplete() {
-                self.endProfile('slow-process');
+            function complete() {
+                self.endProfile('batch-process');
+                self.log('Batch complete');
+
+                self.setting('lastVisited', now);
                 
-                if (highlightNew)
+                if (highlightNew) {
                     highlightNewThreads(unprocessedThreads);
+                }
     
-                // Add filter link to each title, if it doesn't already have one.
-                TBUtils.forEachChunked(fastThreads, 2, threadProcessRate/2,
-                    function (thread, count, array) {
-                        self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
-                        self.log('User = ' + TB.utils.getThingInfo(thread).user);
-                        processThread(thread);
-                    },
-                    function fastComplete() {
-                        self.endProfile('fast-process');
-                        self.log('Batch complete');
-                        
-                        self.setting('lastVisited', now);
-                        
-                        // If set expand link.
-                        if (collapsed) {
-                            var $link = $('.collapse-all-link');
-                            $link.css(selectedCSS);
-                            $link.text('expand all');
-                        }
-                        
-                        // If we're on the unread page, don't filter anything.
-                        if (unreadPage) {
-                            var entries = $('.entry'),
-                                newCount = entries.length;
-                            inbox = ALL;
-                            $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                            $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
-                            $(entries).click();
-                        }
-                        
-                        // Set views.
-                        setFilterLinks(unprocessedThreads);
-                        setReplied(unprocessedThreads);
-                        setView();
-                        
-                        //finally, add LMC support
-                        addLmcSupport();
-                        
-                        TB.ui.longLoadNonPersistent(false);
-                        
-                        // Because realtime or LMC may have pulled more threads during init.
-                        if ($('.message-parent:not(.mmp-processed)').length > 0) {
-                            initialize();
-                        }
-                        // Mod mail done loading
-                        else {
-                            finalize();
-                        }
-                    },
-                    function fastStart() {
-                        self.startProfile('fast-process');
-                    });
+                // If set expand link.
+                if (collapsed) {
+                    var $link = $('.collapse-all-link');
+                    $link.css(selectedCSS);
+                    $link.text('expand all');
+                }
+                
+                // If we're on the unread page, don't filter anything.
+                if (unreadPage) {
+                    var entries = $('.entry'),
+                        newCount = entries.length;
+                    inbox = ALL;
+                    $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
+                    $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
+                    $(entries).click();
+                }
+                
+                // Set views.
+                setFilterLinks(unprocessedThreads);
+                setReplied(unprocessedThreads);
+                setView();
+                
+                //finally, add LMC support
+                addLmcSupport();
+                
+                TB.ui.longLoadNonPersistent(false);
+                
+                // Because realtime or LMC may have pulled more threads during init.
+                if ($('.message-parent:not(.mmp-processed)').length > 0) {
+                    initialize();
+                }
+                // Mod mail done loading
+                else {
+                    finalize();
+                }
             },
-            function slowStart() {
-                self.startProfile('slow-process');
+            function start() {
+                self.startProfile('batch-process');
             });
     }
 
+    function enablePureCSSFeatures() {
+        if (noRedModmail) {
+            $body.addClass('tb-no-red-modmail');
+        }
+    }
+    
+    function enableCSSFeatures() {
+        $body.addClass('tb-modmail-pro');
+        if (fadeRecipient) {
+            $body.addClass('tb-fade-recipient');
+        }
+    }
+    
     function processThread(thread) {
         var $thread = $(thread);
         if ($thread.hasClass('mmp-processed')) {
@@ -540,16 +542,15 @@ self.modmailpro = function () {
             initialize();
         });
     }
-
+    
     function highlightNewThreads($threads) {
-        self.startProfile('highlightNewThreads');
+        self.startProfile('highlight-new-jquery');
         
         $threads.find('.entry:last').each(function (key, entry) {
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
             if (timestamp > lastVisited) {
-
                 var $newThread = $entry.closest('.message-parent');
 
                 $newThread.find('.info-area').addClass('new-highlight');
@@ -560,12 +561,15 @@ self.modmailpro = function () {
             }
         });
 
-        TB.utils.forEachChunked($('.new-messages').find('.entry'), 10, threadProcessRate, function (entry) {
+        self.endProfile('highlight-new-jquery');
+        
+        TBUtils.forEachChunked($('.new-messages').find('.entry'), 10, entryProcessRate, function (entry) {
+            self.startProfile('highlight-new-internal');
+            
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
             if (timestamp > lastVisited) {
-
                 $entry.find('.head').prepend($('<span>').addClass('new-label new-highlight').text('[NEW]'));
 
                 // Expand thread / highlight new
@@ -575,23 +579,20 @@ self.modmailpro = function () {
 
                 newCount++;
             }
-        }, function () {
+
+            self.endProfile('highlight-new-internal');
+        }, function complete() {
             $('.unread-count').html('<b>' + newCount + '</b> - new message' + (newCount == 1 ? '' : 's'));
 
-            self.endProfile('highlightNewThreads');
+            self.endProfile('highlight-new');
+        }, function start() {
+            self.startProfile('highlight-new');
         });
     }
-
+    
     function finalize() {
-        // Set some settings affecting all messages (and enable modmail pro CSS)
-        $body.addClass('tb-modmail-pro');
-        if (noRedModmail) {
-            $body.addClass('tb-no-red-modmail');
-        }
-        if (fadeRecipient) {
-            $body.addClass('tb-fade-recipient');
-        }
-
+        enableCSSFeatures();
+        
         // Tell the user how quick and awesome we are.
         var nowTime = performance.now(),
             secs = (nowTime - start) / 1000;

@@ -58,27 +58,27 @@
 
 /* No red mod mail! */
 
-.tb-modmail-pro.tb-no-red-modmail .message.spam,
-.tb-modmail-pro.tb-no-red-modmail .message.spam .entry {
-    background-color: transparent;
+.tb-no-red-modmail .message.spam,
+.tb-no-red-modmail .message.spam .entry {
+    background-color: transparent !important;
 }
 
-.tb-modmail-pro.tb-no-red-modmail .message.spam p.subject,
-.tb-modmail-pro.tb-no-red-modmail .message.spam>div.entry>.tagline>.head {
+.tb-no-red-modmail .message.spam p.subject,
+.tb-no-red-modmail .message.spam > div.entry > .tagline > .head {
     color: red !important;
 }
 
 /* Recipient fading */
 
-.tb-modmail-pro.tb-fade-recipient .message .entry .recipient {
+.tb-fade-recipient .message .entry .recipient {
     background-color: transparent !important;
     color: #888 !important;
 }
 
-.tb-modmail-pro.tb-fade-recipient .message .entry .recipient.moderator {
+.tb-fade-recipient .message .entry .recipient.moderator {
     color: #588858 !important;
 }
 
-.tb-modmail-pro.tb-fade-recipient .message .entry .recipient.admin {
+.tb-fade-recipient .message .entry .recipient.admin {
     color: #B20606 !important;
 }

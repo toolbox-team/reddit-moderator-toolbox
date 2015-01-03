@@ -499,7 +499,7 @@ if (unmoderatedOn) {
     <a href="/user/noeatnosleep">/u/noeatnosleep</a> and <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
     "<i>'  + randomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
-  <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
+  <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/gorillagnomes">/u/gorillagnomes</a><br><br>\
 <h3>Special thanks to:</h3>\
   <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
 <h3>Credits:</h3>\

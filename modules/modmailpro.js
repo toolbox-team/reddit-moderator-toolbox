@@ -250,7 +250,7 @@ self.modmailpro = function () {
                     highlightNewThreads(unprocessedThreads);
     
                 // Add filter link to each title, if it doesn't already have one.
-                TBUtils.forEachChunked(fastThreads, 1, threadProcessRate/2,
+                TBUtils.forEachChunked(fastThreads, 2, threadProcessRate/2,
                     function (thread, count, array) {
                         self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
                         self.log('User = ' + TB.utils.getThingInfo(thread).user);

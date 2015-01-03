@@ -137,7 +137,8 @@
 .mod-toolbox .removal-reason-title {
     margin-top: 12px;
     margin-left: 6px;
-    font-size: 16px;
+    font-size: 14px;
+    font-family: "Lucida Console", Monaco, monospace;
 }
 
 .reason-popup .reason-content {

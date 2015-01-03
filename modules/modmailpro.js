@@ -216,12 +216,13 @@ self.modmailpro = function () {
     $menuList.after($mmpMenu);
     self.endProfile('menu-gen');
 
-    self.startProfile('initialize');
+
     initialize();
     
     // Processing functions
     
     function initialize() {
+        self.startProfile('initialize');
         self.log('MMP init');
         
         TB.ui.longLoadNonPersistent(true);

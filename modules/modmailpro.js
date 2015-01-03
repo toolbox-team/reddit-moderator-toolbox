@@ -237,8 +237,8 @@ self.modmailpro = function () {
 
         // Process threads
         var $unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-            processSlowly = $unprocessedThreads.slice(0, 8),
-            processFastly = $unprocessedThreads.slice(8);
+            processSlowly = $unprocessedThreads.slice(0, 5),
+            processFastly = $unprocessedThreads.slice(5);
         self.log('Unprocessed Threads = ' + $unprocessedThreads.length);
         self.log('\tProcessing slow = ' + processSlowly.length);
         self.log('\tProcessing fast = ' + processFastly.length);
@@ -249,7 +249,7 @@ self.modmailpro = function () {
         self.endProfile('add-ui-unprocessed');
         
         // Start process
-        processThreads(processSlowly, 2, threadProcessRate, slowComplete, "slow");
+        processThreads(processSlowly, 1, threadProcessRate, slowComplete, "slow");
         //processThreads(unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, "full");
         
         function processThreads(threads, chunkSize, processRate, completeAction, profileKey) {
@@ -334,9 +334,6 @@ self.modmailpro = function () {
     
     function processThread(thread) {
         var $thread = $(thread);
-        if ($thread.hasClass('mmp-processed')) {
-            return;
-        }
         $thread.addClass('mmp-processed');
 
         var threadStart = performance.now();
@@ -350,7 +347,7 @@ self.modmailpro = function () {
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
-            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view").css('display', 'none');
+            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view");
 
         
         self.endProfile("thread-jquery");
@@ -504,6 +501,10 @@ self.modmailpro = function () {
             if (expandReplies) {
                 $thread.find('.expand-btn:first')[0].click();
             }
+
+            // LMC threads are never collapsed.
+            $flatTrigger[0].style.display = '';
+            $threadTrigger[0].style.display = '';
 
             setFilterLinks($thread);
         }

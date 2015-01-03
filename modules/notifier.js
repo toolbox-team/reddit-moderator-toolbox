@@ -193,7 +193,6 @@ self.init = function notifierMod_init() {
     }
 
     if(parseInt(modmailCustomLimit) > 0) {
-        console.log('hi');
         modmailunreadurl += '?limit=' + modmailCustomLimit;
     }
 
@@ -294,7 +293,6 @@ self.init = function notifierMod_init() {
                 $tb_modmail.attr('title', 'no new mail!');
                 // $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator');
                 if(parseInt(modmailCustomLimit) > 0) {
-                    console.log('hi');
                     $tb_modmail.attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
                 } else {
                     $tb_modmail.attr('href', '/message/moderator');

@@ -391,7 +391,7 @@ self.init = function () {
             // We stopped using encode()d notes in v4
             notes.users.forEach(function (user) {
                 user.notes.forEach(function (note) {
-                    note.note = decodeURIComponent(note.note);
+                    note.note = unescape(note.note);
                 });
             });
             return notes;

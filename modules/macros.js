@@ -206,7 +206,7 @@ self.init = function macrosInit() {
         if (!macroConfig) return;
 
         var $this = $(this),
-            comment = decodeURIComponent($this.val()),
+            comment = unescape($this.val()),
             topLevel = (e.target.className === 'tb-top-macro-select'),
             info;
             // disable the select box to prevent a mess with creating multiple popup boxes.

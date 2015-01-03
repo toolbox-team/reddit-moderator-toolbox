@@ -376,8 +376,7 @@
 
                         $feedbackWindow.css({
                             'margin-left': '-' + feedbackLeftMargin + 'px',
-                            'margin-top': '-' + feedbackTopMargin + 'px',
-                            'z-index': 1000001
+                            'margin-top': '-' + feedbackTopMargin + 'px'
                         });
                     break;
                     case TBui.DISPLAY_BOTTOM:
@@ -385,8 +384,7 @@
                             'left': '5px',
                             'bottom': '40px',
                             'top': 'auto',
-                            'position': 'fixed',
-                            'z-index': 1000001
+                            'position': 'fixed'
                         });
                     break;
                     case TBui.DISPLAY_CURSOR:
@@ -397,8 +395,7 @@
                             $feedbackWindow.css({
                                 left: posX - $feedbackWindow.width() + 155,
                                 top: posY - $feedbackWindow.height() - 15,
-                                'position': 'fixed',
-                                'z-index': 1000001
+                                'position': 'fixed'
                             });
                         });
                     break;

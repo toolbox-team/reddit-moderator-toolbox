@@ -94,13 +94,12 @@
 
 .reason-popup .reason-num {
     width: 15px;
-    
+    height: 15px;
     margin-left: 2px;
     margin-bottom: 6px;
-    
+    display: inline-block;
     text-align: center;
     font-size: 10px;
-    font-family: Arial, sans-serif;
     color: #D3D3D3;
 }
 
@@ -135,7 +134,7 @@
 }
 
 .mod-toolbox .removal-reason-title {
-    margin-top: 12px;
+    margin-top: 9px;
     margin-left: 6px;
     font-size: 14px;
     font-family: "Lucida Console", Monaco, monospace;
@@ -290,7 +289,7 @@
 }
 
 .mod-toolbox .removal-toggle {
-    width: 20px;
+    width: 40px;
 }
 
 .mod-toolbox .flair-text {
@@ -308,5 +307,6 @@
 }
 
 .mod-toolbox .reason-popup .reason-check {
-    margin: 4px 6px 6px 3px !important;
+    margin: 4px 0 0 3px !important;
+    display: inline;
 }

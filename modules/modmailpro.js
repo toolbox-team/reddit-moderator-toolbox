@@ -184,7 +184,7 @@ self.modmailpro = function () {
             <span class="tb-message-count"></span><span class="replied-tag"></span>\
         </span>';
 
-    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a> ';
+    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a>';
     
     //TODO: move to CSS
     var selectedCSS = {
@@ -236,70 +236,87 @@ self.modmailpro = function () {
         }
 
         // Process threads
-        var unprocessedThreads = $('.message-parent:not(.mmp-processed)');
-        self.log('Unprocessed Threads' + unprocessedThreads.length);
+        var $unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
+            processSlowly = $unprocessedThreads.slice(0, 8),
+            processFastly = $unprocessedThreads.slice(8);
+        self.log('Unprocessed Threads = ' + $unprocessedThreads.length);
+        self.log('\tProcessing slow = ' + processSlowly.length);
+        self.log('\tProcessing fast = ' + processFastly.length);
 
         self.startProfile('add-ui-unprocessed');
-        unprocessedThreads.find('.correspondent:first').after(infoArea);
-        unprocessedThreads.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
+        $unprocessedThreads.find('.correspondent:first').after(infoArea);
+        $unprocessedThreads.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
         self.endProfile('add-ui-unprocessed');
+        
+        // Start process
+        processThreads(processSlowly, 2, threadProcessRate, slowComplete, "slow");
+        //processThreads(unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, "full");
+        
+        function processThreads(threads, chunkSize, processRate, completeAction, profileKey) {
+            TBUtils.forEachChunked(threads, chunkSize, processRate,
+                function (thread, count, array) {
+                    self.log('Running thread batch: ' + (count + 1) + ' of ' + array.length);
+                    self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
+                    processThread(thread);
+                },
+                function complete() {
+                    self.endProfile('batch-process-' + profileKey);
+                    self.log('Batch ' + profileKey + ' complete');
+                    
+                    completeAction();
+                },
+                function start() {
+                    self.startProfile('batch-process-' + profileKey);
+                });
+        }
+        
+        function slowComplete() {
+            processThreads(processFastly, chunkProcessSize, threadProcessRate/2, fastComplete, "fast");
+        }
+        
+        function fastComplete() {
+            self.setting('lastVisited', now);
 
-        // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(unprocessedThreads, chunkProcessSize, threadProcessRate,
-            function (thread, count, array) {
-                self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
-                self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
-                processThread(thread);
-            },
-            function complete() {
-                self.endProfile('batch-process');
-                self.log('Batch complete');
+            if (highlightNew) {
+                highlightNewThreads($unprocessedThreads);
+            }
 
-                self.setting('lastVisited', now);
-                
-                if (highlightNew) {
-                    highlightNewThreads(unprocessedThreads);
-                }
-    
-                // If set expand link.
-                if (collapsed) {
-                    var $link = $('.collapse-all-link');
-                    $link.css(selectedCSS);
-                    $link.text('expand all');
-                }
-                
-                // If we're on the unread page, don't filter anything.
-                if (unreadPage) {
-                    var entries = $('.entry'),
-                        newCount = entries.length;
-                    inbox = ALL;
-                    $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                    $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
-                    $(entries).click();
-                }
-                
-                // Set views.
-                setFilterLinks(unprocessedThreads);
-                setReplied(unprocessedThreads);
-                setView();
-                
-                //finally, add LMC support
-                addLmcSupport();
-                
-                TB.ui.longLoadNonPersistent(false);
-                
-                // Because realtime or LMC may have pulled more threads during init.
-                if ($('.message-parent:not(.mmp-processed)').length > 0) {
-                    initialize();
-                }
-                // Mod mail done loading
-                else {
-                    finalize();
-                }
-            },
-            function start() {
-                self.startProfile('batch-process');
-            });
+            // If set expand link.
+            if (collapsed) {
+                var $link = $('.collapse-all-link');
+                $link.css(selectedCSS);
+                $link.text('expand all');
+            }
+
+            // If we're on the unread page, don't filter anything.
+            if (unreadPage) {
+                var entries = $('.entry'),
+                    newCount = entries.length;
+                inbox = ALL;
+                $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
+                $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
+                $(entries).click();
+            }
+
+            // Set views.
+            setFilterLinks($unprocessedThreads);
+            setReplied($unprocessedThreads);
+            setView();
+
+            //finally, add LMC support
+            addLmcSupport();
+
+            TB.ui.longLoadNonPersistent(false);
+
+            // Because realtime or LMC may have pulled more threads during init.
+            if ($('.message-parent:not(.mmp-processed)').length > 0) {
+                initialize();
+            }
+            // Mod mail done loading
+            else {
+                finalize();
+            }
+        }
     }
 
     function enablePureCSSFeatures() {
@@ -333,7 +350,7 @@ self.modmailpro = function () {
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
-            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view");
+            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view").css('display', 'none');
 
         
         self.endProfile("thread-jquery");

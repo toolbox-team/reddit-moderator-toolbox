@@ -162,7 +162,7 @@ self.modmailpro = function () {
         threadAlways = self.setting('autoThreadOnLoad'),
         threadOnExpand = threadAlways || self.setting('autoThread'),
         sentFromMMP = false,
-        lmcSupport = false;
+        newThreadSupport = false;
     self.endProfile('settings-access');
 
     self.startProfile('common-element-gen');
@@ -304,7 +304,7 @@ self.modmailpro = function () {
             setView();
 
             //finally, add LMC support
-            addLmcSupport();
+            addNewThreadSupport();
 
             TB.ui.longLoadNonPersistent(false);
 
@@ -369,7 +369,9 @@ self.modmailpro = function () {
 
         self.log("\tNum entries = " + $entries.length);
         self.log("\tNum replies = " + replyCount);
-        if (collapsed) {
+
+        // LMC threads are never collapsed.
+        if (collapsed && !lmcThread) {
             $collapseLink.text('[+]');
             $flatTrigger[0].style.display = 'none';
             $threadTrigger[0].style.display = 'none';
@@ -493,7 +495,7 @@ self.modmailpro = function () {
 
         // Deal with LMC threads
         if (lmcThread) {
-            $collapseLink.text('[−]');
+            self.log("LMC Thread!");
             if (threadOnExpand) {
                 threadModmail(threadID);
             }
@@ -502,10 +504,6 @@ self.modmailpro = function () {
                 $thread.find('.expand-btn:first')[0].click();
             }
 
-            // LMC threads are never collapsed.
-            $flatTrigger[0].style.display = '';
-            $threadTrigger[0].style.display = '';
-
             setFilterLinks($thread);
         }
 
@@ -513,9 +511,9 @@ self.modmailpro = function () {
         perfCounter(threadStart, "Thread process time");
     }
 
-    function addLmcSupport() {
-        if (lmcSupport) return;
-        lmcSupport = true;
+    function addNewThreadSupport() {
+        if (newThreadSupport) return;
+        newThreadSupport = true;
 
         // RES NER support.
         $body.find('div.content').on('DOMNodeInserted', function (e) {

@@ -21,7 +21,7 @@
 }
 
 .tb-modmail-pro .message .subject .info-area {
-    display: inline;
+    display: inline-block;
     border-bottom-right-radius: 7px;
     border-left: medium none !important;
     border-top-right-radius: 7px;
@@ -34,7 +34,7 @@
 }
 
 .tb-modmail-pro .message .subject .collapse-link {
-    display: inline;
+    display: inline-block;
 }
 
 /* New messages */

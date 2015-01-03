@@ -116,6 +116,11 @@ self.register_setting('entryProcessRate', {
     'default': 50,
     'hidden': true
 });
+self.register_setting('chunkProcessSize', {
+    'type': 'number',
+    'default': 2,
+    'hidden': true
+});
 
 self.init = function () {
     if (!TBUtils.isModmail) return;
@@ -149,6 +154,7 @@ self.modmailpro = function () {
         subredditColorSalt = self.setting('subredditColorSalt'),
         threadProcessRate = self.setting('threadProcessRate'),
         entryProcessRate = self.setting('entryProcessRate'),
+        chunkProcessSize = self.setting('chunkProcessSize'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -239,7 +245,7 @@ self.modmailpro = function () {
         self.endProfile('add-ui-unprocessed');
 
         // Add filter link to each title, if it doesn't already have one.
-        TBUtils.forEachChunked(unprocessedThreads, 2, threadProcessRate,
+        TBUtils.forEachChunked(unprocessedThreads, chunkProcessSize, threadProcessRate,
             function (thread, count, array) {
                 self.log('Running thread batch: ' + (count+1) + ' of ' + array.length);
                 self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);

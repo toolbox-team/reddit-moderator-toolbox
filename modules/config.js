@@ -205,11 +205,10 @@ self.init = function () {
                 var $this = $(this),
                     itemSubreddit = $this.find('a.title').text();
 
-                $this.find('a.title').after('<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="' + itemSubreddit + '" title="toolbox configuration for /r/' + itemSubreddit + ' subreddit"><img src="data:image/png;base64,' + TBui.iconWrench + '"/>tb config</a>');
-
-
+                $this.find('a.title').after('<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="' + itemSubreddit + '" title="toolbox configuration for /r/' + itemSubreddit + '"><img src="data:image/png;base64,' + TBui.iconWrench + '"/></a>');
             });
         }
+
     // Oh dear! One of the buttons we created is clicked! What do we do!!?!
     // If it is on a subreddit we already know the sub and can just activate the whole bunch.
         $body.on('click', '.toolbox-edit', function () {

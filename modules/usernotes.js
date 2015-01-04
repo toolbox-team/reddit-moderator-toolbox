@@ -32,13 +32,22 @@ self.init = function () {
         $body = $('body'),
         maxChars = self.setting('maxChars'),
         showDate = self.setting('showDate'),
-        showOnModPages =  self.setting('showOnModPages');
+        showOnModPages =  self.setting('showOnModPages'),
+        showLink = self.setting('unManagerLink');
 
-    if (self.setting('unManagerLink') && TBUtils.post_site && TBUtils.isMod) {
+    if (showLink && TBUtils.post_site && TBUtils.isMod) {
         var toolbox = $('#moderation_tools').find('.content .icon-menu'),
             managerLink = '<li><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '" class="tb-moderation-tools-icons"/><span class="separator"></span>\
                     <a href="/r/'+ TBUtils.post_site +'/about/usernotes" class="tb-un-manager" title="edit usernotes for this subreddit">usernotes</a></li>';
         $(toolbox).append(managerLink);
+    } else if (showLink && TBUtils.isModpage) {
+
+        $body.find('.subscription-box ul li').each(function () {
+            var $this = $(this),
+                itemSubreddit = $this.find('a.title').text();
+
+            $this.find('a.title').after('<a href="/r/'+ itemSubreddit +'/about/usernotes" target="_blank" title="edit usernotes /r/' + itemSubreddit + '"><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '"/></a>');
+        });
     }
 
     if (window.location.href.indexOf('/about/usernotes') > -1) {

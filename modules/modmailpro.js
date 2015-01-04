@@ -94,6 +94,18 @@ self.register_setting('customLimit', {
     'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
 });
 
+self.register_setting('filterBots', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Filter bots from priority view'
+});
+
+self.register_setting('botsToFilter', {
+    'type': 'list',
+    'default': ['AutoModerator'],
+    'title': 'Bots to filter from priority view. Bot names should entered separated by a comma without spaces',
+    'hidden': !self.setting('filterBots')
+});
 
 /// Private setting storage
 self.register_setting('lastVisited', {
@@ -135,7 +147,7 @@ self.modmailpro = function () {
 
     var $body = $('body');
 
-    var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered';
+    var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'Bots';
     
     self.startProfile('settings-access');
     var INVITE = "moderator invited",
@@ -155,6 +167,8 @@ self.modmailpro = function () {
         threadProcessRate = self.setting('threadProcessRate'),
         entryProcessRate = self.setting('entryProcessRate'),
         chunkProcessSize = self.setting('chunkProcessSize'),
+        filterBots = self.setting('filterBots'),
+        botsToFilter = self.setting('botsToFilter'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -168,12 +182,13 @@ self.modmailpro = function () {
     self.startProfile('common-element-gen');
     var separator = '<span class="separator">|</span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-        $allLink = $('<li><a class="alllink" href="javascript:;" view="' + ALL + '">all</a></li>'),
-        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" view="' + PRIORITY + '">priority</a></li>'),
-        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" view="' + FILTERED + '">filtered</a></li>'),
-        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" view="' + REPLIED + '">replied</a></li>'),
-        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" view="' + UNREAD + '">unread</a></li>'),
-        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" view="' + UNANSWERED + '">unanswered</a></li>'),
+        $allLink = $('<li><a class="alllink" href="javascript:;" data-view="' + ALL + '">all</a></li>'),
+        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" data-view="' + PRIORITY + '">priority</a></li>'),
+        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" data-view="' + FILTERED + '">filtered</a></li>'),
+        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" data-view="' + REPLIED + '">replied</a></li>'),
+        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" data-view="' + UNREAD + '">unread</a></li>'),
+        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" data-view="' + UNANSWERED + '">unanswered</a></li>'),
+        $botsLink = $('<li><a class="botslink" href="javascript:;" data-view="' + BOTS + '">bots</a></li>'),
         $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
@@ -209,8 +224,11 @@ self.modmailpro = function () {
     $menuList.append($repliedLink.prepend(separator));
     $menuList.append($unreadLink.prepend(separator));
     $menuList.append($unansweredLink.prepend(separator));
-    $menuList.append($collapseLink.prepend(spacer));
+    if (filterBots) {
+        $menuList.append($botsLink.prepend(separator));
+    }
 
+    $menuList.append($collapseLink.prepend(spacer));
     $mmpMenu.append($unreadCount.prepend(spacer));
 
     $menuList.after($mmpMenu);
@@ -417,6 +435,12 @@ self.modmailpro = function () {
                 if (title === INVITE || title === ADDED) {
                     $thread.addClass('invitespam');
                 }
+            }
+        }
+
+        if (filterBots) {
+            if ($.inArray(TB.utils.getThingInfo($thread).user, botsToFilter) != -1) {
+                $thread.addClass('botspam');
             }
         }
 
@@ -681,9 +705,27 @@ self.modmailpro = function () {
             showThreads(unansweredThreads, true);
         }
 
+        else if (inbox == BOTS) {
+            $botsLink.closest('li').addClass('selected');
+            self.log(getBotThreads());
+            showThreads(getBotThreads(), true);
+        }
+
         // Hide invite spam.
         if (hideInviteSpam && inbox != UNREAD) {
             $('.invitespam').each(function () {
+                var $this = $(this);
+                if ($this.hasClass('new')) {
+                    $this.find('.entry').click();
+                }
+
+                $this.css('display', 'none');
+            });
+        }
+
+        // Hide invite spam.
+        if (filterBots && (inbox != UNREAD && inbox != BOTS)) {
+            $('.botspam').each(function () {
                 var $this = $(this);
                 if ($this.hasClass('new')) {
                     $this.find('.entry').click();
@@ -796,23 +838,31 @@ self.modmailpro = function () {
         return self.setting('replied');
     }
 
+    function getBotThreads() {
+        var bots = [];
+        $('.botspam').each(function () {
+            bots.push($(this).data('fullname'));
+        });
+        return bots;
+    }
+
     function showThreads(items, byID) {
         $('.message-parent').each(function () {
             var $this = $(this);
-            $this.hide();
+            $this.css('display', 'none');
 
             if (!byID) {
                 var subname = getSubname(this);
 
                 if ($.inArray(subname, items) !== -1) {
-                    $this.show();
+                    $this.css('display', '');
                 }
 
             } else {
                 var id = $this.attr('data-fullname');
 
                 if ($.inArray(id, items) !== -1) {
-                    $this.show();
+                    $this.css('display', '');
                 }
             }
         });
@@ -822,10 +872,10 @@ self.modmailpro = function () {
         $('.message-parent').each(function () {
             var subname = getSubname(this);
             var $this = $(this);
-            $this.show();
+            $this.css('display', '');
 
             if ($.inArray(subname, subs) !== -1) {
-                $this.hide();
+                $this.css('display', 'none');
             }
         });
     }
@@ -895,11 +945,11 @@ self.modmailpro = function () {
         setReplied();
     });
 
-    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink', function (e) {
+    $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink, .botslink', function (e) {
         // Just unselect all, then select the caller.
         $($menuList).find('li').removeClass('selected');
 
-        inbox = $(e.target).attr('view');
+        inbox = $(e.target).data('view');
 
         setView();
     });

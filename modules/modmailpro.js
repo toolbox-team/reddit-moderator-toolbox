@@ -134,6 +134,11 @@ self.register_setting('chunkProcessSize', {
     'hidden': true
 });
 
+// Allow default bot view IF user has filterBots enabled.
+if (self.setting('filterBots')){
+    self.settings['inboxStyle']['values'] = ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered', 'Bots'];
+}
+
 self.init = function () {
     if (!TBUtils.isModmail) return;
 
@@ -147,7 +152,7 @@ self.modmailpro = function () {
 
     var $body = $('body');
 
-    var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'Bots';
+    var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'bots';
     
     self.startProfile('settings-access');
     var INVITE = "moderator invited",

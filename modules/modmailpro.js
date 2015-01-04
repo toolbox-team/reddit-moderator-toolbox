@@ -827,7 +827,9 @@ self.modmailpro = function () {
     }
 
     function getSubname(sub) {
-        return TB.utils.cleanSubredditName($(sub).find('.correspondent.reddit.rounded a').text()).toLowerCase();
+        var name = $(sub).find('.correspondent.reddit.rounded a').text();
+        name = TB.utils.cleanSubredditName(name);
+        return name;
     }
 
     function getFilteredSubs() {

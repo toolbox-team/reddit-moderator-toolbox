@@ -137,7 +137,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.0.1 version changes
+        // 3.1 version changes
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, 'TBUtils');
 
         var botCheck = TBStorage.getSetting('QueueTools', 'botCheckmark', ['AutoModerator']),
@@ -149,6 +149,12 @@ function initwrapper() {
 
         // no longer used.
         delete localStorage['Toolbox.UserNotes.unManager'];
+
+        // MMP use to store filtered subs in lower case.  We should not.
+        TBStorage.setSetting('ModMail', 'filteredSubs', []);
+
+        // Reenable MMP by default
+        TBStorage.setSetting('ModMail', 'enabled', true);
 
         // End: version changes.
 
@@ -527,9 +533,16 @@ function initwrapper() {
         });
     };
 
+    TBUtils.replaceAll = function(find, replace, str) {
+        find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        return str.replace(new RegExp(find, 'g'), replace);
+    };
 
     TBUtils.cleanSubredditName = function(dirtySub) {
-        return dirtySub.replace('/r/', '').replace('/', '').replace('[−]', '').replace('[+]', '').trim();
+        dirtySub = dirtySub.replace('/r/', '').replace('/', '').trim();
+        dirtySub = TBUtils.replaceAll('[−]', '', dirtySub);
+        dirtySub = TBUtils.replaceAll('[+]', '', dirtySub);
+        return dirtySub;
     };
 
 

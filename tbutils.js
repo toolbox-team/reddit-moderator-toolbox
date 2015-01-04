@@ -36,7 +36,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.1.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'A BRAVER NEWER WORLD';
+    TBUtils.releaseName = 'A BRAVER NEWER MMP';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;

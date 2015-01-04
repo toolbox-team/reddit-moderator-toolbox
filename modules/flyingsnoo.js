@@ -4,19 +4,12 @@ function flyingsnoo() {
 // @copyright  2014+, LowSociety
 
 //Setup
-var self = new TB.Module('Flying Snoo');
-self.shortname = 'Snoo';
+var self = new TB.Module('Userpage');
+self.shortname = 'Userpage';
 
 ////Default settings
 self.settings['enabled']['default'] = true;
 self.settings['enabled']['hidden'] = true;  // it's an easter egg.
-
-//snoo.register_setting('displayType', {
-//    'type': 'selector',
-//    'values': ['Post border', 'Domain background', 'Domain border'],
-//    'default': 'post_border',
-//    'title': 'Tag location'
-//});
 
 self.init = function snooInit() {
     if (!TB.utils.isUserPage) return;

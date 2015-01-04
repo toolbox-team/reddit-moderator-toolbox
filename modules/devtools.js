@@ -6,10 +6,12 @@ self.settings['enabled']['default'] = false;
 
 self.setting('betamode', false);
 self.setting('devmode', true);
+
+TB.register_module(self);
 }
 
 (function () {
     window.addEventListener('TBObjectLoaded', function () {
-        devtools();
+        //devtools(); //disabled
     });
 })();

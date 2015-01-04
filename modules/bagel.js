@@ -22,6 +22,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBObjectLoaded", function () {
-        make_bagels();
+        //make_bagels(); //disabled
     });
 })();

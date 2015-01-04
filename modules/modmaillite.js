@@ -400,7 +400,6 @@ TB.register_module(self);
 (function() {
     // wait for storage
     window.addEventListener("TBUtilsLoaded", function () {
-        //if (TBUtils.isModmail) $('#siteTable').hide();
-        mml();
+        //mml(); //disabled.
     });
 })();

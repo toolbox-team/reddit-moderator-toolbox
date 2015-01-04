@@ -71,14 +71,16 @@
 /* Recipient fading */
 
 .tb-fade-recipient .message .entry .recipient {
-    background-color: transparent !important;
+    background-color: rgba(0, 0, 0, 0) !important;
     color: #888 !important;
 }
 
 .tb-fade-recipient .message .entry .recipient.moderator {
     color: #588858 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .tb-fade-recipient .message .entry .recipient.admin {
     color: #B20606 !important;
+    background-color: rgba(0, 0, 0, 0) !important;
 }

@@ -56,7 +56,7 @@
 }
 
 .tb-modmail-pro .message .subject .info-area {
-    display: inline;
+    display: inline-block;
     height: 17px;
     padding: 2px 8px;
     

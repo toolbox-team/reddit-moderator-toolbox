@@ -147,7 +147,7 @@ self.init = function removalReasonsInit() {
                 author: info.user,
                 title: info.title,
                 kind: info.kind,
-                mod: TBUtils.logged,
+                mod: info.mod,
                 url: info.permalink,
                 link: info.postlink,
                 domain: info.domain

@@ -728,7 +728,8 @@ function initwrapper() {
             link: postlink,
             banned_by: banned_by,
             spam: spam,
-            ham: ham
+            ham: ham,
+            mod: TBUtils.logged
         };
         //$.log(info);
         return info;

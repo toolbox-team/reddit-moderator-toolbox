@@ -143,8 +143,8 @@ self.init = function () {
     if (!TBUtils.isModmail) return;
 
     this.modmailpro();
-    this.realtimemail();
-    this.mailDropDorpDowns();
+    this.autoLoad();
+    this.mailDropDowns();
 };
 
 self.modmailpro = function () {
@@ -1031,9 +1031,12 @@ self.modmailpro = function () {
 };
 
 
-self.realtimemail = function () {
+self.autoLoad = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
+
+    // autoload depends on notifier
+    if (!TB.storage.getSetting('Notifier', 'enabled', true)) return;
 
     var delay = 30000, // Default .5 min delay between requests.
         refreshLimit = 15, // Default five items per request.
@@ -1087,7 +1090,7 @@ self.realtimemail = function () {
 };
 
 
-self.mailDropDorpDowns = function () {
+self.mailDropDowns = function () {
     var COMPOSE = 'compose-message',
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',

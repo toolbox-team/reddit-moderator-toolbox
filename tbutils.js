@@ -153,8 +153,11 @@ function initwrapper() {
         // MMP use to store filtered subs in lower case.  We should not.
         TBStorage.setSetting('ModMail', 'filteredSubs', []);
 
-        // Reenable MMP by default
+        // Re-enable MMP by default
         TBStorage.setSetting('ModMail', 'enabled', true);
+
+        // enable autoload by default.
+        TBStorage.setSetting('ModMail', 'autoLoad', true);
 
         // End: version changes.
 

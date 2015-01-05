@@ -52,7 +52,7 @@ self.register_setting('hideInviteSpam', {
 
 self.register_setting('autoLoad', {
     'type': 'boolean',
-    'default': false,
+    'default': true,
     'hidden': !TB.storage.getSetting('Notifier', 'enabled', true),
     'title': 'Automatically load new mod mail when received.'
 });

@@ -3,7 +3,6 @@ var self = new TB.Module('Personal Notes');
 self.shortname = 'PNotes';
 
 self.settings['enabled']['default'] = false;
-self.config['betamode'] = true;
 
 self.register_setting('noteWiki', {
     'type': 'subreddit',

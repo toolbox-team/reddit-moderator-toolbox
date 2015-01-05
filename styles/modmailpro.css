@@ -15,6 +15,7 @@
     border-top-right-radius: 0;
 }
 
+.tb-modmail-pro .message .subject .subreddit-name:hover,
 .tb-modmail-pro .message .subject .expand-btn:hover {
     color: rgba(51, 102, 153, 0.7);
 }
@@ -27,7 +28,7 @@
 
 .tb-modmail-pro .message .subject .collapse-link {
     display: inline-block;
-    margin-right: 4px;
+    margin-right: 6px;
 }
 
 .tb-modmail-pro .message .collapse-link::before {

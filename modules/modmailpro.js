@@ -276,6 +276,7 @@ self.modmailpro = function () {
 
         self.startProfile('add-ui-unprocessed');
         var $subArea = $unprocessedThreads.find('.correspondent:first');
+        $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
         $subArea.prepend(collapseLink);
         $subArea.append($subFilter);
         $subArea.after(infoArea);
@@ -849,7 +850,7 @@ self.modmailpro = function () {
     }
 
     function getSubname(sub) {
-        var name = $(sub).find('.correspondent.reddit.rounded a').text();
+        var name = $(sub).find('.subject .subreddit-name').text();
         name = TB.utils.cleanSubredditName(name);
         return name;
     }

@@ -412,6 +412,7 @@ self.modmailpro = function () {
         // LMC threads are never collapsed.
         if (collapsed && !lmcThread) {
             $collapseLink.text('+');
+            $thread.addClass('mmp-collapsed');
             $flatTrigger[0].style.display = 'none';
             $threadTrigger[0].style.display = 'none';
         }

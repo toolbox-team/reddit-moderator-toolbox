@@ -1,6 +1,4 @@
-.tb-modmail-pro .message .collapse-link {
-    margin-right: 4px;
-}
+/* Subject area */
 
 .tb-modmail-pro .message.message-parent.mmp-collapsed .subject {
     margin-bottom: 0;
@@ -11,23 +9,17 @@
 }
 
 .tb-modmail-pro .message .subject .correspondent:first-child {
+    margin-right: 0;
+
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
-    margin-right: 0;
 }
 
-.message .subject .info-area {
-    display: none;
+.tb-modmail-pro .message .subject .expand-btn:hover {
+    color: rgba(51, 102, 153, 0.7);
 }
 
-.tb-modmail-pro .message .subject .info-area {
-    display: inline-block;
-    border-bottom-right-radius: 7px;
-    border-left: medium none !important;
-    border-top-right-radius: 7px;
-    height: 17px;
-    padding: 2px 8px;
-}
+/* Collapsing thing */
 
 .message .subject .collapse-link {
     display: none;
@@ -35,6 +27,67 @@
 
 .tb-modmail-pro .message .subject .collapse-link {
     display: inline-block;
+    margin-right: 4px;
+}
+
+.tb-modmail-pro .message .collapse-link::before {
+    content: "[";
+    position: relative;
+}
+
+.tb-modmail-pro .message .collapse-link:hover::before {
+    right: 1px;
+}
+
+.tb-modmail-pro .message  .collapse-link::after {
+    content: "]";
+    position: relative;
+}
+
+.tb-modmail-pro .message .collapse-link:hover::after {
+    left: 1px;
+}
+
+/* Info area */
+
+.message .subject .info-area {
+    display: none;
+}
+
+.tb-modmail-pro .message .subject .info-area {
+    display: inline;
+    height: 17px;
+    padding: 2px 8px;
+    
+    border-bottom-right-radius: 7px;
+    border-left: medium none !important;
+    border-top-right-radius: 7px;
+}
+
+/* Filtering */
+
+.tb-modmail-pro .filter-sub-link {
+    display: inline-block;
+    width: 18px;
+    
+    text-align: center;
+    color: rgb(255, 69, 0);
+    margin-left: 4px;
+    margin-right: 2px;
+}
+
+.tb-modmail-pro .filter-sub-link:hover {
+    color: rgba(255, 69, 0, 0.7);
+}
+
+/* Message count */
+
+.tb-modmail-pro .info-area .tb-message-count.no-replies {
+    margin: 0 -8px;
+    
+    color: rgba(51, 102, 153, 0.3);
+    font-size: 10px;
+    font-weight: normal;
 }
 
 /* New messages */

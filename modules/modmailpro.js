@@ -133,6 +133,11 @@ self.register_setting('chunkProcessSize', {
     'default': 2,
     'hidden': true
 });
+self.register_setting('twoPhaseProcessing', {
+    'type': 'boolean',
+    'default': true,
+    'hidden': true
+});
 
 // Allow default bot view IF user has filterBots enabled.
 if (self.setting('filterBots')){
@@ -172,6 +177,7 @@ self.modmailpro = function () {
         threadProcessRate = self.setting('threadProcessRate'),
         entryProcessRate = self.setting('entryProcessRate'),
         chunkProcessSize = self.setting('chunkProcessSize'),
+        twoPhaseProcessing = self.setting('twoPhaseProcessing'),
         filterBots = self.setting('filterBots'),
         botsToFilter = self.setting('botsToFilter'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
@@ -196,15 +202,16 @@ self.modmailpro = function () {
         $botsLink = $('<li><a class="botslink" href="javascript:;" data-view="' + BOTS + '">bots</a></li>'),
         $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
-        $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
+        $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>'),
+        $subFilter = $('<a href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>');
     
     var infoArea =
         '<span class="info-area correspondent">\
-            <a style="color:orangered" href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>&nbsp;\
-            <span class="tb-message-count"></span><span class="replied-tag"></span>\
+            <span class="tb-message-count"></span>\
+            <span class="replied-tag"></span>\
         </span>';
 
-    var collapseLink = '<a href="javascript:;" class="collapse-link">[−]</a>';
+    var collapseLink = '<a href="javascript:;" class="collapse-link">−</a>';
     
     //TODO: move to CSS
     var selectedCSS = {
@@ -261,20 +268,26 @@ self.modmailpro = function () {
 
         // Process threads
         var $unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
-            processSlowly = $unprocessedThreads.slice(0, 5),
-            processFastly = $unprocessedThreads.slice(5);
+            $processSlowly = $unprocessedThreads.slice(0, 5),
+            $processFastly = $unprocessedThreads.slice(5);
         self.log('Unprocessed Threads = ' + $unprocessedThreads.length);
-        self.log('\tProcessing slow = ' + processSlowly.length);
-        self.log('\tProcessing fast = ' + processFastly.length);
+        self.log('\tProcessing slow = ' + $processSlowly.length);
+        self.log('\tProcessing fast = ' + $processFastly.length);
 
         self.startProfile('add-ui-unprocessed');
-        $unprocessedThreads.find('.correspondent:first').after(infoArea);
-        $unprocessedThreads.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
+        var $subArea = $unprocessedThreads.find('.correspondent:first');
+        $subArea.prepend(collapseLink);
+        $subArea.append($subFilter);
+        $subArea.after(infoArea);
         self.endProfile('add-ui-unprocessed');
         
         // Start process
-        processThreads(processSlowly, 1, threadProcessRate, slowComplete, "slow");
-        //processThreads(unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, "full");
+        if (twoPhaseProcessing) {
+            processThreads($processSlowly, 1, threadProcessRate, slowComplete, "slow");
+        }
+        else {
+            processThreads($unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, "full");
+        }
         
         function processThreads(threads, chunkSize, processRate, completeAction, profileKey) {
             TBUtils.forEachChunked(threads, chunkSize, processRate,
@@ -295,7 +308,7 @@ self.modmailpro = function () {
         }
         
         function slowComplete() {
-            processThreads(processFastly, chunkProcessSize, threadProcessRate/2, fastComplete, "fast");
+            processThreads($processFastly, chunkProcessSize, threadProcessRate/2, fastComplete, "fast");
         }
         
         function fastComplete() {
@@ -367,6 +380,7 @@ self.modmailpro = function () {
 
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
+            $messageCount = $infoArea.find('.tb-message-count'),
             $collapseLink = $thread.find(".collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
@@ -396,7 +410,7 @@ self.modmailpro = function () {
 
         // LMC threads are never collapsed.
         if (collapsed && !lmcThread) {
-            $collapseLink.text('[+]');
+            $collapseLink.text('+');
             $flatTrigger[0].style.display = 'none';
             $threadTrigger[0].style.display = 'none';
         }
@@ -423,7 +437,7 @@ self.modmailpro = function () {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
-            $infoArea.find('.tb-message-count').text(replyCount);
+            $messageCount.text(replyCount);
 
             //Thread the message if required
             if (threadAlways) {
@@ -433,6 +447,9 @@ self.modmailpro = function () {
         }
         else {
             unansweredThreads.push(threadID);
+
+            $messageCount.text('No replies');
+            $messageCount.addClass('no-replies');
 
             // Only hide invite spam with no replies.
             if (hideInviteSpam) {
@@ -906,7 +923,7 @@ self.modmailpro = function () {
         });
 
         $link.text('expand all');
-        $('.collapse-link').text('[+]');
+        $('.collapse-link').text('+');
     }
 
     function expandall() {
@@ -933,7 +950,7 @@ self.modmailpro = function () {
         });
 
         $link.text('collapse all');
-        $('.collapse-link').text('[−]');
+        $('.collapse-link').text('−');
     }
 
     /// EVENTS ///
@@ -972,15 +989,15 @@ self.modmailpro = function () {
     $body.on('click', '.collapse-link', function () {
         var $this = $(this),
             $parent = $this.closest('.message-parent');
-        if ($this.text() === '[−]') {
+        if (!$parent.hasClass('mmp-collapsed')) {
             $parent.find('.entry').hide();
             $parent.find('.expand-btn').hide();
-            $this.text('[+]');
+            $this.text('+');
             $parent.addClass('mmp-collapsed');
         } else {
             $parent.find('.entry').show();
             $parent.find('.expand-btn').show();
-            $this.text('[−]');
+            $this.text('−');
             $parent.removeClass('mmp-collapsed');
 
             //Show all comments

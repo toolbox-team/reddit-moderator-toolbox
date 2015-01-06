@@ -48,6 +48,11 @@ self.register_setting('lockScroll', {
     'default': false,
     'hidden': true
 });
+self.register_setting('customCSS', {
+    'type': 'code',
+    'default': '',
+    'hidden': true
+});
 
 self.init = function modbarInit() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
@@ -67,6 +72,7 @@ self.init = function modbarInit() {
         consoleShowing = self.setting('consoleShowing'),
         lockscroll = self.setting('lockScroll'),
         enableTopLink = self.setting('enableTopLink'),
+        customCSS = self.setting('customCSS');
 
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
@@ -102,7 +108,10 @@ self.init = function modbarInit() {
                         "I dunno what this 'Safari' thing is."],
         randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
    
-
+    // Custom CSS for devmode/testing
+    if (customCSS) {
+        $('head').append('<style type="text/css">' + customCSS + '</style>');
+    }
 
     //
     // UI elements
@@ -110,7 +119,7 @@ self.init = function modbarInit() {
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
-    var modMailUrl = '/message/moderator/'
+    var modMailUrl = '/message/moderator/';
     if(parseInt(modmailCustomLimit)> 0) {
         modMailUrl += '?limit=' + modmailCustomLimit;
         $('#modmail').attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
@@ -233,7 +242,7 @@ if (unmoderatedOn) {
             ).appendTo('body').css({
                     'position': 'fixed',
                     'bottom': '31px',
-                    'left': '20px',
+                    'left': '20px'
                 });
         }
 
@@ -399,7 +408,7 @@ if (unmoderatedOn) {
         </div>\
         <div class="tb-window-tabs"></div>\
         <div class="tb-window-content"></div>\
-        <div class="tb-window-footer"><input class="tb-save" type="button" value="save"></div>\
+        <div class="tb-window-footer"><input class="tb-save" type="button" value="save">'+ (devMode ? '&nbsp;<input class="tb-save-reload" type="button" value="save and reload">' : '') +'</div>\
     </div></div>\
     ';
         $(html).appendTo('body').show();
@@ -592,7 +601,8 @@ See the License for the specific language governing permissions and limitations 
     });
 
     // Save the settings
-    $body.on('click', '.tb-save', function () {
+    $body.on('click', '.tb-save, .tb-save-reload', function (e) {
+        var reload = (e.target.className === 'tb-save-reload');
 
         // TODO: Check if the settings below work as intended.
         self.setting('compactHide', $("#compactHide").prop('checked'));
@@ -641,7 +651,10 @@ See the License for the specific language governing permissions and limitations 
             if (succ){
                 TB.ui.textFeedback("Settings saved and verified", TB.ui.FEEDBACK_POSITIVE);
                 setTimeout(function () {
-                    if (!devMode) window.location.reload();
+                    // Only reload in dev mode if we asked to.
+                    if (!devMode || reload) {
+                        window.location.reload();
+                    }
                 }, 1000);
             } else{
                 TB.ui.textFeedback("Save could not be verified", TB.ui.FEEDBACK_NEGATIVE);

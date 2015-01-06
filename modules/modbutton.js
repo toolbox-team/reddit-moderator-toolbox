@@ -5,7 +5,6 @@ var self = new TB.Module('Mod Button');
 self.shortname = 'ModButton';
 
 self.settings['enabled']['default'] = true;
-//modbutton.config['needs_mod_subs'] = true;
 
 self.register_setting('savedSubs', {
     'type': 'sublist',
@@ -37,8 +36,6 @@ self.register_setting('lastAction', {
 //    'default': [],
 //    'title': 'Test setting unknown type'
 //});
-
-
 
 var $body = $('body');
 
@@ -119,7 +116,7 @@ self.updateSavedSubs = function updateSavedSubs() {
             .append($('<option>', {
                 value: subreddit
             })
-                .text('/r/' + subreddit));
+                .text(subreddit));
     });
 };
 

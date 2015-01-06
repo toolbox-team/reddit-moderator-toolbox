@@ -176,7 +176,11 @@ TB = {
                         case "JSON":
                             var json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(title + ':<br />');
-                            $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                            $setting.append($('<textarea rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                            break;
+                        case "code":
+                            $setting.append(title + ':<br />');
+                            $setting.append($('<textarea rows="25" cols="80">').val(module.setting(setting)));
                             break;
                         case "subreddit":
                         case "text":
@@ -300,6 +304,9 @@ body {\n\
                             case "array":
                             case "JSON":
                                 value = JSON.parse($this.find('textarea').val());
+                                break;
+                            case 'code':
+                                value = $this.find('textarea').val();
                                 break;
                             case "subreddit":
                                 value = TB.utils.cleanSubredditName($this.find('input').val());

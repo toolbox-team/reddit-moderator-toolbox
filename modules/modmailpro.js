@@ -208,7 +208,7 @@ self.modmailpro = function () {
     var infoArea =
         '<span class="info-area correspondent">\
             <span class="tb-message-count" title="Number of replies to the message."></span>\
-            <span class="replied-tag"></span>\
+            <span class="tb-replied-tag"></span>\
         </span>';
 
     var collapseLink = '<a href="javascript:;" class="collapse-link">−</a>';
@@ -551,6 +551,7 @@ self.modmailpro = function () {
             }
 
             setFilterLinks($thread);
+            setReplied($thread);
         }
 
         self.endProfile("thread");
@@ -848,7 +849,7 @@ self.modmailpro = function () {
                 id = $this.attr('data-fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
-                $this.find('.replied-tag').html('&nbsp;(replied)');
+                $this.find('.tb-replied-tag').html(' Replied');
                 $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });

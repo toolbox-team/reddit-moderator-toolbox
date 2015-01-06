@@ -96,8 +96,9 @@
     font-weight: normal;
 }
 
-.tb-modmail-pro .message-parent.has-replies .replied-tag {
-    font-size: 12px;
+.tb-modmail-pro .message-parent .tb-replied-tag {
+    color: rgb(51, 102, 153);
+    font-size: 10px;
     font-weight: normal;
 }
 

@@ -588,7 +588,7 @@ self.modmailpro = function () {
                 if (thread.length > 1) {
                     $sender.remove();
                 } else {
-                    processThread(thread);
+                    processThread($sender);
                     sentFromMMP = true;
                     window.dispatchEvent(event);
                 }
@@ -601,7 +601,6 @@ self.modmailpro = function () {
             self.log('LMC! LMC!');
             $body.find('div.content').on('DOMNodeInserted', '.message-parent', function (e) {
                 var $sender = $(e.target);
-
                 if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) === -1) {
                     return;
                 }
@@ -1069,7 +1068,7 @@ self.autoLoad = function () {
     // autoload depends on notifier
     if (!TB.storage.getSetting('Notifier', 'enabled', true)) return;
 
-    var delay = 30000, // Default .5 min delay between requests.
+    var delay = 5000, // Default 5 sec delay between checking for new modmail.
         refreshLimit = 15, // Default five items per request.
         refreshLink = $('<li><a class="refresh-link" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>'),
         updateURL = '/message/moderator?limit=',
@@ -1086,7 +1085,6 @@ self.autoLoad = function () {
 
     // Add refresh button.
     $(refreshLink).click(function () {
-        $(refreshLink).css(selectedCSS);
         getNewThings(refreshLimit);
 
     });
@@ -1097,21 +1095,21 @@ self.autoLoad = function () {
         setInterval(function () {
             var count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
             if (count > 0) {
-                $(refreshLink).css(selectedCSS);
-                getNewThings(count);
+                getNewThings((count + 2));
             }
         }, delay);
     }
 
     // Add new things
     function getNewThings(limit) {
+        $(refreshLink).css(selectedCSS);
         TB.storage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
         TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
         self.log('real time a gogo: ' + limit);
         TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {
             if (!resp) return;
-            var $things = $(resp).find('.message-parent').addClass('realtime-new').hide();
+            var $things = $(resp).find('.message-parent').hide().addClass('realtime-new');
             var $siteTable = $('#siteTable');
 
             $siteTable.prepend($things);

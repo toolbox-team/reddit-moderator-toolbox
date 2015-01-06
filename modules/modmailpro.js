@@ -207,7 +207,7 @@ self.modmailpro = function () {
     
     var infoArea =
         '<span class="info-area correspondent">\
-            <span class="tb-message-count"></span>\
+            <span class="tb-message-count" title="Number of replies to the message."></span>\
             <span class="replied-tag"></span>\
         </span>';
 
@@ -274,13 +274,7 @@ self.modmailpro = function () {
         self.log('\tProcessing slow = ' + $processSlowly.length);
         self.log('\tProcessing fast = ' + $processFastly.length);
 
-        self.startProfile('add-ui-unprocessed');
-        var $subArea = $unprocessedThreads.find('.correspondent:first');
-        $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
-        $subArea.prepend(collapseLink);
-        $subArea.append($subFilter);
-        $subArea.after(infoArea);
-        self.endProfile('add-ui-unprocessed');
+        addThreadUI($unprocessedThreads);
         
         // Start process
         if (twoPhaseProcessing) {
@@ -374,7 +368,6 @@ self.modmailpro = function () {
         var $thread = $(thread);
         $thread.addClass('mmp-processed');
 
-        var threadStart = performance.now();
         self.startProfile("thread");
         self.startProfile("thread-info");
         self.startProfile("thread-jquery");
@@ -399,11 +392,7 @@ self.modmailpro = function () {
 
         // Add back UI for new threads.
         if (newThread || lmcThread) {
-            $thread.find('.correspondent:first').after(infoArea);
-            $thread.find('.correspondent.reddit.rounded a:parent').prepend(collapseLink);
-
-            $infoArea = $thread.find('.info-area');
-            $collapseLink = $thread.find(".collapse-link");
+            addThreadUI($thread);
         }
 
         self.log("\tNum entries = " + $entries.length);
@@ -439,8 +428,9 @@ self.modmailpro = function () {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
+            
             $messageCount.text(replyCount);
-
+            
             //Thread the message if required
             if (threadAlways) {
                 threadModmail(threadID);
@@ -451,7 +441,6 @@ self.modmailpro = function () {
             unansweredThreads.push(threadID);
 
             $messageCount.text('No replies');
-            $messageCount.addClass('no-replies');
 
             // Only hide invite spam with no replies.
             if (hideInviteSpam) {
@@ -557,7 +546,14 @@ self.modmailpro = function () {
         }
 
         self.endProfile("thread");
-        perfCounter(threadStart, "Thread process time");
+    }
+    
+    function addThreadUI($threads) {
+        var $subArea = $threads.find('.correspondent:first');
+        $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
+        $subArea.prepend(collapseLink);
+        $subArea.append($subFilter);
+        $subArea.after(infoArea);
     }
 
     function addNewThreadSupport() {
@@ -569,12 +565,13 @@ self.modmailpro = function () {
             if (!e.target.className) return;
 
             var $sender = $(e.target);
-
             if (!$sender.hasClass('message-parent')) {
                 //modmail.log('node return: ' + e.target.className);
                 return; //not RES, not flowwit, not load more comments, not realtime.
             }
 
+            start = performance.now();
+            
             var event = new CustomEvent("TBNewThings");
             self.log('node check');
 
@@ -593,7 +590,8 @@ self.modmailpro = function () {
                         }
                     }, 500);
                 }
-            } else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
+            }
+            else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
                 setTimeout(function () {
                     self.log('LMC go');
                     $sender.addClass('lmc-thread');
@@ -686,18 +684,6 @@ self.modmailpro = function () {
         self.log("--------------------------");
     }
 
-    // TODO: add to tbutils or tbmodule... not sure which just yet.
-    function perfCounter(startTime, note) {
-        if (!TB.utils.debugMode) return; //don't slow performance if not debugging.
-
-        var nowTime = performance.now(),
-            secs = (nowTime - startTime) / 1000;
-
-        self.log(note + ' in: ' + secs + ' seconds');
-
-        return nowTime;
-    }
-
     function setView() {
         var a = [], //hacky-hack for 'all' view.
             filteredSubs = getFilteredSubs();
@@ -773,7 +759,7 @@ self.modmailpro = function () {
         
         var $firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
 
-        if ($firstMessage.hasClass("hasThreads")) {
+        if ($firstMessage.hasClass("has-replies")) {
             $firstMessage.find(".thing").each(function () {
                 var parent = $("div.thing.id-" + $(this).data("parent"));
                 $(this).appendTo(parent.find("> .child"));
@@ -800,7 +786,7 @@ self.modmailpro = function () {
                     $message.find("> .entry .noncollapsed .expand").bind("click", collapse);
                     $message.find("> .entry .collapsed .expand").bind("click", noncollapse);
 
-                    $firstMessage.addClass("hasThreads");
+                    $firstMessage.addClass("has-replies");
                 }
             });
         }
@@ -844,7 +830,7 @@ self.modmailpro = function () {
                 id = $this.attr('data-fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
-                $this.find('.replied-tag').html('&nbsp;R');
+                $this.find('.replied-tag').html('&nbsp;(replied)');
                 $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });
@@ -957,17 +943,24 @@ self.modmailpro = function () {
 
     /// EVENTS ///
     $body.on('click', '.save', function (e) {
-        var parent = $(e.target).closest('.message-parent'),
-            id = $(parent).attr('data-fullname'),
+        var $parent = $(e.target).closest('.message-parent'),
+            id = $($parent).attr('data-fullname'),
             replied = getRepliedThreads();
 
         // Add sub to filtered subs.
         if ($.inArray(id, replied) === -1 && id !== null) {
             replied.push(id);
         }
-
+        
         self.setting('replied', replied);
-
+        
+        // Update UI
+        $parent.addClass('has-replies');
+        
+        var $infoArea = $parent.find('.info-area'),
+            numReplies = $parent.find('.entry').length - 1;
+        $infoArea.text(numReplies);
+        
         setReplied();
     });
 
@@ -1113,8 +1106,8 @@ self.mailDropDowns = function () {
     var COMPOSE = 'compose-message',
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',
-        $composeSelect = $('<li><select class="compose-mail" style="background:transparent;"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
-        $switchSelect = $('<li><select class="switch-mail" style="background:transparent;"><option value="' + SWITCH + '">switch mod mail</option></select></li>'),
+        $composeSelect = $('<li><select class="compose-mail"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
+        $switchSelect = $('<li><select class="switch-mail"><option value="' + SWITCH + '">switch mod mail</option></select></li>'),
         $mmpMenu = $('.mmp-menu');
 
     TBUtils.getModSubs(function () {

@@ -15,9 +15,12 @@
     border-top-right-radius: 0;
 }
 
-.tb-modmail-pro .message .subject .subreddit-name:hover,
-.tb-modmail-pro .message .subject .expand-btn:hover {
+.tb-modmail-pro .message .subject .subreddit-name:hover {
     color: rgba(51, 102, 153, 0.7);
+}
+
+.tb-modmail-pro .message .subject .expand-btn:hover {
+    text-decoration: underline;
 }
 
 /* Collapsing thing */
@@ -51,18 +54,23 @@
 
 /* Info area */
 
-.message .subject .info-area {
-    display: none;
+.message-parent > .subject .info-area {
+    display: none !important;
 }
 
-.tb-modmail-pro .message .subject .info-area {
-    display: inline-block;
+.tb-modmail-pro .message-parent > .subject .info-area {
+    display: inline-block !important;
     height: 17px;
-    padding: 2px 8px;
+    padding: 2px 4px;
     
     border-bottom-right-radius: 7px;
     border-left: medium none !important;
     border-top-right-radius: 7px;
+}
+
+.tb-modmail-pro .message-parent.has-replies > .subject .info-area {
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 /* Filtering */
@@ -74,7 +82,6 @@
     text-align: center;
     color: rgb(255, 69, 0);
     margin-left: 4px;
-    margin-right: 2px;
 }
 
 .tb-modmail-pro .filter-sub-link:hover {
@@ -83,11 +90,14 @@
 
 /* Message count */
 
-.tb-modmail-pro .info-area .tb-message-count.no-replies {
-    margin: 0 -8px;
-    
+.tb-modmail-pro .message-parent:not(.has-replies) .tb-message-count {
     color: rgba(51, 102, 153, 0.3);
     font-size: 10px;
+    font-weight: normal;
+}
+
+.tb-modmail-pro .message-parent.has-replies .replied-tag {
+    font-size: 12px;
     font-weight: normal;
 }
 

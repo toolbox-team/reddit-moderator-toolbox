@@ -171,7 +171,6 @@ self.init = function () {
         }
 
 
-
         TB.ui.longLoadSpinner(true, "Loading usernotes", TB.ui.FEEDBACK_NEUTRAL);
         setTimeout(function () {
             getSubNotes(sub); // wait a sec to make sure spinner is loaded.
@@ -306,7 +305,7 @@ self.init = function () {
     }
 
     function postToWiki(sub, json, reason) {
-        TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL, false);
+        TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
         
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
@@ -315,12 +314,12 @@ self.init = function () {
         TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
             if (succ) {
                 self.log("Success!");
-                TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, true, 2000);
+                TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, 2000);
                 run();
             } 
             else {
                 self.log("Failure: " + err);
-                TBui.textFeedback("Save failed: "+err, TBui.FEEDBACK_NEGATIVE, true, 5000);
+                TBui.textFeedback("Save failed: "+err, TBui.FEEDBACK_NEGATIVE, 5000);
             }
         });
     }
@@ -821,7 +820,7 @@ self.init = function () {
             "users": {}
         };
 
-        TBui.textFeedback("Adding new user note...", TBui.FEEDBACK_NEUTRAL, false);
+        TBui.textFeedback("Adding new user note...", TBui.FEEDBACK_NEUTRAL);
         
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -849,7 +848,6 @@ self.init = function () {
                     // Delete.
                     if (deleteNote) {
                         $(u.notes).each(function (idx) {
-
                             if (this.time == noteid) {
                                 u.notes.splice(idx, 1);
                             }

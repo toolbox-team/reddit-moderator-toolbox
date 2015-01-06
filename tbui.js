@@ -364,8 +364,6 @@
             // Add the element to the page.
             $body.append(feedbackElement);
 
-
-
             //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
             var $feedbackWindow = $body.find('#tb-feedback-window');
 
@@ -402,8 +400,7 @@
                 }
 
             // And fade out nicely after 3 seconds.
-            $feedbackWindow.delay(displayDuration !== undefined ? displayDuration : 3000).fadeOut();
-
+            $feedbackWindow.delay(displayDuration ? displayDuration : 3000).fadeOut();
         }
     };
     

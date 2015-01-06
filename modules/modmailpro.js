@@ -259,6 +259,9 @@ self.modmailpro = function () {
         
         // Enable as much CSS can be done at this point
         enablePureCSSFeatures();
+
+        // Add support for detecting NER, realtime and LMC threads.
+        addNewThreadSupport();
         
         // Collapse everything if enabled
         if (collapsed) {
@@ -335,12 +338,10 @@ self.modmailpro = function () {
             setReplied($unprocessedThreads);
             setView();
 
-            //finally, add LMC support
-            addNewThreadSupport();
 
             TB.ui.longLoadNonPersistent(false);
 
-            // Because realtime or LMC may have pulled more threads during init.
+            // I can't actually imagine this happening.
             if ($('.message-parent:not(.mmp-processed)').length > 0) {
                 initialize();
             }
@@ -560,46 +561,56 @@ self.modmailpro = function () {
         if (newThreadSupport) return;
         newThreadSupport = true;
 
-        // RES NER support.
-        $body.find('div.content').on('DOMNodeInserted', function (e) {
-            if (!e.target.className) return;
+        var event = new CustomEvent("TBNewThings");
 
+        // realtime support
+        $body.find('div.content').on('DOMNodeInserted', '.realtime-new', function (e) {
+            self.log('realtime! realtime!');
             var $sender = $(e.target);
             if (!$sender.hasClass('message-parent')) {
-                //modmail.log('node return: ' + e.target.className);
-                return; //not RES, not flowwit, not load more comments, not realtime.
+                return;
             }
 
             start = performance.now();
-            
-            var event = new CustomEvent("TBNewThings");
-            self.log('node check');
 
-            if ($sender.hasClass('realtime-new')) { //new thread
-                var attrib = $sender.attr('data-fullname');
-                if (attrib) {
-                    setTimeout(function () {
-                        self.log('realtime go');
-                        var thread = $(".message-parent[data-fullname='" + attrib + "']");
-                        if (thread.length > 1) {
-                            $sender.remove();
-                        } else {
-                            processThread(thread);
-                            sentFromMMP = true;
-                            window.dispatchEvent(event);
-                        }
-                    }, 500);
+            var attrib = $sender.attr('data-fullname');
+
+            setTimeout(function () {
+                self.log('realtime go');
+                var thread = $(".message-parent[data-fullname='" + attrib + "']");
+                if (thread.length > 1) {
+                    $sender.remove();
+                } else {
+                    processThread(thread);
+                    sentFromMMP = true;
+                    window.dispatchEvent(event);
                 }
-            }
-            else if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) !== -1) { //check for 'load more comments'
+            }, 500);
+
+        });
+
+        // LMC support
+        $body.on('click', '[id^=more_]', function() {
+            self.log('LMC! LMC!');
+            $body.find('div.content').on('DOMNodeInserted', '.message-parent', function (e) {
+                var $sender = $(e.target);
+
+                if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) === -1) {
+                    return;
+                }
+
+                start = performance.now();
+
                 setTimeout(function () {
                     self.log('LMC go');
                     $sender.addClass('lmc-thread');
                     processThread($sender);
                     sentFromMMP = true;
                     window.dispatchEvent(event);
+                    $body.find('div.content').off('DOMNodeInserted', '.message-parent');
                 }, 500);
-            }
+
+            });
         });
 
         // NER support.
@@ -608,10 +619,11 @@ self.modmailpro = function () {
                 sentFromMMP = false;
                 return;
             }
+            self.log('NER! NER!');
             initialize();
         });
     }
-    
+
     function highlightNewThreads($threads) {
         self.startProfile('highlight-new-jquery');
         

@@ -140,7 +140,7 @@ self.register_setting('twoPhaseProcessing', {
 });
 
 // Allow default bot view IF user has filterBots enabled.
-if (self.setting('filterBots')){
+if (self.setting('filterBots')) {
     self.settings['inboxStyle']['values'] = ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered', 'Bots'];
 }
 
@@ -158,7 +158,7 @@ self.modmailpro = function () {
     var $body = $('body');
 
     var ALL = 'all', PRIORITY = 'priority', FILTERED = 'filtered', REPLIED = 'replied', UNREAD = 'unread', UNANSWERED = 'unanswered', BOTS = 'bots';
-    
+
     self.startProfile('settings-access');
     var INVITE = "moderator invited",
         ADDED = "moderator added",
@@ -204,7 +204,7 @@ self.modmailpro = function () {
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>'),
         $subFilter = $('<a href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>');
-    
+
     var infoArea =
         '<span class="info-area correspondent">\
             <span class="tb-message-count" title="Number of replies to the message."></span>\
@@ -212,7 +212,7 @@ self.modmailpro = function () {
         </span>';
 
     var collapseLink = '<a href="javascript:;" class="collapse-link">−</a>';
-    
+
     //TODO: move to CSS
     var selectedCSS = {
         "color": "orangered",
@@ -222,7 +222,7 @@ self.modmailpro = function () {
         "color": "#369",
         "font-weight": "normal"
     };
-    
+
     self.endProfile('common-element-gen');
 
     // Find and clear menu list.
@@ -248,21 +248,21 @@ self.modmailpro = function () {
 
 
     initialize();
-    
+
     // Processing functions
-    
+
     function initialize() {
         self.startProfile('initialize');
         self.log('MMP init');
-        
+
         TB.ui.longLoadNonPersistent(true);
-        
+
         // Enable as much CSS can be done at this point
         enablePureCSSFeatures();
 
         // Add support for detecting NER, realtime and LMC threads.
         addNewThreadSupport();
-        
+
         // Collapse everything if enabled
         if (collapsed) {
             $body.find('.entry').css('display', 'none');
@@ -278,7 +278,7 @@ self.modmailpro = function () {
         self.log('\tProcessing fast = ' + $processFastly.length);
 
         addThreadUI($unprocessedThreads);
-        
+
         // Start process
         if (twoPhaseProcessing) {
             processThreads($processSlowly, 1, threadProcessRate, slowComplete, "slow");
@@ -286,7 +286,7 @@ self.modmailpro = function () {
         else {
             processThreads($unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, "full");
         }
-        
+
         function processThreads(threads, chunkSize, processRate, completeAction, profileKey) {
             TBUtils.forEachChunked(threads, chunkSize, processRate,
                 function (thread, count, array) {
@@ -297,18 +297,18 @@ self.modmailpro = function () {
                 function complete() {
                     self.endProfile('batch-process-' + profileKey);
                     self.log('Batch ' + profileKey + ' complete');
-                    
+
                     completeAction();
                 },
                 function start() {
                     self.startProfile('batch-process-' + profileKey);
                 });
         }
-        
+
         function slowComplete() {
-            processThreads($processFastly, chunkProcessSize, threadProcessRate/2, fastComplete, "fast");
+            processThreads($processFastly, chunkProcessSize, threadProcessRate / 2, fastComplete, "fast");
         }
-        
+
         function fastComplete() {
             self.setting('lastVisited', now);
 
@@ -357,14 +357,14 @@ self.modmailpro = function () {
             $body.addClass('tb-no-red-modmail');
         }
     }
-    
+
     function enableCSSFeatures() {
         $body.addClass('tb-modmail-pro');
         if (fadeRecipient) {
             $body.addClass('tb-fade-recipient');
         }
     }
-    
+
     function processThread(thread) {
         self.startProfile("thread");
         self.startProfile("thread-info");
@@ -416,7 +416,7 @@ self.modmailpro = function () {
         // Only one feature needs this, so disable it because it's costly.
         if (hideInviteSpam) {
             self.startProfile("thread-hide-invite-spam");
-            
+
             $thread.find('.subject:first').contents().filter(function () {
                 return this.nodeType === 3;
             }).wrap($('<span>').addClass('message-title'));
@@ -429,9 +429,9 @@ self.modmailpro = function () {
                 replyCount = replyCount.toString() + '+';
                 moreCommentThreads.push(threadID);
             }
-            
+
             $messageCount.text(replyCount);
-            
+
             //Thread the message if required
             if (threadAlways) {
                 threadModmail(threadID);
@@ -461,7 +461,7 @@ self.modmailpro = function () {
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
         if (subredditColor) {
             self.startProfile("thread-sr-color");
-            
+
             var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
                 colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
 
@@ -476,19 +476,19 @@ self.modmailpro = function () {
             TBUtils.forEachChunked($entries, 5, entryProcessRate,
                 function (entry, idx, array) {
                     self.startProfile('fade-recipient-internal');
-                    
+
                     // Fade the recipient of a modmail so it is much more clear WHO send it.
                     var $entry = $(entry),
                         $head = $entry.find('.tagline .head'),
                         $fadedRecipient;
-    
+
                     // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
-    
+
                     // If there are two usernames we'll fade out the first one.
                     if ($head.find('a.author').length > 1) {
                         $fadedRecipient = $head.find('a.author').eq(1);
                         $fadedRecipient.addClass('recipient');
-                        
+
                         // RES Stuff and userattrs
                         $head.addClass('tb-remove-res-two');
                         $head.find('.userattrs').eq(1).css('display', 'none');
@@ -497,12 +497,12 @@ self.modmailpro = function () {
                     else if (/^to /.test($head.text())) {
                         $fadedRecipient = $head.find('a.author');
                         $fadedRecipient.addClass('recipient');
-                        
+
                         // RES Stuff and userattrs
                         $head.addClass('tb-remove-res-one');
                         $head.find('.userattrs').css('display', 'none');
                     }
-                    
+
                     self.endProfile('fade-recipient-internal');
                 },
                 function complete() {
@@ -548,7 +548,7 @@ self.modmailpro = function () {
 
         self.endProfile("thread");
     }
-    
+
     function addThreadUI($threads) {
         var $subArea = $threads.find('.correspondent:first');
         $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
@@ -590,7 +590,7 @@ self.modmailpro = function () {
         });
 
         // LMC support
-        $body.on('click', '[id^=more_]', function() {
+        $body.on('click', '[id^=more_]', function () {
             self.log('LMC! LMC!');
             $body.find('div.content').on('DOMNodeInserted', '.message-parent', function (e) {
                 var $sender = $(e.target);
@@ -626,7 +626,7 @@ self.modmailpro = function () {
 
     function highlightNewThreads($threads) {
         self.startProfile('highlight-new-jquery');
-        
+
         $threads.find('.entry:last').each(function (key, entry) {
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
@@ -643,10 +643,10 @@ self.modmailpro = function () {
         });
 
         self.endProfile('highlight-new-jquery');
-        
+
         TBUtils.forEachChunked($('.new-messages').find('.entry'), 10, entryProcessRate, function (entry) {
             self.startProfile('highlight-new-internal');
-            
+
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
@@ -670,10 +670,10 @@ self.modmailpro = function () {
             self.startProfile('highlight-new');
         });
     }
-    
+
     function finalize() {
         enableCSSFeatures();
-        
+
         // Tell the user how quick and awesome we are.
         var nowTime = performance.now(),
             secs = (nowTime - start) / 1000;
@@ -681,17 +681,17 @@ self.modmailpro = function () {
         // Round time
         secs = Math.round(secs * 100) / 100;
 
-        TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000 , TB.ui.DISPLAY_BOTTOM);
+        TB.ui.textFeedback('Mod mail loaded in: ' + secs + ' seconds', TB.ui.FEEDBACK_POSITIVE, 2000, TB.ui.DISPLAY_BOTTOM);
 
         // Profiling results
         self.endProfile('initialize');
-        
+
         self.log("Profiling results: modmail");
         self.log("--------------------------");
         self.getProfiles().forEach(function (profile, key) {
             self.log(key + ":");
-            self.log("\tTime  = "+profile.time.toFixed(4));
-            self.log("\tCalls = "+profile.calls);
+            self.log("\tTime  = " + profile.time.toFixed(4));
+            self.log("\tCalls = " + profile.calls);
         });
         self.log("--------------------------");
     }
@@ -768,7 +768,7 @@ self.modmailpro = function () {
 
     function threadModmail(fullname) {
         self.startProfile("threading");
-        
+
         var $firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
 
         if ($firstMessage.hasClass("has-replies")) {
@@ -779,7 +779,7 @@ self.modmailpro = function () {
         }
         else {
             var id = fullname.substring(3);
-            
+
             $.getJSON("//www.reddit.com/message/messages/" + id + ".json", null, function (data) {
                 var messages = data.data.children[0].data.replies.data.children;
 
@@ -963,16 +963,16 @@ self.modmailpro = function () {
         if ($.inArray(id, replied) === -1 && id !== null) {
             replied.push(id);
         }
-        
+
         self.setting('replied', replied);
-        
+
         // Update UI
         $parent.addClass('has-replies');
-        
+
         var $infoArea = $parent.find('.info-area'),
             numReplies = $parent.find('.entry').length - 1;
         $infoArea.text(numReplies);
-        
+
         setReplied();
     });
 

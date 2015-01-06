@@ -365,12 +365,20 @@ self.modmailpro = function () {
     }
     
     function processThread(thread) {
-        var $thread = $(thread);
-        $thread.addClass('mmp-processed');
-
         self.startProfile("thread");
         self.startProfile("thread-info");
         self.startProfile("thread-jquery");
+
+        var $thread = $(thread),
+            newThread = $thread.hasClass('realtime-new'),
+            lmcThread = $thread.hasClass('lmc-thread');
+
+        $thread.addClass('mmp-processed');
+
+        // Add back UI for new threads *before* any $thread.find()'s
+        if (newThread || lmcThread) {
+            addThreadUI($thread);
+        }
 
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
@@ -379,21 +387,13 @@ self.modmailpro = function () {
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
-            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view");
+            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view"),
 
-        
-        self.endProfile("thread-jquery");
-        
-        var threadID = $thread.attr('data-fullname'),
+            threadID = $thread.attr('data-fullname'),
             replyCount = ($entries.length - 1),
-            subreddit = getSubname($thread),
-            newThread = $thread.hasClass('realtime-new'),
-            lmcThread = $thread.hasClass('lmc-thread');
+            subreddit = getSubname($thread);
 
-        // Add back UI for new threads.
-        if (newThread || lmcThread) {
-            addThreadUI($thread);
-        }
+        self.endProfile("thread-jquery");
 
         self.log("\tNum entries = " + $entries.length);
         self.log("\tNum replies = " + replyCount);

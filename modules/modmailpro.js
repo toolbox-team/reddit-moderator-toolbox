@@ -752,7 +752,7 @@ self.modmailpro = function () {
         }
 
         // Hide invite spam.
-        if (filterBots && (inbox != UNREAD && inbox != BOTS)) {
+        if (filterBots && inbox == PRIORITY) {
             $('.botspam').each(function () {
                 var $this = $(this);
                 if ($this.hasClass('new')) {
@@ -1107,7 +1107,7 @@ self.autoLoad = function () {
         TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
         self.log('real time a gogo: ' + limit);
-        TBUtils.addToSiteTaable(updateURL + String(limit), function (resp) {
+        TBUtils.addToSiteTable(updateURL + String(limit), function (resp) {
             if (!resp) return;
             var $things = $(resp).find('.message-parent').hide().addClass('realtime-new');
             var $siteTable = $('#siteTable');

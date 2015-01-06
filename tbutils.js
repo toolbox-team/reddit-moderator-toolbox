@@ -1285,7 +1285,7 @@ function initwrapper() {
     };
 
 
-    TBUtils.addToSiteTaable = function (URL, callback) {
+    TBUtils.addToSiteTable = function (URL, callback) {
         if (!URL || !callback) callback(null);
 
         $.get(URL, function (resp) {
@@ -1404,6 +1404,11 @@ function initwrapper() {
             window.dispatchEvent(event);
         }, 1000);
     });
+
+    // NER support. todo: finish this.
+    //window.addEventListener("neverEndingLoad", function () {
+    //    $.log('NER! NER! NER! NER!');
+    //});
 
 
     window.onbeforeunload = function () {

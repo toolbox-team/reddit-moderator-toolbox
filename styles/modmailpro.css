@@ -91,7 +91,7 @@
 /* Message count */
 
 .tb-modmail-pro .message-parent:not(.has-replies) .tb-message-count {
-    color: rgba(51, 102, 153, 0.3);
+    color: rgb(51, 102, 153);
     font-size: 10px;
     font-weight: normal;
 }

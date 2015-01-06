@@ -543,6 +543,13 @@ self.modmailpro = function () {
                 $thread.find('.expand-btn:first')[0].click();
             }
 
+            // recolor new threads.
+            if ($.inArray(threadID, unreadThreads) !== -1) {
+                $infoArea.addClass('new-highlight');
+                $subredditArea.addClass('new-highlight');
+                $thread.addClass('new-messages');
+            }
+
             setFilterLinks($thread);
         }
 

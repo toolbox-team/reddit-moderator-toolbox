@@ -338,11 +338,11 @@
         });
 
         $.each(available, function () {
-            $available_list.append($('<option>').attr('value', this).text('/r/' + this));
+            $available_list.append($('<option>').attr('value', this).text(this));
         });
 
         $.each(selected, function () {
-            $selected_list.append($('<option>').attr('value', this).text('/r/' + this));
+            $selected_list.append($('<option>').attr('value', this).text(this));
         });
 
         return $select_multiple;

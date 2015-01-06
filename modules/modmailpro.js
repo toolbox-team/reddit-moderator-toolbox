@@ -211,7 +211,7 @@ self.modmailpro = function () {
             <span class="tb-replied-tag"></span>\
         </span>';
 
-    var collapseLink = '<a href="javascript:;" class="collapse-link">−</a>';
+    var collapseLink = '<a href="javascript:;" class="tb-collapse-link">−</a>';
 
     //TODO: move to CSS
     var selectedCSS = {
@@ -384,7 +384,7 @@ self.modmailpro = function () {
         var $infoArea = $thread.find('.info-area'),
             $entries = $thread.find('.entry'),
             $messageCount = $infoArea.find('.tb-message-count'),
-            $collapseLink = $thread.find(".collapse-link"),
+            $collapseLink = $thread.find(".tb-collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
             $subject = $thread.find(".subject"),
             $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
@@ -930,7 +930,7 @@ self.modmailpro = function () {
         });
 
         $link.text('expand all');
-        $('.collapse-link').text('+');
+        $('.tb-collapse-link').text('+');
     }
 
     function expandall() {
@@ -957,7 +957,7 @@ self.modmailpro = function () {
         });
 
         $link.text('collapse all');
-        $('.collapse-link').text('−');
+        $('.tb-collapse-link').text('−');
     }
 
     /// EVENTS ///
@@ -1000,7 +1000,7 @@ self.modmailpro = function () {
         }
     });
 
-    $body.on('click', '.collapse-link', function () {
+    $body.on('click', '.tb-collapse-link', function () {
         var $this = $(this),
             $parent = $this.closest('.message-parent');
         if (!$parent.hasClass('mmp-collapsed')) {

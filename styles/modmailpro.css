@@ -24,31 +24,55 @@
 }
 
 /* Collapsing thing */
-
-.message .subject .collapse-link {
+/*  Disabled until there is solid benchmarks that show this makes any real difference in load times.
+.message .subject .tb-collapse-link {
     display: none;
 }
 
-.tb-modmail-pro .message .subject .collapse-link {
+.tb-modmail-pro .message .subject .tb-collapse-link {
     display: inline-block;
     margin-right: 6px;
 }
 
-.tb-modmail-pro .message .collapse-link::before {
+.tb-modmail-pro .message .tb-collapse-link::before {
     content: "[";
     position: relative;
 }
 
-.tb-modmail-pro .message .collapse-link:hover::before {
+.tb-modmail-pro .message .tb-collapse-link:hover::before {
     right: 1px;
 }
 
-.tb-modmail-pro .message  .collapse-link::after {
+.tb-modmail-pro .message  .tb-collapse-link::after {
     content: "]";
     position: relative;
 }
 
-.tb-modmail-pro .message .collapse-link:hover::after {
+.tb-modmail-pro .message .tb-collapse-link:hover::after {
+    left: 1px;
+}
+*/
+
+.message .subject .tb-collapse-link {
+    display: inline-block;
+    margin-right: 6px;
+}
+
+.message .tb-collapse-link::before {
+    content: "[";
+    position: relative;
+}
+
+.message .tb-collapse-link:hover::before {
+    right: 1px;
+}
+
+.message  .tb-collapse-link::after {
+    content: "]";
+    position: relative;
+}
+
+.message .tb-collapse-link:hover::after {
     left: 1px;
 }
 

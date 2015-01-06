@@ -257,9 +257,6 @@ self.modmailpro = function () {
 
         TB.ui.longLoadNonPersistent(true);
 
-        // Enable as much CSS can be done at this point
-        enablePureCSSFeatures();
-
         // Add support for detecting NER, realtime and LMC threads.
         addNewThreadSupport();
 
@@ -279,6 +276,9 @@ self.modmailpro = function () {
 
         addThreadUI($unprocessedThreads);
 
+        // Enable as much CSS can be done at this point
+        enablePreProcessFeatures();
+        
         // Start process
         if (twoPhaseProcessing) {
             processThreads($processSlowly, 1, threadProcessRate, slowComplete, "slow");
@@ -352,13 +352,14 @@ self.modmailpro = function () {
         }
     }
 
-    function enablePureCSSFeatures() {
+    function enablePreProcessFeatures() {
+        $body.addClass('tb-collapse');
         if (noRedModmail) {
             $body.addClass('tb-no-red-modmail');
         }
     }
 
-    function enableCSSFeatures() {
+    function enablePostProcessFeatures() {
         $body.addClass('tb-modmail-pro');
         if (fadeRecipient) {
             $body.addClass('tb-fade-recipient');
@@ -679,7 +680,7 @@ self.modmailpro = function () {
     }
 
     function finalize() {
-        enableCSSFeatures();
+        enablePostProcessFeatures();
 
         // Tell the user how quick and awesome we are.
         var nowTime = performance.now(),

@@ -132,17 +132,26 @@
 
 /* Recipient fading */
 
-.tb-fade-recipient .message .entry .recipient {
+.tb-fade-recipient .message .entry .tb-recipient {
     background-color: rgba(0, 0, 0, 0) !important;
     color: #888 !important;
 }
 
-.tb-fade-recipient .message .entry .recipient.moderator {
+.tb-fade-recipient .message .entry .tb-recipient.moderator {
     color: #588858 !important;
     background-color: rgba(0, 0, 0, 0) !important;
 }
 
-.tb-fade-recipient .message .entry .recipient.admin {
+.tb-fade-recipient .message .entry .tb-recipient.admin {
     color: #B20606 !important;
     background-color: rgba(0, 0, 0, 0) !important;
+}
+
+
+/* MMP remove res stuff if needed */
+/* I give up on this shit.  CSS is a fucking joke. */
+.tb-fade-recipient .recipient .RESUserTag,
+.tb-fade-recipient .recipient .voteWeight,
+{
+    display: none !important;
 }

@@ -2062,15 +2062,6 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 }
 
 
-/* MMP remove res stuff if needed */
-.mod-toolbox .tb-remove-res-two b:nth-of-type(3) .RESUserTag,
-.mod-toolbox .tb-remove-res-two b:nth-of-type(3) .voteWeight,
-.mod-toolbox .tb-remove-res-one .voteWeight,
-.mod-toolbox .tb-remove-res-one .RESUserTag
-{
-    display: none !important;
-}
-
 #tb-config-help {
     float: right;
     padding-right: 10px;

@@ -414,17 +414,6 @@ self.modmailpro = function () {
         $subject.append($threadTrigger);
         $subject.append($flatTrigger);
 
-        // Only one feature needs this, so disable it because it's costly.
-        if (hideInviteSpam) {
-            self.startProfile("thread-hide-invite-spam");
-
-            $thread.find('.subject:first').contents().filter(function () {
-                return this.nodeType === 3;
-            }).wrap($('<span>').addClass('message-title'));
-
-            self.endProfile("thread-hide-invite-spam");
-        }
-
         if (replyCount > 0) {
             if ($thread.hasClass('moremessages')) {
                 replyCount = replyCount.toString() + '+';
@@ -446,7 +435,7 @@ self.modmailpro = function () {
 
             // Only hide invite spam with no replies.
             if (hideInviteSpam) {
-                var title = $thread.find('.message-title').text().trim();
+                var title = $thread.find('.subject-text').text().trim();
                 if (title === INVITE || title === ADDED) {
                     $thread.addClass('invitespam');
                 }
@@ -480,28 +469,16 @@ self.modmailpro = function () {
 
                     // Fade the recipient of a modmail so it is much more clear WHO send it.
                     var $entry = $(entry),
-                        $head = $entry.find('.tagline .head'),
-                        $fadedRecipient;
+                        $fadedRecipient = $entry.find('.recipient a.author');
 
                     // Ok this might be a tad complicated but it makes sure to fade out the recipient and also remove all reddit and RES clutter added to usernames.
 
                     // If there are two usernames we'll fade out the first one.
-                    if ($head.find('a.author').length > 1) {
-                        $fadedRecipient = $head.find('a.author').eq(1);
-                        $fadedRecipient.addClass('recipient');
-
-                        // RES Stuff and userattrs
-                        $head.addClass('tb-remove-res-two');
-                        $head.find('.userattrs').eq(1).css('display', 'none');
-                    }
-                    // If it is just one username we'll only fade it out if the line contains "to" since that's us.
-                    else if (/^to /.test($head.text())) {
-                        $fadedRecipient = $head.find('a.author');
-                        $fadedRecipient.addClass('recipient');
-
-                        // RES Stuff and userattrs
-                        $head.addClass('tb-remove-res-one');
+                    if ($fadedRecipient) {
+                        var $head = $fadedRecipient.closest('.head');
                         $head.find('.userattrs').css('display', 'none');
+
+                        $fadedRecipient.addClass('tb-recipient');
                     }
 
                     self.endProfile('fade-recipient-internal');

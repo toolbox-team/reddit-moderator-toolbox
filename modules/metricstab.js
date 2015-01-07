@@ -1,9 +1,9 @@
-function stattittab() {
+function metricstab() {
 
 // @copyright  2013+, LowSociety, dakta
 
-var self = new TB.Module('Stattit Tab');
-self.shortname = 'Stattit';
+var self = new TB.Module('Metrics Tab');
+self.shortname = 'Metrics';
 
 self.settings['enabled']['default'] = true;
 
@@ -53,6 +53,6 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBObjectLoaded", function () {
-        stattittab();
+        metricstab();
     });
 })();

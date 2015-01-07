@@ -148,7 +148,7 @@ function initwrapper() {
         }
 
         // no longer used.
-        delete localStorage['Toolbox.UserNotes.unManager'];
+        localStorage.removeItem('Toolbox.UserNotes.unManager');
 
         // MMP use to store filtered subs in lower case.  We should not.
         TBStorage.setSetting('ModMail', 'filteredSubs', []);
@@ -158,6 +158,10 @@ function initwrapper() {
 
         // enable autoload by default.
         TBStorage.setSetting('ModMail', 'autoLoad', true);
+
+        // 'stattit tab' is now 'metrics tab'.  Migrate enabled, delete old key.
+        TBStorage.setSetting('Metrics', 'enabled', TBStorage.getSetting('Stattit', 'enabled', true));
+        localStorage.removeItem('Toolbox.Stattit.enabled');
 
         // End: version changes.
 

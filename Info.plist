@@ -47,7 +47,7 @@
 				<string>modules/usernotes.js</string>
 				<string>modules/modbutton.js</string>
 				<string>modules/modmailpro.js</string>
-				<string>modules/stattittab.js</string>
+				<string>modules/metricstab.js</string>
 				<string>modules/comment.js</string>
 				<string>modules/config.js</string>
 				<string>modules/modmatrix.js</string>

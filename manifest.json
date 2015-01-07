@@ -51,7 +51,7 @@
 		"modules/usernotes.js",
 		"modules/modbutton.js",
 		"modules/modmailpro.js",
-		"modules/stattittab.js",
+		"modules/metricstab.js",
 		"modules/comment.js",
 		"modules/config.js",
 		"modules/modmatrix.js",

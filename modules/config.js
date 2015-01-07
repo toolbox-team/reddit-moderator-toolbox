@@ -935,7 +935,7 @@ TB.register_module(self);
 } // tbconfig() wrapper
 
 (function() {
-    window.addEventListener('TBUtilsLoaded', function () {
+    window.addEventListener('TBObjectLoaded', function () {
         tbConfig();
     });
 })();

@@ -856,7 +856,7 @@ TB.register_module(self);
 
 (function () {
     // wait for storage
-    window.addEventListener("TBUtilsLoaded", function () {
+    window.addEventListener("TBObjectLoaded", function () {
         modmatrix();
     });
 })();

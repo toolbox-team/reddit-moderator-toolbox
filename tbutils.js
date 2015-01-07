@@ -547,8 +547,6 @@ function initwrapper() {
 
     TBUtils.cleanSubredditName = function(dirtySub) {
         dirtySub = dirtySub.replace('/r/', '').replace('/', '').trim();
-        dirtySub = TBUtils.replaceAll('[−]', '', dirtySub);
-        dirtySub = TBUtils.replaceAll('[+]', '', dirtySub);
         return dirtySub;
     };
 
@@ -646,11 +644,11 @@ function initwrapper() {
             $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender),
             $thing = $($sender.closest('.thing')[0] || $sender),
             user = $entry.find('.author:first').text() || $thing.find('.author:first').text(),
-            subreddit = TBUtils.post_site || $entry.find('.subreddit').text() || $thing.find('.subreddit').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
+            subreddit = TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
             permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href'),
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
-            body = '> ' + ($entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text()).split('\n').join('\n> ');
+            body = '> ' + ($entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text()).split('\n').join('\n> '),
 
         // These need some fall backs, but only removal reasons use them for now.
             title = $thing.find('a.title').length ? $thing.find('a.title').text() : '',
@@ -670,6 +668,9 @@ function initwrapper() {
 
         // If we still don't have a sub, we're in mod mail, or PMs.
         if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+            // Change it to use the parent's title.
+            title = $sender.find('.subject-text:first').text();
+
             subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
 
             //This is a weird palce to go about this, and the conditions are strange,

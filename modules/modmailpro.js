@@ -291,7 +291,7 @@ self.modmailpro = function () {
             TBUtils.forEachChunked(threads, chunkSize, processRate,
                 function (thread, count, array) {
                     self.log('Running thread batch: ' + (count + 1) + ' of ' + array.length);
-                    self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
+                    //self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
                     processThread(thread);
                 },
                 function complete() {
@@ -391,12 +391,19 @@ self.modmailpro = function () {
             $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
             $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view"),
 
-            threadID = $thread.attr('data-fullname'),
-            replyCount = ($entries.length - 1),
-            subreddit = getSubname($thread);
+            threadInfo = TB.utils.getThingInfo($thread),
+            threadID = threadInfo.id,
+            subreddit = threadInfo.subreddit,
+            title = threadInfo.title,
+            sender = threadInfo.author,
+            replyCount = ($entries.length - 1);
+
+        // Set subreddit name.
+        $thread.data('subreddit', subreddit);
 
         self.endProfile("thread-jquery");
 
+        self.log('Processing thread: ' + title + ' in: /r/' + subreddit);
         self.log("\tNum entries = " + $entries.length);
         self.log("\tNum replies = " + replyCount);
 
@@ -435,7 +442,6 @@ self.modmailpro = function () {
 
             // Only hide invite spam with no replies.
             if (hideInviteSpam) {
-                var title = $thread.find('.subject-text').text().trim();
                 if (title === INVITE || title === ADDED) {
                     $thread.addClass('invitespam');
                 }
@@ -443,7 +449,7 @@ self.modmailpro = function () {
         }
 
         if (filterBots) {
-            if ($.inArray(TB.utils.getThingInfo($thread).user, botsToFilter) != -1) {
+            if ($.inArray(sender, botsToFilter) != -1) {
                 $thread.addClass('botspam');
             }
         }
@@ -559,7 +565,7 @@ self.modmailpro = function () {
 
             start = performance.now();
 
-            var attrib = $sender.attr('data-fullname');
+            var attrib = $sender.data('fullname');
 
             setTimeout(function () {
                 self.log('realtime go');
@@ -580,7 +586,7 @@ self.modmailpro = function () {
             self.log('LMC! LMC!');
             $body.find('div.content').on('DOMNodeInserted', '.message-parent', function (e) {
                 var $sender = $(e.target);
-                if ($.inArray($sender.attr('data-fullname'), moreCommentThreads) === -1) {
+                if ($.inArray($sender.data('fullname'), moreCommentThreads) === -1) {
                     return;
                 }
 
@@ -806,14 +812,15 @@ self.modmailpro = function () {
 
         // I think I could do this by just locating .filter-sub-link.
         threads.each(function () {
-            var subname = getSubname(this);
-            var linktext = 'F';
+            var $this = $(this),
+                subname = $this.data('subreddit'),
+                linktext = 'F';
 
             if ($.inArray(subname, getFilteredSubs()) !== -1) {
                 linktext = 'U';
             }
 
-            $(this).find('.filter-sub-link').text(linktext);
+            $this.find('.filter-sub-link').text(linktext);
         });
     }
 
@@ -824,19 +831,13 @@ self.modmailpro = function () {
 
         threads.each(function () {
             var $this = $(this),
-                id = $this.attr('data-fullname');
+                id = $this.data('fullname');
 
             if ($.inArray(id, getRepliedThreads()) !== -1) {
                 $this.find('.tb-replied-tag').html(' Replied');
                 $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });
-    }
-
-    function getSubname(sub) {
-        var name = $(sub).find('.subject .subreddit-name').text();
-        name = TB.utils.cleanSubredditName(name);
-        return name;
     }
 
     function getFilteredSubs() {
@@ -861,14 +862,14 @@ self.modmailpro = function () {
             $this.css('display', 'none');
 
             if (!byID) {
-                var subname = getSubname(this);
+                var subname = $this.data('subreddit');
 
                 if ($.inArray(subname, items) !== -1) {
                     $this.css('display', '');
                 }
 
             } else {
-                var id = $this.attr('data-fullname');
+                var id = $this.data('fullname');
 
                 if ($.inArray(id, items) !== -1) {
                     $this.css('display', '');
@@ -879,8 +880,9 @@ self.modmailpro = function () {
 
     function hideThreads(subs) {
         $('.message-parent').each(function () {
-            var subname = getSubname(this);
-            var $this = $(this);
+            var $this = $(this),
+                subname = $this.data('subreddit');
+
             $this.css('display', '');
 
             if ($.inArray(subname, subs) !== -1) {
@@ -902,9 +904,10 @@ self.modmailpro = function () {
             threads = $('.message-parent');
         }
 
-        TBUtils.forEachChunked(threads, 25, 250, function (thread) {
-            $(thread).find('.entry').hide();
-            $(thread).find('.expand-btn').hide();
+        TBUtils.forEachChunked(threads, 25, 250, function () {
+            $this = $(this);
+            $this.find('.entry').css('display', 'none');
+            $this.find('.expand-btn').css('display', 'none');
         });
 
         $link.text('expand all');
@@ -922,15 +925,16 @@ self.modmailpro = function () {
         var threads = $('.message-parent');
 
         TBUtils.forEachChunked(threads, 35, 250, function (thread) {
-            $(thread).find('.entry').show();
-            $(thread).find('.expand-btn').show();
+            $this = $(this);
+            $this.find('.entry').css('display', '');
+            $this.find('.expand-btn').css('display', '');
 
             if (expandReplies) {
-                $(thread).find('.expand-btn:first')[0].click();
+                $this.find('.expand-btn:first')[0].click();
             }
 
             if (threadOnExpand) {
-                $(thread).find('.tb-thread-view')[0].click();
+                $this.find('.tb-thread-view')[0].click();
             }
         });
 
@@ -941,7 +945,7 @@ self.modmailpro = function () {
     /// EVENTS ///
     $body.on('click', '.save', function (e) {
         var $parent = $(e.target).closest('.message-parent'),
-            id = $($parent).attr('data-fullname'),
+            id = $parent.data('fullname'),
             replied = getRepliedThreads();
 
         // Add sub to filtered subs.
@@ -1013,9 +1017,8 @@ self.modmailpro = function () {
     });
 
     $body.on('click', '.filter-sub-link', function (e) {
-        var subname = getSubname($(e.target).closest('.message-parent')),
-            filtersubs = getFilteredSubs(),
-            $filterCount = $('.filter-count');
+        var subname = $(e.target).closest('.message-parent').data('subreddit'),
+            filtersubs = getFilteredSubs();
 
         // Add sub to filtered subs.
         if ($.inArray(subname, filtersubs) === -1) {
@@ -1032,10 +1035,6 @@ self.modmailpro = function () {
 
         // Relabel links
         setFilterLinks();
-
-        // Update filter count in settings.
-        $filterCount.text(filtersubs.length);
-        $filterCount.attr('title', filtersubs.join(', '));
     });
 };
 

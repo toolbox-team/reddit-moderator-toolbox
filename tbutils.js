@@ -681,13 +681,11 @@ function initwrapper() {
             // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
 
             // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
-            if ($entry.find('.tagline .head a.author').length > 1) {
-                user = $entry.find('.tagline .head a.author').eq(0).text();
-            }
+            user = $entry.find('.sender a.author').text();
 
             // If there is only one use present and it says "to" it means that this is not the user sending the message.
 
-            if ($entry.find('.tagline .head a.author').length === 1 && /^to /.test($entry.find('.tagline .head').text())) {
+            if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
                 user = TBUtils.logged;
             }
 

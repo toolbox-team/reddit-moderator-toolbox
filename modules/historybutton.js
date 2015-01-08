@@ -98,7 +98,7 @@ self.init = function () {
         </div>\
         <div class=" tb-popup-content">\
         <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-        <div><br /><b>Submission history:</b></div>\
+        <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
         <div class="table domain-table">\
         <table><thead>\
         <tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
@@ -128,6 +128,8 @@ self.init = function () {
 
         // Get user's domain & subreddit submission history
         var populateRunning = [];
+	    var submissionCount = 0;
+	    var $submissionCount = contentBox.find('.submission-count');
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
                 TB.ui.longLoadSpinner(true);
@@ -138,7 +140,16 @@ self.init = function () {
                 TB.ui.longLoadSpinner(false);
                 populateRunning.pop();
             }).done(function (d) {
+	            //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
                 if ($.isEmptyObject(d.data.children)) {
+
+	                if(submissionCount > 0) {
+		                $submissionCount.html(submissionCount + "+");
+	                }
+	                else {
+		                $submissionCount.html(submissionCount);
+	                }
+
                     TB.ui.longLoadSpinner(false);
                     populateRunning.pop();
 
@@ -149,7 +160,6 @@ self.init = function () {
                         contentBox.find('.markdown-report').show();
                     }
                     gettingUserdata = false;
-
                 }
                 if (!gettingUserdata) return;
 
@@ -176,6 +186,7 @@ self.init = function () {
                         subredditlist.push(data.subreddit);
                     }
                     subreddits[data.subreddit].count++;
+	                submissionCount++;
                 });
 
                 domainslist.sort(function (a, b) {
@@ -234,8 +245,13 @@ self.init = function () {
                 $('.rts-report').attr('data-commentbody', commentbody);
 
                 if (after) {
+					//There's still more subsmissions to load, so we're going to run again
+	                $submissionCount.html("Loading... (" + submissionCount + ")");
                     populateHistory(after);
                 } else {
+	                //All of the submissions have been loaded at this point
+	                $submissionCount.html(submissionCount);
+
                     TB.ui.longLoadSpinner(false);
                     contentBox.find('.rts-report').show();
                     if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
@@ -245,8 +261,6 @@ self.init = function () {
                     }
                     gettingUserdata = false;
                 }
-
-
             });
 
         })();

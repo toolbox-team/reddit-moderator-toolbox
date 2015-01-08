@@ -144,7 +144,7 @@ self.init = function () {
                 if ($.isEmptyObject(d.data.children)) {
 
 	                if(submissionCount > 0) {
-		                $submissionCount.html(submissionCount + "+")
+		                $submissionCount.html(submissionCount + "+");
 	                }
 	                else {
 		                $submissionCount.html(submissionCount);

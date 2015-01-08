@@ -129,6 +129,7 @@ self.init = function () {
         // Get user's domain & subreddit submission history
         var populateRunning = [];
 	    var submissionCount = 0;
+	    var $submissionCount = contentBox.find('.submission-count');
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
                 TB.ui.longLoadSpinner(true);
@@ -143,10 +144,10 @@ self.init = function () {
                 if ($.isEmptyObject(d.data.children)) {
 
 	                if(submissionCount > 0) {
-		                contentBox.find(".submission-count").html(submissionCount + "+").show();
+		                $submissionCount.html(submissionCount + "+")
 	                }
 	                else {
-		                contentBox.find(".submission-count").html(submissionCount).show();
+		                $submissionCount.html(submissionCount);
 	                }
 
                     TB.ui.longLoadSpinner(false);
@@ -245,11 +246,11 @@ self.init = function () {
 
                 if (after) {
 					//There's still more subsmissions to load, so we're going to run again
-	                contentBox.find(".submission-count").html("Loading... (" + submissionCount + ")").show();
+	                $submissionCount.html("Loading... (" + submissionCount + ")");
                     populateHistory(after);
                 } else {
 	                //All of the submissions have been loaded at this point
-	                contentBox.find(".submission-count").html(submissionCount).show();
+	                $submissionCount.html(submissionCount);
 
                     TB.ui.longLoadSpinner(false);
                     contentBox.find('.rts-report').show();

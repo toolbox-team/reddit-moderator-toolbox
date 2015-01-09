@@ -569,7 +569,7 @@ self.init = function () {
 
             TBUtils.alert(msg, function (clicked) {
                 if (clicked)
-                    window.open("/r/toolbox/wiki/download");
+                    window.open("/r/toolbox/wiki/get");
             });
             return;
         }

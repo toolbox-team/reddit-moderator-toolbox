@@ -1445,9 +1445,9 @@ function initwrapper() {
     (function getNotes() {
         TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
-            if (resp.stableVerson > TBUtils.shortVersion && TBUtils.browser == 'firefox' && TBUtils.isExtension) {
+            if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
                 TBUtils.alert("There is a new version of Toolbox for Firefox!  Click here to update.", function (clicked) {
-                    if (clicked) window.open("https://creesch.github.io/reddit-declutter/reddit_mod_tb.xpi");
+                    if (clicked) window.open('http://creesch.github.io/reddit-moderator-toolbox/download/reddit_mod_tb_'+ resp.ffVersion +'.xpi');
                 });
                 return; //don't spam the user with notes until they have the current version.
             }
@@ -1475,9 +1475,10 @@ function initwrapper() {
                 }
 
                 if (resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
-                    TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
-                        if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
-                    });
+                    // This shit is annoying and has never been used.
+                    //TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
+                    //    if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
+                    //});
                     //return; //do spam?  I donno.
                 }
                 $(resp.notes).each(function () {

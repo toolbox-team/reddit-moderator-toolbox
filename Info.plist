@@ -99,7 +99,7 @@
 		</dict>
 	</dict>
 	<key>Update Manifest URL</key>
-	<string>https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/UpdateManifest.plist</string>
+	<string>http://creesch.github.io/reddit-moderator-toolbox/update/UpdateManifest.plist</string>
 	<key>Website</key>
 	<string>http://reddit.com/r/toolbox</string>
 </dict>

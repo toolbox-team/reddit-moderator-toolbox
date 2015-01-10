@@ -1,5 +1,4 @@
 function betterbuttons() {
-
 var self = new TB.Module('Better Buttons');
 self.shortname = 'BButtons';
 
@@ -109,7 +108,7 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     });
 };
 
-self.init = function betterButtonInit() {
+self.init = function() {
     if (self.setting('enableModSave'))
         self.initModSave();
 

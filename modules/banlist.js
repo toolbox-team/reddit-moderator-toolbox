@@ -3,7 +3,6 @@ var self = new TB.Module('Ban List');
 self.shortname = 'BanList';
 
 self.settings['enabled']['default'] = true;
-self.config['betamode'] = false; // this module is not in beta
 
 self.register_setting('automatic', {
     'type': 'boolean',
@@ -18,18 +17,18 @@ self.getURLParameter = function getURLParameter(url, name) {
     return (new RegExp(name + '=' + '(.+?)(&|$)').exec(url) || [, null])[1];
 };
 
-self.init = function init() {
+self.init = function () {
     if (!(location.pathname.match(/\/about\/(?:banned)\/?/)
         || location.pathname.match(/\/about\/(?:contributors)\/?/))
     ) {
         return;
     }
 
-    banlist_updating = false;
-    banlist_last_update = 0;
-    last_request = 0;
-    time_to_update = 1000 * 60 * 5; // in milliseconds (last value is minutes)
-    pages_back = 0;
+    var banlist_updating = false,
+        banlist_last_update = 0,
+        last_request = 0,
+        time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
+        pages_back = 0;
 
     function _get_next_ban_page(after, pages_back) {
 
@@ -118,21 +117,21 @@ self.init = function init() {
     }
 
     function filter_banlist(banlist, value, ignore_last) {
-        banlist.log('filter(' + value + ')');
-        last_value = typeof last_value !== 'undefined' ? last_value : '';
+        self.log('filter(' + value + ')');
+        var last_value = typeof last_value !== 'undefined' ? last_value : '';
         ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
         if (value == '') {
-            banlist.log('empty');
+            self.log('empty');
             // empty search? show all
             $('tr', banlist).show().addClass('visible');
         } else if (!ignore_last && last_value && value.indexOf(last_value) > -1) {
-            banlist.log('subset');
+            self.log('subset');
             // is this query a subset of the last query?
             // filter *out* non-matching
             $("tr.visible .indexColumn:not(:contains('" + value + "'))", banlist).parent().hide().removeClass('visible');
         } else {
-            banlist.log('full search');
+            self.log('full search');
             $('tr', banlist).hide().removeClass('visible');
             // combine and use a single selector for increased performance
             // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
@@ -149,7 +148,7 @@ self.init = function init() {
         var $user = $('#user');
 
         // counter for number of bans
-        $num_bans = $('<span id="ban_count"></span>');
+        var $num_bans = $('<span id="ban_count"></span>');
         $num_bans.appendTo($user.parent());
 
         $user.prop('placeholder', 'Begin typing to live filter the list.');
@@ -204,7 +203,7 @@ self.init = function init() {
     if (self.setting('automatic')) {
         liveFilter();
     } else {
-        $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
+        var $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
         $tb_liveFilter.insertAfter($('input#user').next());
         $tb_liveFilter.click(function () {
             liveFilter();

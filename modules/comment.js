@@ -1,5 +1,4 @@
-function commentsMod() {
-
+function comments() {
 var self = new TB.Module('Comments');
 self.shortname = 'Comments'; // historical precedent for settings
 
@@ -31,13 +30,13 @@ self.register_setting('highlighted', {
     'default': [],
     'title': 'Highlight keywords, keywords should entered separated by a comma without spaces'
 });
-self.register_setting( 'highlightTitles', {
+self.register_setting('highlightTitles', {
     'type': 'boolean',
     'default': true,
     'title': 'Also highlight titles of submissions.'
 });
 
-self.init = function commentsModInit() {
+self.init = function() {
     var $body = $('body');
 
     // Perform comment actions on pages where you are mod and which are not modmail.
@@ -156,10 +155,10 @@ self.init = function commentsModInit() {
                 }
             }
         }
-        
-        // Let's support selfpost expandos 
-        $body.on('click', '.expando-button.selftext', function() { 
-        delayedHighlight = setTimeout(run, 1000);
+
+        // Let's support selfpost expandos
+        $body.on('click', '.expando-button.selftext', function () {
+            delayedHighlight = setTimeout(run, 1000);
         });
 
         // NER support.
@@ -178,36 +177,36 @@ self.init = function commentsModInit() {
             htmlComment = '\
 <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
 <div class="entry mod-button" subreddit="{{subreddit}}">\
-    <div class="noncollapsed">\
-        <p class="tagline">\
-            <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-            <span class="userattrs">\
-            </span>\
-            <span class="score">{{score}} points</span>\
-            <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-        </p>\
-        <div class="usertext-body">\
-        {{bodyHtml}}\
-        </div>\
-        <ul class="flat-list buttons">\
-            <li class="first">\
-                <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-            </li>\
-            <li>\
-                <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-            </li> \
-            <li>\
-                <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-            </li> \
-            {{bannedBy}}\
-            {{modButtons}}\
-            <li>\
-                <a href="javascript:;" class="global-mod-button">mod</a>\
-            </li>\
-            <li>\
-                <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-        </ul>\
+<div class="noncollapsed">\
+    <p class="tagline">\
+        <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+        <span class="userattrs">\
+        </span>\
+        <span class="score">{{score}} points</span>\
+        <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+    </p>\
+    <div class="usertext-body">\
+    {{bodyHtml}}\
     </div>\
+    <ul class="flat-list buttons">\
+        <li class="first">\
+            <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+        </li>\
+        <li>\
+            <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+        </li> \
+        <li>\
+            <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+        </li> \
+        {{bannedBy}}\
+        {{modButtons}}\
+        <li>\
+            <a href="javascript:;" class="global-mod-button">mod</a>\
+        </li>\
+        <li>\
+            <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
+    </ul>\
+</div>\
 </div>\
 <div class="child"></div>\
 <div class="comment-nest-info">{{commentNestInfo}}</div>\
@@ -221,37 +220,37 @@ self.init = function commentsModInit() {
             var flatListing = {}, // This will contain all comments later on.
                 idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
-            // deconstruct the json we got.    
+            // deconstruct the json we got.
 
             function parseComments(object) {
                 switch (object.kind) {
 
                     case "Listing":
                         for (var i = 0; i < object.data.children.length; i++) {
-                            // let's make sure that child comments also have the istop property and have it set to false. 
-                            if(object.isreply) {
-                                object.data.children[i].data.istop = false;  
+                            // let's make sure that child comments also have the istop property and have it set to false.
+                            if (object.isreply) {
+                                object.data.children[i].data.istop = false;
                             } else {
-                                object.data.children[i].data.istop = true;  
-                            }                     
-                            
+                                object.data.children[i].data.istop = true;
+                            }
+
                             parseComments(object.data.children[i]);
                         }
-                        
+
                         firstFlatRun = false;
                         break;
 
                     case "t1":
                         flatListing[object.data.id] = JSON.parse(JSON.stringify(object.data)); // deep copy, we don't want references
-                        idListing.push(object.data.id);                    
+                        idListing.push(object.data.id);
 
 
                         // if we have replies
                         if (flatListing[object.data.id].hasOwnProperty('replies') && flatListing[object.data.id].replies && typeof flatListing[object.data.id].replies === "object") {
                             delete flatListing[object.data.id].replies; // remove them from the flat object
                             flatListing[object.data.id].hasreplies = true;
-                            
-                            object.data.replies.isreply = true; 
+
+                            object.data.replies.isreply = true;
                             parseComments(object.data.replies); // parse them too
                         } else {
                             flatListing[object.data.id].hasreplies = false;
@@ -308,21 +307,21 @@ self.init = function commentsModInit() {
                         hasreplies = flatListing[value].hasreplies,
                         istop = flatListing[value].istop;
 
-                     
-                     var commentNestInfo = '';
-                     
-                     if (istop) {
+
+                    var commentNestInfo = '';
+
+                    if (istop) {
                         commentNestInfo = 'top level comment</span> ';
-                     } else { 
+                    } else {
                         commentNestInfo = 'child comment ';
-                     }
-                     
-                     if (hasreplies) {
+                    }
+
+                    if (hasreplies) {
                         commentNestInfo = commentNestInfo + 'with replies.';
-                     } else { 
+                    } else {
                         commentNestInfo = commentNestInfo + 'without replies.';
-                     }
-                     
+                    }
+
 
                     // figure out if we need to add author and mod stuff.
                     var authorClass = 'author';
@@ -351,13 +350,13 @@ self.init = function commentsModInit() {
                     var modButtons = '';
                     if ($body.hasClass('moderator')) {
                         modButtons = '\
-            <li>\
-                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-            </li>\
-            <li>\
-                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-            </li>\
-            ';
+        <li>\
+            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+        </li>\
+        <li>\
+            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+        </li>\
+        ';
                     }
 
                     // Constructing the comment.
@@ -406,7 +405,7 @@ self.init = function commentsModInit() {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
             $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit">\
-        <input type="submit" value="go"></form>');
+    <input type="submit" value="go"></form>');
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
@@ -414,7 +413,7 @@ self.init = function commentsModInit() {
 
                 $(TBUtils.mySubs).each(function () {
                     $body.find('#tb-search-suggest table#tb-search-suggest-list').append('\
-                <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
+            <tr data-subreddit="' + this + '"><td>' + this + '</td></td></tr>');
                 });
             }
 
@@ -464,7 +463,6 @@ self.init = function commentsModInit() {
             });
 
 
-
             $body.on('submit', '#tb-searchuser', function (event) {
 
                 var subredditsearch = $body.find('#subredditsearch').val(),
@@ -476,50 +474,50 @@ self.init = function commentsModInit() {
 
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
-    <div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
-        <p class="parent">\
-            <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
-            by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
-            in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
-        </p>\
-        <div class="entry mod-button" subreddit="{{subreddit}}">\
-            <div class="noncollapsed">\
-                <p class="tagline">\
-                    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-                    <span class="userattrs">\
-                    </span>\
-                    <span class="score">{{score}} points</span>\
-                    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-                </p>\
-                <div class="usertext-body">\
-                {{bodyHtml}}\
-                </div>\
-                <ul class="flat-list buttons">\
-                    <li class="first">\
-                        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                    </li>\
-                    <li>\
-                        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                    </li> \
-                    <li>\
-                        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                    </li> \
-                    {{bannedBy}}\
-                    {{modButtons}}\
-                    <li>\
-                        <a href="javascript:;" class="global-mod-button">mod</a>\
-                    </li>\
-                </ul>\
+<div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+    <p class="parent">\
+        <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
+        by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
+        in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
+    </p>\
+    <div class="entry mod-button" subreddit="{{subreddit}}">\
+        <div class="noncollapsed">\
+            <p class="tagline">\
+                <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+                <span class="userattrs">\
+                </span>\
+                <span class="score">{{score}} points</span>\
+                <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+            </p>\
+            <div class="usertext-body">\
+            {{bodyHtml}}\
             </div>\
+            <ul class="flat-list buttons">\
+                <li class="first">\
+                    <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+                </li>\
+                <li>\
+                    <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+                </li> \
+                <li>\
+                    <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+                </li> \
+                {{bannedBy}}\
+                {{modButtons}}\
+                <li>\
+                    <a href="javascript:;" class="global-mod-button">mod</a>\
+                </li>\
+            </ul>\
         </div>\
-        <div class="child"></div>\
     </div>\
-    <div class="clearleft"></div>';
+    <div class="child"></div>\
+</div>\
+<div class="clearleft"></div>';
 
                 var htmlProfileCommentView = '';
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
-                TB.ui.longLoadSpinner(true,'searching for user comments in /r/' + subredditsearch,'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
+                TB.ui.longLoadSpinner(true, 'searching for user comments in /r/' + subredditsearch, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
                 function searchComments(user, searchSubreddit, after) {
                     $.getJSON('/user/' + user + '/comments.json', {
@@ -571,13 +569,13 @@ self.init = function commentsModInit() {
                                 // need to check if you are a mod of the returned sub
                                 if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
                                     modButtons = '\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                <li>\
-                    <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-                </li>\
-                ';
+            <li>\
+                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+            </li>\
+            <li>\
+                <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
+            </li>\
+            ';
                                 }
 
                                 // Constructing the comment.
@@ -636,9 +634,8 @@ self.init = function commentsModInit() {
 TB.register_module(self);
 }
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
-        commentsMod();
+        comments();
     });
 })();

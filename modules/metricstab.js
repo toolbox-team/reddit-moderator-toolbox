@@ -1,5 +1,4 @@
 function metricstab() {
-
 // @copyright  2013+, LowSociety, dakta
 
 var self = new TB.Module('Metrics Tab');
@@ -18,7 +17,7 @@ self.getSectionFromUrl = function getSectionFromUrl(url) {
     }
 };
 
-self.init = function init() {
+self.init = function() {
     var page = this.getSectionFromUrl(window.location.href);
 
     if (page == null) {

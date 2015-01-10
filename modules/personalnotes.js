@@ -10,7 +10,7 @@ self.register_setting('noteWiki', {
     'title': 'Subreddit you want to use to store your personal notes.'
 });
 
-self.init = function personalNotesInit() {
+self.init = function() {
     var $body = $('body'),
         notewiki = self.setting('noteWiki').toLowerCase(),
         notesArray = [],
@@ -18,7 +18,7 @@ self.init = function personalNotesInit() {
 
     // Here we create the popup containing all relevant information
     function createPersonalNotesPopup(notesPopupContent) {
-       TB.ui.popup(
+        TB.ui.popup(
             'Personal notes',
             [
                 {
@@ -106,13 +106,11 @@ self.init = function personalNotesInit() {
     $body.on('click', '#tb-personal-notes-button', function () {
         var $this = $(this);
 
-
-
         // Making sure the ui is only created once.
         if (!$this.hasClass('tb-notes-activated')) {
             $this.addClass('tb-notes-activated');
             // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-            TBUtils.getModSubs(function() {
+            TBUtils.getModSubs(function () {
 
                 // We can't expect people to get the capitalizing right.
                 var mySubsLowerCase = [];
@@ -133,28 +131,28 @@ self.init = function personalNotesInit() {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                     var notesPopupContentTemplate = '\
-                    <table>\
-                        <tr>\
-                            <td id="tb-personal-notes-listing">\
-                                <div id="tb-personal-notes-list">\
-                                    {{notesList}}\
-                                </div>\
-                                <div id="tb-new-personal-note-div">\
-                                    <label for="tb-new-personal-note">\
-                                        Create note:\
-                                    </label> \
-                                    <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
-                                    <input type="button" id="create-personal-note" value="create note">\
-                                </div>\
-                                \
-                            </td>\
-                            <td id="tb-personal-notes-content">\
-                                <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
-                                <textarea id="tb-personal-notes-editarea"></textarea>\
-                            </td>\
-                        </tr>\
-                    </table>\
-                    ';
+                <table>\
+                    <tr>\
+                        <td id="tb-personal-notes-listing">\
+                            <div id="tb-personal-notes-list">\
+                                {{notesList}}\
+                            </div>\
+                            <div id="tb-new-personal-note-div">\
+                                <label for="tb-new-personal-note">\
+                                    Create note:\
+                                </label> \
+                                <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
+                                <input type="button" id="create-personal-note" value="create note">\
+                            </div>\
+                            \
+                        </td>\
+                        <td id="tb-personal-notes-content">\
+                            <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
+                            <textarea id="tb-personal-notes-editarea"></textarea>\
+                        </td>\
+                    </tr>\
+                </table>\
+                ';
 
                     // Lets get a list of notes!
                     $.getJSON('/r/' + notewiki + '/wiki/pages.json')
@@ -227,10 +225,10 @@ self.init = function personalNotesInit() {
                 uh: TBUtils.modhash
             })
 
-
                 .error(function () {
                     TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
                 });
+
             $this.closest('li').remove();
         }
     });
@@ -272,8 +270,7 @@ self.init = function personalNotesInit() {
 TB.register_module(self);
 }
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         personalnotes();
     });

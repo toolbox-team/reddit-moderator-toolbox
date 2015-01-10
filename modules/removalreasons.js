@@ -1,5 +1,4 @@
 function removalreasons() {
-
 var self = new TB.Module('Removal Reasons');
 self.shortname = 'RReasons';
 
@@ -35,8 +34,7 @@ self.register_setting('customRemovalReason', {
     'hidden': true
 });
 
-self.init = function removalReasonsInit() {
-
+self.init = function() {
     var $body = $('body');
     //Add a class to the body announcing removal reasons enabled
     $body.addClass('tb-removal-reasons');
@@ -259,60 +257,60 @@ self.init = function removalReasonsInit() {
 
             // Make box & add reason radio buttons
             var popup = $('\
-        <div class="reason-popup" id="reason-popup-' + data.subreddit + '"> \
-            <attrs /> \
-            <div class="reason-popup-content"> \
-                <div class="reason-popup-header">Removal reasons for /r/' + data.subreddit + ':</div> \
-                <div class="reason-popup-innercontent"> \
-                    <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p> \
-                    <div class="styled-reason" id="header-reason" style="display:' + headerDisplay + '"> \
-                        <p> \
-                            <input type="checkbox" id="include-header" checked> Include header. </input><br /> \
-                            <label id="reason-header">' + headerText + '</label> \
-                        </p> \
-                    </div> \
-                    <table id="removal-reasons-table"> \
-                        <thead><tr> \
-                            <th class="removal-toggle"></th> \
-                            <th class="reason">reason</th> \
-                            <th class="flair-text">flair text</th> \
-                            <th class="flair-css">flair css</th> \
-                        </tr></thead> \
-                        <tbody id="reason-table" /> \
-                    </table> \
-                    <div class="styled-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
-                        <p>	\
-                            <input type="checkbox" id="include-footer" checked> Include footer. </input><br />\
-                            <label id="reason-footer">' + footerText + '</label> \
-                        </p> \
-                    </div> \
-                    <div id="buttons"> \
-                        <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
-                         (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
-                        <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
-                        <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
-                        <span style="display:' + selectNoneDisplay + '"> / \
-                            <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
-                        </span> \
-                    </div> \
-                    <div id="log-reason" style="display:' + logDisplay + '"> \
-                        <p>Log Reason(s): \
-                            <input id="log-reason-input" type="text" name="logReason" value="' + data.logReason + '" /> \
-                        </p> \
-                        <p> \
-                            (Used for posting a log to /r/' + data.logSub + '. Will only be used when "send" is clicked.) </label> \
-                        </p> \
-                    </div> \
+    <div class="reason-popup" id="reason-popup-' + data.subreddit + '"> \
+        <attrs /> \
+        <div class="reason-popup-content"> \
+            <div class="reason-popup-header">Removal reasons for /r/' + data.subreddit + ':</div> \
+            <div class="reason-popup-innercontent"> \
+                <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p> \
+                <div class="styled-reason" id="header-reason" style="display:' + headerDisplay + '"> \
+                    <p> \
+                        <input type="checkbox" id="include-header" checked> Include header. </input><br /> \
+                        <label id="reason-header">' + headerText + '</label> \
+                    </p> \
                 </div> \
-                <div class="reason-popup-footer"> \
-                    <input type="hidden" name="tom_or_not" value="no-tom"> \
-                    <span class="status error" style="display:none">This is an easter egg.</span> \
-                    <button class="save">send</button> \
-                    <button class="no-reason">no reason</button> \
-                    <button class="cancel">cancel and approve</button> \
+                <table id="removal-reasons-table"> \
+                    <thead><tr> \
+                        <th class="removal-toggle"></th> \
+                        <th class="reason">reason</th> \
+                        <th class="flair-text">flair text</th> \
+                        <th class="flair-css">flair css</th> \
+                    </tr></thead> \
+                    <tbody id="reason-table" /> \
+                </table> \
+                <div class="styled-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
+                    <p>	\
+                        <input type="checkbox" id="include-footer" checked> Include footer. </input><br />\
+                        <label id="reason-footer">' + footerText + '</label> \
+                    </p> \
+                </div> \
+                <div id="buttons"> \
+                    <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
+                     (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
+                    <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
+                    <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
+                    <span style="display:' + selectNoneDisplay + '"> / \
+                        <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
+                    </span> \
+                </div> \
+                <div id="log-reason" style="display:' + logDisplay + '"> \
+                    <p>Log Reason(s): \
+                        <input id="log-reason-input" type="text" name="logReason" value="' + data.logReason + '" /> \
+                    </p> \
+                    <p> \
+                        (Used for posting a log to /r/' + data.logSub + '. Will only be used when "send" is clicked.) </label> \
+                    </p> \
                 </div> \
             </div> \
-        </div>');
+            <div class="reason-popup-footer"> \
+                <input type="hidden" name="tom_or_not" value="no-tom"> \
+                <span class="status error" style="display:none">This is an easter egg.</span> \
+                <button class="save">send</button> \
+                <button class="no-reason">no reason</button> \
+                <button class="cancel">cancel and approve</button> \
+            </div> \
+        </div> \
+    </div>');
 
             popup = $(popup).appendTo('body').find('attrs').attr(data).end();
 
@@ -322,18 +320,18 @@ self.init = function removalReasonsInit() {
                 var reasonHtml = parser.render(reasonMarkdown);
 
                 var tr = $('\
-            <tr class="selectable-reason"> \
-                <td class="removal-toggle"> \
-                    <input type="checkbox" class="reason-check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + index + '" /> \
-                    <div class="reason-num">' + (index + 1) + '</div> \
-                </td> \
-                <td class="reason"> \
-                    <div class="removal-reason-title">' + (this.title ? this.title : "") + '</div>\
-                    <div class="styled-reason reason-content ' + data.subreddit + '-' + index + '">' + reasonHtml + '<br /></div> \
-                </td> \
-                <td class="flair-text"><span class="flair-text-span">' + (this.flairText ? this.flairText : "") + '</span></td> \
-                <td class="flair-css"><span class="flair-css-span">' + (this.flairCSS ? this.flairCSS : "") + '</span></td> \
-            </tr>');
+        <tr class="selectable-reason"> \
+            <td class="removal-toggle"> \
+                <input type="checkbox" class="reason-check" name="reason-' + data.subreddit + '" id="reason-' + data.subreddit + '-' + index + '" /> \
+                <div class="reason-num">' + (index + 1) + '</div> \
+            </td> \
+            <td class="reason"> \
+                <div class="removal-reason-title">' + (this.title ? this.title : "") + '</div>\
+                <div class="styled-reason reason-content ' + data.subreddit + '-' + index + '">' + reasonHtml + '<br /></div> \
+            </td> \
+            <td class="flair-text"><span class="flair-text-span">' + (this.flairText ? this.flairText : "") + '</span></td> \
+            <td class="flair-css"><span class="flair-css-span">' + (this.flairCSS ? this.flairCSS : "") + '</span></td> \
+        </tr>');
 
                 tr.data({
                     reasonId: index,
@@ -711,8 +709,7 @@ self.init = function removalReasonsInit() {
 TB.register_module(self);
 } // end removalreasons()
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         removalreasons();
     });

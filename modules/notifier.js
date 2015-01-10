@@ -1,10 +1,8 @@
 function notifiermod() {
-
 var self = new TB.Module('Notifier');
 self.shortname = 'Notifier';
 
 self.settings['enabled']['default'] = true;
-
 
 // First show the options for filtering of subreddits.
 self.register_setting('modSubreddits', {
@@ -19,7 +17,6 @@ self.register_setting('unmoderatedSubreddits', {
     'title': 'Multireddit of subs you want displayed in the unmoderated counter'
 });
 
-
 self.register_setting('modmailSubreddits', {
     'type': 'text',
     'default': 'mod',
@@ -32,8 +29,6 @@ self.register_setting('modmailSubredditsFromPro', {
     'default': false,
     'title': 'Use filtered subreddits from ModMail Pro'
 });
-
-// Do we want notifications and where do they link to?
 
 self.register_setting('messageNotifications', {
     'type': 'boolean',
@@ -137,11 +132,8 @@ self.register_setting('modqueuePushed', {
     'hidden': true
 });
 
-self.init = function notifierMod_init() {
+self.init = function () {
 
-    //
-    // preload some generic variables
-    //
     var modNotifications = self.setting('modNotifications'),  // these need to be converted to booleans.
         messageNotifications = self.setting('messageNotifications'), // these need to be converted to booleans.
         modmailNotifications = self.setting('modmailNotifications'),
@@ -160,16 +152,18 @@ self.init = function notifierMod_init() {
 
         messageunreadlink = self.setting('messageUnreadLink'),
         modmailunreadlink = self.setting('modmailUnreadLink'),
-        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
 
-    // private
-    var checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')),//setting is in seconds, convet to milliseconds.
+        checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')),//setting is in seconds, convet to milliseconds.
         newLoad = true,
         now = new Date().getTime(),
         unreadMessageCount = self.setting('unreadMessageCount'),
         modqueueCount = self.setting('modqueueCount'),
         unmoderatedCount = self.setting('unmoderatedCount'),
-        modmailCount = self.setting('modmailCount');
+        modmailCount = self.setting('modmailCount'),
+
+        messageunreadurl = '/message/inbox/',
+        modmailunreadurl = '/message/moderator/';
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
@@ -179,24 +173,20 @@ self.init = function notifierMod_init() {
         }
     }
 
-    var messageunreadurl = '/message/inbox/';
     if (messageunreadlink) {
         messageunreadurl = '/message/unread/';
     }
 
     // this is a placeholder from issue #217
     // TODO: provide an option for this once we fix modmailpro filtering
-    var modmailunreadurl = '/message/moderator/';
     if (modmailunreadlink) {
         // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
         modmailunreadurl += 'unread/';
     }
 
-    if(parseInt(modmailCustomLimit) > 0) {
+    if (modmailCustomLimit > 0) {
         modmailunreadurl += '?limit=' + modmailCustomLimit;
     }
-
-
 
     //
     // Counters and notifications
@@ -216,7 +206,7 @@ self.init = function notifierMod_init() {
 
                 var unreadmessageid = value.data.name;
 
-                TBUtils.markMessageRead(unreadmessageid, function() {
+                TBUtils.markMessageRead(unreadmessageid, function () {
                     //Insert useful error handling here
                 });
             });
@@ -292,7 +282,7 @@ self.init = function notifierMod_init() {
                 $tb_modmail.attr('class', 'nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
                 // $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator');
-                if(parseInt(modmailCustomLimit) > 0) {
+                if (parseInt(modmailCustomLimit) > 0) {
                     $tb_modmail.attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
                 } else {
                     $tb_modmail.attr('href', '/message/moderator');
@@ -411,7 +401,7 @@ self.init = function notifierMod_init() {
                                 commentid = value.data.name,
                                 contexturl = context.slice(0, -10) + '.json';
 
-                            getcommentitle(subreddit, contexturl, context, author, body_html,commentid);
+                            getcommentitle(subreddit, contexturl, context, author, body_html, commentid);
                             pushedunread.push(value.data.name);
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
@@ -559,9 +549,8 @@ self.init = function notifierMod_init() {
 
                         $.each(json.data.children, function (i, value) {
                             if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
-                                var subreddit = value.data.subreddit
-                                    , author = value.data.author;
-
+                                var subreddit = value.data.subreddit,
+                                    author = value.data.author;
 
                                 if (!notificationbody) {
                                     notificationbody = 'post from: ' + author + ', in: ' + subreddit + '\n';
@@ -572,7 +561,6 @@ self.init = function notifierMod_init() {
                                 }
 
                                 queuecount++;
-
                             }
                         });
 

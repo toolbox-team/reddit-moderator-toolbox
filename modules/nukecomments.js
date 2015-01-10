@@ -1,16 +1,8 @@
 function nukecomments() {
-
 // Adapted from:
-// ==UserScript==
 // @name          Reddit Mod Nuke Userscript
-// @version       6.283.185.307
-// @include       htt*://*.reddit.com/*
 // @author        djimbob (dr jimbob)
-// @downloadURL   https://github.com/agentlame/Reddit-Mod-Nuke-Userscript/raw/master/modnuke.user.js
-// @description   This userscript helps reddit moderators delete threads.
-// ==/UserScript==
 
-//Setup
 var self = new TB.Module('Comment Nuke');
 self.shortname = 'Nuke';
 
@@ -31,7 +23,6 @@ self.register_setting('confirmNuke', {
 });
 
 self.init = function () {
-
     delete_function = function (thread_root) {
         var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
         var $rootElmnt = $(elmnts[0]).closest('.thing');
@@ -46,7 +37,7 @@ self.init = function () {
                         event.initUIEvent('click', true, true, window, 1);
                         _elmnt.dispatchEvent(event);
                         if (_idx == elmnts.length) {
-                            if(self.setting('hideAfterNuke')) {
+                            if (self.setting('hideAfterNuke')) {
                                 $rootElmnt.hide(750);
                             }
                             self.log("kill spinner");
@@ -62,9 +53,9 @@ self.init = function () {
         //console.log('running nuke comments');
 
         function run() {
-            var nuke_button = new Array();
+            var nuke_button = [];
             var divels = document.querySelectorAll('div.comment:not(.nuke-processed)');
-            var comment_ids = new Array();
+            var comment_ids = [];
             var use_image = false;
             // create img DOM element to clone
             if (use_image) {
@@ -148,7 +139,7 @@ self.init = function () {
 TB.register_module(self);
 } // nukecomments() wrapper
 
-(function () {
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         nukecomments();
     });

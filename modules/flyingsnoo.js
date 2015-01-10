@@ -3,7 +3,6 @@ function flyingsnoo() {
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
 
-//Setup
 var self = new TB.Module('Userpage');
 self.shortname = 'Userpage';
 
@@ -11,7 +10,7 @@ self.shortname = 'Userpage';
 self.settings['enabled']['default'] = true;
 self.settings['enabled']['hidden'] = true;  // it's an easter egg.
 
-self.init = function snooInit() {
+self.init = function () {
     if (!TB.utils.isUserPage) return;
 
     $(".profile-page .footer-parent").click(function () {
@@ -119,13 +118,12 @@ self.init = function snooInit() {
         $(this).css("background", "transparent");
         startInterval();
     });
-
 };
 
 TB.register_module(self);
 }
 
-(function () {
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         flyingsnoo();
     });

@@ -1,5 +1,4 @@
 function modmatrix() {
-
 var self = new TB.Module('Mod Log Matrix');
 self.shortname = 'ModMatrix'; // backwards compatibility
 
@@ -62,7 +61,7 @@ self.addButton = function () {
     // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
     $('.menuarea').append('\
 <div class="spacer">\
-    <span style="float:right;">&nbsp;<a class="reddit-moderationlog" href="#matrix" >toggle moderation log matrix</a>&nbsp;</span>\
+<span style="float:right;">&nbsp;<a class="reddit-moderationlog" href="#matrix" >toggle moderation log matrix</a>&nbsp;</span>\
 </div>\
 ');
 
@@ -823,11 +822,10 @@ self.init = function () {
                     var seconds = count - minutes * 60;
 
                     $body.find('#ratelimit-counter').html('<b>Oh dear, it seems we have hit a limit, waiting for ' + minutes + ' minutes and ' + seconds + ' seconds </b>\
-                <br><br>\
-                <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimit + ' requests</i>. We are currently trying to load <i>' + parseInt(commentCount - 10) + ' comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
-                ');
+            <br><br>\
+            <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimit + ' requests</i>. We are currently trying to load <i>' + parseInt(commentCount - 10) + ' comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+            ');
                 }
-
 
             } else {
                 getComments();
@@ -835,7 +833,6 @@ self.init = function () {
         }
 
     }
-
 
     $body.on('click', '.activate-comment-load', function () {
         addComments();
@@ -847,15 +844,12 @@ self.init = function () {
             addComments();
         }
     });
-
 };
-
 
 TB.register_module(self);
 }
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         modmatrix();
     });

@@ -1,5 +1,4 @@
 function domaintagger() {
-//Setup
 var self = new TB.Module('Domain Tagger');
 self.shortname = 'DTagger';
 
@@ -13,15 +12,11 @@ self.register_setting('displayType', {
     'title': 'Tag location'
 });
 
-self.init = function domainTaggerInit() {
+self.init = function() {
     //Get settings
-    var tagType = this.setting('displayType');
-    //$.log("Domain tag type: " + tagType);
-
-    //Module body
-    var $body = $('body');
-
-    var subs = [];
+    var tagType = this.setting('displayType'),
+        $body = $('body'),
+        subs = [];
 
     TBUtils.getModSubs(function () {
         run();
@@ -149,24 +144,24 @@ self.init = function domainTaggerInit() {
 
         // Make box & add subreddit radio buttons
         var $popup = $('\
-            <div class="dtagger-popup">\
-                <div class="dtagger-popup-header">\
-                <div class="dtagger-popup-title">Domain Tagger - /r/' + $subreddit + '</div>\
-                    <span class="buttons"><a class="close" href="javascript:;">✕</a></span>\
-                </div>\
-                <div class="dtagger-popup-content">\
-                    <p>\
-                        <input type="text" class="domain-name" value="' + $domain + '" subreddit="' + $subreddit + '"/>\
-                        <select class="domain-color">\
-                            <option value="none">none</option>\
-                        </select>\
-                    </p>\
-                    <p>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</p>\
-                </div>\
-                <div class="dtagger-popup-footer">\
-                   <button class="save-domain" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com">save</button>\
-                </div>\
-            <div>')
+        <div class="dtagger-popup">\
+            <div class="dtagger-popup-header">\
+            <div class="dtagger-popup-title">Domain Tagger - /r/' + $subreddit + '</div>\
+                <span class="buttons"><a class="close" href="javascript:;">✕</a></span>\
+            </div>\
+            <div class="dtagger-popup-content">\
+                <p>\
+                    <input type="text" class="domain-name" value="' + $domain + '" subreddit="' + $subreddit + '"/>\
+                    <select class="domain-color">\
+                        <option value="none">none</option>\
+                    </select>\
+                </p>\
+                <p>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</p>\
+            </div>\
+            <div class="dtagger-popup-footer">\
+               <button class="save-domain" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com">save</button>\
+            </div>\
+        <div>')
             .appendTo('body')
             .css({
                 left: e.pageX - 50,

@@ -1,5 +1,8 @@
 function modmacros() {
-
+// SUPER ULTRA COPYRIGHT FOURPOINTFIVEBILLIONYEARSAGO-THEHEATDEATHOFTHEFUCKINGUNIVERSE agentlame
+// IF YOU EVEN LOOK AT THIS CODE I OWN YOUR SOUL
+// Jesus fuck, please stop putting copyright headers on files--the ones we have I left because we used **other people's code**.
+// As always, agent "I include the full GPLv3 in my three-line shell script" lame loves you!
 
 var self = new TB.Module('Mod Macros');
 self.shortname = 'ModMacros';
@@ -7,8 +10,7 @@ self.shortname = 'ModMacros';
 self.settings['enabled']['default'] = false;
 self.config['betamode'] = true;
 
-self.init = function macrosInit() {
-
+self.init = function () {
     var $body = $('body'),
         macroConfig,
         MACROS = 'TB-MACROS',
@@ -65,7 +67,7 @@ self.init = function macrosInit() {
         });
     }
 
-    TB.utils.getModSubs(function() {
+    TB.utils.getModSubs(function () {
         if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
             self.log("getting config");
             getConfig(TB.utils.post_site, function (success) {
@@ -126,7 +128,7 @@ self.init = function macrosInit() {
             offsetTop = offset.top,
             minHeight = $usertext.outerHeight(),
             editMinWidth = $usertext.outerWidth(),
-            editMinHeight = minHeight- 74;
+            editMinHeight = minHeight - 74;
 
         var title = dropdown.find('option:selected').text();
         console.log(title)
@@ -137,7 +139,7 @@ self.init = function macrosInit() {
                     title: 'Mod Macro:',
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Mod Macro:' + title,
-                    content: '<textarea class="macro-edit-area" data-toplevel="'+ topLevel +'" data-id="' + info.id + '">' + comment + '</textarea>',
+                    content: '<textarea class="macro-edit-area" data-toplevel="' + topLevel + '" data-id="' + info.id + '">' + comment + '</textarea>',
                     footer: '<button class="macro-send">Post Macro</button>'
                 }
             ],
@@ -161,7 +163,7 @@ self.init = function macrosInit() {
     $body.on('click', '.macro-popup .close', function (e) {
         var $currentMacroPopup = $(this).closest('.macro-popup'),
             infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
-            $selectElement = $body.find('#macro-dropdown-'+ infoId);
+            $selectElement = $body.find('#macro-dropdown-' + infoId);
 
         $selectElement.val(MACROS);
 
@@ -173,7 +175,7 @@ self.init = function macrosInit() {
         var $currentMacroPopup = $(this).closest('.macro-popup'),
             topLevel = $currentMacroPopup.find('.macro-edit-area').data('toplevel'),
             infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
-            $selectElement = $body.find('#macro-dropdown-'+ infoId),
+            $selectElement = $body.find('#macro-dropdown-' + infoId),
             editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
         if ($selectElement.val() !== MACROS) {
@@ -209,21 +211,21 @@ self.init = function macrosInit() {
             comment = unescape($this.val()),
             topLevel = (e.target.className === 'tb-top-macro-select'),
             info;
-            // disable the select box to prevent a mess with creating multiple popup boxes.
-            $this.prop('disabled', 'disabled');
-            // If it's a top-level reply we need to find the post's info.
-            if (topLevel) {
-                info = TB.utils.getThingInfo($('#siteTable .thing:first'));
-            } else {
-                info = TB.utils.getThingInfo($this);
-            }
+        // disable the select box to prevent a mess with creating multiple popup boxes.
+        $this.prop('disabled', 'disabled');
+        // If it's a top-level reply we need to find the post's info.
+        if (topLevel) {
+            info = TB.utils.getThingInfo($('#siteTable .thing:first'));
+        } else {
+            info = TB.utils.getThingInfo($this);
+        }
 
-            // replace token.
-            comment = TB.utils.replaceTokens(info, comment);
+        // replace token.
+        comment = TB.utils.replaceTokens(info, comment);
 
-            // add unique id to the dropdown
-            $this.attr('id', 'macro-dropdown-'+ info.id)
-            editMacro($this, info, comment, topLevel);
+        // add unique id to the dropdown
+        $this.attr('id', 'macro-dropdown-' + info.id)
+        editMacro($this, info, comment, topLevel);
     });
 };
 
@@ -231,7 +233,6 @@ TB.register_module(self);
 }
 
 (function () {
-    // wait for storage
     window.addEventListener("TBObjectLoaded", function () {
         modmacros();
     });

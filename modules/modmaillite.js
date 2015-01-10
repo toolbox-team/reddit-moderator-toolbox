@@ -1,11 +1,11 @@
-function mml() {
+function modmaillite() {
 var self = new TB.Module('Mod Mail Lite');
 self.shortname = 'ModMailLite';
 
 self.settings['enabled']['default'] = false;
 self.config['betamode'] = true;
 
-self.init = function mmlInit() {
+self.init = function () {
     if (!TB.utils.isModmail) return;
 
     // Never allow if MMP is on.
@@ -18,8 +18,10 @@ self.init = function mmlInit() {
     var $body = $('body'),
         subreddits = [],
         now = new Date().getTime(),
-        lastViewed = settingsShim('lastVisited'),
         firstRun = true,
+
+    // Steal MMP settings.
+        lastViewed = settingsShim('lastVisited'),
         collapsed = settingsShim('defaultCollapse'),
         expandReplies = settingsShim('expandReplies'),
         noRedModmail = settingsShim('noRedModmail'),
@@ -34,13 +36,13 @@ self.init = function mmlInit() {
     $('clearleft').remove();
 
     var subsDiv = '\
-     <div class="tb-mml-subreddit" data-subreddit="{{subreddit}}">\
-        <span class="tb-mml-info">\
-            <a href="javascript:;" class="tb-mml-sublink" data-subreddit="{{subreddit}}">[+]</a>\
-            <label class="tb-mml-name"> /r/{{subreddit}}</label>\
-        </span>\
-        <div class="tb-mml-messages" data-subreddit="{{subreddit}}"></div>\
-    </div>';
+ <div class="tb-mml-subreddit" data-subreddit="{{subreddit}}">\
+    <span class="tb-mml-info">\
+        <a href="javascript:;" class="tb-mml-sublink" data-subreddit="{{subreddit}}">[+]</a>\
+        <label class="tb-mml-name"> /r/{{subreddit}}</label>\
+    </span>\
+    <div class="tb-mml-messages" data-subreddit="{{subreddit}}"></div>\
+</div>';
 
     var infoLabel = '&nbsp;<label>[{{messagecount}}] [{{newcount}}]</label>';
 
@@ -87,6 +89,7 @@ self.init = function mmlInit() {
             }
         });
     }
+
     run();
 
 
@@ -218,7 +221,7 @@ self.init = function mmlInit() {
                     var $head = $entry.find('.tagline .head');
                     if ($head.find('a.author').length > 1) {
                         $head.find('a.author').eq(0).css('opacity', '.6');
-                    } else if(/^to /.test($head.text())) {
+                    } else if (/^to /.test($head.text())) {
                         $head.find('a.author').css('opacity', '.6');
                     }
                 }
@@ -282,7 +285,7 @@ self.init = function mmlInit() {
             }
         }
 
-        if (threadAlways){
+        if (threadAlways) {
             quickChunk($messages.find('.tb-thread-view'), function (ret) {
                 ret.click();
             });
@@ -293,6 +296,7 @@ self.init = function mmlInit() {
     function collapse() {
         $(this).parents(".thing:first").find("> .child").hide();
     }
+
     function noncollapse() {
         $(this).parents(".thing:first").find("> .child").show();
     }
@@ -398,8 +402,7 @@ TB.register_module(self);
 }
 
 (function() {
-    // wait for storage
     window.addEventListener("TBObjectLoaded", function () {
-        //mml(); //disabled.
+        //modmaillite(); //disabled.
     });
 })();

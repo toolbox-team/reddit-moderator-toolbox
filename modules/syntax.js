@@ -1,5 +1,4 @@
 function syntax() {
-
 // syntax highlighter with ACE, by creesch
 
 var self = new TB.Module('Syntax Highlighter');
@@ -60,16 +59,19 @@ self.themeSelect = '\
 </select>\
 ';
 
-self.init = function init() {
-    var selectedTheme = this.setting('selectedTheme'),
-        enableWordWrap = this.setting('enableWordWrap');
+self.init = function () {
+    var $body = $('body'),
+        selectedTheme = this.setting('selectedTheme'),
+        enableWordWrap = this.setting('enableWordWrap'),
+        editor, session, textarea;
+
 
     if (location.pathname.match(/\/about\/stylesheet\/?/)) {
         $('.sheets .col').prepend('<div id="stylesheet_contents_div"></div>');
 
-        var editor = ace.edit("stylesheet_contents_div"),
-            session = editor.getSession(),
-            textarea = $('textarea[name="stylesheet_contents"]').hide();
+        editor = ace.edit("stylesheet_contents_div");
+        session = editor.getSession();
+        textarea = $('textarea[name="stylesheet_contents"]').hide();
 
         editor.getSession().setUseWrapMode(enableWordWrap);
 
@@ -77,7 +79,7 @@ self.init = function init() {
         if (TBUtils.browser == 'chrome') {
             ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
         } else if (TBUtils.browser == 'safari') {
-            ace.config.set('workerPath', safari.extension.baseURI+'/libs/')
+            ace.config.set('workerPath', safari.extension.baseURI + '/libs/')
         } else if (TBUtils.browser == 'firefox') {
             session.setUseWorker(false);
         }
@@ -88,7 +90,7 @@ self.init = function init() {
             textarea.val(session.getValue());
         });
 
-        var $body = $('body');
+
         $body.addClass('mod-toolbox-ace');
 
         $('#stylesheet_contents_div').before(this.themeSelect);
@@ -106,14 +108,14 @@ self.init = function init() {
     if (location.pathname.match(/\/wiki\/edit\/automoderator\/?$/)
         || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)
     ) {
-        var $body = $('body');
         var $editform = $('#editform');
 
         $editform.prepend('<div id="wiki_contents_div"></div>');
 
-        var editor = ace.edit("wiki_contents_div"),
-            session = editor.getSession(),
-            textarea = $('textarea[name="content"]').hide();
+        editor = ace.edit("wiki_contents_div");
+        session = editor.getSession();
+        textarea = $('textarea[name="content"]').hide();
+
         if (enableWordWrap) {
             editor.getSession().setUseWrapMode(true);
         }
@@ -146,13 +148,12 @@ self.init = function init() {
     $('.ace_editor').on("webkitTransitionEnd transitionend oTransitionEnd", function () {
         editor.resize();
     });
-
 };
 
 TB.register_module(self);
 }
 
-(function () {
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         syntax();
     });

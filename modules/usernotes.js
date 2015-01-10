@@ -1,5 +1,4 @@
 function usernotes() {
-//Setup
 var self = new TB.Module('User Notes');
 self.shortname = 'UserNotes';
 
@@ -27,18 +26,18 @@ self.register_setting('maxChars', {
     'title': 'Max characters to display in current note tag (excluding date)'
 });
 
-self.init = function () {
+self.init = function() {
     var subs = [],
         $body = $('body'),
         maxChars = self.setting('maxChars'),
         showDate = self.setting('showDate'),
-        showOnModPages =  self.setting('showOnModPages'),
+        showOnModPages = self.setting('showOnModPages'),
         showLink = self.setting('unManagerLink');
 
     if (showLink && TBUtils.post_site && TBUtils.isMod) {
         var toolbox = $('#moderation_tools').find('.content .icon-menu'),
             managerLink = '<li><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '" class="tb-moderation-tools-icons"/><span class="separator"></span>\
-                    <a href="/r/'+ TBUtils.post_site +'/about/usernotes" class="tb-un-manager" title="edit usernotes for this subreddit">usernotes</a></li>';
+                <a href="/r/' + TBUtils.post_site + '/about/usernotes" class="tb-un-manager" title="edit usernotes for this subreddit">usernotes</a></li>';
         $(toolbox).append(managerLink);
     } else if (showLink && TBUtils.isModpage) {
 
@@ -46,7 +45,7 @@ self.init = function () {
             var $this = $(this),
                 itemSubreddit = $this.find('a.title').text();
 
-            $this.find('a.title').after('<a href="/r/'+ itemSubreddit +'/about/usernotes" target="_blank" title="edit usernotes /r/' + itemSubreddit + '"><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '"/></a>');
+            $this.find('a.title').after('<a href="/r/' + itemSubreddit + '/about/usernotes" target="_blank" title="edit usernotes /r/' + itemSubreddit + '"><img src="data:image/png;base64,' + TB.ui.iconUsernotes + '"/></a>');
         });
     }
 
@@ -59,8 +58,10 @@ self.init = function () {
 
         $contentClear.html('<div id="tb-un-note-content-wrap"></div>"');
 
-        var $siteTable = $contentClear.find('#tb-un-note-content-wrap');
-        $('.pagename').html( $('.pagename').html().replace(': page not found', ''));//(': page not found', '<ul class="tabmenu"></ul>'));
+        var $siteTable = $contentClear.find('#tb-un-note-content-wrap'),
+            $pageName = $('.pagename');
+
+        $pageName.html($pageName.html().replace(': page not found', ''));//(': page not found', '<ul class="tabmenu"></ul>'));
         $(document).prop('title', 'usernotes - /r/' + sub);
 
         function getSubNotes(currsub) {
@@ -102,22 +103,22 @@ self.init = function () {
                 noteCount = 0;
 
             var userHTML = '\
-                <div class="tb-un-user" data-user="{{user}}">\
-                    <div class="tb-un-user-header">\
-                    <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
-                    <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
-                    <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
-                    </div>\
-                    <div class="tb-usernotes">\
-                    </div>\
-                </div>';
+            <div class="tb-un-user" data-user="{{user}}">\
+                <div class="tb-un-user-header">\
+                <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
+                <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
+                <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
+                </div>\
+                <div class="tb-usernotes">\
+                </div>\
+            </div>';
 
             var noteHTML = '\
-                <div class="tb-un-note-details">\
-                    <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>&nbsp;\
-                    <span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;-&nbsp;\
-                    <span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>&nbsp;\
-                </div>';
+            <div class="tb-un-note-details">\
+                <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>&nbsp;\
+                <span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;-&nbsp;\
+                <span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>&nbsp;\
+            </div>';
 
             TBUtils.forEachChunked(Object.keys(notes.users), 10, 100, function (user, counter) {
                     var usercontent = TB.utils.template(userHTML, {
@@ -153,10 +154,10 @@ self.init = function () {
                     TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
                     var infoHTML = '\
-                        <div class="tb-un-info">\
-                            <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
-                            <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
-                        </div></br></br>';
+                    <div class="tb-un-info">\
+                        <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
+                        <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
+                    </div></br></br>';
 
                     var infocontent = TB.utils.template(infoHTML, {
                         'usercount': userCount,
@@ -184,12 +185,12 @@ self.init = function () {
                 var userSearchValue = new RegExp($(this).val().toUpperCase());
 
                 $body.find('.tb-un-user').each(function (key, thing) {
-                    userSearchValue.test($(thing).attr('data-user').toUpperCase())? $(this).show() : $(this).hide();
+                    userSearchValue.test($(thing).attr('data-user').toUpperCase()) ? $(this).show() : $(this).hide();
                 });
             });
 
             // Update user status.
-            $body.find('.tb-un-refresh').on('click', function() {
+            $body.find('.tb-un-refresh').on('click', function () {
                 var $this = $(this),
                     user = $this.attr('data-user'),
                     $userSpan = $this.parent().find('.user');
@@ -208,35 +209,35 @@ self.init = function () {
             });
 
             // Delete all notes for user.
-            $body.find('.tb-un-delete').on('click', function(){
+            $body.find('.tb-un-delete').on('click', function () {
                 var $this = $(this),
                     user = $this.attr('data-user'),
                     $userSpan = $this.parent();
 
-                var r = confirm('This will delete all notes for /u/'+ user +'.  Would you like to proceed?');
+                var r = confirm('This will delete all notes for /u/' + user + '.  Would you like to proceed?');
                 if (r == true) {
                     self.log("deleting notes for " + user);
                     delete subUsenotes.users[user];
                     TB.utils.noteCache[sub] = subUsenotes;
                     postToWiki(sub, subUsenotes, "deleted all notes for /u/" + user);
                     $userSpan.parent().remove();
-                    TB.ui.textFeedback('Deleted all notes for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback('Deleted all notes for /u/' + user, TB.ui.FEEDBACK_POSITIVE);
                 }
             });
 
             // Delete individual notes for user.
-            $body.find('.tb-un-notedelete').on('click', function(){
+            $body.find('.tb-un-notedelete').on('click', function () {
                 var $this = $(this),
                     user = $this.attr('data-user'),
                     note = $this.attr('data-note'),
                     $noteSpan = $this.parent();
 
-                    self.log("deleting note for " + user);
-                    subUsenotes.users[user].notes.splice(note, 1);
-                    TB.utils.noteCache[sub] = subUsenotes;
-                    postToWiki(sub, subUsenotes, "deleted a note for /u/" + user);
-                    $noteSpan.remove();
-                    TB.ui.textFeedback('Deleted note for /u/'+ user, TB.ui.FEEDBACK_POSITIVE);
+                self.log("deleting note for " + user);
+                subUsenotes.users[user].notes.splice(note, 1);
+                TB.utils.noteCache[sub] = subUsenotes;
+                postToWiki(sub, subUsenotes, "deleted a note for /u/" + user);
+                $noteSpan.remove();
+                TB.ui.textFeedback('Deleted note for /u/' + user, TB.ui.FEEDBACK_POSITIVE);
             });
         }
     }
@@ -306,7 +307,7 @@ self.init = function () {
 
     function postToWiki(sub, json, reason) {
         TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
-        
+
         TBUtils.noteCache[sub] = json;
         json = deflateNotes(json);
 
@@ -316,10 +317,10 @@ self.init = function () {
                 self.log("Success!");
                 TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, 2000);
                 run();
-            } 
+            }
             else {
                 self.log("Failure: " + err);
-                TBui.textFeedback("Save failed: "+err, TBui.FEEDBACK_NEGATIVE, 5000);
+                TBui.textFeedback("Save failed: " + err, TBui.FEEDBACK_NEGATIVE, 5000);
             }
         });
     }
@@ -349,7 +350,7 @@ self.init = function () {
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
         var userattrs = $(thing).find('.userattrs');
         if ($(userattrs).length > 0) {
-            if(TBUtils.isModmail && $(userattrs).length > 1) {
+            if (TBUtils.isModmail && $(userattrs).length > 1) {
                 $(userattrs).eq(0).after(tag);
             } else {
                 $(userattrs).after(tag);
@@ -545,7 +546,7 @@ self.init = function () {
 
     function deflateTime(time) {
         if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
-            time = Math.trunc(time/1000);
+            time = Math.trunc(time / 1000);
         }
         return time;
     }
@@ -554,10 +555,10 @@ self.init = function () {
         // Check if the version of loaded notes is within the supported versions
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
             self.log("Failed usernotes version check:");
-            self.log("\tnotes.ver: "+notes.ver);
-            self.log("\tTBUtils.notesSchema: "+TBUtils.notesSchema);
-            self.log("\tTBUtils.notesMinSchema: "+TBUtils.notesMinSchema);
-            self.log("\tTBUtils.notesMaxSchema: "+TBUtils.notesMaxSchema);
+            self.log("\tnotes.ver: " + notes.ver);
+            self.log("\tTBUtils.notesSchema: " + TBUtils.notesSchema);
+            self.log("\tTBUtils.notesMinSchema: " + TBUtils.notesMinSchema);
+            self.log("\tTBUtils.notesMaxSchema: " + TBUtils.notesMaxSchema);
 
             // Remove the option to add notes
             $('.usernote-span-' + subreddit).remove();
@@ -565,7 +566,7 @@ self.init = function () {
             // Alert the user
             var msg = notes.ver > TBUtils.notesMaxSchema ?
                 "You are using a version of toolbox that cannot read a newer usernote data format. Please update your extension." :
-            "You are using a version of toolbox that cannot read an old usernote data format, schema v"+notes.ver+".";
+            "You are using a version of toolbox that cannot read an old usernote data format, schema v" + notes.ver + ".";
 
             TBUtils.alert(msg, function (clicked) {
                 if (clicked)
@@ -580,8 +581,8 @@ self.init = function () {
         if (showOnModPages && TB.utils.isEditUserPage) {
             var $userSpan = $('span.user'),
                 tag = '<span class="usernote-span-' +
-                subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
-                subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';
+                    subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
+                    subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';
 
             self.log('running on ban page');
             things = $userSpan.find('a:first');
@@ -678,21 +679,21 @@ self.init = function () {
             [
                 {
                     content: '\
-                    <table class="utagger-notes"><tbody><tr>\
-                        <td class="utagger-notes-td1">Author</td>\
-                        <td class="utagger-notes-td2">Note</td>\
-                        <td class="utagger-notes-td3"></td>\
-                    </tr></tbody></table>\
-                    <table class="utagger-type"><tbody><tr>\
-                        <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
-                    </tr></tbody></table>\
-                    <span>\
-                        <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
-                        <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
-                    </span>',
+                <table class="utagger-notes"><tbody><tr>\
+                    <td class="utagger-notes-td1">Author</td>\
+                    <td class="utagger-notes-td2">Note</td>\
+                    <td class="utagger-notes-td3"></td>\
+                </tr></tbody></table>\
+                <table class="utagger-type"><tbody><tr>\
+                    <td><input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-none" value="none" checked/><label for="utagger-type-none" style="color: #369;">None</label></td>\
+                </tr></tbody></table>\
+                <span>\
+                    <input type="text" placeholder="something about the user..." class="utagger-user-note" id="utagger-user-note-input" data-link="' + link + '" data-subreddit="' + subreddit + '" data-user="' + user + '">\
+                    <br><label><input type="checkbox" class="utagger-include-link" checked /> include link</label>\
+                </span>',
                     footer: '\
-                    <span class="tb-popup-error" style="display:none"/>\
-                    <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
+                <span class="tb-popup-error" style="display:none"/>\
+                <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
                 }
             ],
             '', // meta to inject in popup header; just a placeholder
@@ -821,7 +822,7 @@ self.init = function () {
         };
 
         TBui.textFeedback("Adding new user note...", TBui.FEEDBACK_NEUTRAL);
-        
+
         TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
             if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                 return;
@@ -896,11 +897,9 @@ self.init = function () {
 }; // userNotes.init()
 
 TB.register_module(self);
-
 } // usernotes() wrapper
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
         usernotes();
     });

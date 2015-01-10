@@ -1,5 +1,4 @@
-function tbmodbar() {
-
+function modbar() {
 var self = new TB.Module('Toolbox UI (modbar)');
 self.shortname = 'Modbar';
 
@@ -54,7 +53,7 @@ self.register_setting('customCSS', {
     'hidden': true
 });
 
-self.init = function modbarInit() {
+self.init = function() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
     var $body = $('body'),
@@ -72,7 +71,7 @@ self.init = function modbarInit() {
         consoleShowing = self.setting('consoleShowing'),
         lockscroll = self.setting('lockScroll'),
         enableTopLink = self.setting('enableTopLink'),
-        customCSS = self.setting('customCSS');
+        customCSS = self.setting('customCSS'),
 
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
@@ -94,20 +93,20 @@ self.init = function modbarInit() {
 
     // todo: move the quotes array to TBUtils.
     var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-                        "Simple solution, don't use nightmode....",
-                        "Nightmode users are a buncha nerds.",
-                        "Oh, so that's where that code went, I thought i had lost it somehow.",
-                        "Are all close buttons pretty now?!?!?",
-                        "As a Business Analyst myself...",
-                        "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
-                        "You are now an approvened submitter",
-                        "Translate creesch's Kligon settings to Elglis.",
-                        "Cuz Uncle Jessy was hot and knew the Beach Boys",
-                        "Don't worry too much. There's always extra pieces.",
-                        "Make the check actually check.",
-                        "I dunno what this 'Safari' thing is."],
-        randomQuote = randomQuotes[Math.floor( Math.random() * randomQuotes.length )];
-   
+            "Simple solution, don't use nightmode....",
+            "Nightmode users are a buncha nerds.",
+            "Oh, so that's where that code went, I thought i had lost it somehow.",
+            "Are all close buttons pretty now?!?!?",
+            "As a Business Analyst myself...",
+            "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+            "You are now an approvened submitter",
+            "Translate creesch's Kligon settings to Elglis.",
+            "Cuz Uncle Jessy was hot and knew the Beach Boys",
+            "Don't worry too much. There's always extra pieces.",
+            "Make the check actually check.",
+            "I dunno what this 'Safari' thing is."],
+        randomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
+
     // Custom CSS for devmode/testing
     if (customCSS) {
         $('head').append('<style type="text/css">' + customCSS + '</style>');
@@ -120,7 +119,7 @@ self.init = function modbarInit() {
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
     var modMailUrl = '/message/moderator/';
-    if(parseInt(modmailCustomLimit)> 0) {
+    if (parseInt(modmailCustomLimit) > 0) {
         modMailUrl += '?limit=' + modmailCustomLimit;
         $('#modmail').attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
     }
@@ -133,25 +132,25 @@ self.init = function modbarInit() {
 <span>&nbsp;</span>\
 <span id="tb-toolbarshortcuts"></span>\
 <span id="tb-toolbarcounters">\
-    <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-    <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-    <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
-    <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
-    <a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-    <a href="/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
+<a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
+<a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
+<a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
+<a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
+<a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
+<a href="/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
 </span>\
 </div>\
 ');
 
     // Add unmoderated icon if it is enabled.
 
-if (unmoderatedOn) {
-    modBar.find('#tb-toolbarcounters').append('\
-    <a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-    <a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
-    ');
+    if (unmoderatedOn) {
+        modBar.find('#tb-toolbarcounters').append('\
+<a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
+<a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
+');
 
-}
+    }
 
 
     var modbarhid = $('\
@@ -163,19 +162,19 @@ if (unmoderatedOn) {
     if (debugMode) {
 
         var $console = $('\
-    <div class="tb-debug-window">\
-        <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
-        <div class="tb-debug-content">\
-            <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
-            <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
-        </div>\
-        <div class="tb-debug-footer">\
-            <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
-            <!--input class="tb-console-copy" type="button" value="copy text"-->\
-            <input class="tb-console-clear" type="button" value="clear console">\
-        </div>\
+<div class="tb-debug-window">\
+    <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
+    <div class="tb-debug-content">\
+        <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
+        <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
     </div>\
-    ');
+    <div class="tb-debug-footer">\
+        <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
+        <!--input class="tb-console-copy" type="button" value="copy text"-->\
+        <input class="tb-console-clear" type="button" value="clear console">\
+    </div>\
+</div>\
+');
 
         $console.appendTo('body').hide();
 
@@ -185,37 +184,30 @@ if (unmoderatedOn) {
     $body.append(modBar);
 
     // moderated subreddits button.
-
-
     var subList = '',
         livefilterCount,
-        subList,
         mySubsTemplate = '  <div id="tb-my-subreddits">\
-                                <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
-                                <span class="tb-livefilter-count">{{livefilterCount}}</span>\
-                                <br>\
-                                <table id="tb-my-subreddit-list">{{subList}}</table>\
-                            </div>';
-
+                            <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
+                            <span class="tb-livefilter-count">{{livefilterCount}}</span>\
+                            <br>\
+                            <table id="tb-my-subreddit-list">{{subList}}</table>\
+                        </div>';
 
     $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
 
-
-    TBUtils.getModSubs(function notifierinit() {
+    TBUtils.getModSubs(function () {
         $(TBUtils.mySubsData).each(function () {
             subList = subList + '\
-    <tr data-subreddit="' + this.subreddit + '"><td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td> \
-    <td class="tb-my-subreddits-subreddit"><a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
-    <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
-    <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
-    ';
+<tr data-subreddit="' + this.subreddit + '"><td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td> \
+<td class="tb-my-subreddits-subreddit"><a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
+<a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
+<a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
+';
         });
         livefilterCount = TBUtils.mySubs.length;
     });
 
-
-
-    modSubsPopupContent = TBUtils.template(mySubsTemplate, {
+    var modSubsPopupContent = TBUtils.template(mySubsTemplate, {
         'livefilterCount': livefilterCount,
         'subList': subList
     });
@@ -223,8 +215,7 @@ if (unmoderatedOn) {
 
     $body.on('click', '#tb-toolbar-mysubs', function () {
         var $this = $(this);
-        if(!$this.hasClass('tb-mysubs-activated'))
-        {
+        if (!$this.hasClass('tb-mysubs-activated')) {
             $this.addClass('tb-mysubs-activated');
             TB.ui.popup(
                 'Subreddits you moderate',
@@ -267,8 +258,6 @@ if (unmoderatedOn) {
         $body.find('#tb-toolbar-mysubs').removeClass('tb-mysubs-activated');
     });
 
-
-
     if (TBUtils.firstRun) {
         $('.tb-first-run').show();
     }
@@ -280,8 +269,8 @@ if (unmoderatedOn) {
     // Debug mode/console
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').before('\
-    <a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a>\
-    ');
+<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a>\
+');
 
         var $consoleText = $('.tb-debug-console');
 
@@ -401,60 +390,60 @@ if (unmoderatedOn) {
 
         // The window in which all settings will be showed.
         var html = '\
-    <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
-        <div class="tb-window-header">\
-            Toolbox Settings\
-            <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a><a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
-        </div>\
-        <div class="tb-window-tabs"></div>\
-        <div class="tb-window-content"></div>\
-        <div class="tb-window-footer"><input class="tb-save" type="button" value="save">'+ (devMode ? '&nbsp;<input class="tb-save-reload" type="button" value="save and reload">' : '') +'</div>\
-    </div></div>\
-    ';
+<div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
+    <div class="tb-window-header">\
+        Toolbox Settings\
+        <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a><a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
+    </div>\
+    <div class="tb-window-tabs"></div>\
+    <div class="tb-window-content"></div>\
+    <div class="tb-window-footer"><input class="tb-save" type="button" value="save">' + (devMode ? '&nbsp;<input class="tb-save-reload" type="button" value="save and reload">' : '') + '</div>\
+</div></div>\
+';
         $(html).appendTo('body').show();
         $body.css('overflow', 'hidden');
 
         // Settings for the tool bar.
         var $toolboxSettings = $('\
-    <div class="tb-window-content-toolbox">\
-    <p>\
-        Import/export toolbox settings to a wiki page:<br>\
-        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
-        <input class="tb-settings-import" type="button" value="import">\
-        <input class="tb-settings-export" type="button" value="export">\
-        <b> Important:</b> This will reload the page without saving!\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
-    </p>\
-    <p '+ ((debugMode) ? '' : 'style="display:none;"') +'>\
-        <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="unmoderatedOn" ' + ((unmoderatedOn) ? "checked" : "") + '> Show icon for unmoderated</label>\
-    </p>\
-        Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-        <input type="text" name="longLength" value="' + longLength + '">\
-    </p>\
-    <p>\
-        Cache subreddit user notes time (in minutes):<br>\
-        <input type="text" name="shortLength" value="' + shortLength + '">\
-    </p>\
-    <p>\
-        <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
-    </p>\
-    <div class="tb-help-main-content">Edit Toolbox general settings</div>\
-    </div>\
-    ');
+<div class="tb-window-content-toolbox">\
+<p>\
+    Import/export toolbox settings to a wiki page:<br>\
+    <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+    <input class="tb-settings-import" type="button" value="import">\
+    <input class="tb-settings-export" type="button" value="export">\
+    <b> Important:</b> This will reload the page without saving!\
+</p>\
+<p>\
+    <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
+</p>\
+<p>\
+    <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
+</p>\
+<p ' + ((debugMode) ? '' : 'style="display:none;"') + '>\
+    <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
+</p>\
+<p>\
+    <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
+</p>\
+<p>\
+    <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
+</p>\
+<p>\
+    <label><input type="checkbox" id="unmoderatedOn" ' + ((unmoderatedOn) ? "checked" : "") + '> Show icon for unmoderated</label>\
+</p>\
+    Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+    <input type="text" name="longLength" value="' + longLength + '">\
+</p>\
+<p>\
+    Cache subreddit user notes time (in minutes):<br>\
+    <input type="text" name="shortLength" value="' + shortLength + '">\
+</p>\
+<p>\
+    <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
+</p>\
+<div class="tb-help-main-content">Edit Toolbox general settings</div>\
+</div>\
+');
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
@@ -463,10 +452,10 @@ if (unmoderatedOn) {
 
         // Settings to toggle the modules
         var htmlmodules = '\
-    <div class="tb-window-content-modules">\
-    <div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
-    </div>\
-    ';
+<div class="tb-window-content-modules">\
+<div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
+</div>\
+';
         $(htmlmodules).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-modules" data-module="modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
@@ -479,7 +468,7 @@ if (unmoderatedOn) {
 <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a>\
 <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
 </div>\
-    ';
+';
         $(htmlshorcuts).appendTo('.tb-window-content').hide();
 
         if ($.isEmptyObject(shortcuts)) {
@@ -503,14 +492,14 @@ if (unmoderatedOn) {
         var htmlabout = '\
 <div class="tb-window-content-about">\
 <h3>About:</h3>	<a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a> <br>\
-    made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
-    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>, \
-    <a href="/user/noeatnosleep">/u/noeatnosleep</a> and <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
-    "<i>'  + randomQuote + '</i>"<br><br>\
+made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
+<a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>, \
+<a href="/user/noeatnosleep">/u/noeatnosleep</a> and <a href="/user/psdtwk">/u/psdtwk</a><br><br>\
+"<i>' + randomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
-  <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/gorillagnomes">/u/gorillagnomes</a><br><br>\
+<a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/gorillagnomes">/u/gorillagnomes</a><br><br>\
 <h3>Special thanks to:</h3>\
-  <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
+<a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
 <h3>Credits:</h3>\
 <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
 <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
@@ -527,16 +516,14 @@ You may obtain a copy of the License at </p>\
 <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
 <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>\
 See the License for the specific language governing permissions and limitations under the License.</p>\
-<p '+ ((debugMode && !TB.utils.devModeLock) ? '' : 'style="display:none;"') +'>\
-    <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
+<p ' + ((debugMode && !TB.utils.devModeLock) ? '' : 'style="display:none;"') + '>\
+<label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
 </p>\
 <div class="tb-help-main-content">This is a about page!</div>\
 </div>';
 
         $(htmlabout).appendTo('.tb-window-content').hide();
         $('<a href="javascript:;" class="tb-window-content-about" data-module="about">About</a>').appendTo('.tb-window-tabs');
-
-        //	$("input[name=shortcuts]").val(unescape(shortcuts));
     }
 
     $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
@@ -565,7 +552,7 @@ See the License for the specific language governing permissions and limitations 
 
     // Open the settings
     $body.on('click', '.tb-toolbarsettings', function () {
-        TB.utils.getModSubs(function(){
+        TB.utils.getModSubs(function () {
             showSettings();
             TB.injectSettings();
         });
@@ -615,7 +602,6 @@ See the License for the specific language governing permissions and limitations 
 
         TB.storage.setSetting('Utils', 'skipLocalConsole', $("#browserConsole").prop('checked'));
 
-
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');
         if ($shortcuts.length === 0) {
@@ -647,8 +633,8 @@ See the License for the specific language governing permissions and limitations 
         $('.tb-settings').remove();
         $body.css('overflow', 'auto');
 
-        TB.storage.verifiedSettingsSave(function(succ){
-            if (succ){
+        TB.storage.verifiedSettingsSave(function (succ) {
+            if (succ) {
                 TB.ui.textFeedback("Settings saved and verified", TB.ui.FEEDBACK_POSITIVE);
                 setTimeout(function () {
                     // Only reload in dev mode if we asked to.
@@ -656,7 +642,7 @@ See the License for the specific language governing permissions and limitations 
                         window.location.reload();
                     }
                 }, 1000);
-            } else{
+            } else {
                 TB.ui.textFeedback("Save could not be verified", TB.ui.FEEDBACK_NEGATIVE);
             }
         });
@@ -668,16 +654,12 @@ See the License for the specific language governing permissions and limitations 
         window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
 
     });
+
     $body.on('click', '.tb-help-main', function () {
         var $this = $(this),
             module = $this.attr('currentpage');
 
-
-            window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
-
-
-
-
+        window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
     });
 
     // Close the Settings menu
@@ -690,8 +672,7 @@ TB.register_module(self);
 }
 
 (function() {
-    // wait for storage
     window.addEventListener("TBObjectLoaded", function () {
-        tbmodbar();
+        modbar();
     });
 })();

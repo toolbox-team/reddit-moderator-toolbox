@@ -20,18 +20,17 @@ self.init = function () {
     // Add context & history stuff
     $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
-    function run()
-    {
+    function run() {
         var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]</span>';
 
-        if(TBUtils.isModmail) {
-            $('.thing .entry .head:not(.tb-history)').each(function(){
+        if (TBUtils.isModmail) {
+            $('.thing .entry .head:not(.tb-history)').each(function () {
                 var $this = $(this),
                     $userattrs = $this.find('.userattrs');
 
                 $this.addClass('tb-history');
 
-                if($userattrs.length > 1) {
+                if ($userattrs.length > 1) {
                     $userattrs.eq(0).after(UserButtonHTML);
                 } else {
                     $userattrs.after(UserButtonHTML);
@@ -39,14 +38,14 @@ self.init = function () {
 
             });
         } else {
-            $('.thing .entry .userattrs:not(.tb-history)').each(function(){
+            $('.thing .entry .userattrs:not(.tb-history)').each(function () {
                 var $this = $(this);
                 $this.addClass('tb-history');
                 $this.after(UserButtonHTML);
             });
         }
-
     }
+
     run();
 
     // NER support.
@@ -91,26 +90,26 @@ self.init = function () {
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
             contentBox = $('.inline-content').show().offset($(this).offset()).html('\
-        <div class="tb-popup user-history">\
-        <div class="tb-popup-header">\
-            <div class="tb-popup-title">User history for ' + author + '\</div>\
-            <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
-        </div>\
-        <div class=" tb-popup-content">\
-        <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-        <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
-        <div class="table domain-table">\
-        <table><thead>\
-        <tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
-        <tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
-        </table>\
-        </div><div class="table subreddit-table">\
-        <table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
-        </div></div>\
-            <div class="tb-popup-footer">\
-            </div>\
-        </div>\
-        '),
+<div class="tb-popup user-history">\
+<div class="tb-popup-header">\
+    <div class="tb-popup-title">User history for ' + author + '\</div>\
+    <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
+</div>\
+<div class=" tb-popup-content">\
+<a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+<div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
+<div class="table domain-table">\
+<table><thead>\
+<tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
+<tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
+</table>\
+</div><div class="table subreddit-table">\
+<table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
+</div></div>\
+    <div class="tb-popup-footer">\
+    </div>\
+</div>\
+'),
 
             domains = {},
             domainslist = [],
@@ -127,9 +126,10 @@ self.init = function () {
         });
 
         // Get user's domain & subreddit submission history
-        var populateRunning = [];
-	    var submissionCount = 0;
-	    var $submissionCount = contentBox.find('.submission-count');
+        var populateRunning = [],
+            submissionCount = 0,
+            $submissionCount = contentBox.find('.submission-count');
+
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
                 TB.ui.longLoadSpinner(true);
@@ -140,15 +140,15 @@ self.init = function () {
                 TB.ui.longLoadSpinner(false);
                 populateRunning.pop();
             }).done(function (d) {
-	            //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
+                //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
                 if ($.isEmptyObject(d.data.children)) {
 
-	                if(submissionCount > 0) {
-		                $submissionCount.html(submissionCount + "+");
-	                }
-	                else {
-		                $submissionCount.html(submissionCount);
-	                }
+                    if (submissionCount > 0) {
+                        $submissionCount.html(submissionCount + "+");
+                    }
+                    else {
+                        $submissionCount.html(submissionCount);
+                    }
 
                     TB.ui.longLoadSpinner(false);
                     populateRunning.pop();
@@ -163,8 +163,7 @@ self.init = function () {
                 }
                 if (!gettingUserdata) return;
 
-                var after = '',
-                    after = d.data.after,
+                var after = d.data.after,
                     commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
                 $.each(d.data.children, function (index, value) {
@@ -186,7 +185,7 @@ self.init = function () {
                         subredditlist.push(data.subreddit);
                     }
                     subreddits[data.subreddit].count++;
-	                submissionCount++;
+                    submissionCount++;
                 });
 
                 domainslist.sort(function (a, b) {
@@ -245,12 +244,12 @@ self.init = function () {
                 $('.rts-report').attr('data-commentbody', commentbody);
 
                 if (after) {
-					//There's still more subsmissions to load, so we're going to run again
-	                $submissionCount.html("Loading... (" + submissionCount + ")");
+                    //There's still more subsmissions to load, so we're going to run again
+                    $submissionCount.html("Loading... (" + submissionCount + ")");
                     populateHistory(after);
                 } else {
-	                //All of the submissions have been loaded at this point
-	                $submissionCount.html(submissionCount);
+                    //All of the submissions have been loaded at this point
+                    $submissionCount.html(submissionCount);
 
                     TB.ui.longLoadSpinner(false);
                     contentBox.find('.rts-report').show();
@@ -328,7 +327,6 @@ self.init = function () {
                         rtsLink.href = submission.json.data.url;
                         rtsLink.className = '';
                     }
-                    ;
                 });
             }
         });

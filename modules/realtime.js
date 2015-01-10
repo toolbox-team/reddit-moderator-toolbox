@@ -1,8 +1,8 @@
+function realtime() {
 // ===============
 // http://userscripts-mirror.org/scripts/show/129928
 // By: /u/DEADBEEF
 // ===============
-function realtimeInit() {
 
 var self = new TB.Module('Realtime Reddit');
 self.shortname = 'Realtime';
@@ -10,7 +10,7 @@ self.shortname = 'Realtime';
 self.settings['enabled']['default'] = false;
 self.config['betamode'] = true;
 
-self.init = function realtimeInit() {
+self.init = function () {
 
     // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
     if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
@@ -119,9 +119,8 @@ self.init = function realtimeInit() {
 TB.register_module(self);
 }
 
-(function () {
-    // wait for storage
+(function() {
     window.addEventListener("TBObjectLoaded", function () {
-        realtimeInit();
+        realtime();
     });
 })();

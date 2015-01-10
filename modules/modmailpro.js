@@ -1,5 +1,4 @@
 function modmailpro() {
-//Setup
 var self = new TB.Module('Mod Mail Pro');
 self.shortname = 'ModMail';
 
@@ -144,7 +143,7 @@ if (self.setting('filterBots')) {
     self.settings['inboxStyle']['values'] = ['All', 'Priority', 'Filtered', 'Replied', 'Unread', 'Unanswered', 'Bots'];
 }
 
-self.init = function () {
+self.init = function() {
     if (!TBUtils.isModmail) return;
 
     this.modmailpro();
@@ -152,7 +151,7 @@ self.init = function () {
     this.mailDropDowns();
 };
 
-self.modmailpro = function () {
+self.modmailpro = function() {
     var start = performance.now();
 
     var $body = $('body');
@@ -278,7 +277,7 @@ self.modmailpro = function () {
 
         // Enable as much CSS can be done at this point
         enablePreProcessFeatures();
-        
+
         // Start process
         if (twoPhaseProcessing) {
             processThreads($processSlowly, 1, threadProcessRate, slowComplete, "slow");
@@ -454,7 +453,8 @@ self.modmailpro = function () {
             }
         }
 
-        // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what subreddit the conversation is for.
+        // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what
+        // subreddit the conversation is for.
         if (subredditColor) {
             self.startProfile("thread-sr-color");
 
@@ -1039,7 +1039,7 @@ self.modmailpro = function () {
 };
 
 
-self.autoLoad = function () {
+self.autoLoad = function() {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
     if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
 
@@ -1097,7 +1097,7 @@ self.autoLoad = function () {
 };
 
 
-self.mailDropDowns = function () {
+self.mailDropDowns = function() {
     var COMPOSE = 'compose-message',
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',

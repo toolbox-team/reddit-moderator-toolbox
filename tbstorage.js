@@ -81,6 +81,7 @@
 function storagewrapper() {
 (function (TBStorage) {
     if (!$("form.logout input[name=uh]").val()) return; // not logged in.
+    var SHORTNAME = 'TBStorage';
 
     // Type safe keys.
     TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safeToStore';
@@ -91,7 +92,7 @@ function storagewrapper() {
     TBStorage.domain = window.location.hostname.split('.')[0];
     TBStorage.bnwShim = JSON.parse(localStorage[TBStorage.BNW_SHIM_KEY] || 'false');
 
-    //$.log('Domain: ' + TBStorage.domain, false, 'TBStorage');
+    //$.log('Domain: ' + TBStorage.domain, false, SHORTNAME);
 
     // We'll see about this idea after some testing.
     /*
@@ -111,7 +112,7 @@ function storagewrapper() {
 
     // one time hack for 3.0 storage changes.
     if (!TBStorage.bnwShim) {
-        $.log('Fixing pre-3.0 storage', false, 'TBStorage');
+        $.log('Fixing pre-3.0 storage', false, SHORTNAME);
         var shortcuts;
 
         if (TBStorage.domain === 'www') {
@@ -134,7 +135,7 @@ function storagewrapper() {
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
 
         if (shortcuts) {
-            $.log('Found old shortcuts', false, 'TBStorage');
+            $.log('Found old shortcuts', false, SHORTNAME);
             localStorage['Toolbox.Modbar.shortcuts'] = shortcuts;
         }
     }
@@ -284,7 +285,7 @@ function storagewrapper() {
                             && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             callback(true);
                         } else {
-                            $.log('Settings could not be verified', false, 'TBStorage');
+                            $.log('Settings could not be verified', false, SHORTNAME);
                             callback(false);
                         }
                     });
@@ -306,7 +307,7 @@ function storagewrapper() {
                         && isEquivalent(tbsettings, settingsObject)) {
                         callback(true);
                     } else {
-                        $.log('Settings could not be verified', false, 'TBStorage');
+                        $.log('Settings could not be verified', false, SHORTNAME);
                         callback(false);
                     }
                 }, false);
@@ -327,7 +328,7 @@ function storagewrapper() {
                     if (tbsettings !== null && isEquivalent(tbsettings, settingsObject)) {
                         callback(true);
                     } else {
-                        $.log('Settings could not be verified', false, 'TBStorage');
+                        $.log('Settings could not be verified', false, SHORTNAME);
                         callback(false);
                     }
                 });
@@ -429,7 +430,7 @@ function storagewrapper() {
             try {
                 result = JSON.parse(storageString);
             } catch (e) {
-                $.log(storageKey + ' is corrupted.  Sending default.', false, 'TBStorage');
+                $.log(storageKey + ' is corrupted.  Sending default.', false, SHORTNAME);
                 result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
             }
 
@@ -470,7 +471,7 @@ function storagewrapper() {
             try {
                 result = JSON.parse(storageString);
             } catch (e) {
-                $.log(storageKey + ' is corrupted.  Sending default.', false, 'TBStorage');
+                $.log(storageKey + ' is corrupted.  Sending default.', false, SHORTNAME);
                 result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
             }
 

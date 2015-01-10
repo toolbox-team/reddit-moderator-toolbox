@@ -900,7 +900,7 @@ TB.register_module(self);
 } // usernotes() wrapper
 
 (function() {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         usernotes();
     });
 })();

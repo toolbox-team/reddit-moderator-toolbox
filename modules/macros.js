@@ -233,7 +233,7 @@ TB.register_module(self);
 }
 
 (function () {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         modmacros();
     });
 })();

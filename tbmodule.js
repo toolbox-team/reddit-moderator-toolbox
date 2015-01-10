@@ -1,5 +1,4 @@
-function tbobject() {
-
+function tbmodule() {
 TB = {
     utils: TBUtils,
     ui: TBui,
@@ -19,49 +18,45 @@ TB = {
 
         function initLoop() {
             setTimeout(function init() {
-                if (TB.storage.isLoaded === true) {
 
-                    $.log("TBModule has TBStorage, loading modules", false, "TBinit");
-                    // call every module's init() method on page load
-                    for (var i = 0; i < TB.moduleList.length; i++) {
-                        var module = TB.modules[TB.moduleList[i]];
+                $.log("TBModule has TBStorage, loading modules", false, "TBinit");
+                // call every module's init() method on page load
+                for (var i = 0; i < TB.moduleList.length; i++) {
+                    var module = TB.modules[TB.moduleList[i]];
 
-                        // Don't do anything with beta modules unless beta mode is enabled
-                        // Need TB.setting() call for non-module settings
-                        // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
-                            // skip this module entirely
-                            continue;
-                        }
-
-                        // Don't do anything with dev modules unless debug mode is enabled
-                        // Need TB.setting() call for non-module settings
-                        // if (!TB.setting('betamode') && module.setting('betamode')) {
-                        if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
-                            // skip this module entirely
-                            continue;
-                        }
-
-                        // lock 'n load
-                        if (module.setting('enabled')) {
-                            $.log('Loading ' + module.name + ' module', false, 'TBinit');
-                            module.init();
-                            // unnecessary; we do it in TB.utils.getModSubs now
-                            // if (module.config["needs_mod_subs"]) {
-                            //     $.log("  We require additional mod subs");
-                            //     TB.utils.getModSubs(function init() {
-                            //         module.init();
-                            //     });
-                            // } else {
-                            //     module.init();
-                            // }
-                        }
-
+                    // Don't do anything with beta modules unless beta mode is enabled
+                    // Need TB.setting() call for non-module settings
+                    // if (!TB.setting('betamode') && module.setting('betamode')) {
+                    if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
+                        // skip this module entirely
+                        continue;
                     }
-                } else {
-                    $.log("no storage, looping", false, "TBModule");
-                    initLoop();
+
+                    // Don't do anything with dev modules unless debug mode is enabled
+                    // Need TB.setting() call for non-module settings
+                    // if (!TB.setting('betamode') && module.setting('betamode')) {
+                    if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
+                        // skip this module entirely
+                        continue;
+                    }
+
+                    // lock 'n load
+                    if (module.setting('enabled')) {
+                        $.log('Loading ' + module.name + ' module', false, 'TBinit');
+                        module.init();
+                        // unnecessary; we do it in TB.utils.getModSubs now
+                        // if (module.config["needs_mod_subs"]) {
+                        //     $.log("  We require additional mod subs");
+                        //     TB.utils.getModSubs(function init() {
+                        //         module.init();
+                        //     });
+                        // } else {
+                        //     module.init();
+                        // }
+                    }
+
                 }
+
             }, 50);
         }
     },
@@ -123,14 +118,14 @@ TB = {
 
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting == "enabled") {
-                        if (options.hasOwnProperty("hidden") && options["hidden"]  && !TB.utils.devMode) continue;
+                        if (options.hasOwnProperty("hidden") && options["hidden"] && !TB.utils.devMode) continue;
 
                         // blank slate
                         var $setting = $('<p></p>');
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
                         $('.tb-window-content .tb-window-content-modules').append($setting);
-                        moduleIsEnabled =  (module.setting(setting) ? true : false);
+                        moduleIsEnabled = (module.setting(setting) ? true : false);
                         // don't need this on the module's tab, too
                         continue;
                     }
@@ -152,7 +147,7 @@ TB = {
 
                     // hide hidden settings, ofc
                     if (options.hasOwnProperty("hidden")
-                        && options["hidden"]  && !TB.utils.devMode
+                        && options["hidden"] && !TB.utils.devMode
                     ) {
                         continue;
                     }
@@ -162,15 +157,15 @@ TB = {
                     // blank slate
                     var $setting = $('<p></p>'),
                         execAfterInject = [],
-                        title = (options.title) ? options.title : '(' + setting +')';
+                        title = (options.title) ? options.title : '(' + setting + ')';
 
                     // automagical handling of input types
                     switch (options.type) {
                         case "boolean":
-                            $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(' '+title));
+                            $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(' ' + title));
                             break;
                         case "number":
-                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(' '+title));
+                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(' ' + title));
                             break;
                         case "array":
                         case "JSON":
@@ -202,23 +197,23 @@ TB = {
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', module.shortname + '_syntax_theme');
                             $setting.append($('\
-                            <pre class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\
+                    <pre class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\
 /* This is just some example code*/\n\
 body {\n\
-    font-family: sans-serif, "Helvetica Neue", Arial;\n\
-    font-weight: normal;\n\
+font-family: sans-serif, "Helvetica Neue", Arial;\n\
+font-weight: normal;\n\
 }\n\
 \n\
 .md h3, .commentarea h3 {\n\
-    font-size: 1em;\n\
+font-size: 1em;\n\
 }\n\
 \n\
 #header {\n\
-    border-bottom: 1px solid #9A9A9A; \n\
-    box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
+border-bottom: 1px solid #9A9A9A; \n\
+box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 }\n\
 /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
-                            </pre>'));
+                    </pre>'));
                             execAfterInject.push(function () {
                                 // Syntax highlighter selection stuff
                                 $body.addClass('mod-toolbox-ace');
@@ -259,7 +254,7 @@ body {\n\
                 // if ($settings.find('input').length > 0) {
                 if (moduleHasSettingTab) {
                     // attach tab and content
-                    if(!moduleIsEnabled) {
+                    if (!moduleIsEnabled) {
                         $tab.addClass('tb-module-disabled');
                         $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.')
                         $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>')
@@ -398,7 +393,7 @@ TB.Module = function Module(name) {
         if (skip === undefined) skip = false;
         $.log(message, skip, this.shortname);
     };
-    
+
     // Profiling
 
     var profile = new Map(),
@@ -407,12 +402,12 @@ TB.Module = function Module(name) {
     this.startProfile = function (key) {
         if (!TB.utils.debugMode)
             return;
-        
+
         startTimes.set(key, performance.now());
-        
+
         // New key: add a new profile
         if (!profile.has(key)) {
-            profile.set(key, { time: 0, calls: 1 });
+            profile.set(key, {time: 0, calls: 1});
         }
         // Existing key: increment calls
         else {
@@ -423,7 +418,7 @@ TB.Module = function Module(name) {
     this.endProfile = function (key) {
         if (!TB.utils.debugMode)
             return;
-        
+
         // Never started profiling for the key
         if (!startTimes.has(key))
             return;
@@ -435,11 +430,11 @@ TB.Module = function Module(name) {
         // Must have been started, so the object exists
         profile.get(key).time += diff;
     };
-    
+
     this.getProfiles = function () {
         return profile;
     };
-    
+
     // PUBLIC: placeholder init(), just in case
     this.init = function init() {
         // pass
@@ -458,12 +453,12 @@ TB.Module.prototype = {
 };
 }
 
-(function TBinit() {
+(function() {
     window.addEventListener("TBUtilsLoaded", function () {
         $.log("TBModule has TBUtils", false, "TBinit");
-        tbobject();
+        tbmodule();
 
-        var event = new CustomEvent("TBObjectLoaded");
+        var event = new CustomEvent("TBModuleLoaded");
         window.dispatchEvent(event);
     });
 })();

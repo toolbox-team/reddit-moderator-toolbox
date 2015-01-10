@@ -724,7 +724,7 @@ TB.register_module(self);
 } // notifier() wrapper
 
 (function () {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         notifiermod();
     });
 })();

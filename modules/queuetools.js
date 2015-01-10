@@ -724,7 +724,7 @@ TB.register_module(self);
 }// queuetools() wrapper
 
 (function() {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         queuetools();
     });
 })();

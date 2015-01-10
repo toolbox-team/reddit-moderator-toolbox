@@ -140,7 +140,7 @@ TB.register_module(self);
 } // nukecomments() wrapper
 
 (function() {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         nukecomments();
     });
 })();

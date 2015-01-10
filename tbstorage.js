@@ -3,81 +3,82 @@
 //Reset toolbox settings support
 (function () {
 
-    if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') > -1) {
-        var domain = window.location.hostname.split('.')[0];
-        var r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
-        if (r == true) {
+    // load storage if we're not on the reset page.
+    if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
+        storagewrapper();
+        return;
+    }
 
-            function clearLocal() {
+    var domain = window.location.hostname.split('.')[0],
+        r = confirm("This will reset all your toolbox settings.  Would you like to proceed?");
+    if (r == true) {
+        function clearLocal() {
 
-                // Settings.
-                Object.keys(localStorage)
-                    .forEach(function (key) {
-                        if (/^(Toolbox.)/.test(key)) {
-                            localStorage.removeItem(key);
-                        }
-                    });
-
-                // Cache.
-                Object.keys(localStorage)
-                    .forEach(function (key) {
-                        if (/^(TBCache.)/.test(key)) {
-                            localStorage.removeItem(key);
-                        }
-                    });
-
-
-                // Wait a sec for stuff to clear.
-                setTimeout(function () {
-                    window.location.href = "//"+ domain +".reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
-                }, 1000);
-            }
-
-            // Chrome
-            if (typeof (chrome) !== "undefined") {
-                chrome.storage.local.remove('tbsettings', function () {
-                    // Wait a sec for stuff to clear.
-                    setTimeout(function () {
-                        clearLocal();
-                    }, 1000);
-                });
-
-            // Safari
-            } else if (typeof (safari) !== "undefined") {
-                safari.self.addEventListener('message', function(event) {
-                    if (event.name == 'tb-clearsettings') {
-                        // Wait a sec for stuff to clear.
-                        setTimeout(function () {
-                            clearLocal();
-                        }, 1000);
+            // Settings.
+            Object.keys(localStorage)
+                .forEach(function (key) {
+                    if (/^(Toolbox.)/.test(key)) {
+                        localStorage.removeItem(key);
                     }
-                }, false);
-
-                safari.self.tab.dispatchMessage('tb-clearsettings', null);
-            // Firefox
-            } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
-                self.port.on('tb-clearsettings-reply', function () {
-                    // Wait a sec for stuff to clear.
-                    setTimeout(function () {
-                        clearLocal();
-                    }, 1000);
                 });
 
-                self.port.emit('tb-clearsettings');
-            // Donno, fuck it.
-            } else {
+            // Cache.
+            Object.keys(localStorage)
+                .forEach(function (key) {
+                    if (/^(TBCache.)/.test(key)) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+
+            // Wait a sec for stuff to clear.
+            setTimeout(function () {
+                window.location.href = "//" + domain + ".reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/";
+            }, 1000);
+        }
+
+        // Chrome
+        if (typeof (chrome) !== "undefined") {
+            chrome.storage.local.remove('tbsettings', function () {
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
                     clearLocal();
                 }, 1000);
-            }
+            });
+
+            // Safari
+        } else if (typeof (safari) !== "undefined") {
+            safari.self.addEventListener('message', function (event) {
+                if (event.name == 'tb-clearsettings') {
+                    // Wait a sec for stuff to clear.
+                    setTimeout(function () {
+                        clearLocal();
+                    }, 1000);
+                }
+            }, false);
+
+            safari.self.tab.dispatchMessage('tb-clearsettings', null);
+            // Firefox
+        } else if ((typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style)) {
+            self.port.on('tb-clearsettings-reply', function () {
+                // Wait a sec for stuff to clear.
+                setTimeout(function () {
+                    clearLocal();
+                }, 1000);
+            });
+
+            self.port.emit('tb-clearsettings');
+            // Donno, fuck it.
+        } else {
+            // Wait a sec for stuff to clear.
+            setTimeout(function () {
+                clearLocal();
+            }, 1000);
         }
-    } else {
-        storageWrapper();
     }
 })();
 
-function storageWrapper() {
+function storagewrapper() {
 (function (TBStorage) {
     if (!$("form.logout input[name=uh]").val()) return; // not logged in.
 
@@ -95,16 +96,15 @@ function storageWrapper() {
     // We'll see about this idea after some testing.
     /*
      if (TBStorage.domain !== 'www') {
-         Object.keys(localStorage)
-             .forEach(function (key) {
-                 if (key === TBStorage.BNW_SHIM_KEY) return;
-                 if (/^(Toolbox.)/.test(key)) {
-                     localStorage.removeItem(key);
-                 }
-             });
+     Object.keys(localStorage)
+     .forEach(function (key) {
+     if (key === TBStorage.BNW_SHIM_KEY) return;
+     if (/^(Toolbox.)/.test(key)) {
+     localStorage.removeItem(key);
+     }
+     });
      }
      */
-
 
     localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
 
@@ -117,7 +117,7 @@ function storageWrapper() {
         if (TBStorage.domain === 'www') {
             shimming = true;
             shortcuts = localStorage['Toolbox.Notifier.shortcuts2'] || null;
-            if(!shortcuts) {
+            if (!shortcuts) {
                 shortcuts = localStorage['Toolbox.Modbar.shortcuts'] || null;
             }
         }
@@ -176,7 +176,7 @@ function storageWrapper() {
         });
     } else if (TBStorage.userBrowserStorage && TBStorage.browser === SAFARI) {
         // wait for reply.
-        safari.self.addEventListener('message', function(event) {
+        safari.self.addEventListener('message', function (event) {
             var tbsettings = event.message;
             if (event.name === 'tb-getsettings' && tbsettings !== undefined) {
                 if ((tbsettings[TBStorage.BNW_SHIM_KEY] || false)) {
@@ -222,22 +222,27 @@ function storageWrapper() {
         return setSetting(module, setting, value, true);
     };
 
+
     TBStorage.getSetting = function (module, setting, defaultVal) {
         return getSetting(module, setting, defaultVal);
     };
+
 
     // methods.
     TBStorage.setCache = function (module, setting, value) {
         return setCache(module, setting, value, true);
     };
 
+
     TBStorage.getCache = function (module, setting, defaultVal) {
         return getCache(module, setting, defaultVal);
     };
 
+
     TBStorage.unloading = function () {
         saveSettingsToBrowser();
     };
+
 
     TBStorage.clearCache = function () {
 
@@ -256,7 +261,8 @@ function storageWrapper() {
         setCache('Utils', 'moderatedSubsData', []);
     };
 
-    TBStorage.verifiedSettingsSave = function(callback) {
+
+    TBStorage.verifiedSettingsSave = function (callback) {
         // Allow manual saves from all domains.
         if (!TBStorage.userBrowserStorage) return callback(true);
 
@@ -332,18 +338,14 @@ function storageWrapper() {
         }
     };
 
-    function SendInit() {
-        //TBLoadUtils
-        var event = new CustomEvent("TBLoadUtils");
-        window.dispatchEvent(event);
-        setTimeout(function () {
-            TBStorage.isLoaded = true;
 
+    function SendInit() {
+        setTimeout(function () {
             event = new CustomEvent("TBStorageLoaded");
             window.dispatchEvent(event);
         }, 10);
-
     }
+
 
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
@@ -358,6 +360,7 @@ function storageWrapper() {
             localStorage['Toolbox.Storage.settings'] = JSON.stringify(TBStorage.settings.sort());
         }
     }
+
 
     function settingsToObject(callback) {
         var settingsObject = {};
@@ -375,6 +378,7 @@ function storageWrapper() {
             });
         callback(settingsObject);
     }
+
 
     function saveSettingsToBrowser() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
@@ -399,6 +403,7 @@ function storageWrapper() {
         }
     }
 
+
     function objectToSettings(object, callback) {
         //console.log(object);
         $.each(object, function (fullKey, value) {
@@ -409,6 +414,7 @@ function storageWrapper() {
 
         callback();
     }
+
 
     function getSetting(module, setting, defaultVal) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
@@ -438,6 +444,7 @@ function storageWrapper() {
         }
     }
 
+
     function setSetting(module, setting, value, syncSettings) {
         var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
@@ -449,6 +456,7 @@ function storageWrapper() {
 
         return getSetting(module, setting);
     }
+
 
     function getCache(module, setting, defaultVal) {
         var storageKey = 'TBCache.' + module + '.' + setting;
@@ -477,6 +485,7 @@ function storageWrapper() {
         }
     }
 
+
     function setCache(module, setting, value) {
         var storageKey = 'TBCache.' + module + '.' + setting;
 
@@ -485,12 +494,13 @@ function storageWrapper() {
         return getSetting(module, setting);
     }
 
+
     // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
     // added recursive object checks - al
     function isEquivalent(a, b) {
         // Create arrays of property names
-        var aProps = Object.getOwnPropertyNames(a);
-        var bProps = Object.getOwnPropertyNames(b);
+        var aProps = Object.getOwnPropertyNames(a),
+            bProps = Object.getOwnPropertyNames(b);
 
         // If number of properties is different,
         // objects are not equivalent
@@ -500,19 +510,19 @@ function storageWrapper() {
         }
 
         for (var i = 0; i < aProps.length; i++) {
-            var propName = aProps[i];
-            var propA = a[propName];
-            var propB = b[propName];
+            var propName = aProps[i],
+                propA = a[propName],
+                propB = b[propName];
 
             // If values of same property are not equal,
             // objects are not equivalent
             if (propA !== propB) {
                 if (typeof propA === 'object' && typeof propB === 'object') {
-                    if (!isEquivalent(propA, propB)){
+                    if (!isEquivalent(propA, propB)) {
                         $.log('prop :' + propA + ' ' + propB);
                         return false;
                     }
-                } else{
+                } else {
                     $.log('prop :' + propA + ' ' + propB);
                     return false;
                 }

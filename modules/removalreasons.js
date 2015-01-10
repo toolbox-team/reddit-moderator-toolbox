@@ -710,7 +710,7 @@ TB.register_module(self);
 } // end removalreasons()
 
 (function() {
-    window.addEventListener("TBObjectLoaded", function () {
+    window.addEventListener("TBModuleLoaded", function () {
         removalreasons();
     });
 })();

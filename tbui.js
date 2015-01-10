@@ -1,6 +1,6 @@
 (function (TBui) {
     TBui.longLoadArray = [];
-    TBui.longLoadArrayNonPersistent  = [];
+    TBui.longLoadArrayNonPersistent = [];
 
     // Icons
     TBui.iconWrench = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1ddRRBLA6lg4iT\
@@ -105,7 +105,7 @@
             Bw0aLTli1bBlu2bBEhMIfC1N4NjoVM9QDviw/gswRX5dyejFanE6HRo0fLb71C4hkUneHmPizNbwoXLVrUqcGr/Qpkn7mWeFecFs/y8vIyaYdHW5YvXy4rYHx3VIDs3xJlkqQjUltbK34cxY4EVIerHbuLApj/YlLgifT2+MBCi9EzRXpIEFD9kII/ORfO7Ohs6GoF9Afp7C5ZbXFylGn\
             xkJAQMZhNOtycvvPB/INIptTIC2BKSoogSO3t7WWlfGapCrigb5vM399fdF79pKk+iYyMFGVPnDjRbjssICBA70bo+1YAh35IPlvnoCgzFB2nNNngVvmSJUtEueTkZJ33y8rKkLJCLvNPJRSg5C9GPhLMiK8v5OfnixBWjt05GCJ/DklJSbB+/XoIppw/PT1dUOB85I7TZWcKhFJTU2H//v\
             2CFo+NjYUbN26IYMpGyhf4k4kQsidw/vz5KRIP0WApoXCKsc0O3ijh7XRj5XjtSwcedEL6mdxzUzxDV84Ajs/5FyLMVOg8o8O8nykiU2AGBtWbPm5CJ35Coy3/F2AAwAD1p/Bd/dYAAAAASUVORK5CYII=';
-    
+
     TBui.iconBot = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACz0lEQVQ4T3VTXUhTYRh+zzbdNHZ0E5sjdLOiLnTahQaCFGiIwSK9iIGhGQjOM3GgN0MENYTJYGKiG91kPxe5qxkJk0jQ7EKwvHAarMTMtvYD+2XqnHPr/Q4Jm60PDt95v/f7nvM8z/ccCs4NrVY7I5FIng4ODn5Lb\
                     +n1ernX69VNTk6q09ep8wAjIyOcvb09o0wm04+OjvpIX6PR3OJyuU1isfgJ9uP/BZiYmLgUDAYtqVTqSjKZFOKhMM5crGl8D+LBHyKRSNXf3+86A8lgYDAYOuRy+UuFQgFutwdKS0tBIBDAzs4OFBTQ7Ly7u/tIp9O9ygowPm7oKSoSmQKBAJSVlYHP5wOhkMa9KQiFQsDhcCAWizEI\
                     YM4KYDQaew4PD01VVVXQ2HgHTKYZODqKQW+vBhwOB9hsNigsLGQGBgayA0xNTfXQNG3yeDzA4/EA9UJ+/gXY3/8J6APKKICTkxOmr6/vXwCz2VzpcrneV1YqpHV1dSxloVDIMo1Go4DAsLa2Bltbdjf61NTV1bVFeqyJeLfX/X7/SnPzXcnq6kc4PT0FdD3jhgmDRCIBDQ2NsLho80ql\
@@ -325,7 +325,7 @@
 
             // Don't add the sub twice.
             var exists = false;
-            $selected_list.find('option').each(function(){
+            $selected_list.find('option').each(function () {
                 if (this.value === $add_item.val()) {
                     exists = true;
                     return false;
@@ -367,43 +367,43 @@
             //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
             var $feedbackWindow = $body.find('#tb-feedback-window');
 
-                switch (displayLocation){
-                    case TBui.DISPLAY_CENTER:
-                        var feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
-                            feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
+            switch (displayLocation) {
+                case TBui.DISPLAY_CENTER:
+                    var feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
+                        feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
+
+                    $feedbackWindow.css({
+                        'margin-left': '-' + feedbackLeftMargin + 'px',
+                        'margin-top': '-' + feedbackTopMargin + 'px'
+                    });
+                    break;
+                case TBui.DISPLAY_BOTTOM:
+                    $feedbackWindow.css({
+                        'left': '5px',
+                        'bottom': '40px',
+                        'top': 'auto',
+                        'position': 'fixed'
+                    });
+                    break;
+                case TBui.DISPLAY_CURSOR:
+                    $(document).mousemove(function (e) {
+                        posX = e.pageX;
+                        posY = e.pageY;
 
                         $feedbackWindow.css({
-                            'margin-left': '-' + feedbackLeftMargin + 'px',
-                            'margin-top': '-' + feedbackTopMargin + 'px'
-                        });
-                    break;
-                    case TBui.DISPLAY_BOTTOM:
-                        $feedbackWindow.css({
-                            'left': '5px',
-                            'bottom': '40px',
-                            'top': 'auto',
+                            left: posX - $feedbackWindow.width() + 155,
+                            top: posY - $feedbackWindow.height() - 15,
                             'position': 'fixed'
                         });
+                    });
                     break;
-                    case TBui.DISPLAY_CURSOR:
-                        $(document).mousemove(function(e) {
-                            posX = e.pageX;
-                            posY = e.pageY;
-
-                            $feedbackWindow.css({
-                                left: posX - $feedbackWindow.width() + 155,
-                                top: posY - $feedbackWindow.height() - 15,
-                                'position': 'fixed'
-                            });
-                        });
-                    break;
-                }
+            }
 
             // And fade out nicely after 3 seconds.
             $feedbackWindow.delay(displayDuration ? displayDuration : 3000).fadeOut();
         }
     };
-    
+
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
     TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
         if (createOrDestroy !== undefined) {

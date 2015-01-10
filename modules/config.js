@@ -924,7 +924,7 @@ TB.register_module(self);
 } // tbconfig() wrapper
 
 (function() {
-    window.addEventListener('TBObjectLoaded', function () {
+    window.addEventListener('TBModuleLoaded', function () {
         tbconfig();
     });
 })();

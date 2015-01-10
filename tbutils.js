@@ -142,7 +142,7 @@ function initwrapper() {
 
         var botCheck = TBStorage.getSetting('QueueTools', 'botCheckmark', ['AutoModerator']),
             index = botCheck.indexOf('automoderator');
-        if (index > -1){
+        if (index > -1) {
             botCheck[index] = 'AutoModerator';
             TBStorage.setSetting('QueueTools', 'botCheckmark', botCheck);
         }
@@ -248,7 +248,7 @@ function initwrapper() {
     };
 
     //
-    TBUtils.minutesToMilliseconds = function(mins) {
+    TBUtils.minutesToMilliseconds = function (mins) {
         var oneMin = 60000,
             milliseconds = mins * 60 * 1000;
 
@@ -325,9 +325,9 @@ function initwrapper() {
             // Create the overlay
             if (createOrDestroy) {
                 var html = '\
-    <div class="tb-internal-overlay">\
-    <div class="tb-overlay-label"></div></div>\
-    ';
+<div class="tb-internal-overlay">\
+<div class="tb-overlay-label"></div></div>\
+';
                 TBui.longLoadSpinner(true);
                 $body.find('.tb-popup-tabs').after(html);
             }
@@ -540,12 +540,12 @@ function initwrapper() {
         });
     };
 
-    TBUtils.replaceAll = function(find, replace, str) {
+    TBUtils.replaceAll = function (find, replace, str) {
         find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
         return str.replace(new RegExp(find, 'g'), replace);
     };
 
-    TBUtils.cleanSubredditName = function(dirtySub) {
+    TBUtils.cleanSubredditName = function (dirtySub) {
         dirtySub = dirtySub.replace('/r/', '').replace('/', '').trim();
         return dirtySub;
     };
@@ -765,7 +765,7 @@ function initwrapper() {
             if (counter == 0 && start) {
                 start();
             }
-            
+
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
                 if (ret === false) finish();
@@ -776,6 +776,7 @@ function initwrapper() {
                 finish();
             }
         }
+
         window.setTimeout(doChunk, delay);
 
         function finish() {
@@ -893,21 +894,20 @@ function initwrapper() {
                 }
 
                 if (isJSON) {
-                  try{
-                    wikiData = JSON.parse(wikiData);
-                    if (wikiData) {
-                        callback(wikiData);
-                    } else {
+                    try {
+                        wikiData = JSON.parse(wikiData);
+                        if (wikiData) {
+                            callback(wikiData);
+                        } else {
+                            callback(TBUtils.NO_WIKI_PAGE);
+                        }
+                    }
+                    catch (err) {
+                        // we should really have a INVAILD_DATA error for this.
+                        $.log(err, false, 'TBUtils');
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                  }
-                  catch(err)
-                  {
-                    // we should really have a INVAILD_DATA error for this.
-                    $.log(err, false, 'TBUtils');
-                    callback(TBUtils.NO_WIKI_PAGE);
-                  }
-                  return;
+                    return;
                 }
 
                 // We have valid data, but it's not JSON.
@@ -915,8 +915,8 @@ function initwrapper() {
 
             })
             .fail(function (jqXHR, textStatus, e) {
-              $.log('Wiki error (' + subreddit + '/' + page +'): '  + e, false, 'TBUtils');
-                if (jqXHR.responseText  === undefined) {
+                $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, 'TBUtils');
+                if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;
                 }
@@ -1204,7 +1204,7 @@ function initwrapper() {
     };
 
     TBUtils.aboutUser = function (user, callback) {
-        $.get('/user/'+ user +'/about.json', {
+        $.get('/user/' + user + '/about.json', {
             uh: TBUtils.modhash
         })
             .success(function (response) {
@@ -1397,7 +1397,7 @@ function initwrapper() {
     $('div.content').on('DOMNodeInserted', function (e) {
         var $target = $(e.target), $parentNode = $(e.target.parentNode);
         if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") ||
-          $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+            $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
 
         $.log('TBNewThings firing from: ' + $target.attr('class'), false, 'TBUtils');
 
@@ -1449,7 +1449,7 @@ function initwrapper() {
             // Custom FF nag for updates.
             if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
                 TBUtils.alert("There is a new version of Toolbox for Firefox!  Click here to update.", function (clicked) {
-                    if (clicked) window.open('http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_'+ resp.ffVersion +'.xpi');
+                    if (clicked) window.open('http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_' + resp.ffVersion + '.xpi');
                 });
                 return; //don't spam the user with notes until they have the current version.
             }
@@ -1457,9 +1457,15 @@ function initwrapper() {
             // Custom Safari nag for updates.
             if (resp.safariVersion > TBUtils.shortVersion && TBUtils.browser == SAFARI && TBUtils.isExtension) {
                 TBUtils.alert("There is a new version of Toolbox for Safari!  Click here to update.", function (clicked) {
-                    if (clicked) window.open('http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_'+ resp.safariVersion +'.safariextz');
+                    if (clicked) window.open('http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_' + resp.safariVersion + '.safariextz');
                 });
                 return; //don't spam the user with notes until they have the current version.
+            }
+
+            if (TBUtils.debugMode && resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
+                TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
+                    if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
+                });
             }
 
             $(resp.notes).each(function () {
@@ -1485,13 +1491,6 @@ function initwrapper() {
                     return;
                 }
 
-                if (resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
-                    // This shit is annoying and has never been used.
-                    //TBUtils.alert("There is a new development version of Toolbox!  Click here to update.", function (clicked) {
-                    //    if (clicked) window.open("https://github.com/creesch/reddit-moderator-toolbox");
-                    //});
-                    //return; //do spam?  I donno.
-                }
                 $(resp.notes).each(function () {
                     TBUtils.showNote(this);
                 });

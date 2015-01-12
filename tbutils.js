@@ -64,7 +64,7 @@ function initwrapper() {
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
-    TBUtils.browser = TBStorage.browser;
+    TBUtils.browser = SAFARI; //TBStorage.browser;
     TBUtils.firstRun = false;
 
 
@@ -787,6 +787,19 @@ function initwrapper() {
     };
 
     // Reddit API stuff
+    TBUtils.getRatelimit = function getRatelimit(callback) {
+        $.getJSON('/r/toolbox/about.json').done(function (data, status, jqxhr) {
+            var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
+                ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+            $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
+
+            callback({
+                'ratelimitRemaining': ratelimitRemaining,
+                'ratelimitReset': ratelimitReset
+            })
+        });
+    };
+
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {
             reason = '"' + reason + '" via toolbox';

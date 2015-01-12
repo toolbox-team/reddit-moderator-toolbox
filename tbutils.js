@@ -64,7 +64,7 @@ function initwrapper() {
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
-    TBUtils.browser = SAFARI; //TBStorage.browser;
+    TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
 
 

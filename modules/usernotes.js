@@ -42,67 +42,11 @@ self.usernotes = function usernotes(){
         run();
     });
 
-    // Compatibility with Sweden
-    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/;
-    var MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/;
-
-    var ConstManager = function (init_pools) {
-        return {
-            _pools: init_pools,
-            create: function (poolName, constant) {
-                var pool = this._pools[poolName];
-                var id = pool.indexOf(constant);
-                if (id !== -1)
-                    return id;
-                pool.push(constant);
-                return pool.length - 1;
-            },
-            get: function (poolName, id) {
-                return this._pools[poolName][id];
-            }
-        };
-    };
-
     function getUser(users, name) {
         if (users.hasOwnProperty(name)) {
             return users[name];
         }
         return undefined;
-    }
-
-    function squashPermalink(permalink) {
-        var linkMatches = permalink.match(COMMENTS_LINK_RE);
-        var modMailMatches = permalink.match(MODMAIL_LINK_RE);
-        if (linkMatches) {
-            var squashed = "l," + linkMatches[1];
-            if (linkMatches[3] !== undefined)
-                squashed += "," + linkMatches[3];
-            return squashed
-        } else if (modMailMatches) {
-            return "m," + modMailMatches[1];
-        } else {
-            return "";
-        }
-    }
-
-    function postToWiki(sub, json, reason) {
-        TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
-
-        TBUtils.noteCache[sub] = json;
-        json = deflateNotes(json);
-
-        self.log("Saving usernotes to wiki...");
-        TBUtils.postToWiki('usernotes', sub, json, reason, true, false, function postToWiki(succ, err) {
-            if (succ) {
-                self.log("Success!");
-                TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, 2000);
-                run();
-            }
-            else {
-                self.log("Failure: " + err);
-                TBui.textFeedback("Save failed: " + err, TBui.FEEDBACK_NEGATIVE, 5000);
-            }
-        });
     }
 
     // NER support.
@@ -146,43 +90,6 @@ self.usernotes = function usernotes(){
 
     function processSub(currsub) {
         self.getUserNotes(currsub, setNotes);
-    }
-
-    // Compress notes so they'll store well in the database.
-    function deflateNotes(notes) {
-        var deflated = {
-            ver: TBUtils.notesSchema,
-            users: {},
-            constants: {
-                users: [],
-                warnings: []
-            }
-        };
-
-        var mgr = new ConstManager(deflated.constants);
-
-        $.each(notes.users, function (name, user) {
-            deflated.users[name] = {
-                "ns": user.notes.map(function (note) {
-                    return {
-                        "n": note.note,
-                        "t": deflateTime(note.time),
-                        "m": mgr.create("users", note.mod),
-                        "l": note.link,
-                        "w": mgr.create("warnings", note.type)
-                    };
-                })
-            };
-        });
-
-        return deflated;
-    }
-
-    function deflateTime(time) {
-        if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
-            time = Math.trunc(time / 1000);
-        }
-        return time;
     }
 
     function setNotes(status, notes, subreddit) {
@@ -280,7 +187,7 @@ self.usernotes = function usernotes(){
             info = TBUtils.getThingInfo(thing),
             subreddit = info.subreddit,
             user = info.user,
-            link = squashPermalink(info.permalink);
+            link = info.permalink;
 
         var popup = TB.ui.popup(
             'User Notes - <a href="//reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>',
@@ -434,7 +341,9 @@ self.usernotes = function usernotes(){
                     case TBUtils.NO_WIKI_PAGE:
                         notes = noteSkel;
                         notes.users[user] = userNotes;
-                        postToWiki(subreddit, notes, 'create usernotes config');
+                        self.saveUserNotes(subreddit, notes, 'create usernotes config', function(succ){
+                            if (succ) run();
+                        });
                         break;
 
                 }
@@ -460,26 +369,34 @@ self.usernotes = function usernotes(){
                             delete notes.users[user];
                         }
 
-                        postToWiki(subreddit, notes, 'delete note ' + noteid + ' on user ' + user);
+                        self.saveUserNotes(subreddit, notes, 'delete note ' + noteid + ' on user ' + user, function(succ){
+                            if (succ) run();
+                        });
                         // Add.
                     }
                     else {
                         u.notes.unshift(note);
-                        postToWiki(subreddit, notes, 'create new note on user ' + user);
+                        self.saveUserNotes(subreddit, notes, 'create new note on user ' + user, function(succ){
+                            if (succ) run();
+                        });
                     }
 
                     // Adding a note for previously unknown user
                 }
                 else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
-                    postToWiki(subreddit, notes, 'create new note on new user ' + user);
+                    self.saveUserNotes(subreddit, notes, 'create new note on new user ' + user, function(succ){
+                        if (succ) run();
+                    });
                 }
             }
             else {
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
-                postToWiki(subreddit, notes, 'create new notes object, add new note on user ' + user);
+                self.saveUserNotes(subreddit, notes, 'create new notes object, add new note on user ' + user, function(succ){
+                    if (succ) run();
+                });
             }
         });
     });
@@ -666,7 +583,7 @@ self.usernotesManager = function () {
                 self.log("deleting notes for " + user);
                 delete subUsenotes.users[user];
                 TB.utils.noteCache[sub] = subUsenotes;
-                //postToWiki(sub, subUsenotes, "deleted all notes for /u/" + user);
+                self.saveUserNotes(sub, subUsenotes, "deleted all notes for /u/" + user);
                 $userSpan.parent().remove();
                 TB.ui.textFeedback('Deleted all notes for /u/' + user, TB.ui.FEEDBACK_POSITIVE);
             }
@@ -682,7 +599,7 @@ self.usernotesManager = function () {
             self.log("deleting note for " + user);
             subUsenotes.users[user].notes.splice(note, 1);
             TB.utils.noteCache[sub] = subUsenotes;
-            //postToWiki(sub, subUsenotes, "deleted a note for /u/" + user);
+            self.saveUserNotes(sub, subUsenotes, "deleted a note for /u/" + user);
             $noteSpan.remove();
             TB.ui.textFeedback('Deleted note for /u/' + user, TB.ui.FEEDBACK_POSITIVE);
         });
@@ -699,14 +616,12 @@ self.usernotesManager = function () {
 };
 
 self.getUserNotes = function(subreddit, callback) {
-    self.log(callback === undefined);
     if (!callback) return;
-    self.log(subreddit);
     if (!subreddit) return returnFalse();
 
     if (TBUtils.noteCache[subreddit] !== undefined) {
         self.log('notes found in cache');
-        callback(true, TBUtils.noteCache[subreddit], subreddit);
+        if (callback) callback(true, TBUtils.noteCache[subreddit], subreddit);
         return;
     }
 
@@ -742,12 +657,12 @@ self.getUserNotes = function(subreddit, callback) {
 
         // We have notes, cache them and return them.
         TBUtils.noteCache[subreddit] = notes;
-        callback(true, notes, subreddit);
+        if (callback) callback(true, notes, subreddit);
     });
 
     function returnFalse(pageError){
         self.log('returning false');
-        callback(false, null, pageError);
+        if (callback) callback(false, null, pageError);
     }
 
     // Inflate notes from the database, converting between versions if necessary.
@@ -784,7 +699,7 @@ self.getUserNotes = function(subreddit, callback) {
                 } else {
                     user.notes.forEach(function (note) {
                         if (note.link && note.link.trim()) {
-                            note.link = squashPermalink(note.link);
+                            note.link = self._squashPermalink(note.link);
                         }
                     });
                     newUsers.push(user);
@@ -812,7 +727,7 @@ self.getUserNotes = function(subreddit, callback) {
             users: {}
         };
 
-        var mgr = new ConstManager(deflated.constants);
+        var mgr = new self._constManager(deflated.constants);
 
         $.each(deflated.users, function (name, user) {
             inflated.users[name] = {
@@ -833,7 +748,7 @@ self.getUserNotes = function(subreddit, callback) {
             users: []
         };
 
-        var mgr = new ConstManager(deflated.constants);
+        var mgr = new self._constManager(deflated.constants);
 
         notes.users = deflated.users.map(function (user) {
             return {
@@ -870,27 +785,6 @@ self.getUserNotes = function(subreddit, callback) {
         return time;
     }
 
-    // Compatibility with Sweden
-    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/;
-    var MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/;
-
-    var ConstManager = function (init_pools) {
-        return {
-            _pools: init_pools,
-            create: function (poolName, constant) {
-                var pool = this._pools[poolName];
-                var id = pool.indexOf(constant);
-                if (id !== -1)
-                    return id;
-                pool.push(constant);
-                return pool.length - 1;
-            },
-            get: function (poolName, id) {
-                return this._pools[poolName][id];
-            }
-        };
-    };
-
     function unsquashPermalink(subreddit, permalink) {
         if (!permalink) return '';
         var linkParams = permalink.split(/,/g);
@@ -907,20 +801,102 @@ self.getUserNotes = function(subreddit, callback) {
         }
         return link;
     }
+};
 
-    function squashPermalink(permalink) {
-        var linkMatches = permalink.match(COMMENTS_LINK_RE);
-        var modMailMatches = permalink.match(MODMAIL_LINK_RE);
-        if (linkMatches) {
-            var squashed = "l," + linkMatches[1];
-            if (linkMatches[3] !== undefined)
-                squashed += "," + linkMatches[3];
-            return squashed
-        } else if (modMailMatches) {
-            return "m," + modMailMatches[1];
-        } else {
-            return "";
+self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
+
+    TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
+
+    TBUtils.noteCache[sub] = notes;
+    notes = deflateNotes(notes);
+
+    self.log("Saving usernotes to wiki...");
+    TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, function postToWiki(succ, err) {
+        if (succ) {
+            self.log("Success!");
+            TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, 2000);
+            if (callback) callback(true);
         }
+        else {
+            self.log("Failure: " + err);
+            TBui.textFeedback("Save failed: " + err, TBui.FEEDBACK_NEGATIVE, 5000);
+            if (callback) callback(false);
+        }
+    });
+
+    // Compress notes so they'll store well in the database.
+    function deflateNotes(notes) {
+        var deflated = {
+            ver: TBUtils.notesSchema,
+            users: {},
+            constants: {
+                users: [],
+                warnings: []
+            }
+        };
+
+        var mgr = new self._constManager(deflated.constants);
+
+        $.each(notes.users, function (name, user) {
+            deflated.users[name] = {
+                "ns": user.notes.map(function (note) {
+                    return {
+                        "n": note.note,
+                        "t": deflateTime(note.time),
+                        "m": mgr.create("users", note.mod),
+                        "l": self._squashPermalink(note.link),
+                        "w": mgr.create("warnings", note.type)
+                    };
+                })
+            };
+        });
+
+        return deflated;
+    }
+
+    function deflateTime(time) {
+        if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
+            time = Math.trunc(time / 1000);
+        }
+        return time;
+    }
+};
+
+self._constManager = function _constManager(init_pools) {
+    return {
+        _pools: init_pools,
+        create: function (poolName, constant) {
+            var pool = this._pools[poolName];
+            var id = pool.indexOf(constant);
+            if (id !== -1)
+                return id;
+            pool.push(constant);
+            return pool.length - 1;
+        },
+        get: function (poolName, id) {
+            return this._pools[poolName][id];
+        }
+    };
+};
+
+self._squashPermalink = function _squashPermalink(permalink) {
+    // Compatibility with Sweden
+    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/,
+        MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
+
+        linkMatches = permalink.match(COMMENTS_LINK_RE),
+        modMailMatches = permalink.match(MODMAIL_LINK_RE);
+
+
+    if (linkMatches) {
+        var squashed = "l," + linkMatches[1];
+        if (linkMatches[3] !== undefined)
+            squashed += "," + linkMatches[3];
+        return squashed
+    } else if (modMailMatches) {
+        return "m," + modMailMatches[1];
+    } else {
+        return "";
     }
 };
 

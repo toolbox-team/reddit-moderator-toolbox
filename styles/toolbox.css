@@ -996,8 +996,12 @@ body .thing.flaired {
     display: inline-block;
     width: 300px;
 }
+.user-history div.table.comment-table {
+    display: inline-block;
+    width: 300px;
+}
 .user-history div.tb-popup-content {
-    width: 650px;  
+    min-width: 650px;
 }
 
 .user-history {

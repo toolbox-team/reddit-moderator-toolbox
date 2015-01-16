@@ -131,7 +131,7 @@
         "red": "#FF0000",
         "green": "#00F51E",
         "blue": "#0082FF",
-        "magenta": "DC00C8",
+        "magenta": "#DC00C8",
         "cyan": "#00F0F0",
         "yellow": "#EAC117",
         "black": "#000000"

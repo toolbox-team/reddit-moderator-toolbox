@@ -274,6 +274,119 @@ function initwrapper() {
         return year + '-' + month + '-' + date + 'T' + hour + ':' + min + ':' + sec + 'Z';
     };
 
+	TBUtils.niceDateDiff = function(origdate, newdate) {
+		// Enter the month, day, and year below you want to use as
+		// the starting point for the date calculation
+		if (!newdate) {
+			newdate = new Date();
+		}
+
+		var amonth = origdate.getUTCMonth() + 1;
+		var aday = origdate.getUTCDate();
+		var ayear = origdate.getUTCFullYear();
+
+		var tyear = newdate.getUTCFullYear();
+		var tmonth = newdate.getUTCMonth() + 1;
+		var tday = newdate.getUTCDate();
+
+		var y = 1;
+		var mm = 1;
+		var d = 1;
+		var a2 = 0;
+		var a1 = 0;
+		var f = 28;
+
+		if (((tyear % 4 === 0) && (tyear % 100 !== 0)) || (tyear % 400 === 0)) {
+			f = 29;
+		}
+
+		var m = [31, f, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+		var dyear = tyear - ayear;
+
+		var dmonth = tmonth - amonth;
+		if (dmonth < 0 && dyear > 0) {
+			dmonth = dmonth + 12;
+			dyear--;
+		}
+
+		var dday = tday - aday;
+		if (dday < 0) {
+			if (dmonth > 0) {
+				var ma = amonth + tmonth;
+
+				if (ma >= 12) {
+					ma = ma - 12;
+				}
+				if (ma < 0) {
+					ma = ma + 12;
+				}
+				dday = dday + m[ma];
+				dmonth--;
+				if (dmonth < 0) {
+					dyear--;
+					dmonth = dmonth + 12;
+				}
+			} else {
+				dday = 0;
+			}
+		}
+
+		var returnString = '';
+
+		if (dyear === 0) {
+			y = 0;
+		}
+		if (dmonth === 0) {
+			mm = 0;
+		}
+		if (dday === 0) {
+			d = 0;
+		}
+		if ((y === 1) && (mm === 1)) {
+			a1 = 1;
+		}
+		if ((y === 1) && (d === 1)) {
+			a1 = 1;
+		}
+		if ((mm === 1) && (d === 1)) {
+			a2 = 1;
+		}
+		if (y === 1) {
+			if (dyear === 1) {
+				returnString += dyear + ' year';
+			} else {
+				returnString += dyear + ' years';
+			}
+		}
+		if ((a1 === 1) && (a2 === 0)) {
+			returnString += ' and ';
+		}
+		if ((a1 === 1) && (a2 === 1)) {
+			returnString += ', ';
+		}
+		if (mm === 1) {
+			if (dmonth === 1) {
+				returnString += dmonth + ' month';
+			} else {
+				returnString += dmonth + ' months';
+			}
+		}
+		if (a2 === 1) {
+			returnString += ' and ';
+		}
+		if (d === 1) {
+			if (dday === 1) {
+				returnString += dday + ' day';
+			} else {
+				returnString += dday + ' days';
+			}
+		}
+		if (returnString === '') {
+			returnString = '0 days';
+		}
+		return returnString;
+	};
 
     // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
     TBUtils.timeConverterRead = function (UNIX_timestamp) {

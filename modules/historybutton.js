@@ -92,11 +92,16 @@ self.init = function () {
             $contentBox = $('.inline-content').show().offset($(this).offset()).html('\
 <div class="tb-popup user-history">\
 <div class="tb-popup-header">\
-    <div class="tb-popup-title">User history for ' + author + '\</div>\
+    <div class="tb-popup-title">User history for ' + author + '</div>\
     <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
 </div>\
 <div class=" tb-popup-content">\
+<<<<<<< HEAD
 <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="comment-report" href="javascript:;">get comment history</a> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+=======
+<a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+<br /><span class="redditorTime"></span>\
+>>>>>>> Issue #449
 <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
 <div class="table domain-table">\
 <table><thead>\
@@ -137,7 +142,10 @@ self.init = function () {
 
         // Show user's karma
         $.get('/user/' + author + '/about.json').success(function (d) {
+	        var joinedDate = new Date(d.data.created_utc * 1000);
+	        var redditorTime = TBUtils.niceDateDiff(joinedDate);
             $contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
+			$contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
         });
 
         // Get user's domain & subreddit submission history

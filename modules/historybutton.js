@@ -111,7 +111,7 @@ self.init = function () {
 	<table>\
 		<thead>\
 			<tr>\
-				<th class="url-td">subreddit submitted to</th>\
+				<th class="url-td">subreddit commented in</th>\
 				<th class="url-count">count</th>\
 				<th class="url-percentage">%</th>\
 			</tr>\

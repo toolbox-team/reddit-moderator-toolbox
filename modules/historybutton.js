@@ -96,12 +96,8 @@ self.init = function () {
     <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
 </div>\
 <div class=" tb-popup-content">\
-<<<<<<< HEAD
 <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="comment-report" href="javascript:;">get comment history</a> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-=======
-<a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
 <br /><span class="redditorTime"></span>\
->>>>>>> Issue #449
 <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
 <div class="table domain-table">\
 <table><thead>\

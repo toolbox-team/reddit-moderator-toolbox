@@ -293,7 +293,7 @@ self.init = function () {
 			    $contentBox.width(1000);
 			    $contentBox.find('.comment-table').show();
 			    $commentTable.empty();
-			    $commentTable.append('<tr><td colspan="6" class="error">loading...</td></tr>');
+			    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + commentCount + ')</td></tr>');
 
 			    $.get('/user/' + author + '/comments.json?limit=100&after=' + (after || '')).done(function (d) {
 

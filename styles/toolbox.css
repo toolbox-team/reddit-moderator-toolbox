@@ -1052,7 +1052,7 @@ body .thing.flaired {
     text-align: center;
 }
 
-.rts-report,.rts-report-clicked, .markdown-report {
+.rts-report,.rts-report-clicked, .markdown-report, .comment-report {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;

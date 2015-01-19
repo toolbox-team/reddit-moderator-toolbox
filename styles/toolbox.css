@@ -996,8 +996,12 @@ body .thing.flaired {
     display: inline-block;
     width: 300px;
 }
+.user-history div.table.comment-table {
+    display: inline-block;
+    width: 300px;
+}
 .user-history div.tb-popup-content {
-    width: 650px;  
+    min-width: 650px;
 }
 
 .user-history {
@@ -1048,7 +1052,7 @@ body .thing.flaired {
     text-align: center;
 }
 
-.rts-report,.rts-report-clicked, .markdown-report {
+.rts-report,.rts-report-clicked, .markdown-report, .comment-report {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;

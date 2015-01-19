@@ -89,14 +89,15 @@ self.init = function () {
 
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
             commentbody = '',
-            contentBox = $('.inline-content').show().offset($(this).offset()).html('\
+            $contentBox = $('.inline-content').show().offset($(this).offset()).html('\
 <div class="tb-popup user-history">\
 <div class="tb-popup-header">\
-    <div class="tb-popup-title">User history for ' + author + '\</div>\
+    <div class="tb-popup-title">User history for ' + author + '</div>\
     <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
 </div>\
 <div class=" tb-popup-content">\
 <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+<br /><span class="redditorTime"></span>\
 <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
 <div class="table domain-table">\
 <table><thead>\
@@ -113,22 +114,25 @@ self.init = function () {
 
             domains = {},
             domainslist = [],
-            domaintable = contentBox.find('.domain-table tbody'),
+            domaintable = $contentBox.find('.domain-table tbody'),
             subreddits = {},
             subredditlist = [],
-            subreddittable = contentBox.find('.subreddit-table tbody');
+            subreddittable = $contentBox.find('.subreddit-table tbody');
 
         $('.rts-report').attr('data-author', author);
 
         // Show user's karma
         $.get('/user/' + author + '/about.json').success(function (d) {
-            contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
+	        var joinedDate = new Date(d.data.created_utc * 1000);
+	        var redditorTime = TBUtils.niceDateDiff(joinedDate);
+            $contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
+			$contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
         });
 
         // Get user's domain & subreddit submission history
         var populateRunning = [],
             submissionCount = 0,
-            $submissionCount = contentBox.find('.submission-count');
+            $submissionCount = $contentBox.find('.submission-count');
 
         (function populateHistory(after) {
             if (typeof after === 'undefined') {
@@ -136,7 +140,7 @@ self.init = function () {
                 populateRunning.push('load');
             }
             $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
-                contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
+                $contentBox.find('.error').html('unable to load userdata</br>shadowbanned?');
                 TB.ui.longLoadSpinner(false);
                 populateRunning.pop();
             }).done(function (d) {
@@ -153,11 +157,11 @@ self.init = function () {
                     TB.ui.longLoadSpinner(false);
                     populateRunning.pop();
 
-                    contentBox.find('.rts-report').show();
-                    if (contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
-                        contentBox.find('.error').html('no submissions');
+                    $contentBox.find('.rts-report').show();
+                    if ($contentBox.find('.error').length > 0) { // If .error is present it means there are no results. So we show that.
+                        $contentBox.find('.error').html('no submissions');
                     } else { // If it is not present we have results and we can show the links for reporting and markdown reports.
-                        contentBox.find('.markdown-report').show();
+                        $contentBox.find('.markdown-report').show();
                     }
                     gettingUserdata = false;
                 }
@@ -252,11 +256,11 @@ self.init = function () {
                     $submissionCount.html(submissionCount);
 
                     TB.ui.longLoadSpinner(false);
-                    contentBox.find('.rts-report').show();
-                    if (contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
-                        contentBox.find('.error').html('no submissions');
+                    $contentBox.find('.rts-report').show();
+                    if ($contentBox.find('.error').length > 0) {  // This check is likely not need, but better safe than sorry.
+                        $contentBox.find('.error').html('no submissions');
                     } else {
-                        contentBox.find('.markdown-report').show();
+                        $contentBox.find('.markdown-report').show();
                     }
                     gettingUserdata = false;
                 }

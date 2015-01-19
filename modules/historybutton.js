@@ -97,6 +97,7 @@ self.init = function () {
 </div>\
 <div class=" tb-popup-content">\
 <a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
+<br /><span class="redditorTime"></span>\
 <div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
 <div class="table domain-table">\
 <table><thead>\

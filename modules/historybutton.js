@@ -331,9 +331,8 @@ self.init = function () {
 					    {
 						    var count = subreddits.comments[value].count;
 						    var percentage = Math.round(count / commentCount * 100);
-						    var url = '/r/' + value + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
 							$commentTable.append('<tr>' +
-								'<td class="url-td"><a target="_blank" href="' +  url + '">' + value + '</a></td><td>' + count + '</td><td>' + percentage + '</td></tr>');
+								'<td>' + value + '</td><td>' + count + '</td><td>' + percentage + '</td></tr>');
 					    });
 				    }
 			    });

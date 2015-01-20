@@ -240,7 +240,7 @@ function initwrapper() {
                 typeInfo = {color: 'darkred', name: 'Perma-banned', text: 'Permanent Ban'};
                 break;
             case 'botban':
-                typeInfo = {color: 'black', name: 'Bot Banned', text: 'Shadow Ban'};
+                typeInfo = {color: 'black', name: 'Bot Banned', text: 'Bot Ban'};
                 break;
             default:
                 typeInfo = {color: '', name: '', text: 'none'};

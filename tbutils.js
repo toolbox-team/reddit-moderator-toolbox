@@ -249,6 +249,38 @@ function initwrapper() {
         return typeInfo;
     };
 
+	TBUtils.escapeHTML = function(html)
+	{
+		var entityMap = {
+			"&": "&amp;",
+			"<": "&lt;",
+			">": "&gt;",
+			'"': '&quot;',
+			"'": '&#39;',
+			"/": '&#x2F;'
+		};
+
+		return String(html).replace(/[&<>"'\/]/g, function (s) {
+			return entityMap[s];
+		});
+	};
+
+	TBUtils.unescapeHTML = function(html)
+	{
+		var entityMap = {
+			"&amp;": "&",
+			"&lt;": "<",
+			"&gt;": ">",
+			'&quot;': '"',
+			'&#39;': "'",
+			'&#x2F;' : "/"
+		};
+
+		return String(html).replace(/[&<>"'\/]/g, function (s) {
+			return entityMap[s];
+		});
+	};
+
     //
     TBUtils.minutesToMilliseconds = function (mins) {
         var oneMin = 60000,

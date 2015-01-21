@@ -402,7 +402,7 @@ self.init = function() {
                     'subreddit': subreddit,
                     'i++': (i++),
                     'label': label,
-                    'removalReasonText': removalReasonText,
+                    'removalReasonText': TBUtils.escapeHTML(removalReasonText),
                     'removalReasonTitle': removalReasonTitle,
                     'removalReasonFlairText': removalReasonFlairText,
                     'removalReasonFlairCSS': removalReasonFlairCSS,

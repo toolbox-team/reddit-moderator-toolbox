@@ -368,6 +368,12 @@ self.init = function () {
                             var subject = value.data.subject,
                                 author = value.data.author;
 
+	                        //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
+	                        //from a subreddit
+	                        if(!author && value.data.subreddit != null) {
+		                        author = value.data.subreddit;
+	                        }
+
                             if (!notificationbody) {
                                 notificationbody = 'pm from: ' + author + ' - ' + subject + '\n';
                             } else {
@@ -410,6 +416,12 @@ self.init = function () {
                                 body_html = TBUtils.htmlDecode(value.data.body_html),
                                 subject = value.data.subject,
                                 id = value.data.id;
+
+	                        //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
+	                        //from a subreddit
+	                        if(!author && value.data.subreddit != null) {
+		                        author = value.data.subreddit;
+	                        }
 
                             TBUtils.notification('New message:' + subject, $(body_html).text() + '\u2026 \n \n from:' + author, '/message/messages/' + id);
                             pushedunread.push(value.data.name);

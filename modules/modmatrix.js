@@ -114,6 +114,7 @@ self.sort = function (index, direction) {
 };
 
 self.renderMatrix = function () {
+	var self = this;
     var siteTable = $("#siteTable");
 
     $(".drop-choices.lightdrop a").each(function () {

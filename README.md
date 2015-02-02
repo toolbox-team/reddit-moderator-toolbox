@@ -1,4 +1,4 @@
-reddit Moderator Toolbox
+Moderator Toolbox for reddit
 ========================
 
 Bundled extension of the /r/toolbox moderator tools for reddit.com

@@ -150,7 +150,7 @@ function historybutton()
 				</div>'
 				;
 
-			$popup = TB.ui.popup(
+			var $popup = TB.ui.popup(
 				'History Button',
 				[
 					{
@@ -169,6 +169,21 @@ function historybutton()
 				});
 			;
 
+			$popup.on('click', '.close', function()
+			{
+				self.subreddits = { submissions: { }, comments: { }},
+				self.counters = { submissions: 0, comments: 0 };
+				self.subredditList = [ ];
+				self.domainList = [ ];
+				self.commentSubredditList = [ ];
+
+				self.gettingUserData = false;
+				self.domains = [ ];
+				self.domainslist = [ ];
+
+				$popup.remove();
+			});
+
 			self.gettingUserData = true;
 			self.showAuthorInformation();
 			self.populateSubmissionHistory();
@@ -181,214 +196,6 @@ function historybutton()
 
 
 		return;
-	};
-
-	/**
-	 * Old code to port over
-	 */
-	self.oldCode = function()
-	{
-	    //User history button pressed
-	    var gettingUserdata = false;
-	    $body.on('click', '.user-history-button', function () {
-	        $body.on('click', '.user-history-close', function () {
-	            if (populateRunning.length > 0) {
-	                $.each(populateRunning, function () {
-	                    TB.ui.longLoadSpinner(false);
-	                });
-	            }
-
-	            $('.inline-content').hide();
-	            gettingUserdata = false;
-	        });
-	        gettingUserdata = true;
-
-	        var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
-	            commentbody = '',
-	            $contentBox = $('.inline-content').show().offset($(this).offset()).html('\
-	<div class="tb-popup user-history">\
-	<div class="tb-popup-header">\
-	    <div class="tb-popup-title">User history for ' + author + '</div>\
-	    <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
-	</div>\
-	<div class=" tb-popup-content">\
-	<a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="comment-report" href="javascript:;">get comment history</a> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-	<br /><span class="redditorTime"></span>\
-	<div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
-	<div class="table domain-table">\
-	<table><thead>\
-	<tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
-	<tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
-	</table>\
-	</div><div class="table subreddit-table">\
-	<table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
-	</div>\
-	<div class="table comment-table" style="display: none">\
-		<table>\
-			<thead>\
-				<tr>\
-					<th class="url-td">subreddit commented in</th>\
-					<th class="url-count">count</th>\
-					<th class="url-percentage">%</th>\
-				</tr>\
-			</thead>\
-			<tbody>\
-				<tr><td colspan="6" class="error">loading...</td></tr>\
-			</tbody>\
-		</table>\
-	</div>\
-	    <div class="tb-popup-footer">\
-	    </div>\
-	</div>\
-	'),
-
-	        domains = {},
-	        domainslist = [],
-	        $domaintable = $contentBox.find('.domain-table tbody'),
-	        subreddits = { submissions: { }, comments: { }},
-	        subredditlist = [],
-	        $subreddittable = $contentBox.find('.subreddit-table tbody'),
-		    $commentTable = $contentBox.find('.comment-table tbody');
-
-	        $('.rts-report').attr('data-author', author);
-
-	        // Show user's karma
-	        $.get('/user/' + author + '/about.json').success(function (d) {
-		        var joinedDate = new Date(d.data.created_utc * 1000);
-		        var redditorTime = TBUtils.niceDateDiff(joinedDate);
-	            $contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
-				$contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
-	        });
-
-	        // Get user's domain & subreddit submission history
-	        var populateRunning = [],
-	            submissionCount = 0,
-	            $submissionCount = $contentBox.find('.submission-count'),
-	            commentCount = 0,
-	            commentSubredditList = [ ]
-		        ;
-
-		    $('.inline-content').on('click', '.comment-report', function() {
-			    (function populateCommentHistory(after)
-			    {
-				    $contentBox.width(1000);
-				    $contentBox.find('.comment-table').show();
-				    $commentTable.empty();
-				    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + commentCount + ')</td></tr>');
-
-				    $.get('/user/' + author + '/comments.json?limit=100&after=' + (after || '')).done(function (d) {
-
-					    var after = d.data.after;
-					    if ($.isEmptyObject(d.data.children)) {
-					        after = false;
-					    }
-
-					    if(after)
-					    {
-						    $.each(d.data.children, function (index, value) {
-							    var data = value.data;
-							    if(!subreddits.comments[data.subreddit])
-							    {
-								    subreddits.comments[data.subreddit] = { count: 0 };
-								    commentSubredditList.push(data.subreddit);
-							    }
-
-							    subreddits.comments[data.subreddit].count++;
-							    commentCount++;
-						    });
-
-						    populateCommentHistory(after);
-					    }
-					    else
-					    {
-						    commentSubredditList.sort(function(a, b)
-						    {
-							    return subreddits.comments[b].count - subreddits.comments[a].count;
-						    });
-
-						    $commentTable.empty();
-
-						    $.each(commentSubredditList, function(index, value)
-						    {
-							    var count = subreddits.comments[value].count;
-							    var percentage = Math.round(count / commentCount * 100);
-								$commentTable.append('<tr>' +
-									'<td>' + value + '</td><td>' + count + '</td><td>' + percentage + '</td></tr>');
-						    });
-					    }
-				    });
-			    })();
-		    });
-
-	        return false;
-	    });
-
-
-
-	    // Markdown button pressed
-	    $('.inline-content').on('click', '.markdown-report', function () {
-	        var markdownReport = $body.find('.rts-report').attr('data-commentbody');
-	        if ($('body').find('.submission-markdown').length > 0) {
-	            $('body').find('.submission-markdown').toggle();
-	        } else {
-	            $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
-	        }
-	    });
-	    // RTS button pressed
-	    $('.inline-content').on('click', '.rts-report', function () {
-	        var rtsLink = this,
-	            $rtsLink = $(this),
-	            author = rtsLink.getAttribute('data-author'),
-	            commentbody = rtsLink.getAttribute('data-commentbody');
-
-	        rtsLink.textContent = 'submitting...';
-	        rtsLink.className = '.rts-report-clicked';
-
-	        //Submit to RTS
-	        var link = 'https://www.reddit.com/user/' + author,
-	            title = 'Overview for ' + author;
-
-	        TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
-	            if (!successful) {
-	                $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
-	                $rtsLink.hide();
-	            } else {
-	                if (submission.json.errors.length) {
-	                    $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
-	                    $rtsLink.hide();
-	                    if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-	                        rtsLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
-	                    }
-	                    return;
-	                }
-
-	                // Post stats as a comment.
-	                if (!commentbody.length || !rtsComment) {
-	                    rtsLink.textContent = 'reported';
-	                    rtsLink.href = submission.json.data.url;
-	                    rtsLink.className = '';
-	                    return;
-	                }
-
-
-	                TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
-	                    if (!successful) {
-	                        $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>');
-	                        $rtsLink.hide();
-	                    } else {
-	                        if (comment.json.errors.length) {
-	                            $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>');
-	                            $rtsLink.hide();
-	                            return
-	                        }
-	                        rtsLink.textContent = 'reported';
-	                        rtsLink.href = submission.json.data.url;
-	                        rtsLink.className = '';
-	                    }
-	                });
-	            }
-	        });
-	    });
 	};
 
 	/**
@@ -426,9 +233,6 @@ function historybutton()
 	 * @param after A token given by reddit for paginated results, allowing us to get the next page of results
 	 */
 	self.populateSubmissionHistory = function (after) {
-
-		console.log(after);
-
 		var $contentBox = $('.history-button-popup');
 		var $submissionCount = $('.history-button-popup .submission-count');
 		var $commentTable = $contentBox.find('.comment-table tbody');
@@ -601,8 +405,11 @@ function historybutton()
 		var $commentTable = $contentBox.find('.comment-table tbody');
 
 		$contentBox.width(1000);
-		$contentBox.find('.comment-table').show();
 		$commentTable.empty();
+
+		if(!self.gettingUserData) return;
+
+		$contentBox.find('.comment-table').show();
 		$commentTable.append('<tr><td colspan="6" class="error">Loading... (' + self.counters.comments + ')</td></tr>');
 
 		$.get('/user/' + self.author + '/comments.json?limit=100&after=' + (after || '')).done(function (d) {

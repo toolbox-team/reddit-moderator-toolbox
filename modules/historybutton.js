@@ -105,6 +105,19 @@ function historybutton()
 				<a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a><br />\
 				<span class="redditorTime"></span>\
 				<br /><b>Submission history:</b> <label class="submission-count"></label></div>\
+				<div class="table domain-table">\
+					<table>\
+						<thead>\
+							<tr>\
+								<th class="url-td">domain submitted from</th>\
+								<th class="url-count">count</th><th class="url-percentage">%</th>\
+							</tr>\
+						</thead>\
+						<tbody>\
+							<tr><td colspan="6" class="error">loading...</td></tr>\
+						</tbody>\
+					</table>\
+				</div>\
 				<div class="table subreddit-table">\
 					<table>\
 						<thead>\
@@ -118,19 +131,6 @@ function historybutton()
 							<tr>\
 								<td colspan="6" class="error">loading...</td>\
 							</tr>\
-						</tbody>\
-					</table>\
-				</div>\
-			    <div class="table domain-table">\
-					<table>\
-						<thead>\
-							<tr>\
-								<th class="url-td">domain submitted from</th>\
-								<th class="url-count">count</th><th class="url-percentage">%</th>\
-							</tr>\
-						</thead>\
-						<tbody>\
-							<tr><td colspan="6" class="error">loading...</td></tr>\
 						</tbody>\
 					</table>\
 				</div>\

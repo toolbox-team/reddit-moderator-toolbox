@@ -254,10 +254,9 @@ self.init = function() {
 
     $body.on('click', '.personal-notes-popup #save-personal-note', function () {
         var $this = $(this),
-            page = $this.data('note'),
+            page = $this.attr('data-note'),
             data = $body.find('#tb-personal-notes-editarea').val(),
             reason = 'Saving personal toolbox note';
-
         saveNoteWiki(page, notewiki, data, reason, false);
     });
 

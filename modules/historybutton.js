@@ -245,7 +245,8 @@ function historybutton()
 		}
 
 		$.get('/user/' + self.author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
-			$commentTable.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
+			console.log('Shadowbanned?');
+			$contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
 			TB.ui.longLoadSpinner(false);
 //			populateRunning.pop();
 		}).done(function (d) {
@@ -412,7 +413,10 @@ function historybutton()
 		$contentBox.find('.comment-table').show();
 		$commentTable.append('<tr><td colspan="6" class="error">Loading... (' + self.counters.comments + ')</td></tr>');
 
-		$.get('/user/' + self.author + '/comments.json?limit=100&after=' + (after || '')).done(function (d) {
+		$.get('/user/' + self.author + '/comments.json?limit=100&after=' + (after || '')).error(function()
+		{
+			$commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
+		}).done(function (d) {
 
 			var after = d.data.after;
 			if ($.isEmptyObject(d.data.children)) {

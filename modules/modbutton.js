@@ -472,6 +472,25 @@ self.init = function () {
                                 $timer.pause();
                                 self.log('ratelimited');
                                 rateLimit(response.json.ratelimit);
+                            } else if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
+
+                                // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
+
+                                self.log('no ban message allowed, falling back to no message.')
+                                banMessage = '';
+                                TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                                    if (success) {
+                                        if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
+                                            $timer.pause();
+                                            self.log('ratelimited');
+                                            rateLimit(response.json.ratelimit);
+                                        }
+                                    }
+                                    else {
+                                        self.log('missed one');
+                                        failedSubs.push(subreddit);
+                                    }
+                                });
                             }
                         }
                         else {

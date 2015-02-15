@@ -156,7 +156,8 @@ function historybutton()
 					{
 						title: 'Tab1',
 						tooltip: 'Tooltip shown when hovering tab.',
-						content: popupContent
+						content: popupContent,
+						footer: ''
 					}
 				],
 				'',

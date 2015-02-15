@@ -1,416 +1,526 @@
-function historybutton() {
-var self = new TB.Module('History Button');
-self.shortname = 'HButton';
+function historybutton()
+{
+	var self = new TB.Module('History Button');
 
-// This should be a setting, methinks.
-self.SPAM_REPORT_SUB = 'spam';
+	self.subreddits = { submissions: { }, comments: { }};
+	self.counters = { submissions: 0, comments: 0 };
+	self.subredditList = [ ];
+	self.domainList = [ ];
+	self.commentSubredditList = [ ];
 
-self.settings['enabled']['default'] = true;
+	self.gettingUserData = false;
+	self.author = null;
+	self.domains = [ ];
 
-self.register_setting('rtsComment', {
-    'type': 'boolean',
-    'default': true,
-    'title': 'Post user summary when submitting spam reports'
-});
+	self.shortname = 'HButton';
 
-self.init = function () {
-    var $body = $('body'),
-        rtsComment = self.setting('rtsComment');
+	// This should be a setting, methinks.
+	self.SPAM_REPORT_SUB = 'spam';
 
-    // Add context & history stuff
-    $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
+	self.settings['enabled']['default'] = true;
 
-    function run() {
-        var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]</span>';
+	self.register_setting('rtsComment', {
+	    'type': 'boolean',
+	    'default': true,
+	    'title': 'Post user summary when submitting spam reports'
+	});
 
-        if (TBUtils.isModmail) {
-            $('.thing .entry .head:not(.tb-history)').each(function () {
-                var $this = $(this),
-                    $userattrs = $this.find('.userattrs');
+	/**
+	 * Attach an [H] button to all users
+	 */
+	self.run = function() {
+		var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]</span>';
 
-                $this.addClass('tb-history');
+		if (TBUtils.isModmail) {
+			$('.thing .entry .head:not(.tb-history)').each(function () {
+				var $this = $(this),
+				    $userattrs = $this.find('.userattrs');
 
-                if ($userattrs.length > 1) {
-                    $userattrs.eq(0).after(UserButtonHTML);
-                } else {
-                    $userattrs.after(UserButtonHTML);
-                }
+				$this.addClass('tb-history');
 
-            });
-        } else {
-            $('.thing .entry .userattrs:not(.tb-history)').each(function () {
-                var $this = $(this);
-                $this.addClass('tb-history');
-                $this.after(UserButtonHTML);
-            });
-        }
-    }
+				if ($userattrs.length > 1) {
+					$userattrs.eq(0).after(UserButtonHTML);
+				} else {
+					$userattrs.after(UserButtonHTML);
+				}
 
-    run();
+			});
+		} else {
+			$('.thing .entry .userattrs:not(.tb-history)').each(function () {
+				var $this = $(this);
+				$this.addClass('tb-history');
+				$this.after(UserButtonHTML);
+			});
+		}
+	};
 
-    // NER support.
-    window.addEventListener("TBNewThings", function () {
-        run();
-    });
+	/**
+	 * Initiate the module
+	 */
+	self.init = function () {
+		var $body = $('body');
 
-    // Open inline context
-    $('.inline-content').click(function (e) {
-        //  e.stopPropagation();
-    });
-    $body.on('click', 'a.context', function (e) {
-        $body.on('click', '.user-history-close', function () {
-            if (populateRunning.length > 0) {
-                $.each(populateRunning, function () {
-                    TB.ui.longLoadSpinner(false);
-                });
-            }
+		// Add context & history stuff
+		$body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
-            $('.inline-content').hide();
-        });
-        $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
-        return false;
-    });
+		self.run();
+
+		// NER support.
+		window.addEventListener("TBNewThings", function () {
+			self.run();
+		});
+
+		//Close the popup on click
+		$body.on('click', 'a.context', function (e) {
+			$body.on('click', '.user-history-close', function () {
+				if (populateRunning.length > 0) {
+					$.each(populateRunning, function () {
+						TB.ui.longLoadSpinner(false);
+					});
+				}
+
+				$('.inline-content').hide();
+			});
+			$('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
+			return false;
+		});
+
+		$body.on('click', '.user-history-button', function (event) {
+			self.subreddits = { submissions: { }, comments: { }},
+			self.counters = { submissions: 0, comments: 0 };
+			self.subredditList = [ ];
+			self.domainList = [ ];
+			self.commentSubredditList = [ ];
+
+			self.author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+			self.gettingUserData = true;
+			self.domains = [ ];
+			self.domainslist = [ ];
+
+			var popupContent = '<div>\
+				<a href="/user/' + self.author + '" target="_blank">' + self.author + '</a>\
+				<span class="karma" />\
+				<a class="comment-report" href="javascript:;">get comment history</a> \
+				<a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> \
+				<a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a><br />\
+				<span class="redditorTime"></span>\
+				<br /><b>Submission history:</b> <label class="submission-count"></label></div>\
+				<div class="table domain-table">\
+					<table>\
+						<thead>\
+							<tr>\
+								<th class="url-td">domain submitted from</th>\
+								<th class="url-count">count</th><th class="url-percentage">%</th>\
+							</tr>\
+						</thead>\
+						<tbody>\
+							<tr><td colspan="6" class="error">loading...</td></tr>\
+						</tbody>\
+					</table>\
+				</div>\
+				<div class="table subreddit-table">\
+					<table>\
+						<thead>\
+							<tr>\
+								<th class="url-td">subreddit submitted to</th>\
+								<th class="url-count">count</th>\
+								<th class="url-percentage">%</th>\
+							</tr>\
+						</thead>\
+						<tbody>\
+							<tr>\
+								<td colspan="6" class="error">loading...</td>\
+							</tr>\
+						</tbody>\
+					</table>\
+				</div>\
+				<div class="table comment-table" style="display: none">\
+					<table>\
+						<thead>\
+							<tr>\
+								<th class="url-td">subreddit commented in</th>\
+								<th class="url-count">count</th>\
+								<th class="url-percentage">%</th>\
+							</tr>\
+						</thead>\
+						<tbody>\
+							<tr><td colspan="6" class="error">loading...</td></tr>\
+						</tbody>\
+					</table>\
+				</div>'
+				;
+
+			var $popup = TB.ui.popup(
+				'History Button',
+				[
+					{
+						title: 'Tab1',
+						tooltip: 'Tooltip shown when hovering tab.',
+						content: popupContent,
+						footer: ''
+					}
+				],
+				'',
+				'history-button-popup'
+			).appendTo('body')
+				.css({
+					left: event.pageX - 50,
+					top: event.pageY - 10,
+					display: 'block'
+				});
+			;
+
+			$popup.on('click', '.close', function()
+			{
+				self.subreddits = { submissions: { }, comments: { }},
+				self.counters = { submissions: 0, comments: 0 };
+				self.subredditList = [ ];
+				self.domainList = [ ];
+				self.commentSubredditList = [ ];
+
+				self.gettingUserData = false;
+				self.domains = [ ];
+				self.domainslist = [ ];
+
+				$popup.remove();
+			});
+
+			self.gettingUserData = true;
+			self.showAuthorInformation();
+			self.populateSubmissionHistory();
+
+			$('.history-button-popup').on('click', '.markdown-report', self.showMarkdownReport);
+			$('.history-button-popup').on('click', '.rts-report', self.reportAuthorToSpam);
+			$('.history-button-popup').on('click', '.comment-report', self.populateCommentHistory);
+		});
 
 
-    //User history button pressed
-    var gettingUserdata = false;
-    $body.on('click', '.user-history-button', function () {
-        $body.on('click', '.user-history-close', function () {
-            if (populateRunning.length > 0) {
-                $.each(populateRunning, function () {
-                    TB.ui.longLoadSpinner(false);
-                });
-            }
 
-            $('.inline-content').hide();
-            gettingUserdata = false;
-        });
-        gettingUserdata = true;
+		return;
+	};
 
-        var author = TBUtils.getThingInfo($(this).closest('.entry')).user,
-            commentbody = '',
-            $contentBox = $('.inline-content').show().offset($(this).offset()).html('\
-<div class="tb-popup user-history">\
-<div class="tb-popup-header">\
-    <div class="tb-popup-title">User history for ' + author + '</div>\
-    <div class="buttons"><a class="user-history-close close" href="javascript:;">✕</a></div>\
-</div>\
-<div class=" tb-popup-content">\
-<a href="/user/' + author + '" target="_blank">' + author + '</a> <span class="karma" /> <a class="comment-report" href="javascript:;">get comment history</a> <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a>\
-<br /><span class="redditorTime"></span>\
-<div><br /><b>Submission history:</b> <label class="submission-count"></label></div>\
-<div class="table domain-table">\
-<table><thead>\
-<tr><th class="url-td">domain submitted from</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead>\
-<tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody>\
-</table>\
-</div><div class="table subreddit-table">\
-<table><thead><tr><th class="url-td">subreddit submitted to</th><th class="url-count">count</th><th class="url-percentage">%</th></tr></thead><tbody><tr><td colspan="6" class="error">loading...</td></tr></tbody></table>\
-</div>\
-<div class="table comment-table" style="display: none">\
-	<table>\
-		<thead>\
-			<tr>\
-				<th class="url-td">subreddit commented in</th>\
-				<th class="url-count">count</th>\
-				<th class="url-percentage">%</th>\
-			</tr>\
-		</thead>\
-		<tbody>\
-			<tr><td colspan="6" class="error">loading...</td></tr>\
-		</tbody>\
-	</table>\
-</div>\
-    <div class="tb-popup-footer">\
-    </div>\
-</div>\
-'),
+	/**
+	 * Show author information (Karma, How long they've been a redditor for)
+	 */
+	self.showAuthorInformation = function()
+	{
+		var $contentBox = $('.history-button-popup');
 
-        domains = {},
-        domainslist = [],
-        $domaintable = $contentBox.find('.domain-table tbody'),
-        subreddits = { submissions: { }, comments: { }},
-        subredditlist = [],
-        $subreddittable = $contentBox.find('.subreddit-table tbody'),
-	    $commentTable = $contentBox.find('.comment-table tbody');
-
-        $('.rts-report').attr('data-author', author);
-
-        // Show user's karma
-        $.get('/user/' + author + '/about.json').success(function (d) {
-	        var joinedDate = new Date(d.data.created_utc * 1000);
-	        var redditorTime = TBUtils.niceDateDiff(joinedDate);
-            $contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
+		$.get('/user/' + self.author + '/about.json').success(function (d) {
+			var joinedDate = new Date(d.data.created_utc * 1000);
+			var redditorTime = TBUtils.niceDateDiff(joinedDate);
+			$contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
 			$contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
-        });
+		});
+	};
 
-        // Get user's domain & subreddit submission history
-        var populateRunning = [],
-            submissionCount = 0,
-            $submissionCount = $contentBox.find('.submission-count'),
-            commentCount = 0,
-            commentSubredditList = [ ]
-	        ;
+	/**
+	 * Show the markdown report
+	 */
+	self.showMarkdownReport = function()
+	{
+		var $contentBox = $('.history-button-popup');
+		var markdownReport = $contentBox.find('.rts-report').attr('data-commentbody');
+		if ($('body').find('.submission-markdown').length > 0) {
+			$('body').find('.submission-markdown').toggle();
+		} else {
+			$contentBox.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
+		}
+	};
 
-        (function populateHistory(after) {
-            if (typeof after === 'undefined') {
-                TB.ui.longLoadSpinner(true);
-                populateRunning.push('load');
-            }
-	        $commentTable.empty();
-            $.get('/user/' + author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
-                $contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
-                TB.ui.longLoadSpinner(false);
-                populateRunning.pop();
-            }).done(function (d) {
-                //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
-                if ($.isEmptyObject(d.data.children)) {
+	/**
+	 * Populate the submission history for a user
+	 *
+	 * @param after A token given by reddit for paginated results, allowing us to get the next page of results
+	 */
+	self.populateSubmissionHistory = function (after) {
+		var $contentBox = $('.history-button-popup');
+		var $submissionCount = $('.history-button-popup .submission-count');
+		var $commentTable = $contentBox.find('.comment-table tbody');
+		var $domainTable = $contentBox.find('.domain-table tbody');
+		var $subredditTable = $contentBox.find('.subreddit-table tbody');
 
-                    if (submissionCount > 0) {
-                        $submissionCount.html(submissionCount + "+");
-                    }
-                    else {
-                        $submissionCount.html(submissionCount);
-                    }
+		if (typeof after === 'undefined') {
+			TB.ui.longLoadSpinner(true);
+//			populateRunning.push('load');
+		}
 
-                    TB.ui.longLoadSpinner(false);
-                    populateRunning.pop();
+		$.get('/user/' + self.author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
+			console.log('Shadowbanned?');
+			$contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
+			TB.ui.longLoadSpinner(false);
+//			populateRunning.pop();
+		}).done(function (d) {
 
-                    $contentBox.find('.rts-report').show();
-                    if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) { // If .error is present it means there are no results. So we show that.
-                        $contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
-                    } else { // If it is not present we have results and we can show the links for reporting and markdown reports.
-                        $contentBox.find('.markdown-report').show();
-                    }
-                    gettingUserdata = false;
-                }
-                if (!gettingUserdata) return;
+			//This is another exit point of the script. Hits this code after loading 1000 submissions for a user
+			if ($.isEmptyObject(d.data.children)) {
 
-                var after = d.data.after,
-                    commentbody = 'Recent Submission history for ' + author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
+				if (self.counters.submissions > 0) {
+					$submissionCount.html(self.counters.submissions + "+");
+				}
+				else {
+					$submissionCount.html(self.counters.submissions);
+				}
 
-                $.each(d.data.children, function (index, value) {
-                    var data = value.data;
+				TB.ui.longLoadSpinner(false);
+//				populateRunning.pop();
 
-                    if (!domains[data.domain]) {
-                        domains[data.domain] = {
-                            count: 0
-                        };
-                        domainslist.push(data.domain);
-                    }
+//				$contentBox.find('.rts-report').show();
 
-                    domains[data.domain].count++;
+				// If .error is present it means there are no results. So we show that.
+				if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {
+					$contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
+				}
+				// If it is not present we have results and we can show the links for reporting and markdown reports.
+				else {
+					$contentBox.find('.markdown-report').show();
+				}
+				self.gettingUserData = false;
+			}
 
-                    if (!subreddits.submissions[data.subreddit]) {
-	                    subreddits.submissions[data.subreddit] = {
-                            count: 0
-                        };
-                        subredditlist.push(data.subreddit);
-                    }
-                    subreddits.submissions[data.subreddit].count++;
-                    submissionCount++;
-                });
+			if (!self.gettingUserData) return;
 
-                domainslist.sort(function (a, b) {
-                    return domains[b].count - domains[a].count;
-                });
-                $domaintable.empty();
+			var after = d.data.after,
+			    commentBody = 'Recent Submission history for ' + self.author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
 
-                var moredomains;
-                $.each(domainslist, function (index, value) {
-                    var dom = value,
-                        n = domains[dom].count,
-                        url = '/search?q=%28and+site%3A%27' + dom + '%27+author%3A%27' + author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
-                        match = dom.match(/^self.(\w+)$/);
+			//For every submission, incremenet the count for the subreddit and domain by one.
+			$.each(d.data.children, function (index, value) {
+				var data = value.data;
 
-                    var subTotal = 0;
-                    for (x in domains) {
-                        subTotal = subTotal + domains[x].count;
-                    }
+				if (!self.domains[data.domain]) {
+					self.domains[data.domain] = {
+						count: 0
+					};
+					self.domainList.push(data.domain);
+				}
 
-                    var percentage = Math.round(n / subTotal * 100);
-                    if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
-                    $domaintable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted from \'' + dom + '\'">' + dom + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+				self.domains[data.domain].count++;
 
-                    if (index < 20) commentbody += '\n[' + dom + '](' + url + ')|' + n + '|' + percentage + '%';
-                    moredomains = index;
-                });
+				if (!self.subreddits.submissions[data.subreddit]) {
+					self.subreddits.submissions[data.subreddit] = {
+						count: 0
+					};
+					self.subredditList.push(data.subreddit);
+				}
+				self.subreddits.submissions[data.subreddit].count++;
+				self.counters.submissions++;
+			});
 
-                if (moredomains >= 20) commentbody += '\n\n_^...and ^' + (domainslist.length - 20) + ' ^more_';
+			//Sort the domains by submission count
+			self.domainList.sort(function (a, b) {
+				return self.domains[b].count - self.domains[a].count;
+			});
 
-                commentbody += '\n\nsubreddit submitted to|count|%\n:-|-:|-:';
+			//Empty the domain table
+			$domainTable.empty();
 
-                subredditlist.sort(function (a, b) {
-                    return subreddits.submissions[b].count - subreddits.submissions[a].count;
-                });
-                $subreddittable.empty();
+			//Get the total account od domain submissions
+			var totalDomainCount = 0;
+			for (var domain in self.domains) {
+				totalDomainCount = totalDomainCount + self.domains[domain].count;
+			}
 
-                var moresubreddit;
-                $.each(subredditlist, function (index, value) {
-                    var sr = value,
-                        n = subreddits.submissions[sr].count,
-                        url = '/r/' + sr + '/search?q=author%3A%27' + author + '%27&restrict_sr=on&sort=new';
+			//Are there more domains than are shown?
+			var moreDomains = 0;
 
-                    var subTotal = 0;
-                    for (x in subreddits.submissions) {
-                        subTotal = subTotal + subreddits.submissions[x].count;
-                    }
+			//Append all domains to the table and to the report comment
+			$.each(self.domainList, function (index, value) {
+				var domain = value,
+				    domainCount = self.domains[domain].count,
+				    url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
+				    match = domain.match(/^self.(\w+)$/);
 
-                    var percentage = Math.round(n / subTotal * 100);
-                    $subreddittable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + author + ' recently submitted to /r/' + sr + '/">' + sr + '</a></td><td class="count-td">' + n + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+				var percentage = Math.round(domainCount / totalDomainCount * 100);
 
-                    if (index < 20) commentbody += '\n[' + sr + '](' + url + ')|' + n + '|' + percentage + '%';
-                    moresubreddit = index;
-                });
-                if (moresubreddit >= 20) commentbody += '\n\n_^...and ^' + (subredditlist.length - 20) + ' ^more_';
+				//If the domain is a self post, change the URL
+				if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
 
-                $('.rts-report').attr('data-commentbody', commentbody);
+				//Append domain to the table
+				$domainTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
-                if (after) {
-                    //There's still more subsmissions to load, so we're going to run again
-                    $submissionCount.html("Loading... (" + submissionCount + ")");
-                    populateHistory(after);
-                } else {
-                    //All of the submissions have been loaded at this point
-                    $submissionCount.html(submissionCount);
+				//Append the first 20 domains to the report comment
+				if (index < 20) commentBody += '\n[' + domain + '](' + url + ')|' + domainCount + '|' + percentage + '%';
+				moreDomains = index;
+			});
 
-                    TB.ui.longLoadSpinner(false);
-                    $contentBox.find('.rts-report').show();
-                    if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {  // This check is likely not need, but better safe than sorry.
-                        $contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
-                    } else {
-                        $contentBox.find('.markdown-report').show();
-                    }
-                    gettingUserdata = false;
-                }
-            });
+			//If there were 20 or more domains, append to the report comment that we only displayed 20
+			if (moreDomains >= 20) commentBody += '\n\n_^...and ^' + (self.domainList.length - 20) + ' ^more_';
 
-        })();
+			commentBody += '\n\nsubreddit submitted to|count|%\n:-|-:|-:';
 
-	    $('.inline-content').on('click', '.comment-report', function() {
-		    (function populateCommentHistory(after)
-		    {
-			    $contentBox.width(1000);
-			    $contentBox.find('.comment-table').show();
-			    $commentTable.empty();
-			    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + commentCount + ')</td></tr>');
+			//Sort subreddit list by count
+			self.subredditList.sort(function (a, b) {
+				return self.subreddits.submissions[b].count - self.subreddits.submissions[a].count;
+			});
 
-			    $.get('/user/' + author + '/comments.json?limit=100&after=' + (after || '')).done(function (d) {
+			//Empty the subreddit table
+			$subredditTable.empty();
 
-				    var after = d.data.after;
-				    if ($.isEmptyObject(d.data.children)) {
-				        after = false;
-				    }
+			//Get the total count of subreddit submissions
+			var totalSubredditCount = 0;
+			for (var subreddit in self.subreddits.submissions) {
+				totalSubredditCount += self.subreddits.submissions[subreddit].count;
+			}
 
-				    if(after)
-				    {
-					    $.each(d.data.children, function (index, value) {
-						    var data = value.data;
-						    if(!subreddits.comments[data.subreddit])
-						    {
-							    subreddits.comments[data.subreddit] = { count: 0 };
-							    commentSubredditList.push(data.subreddit);
-						    }
+			var moreSubreddits = 0;
+			//Append a list of subreddits submitted to the subreddit table and to the comment body for reports
+			$.each(self.subredditList, function (index, value) {
+				var subreddit = value,
+				    subredditCount = self.subreddits.submissions[subreddit].count,
+				    url = '/r/' + subreddit + '/search?q=author%3A%27' + self.author + '%27&restrict_sr=on&sort=new';
 
-						    subreddits.comments[data.subreddit].count++;
-						    commentCount++;
-					    });
+				var percentage = Math.round(subredditCount / totalSubredditCount * 100);
+				$subredditTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted to /r/' + subreddit + '/">' + subreddit + '</a></td><td class="count-td">' + subredditCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
-					    populateCommentHistory(after);
-				    }
-				    else
-				    {
-					    commentSubredditList.sort(function(a, b)
-					    {
-						    return subreddits.comments[b].count - subreddits.comments[a].count;
-					    });
+				if (index < 20) commentBody += '\n[' + subreddit + '](' + url + ')|' + subredditCount + '|' + percentage + '%';
+				moreSubreddits = index;
+			});
 
-					    $commentTable.empty();
+			//If there were more than 20 subreddits, we only put the first 20 in the report, and say that there are more
+			if (moreSubreddits >= 20) commentBody += '\n\n_^...and ^' + (self.subredditList.length - 20) + ' ^more_';
 
-					    $.each(commentSubredditList, function(index, value)
-					    {
-						    var count = subreddits.comments[value].count;
-						    var percentage = Math.round(count / commentCount * 100);
-							$commentTable.append('<tr>' +
-								'<td>' + value + '</td><td>' + count + '</td><td>' + percentage + '</td></tr>');
-					    });
-				    }
-			    });
-		    })();
-	    });
+			$('.rts-report').attr('data-commentbody', commentBody);
 
-        return false;
-    });
+			//There's still more subsmissions to load, so we're going to run again
+			if (after) {
+				$submissionCount.html("Loading... (" + self.counters.submissions + ")");
+				self.populateSubmissionHistory(after);
+			}
+			//All of the submissions have been loaded at this point
+			else {
+				$submissionCount.html(self.counters.submissions);
+
+				TB.ui.longLoadSpinner(false);
+				$contentBox.find('.rts-report').show();
+				if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {  // This check is likely not need, but better safe than sorry.
+					$contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
+				} else {
+					$contentBox.find('.markdown-report').show();
+				}
+				self.gettingUserdata = false;
+			}
+		});
+	};
+
+	self.populateCommentHistory = function(after) {
+		var $contentBox = $('.history-button-popup');
+		var $commentTable = $contentBox.find('.comment-table tbody');
+
+		$contentBox.width(1000);
+		$commentTable.empty();
+
+		if(!self.gettingUserData) return;
+
+		$contentBox.find('.comment-table').show();
+		$commentTable.append('<tr><td colspan="6" class="error">Loading... (' + self.counters.comments + ')</td></tr>');
+
+		$.get('/user/' + self.author + '/comments.json?limit=100&after=' + (after || '')).error(function()
+		{
+			$commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
+		}).done(function (d) {
+
+			var after = d.data.after;
+			if ($.isEmptyObject(d.data.children)) {
+				after = false;
+			}
+
+			if(after)
+			{
+				$.each(d.data.children, function (index, value) {
+					var data = value.data;
+					if(!self.subreddits.comments[data.subreddit])
+					{
+						self.subreddits.comments[data.subreddit] = { count: 0 };
+						self.commentSubredditList.push(data.subreddit);
+					}
+
+					self.subreddits.comments[data.subreddit].count++;
+					self.counters.comments++;
+				});
+
+				self.populateCommentHistory(after);
+			}
+			else
+			{
+				self.commentSubredditList.sort(function(a, b)
+				{
+					return self.subreddits.comments[b].count - self.subreddits.comments[a].count;
+				});
+
+				$commentTable.empty();
+
+				$.each(self.commentSubredditList, function(index, value)
+				{
+					var count = self.subreddits.comments[value].count;
+					var percentage = Math.round(count / self.counters.comments * 100);
+					$commentTable.append('<tr>' +
+						'<td>' + value + '</td><td>' + count + '</td><td>' + percentage + '</td></tr>');
+				});
+			}
+		});
+	};
+
+	/**
+	 * Report the use to /r/spam
+	 */
+	self.reportAuthorToSpam = function() {
+		var rtsComment = self.setting('rtsComment');
+		var $contentBox = $('.history-button-popup');
+
+		var $rtsLink = $contentBox.find('.rts-report');
+		var rtsLink = $rtsLink.get(0);
+		var commentBody = rtsLink.getAttribute('data-commentbody');
+
+		rtsLink.textContent = 'Submitting...';
+		rtsLink.className = '.rts-report-clicked';
+
+		//Submit to RTS
+		var link = 'https://www.reddit.com/user/' + self.author,
+		    title = 'Overview for ' + self.author;
+
+		TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
+			if (!successful) {
+				$rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
+				$rtsLink.hide();
+			} else {
+				if (submission.json.errors.length) {
+					$rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
+					$rtsLink.hide();
+					if (submission.json.errors[0][0] == 'ALREADY_SUB') {
+						rtsLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on';
+					}
+					return;
+				}
+
+				// Post stats as a comment.
+				if (!commentBody.length || !rtsComment) {
+					rtsLink.textContent = 'Reported';
+					rtsLink.href = submission.json.data.url;
+					rtsLink.className = '';
+					return;
+				}
 
 
+				TBUtils.postComment(submission.json.data.name, commentBody, function (successful, comment) {
+					if (!successful) {
+						$rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>');
+						$rtsLink.hide();
+					} else {
+						if (comment.json.errors.length) {
+							$rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>');
+							$rtsLink.hide();
+							return
+						}
+						rtsLink.textContent = 'Reported';
+						rtsLink.href = submission.json.data.url;
+						rtsLink.className = '';
+					}
+				});
+			}
+		});
+	};
 
-    // Markdown button pressed
-    $('.inline-content').on('click', '.markdown-report', function () {
-        var markdownReport = $body.find('.rts-report').attr('data-commentbody');
-        if ($('body').find('.submission-markdown').length > 0) {
-            $('body').find('.submission-markdown').toggle();
-        } else {
-            $body.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
-        }
-    });
-    // RTS button pressed
-    $('.inline-content').on('click', '.rts-report', function () {
-        var rtsLink = this,
-            $rtsLink = $(this),
-            author = rtsLink.getAttribute('data-author'),
-            commentbody = rtsLink.getAttribute('data-commentbody');
-
-        rtsLink.textContent = 'submitting...';
-        rtsLink.className = '.rts-report-clicked';
-
-        //Submit to RTS
-        var link = 'https://www.reddit.com/user/' + author,
-            title = 'Overview for ' + author;
-
-        TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
-            if (!successful) {
-                $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
-                $rtsLink.hide();
-            } else {
-                if (submission.json.errors.length) {
-                    $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
-                    $rtsLink.hide();
-                    if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                        rtsLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on';
-                    }
-                    return;
-                }
-
-                // Post stats as a comment.
-                if (!commentbody.length || !rtsComment) {
-                    rtsLink.textContent = 'reported';
-                    rtsLink.href = submission.json.data.url;
-                    rtsLink.className = '';
-                    return;
-                }
-
-
-                TBUtils.postComment(submission.json.data.name, commentbody, function (successful, comment) {
-                    if (!successful) {
-                        $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>');
-                        $rtsLink.hide();
-                    } else {
-                        if (comment.json.errors.length) {
-                            $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>');
-                            $rtsLink.hide();
-                            return
-                        }
-                        rtsLink.textContent = 'reported';
-                        rtsLink.href = submission.json.data.url;
-                        rtsLink.className = '';
-                    }
-                });
-            }
-        });
-    });
-};
-
-TB.register_module(self);
+	TB.register_module(self);
 }
 
 (function () {

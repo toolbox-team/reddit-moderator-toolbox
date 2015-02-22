@@ -173,7 +173,7 @@ self.init = function() {
     // Help click event.
     $body.on('click', '#tb-config-help', function () {
         var module = $(this).attr('data-module');
-        window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
 
     });
 
@@ -392,7 +392,7 @@ self.init = function() {
                             <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
                             <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel editing reason">\
+                            <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel">\
                         </span>\
                     </td>\
                 </tr>';

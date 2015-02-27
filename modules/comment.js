@@ -175,9 +175,8 @@ self.init = function() {
 
             // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
             htmlComment = '\
-<div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
 <div class="entry mod-button" subreddit="{{subreddit}}">\
-<div class="noncollapsed">\
     <p class="tagline">\
         <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
         <span class="userattrs">\
@@ -185,9 +184,11 @@ self.init = function() {
         <span class="score">{{score}} points</span>\
         <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
     </p>\
-    <div class="usertext-body">\
-    {{bodyHtml}}\
-    </div>\
+    <form class="usertext">\
+        <div class="usertext-body">\
+        {{bodyHtml}}\
+        </div>\
+    </form>\
     <ul class="flat-list buttons">\
         <li class="first">\
             <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
@@ -206,7 +207,6 @@ self.init = function() {
         <li>\
             <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
     </ul>\
-</div>\
 </div>\
 <div class="child"></div>\
 <div class="comment-nest-info">{{commentNestInfo}}</div>\
@@ -474,41 +474,41 @@ self.init = function() {
 
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
-<div class="thing comment id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
     <p class="parent">\
         <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
         by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
         in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
     </p>\
     <div class="entry mod-button" subreddit="{{subreddit}}">\
-        <div class="noncollapsed">\
-            <p class="tagline">\
-                <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-                <span class="userattrs">\
-                </span>\
-                <span class="score">{{score}} points</span>\
-                <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-            </p>\
+        <p class="tagline">\
+            <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
+            <span class="userattrs">\
+            </span>\
+            <span class="score">{{score}} points</span>\
+            <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
+        </p>\
+        <form class="usertext">\
             <div class="usertext-body">\
             {{bodyHtml}}\
             </div>\
-            <ul class="flat-list buttons">\
-                <li class="first">\
-                    <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-                </li>\
-                <li>\
-                    <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-                </li> \
-                <li>\
-                    <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-                </li> \
-                {{bannedBy}}\
-                {{modButtons}}\
-                <li>\
-                    <a href="javascript:;" class="global-mod-button">mod</a>\
-                </li>\
-            </ul>\
-        </div>\
+        </form>\
+        <ul class="flat-list buttons">\
+            <li class="first">\
+                <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
+            </li>\
+            <li>\
+                <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
+            </li> \
+            <li>\
+                <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
+            </li> \
+            {{bannedBy}}\
+            {{modButtons}}\
+            <li>\
+                <a href="javascript:;" class="global-mod-button">mod</a>\
+            </li>\
+        </ul>\
     </div>\
     <div class="child"></div>\
 </div>\

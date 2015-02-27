@@ -2,7 +2,7 @@ function betterbuttons() {
 var self = new TB.Module('Better Buttons');
 self.shortname = 'BButtons';
 
-//Default settings
+// Default settings
 self.settings['enabled']['default'] = false;
 
 self.register_setting('enableModSave', {
@@ -10,12 +10,26 @@ self.register_setting('enableModSave', {
     'default': true,
     'title': 'Enable mod-save button'
 });
-
 self.register_setting('enableDistinguishToggle', {
     'type': 'boolean',
     'default': true,
     'title': 'Enable distinguish toggling'
 });
+self.register_setting('approveOnIgnore', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Auto-approve when ignoring reports'
+});
+self.register_setting('ignoreOnApprove', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Auto-ignore reports when approving',
+    'hidden': true
+});
+
+// Bread and buttons
+
+var $body = $('body');
 
 self.initModSave = function initModSave() {
     self.log("Adding mod save buttons");
@@ -83,7 +97,7 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     self.log("Adding distinguish toggle events");
 
     //Add distinguish button listeners
-    $('.thing .buttons').on('click', 'form[action="/post/distinguish"]', distinguishClicked);
+    $body.on('click', 'form[action="/post/distinguish"]', distinguishClicked);
 
     //Watches for changes in DOM to add distinguish button listeners if needed
     var commentObserver = new MutationObserver(function (mutations) {
@@ -108,12 +122,40 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     });
 };
 
+self.initAutoApprove = function initAutoApprove() {
+    self.log("Adding ignore reports toggle events");
+    
+    $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
+        self.log("Ignore reports pressed");
+        var $button = $(this).parent().find('> span > .positive');
+        if (!$button.hasClass('pressed')) {
+            $button.click();
+        }
+    });
+};
+
+self.initAutoIgnoreReports = function initAutoIgnoreReports() {
+    self.log("Adding approve toggle events");
+    
+    $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
+        var $button = $(this).closest('.big-mod-buttons').find('> .neutral');
+        if (!$button.hasClass('pressed')) {
+            $button.click();
+        }
+    });
+};
+    
+// Module init
+
 self.init = function() {
     if (self.setting('enableModSave'))
         self.initModSave();
-
     if (self.setting('enableDistinguishToggle'))
         self.initDistinguishToggle();
+    if (self.setting('approveOnIgnore'))
+        self.initAutoApprove();
+    if (self.setting('ignoreOnApprove'))
+        self.initAutoIgnoreReports();
 };
 
 TB.register_module(self);

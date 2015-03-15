@@ -15,6 +15,11 @@ self.register_setting('enableDistinguishToggle', {
     'default': true,
     'title': 'Enable distinguish toggling'
 });
+self.register_setting('removeRemoveConfirmation', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Remove remove/approve confirmation'
+});
 self.register_setting('approveOnIgnore', {
     'type': 'boolean',
     'default': true,
@@ -122,6 +127,23 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     });
 };
 
+self.initRemoveConfirmation = function initRemoveConfirmation() {
+    self.log("Adding one-click remove events");
+    
+    // Approve
+    $body.on('click', '.flat-list > .approve-button', function () {
+        $(this).find('.yes').click();
+    });
+    // Remove and spam
+    $body.on('click', '.flat-list > .remove-button', function () {
+        var $button = $(this);
+        // Don't remove if removal reasons are enabled and the button isn't for spam
+        if (!$body.hasClass('tb-removal-reasons') || $button.children().first().attr('value') === 'spammed') {
+            $button.find('.yes').click();
+        }
+    });
+};
+
 self.initAutoApprove = function initAutoApprove() {
     self.log("Adding ignore reports toggle events");
     
@@ -152,6 +174,8 @@ self.init = function() {
         self.initModSave();
     if (self.setting('enableDistinguishToggle'))
         self.initDistinguishToggle();
+    if (self.setting('removeRemoveConfirmation'))
+        self.initRemoveConfirmation();
     if (self.setting('approveOnIgnore'))
         self.initAutoApprove();
     if (self.setting('ignoreOnApprove'))

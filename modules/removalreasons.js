@@ -59,7 +59,8 @@ self.init = function() {
     var notEnabled = [];
 
     // Settings.
-    var alwaysShow = self.setting('alwaysShow');
+    var alwaysShow = self.setting('alwaysShow'),
+        commentReasons = self.setting('commentReasons');
 
     function getRemovalReasons(subreddit, callback) {
 
@@ -125,20 +126,20 @@ self.init = function() {
     $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
     // Open reason drop-down when we remove something as ham.
     $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
+        var $button = $(this),
+            $thing = $button.closest('.thing');
+        
         //Don't show removal reasons for spam button.
-        if ($(this).children().first().attr('value') === 'spammed') return;
-
-        // Ignore if a comment and comment reasons disabled
-        var thingclasses = $(this).parents('div.thing').attr('class');
-        if (thingclasses.match(/\bcomment\b/) && !self.setting('commentReasons'))
+        if ($button.children().first().attr('value') === 'spammed')
             return;
 
-
+        // Ignore if a comment and comment reasons disabled
+        if (!commentReasons && $thing.hasClass('comment'))
+            return;
+        
         // Get link/comment attributes
-        var button = $(this),
-            thing = button.closest('.thing'),
-            yes = button.find('.yes')[0],
-            info = TBUtils.getThingInfo(button),
+        var yes = $button.find('.yes')[0],
+            info = TBUtils.getThingInfo($button),
             data = {
                 subreddit: info.subreddit,
                 fullname: info.id,
@@ -157,9 +158,9 @@ self.init = function() {
         }
 
         // Set attributes and open reason box if one already exists for this subreddit
-        var popup = $('#reason-popup-' + data.subreddit);
+        var $popup = $('#reason-popup-' + data.subreddit);
         // If the popup already exists, open it
-        if (popup.length) {
+        if ($popup.length) {
             // Click yes on the removal
             if (yes) yes.click();
 
@@ -361,18 +362,18 @@ self.init = function() {
 
         function openPopup() {
             // Reset state
-            popup.find('attrs').attr(data);
-            popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
-            popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
-            popup.find('.status').hide();//css('display: none;');
-            popup.find('.error-highlight').removeClass('error-highlight');
-            popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
+            $popup.find('attrs').attr(data);
+            $popup.find('.selectable-reason input[type=checkbox]:checked').prop('checked', false);
+            $popup.find('.selectable-reason.reason-selected').removeClass('reason-selected');
+            $popup.find('.status').hide();//css('display: none;');
+            $popup.find('.error-highlight').removeClass('error-highlight');
+            $popup.find('.mte-thread-link').attr('href', data.url).text(data.title);
 
             // Open popup
             /*popup.css({
              display: ''
              });*/
-            popup.show();
+            $popup.show();
             $body.css('overflow', 'hidden');
         }
     });

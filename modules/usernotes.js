@@ -264,11 +264,12 @@ self.usernotes = function usernotes(){
         });
     });
 
-    // 'cancel' button clicked
+    // Cancel button clicked
     $body.on('click', '.utagger-popup .close', function () {
         $(this).parents('.utagger-popup').remove();
     });
-
+    
+    // Save or delete button clicked
     $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
         var $popup = $(this).closest('.utagger-popup'),
             $unote = $popup.find('.utagger-user-note'),
@@ -329,12 +330,13 @@ self.usernotes = function usernotes(){
             "users": {}
         };
 
-        TBui.textFeedback("Adding new user note...", TBui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback((deleteNote ? "Removing" : "Adding")+" user note...", TBui.FEEDBACK_NEUTRAL);
 
-        self.getUserNotes(subreddit, function(status, notes, pageError){
-
+        self.getUserNotes(subreddit, function(success, notes, pageError) {
+            self.log("Save get callback");
             // Only page errors git different treatment.
-            if (!status && pageError) {
+            if (!success && pageError) {
+                self.log("  Page error");
                 switch (pageError) {
                     case TBUtils.WIKI_PAGE_UNKNOWN:
                         break;
@@ -350,11 +352,12 @@ self.usernotes = function usernotes(){
                 return;
             }
 
-            if (notes.corrupted) {
-                TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
-            }
-
             if (notes) {
+                self.log("  Notes exist");
+                if (notes.corrupted) {
+                    TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+                }
+                
                 var u = getUser(notes.users, user);
                 if (u !== undefined) {
                     // Delete.
@@ -391,6 +394,7 @@ self.usernotes = function usernotes(){
                 }
             }
             else {
+                self.log("  Creating new notes");
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
@@ -398,17 +402,12 @@ self.usernotes = function usernotes(){
                     if (succ) run();
                 });
             }
-        });
+        }, true);
     });
-
-    $body.on('click', '.utagger-cancel-user', function () {
-        var popup = $(this).closest('.utagger-popup');
-        $(popup).remove();
-    });
-
+    
+    // Enter key pressed when adding new note
     $body.on('keyup', '.utagger-user-note', function (event) {
         if (event.keyCode == 13) {
-            self.log("Enter pressed!");
             var popup = $(this).closest('.utagger-popup');
             popup.find('.utagger-save-user').click();
         }
@@ -437,7 +436,6 @@ self.usernotesManager = function () {
 
     // End it here if we're not on /about/usernotes
     if (window.location.href.indexOf('/about/usernotes') < 0) return;
-
 
     //userNotes.log(TBUtils.post_site);  // that should work?
     var sub = $('.pagename a:first').html(),
@@ -615,39 +613,42 @@ self.usernotesManager = function () {
 
 };
 
-self.getUserNotes = function(subreddit, callback) {
+// Get usernotes from wiki
+self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     if (!callback) return;
     if (!subreddit) return returnFalse();
+    
+    if(!forceSkipCache) {
+        if (TBUtils.noteCache[subreddit] !== undefined) {
+            self.log('notes found in cache');
+            if (callback) callback(true, TBUtils.noteCache[subreddit], subreddit);
+            return;
+        }
 
-    if (TBUtils.noteCache[subreddit] !== undefined) {
-        self.log('notes found in cache');
-        if (callback) callback(true, TBUtils.noteCache[subreddit], subreddit);
-        return;
-    }
-
-    if (TBUtils.noNotes.indexOf(subreddit) != -1) {
-        self.log('found in NoNotes cache');
-        returnFalse();
-        return;
+        if (TBUtils.noNotes.indexOf(subreddit) != -1) {
+            self.log('found in NoNotes cache');
+            returnFalse();
+            return;
+        }
     }
 
     TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-            self.log('WIKI_PAGE_UNKNOWN');
+            self.log('Usernotes read error: WIKI_PAGE_UNKNOWN');
             returnFalse(TBUtils.WIKI_PAGE_UNKNOWN);
             return;
         }
 
         if (resp === TBUtils.NO_WIKI_PAGE) {
             TBUtils.noNotes.push(subreddit);
-            self.log('NO_WIKI_PAGE');
+            self.log('Usernotes read error: NO_WIKI_PAGE');
             returnFalse(TBUtils.NO_WIKI_PAGE);
             return;
         }
 
         if (resp.length < 1) {
             TBUtils.noNotes.push(subreddit);
-            self.log('no notes');
+            self.log('Usernotes read error: wiki empty');
             returnFalse();
             return;
         }
@@ -709,15 +710,19 @@ self.getUserNotes = function(subreddit, callback) {
             notes.ver = TBUtils.notesSchema;
             notes.corrupted = corruptedNotes;
             return keyOnUsername(decodeNoteText(notes));
-        } else if (notes.ver == 3) {
+        }
+        else if (notes.ver == 3) {
             notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes, sub)));
             notes.ver = TBUtils.notesSchema;
             return notes;
-        } else if (notes.ver == 4 || notes.ver == 5) {
+        }
+        else if (notes.ver == 4 || notes.ver == 5) {
             return inflateNotes(notes, sub);
         }
-
-        //TODO: throw an error if unrecognized version?
+        else {
+            self.log("Warning: Unknown usernotes version "+notes.ver+". Expect unexpected behavior!");
+            return inflateNotes(notes, sub);
+        }
     }
 
     // Decompress notes from the database into a more useful format
@@ -729,6 +734,7 @@ self.getUserNotes = function(subreddit, callback) {
 
         var mgr = new self._constManager(deflated.constants);
 
+        self.log("Inflating all usernotes");
         $.each(deflated.users, function (name, user) {
             inflated.users[name] = {
                 "name": name,
@@ -784,25 +790,36 @@ self.getUserNotes = function(subreddit, callback) {
         }
         return time;
     }
-
+    
+    // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined
     function unsquashPermalink(subreddit, permalink) {
         if (!permalink) return '';
+        self.log("Unsquishing: "+permalink);
+
         var linkParams = permalink.split(/,/g);
         var link = "/r/" + subreddit + "/";
 
         if (linkParams[0] == "l") {
+            self.log("  Is comments");
             link += "comments/" + linkParams[1] + "/";
             if (linkParams.length > 2)
-                link += "a/" + linkParams[2] + "/";
-        } else if (linkParams[0] == "m") {
+                link += "-/" + linkParams[2] + "/";
+        }
+        else if (linkParams[0] == "m") {
+            self.log("  Is message");
             link += "message/messages/" + linkParams [1];
-        } else {
+        }
+        else {
+            self.log("  Is unknown");
             return "";
         }
+
+        self.log("  "+link);
         return link;
     }
 };
 
+// Save usernotes to wiki
 self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
 
     TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
@@ -840,25 +857,54 @@ self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
         $.each(notes.users, function (name, user) {
             deflated.users[name] = {
                 "ns": user.notes.map(function (note) {
-                    return {
-                        "n": note.note,
-                        "t": deflateTime(note.time),
-                        "m": mgr.create("users", note.mod),
-                        "l": self._squashPermalink(note.link),
-                        "w": mgr.create("warnings", note.type)
-                    };
+                    return deflateNote(note, mgr);
                 })
             };
         });
 
         return deflated;
     }
-
+    
+    // Compresses a single note
+    function deflateNote(note, mgr) {
+        return {
+            "n": note.note,
+            "t": deflateTime(note.time),
+            "m": mgr.create("users", note.mod),
+            "l": squashPermalink(note.link),
+            "w": mgr.create("warnings", note.type)
+        };
+    }
+    
+    // Compression utilities
     function deflateTime(time) {
         if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
             time = Math.trunc(time / 1000);
         }
         return time;
+    }
+
+    // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined and all links are erased
+    function squashPermalink(permalink) {
+        // Compatibility with Sweden
+        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/,
+            MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
+
+            linkMatches = permalink.match(COMMENTS_LINK_RE),
+            modMailMatches = permalink.match(MODMAIL_LINK_RE);
+
+        if (linkMatches) {
+            var squashed = "l," + linkMatches[1];
+            if (linkMatches[3] !== undefined)
+                squashed += "," + linkMatches[3];
+            return squashed;
+        }
+        else if (modMailMatches) {
+            return "m," + modMailMatches[1];
+        }
+        else {
+            return "";
+        }
     }
 };
 
@@ -877,27 +923,6 @@ self._constManager = function _constManager(init_pools) {
             return this._pools[poolName][id];
         }
     };
-};
-
-self._squashPermalink = function _squashPermalink(permalink) {
-    // Compatibility with Sweden
-    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/,
-        MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
-
-        linkMatches = permalink.match(COMMENTS_LINK_RE),
-        modMailMatches = permalink.match(MODMAIL_LINK_RE);
-
-
-    if (linkMatches) {
-        var squashed = "l," + linkMatches[1];
-        if (linkMatches[3] !== undefined)
-            squashed += "," + linkMatches[3];
-        return squashed
-    } else if (modMailMatches) {
-        return "m," + modMailMatches[1];
-    } else {
-        return "";
-    }
 };
 
 TB.register_module(self);

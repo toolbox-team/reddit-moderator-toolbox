@@ -817,28 +817,24 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     
     // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined
     function unsquashPermalink(subreddit, permalink) {
-        if (!permalink) return '';
-        self.log("Unsquishing: "+permalink);
+        if (!permalink)
+            return '';
 
         var linkParams = permalink.split(/,/g);
         var link = "/r/" + subreddit + "/";
 
         if (linkParams[0] == "l") {
-            self.log("  Is comments");
             link += "comments/" + linkParams[1] + "/";
             if (linkParams.length > 2)
                 link += "-/" + linkParams[2] + "/";
         }
         else if (linkParams[0] == "m") {
-            self.log("  Is message");
             link += "message/messages/" + linkParams [1];
         }
         else {
-            self.log("  Is unknown");
             return "";
         }
 
-        self.log("  "+link);
         return link;
     }
 };
@@ -938,8 +934,11 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
 
     // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined and all links are erased
     function squashPermalink(permalink) {
+        if(!permalink)
+            return "";
+        
         // Compatibility with Sweden
-        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/[^\/]+(\/(\w+))?\/?(\?.*)?$/,
+        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+)\/)?)?/,
             MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
 
             linkMatches = permalink.match(COMMENTS_LINK_RE),
@@ -947,8 +946,9 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
 
         if (linkMatches) {
             var squashed = "l," + linkMatches[1];
-            if (linkMatches[3] !== undefined)
-                squashed += "," + linkMatches[3];
+            if (linkMatches[2] !== undefined) {
+                squashed += "," + linkMatches[2];
+            }
             return squashed;
         }
         else if (modMailMatches) {

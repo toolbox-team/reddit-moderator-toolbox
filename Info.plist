@@ -31,6 +31,7 @@
 				<string>libs/tbplugins.js</string>
 				<string>libs/snuownd.js</string>
 				<string>libs/ace.js</string>
+				<string>libs/pako.min.js</string>
 				<string>libs/worker-css.js</string>
 				<string>libs/mode-css.js</string>
 				<string>libs/mode-json.js</string>

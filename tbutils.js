@@ -42,7 +42,7 @@ function initwrapper() {
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;
-    TBUtils.notesMaxSchema = 5;     // The non-default max version (to allow phase-in schema releases)
+    TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/\/message\/(?:moderator)\/?/);
@@ -969,7 +969,6 @@ function initwrapper() {
         $.post('/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
-            // reason: 'updated via toolbox config',
             reason: reason,
             uh: TBUtils.modhash
         })

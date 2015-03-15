@@ -35,6 +35,7 @@
 		"libs/tbplugins.js",
 		"libs/snuownd.js",
 		"libs/ace.js",
+        "libs/pako.min.js",
 		"libs/worker-css.js",
 		"libs/mode-css.js",
 		"libs/mode-json.js",

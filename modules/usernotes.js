@@ -618,6 +618,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     if (!callback) return;
     if (!subreddit) return returnFalse();
     
+    // Check cache (if not skipped)
     if(!forceSkipCache) {
         if (TBUtils.noteCache[subreddit] !== undefined) {
             self.log('notes found in cache');
@@ -631,29 +632,32 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
             return;
         }
     }
-
+    
+    // Read notes from wiki page
     TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
+        // Errors when reading notes
+        //// These errors are bad
         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
             self.log('Usernotes read error: WIKI_PAGE_UNKNOWN');
             returnFalse(TBUtils.WIKI_PAGE_UNKNOWN);
             return;
         }
-
         if (resp === TBUtils.NO_WIKI_PAGE) {
             TBUtils.noNotes.push(subreddit);
             self.log('Usernotes read error: NO_WIKI_PAGE');
             returnFalse(TBUtils.NO_WIKI_PAGE);
             return;
         }
-
+        //// No notes exist in wiki page
         if (resp.length < 1) {
             TBUtils.noNotes.push(subreddit);
             self.log('Usernotes read error: wiki empty');
             returnFalse();
             return;
         }
-
-        self.log('we have notes!');
+        
+        // Success
+        self.log("We have notes!");
         var notes  = convertNotes(resp, subreddit);
 
         // We have notes, cache them and return them.
@@ -665,31 +669,9 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
         self.log('returning false');
         if (callback) callback(false, null, pageError);
     }
-
+    
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes, sub) {
-        function decodeNoteText(notes) {
-            // We stopped using encode()d notes in v4
-            notes.users.forEach(function (user) {
-                user.notes.forEach(function (note) {
-                    note.note = unescape(note.note);
-                });
-            });
-            return notes;
-        }
-
-        function keyOnUsername(notes) {
-            // we have to rebuild .users to be an object keyed on .name
-            var users = {};
-            notes.users.forEach(function (user) {
-                users[user.name] = {
-                    "notes": user.notes
-                }
-            });
-            notes.users = users;
-            return notes;
-        }
-
         if (notes.ver <= 2) {
             var newUsers = [];
             var corruptedNotes = false;
@@ -716,12 +698,54 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
             notes.ver = TBUtils.notesSchema;
             return notes;
         }
-        else if (notes.ver == 4 || notes.ver == 5) {
+        else if (notes.ver <= 5) {
+            return inflateNotes(notes, sub);
+        }
+        else if(notes.ver <= 6) {
+            notes = zlibDecompress(notes);
             return inflateNotes(notes, sub);
         }
         else {
             self.log("Warning: Unknown usernotes version "+notes.ver+". Expect unexpected behavior!");
             return inflateNotes(notes, sub);
+        }
+        
+        // Utilities
+        function zlibDecompress(notes) {
+            // Expand base64
+            notes.blob = atob(notes.blob);
+            // zlib time!
+            var inflate = new pako.Inflate({to:'string'});
+            inflate.push(notes.blob);
+            var decompressed = inflate.result;
+            
+            // Update notes with actual notes
+            delete notes.blob;
+            notes.users = JSON.parse(decompressed);
+            return notes;
+        }
+        
+        // Utilities for old versions
+        function decodeNoteText(notes) {
+            // We stopped using encode()d notes in v4
+            notes.users.forEach(function (user) {
+                user.notes.forEach(function (note) {
+                    note.note = unescape(note.note);
+                });
+            });
+            return notes;
+        }
+
+        function keyOnUsername(notes) {
+            // we have to rebuild .users to be an object keyed on .name
+            var users = {};
+            notes.users.forEach(function (user) {
+                users[user.name] = {
+                    "notes": user.notes
+                }
+            });
+            notes.users = users;
+            return notes;
         }
     }
 
@@ -820,13 +844,16 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
 };
 
 // Save usernotes to wiki
-self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
+self.saveUserNotes = function(sub, notes, reason, callback) {
 
     TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
-
+    
+    // Update cache
     TBUtils.noteCache[sub] = notes;
-    notes = deflateNotes(notes);
-
+    // Deconvert notes to wiki format
+    notes = deconvertNotes(notes);
+    
+    // Write to wiki page
     self.log("Saving usernotes to wiki...");
     TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, function postToWiki(succ, err) {
         if (succ) {
@@ -841,10 +868,35 @@ self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
         }
     });
 
+    // Decovert notes to wiki format based on version (note: deconversion is actually conversion in the opposite direction)
+    function deconvertNotes(notes) {
+        if(notes.ver <= 5) {
+            return deflateNotes(notes);
+        }
+        else if(notes.ver <= 6) {
+            notes = deflateNotes(notes);
+            return zlibCompress(notes);
+        }
+        
+        // Utilities
+        function zlibCompress(notes) {
+            // Make way for the blob!
+            var users = JSON.stringify(notes.users);
+            delete notes.users;
+            
+            // zlib time!
+            var deflate = new pako.Deflate({to:'string'});
+            deflate.push(users, true);
+            notes.blob = deflate.result;
+            // Collapse to base64
+            notes.blob = btoa(notes.blob);
+        }
+    }
+    
     // Compress notes so they'll store well in the database.
     function deflateNotes(notes) {
         var deflated = {
-            ver: TBUtils.notesSchema,
+            ver: TBUtils.notesSchema > notes.ver ? TBUtils.notesSchema : notes.ver, // Prevents downgrading usernotes version like a butt
             users: {},
             constants: {
                 users: [],
@@ -857,7 +909,7 @@ self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
         $.each(notes.users, function (name, user) {
             deflated.users[name] = {
                 "ns": user.notes.map(function (note) {
-                    return deflateNote(note, mgr);
+                    return deflateNote(notes.ver, note, mgr);
                 })
             };
         });
@@ -866,10 +918,10 @@ self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
     }
     
     // Compresses a single note
-    function deflateNote(note, mgr) {
+    function deflateNote(version, note, mgr) {
         return {
             "n": note.note,
-            "t": deflateTime(note.time),
+            "t": deflateTime(version, note.time),
             "m": mgr.create("users", note.mod),
             "l": squashPermalink(note.link),
             "w": mgr.create("warnings", note.type)
@@ -877,8 +929,8 @@ self.saveUserNotes = function saveUserNotes(sub, notes, reason, callback) {
     }
     
     // Compression utilities
-    function deflateTime(time) {
-        if (TBUtils.notesSchema >= 5 && time.toString().length > 10) {
+    function deflateTime(version, time) {
+        if (version >= 5 && time.toString().length > 10) {
             time = Math.trunc(time / 1000);
         }
         return time;

@@ -362,17 +362,11 @@ self.init = function () {
             banReason = $popup.find('.ban-note').val(),
             banMessage = $popup.find('textarea.ban-message').val(),
             banDuration = $popup.find('.ban-duration').val(),
+            includeDuration = $popup.find('.ban-include-time').is(':checked'),
             subreddits = [],
             user = $popup.find('.user').text();
-
-        if (isNaN(banDuration)) {
-            banDuration = '';
-        }
-        else if ($popup.find('.ban-include-time').is(':checked') && banDuration > 0) {
-            self.log('Including time in ban message');
-            banMessage = banMessage + '  \n \n\
-*You are banned for: ' + TBUtils.humaniseDays(banDuration) + '*';
-        }
+        
+        banMessage = createBanReason(banMessage, includeDuration, banDuration);
 
         self.setting('lastAction', actionName);
 
@@ -421,7 +415,25 @@ self.init = function () {
         }
 
         var $timer;
-
+        
+        function createBanReason(message, includeDuration, duration) {
+            var reason = "";
+            
+            // Add message if exists
+            if(message && message.length > 0) {
+                reason += "{0}";
+            }
+            // Add duration if exists and required
+            if(includeDuration && !isNaN(duration) && duration > 0) {
+                if(reason.length > 0) {
+                    reason += "\n\n";
+                }
+                reason += "You are banned for: {1}";
+            }
+            
+            return TBUtils.stringFormat(reason, message, TBUtils.humaniseDays(banDuration));
+        }
+        
         function completeCheck(failedSubs) {
             $timer.stop();
             TB.utils.pageOverlay(null, false);

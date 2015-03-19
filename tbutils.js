@@ -658,6 +658,13 @@ function initwrapper() {
         }
         return str.slice(0, -1);
     };
+    
+    TBUtils.stringFormat = function(format) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        return format.replace(/{(\d+)}/g, function(match, number) {
+            return typeof args[number] != 'undefined' ? args[number] : match;
+        });
+    };
 
 
     TBUtils.sortBy = function (arr, prop) {

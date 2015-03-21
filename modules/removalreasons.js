@@ -80,8 +80,13 @@ self.init = function() {
 
             // If we need to get them from another sub, recurse.
             if (reasons && reasons.getfrom) {
-                getRemovalReasons(reasons.getfrom, callback);
-                return;
+                if(reasons.getfrom == subreddit) {
+                    self.log("Warning: 'get from' subreddit same as current subreddit. Don't do that!");
+                }
+                else {
+                    getRemovalReasons(reasons.getfrom, callback);
+                    return;
+                }
             }
         }
 

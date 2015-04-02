@@ -127,6 +127,36 @@
                         vFw1qWf9RFJ9bD7X178gB4qp+1cQoxhLZihrbMNInInBq1TEo6jMWjJPewinX2K1mpcDZ+Ey3epoksOnu/jQfZ7xkV6K19VjkqnximhRc92FF28Wxj20sPHh86TRb+9SU7+P0tJaEv2D08rVB5YSL+ng\
                         yP5Kt3HDmvDurTVIxOt1k6mTrZcGvvxrnX8BwNty8Brb9FgAAAAASUVORK5CYII=';
 
+    TBui.iconNuke = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAB8UlEQVR42lXP20uTYQCA8ed9v81tzLkmeMCPnDHNC+0geMCV1Fx2I5lgybxK0xCMNdQIHDMiLBJv6rKMA\
+                     kMUsYN4FxKa2bLMMLCN1BlEKRLURQ0q2ldzu+n3Dzw80K8JefEnCRpuV7bNX0fepZPkut12G2hw7bqgVwMtxn9chbr2W63m4aE2Zu+dY/6Oz3L/Qq2uC5Ia/whI2p0p+nPTeTzaztyXmzz7NszckI83\
+                     HS7CPbViEECXrQninA7pq85nCWHWdmWkvN+6y9TXcV5UFOo3wax1HSXcUiW7iXPkZlkbSo2TFoOMgtRA/PA4CXkqWZFS9xsUbYdZRJsPGyaKHJlWyu2orgI2ECJi0LMGYiNwnLfeGpZBftbpCJn0rJ+\
+                     pZvNUFSqpKajOPCKDp5lausLMWTfzbYfEatO/gvcIwZkepke9TPvr+egqQkVaVGtjqZyY8fNydYCFR528korxl1T00ZEOnn+4wcLiVYLdx5RxW5opjW17zufcblEmVwYIVhYoW8mXmDOfT6/7ePrkMo\
+                     v77KKXBI24kp086GsgmJVuWk9JtX43WGxRNcMcGfERrC3hIUC5A4jFYK+BbfvtSqC9xjTmKeNdaxWhzjrjWHWJEgBoOiBJOkGccW2ZuLLi+BNq80HUiuIcK4DZGCahXv4FY4eX45ww+AQAAAAASUVORK\
+                     5CYII=";
+
+    // Do we ever care about loading image assets from disk? Here's how:
+    // switch (TBUtils.browser) {
+    //     case TBUtils.browsers.CHROME:
+    //     case TBUtils.browsers.OPERA: // yep, same name and everything
+    //         TBui.iconNuke = chrome.extension.getURL('images/nuke.png')
+    //         break;
+    //     case TBUtils.browsers.FIREFOX:
+    //         TBui.iconNuke = self.data.nukeIcon;
+    //         break;
+    //     case TBUtils.browsers.SAFARI:
+    //         TBui.iconNuke = safari.extension.baseURI + 'images/nuke.png')
+    //         break;
+    //     case TBUtils.browsers.UNKOWN_BROWSER:
+    //     default:
+    //         TBui.iconNuke = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAB8UlEQVR42lXP20uTYQCA8ed9v81tzLkmeMCPnDHNC+0geMCV1Fx2I5lgybxK0xCMNdQIHDMiLBJv6rKMA\
+    //                          kMUsYN4FxKa2bLMMLCN1BlEKRLURQ0q2ldzu+n3Dzw80K8JefEnCRpuV7bNX0fepZPkut12G2hw7bqgVwMtxn9chbr2W63m4aE2Zu+dY/6Oz3L/Qq2uC5Ia/whI2p0p+nPTeTzaztyXmzz7NszckI83\
+    //                          HS7CPbViEECXrQninA7pq85nCWHWdmWkvN+6y9TXcV5UFOo3wax1HSXcUiW7iXPkZlkbSo2TFoOMgtRA/PA4CXkqWZFS9xsUbYdZRJsPGyaKHJlWyu2orgI2ECJi0LMGYiNwnLfeGpZBftbpCJn0rJ+\
+    //                          pZvNUFSqpKajOPCKDp5lausLMWTfzbYfEatO/gvcIwZkepke9TPvr+egqQkVaVGtjqZyY8fNydYCFR528korxl1T00ZEOnn+4wcLiVYLdx5RxW5opjW17zufcblEmVwYIVhYoW8mXmDOfT6/7ePrkMo\
+    //                          v77KKXBI24kp086GsgmJVuWk9JtX43WGxRNcMcGfERrC3hIUC5A4jFYK+BbfvtSqC9xjTmKeNdaxWhzjrjWHWJEgBoOiBJOkGccW2ZuLLi+BNq80HUiuIcK4DZGCahXv4FY4eX45ww+AQAAAAASUVORK\
+    //                          5CYII=";
+    //         break;
+    // }
+
     TBui.standardColors = {
         "red": "#FF0000",
         "green": "#00F51E",

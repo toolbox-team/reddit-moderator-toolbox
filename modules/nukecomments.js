@@ -22,118 +22,130 @@ self.register_setting('confirmNuke', {
     'title': 'Show a confirmation window before nuking a comment chain'
 });
 
+self.register_setting('useImage', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Use an image button instead of [R]'
+});
+
+
 self.init = function () {
-    delete_function = function (thread_root) {
-        var elmnts = document.getElementsByClassName('id-' + thread_root)[0].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
-        var $rootElmnt = $(elmnts[0]).closest('.thing');
-        TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
-        for (var i = 0; i < elmnts.length; i++) {
-            setTimeout(
-                (function (_elmnt, _idx) {
-                    return function () {
-                        TB.ui.textFeedback('removing comment ' + _idx + '/' + elmnts.length, 'neutral');
-                        self.log('removing comment ' + _idx + '/' + elmnts.length, false, 'nuke');
-                        var event = document.createEvent('UIEvents');
-                        event.initUIEvent('click', true, true, window, 1);
-                        _elmnt.dispatchEvent(event);
-                        if (_idx == elmnts.length) {
-                            if (self.setting('hideAfterNuke')) {
-                                $rootElmnt.hide(750);
-                            }
-                            self.log("kill spinner");
-                            TB.ui.longLoadSpinner(false);
-                            TB.ui.textFeedback('all comments removed', 'positive');
-                        }
-                    }
-                })(elmnts[i], (i + 1)), 1500 * i); // 1.5s timeout prevents overloading reddit.
-        }
-    };
-
-    if (document.querySelector('body.moderator')) { // only execute if you are a moderator
-        //console.log('running nuke comments');
-
-        function run() {
-            var nuke_button = [];
-            var divels = document.querySelectorAll('div.comment:not(.nuke-processed)');
-            var comment_ids = [];
-            var use_image = false;
-            // create img DOM element to clone
-            if (use_image) {
-                try {
-                    var img_element = document.createElement('img');
-                    img_element.setAttribute('alt', 'Nuke!');
-                    img_element.setAttribute('src', chrome.extension.getURL('nuke.png'));
-                } catch (e) {
-                    use_image = false;
-                }
-            }
-            for (var i = 0; i < divels.length; i++) {
-                $(divels[i]).addClass('nuke-processed');
-                var author_link = divels[i].querySelector('p.tagline>a.author,p.tagline>span.author,p.tagline>em');
-                // p.tagline>a.author is normal comment;
-                // some author deleted comments seem to have either
-                // p.tagline>span.author or p.tagline>em
-
-                comment_ids[i] = divels[i].getAttribute('data-fullname');
-                // console.log(i + ':' + comment_ids);
-                if (author_link) {
-                    // create link DOM element with img inside link
-                    nuke_button[i] = document.createElement('a');
-                    nuke_button[i].setAttribute('href', 'javascript:void(0)');
-                    nuke_button[i].setAttribute('title', 'Nuke!');
-                    nuke_button[i].setAttribute('id', 'nuke_' + i);
-                    if (use_image) {
-                        nuke_button[i].appendChild(img_element.cloneNode(true));
-                    } else {
-                        nuke_button[i].innerHTML = "[R]";
-                    }
-                    // append after the author's name
-                    author_link.parentNode.insertBefore(nuke_button[i], author_link.nextSibling);
-
-                    // Add listener for click; using IIFE to function with _i as value of i when created; not when click
-                    nuke_button[i].addEventListener('click', (function (_i) {
-                        return function () {
-                            var continue_thread = divels[_i].querySelectorAll('span.morecomments>a');
-                            var comment_str = " comments?";
-                            if (continue_thread.length > 0) {
-                                comment_str = "+ comments (more after expanding collapsed threads; there will be a pause before the first deletion to retrieve more comments)?";
-                            }
-                            var delete_button = divels[_i].querySelectorAll('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
-                            // form input[value="removed"]~span.option.error a.yes -- finds the yes for normal deleting comments.
-                            // a.pretty-button.neutral finds the 'remove' button for flagged comments
-
-                            if (!self.setting('confirmNuke') || confirm("Are you sure you want to nuke the following " + delete_button.length + comment_str)) {
-
-                                for (var indx = 0; indx < continue_thread.length; indx++) {
-                                    var elmnt = continue_thread[indx];
-                                    setTimeout(
-                                        function () {
-                                            var event = document.createEvent('UIEvents');
-                                            event.initUIEvent('click', true, true, window, 1);
-                                            elmnt.dispatchEvent(event);
-                                        }, 2000 * indx); // wait two seconds before each ajax call before clicking each "load more comments"
-                                }
-                                if (indx > 0) {
-                                    setTimeout(function () {
-                                            delete_function(comment_ids[_i])
-                                        },
-                                        2000 * (indx + 2)); // wait 4s after last ajax "load more comments"
-                                } else {
-                                    delete_function(comment_ids[_i]); // call immediately if not "load more comments"
-                                }
-                            }
-                        }
-                    })(i)); // end of IIFE (immediately invoked function expression)
-                }
-            }
-        }
-        run();
-
-        // NER support.
-        window.addEventListener("TBNewThings", function () {
-            run();
-        });
+    // Image or text?
+    if (self.setting('useImage')) {
+        self.button = $('<img>')
+                .attr('alt', 'Nuke!')
+                .attr('src', TB.ui.iconNuke)
+                .prop('outerHTML');
+    } else {
+        self.button = '[R]';
     }
+
+    console.log(self.button);
+
+    // Mod button clicked
+    $('body').on('click', '.nuke-button', function (event) {
+        var $nukeButton = $(event.target);
+        var $comment = $nukeButton.closest('.comment');
+
+        var $continue_thread = $comment.find('span.morecomments>a');
+
+
+        var confirmMessage = "Are you sure you want to nuke the following ";
+        var $delete_button = $comment.find('form.remove-button input[name="spam"][value="False"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
+        // form input[value="removed"]~span.option.error a.yes -- finds the yes for normal deleting comments.
+        // a.pretty-button.neutral finds the 'remove' button for flagged comments
+        confirmMessage += $delete_button.length;
+        if ($continue_thread.length > 0) {
+            confirmMessage += "+ comments (more after expanding collapsed threads; there will be a pause before the first deletion to retrieve more comments)?";
+        } else {
+            confirmMessage += " comments?";
+        }
+
+        if (!self.setting('confirmNuke')
+            || confirm(confirmMessage)
+        ) {
+            $continue_thread.each(function (idx, $continue_button) {
+                // wait a bit before each ajax call
+                setTimeout(function () {
+                    $continue_button.click();
+                }, 2000 * idx);
+            });
+
+            // wait a bit after last ajax call before deleting
+            setTimeout(function () {
+                self.deleteThreadFromComment($comment);
+            }, 2000 * ($continue_thread.length + ($continue_thread.length ? 1 : 0)));
+        }
+
+
+        return false; // necessary?
+    });
+
+    // https://github.com/reddit/reddit/blob/master/r2/r2/public/static/js/jquery.reddit.js#L531
+    // $(document).on('new_thing', function(e, thing) {
+    //     // This could be useful...
+    // });
+
+    // https://github.com/reddit/reddit/blob/master/r2/r2/public/static/js/jquery.reddit.js#L531
+    // $(document).on('new_things_inserted', function(e, thing) {
+    //     // eh?
+    // });
+
+
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        self.run();
+    });
+
+    self.run();
+};
+
+self.deleteThreadFromComment = function ($thread_root) {
+    var $removeButtons = $thread_root.find('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
+    TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
+    // we need a delay between every single click of >1sec
+    // this should be re-written to use the API
+    TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment($button, num) {
+        var msg = 'removing comment ' + num + '/' + $removeButtons.length;
+        TB.ui.textFeedback(msg, 'neutral');
+        self.log(msg, false, 'nuke');
+        $button.click();
+    }, function complete() {
+        if (self.setting('hideAfterNuke')) {
+            $thread_root.hide(750);
+        }
+        self.log("kill spinner");
+        TB.ui.longLoadSpinner(false);
+        TB.ui.textFeedback('all comments removed', 'positive');
+    });
+};
+
+
+// Add nuke button to all comments
+self.processComment = function (comment, num) {
+    $comment = $(comment);
+    if (!$comment.hasClass('nuke-processed')) {
+        // Add the class so we don't add buttons twice.
+        $comment.addClass('nuke-processed');
+
+        // Defer info gathering until button is clicked.
+        $comment.find('.author:first')
+            .after('<a href="javascript:;" class="nuke-button">' + self.button + '</a>');
+    }
+};
+
+// need this for RES NER support
+self.run = function () {
+    // Not a mod, don't bother.
+    if (TB.utils.mySubs.length < 1
+        || !TB.utils.isMod
+    ) {
+        self.log('Not a mod of the sub, d\'oh!');
+        return;
+    }
+
+    var $comments = $('div.comment:not(.nuke-processed)');
+    TB.utils.forEachChunked($comments, 15, 650, self.processComment);
 };
 
 TB.register_module(self);

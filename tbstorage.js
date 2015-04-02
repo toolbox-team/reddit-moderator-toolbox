@@ -142,6 +142,14 @@ function storagewrapper() {
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
+    TBStorage.browsers = {
+        CHROME: CHROME,
+        FIREFOX: FIREFOX,
+        OPERA: OPERA,
+        SAFARI: SAFARI,
+        UNKOWN_BROWSER: UNKOWN_BROWSER
+    };
+
     TBStorage.browser = UNKOWN_BROWSER;
     TBStorage.isLoaded = false;
 

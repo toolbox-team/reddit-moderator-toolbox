@@ -35,6 +35,8 @@ function initwrapper() {
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
 
+    TBUtils.browsers = TBStorage.browsers;
+
     // Public variables
     TBUtils.toolboxVersion = '3.1.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.

@@ -33,7 +33,7 @@ self.init = function () {
     // Image or text?
     if (self.setting('useImage')) {
         self.button = $('<img>')
-                .attr('alt', 'Nuke!')
+                .attr('title', 'Nuke!')
                 .attr('src', TB.ui.iconNuke)
                 .prop('outerHTML');
     } else {
@@ -123,7 +123,7 @@ self.deleteThreadFromComment = function ($thread_root) {
 
 // Add nuke button to all comments
 self.processComment = function (comment, num) {
-    $comment = $(comment);
+    var $comment = $(comment);
     if (!$comment.hasClass('nuke-processed')) {
         // Add the class so we don't add buttons twice.
         $comment.addClass('nuke-processed');

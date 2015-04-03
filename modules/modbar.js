@@ -104,7 +104,8 @@ self.init = function() {
             "Cuz Uncle Jessy was hot and knew the Beach Boys",
             "Don't worry too much. There's always extra pieces.",
             "Make the check actually check.",
-            "I dunno what this 'Safari' thing is."],
+            "I dunno what this 'Safari' thing is.",
+            "eeeeew... why is there PHP code in this room?"],
         randomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
 
     // Custom CSS for devmode/testing

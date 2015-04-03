@@ -147,7 +147,6 @@ self.init = function () {
         modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
         modmailFilteredSubreddits = modmailSubreddits,  //wat?
-        notifierEnabled = self.setting('enabled'),
         unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
         messageunreadlink = self.setting('messageUnreadLink'),
@@ -720,16 +719,19 @@ self.init = function () {
     }
 
     // How often we check for new messages, this will later be adjustable in the settings.
-    if (notifierEnabled) {
-        setInterval(getmessages, checkInterval);
-        getmessages();
-    } else { // todo: this is a temp hack until 2.2
-        self.setting('unreadMessageCount', 0);
-        self.setting('modqueueCount', 0);
-        self.setting('unmoderatedCount', 0);
-        self.setting('modmailCount', 0);
-    }
+    // if (notifierEnabled) {
+    //     setInterval(getmessages, checkInterval);
+    //     getmessages();
+    // } else { // todo: this is a temp hack until 2.2
+    //     self.setting('unreadMessageCount', 0);
+    //     self.setting('modqueueCount', 0);
+    //     self.setting('unmoderatedCount', 0);
+    //     self.setting('modmailCount', 0);
+    // }
 
+    // that temp hack stopped being relevant with the module port
+    setInterval(getmessages, checkInterval);
+    getmessages();
 };
 
 TB.register_module(self);

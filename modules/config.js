@@ -65,6 +65,10 @@ self.init = function() {
                     title: 'edit automoderator config',
                     tooltip: 'Edit the automoderator config.',
                     content: '\
+                <p>\
+                    <a href="/wiki/automoderator/full-documentation" target="_blank">Full automoderator documentation</a>\
+                </p>\
+                <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
                 <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                 <br>\
@@ -250,9 +254,24 @@ self.init = function() {
         TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
             self.log("save succ = " + succ);
             if (!succ) {
-                self.log(err.responseText);
-                TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
+
+
+                self.log(err);
+                if (page === 'config/automoderator') {
+                    $error = $body.find('.edit_automoderator_config .error');
+                    $error.show();
+
+                    var saveError = err.responseJSON.special_errors[0];
+                    $error.find('.errorMessage').html(saveError);
+
+                    TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
+                } else {
+                    TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
+                }
             } else {
+                if (page === 'config/automoderator') {
+                    $body.find('.edit_automoderator_config .error').hide();
+                }
                 self.log("clearing cache");
                 TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
                 TBUtils.clearCache();
@@ -264,15 +283,19 @@ self.init = function() {
     function wikiTabContent(tabname) {
 
         var page;
+        var actualPage;
         switch (tabname) {
             case 'edit_toolbox_config':
                 page = 'toolbox';
+                actualPage = 'usernotes';
                 break;
             case 'edit_user_notes':
                 page = 'usernotes';
+                actualPage = 'usernotes';
                 break;
             case 'edit_automoderator_config':
                 page = 'automoderator';
+                actualPage =  'config/automoderator'
                 break;
         }
         var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
@@ -306,7 +329,7 @@ self.init = function() {
             });
 
 
-            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+            TBUtils.readFromWiki(subreddit, actualPage, false, function (resp) {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                     $($textArea).val('error getting wiki data.');
                     configEditor.getSession().setValue('error getting wiki data.');
@@ -333,7 +356,7 @@ self.init = function() {
             // load the text area, but not the save button.
             $textArea.val('getting wiki data...');
 
-            TBUtils.readFromWiki(subreddit, page, false, function (resp) {
+            TBUtils.readFromWiki(subreddit, actualPage, false, function (resp) {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                     $textArea.val('error getting wiki data.');
                     return;
@@ -506,18 +529,22 @@ self.init = function() {
     $body.on('click', '.save-wiki-data', function () {
         var $this = $(this),
             tabname = $this.attr('data-tabname'),
-            page;
+            page,
+            actualPage;
 
         switch (tabname) {
             case 'edit_toolbox_config':
                 page = 'toolbox';
+                actualPage = 'toolbox';
                 $body.addClass('toolbox-wiki-edited');
                 break;
             case 'edit_user_notes':
                 page = 'usernotes';
+                actualPage = 'usernotes';
                 break;
             case 'edit_automoderator_config':
                 page = 'automoderator';
+                actualPage = 'config/automoderator';
                 break;
         }
 
@@ -533,7 +560,7 @@ self.init = function() {
         // save the data, and blank the text area.
         // also, yes some of the pages are in JSON, but they aren't JSON objects,
         // so they don't need to be re-strinified.
-        postToWiki(page, text, editNote, false, updateAM);
+        postToWiki(actualPage, text, editNote, false, updateAM);
     });
 
     // Toolbox config FORM tab save

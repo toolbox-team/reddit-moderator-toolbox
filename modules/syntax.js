@@ -105,8 +105,9 @@ self.init = function () {
         });
     }
 
-    if (location.pathname.match(/\/wiki\/edit\/automoderator(-schedule)?\/?$/)
+    if (location.pathname.match(/\/wiki\/edit\/(config\/)?automoderator(-schedule)?\/?$/)
         || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)
+
     ) {
         var $editform = $('#editform');
 
@@ -121,7 +122,7 @@ self.init = function () {
         }
         editor.setTheme("ace/theme/" + selectedTheme);
 
-        if (location.pathname.match(/\/wiki\/edit\/automoderator(-schedule)?\/?$/)) {
+        if (location.pathname.match(/\/wiki\/edit\/(config\/)?automoderator(-schedule)?\/?$/)) {
             session.setMode("ace/mode/yaml");
         }
         if (location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {

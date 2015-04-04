@@ -983,29 +983,13 @@ function initwrapper() {
         })
 
             .error(function postToWiki_error(err) {
-                $.log(err);
-                callback(false, err.responseText);
+                $.log(err.responseText);
+                callback(false, err);
             })
 
             .success(function () {
                 // Callback regardless of what happens next.  We wrote to the page.
                 callback(true);
-
-                if (updateAM) {
-                    $.post('/api/compose', {
-                        to: 'automoderator',
-                        uh: TBUtils.modhash,
-                        subject: subreddit,
-                        text: 'update'
-                    })
-                        .success(function () {
-                            TB.ui.textFeedback('sucessfully sent update PM to automoderator', TBui.FEEDBACK_POSITIVE);
-                        })
-                        .error(function () {
-                            TB.ui.textFeedback('error sending update PM to automoderator', TB.ui.FEEDBACK_NEGATIVE);
-                            window.location = '/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
-                        });
-                }
 
                 setTimeout(function () {
 

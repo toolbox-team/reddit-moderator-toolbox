@@ -39,7 +39,7 @@ self.processThing = function (thing) {
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        $(thing).find('.buttons > li:last').before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
+        $(thing).find('.flat-list.buttons a[onClick="return reply(this)"]').before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
     }
 };
 

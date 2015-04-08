@@ -22,23 +22,25 @@ self.register_setting('confirmNuke', {
     'title': 'Show a confirmation window before nuking a comment chain'
 });
 
-self.register_setting('useImage', {
-    'type': 'boolean',
-    'default': true,
-    'title': 'Use an image button instead of [R]'
-});
+// self.register_setting('useImage', {
+//     'type': 'boolean',
+//     'default': true,
+//     'title': 'Use an image button instead of [R]'
+// });
 
 
 self.init = function () {
-    // Image or text?
-    if (self.setting('useImage')) {
-        self.button = $('<img>')
-                .attr('title', 'Nuke!')
-                .attr('src', TB.ui.iconNuke)
-                .prop('outerHTML');
-    } else {
-        self.button = '[R]';
-    }
+    // // Image or text?
+    // if (self.setting('useImage')) {
+    //     self.button = $('<img>')
+    //             .attr('title', 'Nuke!')
+    //             .attr('src', TB.ui.iconNuke)
+    //             .prop('outerHTML');
+    // } else {
+    //     self.button = '[R]';
+    // }
+
+    self.button = 'nuke';
 
     console.log(self.button);
 
@@ -128,9 +130,12 @@ self.processComment = function (comment, num) {
         // Add the class so we don't add buttons twice.
         $comment.addClass('nuke-processed');
 
+
+
         // Defer info gathering until button is clicked.
-        $comment.find('.author:first')
-            .after('<a href="javascript:;" class="nuke-button">' + self.button + '</a>');
+        // the report button is always visible, so we don't have to do anything special for the big mod action buttons
+        $comment.find('.report-button')
+            .after('<li><a href="javascript:;" class="nuke-button">' + self.button + '</a></li>');
     }
 };
 

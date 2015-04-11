@@ -39,7 +39,13 @@ self.processThing = function (thing) {
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        $(thing).find('.flat-list.buttons a[onClick="return reply(this)"]').before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
+        // try to insert it to the left of 'reply'
+        var $insertionPoint = $(thing).find('.flat-list.buttons a[onClick="return reply(this)"]');
+        if ($insertionPoint.length == 0) {
+            // otherwise stick it to the left of the last button
+            $insertionPoint = $(thing).find('.buttons > li:last');
+        }
+        $insertionPoint.before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
     }
 };
 

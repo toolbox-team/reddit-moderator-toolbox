@@ -1467,11 +1467,30 @@ function initwrapper() {
         return $('<div/>').text(value).html();
     };
 
-
     TBUtils.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
     };
-
+    
+    
+    TBUtils.zlibInflate = function (stringThing) {
+        // Expand base64
+        stringThing = atob(stringThing);
+        // zlib time!
+        var inflate = new pako.Inflate({to:'string'});
+        inflate.push(stringThing);
+        return inflate.result;
+    };
+    
+    TBUtils.zlibDeflate = function (objThing) {
+        // zlib time!
+        var deflate = new pako.Deflate({to:'string'});
+        deflate.push(objThing, true);
+        objThing = deflate.result;
+        // Collapse to base64
+        return btoa(objThing);
+    };
+    
+    
     TBUtils.clearCache = function () {
         $.log('TBUtils.clearCache()');
 

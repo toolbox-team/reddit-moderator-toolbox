@@ -368,7 +368,8 @@ self.init = function() {
                     $saveButton.attr('page', page);
                     return;
                 }
-
+                
+                resp = humanizeUsernotes(resp);
                 resp = TBUtils.unescapeJSON(resp);
 
                 // Found it, show it.
@@ -376,6 +377,24 @@ self.init = function() {
                 $saveButton.show();
                 $saveButton.attr('page', page);
             });
+        }
+        
+        function humanizeUsernotes(notes) {
+            if(notes.ver >= 6) {
+                return decompressBlob(notes);
+            }
+            else {
+                return notes;
+            }
+            
+            function decompressBlob(notes) {
+                var decompressed = TBUtils.zlibInflate(notes.blob);
+
+                // Update notes with actual notes
+                delete notes.blob;
+                notes.users = JSON.parse(decompressed);
+                return notes;
+            }
         }
     }
 

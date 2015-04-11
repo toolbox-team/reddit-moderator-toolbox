@@ -658,7 +658,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
         
         // Success
         self.log("We have notes!");
-        var notes  = convertNotes(resp, subreddit);
+        var notes = convertNotes(resp, subreddit);
 
         // We have notes, cache them and return them.
         TBUtils.noteCache[subreddit] = notes;
@@ -702,7 +702,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
             return inflateNotes(notes, sub);
         }
         else if(notes.ver <= 6) {
-            notes = zlibDecompress(notes);
+            notes = decompressBlob(notes);
             return inflateNotes(notes, sub);
         }
         else {
@@ -711,13 +711,8 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
         }
         
         // Utilities
-        function zlibDecompress(notes) {
-            // Expand base64
-            notes.blob = atob(notes.blob);
-            // zlib time!
-            var inflate = new pako.Inflate({to:'string'});
-            inflate.push(notes.blob);
-            var decompressed = inflate.result;
+        function decompressBlob(notes) {
+            var decompressed = TBUtils.zlibInflate(notes.blob);
             
             // Update notes with actual notes
             delete notes.blob;
@@ -871,21 +866,16 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
         }
         else if(notes.ver <= 6) {
             notes = deflateNotes(notes);
-            return zlibCompress(notes);
+            return compressBlob(notes);
         }
         
         // Utilities
-        function zlibCompress(notes) {
+        function compressBlob(notes) {
             // Make way for the blob!
             var users = JSON.stringify(notes.users);
             delete notes.users;
             
-            // zlib time!
-            var deflate = new pako.Deflate({to:'string'});
-            deflate.push(users, true);
-            notes.blob = deflate.result;
-            // Collapse to base64
-            notes.blob = btoa(notes.blob);
+            notes.blob = TBUtils.zlibDeflate(users);
         }
     }
     

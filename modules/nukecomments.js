@@ -42,8 +42,6 @@ self.init = function () {
 
     self.button = 'nuke';
 
-    console.log(self.button);
-
     // Mod button clicked
     $('body').on('click', '.nuke-button', function (event) {
         var $nukeButton = $(event.target);

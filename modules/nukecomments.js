@@ -40,7 +40,7 @@ self.init = function () {
     //     self.button = '[R]';
     // }
 
-    self.button = 'nuke';
+    self.button = '[R]';
 
     // Mod button clicked
     $('body').on('click', '.nuke-button', function (event) {
@@ -132,8 +132,8 @@ self.processComment = function (comment, num) {
 
         // Defer info gathering until button is clicked.
         // the report button is always visible, so we don't have to do anything special for the big mod action buttons
-        $comment.find('.report-button')
-            .after('<li><a href="javascript:;" class="nuke-button">' + self.button + '</a></li>');
+        $comment.find('.author:first')
+            .after('<a href="javascript:;" class="nuke-button">' + self.button + '</a>');
     }
 };
 
@@ -141,7 +141,7 @@ self.processComment = function (comment, num) {
 self.run = function () {
     // Not a mod, don't bother.
     if (!TB.utils.isMod) {
-        self.log('Not a mod of the sub, d\'oh!');
+        //self.log('Not a mod of the sub, d\'oh!');
         return;
     }
 

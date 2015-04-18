@@ -918,6 +918,7 @@ img.note-close {
 }
 
 .mod-popup .ban-note-container {
+    width: auto;
     border: none;
 }
 
@@ -1585,7 +1586,6 @@ div.sticky {
 .mod-toolbox.res-nightmode .mod-popup .saved-subs div,
 .mod-toolbox.res-nightmode .mod-popup div.other-sub,
 .mod-toolbox.res-nightmode .mod-popup .ban-note-container {
-    width: 225px;
     border-bottom: 1px dotted gray;
     padding: 5px;
 }

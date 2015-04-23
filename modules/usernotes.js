@@ -839,6 +839,11 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
 
     TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
     
+    // Upgrade usernotes if only upgrading
+    if (notes.ver < TBUtils.notesSchema) {
+        notes.ver = TBUtils.notesSchema;
+    }
+    
     // Update cache
     TBUtils.noteCache[sub] = notes;
     // Deconvert notes to wiki format
@@ -868,6 +873,7 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
             notes = deflateNotes(notes);
             return compressBlob(notes);
         }
+        return notes;
         
         // Utilities
         function compressBlob(notes) {
@@ -876,6 +882,7 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
             delete notes.users;
             
             notes.blob = TBUtils.zlibDeflate(users);
+            return notes;
         }
     }
     

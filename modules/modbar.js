@@ -91,24 +91,6 @@ self.init = function() {
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
         modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
 
-    // todo: move the quotes array to TBUtils.
-    var randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-            "Simple solution, don't use nightmode....",
-            "Nightmode users are a buncha nerds.",
-            "Oh, so that's where that code went, I thought i had lost it somehow.",
-            "Are all close buttons pretty now?!?!?",
-            "As a Business Analyst myself...",
-            "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
-            "You are now an approvened submitter",
-            "Translate creesch's Kligon settings to Elglis.",
-            "Cuz Uncle Jessy was hot and knew the Beach Boys",
-            "Don't worry too much. There's always extra pieces.",
-            "Make the check actually check.",
-            "I dunno what this 'Safari' thing is.",
-            "eeeeew... why is there PHP code in this room?",
-            "nah there is an actual difference between stuff"],
-        randomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
-
     // Custom CSS for devmode/testing
     if (customCSS) {
         $('head').append('<style type="text/css">' + customCSS + '</style>');
@@ -497,7 +479,7 @@ self.init = function() {
 made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
 <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>, \
 <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/garethp">/u/garethp</a><br><br>\
-"<i>' + randomQuote + '</i>"<br><br>\
+"<i>' + TBUtils.RandomQuote + '</i>"<br><br>\
 <h3>Documentation by:</h3>\
 <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/gorillagnomes">/u/gorillagnomes</a><br><br>\
 <h3>Special thanks to:</h3>\

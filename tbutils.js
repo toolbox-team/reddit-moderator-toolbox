@@ -30,7 +30,10 @@ function initwrapper() {
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
-        getModSubsCallbacks = [];
+        getModSubsCallbacks = [],
+
+        randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', TB_KEY = 'Toolbox.';
@@ -62,6 +65,7 @@ function initwrapper() {
     TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
     TBUtils.isMod = $('body.moderator').length;
     TBUtils.isExtension = true;
+    TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
     TBUtils.log = [];
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
@@ -184,7 +188,7 @@ function initwrapper() {
             ', Browser: ' + TBUtils.browser +
             ', Extension: ' + TBUtils.isExtension +
             ', Beta features: ' + TBUtils.betaMode +
-            '\n';
+            '\n\n"' + TBUtils.RandomQuote+ '"\n';
 
         TBUtils.log.push(consoleText);
     }

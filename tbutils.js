@@ -33,6 +33,20 @@ function initwrapper() {
         getModSubsCallbacks = [],
 
         randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+            "Simple solution, don't use nightmode....",
+            "Nightmode users are a buncha nerds.",
+            "Oh, so that's where that code went, I thought i had lost it somehow.",
+            "Are all close buttons pretty now?!?!?",
+            "As a Business Analyst myself...",
+            "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+            "You are now an approvened submitter",
+            "Translate creesch's Kligon settings to Elglis.",
+            "Cuz Uncle Jessy was hot and knew the Beach Boys",
+            "Don't worry too much. There's always extra pieces.",
+            "Make the check actually check.",
+            "I dunno what this 'Safari' thing is.",
+            "eeeeew... why is there PHP code in this room?",
+            "nah there is an actual difference between stuff"];
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',

@@ -46,7 +46,8 @@ function initwrapper() {
             "Make the check actually check.",
             "I dunno what this 'Safari' thing is.",
             "eeeeew... why is there PHP code in this room?",
-            "nah there is an actual difference between stuff"];
+            "nah there is an actual difference between stuff",
+            "...have you paid money *out of your own pocket* to anyone to vet this product"];
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',

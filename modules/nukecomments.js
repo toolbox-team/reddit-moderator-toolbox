@@ -106,7 +106,7 @@ self.deleteThreadFromComment = function ($thread_root) {
     // we need a delay between every single click of >1sec
     // this should be re-written to use the API
     TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment($button, num) {
-        var msg = 'removing comment ' + num + '/' + $removeButtons.length;
+        var msg = 'removing comment ' + (num + 1) + '/' + $removeButtons.length;
         TB.ui.textFeedback(msg, 'neutral');
         self.log(msg, false, 'nuke');
         $button.click();

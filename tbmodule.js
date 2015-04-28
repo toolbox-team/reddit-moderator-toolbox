@@ -264,7 +264,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                         aDescr = "??????",
                                         aClass = "";
 
-                                    if (module.manager.isUnlocked(saveIndex, index, save)) {
+                                    if (module.manager.isUnlocked(saveIndex, index, save) || TB.utils.devMode) {
                                         var a = module.manager.getAchievement(saveIndex, index);
                                         aTitle = a.title;
                                         aDescr = a.descr;

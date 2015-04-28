@@ -28,7 +28,8 @@
 		"styles/personalnotes.css",
 		"styles/modmaillite.css",
 		"styles/queuetools.css",
-		"styles/modmailpro.css"
+		"styles/modmailpro.css",
+        "styles/achievements.css"
 	  ],
 	  "js": [
 		"libs/jquery-2.1.1.js",
@@ -68,6 +69,7 @@
 		"modules/betterbuttons.js",
 		"modules/bagel.js",
 		"modules/flyingsnoo.js",
+        "modules/achievements.js",
 		"modules/queuetools.js",
 		"tbmoduleinit.js"
 	  ]

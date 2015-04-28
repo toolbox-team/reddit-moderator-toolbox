@@ -1,0 +1,28 @@
+.tb-settings .achievements p {
+	padding-top: 0 !important;
+}
+
+.tb-settings .achievements .achievements-list {
+	max-height: 585px;
+	overflow-y: scroll;
+}
+
+.tb-settings .achievements .achievement {
+	padding: 4px 4px 3px;
+	margin-bottom: 4px;
+	
+	background-color: rgb(220, 220, 220);
+	border: 1px solid darkgray;
+}
+
+.tb-settings .achievements .achievement.unlocked {
+	background-color: white;
+}
+
+.tb-settings .achievements .achievement p {
+	border: none;
+}
+
+.tb-settings .achievements .achievement p.title {
+	font-weight: bold;
+}

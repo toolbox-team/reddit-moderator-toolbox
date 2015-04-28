@@ -157,7 +157,8 @@ TB = {
                     // blank slate
                     var $setting = $('<p></p>'),
                         execAfterInject = [],
-                        title = (options.title) ? options.title : '(' + setting + ')';
+                        title = (options.title) ? options.title : '(' + setting + ')',
+                        noWrap = false;
 
                     // automagical handling of input types
                     switch (options.type) {
@@ -235,6 +236,50 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 });
                             });
                             break;
+                        case "achievement_save":
+                            noWrap = true;
+                            
+                            $.log("----------");
+                            $.log("GENERATING ACHIEVEMENT PAGE");
+                            var total = module.manager.getAchievementTotal(),
+                                unlocked = module.manager.getUnlockedCount();
+
+                            $.log("  total="+total);
+                            $.log("  unlocked="+unlocked);
+                            
+                            $setting = $('<div>').attr('class', 'achievements');
+                            $setting.append($('<h1>').text("Mod Achievements"));
+                            $setting.append($('<p>').text(unlocked + " of " + total + " unlocked"));
+                            $setting.append('<br />');
+                            
+                            var save = module.setting(setting);
+                            save = module.manager.decodeSave(save);
+
+                            var $list = $('<div>').attr('class', 'achievements-list');
+                            for(var saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
+                                $.log("  saveIndex: "+saveIndex);
+                                for (var index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
+                                    $.log("  index: "+index);
+                                    var aTitle = "???",
+                                        aDescr = "??????",
+                                        aClass = "";
+
+                                    if (module.manager.isUnlocked(saveIndex, index, save)) {
+                                        var a = module.manager.getAchievement(saveIndex, index);
+                                        aTitle = a.title;
+                                        aDescr = a.descr;
+                                        aClass = "unlocked";
+                                    }
+
+                                    var $a = $('<div>').attr('class', 'achievement ' + aClass);
+                                    $a.append($('<p>').attr('class', 'title').text(aTitle));
+                                    $a.append($('<p>').attr('class', 'description').text(aDescr));
+                                    $list.append($a);
+                                }
+                            }
+                            $setting.append($list);
+                            
+                            break;
                         default:
                             // what in the world would we do here? maybe raw JSON?
                             // yes, we do raw JSON
@@ -243,10 +288,12 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
                     }
-                    $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                    $setting.attr('id', 'tb-' + module.shortname + '-' + setting);
-                    $setting.data('module', module.shortname);
-                    $setting.data('setting', setting);
+                    if(!noWrap) {
+                        $setting = $('<span>').attr('class', 'setting-item').append($setting);
+                        $setting.attr('id', 'tb-' + module.shortname + '-' + setting);
+                        $setting.data('module', module.shortname);
+                        $setting.data('setting', setting);
+                    }
 
                     $settings.append($setting);
                 }

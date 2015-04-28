@@ -193,8 +193,8 @@ function achievements() {
 
         self.manager.register(["being awesome"], "As always, toolbox loves you", [1], function (saveIndex) {
             var awesome = 7,
-                chanceOfBeingAwesome = Math.floor((Math.random() * 10) + 1);
-            
+                chanceOfBeingAwesome = Math.floor((Math.random() * 50) + 1);
+
             self.log("You rolled a: " + chanceOfBeingAwesome);
             if (awesome == chanceOfBeingAwesome) {
                 self.manager.unlock(saveIndex, 1);

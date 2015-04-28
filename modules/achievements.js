@@ -166,30 +166,35 @@ function achievements() {
 
         // Achievement definitions
         self.log("Registering achievements");
-        self.manager.register(["too nice", "way too nice", "big softie"], "Approved {0} things", [1, 2, 3], function(saveIndex) {
-            $('.approve-button, .big-mod-buttons .positive').on('click', function () {
-                self.manager.unlock(saveIndex, 1);
+
+        // approving stuff
+        self.manager.register(["too nice", "way too nice", "big softie"], "Approved {0} things", [50, 200, 1000], function (saveIndex) {
+            $body.on('click', '.pretty-button, .approve-button', function () {
+                var $this = $(this);
+                if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
+                    self.manager.unlock(saveIndex, 1);
+                }
             });
         });
 
         // Mod mail
-        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [10, 10, 1000, 10000], function(saveIndex) {
+        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
             if (TB.utils.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Empty queue
-        self.manager.register(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [1, 700, 1500], function(saveIndex) {
+        self.manager.register(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
             if (TBUtils.isModpage && $body.find('p#noresults')) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
-        self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
+        self.manager.register(["", "", ""], "", [1, 2, 3], function (saveIndex) {
 
         });
-        self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
+        self.manager.register(["", "", ""], "", [1, 2, 3], function (saveIndex) {
 
         });
     };

@@ -166,14 +166,14 @@ function achievements() {
 
         // Achievement definitions
         self.log("Registering achievements");
-        self.manager.register(["Too nice", "Way too nice", "Big softie"], "Approved {0} things", [1, 2, 3], function(saveIndex) {
+        self.manager.register(["too nice", "way too nice", "big softie"], "Approved {0} things", [1, 2, 3], function(saveIndex) {
             $('.approve-button, .big-mod-buttons .positive').on('click', function () {
                 self.manager.unlock(saveIndex, 1);
             });
         });
 
         // Mod mail
-        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman"], "Checked mod mail {0} times!", [10, 10, 1000], function(saveIndex) {
+        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [10, 10, 1000, 10000], function(saveIndex) {
             if (TB.utils.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }

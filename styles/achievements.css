@@ -3,7 +3,7 @@
 }
 
 .tb-settings .achievements .achievements-list {
-	max-height: 585px;
+	max-height: 585px !important;
 	overflow-y: scroll;
 }
 

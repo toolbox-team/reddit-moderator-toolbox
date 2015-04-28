@@ -4,10 +4,16 @@ function achievements() {
 
     // Default settings
     self.settings['enabled']['default'] = true;
-
+    
     self.register_setting('save', {
         'type': 'achievement_save',
         'default': ''
+    });
+    
+    self.register_setting('last_seen', {
+        'type': 'number',
+        'default': 0,
+        'hidden': true
     });
     
     // Saves
@@ -25,24 +31,10 @@ function achievements() {
         };
         
         this.register = function(title, description, achievement) {
-            this.register(title, description, 1, achievement);
+            this.registerSeries([title], description, [1], achievement);
         };
         
-        this.register = function(titles, description, maxValues, achievement) {
-            function createRegister(title, maxValue, saveIndex) {
-                self.log("Registering Achievement" );
-                if (TB.utils.devMode) self.log(" name=" + title); // spoilers
-                self.log("  maxValue=" + maxValue);
-                self.log("  saveIndex=" + saveIndex);
-                
-                return {
-                    title: title,
-                    descr: description.format(maxValue),
-                    maxValue: maxValue,
-                    saveIndex: saveIndex
-                };
-            }
-            
+        this.registerSeries = function(titles, description, maxValues, achievement) {
             var saveValue = 0;
             if (saveIndex < saves.length) {
                 saveValue = saves[saveIndex];
@@ -52,14 +44,21 @@ function achievements() {
             }
             
             var achievementsBlock = [];
-            if(maxValues instanceof Array && titles instanceof Array) {
-                for(var i = 0; i < maxValues.length; i++) {
-                    var a = createRegister(titles[i], maxValues[i], saveIndex);
-                    achievementsBlock.push(a);
-                }
-            }
-            else {
-                achievementsBlock.push(createRegister(titles, maxValues, saveIndex));
+            for(var i = 0; i < maxValues.length; i++) {
+                var title = titles[i],
+                    maxValue = maxValues[i];
+                
+                self.log("Registering Achievement");
+                if (TB.utils.devMode) self.log("  name=" + title); // spoilers
+                self.log("  maxValue=" + maxValue);
+                self.log("  saveIndex=" + saveIndex);
+
+                achievementsBlock.push({
+                    title: title,
+                    descr: description.format(maxValue),
+                    maxValue: maxValue,
+                    saveIndex: saveIndex
+                });
             }
             achievements.push(achievementsBlock);
             
@@ -68,15 +67,15 @@ function achievements() {
         };
         
         this.unlock = function(saveIndex, value) {
-            self.log("Unlocking achievement block: index="+saveIndex+", value="+value);
             if(value === undefined) {
                 value = 1;
             }
+            self.log("Unlocking achievement block: index="+saveIndex+", value="+value);
+            
             var old = saves[saveIndex];
             self.log("  Old value: "+saves[saveIndex]);
             saves[saveIndex] += value;
             self.log("  New value: "+saves[saveIndex]);
-            this.save();
 
             var achievementsBlock = achievements[saveIndex];
             for(var index = 0; index < achievementsBlock.length; index++) {
@@ -88,6 +87,11 @@ function achievements() {
                     TBUtils.notification("Mod achievement unlocked!", achievement.title, window.location + "#?tbsettings=" + self.shortname);
                 }
             }
+            
+            if(saves[saveIndex] > achievement.maxValue) {
+                saves[saveIndex] = achievement.maxValue
+            }
+            this.save();
         };
         
         this.save = function() {
@@ -163,12 +167,18 @@ function achievements() {
         var $body = $('body');
         self.manager = new Manager();
         self.manager.init();
+        
+        // Individual achievement stuff
+        var lastSeen = self.setting('last_seen');
+        if(lastSeen == 0) {
+            lastSeen = TBUtils.getTime();
+        }
 
         // Achievement definitions
         self.log("Registering achievements");
 
         // approving stuff
-        self.manager.register(["too nice", "way too nice", "big softie"], "Approved {0} things", [50, 200, 1000], function (saveIndex) {
+        self.manager.registerSeries(["too nice", "way too nice", "big softie"], "Approved {0} things", [50, 200, 1000], function (saveIndex) {
             $body.on('click', '.pretty-button, .approve-button', function () {
                 var $this = $(this);
                 if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
@@ -178,31 +188,40 @@ function achievements() {
         });
 
         // Mod mail
-        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
+        self.manager.registerSeries(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
             if (TB.utils.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Empty queue
-        self.manager.register(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
+        self.manager.registerSeries(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
             if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
-        self.manager.register(["being awesome"], "As always, toolbox loves you", [1], function (saveIndex) {
+        self.manager.register("being awesome", "As always, toolbox loves you", function (saveIndex) {
             var awesome = 7,
                 chanceOfBeingAwesome = Math.floor((Math.random() * 50) + 1);
 
             self.log("You rolled a: " + chanceOfBeingAwesome);
             if (awesome == chanceOfBeingAwesome) {
-                self.manager.unlock(saveIndex, 1);
+                self.manager.unlock(saveIndex);
             }
 
         });
-        self.manager.register(["", "", ""], "", [1, 2, 3], function (saveIndex) {
+        
+        self.manager.register("not dead yet", "Spent a week away from reddit.", function (saveIndex) {
+            var now = TBUtils.getTime(),
+                timeSince = now - lastSeen,
+                daysSince = TBUtils.daysToMilliseconds(timeSince);
+            
+            if(daysSince >= 7) {
+                self.manager.unlock(saveIndex);
+            }
 
+            self.setting('last_seen', now);
         });
     };
 

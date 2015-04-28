@@ -312,7 +312,11 @@ function initwrapper() {
 			return entityMap[s];
 		});
 	};
-
+    
+    TBUtils.getTime = function() {
+        return new Date().getTime();
+    };
+    
     //
     TBUtils.minutesToMilliseconds = function (mins) {
         var oneMin = 60000,
@@ -325,7 +329,11 @@ function initwrapper() {
 
         return milliseconds;
     };
-
+    
+    TBUtils.daysToMilliseconds = function (days) {
+        return days * 86400000;
+    };
+    
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function (UNIX_timestamp) {
         var a = new Date(UNIX_timestamp * 1000);

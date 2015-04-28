@@ -14,7 +14,7 @@ function achievements() {
     function Manager() {
         var saves = [],
             saveIndex = 0,
-            
+
             achievements = [];
         
         this.init = function() {
@@ -30,7 +30,8 @@ function achievements() {
         
         this.register = function(titles, description, maxValues, achievement) {
             function createRegister(title, maxValue, saveIndex) {
-                self.log("Registering: " + title);
+                self.log("Registering Achievement" );
+                if (TB.utils.devMode) self.log(" name=" + title); // spoilers
                 self.log("  maxValue=" + maxValue);
                 self.log("  saveIndex=" + saveIndex);
                 
@@ -159,6 +160,7 @@ function achievements() {
     
     // Init module
     self.init = function() {
+        var $body = $('body');
         self.manager = new Manager();
         self.manager.init();
 
@@ -169,14 +171,21 @@ function achievements() {
                 self.manager.unlock(saveIndex, 1);
             });
         });
-        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman"], "Checked mod mail {0} times!", [1, 10, 1000], function(saveIndex) {
+
+        // Mod mail
+        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman"], "Checked mod mail {0} times!", [10, 10, 1000], function(saveIndex) {
             if (TB.utils.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
-        self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
 
+        // Empty queue
+        self.manager.register(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [1, 700, 1500], function(saveIndex) {
+            if (TBUtils.isModpage && $body.find('p#noresults')) {
+                self.manager.unlock(saveIndex, 1);
+            }
         });
+
         self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
 
         });

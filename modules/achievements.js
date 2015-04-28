@@ -191,7 +191,14 @@ function achievements() {
             }
         });
 
-        self.manager.register(["", "", ""], "", [1, 2, 3], function (saveIndex) {
+        self.manager.register(["being awesome"], "As always, toolbox loves you", [1], function (saveIndex) {
+            var awesome = 7,
+                chanceOfBeingAwesome = Math.floor((Math.random() * 10) + 1);
+            
+            self.log("You rolled a: " + chanceOfBeingAwesome);
+            if (awesome == chanceOfBeingAwesome) {
+                self.manager.unlock(saveIndex, 1);
+            }
 
         });
         self.manager.register(["", "", ""], "", [1, 2, 3], function (saveIndex) {

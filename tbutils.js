@@ -823,6 +823,21 @@ function initwrapper() {
         }
     };
 
+    TBUtils.getHashParameter = function(ParameterKey)
+    {
+        var hash = window.location.hash.substring(1);
+        var params = hash.split('&');
+        for (var i = 0; i < params.length; i++)
+        {
+            var keyval = params[i].split('='),
+                key = keyval[0].replace('?','');
+            if (key == ParameterKey)
+            {
+                return keyval[1];
+            }
+        }
+    };
+
     TBUtils.getThingInfo = function (sender, modCheck) {
         // If we were passed in a .thing, we may have to walk down the tree to
         // find the associated .entry

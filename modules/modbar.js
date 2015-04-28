@@ -102,6 +102,8 @@ self.init = function() {
     // style="display: none;"
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
+
+
     var modMailUrl = '/message/moderator/';
     if (parseInt(modmailCustomLimit) > 0) {
         modMailUrl += '?limit=' + modmailCustomLimit;
@@ -371,7 +373,6 @@ self.init = function() {
     function showSettings() {
 
 
-
         // The window in which all settings will be showed.
         var html = '\
 <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
@@ -542,21 +543,42 @@ See the License for the specific language governing permissions and limitations 
         });
     });
 
-    // change tabs
-    $body.on('click', '.tb-window-tabs a:not(.active)', function () {
-        var tab = $(this).attr('data-module'),
+    // check for passed settings.
+    function switchTab(module) {
+
+        var $this = $body.find("[data-module='" + module + "']"),
             $tb_help_mains = $('.tb-help-main');
 
         $('.tb-window-tabs a').removeClass('active');
-        $(this).addClass('active');
+        $this.addClass('active');
 
-        $tb_help_mains.attr('currentpage', tab);
+        $tb_help_mains.attr('currentpage', module);
         // if we have module name, give that to the help button
-        if ($(this).data('module')) {
-            $tb_help_mains.data('module', $(this).data('module'));
+        if ($this.data('module')) {
+            $tb_help_mains.data('module', $this.data('module'));
         }
         $('.tb-window-content').children().hide();
-        $('div.tb-window-content-' + tab).show();
+        $('div.tb-window-content-' + module).show();
+    }
+
+    if(window.location.hash) {
+        var module = TB.utils.getHashParameter('tbsettings').toLocaleLowerCase();
+
+        if (module) {
+            // Wait a sec for stuff to load.
+            setTimeout(function () {
+
+                showSettings();
+                TB.injectSettings();
+                switchTab(module);
+            }, 1000);
+        }
+    }
+
+    // change tabs
+    $body.on('click', '.tb-window-tabs a:not(.active)', function () {
+        var tab = $(this).attr('data-module');
+        switchTab(tab);
     });
 
     // remove a shortcut

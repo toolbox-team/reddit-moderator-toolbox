@@ -186,7 +186,7 @@ function achievements() {
 
         // Empty queue
         self.manager.register(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
-            if (TBUtils.isModpage && $body.find('p#noresults')) {
+            if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }
         });

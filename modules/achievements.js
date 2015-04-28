@@ -84,7 +84,7 @@ function achievements() {
                 self.log("    Comparing to max value: " + achievement.maxValue);
                 if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                     self.log("    Unlocked!");
-                    TBUtils.notification("Mod achievement unlocked!", achievement.title);
+                    TBUtils.notification("Mod achievement unlocked!", achievement.title, window.location + "#?tbsettings=" + self.shortname);
                 }
             }
         };
@@ -169,8 +169,10 @@ function achievements() {
                 self.manager.unlock(saveIndex, 1);
             });
         });
-        self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
-            
+        self.manager.register(["hic sunt dracones", "just checkin' the mail", "dear mister postman"], "Checked mod mail {0} times!", [1, 10, 1000], function(saveIndex) {
+            if (TB.utils.isModmail) {
+                self.manager.unlock(saveIndex, 1);
+            }
         });
         self.manager.register(["", "", ""], "", [1, 2, 3], function(saveIndex) {
 

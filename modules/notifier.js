@@ -220,7 +220,7 @@ self.init = function () {
             body_html = '';
 
         // Update now.
-        now = new Date().getTime();
+        now = TB.utils.getTime();
 
 
         // Update counters.

@@ -234,6 +234,10 @@ function initwrapper() {
         modMacros: ''
     };
 
+    TBUtils.events = {
+        TB_ABOUT_PAGE: "TB_ABOUT_PAGE"
+    };
+
     // Methods and stuff
 
     if (!String.prototype.format) {
@@ -244,7 +248,18 @@ function initwrapper() {
             });
         };
     }
-    
+
+    TBUtils.sendEvent = function (tbuEvent){
+        $.log('Sending event: ' + tbuEvent, false, SHORTNAME);
+        window.dispatchEvent( new CustomEvent(tbuEvent) );
+    };
+
+    TBUtils.catchEvent = function (tbuEvent, callback){
+       if (!callback) return;
+
+        window.addEventListener(tbuEvent, callback);
+    };
+
     TBUtils.getTypeInfo = function (warningType) {
         var typeInfo = {
             name: '',
@@ -315,6 +330,10 @@ function initwrapper() {
     
     TBUtils.getTime = function() {
         return new Date().getTime();
+    };
+
+    TBUtils.getRandomNumber = function(maxInt){
+        return Math.floor((Math.random() * maxInt) + 1)
     };
     
     //

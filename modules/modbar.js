@@ -549,6 +549,11 @@ See the License for the specific language governing permissions and limitations 
         var $this = $body.find("[data-module='" + module + "']"),
             $tb_help_mains = $('.tb-help-main');
 
+        // achievement support
+        if (module == 'about'){
+            TB.utils.sendEvent(TB.utils.events.TB_ABOUT_PAGE);
+        }
+
         $('.tb-window-tabs a').removeClass('active');
         $this.addClass('active');
 

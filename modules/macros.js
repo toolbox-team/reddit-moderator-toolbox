@@ -8,24 +8,12 @@ var self = new TB.Module('Mod Macros');
 self.shortname = 'ModMacros';
 
 self.settings['enabled']['default'] = false;
-self.config['betamode'] = true;
 
 self.init = function () {
     var $body = $('body'),
-        macroConfig,
         MACROS = 'TB-MACROS',
         STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;';
 
-    //$.log($body);
-    //$.log(TB.utils.config);
-    function setConfig(config) {
-        if (!config.modMacros || config.modMacros.length < 1) {
-            self.log("!config.modMacros || config.modMacros.length < 1");
-            return false;
-        }
-        macroConfig = config.modMacros;
-        return true;
-    }
 
     function getConfig(sub, callback) {
         if (TBUtils.noConfig.indexOf(sub) != -1) {
@@ -35,7 +23,7 @@ self.init = function () {
 
         // get our config.
         if (TBUtils.configCache[sub] !== undefined) {
-            callback(setConfig(TBUtils.configCache[sub]));
+            callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
 
         } else {
             TBUtils.readFromWiki(sub, 'toolbox', true, function (resp) {
@@ -52,29 +40,52 @@ self.init = function () {
 
                 // We likely have a god config, but maybe not domain tags.
                 TBUtils.configCache[sub] = resp;
-                callback(setConfig(TBUtils.configCache[sub]));
+                callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
             });
+        }
+
+        function checkConfig(config) {
+            if (!config.modMacros || config.modMacros.length < 1) {
+                self.log("!config.modMacros || config.modMacros.length < 1");
+                return false;
+            }
+
+            return true;
         }
     }
 
-    function populateSelect(selectClass) {
-        $(macroConfig).each(function (i, item) {
-            $(selectClass)
-                .append($('<option>', {
-                    value: item.text
-                })
-                    .text(item.title));
+    function populateSelect(selectClass, subreddit, config) {
+        $(selectClass).each(function () {
+            var $select = $(this),
+                sub = $select.attr('data-subreddit');
+
+            self.log($select);
+            self.log(sub + ' ' + subreddit);
+
+            if (sub == subreddit) {
+                $(config).each(function (i, item) {
+                    $($select)
+                        .append($('<option>', {
+                            value: item.text
+                        })
+                            .text(item.title));
+                });
+
+            } else {
+                self.log('removing select');
+                $select.remove();
+            }
         });
     }
 
     TB.utils.getModSubs(function () {
         if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
             self.log("getting config");
-            getConfig(TB.utils.post_site, function (success) {
+            getConfig(TB.utils.post_site, function (success, config) {
                 // if we're a mod, add macros to top level reply button.
-                if (success) {
-                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="' + STYLE + '"><option value=' + MACROS + '>macros</option></select>');
-                    populateSelect('.tb-top-macro-select');
+                if (success && config.length > 0) {
+                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="' + STYLE + '"  data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>');
+                    populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
                 }
             });
         }
@@ -98,30 +109,23 @@ self.init = function () {
 
             // are we a mod?
             if (!info.subreddit) return;
+            self.log(info.subreddit);
 
             // if we don't have a config, get it.  If it fails, return.
-            if (!macroConfig) {
-
-                getConfig(info.subreddit, function (success) {
-                    // if we're a mod, add macros to top level reply button.
-                    if (success) {
-                        $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" style="' + STYLE + '"><option value=' + MACROS + '>macros</option></select>');
-                        populateSelect('.tb-macro-select');
-                    }
-                });
-
-                return;
-            }
-
-            $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" style="' + STYLE + '"><option value=' + MACROS + '>macros</option></select>');
-            populateSelect('.tb-macro-select');
+            getConfig(info.subreddit, function (success, config) {
+                // if we're a mod, add macros to top level reply button.
+                if (success && config.length > 0) {
+                    $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" style="' + STYLE + '" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>');
+                    populateSelect('.tb-macro-select', info.subreddit, config);
+                }
+            });
         }
     });
 
     function editMacro(dropdown, info, comment, topLevel) {
         // get some placement variables
 
-        var $usertext = dropdown.closest('.usertext-edit')
+        var $usertext = dropdown.closest('.usertext-edit');
 
         var offset = $usertext.offset(),
             offsetLeft = offset.left,
@@ -131,7 +135,7 @@ self.init = function () {
             editMinHeight = minHeight - 74;
 
         var title = dropdown.find('option:selected').text();
-        console.log(title)
+        self.log(title);
         $macroPopup = TB.ui.popup(
             'Mod Macro: ' + title,
             [
@@ -166,7 +170,6 @@ self.init = function () {
             $selectElement = $body.find('#macro-dropdown-' + infoId);
 
         $selectElement.val(MACROS);
-
         $currentMacroPopup.remove();
         $selectElement.prop('disabled', false);
     });
@@ -205,12 +208,12 @@ self.init = function () {
     });
 
     $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {
-        if (!macroConfig) return;
 
         var $this = $(this),
             comment = unescape($this.val()),
             topLevel = (e.target.className === 'tb-top-macro-select'),
             info;
+
         // disable the select box to prevent a mess with creating multiple popup boxes.
         $this.prop('disabled', 'disabled');
         // If it's a top-level reply we need to find the post's info.
@@ -224,7 +227,7 @@ self.init = function () {
         comment = TB.utils.replaceTokens(info, comment);
 
         // add unique id to the dropdown
-        $this.attr('id', 'macro-dropdown-' + info.id)
+        $this.attr('id', 'macro-dropdown-' + info.id);
         editMacro($this, info, comment, topLevel);
     });
 };

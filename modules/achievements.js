@@ -174,6 +174,66 @@ function achievements() {
         // Achievement definitions
         self.log("Registering achievements");
 
+
+        // Random awesome
+        self.manager.register("being awesome", "toolbox just feels like you're awesome today", function (saveIndex) {
+            var awesome = 7,
+                chanceOfBeingAwesome = TB.utils.getRandomNumber(50);
+
+            self.log("You rolled a: " + chanceOfBeingAwesome);
+            if (awesome == chanceOfBeingAwesome) {
+                self.manager.unlock(saveIndex);
+            }
+        });
+
+        // Still Alive (TODO: can we make links work?)
+        //self.manager.register("not dead yet", '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">Spent a week away from reddit</a>', function (saveIndex) {
+        self.manager.register("not dead yet", 'Spent a week away from reddit', function (saveIndex) {
+
+            // BUG: this one keeps firing on default no value for lastSeen.
+            // I tried defaulting to now but it's still wonky.
+            var now = TBUtils.getTime(),
+                timeSince = now - lastSeen,
+                daysSince = TBUtils.daysToMilliseconds(timeSince);
+
+            if(daysSince >= 7) {
+                self.log("you've got an award!");
+                //self.manager.unlock(saveIndex);
+            }
+
+            self.setting('last_seen', now);
+        });
+
+        //Toolbox Loves You: Look at the about page
+        self.manager.register("Toolbox Loves You", 'Looked at the about page. <3', function (saveIndex) {
+            TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
+                self.manager.unlock(saveIndex);
+            });
+        });
+
+        // Beta testers
+        self.manager.register("bug hunter", "Beta testing toolbox", function (saveIndex) {
+            if (TB.utils.betaRelease){
+                self.manager.unlock(saveIndex, 1);
+            }
+        });
+
+        // Judas
+        self.manager.register("Judas", "Why do you hate toolbox devs? :'( ", function (saveIndex) {
+            $body.on('click', 'a:contains("remove")', function () {
+                var $this = $(this),
+                    auth = TB.utils.getThingInfo($this).author;
+
+                if (TB.utils.tbDevs.indexOf(auth) != -1) {
+                    self.manager.unlock(saveIndex, 1);
+                }
+                // TODO: wait for 'yes' click.
+                //$body.on('click', '.yes', function(){
+                //  self.log('yes clicked');
+                //});
+            });
+        });
+
         // approving stuff
         self.manager.registerSeries(["too nice", "way too nice", "big softie", "approvening master"], "Approved {0} things", [50, 200, 1000, 10000], function (saveIndex) {
             $body.on('click', '.pretty-button, .approve-button', function () {
@@ -196,42 +256,6 @@ function achievements() {
             if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }
-        });
-
-        // Random awesome
-        self.manager.register("being awesome", "toolbox just feels like you're awesome today", function (saveIndex) {
-            var awesome = 7,
-                chanceOfBeingAwesome = TB.utils.getRandomNumber(50);
-
-            self.log("You rolled a: " + chanceOfBeingAwesome);
-            if (awesome == chanceOfBeingAwesome) {
-                self.manager.unlock(saveIndex);
-            }
-        });
-
-        // Still Alive (TODO: can we make links work?)
-        //self.manager.register("not dead yet", '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">Spent a week away from reddit</a>', function (saveIndex) {
-        self.manager.register("not dead yet", 'Spent a week away from reddit', function (saveIndex) {
-
-            // BUG: this one keeps firing on default no value for lastSeen.
-            // I tried defaulting to now but it's still wonky.
-            var now = TBUtils.getTime(),
-                timeSince = now - lastSeen,
-                daysSince = TBUtils.daysToMilliseconds(timeSince);
-            
-            if(daysSince >= 7) {
-                self.log("you've got an award!");
-                //self.manager.unlock(saveIndex);
-            }
-
-            self.setting('last_seen', now);
-        });
-
-        //Toolbox Loves You: Look at the about page
-        self.manager.register("Toolbox Loves You", 'Looked at the about page. <3', function (saveIndex) {
-            TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
-                self.manager.unlock(saveIndex);
-            });
         });
     };
 

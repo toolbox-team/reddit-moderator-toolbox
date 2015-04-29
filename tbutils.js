@@ -25,6 +25,7 @@ function initwrapper() {
         cacheName = TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
         seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
         lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
+        toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
@@ -87,6 +88,8 @@ function initwrapper() {
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
     TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
+    TBUtils.tbDevs = toolboxDevs;
+    TBUtils.betaRelease = betaRelease;
 
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
@@ -149,11 +152,18 @@ function initwrapper() {
         TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
     }
 
+    if (toolboxDevs.length < 1) {
+        TBUtils.tbDevs = getToolboxDevs();
+    }
+
 
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
+
+        // These need to happen for every version change
         TBUtils.firstRun = true; // for use by other modules.
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBUtils.shortVersion); //set last version to this version.
+        TBUtils.tbDevs = getToolboxDevs();  //always repopulate tb devs for each version change
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -1634,6 +1644,14 @@ function initwrapper() {
             callback(false);
         });
     };
+
+    // private functions
+    function getToolboxDevs() {
+        //TODO: actually pull these from /r/toolbox/about/moderators.json
+        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'noeatnosleep', 'Garethp'];
+        TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
+        return devs;
+    }
 
 
     // NER, load more comments, and mod frame support.

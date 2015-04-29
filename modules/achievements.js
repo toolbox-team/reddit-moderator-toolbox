@@ -31,16 +31,16 @@ function achievements() {
         };
         
         this.register = function(title, description, achievement) {
-            this.registerSeries([title], description, [1], achievement);
+            this.registerTarget(title, description, 1, achievement);
+        };
+        
+        this.registerTarget = function(title, description, target, achievement) {
+            this.registerSeries([title], description, [target], achievement);
         };
         
         this.registerSeries = function(titles, description, maxValues, achievement) {
-            var saveValue = 0;
-            if (saveIndex < saves.length) {
-                saveValue = saves[saveIndex];
-            }
-            else {
-                saves.push(saveValue);
+            if (saveIndex >= saves.length) {
+                saves.push(0);
             }
             
             var achievementsBlock = [];

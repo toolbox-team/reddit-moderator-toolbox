@@ -404,7 +404,7 @@ self.init = function() {
         if ($body.hasClass('profile-page')) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments in subreddit: <input id="subredditsearch" type="text" placeholder="subreddit">\
+            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content">\
     <input type="submit" value="go"></form>');
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
@@ -466,7 +466,8 @@ self.init = function() {
             $body.on('submit', '#tb-searchuser', function (event) {
 
                 var subredditsearch = $body.find('#subredditsearch').val(),
-                    usersearch = $('#header-bottom-left .pagename').text();
+                    usersearch = $('#header-bottom-left .pagename').text(),
+					contentsearch = $body.find('#contentsearch').val();
 
                 subredditsearch = subredditsearch.replace(/\/?r\//g, '');
                 subredditsearch = TBUtils.htmlEncode(subredditsearch);
@@ -514,12 +515,13 @@ self.init = function() {
 </div>\
 <div class="clearleft"></div>';
 
-                var htmlProfileCommentView = '';
+                var htmlProfileCommentViewBuffer = '';
+				var hasHits = false;
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
-                TB.ui.longLoadSpinner(true, 'searching for user comments in /r/' + subredditsearch, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
+                TB.ui.longLoadSpinner(true, 'searching for comments by ' + usersearch, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
-                function searchComments(user, searchSubreddit, after) {
+                function searchComments(user, options, after) {
                     $.getJSON('/user/' + user + '/comments.json', {
                         "after": after,
                         "limit": 100
@@ -532,6 +534,7 @@ self.init = function() {
                                 authorFlairText = value.data.author_flair_text,
                                 bannedBy = value.data.banned_by,
                                 bodyHtml = value.data.body_html,
+								body = value.data.body,
                                 createdUTC = value.data.created_utc,
                                 distinguished = value.data.distinguished,
                                 commentID = value.data.id,
@@ -542,8 +545,17 @@ self.init = function() {
                                 submissionTitle = value.data.link_title,
                                 linkId = value.data.link_id,
                                 linkUrl = value.data.link_url;
+								
+							var hit = true;
+							
+							for(var option in options) {
+								if(!value.data[option] || !options[option].test(""+value.data[option])) {
+									hit = false;
+									break;
+								}
+							}
 
-                            if (subreddit.toLowerCase() === searchSubreddit.toLowerCase()) {
+                            if (hit) {
                                 // figure out if we need to add author and mod stuff.
                                 var authorClass = 'author',
                                     createdTimeAgo = TBUtils.timeConverterISO(createdUTC),
@@ -597,16 +609,23 @@ self.init = function() {
                                     'bannedBy': bannedBy,
                                     'modButtons': modButtons
                                 });
-                                htmlProfileCommentView = htmlProfileCommentView + htmlConstructedComment;
+                                htmlProfileCommentViewBuffer = htmlProfileCommentViewBuffer + htmlConstructedComment;
                             }
                         });
+						
+						// Buffer
+						if (htmlProfileCommentViewBuffer) {
+							$('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
+							htmlProfileCommentViewBuffer = "";
+							hasHits = true;
+						}
 
                         if (!data.data.after) {
-                            if (!htmlProfileCommentView) {
-                                htmlProfileCommentView = '<div class="error">no results found for /r/' + searchSubreddit + '</div>';
+                            if (!hasHits) {
+                                htmlProfileCommentViewBuffer = '<div class="error">no results found</div>';
+								$('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
                             }
 
-                            $('.sitetable.linklisting').append(htmlProfileCommentView);
                             $("time.timeago").timeago();
                             TB.ui.longLoadSpinner(false);
 
@@ -617,12 +636,23 @@ self.init = function() {
                             }, 1000);
 
                         } else {
-                            searchComments(user, searchSubreddit, data.data.after);
+                            searchComments(user, options, data.data.after);
                         }
                     });
                 }
-
-                searchComments(usersearch, subredditsearch);
+				
+				function regExpEscape(query) {
+					return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+				}
+				var searchOptions = {
+				};
+				if(subredditsearch) {
+					searchOptions.subreddit = new RegExp("^" + regExpEscape(subredditsearch) + "$","i");
+				}
+				if(contentsearch) {
+					searchOptions.body = new RegExp(regExpEscape(contentsearch),"gi");
+				}
+                searchComments(usersearch, searchOptions);
                 return false;
             });
         }

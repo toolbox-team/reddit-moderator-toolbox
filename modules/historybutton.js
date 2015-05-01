@@ -168,7 +168,6 @@ function historybutton()
 					top: event.pageY - 10,
 					display: 'block'
 				});
-			;
 
 			$popup.on('click', '.close', function()
 			{
@@ -189,14 +188,12 @@ function historybutton()
 			self.showAuthorInformation();
 			self.populateSubmissionHistory();
 
-			$('.history-button-popup').on('click', '.markdown-report', self.showMarkdownReport);
-			$('.history-button-popup').on('click', '.rts-report', self.reportAuthorToSpam);
-			$('.history-button-popup').on('click', '.comment-report', self.populateCommentHistory);
+			var $histButtonPopup = $('.history-button-popup');
+
+			$histButtonPopup.on('click', '.markdown-report', self.showMarkdownReport);
+			$histButtonPopup.on('click', '.rts-report', self.reportAuthorToSpam);
+			$histButtonPopup.on('click', '.comment-report', self.populateCommentHistory);
 		});
-
-
-
-		return;
 	};
 
 	/**
@@ -207,8 +204,9 @@ function historybutton()
 		var $contentBox = $('.history-button-popup');
 
 		$.get('/user/' + self.author + '/about.json').success(function (d) {
-			var joinedDate = new Date(d.data.created_utc * 1000);
-			var redditorTime = TBUtils.niceDateDiff(joinedDate);
+			var joinedDate = new Date(d.data.created_utc * 1000),
+				redditorTime = TBUtils.niceDateDiff(joinedDate);
+
 			$contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
 			$contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
 		});
@@ -219,10 +217,12 @@ function historybutton()
 	 */
 	self.showMarkdownReport = function()
 	{
-		var $contentBox = $('.history-button-popup');
-		var markdownReport = $contentBox.find('.rts-report').attr('data-commentbody');
-		if ($('body').find('.submission-markdown').length > 0) {
-			$('body').find('.submission-markdown').toggle();
+		var $body = $('body'),
+			$contentBox = $('.history-button-popup'),
+			markdownReport = $contentBox.find('.rts-report').attr('data-commentbody');
+
+		if ($body.find('.submission-markdown').length > 0) {
+			$body.find('.submission-markdown').toggle();
 		} else {
 			$contentBox.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
 		}
@@ -263,8 +263,6 @@ function historybutton()
 				}
 
 				TB.ui.longLoadSpinner(false);
-//				populateRunning.pop();
-
 				$contentBox.find('.rts-report').show();
 
 				// If .error is present it means there are no results. So we show that.
@@ -403,8 +401,8 @@ function historybutton()
 	};
 
 	self.populateCommentHistory = function(after) {
-		var $contentBox = $('.history-button-popup');
-		var $commentTable = $contentBox.find('.comment-table tbody');
+		var $contentBox = $('.history-button-popup'),
+			$commentTable = $contentBox.find('.comment-table tbody');
 
 		$contentBox.width(1000);
 		$commentTable.empty();
@@ -464,15 +462,14 @@ function historybutton()
 	 * Report the use to /r/spam
 	 */
 	self.reportAuthorToSpam = function() {
-		var rtsComment = self.setting('rtsComment');
-		var $contentBox = $('.history-button-popup');
+		var rtsComment = self.setting('rtsComment'),
+			$contentBox = $('.history-button-popup'),
+			$rtsLink = $contentBox.find('.rts-report'),
+			rtsNativeLink = $rtsLink.get(0),
+			commentBody = rtsNativeLink.getAttribute('data-commentbody');
 
-		var $rtsLink = $contentBox.find('.rts-report');
-		var rtsLink = $rtsLink.get(0);
-		var commentBody = rtsLink.getAttribute('data-commentbody');
-
-		rtsLink.textContent = 'Submitting...';
-		rtsLink.className = '.rts-report-clicked';
+		rtsNativeLink.textContent = 'Submitting...';
+		rtsNativeLink.className = '.rts-report-clicked';
 
 		//Submit to RTS
 		var link = 'https://www.reddit.com/user/' + self.author,
@@ -487,16 +484,16 @@ function historybutton()
 					$rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
 					$rtsLink.hide();
 					if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-						rtsLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on';
+						rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on';
 					}
 					return;
 				}
 
 				// Post stats as a comment.
 				if (!commentBody.length || !rtsComment) {
-					rtsLink.textContent = 'Reported';
-					rtsLink.href = submission.json.data.url;
-					rtsLink.className = '';
+					rtsNativeLink.textContent = 'Reported';
+					rtsNativeLink.href = submission.json.data.url;
+					rtsNativeLink.className = '';
 					return;
 				}
 
@@ -511,9 +508,9 @@ function historybutton()
 							$rtsLink.hide();
 							return
 						}
-						rtsLink.textContent = 'Reported';
-						rtsLink.href = submission.json.data.url;
-						rtsLink.className = '';
+						rtsNativeLink.textContent = 'Reported';
+						rtsNativeLink.href = submission.json.data.url;
+						rtsNativeLink.className = '';
 					}
 				});
 			}

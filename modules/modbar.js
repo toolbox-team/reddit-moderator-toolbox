@@ -567,9 +567,11 @@ See the License for the specific language governing permissions and limitations 
     }
 
     if(window.location.hash) {
-        var module = TB.utils.getHashParameter('tbsettings').toLocaleLowerCase();
+        var module = TB.utils.getHashParameter('tbsettings');
 
         if (module) {
+            module = module.toLocaleLowerCase();
+
             // Wait a sec for stuff to load.
             setTimeout(function () {
 

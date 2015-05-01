@@ -265,7 +265,7 @@ function historybutton()
 				TB.ui.longLoadSpinner(false);
 //				populateRunning.pop();
 
-//				$contentBox.find('.rts-report').show();
+				$contentBox.find('.rts-report').show();
 
 				// If .error is present it means there are no results. So we show that.
 				if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {

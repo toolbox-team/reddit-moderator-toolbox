@@ -532,6 +532,7 @@ self.modmailpro = function() {
                 $infoArea.addClass('new-highlight');
                 $subredditArea.addClass('new-highlight');
                 $thread.addClass('new-messages');
+                $thread.addClass('process-new');
             }
 
             setFilterLinks($thread);
@@ -628,6 +629,7 @@ self.modmailpro = function() {
                 $newThread.find('.info-area').addClass('new-highlight');
                 $newThread.find('.correspondent:first').addClass('new-highlight');
                 $newThread.addClass('new-messages');
+                $newThread.addClass('process-new');
 
                 unreadThreads.push($newThread.data('fullname'));
             }
@@ -635,11 +637,14 @@ self.modmailpro = function() {
 
         self.endProfile('highlight-new-jquery');
 
-        TBUtils.forEachChunked($('.new-messages').find('.entry'), 10, entryProcessRate, function (entry) {
+        TBUtils.forEachChunked($('.process-new').find('.entry'), 10, entryProcessRate, function (entry) {
             self.startProfile('highlight-new-internal');
 
             var $entry = $(entry),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
+
+            // don't process new threads twice.
+            $entry.closest('.process-new').removeClass('process-new');
 
             if (timestamp > lastVisited) {
                 $entry.find('.head').prepend($('<span>').addClass('new-label new-highlight').text('[NEW]'));

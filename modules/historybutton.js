@@ -397,13 +397,14 @@ self.populateSubmissionHistory = function (after) {
 };
 
 self.populateCommentHistory = function (after) {
+    // fuck it; it's their ratelimit.
+    //if (self.gettingUserData) return;
+
     var $contentBox = $('.history-button-popup'),
         $commentTable = $contentBox.find('.comment-table tbody');
 
     $contentBox.width(1000);
     $commentTable.empty();
-
-    if (!self.gettingUserData) return;
 
     $contentBox.find('.comment-table').show();
     $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + self.counters.comments + ')</td></tr>');

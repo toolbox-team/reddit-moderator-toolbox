@@ -178,7 +178,7 @@ self.init = function () {
     // Random awesome
     self.manager.register("being awesome", "toolbox just feels like you're awesome today", function (saveIndex) {
         var awesome = 7,
-            chanceOfBeingAwesome = TB.utils.getRandomNumber(1000);
+            chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
         self.log("You rolled a: " + chanceOfBeingAwesome);
         if (awesome == chanceOfBeingAwesome) {

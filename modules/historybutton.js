@@ -74,7 +74,7 @@ self.init = function () {
         $body.on('click', '.user-history-close', function () {
             if (populateRunning.length > 0) {
                 $.each(populateRunning, function () {
-                    TB.ui.longLoadSpinner(false);
+                    TB.ui.longLoadNonPersistent(false);
                 });
             }
 
@@ -237,14 +237,14 @@ self.populateSubmissionHistory = function (after) {
     var $subredditTable = $contentBox.find('.subreddit-table tbody');
 
     if (typeof after === 'undefined') {
-        TB.ui.longLoadSpinner(true);
+        TB.ui.longLoadNonPersistent(true);
 //			populateRunning.push('load');
     }
 
     $.get('/user/' + self.author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
         console.log('Shadowbanned?');
         $contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
-        TB.ui.longLoadSpinner(false);
+        TB.ui.longLoadNonPersistent(false);
 //			populateRunning.pop();
     }).done(function (d) {
 
@@ -258,7 +258,7 @@ self.populateSubmissionHistory = function (after) {
                 $submissionCount.html(self.counters.submissions);
             }
 
-            TB.ui.longLoadSpinner(false);
+            TB.ui.longLoadNonPersistent(false);
             $contentBox.find('.rts-report').show();
 
             // If .error is present it means there are no results. So we show that.
@@ -384,7 +384,7 @@ self.populateSubmissionHistory = function (after) {
         else {
             $submissionCount.html(self.counters.submissions);
 
-            TB.ui.longLoadSpinner(false);
+            TB.ui.longLoadNonPersistent(false);
             $contentBox.find('.rts-report').show();
             if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {  // This check is likely not need, but better safe than sorry.
                 $contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');

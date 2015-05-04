@@ -122,7 +122,7 @@ self.usernotes = function usernotes(){
 
         var things = $('div.thing .entry[subreddit=' + subreddit + ']');
         if (showOnModPages && TB.utils.isEditUserPage) {
-            var $userSpan = $('span.user'),
+            var $userSpan = $('span.user:not(:first)'),
                 tag = '<span class="usernote-span-' +
                     subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
                     subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';

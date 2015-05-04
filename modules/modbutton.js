@@ -54,7 +54,7 @@ self.run = function () {
     // do it differently on the about mod page.
     if (TB.utils.isEditUserPage) {
 
-        $('span.user').each(function () {
+        $('span.user:not(:first)').each(function () {
             $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></span>');
         });
 

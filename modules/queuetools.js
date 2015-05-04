@@ -305,7 +305,19 @@ self.init = function () {
         var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
         $body.on('click', '.thing .entry', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
+
+            self.log('thing selected.');
             $(this).parent('.thing').find('input[type=checkbox]:first').click();
+        });
+
+        // NB: the reason both the above method and the next one use .click() instead of .prop() is so they act as a toggle
+        // when the report button is pressed. See https://github.com/creesch/reddit-moderator-toolbox/issues/421
+        // This way, if it was already checked by the user, the following call will re-check it.  If it wasn't
+        // the following call will uncheck it.
+
+        $body.on('click', '.reported-stamp', function () {
+            self.log('reports selected.');
+            $(this).closest('.thing').find('input[type=checkbox]:first').click();
         });
 
         // Change sort order
@@ -478,7 +490,7 @@ self.init = function () {
             ignoreOnApproveset = true;
 
             if ($(thing).find('.reported-stamp').length) {
-                var ignore = $(thing).find('a:contains("ignore reports")')
+                var ignore = $(thing).find('a:contains("ignore reports")');
                 if (ignore) ignore[0].click();
             }
         });
@@ -542,18 +554,29 @@ self.init = function () {
         $('.open-expandos').on('click', function () {
 
             if (!expandosOpen) {
+                self.log('expanding all expandos.');
+
                 $('.open-expandos').text('[-]');
                 $('.expando-button.collapsed').each(function (index) {
-                    var button = this;
+                    var $button = $(this),
+                        $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+
                     setTimeout(function () {
-                        $(button).click();
+                        $button.click();
+                        $checkBox.prop('checked', false);
                     }, index * 1000);
                 });
                 expandosOpen = true;
             } else {
+                self.log('collapsing all expandos.');
+
                 $('.open-expandos').text('[+]');
                 $('.expando-button.expanded').each(function () {
-                    $(this).click();
+                    var $button = $(this),
+                        $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+
+                    $button.click();
+                    $checkBox.prop('checked', false);
                 });
                 expandosOpen = false;
             }

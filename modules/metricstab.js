@@ -1,73 +1,73 @@
 function metricstab() {
-	var self = new TB.Module('Metrics Tab');
-	self.shortname = 'Metrics';
+    var self = new TB.Module('Metrics Tab');
+    self.shortname = 'Metrics';
 
-	self.settings['enabled']['default'] = true;
+    self.settings['enabled']['default'] = true;
 
-	self.getSectionFromUrl = function getSectionFromUrl(url) {
-	    var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
-	    var matches = regex.exec(url);
+    self.getSectionFromUrl = function getSectionFromUrl(url) {
+        var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
+        var matches = regex.exec(url);
 
-	    if (matches != null) {
-	        return {section: matches[3], subSection: matches[4]};
-	    } else {
-	        return null;
-	    }
-	};
+        if (matches != null) {
+            return {section: matches[3], subSection: matches[4]};
+        } else {
+            return null;
+        }
+    };
 
-	self.init = function() {
-	    var page = this.getSectionFromUrl(window.location.href);
+    self.init = function() {
+        var page = this.getSectionFromUrl(window.location.href);
 
-	    if (page == null) {
-	        return false;
-	    }
+        if (page == null) {
+            return false;
+        }
 
-		var metrics = {
-			user: {
-				'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}',
-				'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html',
-				'Karmawhores' : 'http://www.karmawhores.net/user/{subSection}'
-			},
+        var metrics = {
+            user: {
+                'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}',
+                'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html',
+                'Karmawhores' : 'http://www.karmawhores.net/user/{subSection}'
+            },
 
-			r: {
-				'MetaReddit': 'http://metareddit.com/r/{subSection}',
-				'RedditMetrics': 'http://redditmetrics.com/r/{subSection}'
-			}
-		};
-		
-	    var header = document.getElementById("header-bottom-left");
-	    var tabList = header.getElementsByTagName("ul")[0];
+            r: {
+                'MetaReddit': 'http://metareddit.com/r/{subSection}',
+                'RedditMetrics': 'http://redditmetrics.com/r/{subSection}'
+            }
+        };
 
-	    if (tabList == null) {
-	        return false;
-	    }
+        var header = document.getElementById("header-bottom-left");
+        var tabList = header.getElementsByTagName("ul")[0];
 
-		var $tabList = $(tabList);
-		$tabList.css('overflow', 'visible');
+        if (tabList == null) {
+            return false;
+        }
 
-		var $listItem = $("<li class='dropdown tb-metrics' style=''><a href='#'>Metrics</a></li>");
-		$listItem.css({
-			overflow: 'visible',
-			position: 'relative'
-		});
+        var $tabList = $(tabList);
+        $tabList.css('overflow', 'visible');
 
-		$(tabList).append($listItem);
+        var $listItem = $("<li class='dropdown tb-metrics' style=''><a href='#'>Metrics</a></li>");
+        $listItem.css({
+            overflow: 'visible',
+            position: 'relative'
+        });
 
-		var links = metrics[page.section];
-		for(var i in links)
-		{
-			var url = links[i];
-			url = url.replace(/\{subSection\}/g, page.subSection);
-			$tabList.append("<li style='display: none;' class='hidden metricTab'><a href='" + url + "'>" + i + "</a></li>");
-		}
+        $(tabList).append($listItem);
 
-		$listItem.on('click', function()
-		{
-			$tabList.find('.metricTab').toggle();
-		});
-	};
+        var links = metrics[page.section];
+        for(var i in links)
+        {
+            var url = links[i];
+            url = url.replace(/\{subSection\}/g, page.subSection);
+            $tabList.append("<li style='display: none;' class='hidden metricTab'><a href='" + url + "'>" + i + "</a></li>");
+        }
 
-	TB.register_module(self);
+        $listItem.on('click', function()
+        {
+            $tabList.find('.metricTab').toggle();
+        });
+    };
+
+    TB.register_module(self);
 }
 
 (function () {

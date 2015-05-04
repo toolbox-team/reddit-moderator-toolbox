@@ -27,10 +27,10 @@ self.init = function () {
         user: {
             'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/stalk?user={subSection}',
-            'Karmawhores': 'http://www.karmawhores.net/user/{subSection}',
-            'Karmalb': 'http://www.karmalb.com/user/{subSection}' ,
-            'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
             'Redective': 'http://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
+            'Karmawhores': 'http://www.karmawhores.net/user/{subSection}',
+            'Karmalb': 'http://www.karmalb.com/user/{subSection}',
+            'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
             'RateRedditors': 'http://rateredditors.com/{subSection}',
             'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}'
             //'RedditInsight': 'http://www.redditinsight.com/#trackuser', // donno if we want to add ones that don't propagate the user name.
@@ -40,6 +40,7 @@ self.init = function () {
         r: {
             'Observatory': 'http://0bservat0ry.com/reddit/r/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/r/{subSection}',
+            'Redective': 'http://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
             'RedditMetrics': 'http://redditmetrics.com/r/{subSection}',
             'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}'
         }

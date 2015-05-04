@@ -1759,6 +1759,33 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     margin-left: 6px;
 }
 
+
+/* metrics tab/dropdown stuff */
+#tb-metrics-expand-list {
+    display: none;
+    max-height: 65%;
+    position: absolute;
+    width: 171px;
+    padding: 0;
+    overflow: auto;
+    background-color: rgba(226, 238, 250, 1);
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #B6C9DD;
+    border-bottom: 0;
+    text-align: left;
+    z-index: 501;
+}
+#tb-metrics-expand-list li {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    background: rgb(247, 250, 253);
+    border-bottom: 1px solid rgb(204, 209, 215);
+}
+
+
 /* Comment search */
 #tb-search-suggest {
     display: none;

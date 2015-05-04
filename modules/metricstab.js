@@ -16,7 +16,8 @@ function metricstab() {
     };
 
     self.init = function() {
-        var page = this.getSectionFromUrl(window.location.href);
+        var page = this.getSectionFromUrl(window.location.href),
+            $body = $('body');
 
         if (page == null) {
             return false;
@@ -41,15 +42,16 @@ function metricstab() {
         if (tabList == null) {
             return false;
         }
+        $body.append('<div id="tb-metrics-expand-list" style="display: none;"><ul></ul></div>');
 
-        var $tabList = $(tabList);
+        var $tabList = $(tabList),
+            $metricsDropDown = $body.find('#tb-metrics-expand-list ul');
+
         $tabList.css('overflow', 'visible');
 
-        var $listItem = $("<li class='dropdown tb-metrics' style=''><a href='#'>Metrics</a></li>");
-        $listItem.css({
-            overflow: 'visible',
-            position: 'relative'
-        });
+        var $listItem = $("<li class='tb-metrics' style=''><a href='#'>Metrics</a></li>"),
+            $tbMetricsList = $body.find('#tb-metrics-expand-list');
+
 
         $(tabList).append($listItem);
 
@@ -58,13 +60,28 @@ function metricstab() {
         {
             var url = links[i];
             url = url.replace(/\{subSection\}/g, page.subSection);
-            $tabList.append("<li style='display: none;' class='hidden metricTab'><a href='" + url + "'>" + i + "</a></li>");
+            $metricsDropDown.append('<li class="hidden metricTab"><a href="' + url + '" target="_blank">' + i + '</a></li>');
         }
 
         $listItem.on('click', function()
         {
-            $tabList.find('.metricTab').toggle();
+            var offset = $(this).offset();
+            var offsetLeft = offset.left;
+            var offsetTop = (offset.top + 20);
+
+            $body.find('#tb-metrics-expand-list').css({
+                "left": offsetLeft + 'px',
+                "top": offsetTop + 'px'
+            });
+            $tbMetricsList.toggle();
         });
+
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.tb-metrics').length) {
+                $tbMetricsList.hide();
+            }
+        });
+
     };
 
     TB.register_module(self);

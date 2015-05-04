@@ -57,7 +57,10 @@ self.init = function() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
     var $body = $('body'),
-        footer = $('.footer-parent');
+        footer = $('.footer-parent'),
+        moduleCount = 0,
+        DEFAULT_MODULE = 'DEFAULT_MODULE',
+        currentModule = DEFAULT_MODULE;
 
     $body.addClass('mod-toolbox');
 
@@ -155,7 +158,8 @@ self.init = function() {
         <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
     </div>\
     <div class="tb-debug-footer">\
-        <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll to bottom</label>\
+        <select class="module-select"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
+        <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll</label>\
         <!--input class="tb-console-copy" type="button" value="copy text"-->\
         <input class="tb-console-clear" type="button" value="clear console">\
     </div>\
@@ -261,9 +265,51 @@ self.init = function() {
         var $consoleText = $('.tb-debug-console');
 
         setInterval(function () {
-            $consoleText.val(TBUtils.log.join('\n'));
+
+            if (currentModule == DEFAULT_MODULE) {
+                $consoleText.val(TBUtils.log.join('\n'));
+            }
+
+            // filter log by module.
+            else {
+                var search = '[' + currentModule + ']',
+                    moduleLog = [];
+
+                // hack-y substring search for arrays.
+                for (i = 0; i < TB.utils.log.length; i++) {
+                    if (TB.utils.log[i].indexOf(search) > -1) {
+                        moduleLog.push(TB.utils.log[i]);
+                    }
+                }
+
+                $consoleText.val(moduleLog.join('\n'));
+            }
+
             if (lockscroll) {
                 $consoleText.scrollTop($consoleText[0].scrollHeight);
+            }
+
+            // add new modules to dropdown.
+            if (TB.utils.logModules.length > moduleCount){
+                moduleCount = TB.utils.logModules.length;
+
+                var $moduleSelect = $('.module-select');
+
+                // clear old list
+                $('.module-select option').remove();
+
+                // re-add default option
+                $moduleSelect.append($('<option>', {
+                    value: DEFAULT_MODULE
+                }).text('all modules'));
+
+                $(TB.utils.logModules).each(function () {
+                    $moduleSelect.append($('<option>', {
+                        value: this
+                    }).text(this));
+                }).promise().done( function(){
+                    $moduleSelect.val(currentModule);
+                });
             }
         }, 500);
 
@@ -329,43 +375,52 @@ self.init = function() {
 
     /// Console stuff
     // Show/hide console
-    $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
-        if (consoleShowing) {
-            $console.hide();
-        } else {
-            $console.show();
-        }
+    if (debugMode) {
+        $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
+            if (consoleShowing) {
+                $console.hide();
+            } else {
+                $console.show();
+            }
 
-        consoleShowing = !consoleShowing;
-        self.setting('consoleShowing', consoleShowing);
-    });
+            consoleShowing = !consoleShowing;
+            self.setting('consoleShowing', consoleShowing);
+        });
 
-    // Set console scroll
-    $body.on('click', '#tb-console-lockscroll', function () {
-        lockscroll = !lockscroll;
-        self.setting('lockScroll', lockscroll);
-    });
+        // Set console scroll
+        $body.on('click', '#tb-console-lockscroll', function () {
+            lockscroll = !lockscroll;
+            self.setting('lockScroll', lockscroll);
+        });
 
-    /*
-     // Console copy... needs work
-     $body.on('click', '#tb-console-copy', function () {
-     lockscroll = !lockscroll;
-     TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
-     });
-     */
+        /*
+         // Console copy... needs work
+         $body.on('click', '#tb-console-copy', function () {
+         lockscroll = !lockscroll;
+         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
+         });
+         */
 
-    // Console clear
-    $body.on('click', '.tb-console-clear', function () {
-        TBUtils.log = [];
-    });
+        // Console clear
+        $body.on('click', '.tb-console-clear', function () {
+            TBUtils.log = [];
+        });
 
-// Run console input
-    $('.tb-debug-input').keyup(function (e) {
-        if (e.keyCode == 13) {
-            self.log(eval($(this).val()));
-            $(this).val(''); // clear line
-        }
-    });
+        // Run console input
+        $('.tb-debug-input').keyup(function (e) {
+            if (e.keyCode == 13) {
+                self.log(eval($(this).val()));
+                $(this).val(''); // clear line
+            }
+        });
+
+        // change modules
+        $('.module-select').change(function () {
+            currentModule = $(this).val();
+            self.log('selected module: ' + currentModule);
+        });
+    }
+
 /// End console stuff
 
 

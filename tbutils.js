@@ -83,6 +83,7 @@ function initwrapper() {
     TBUtils.isExtension = true;
     TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
     TBUtils.log = [];
+    TBUtils.logModules = [];
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);

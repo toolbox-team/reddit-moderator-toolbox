@@ -73,9 +73,10 @@ self.init = function () {
     }
 
     $listItem.on('click', function () {
-        var offset = $(this).offset();
-        var offsetLeft = offset.left;
-        var offsetTop = (offset.top + 20);
+        self.log('metrics tab opened');
+        var offset = $(this).offset(),
+            offsetLeft = offset.left,
+            offsetTop = (offset.top + 20);
 
         $body.find('#tb-metrics-expand-list').css({
             "left": offsetLeft + 'px',

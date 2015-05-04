@@ -2,6 +2,12 @@
     $.fn.log = function (message, caller, orignalMessage) {
         if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skipLocalConsole'] || 'false')) {
             TBUtils.log.push(message);
+
+            // add module to list.
+            if (TBUtils.logModules.indexOf(caller) == -1) {
+                TBUtils.logModules.push(caller);
+            }
+
         } else {
             console.log(' [' + caller + ']: ');
             console.log(orignalMessage);

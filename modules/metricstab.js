@@ -41,7 +41,7 @@ self.init = function () {
             'Observatory': 'http://0bservat0ry.com/reddit/r/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/r/{subSection}',
             'RedditMetrics': 'http://redditmetrics.com/r/{subSection}',
-            'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}',
+            'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}'
         }
     };
 
@@ -58,7 +58,7 @@ self.init = function () {
 
     $tabList.css('overflow', 'visible');
 
-    var $listItem = $("<li class='tb-metrics''><a href='javascript:;'>metrics</a></li>"),
+    var $listItem = $("<li class='tb-metrics'><a href='javascript:;'>metrics</a></li>"),
         $tbMetricsList = $body.find('#tb-metrics-expand-list');
 
 
@@ -68,7 +68,7 @@ self.init = function () {
     for (var i in links) {
         var url = links[i];
         url = url.replace(/\{subSection\}/g, page.subSection);
-        $metricsDropDown.append('<li class="hidden metricTab"><a href="' + url + '" target="_blank">' + i + '</a></li>');
+        $metricsDropDown.append('<li><a href="' + url + '" target="_blank">' + i + '</a></li>');
     }
 
     $listItem.on('click', function () {

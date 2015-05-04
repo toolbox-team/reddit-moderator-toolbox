@@ -397,8 +397,8 @@ text-align: left;
     background-color: #C7D6E6;
     line-height: 24px;
     border-left: 1px solid #B6C9DD;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
 }
 
 .mod-toolbox .tb-close {
@@ -630,8 +630,8 @@ img.note-close {
 .mod-toolbox .dtagger-popup .dtagger-popup-header .buttons {
     display: inline-block;
     position: absolute;
-    right: 0px !important;
-    top: 0px !important;
+    right: 0 !important;
+    top: 0 !important;
     background-color: #C7D6E6;
     line-height: 20px;
     border-left: 1px solid #B6C9DD;
@@ -802,8 +802,8 @@ img.note-close {
 .mod-toolbox .tb-popup .tb-popup-header .buttons {
     display: inline-block;
     position: absolute;
-    right: 0px !important;
-    top: 0px !important;
+    right: 0 !important;
+    top: 0 !important;
     background-color: #C7D6E6;
     line-height: 20px;
     border-left: 1px solid #B6C9DD;
@@ -1166,7 +1166,7 @@ body .thing.flaired {
 
 .mod-toolbox #tb-debug-header-handle {
     position: absolute;
-    left: 0px;
+    left: 0;
     top: 0;
     display: inline-block;
     right: 20px;
@@ -1785,6 +1785,10 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     border-bottom: 1px solid rgb(204, 209, 215);
 }
 
+#tb-metrics-expand-list a:hover {
+    text-decoration: underline;
+}
+
 
 /* Comment search */
 #tb-search-suggest {
@@ -1887,8 +1891,8 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     background-color: #C7D6E6;
     line-height: 24px;
     border-left: 1px solid #B6C9DD;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
 }
 
 .mod-toolbox .tb-page-overlay a.tb-close,

@@ -797,7 +797,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
             "note": TBUtils.htmlDecode(note.n),
             "time": inflateTime(version, note.t),
             "mod": mgr.get("users", note.m),
-            "link": unsquashPermalink(sub, note.l),
+            "link": self._unsquashPermalink(sub, note.l),
             "type": mgr.get("warnings", note.w)
         };
     }
@@ -810,28 +810,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
         return time;
     }
     
-    // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined
-    function unsquashPermalink(subreddit, permalink) {
-        if (!permalink)
-            return '';
 
-        var linkParams = permalink.split(/,/g);
-        var link = "/r/" + subreddit + "/";
-
-        if (linkParams[0] == "l") {
-            link += "comments/" + linkParams[1] + "/";
-            if (linkParams.length > 2)
-                link += "-/" + linkParams[2] + "/";
-        }
-        else if (linkParams[0] == "m") {
-            link += "message/messages/" + linkParams [1];
-        }
-        else {
-            return "";
-        }
-
-        return link;
-    }
 };
 
 // Save usernotes to wiki
@@ -916,7 +895,7 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
             "n": note.note,
             "t": deflateTime(version, note.time),
             "m": mgr.create("users", note.mod),
-            "l": squashPermalink(note.link),
+            "l": self._squashPermalink(note.link),
             "w": mgr.create("warnings", note.type)
         };
     }
@@ -927,33 +906,6 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
             time = Math.trunc(time / 1000);
         }
         return time;
-    }
-
-    // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined and all links are erased
-    function squashPermalink(permalink) {
-        if(!permalink)
-            return "";
-        
-        // Compatibility with Sweden
-        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+)\/)?)?/,
-            MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
-
-            linkMatches = permalink.match(COMMENTS_LINK_RE),
-            modMailMatches = permalink.match(MODMAIL_LINK_RE);
-
-        if (linkMatches) {
-            var squashed = "l," + linkMatches[1];
-            if (linkMatches[2] !== undefined) {
-                squashed += "," + linkMatches[2];
-            }
-            return squashed;
-        }
-        else if (modMailMatches) {
-            return "m," + modMailMatches[1];
-        }
-        else {
-            return "";
-        }
     }
 };
 
@@ -972,6 +924,63 @@ self._constManager = function _constManager(init_pools) {
             return this._pools[poolName][id];
         }
     };
+};
+
+// DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined and all links are erased
+// Yeah, calling bullshit.
+self._squashPermalink = function(permalink) {
+    self.log("_squashPermalink here, looks like I'm defined");
+    if(!permalink)
+        return "";
+
+    // Compatibility with Sweden
+    var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+)\/)?)?/,
+        MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
+
+        linkMatches = permalink.match(COMMENTS_LINK_RE),
+        modMailMatches = permalink.match(MODMAIL_LINK_RE);
+
+    if (linkMatches) {
+        var squashed = "l," + linkMatches[1];
+        if (linkMatches[2] !== undefined) {
+            squashed += "," + linkMatches[2];
+        }
+        return squashed;
+    }
+    else if (modMailMatches) {
+        self.log("just _squashPermalink again, I'll be returning: " + modMailMatches[1] + "... because I'm not undefined.");
+        return "m," + modMailMatches[1];
+    }
+    else {
+        self.log("just _squashPermalink again, I'll be returning a blank string, but not because I'm undefined.");
+        return "";
+    }
+};
+
+// DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined
+self._unsquashPermalink = function(subreddit, permalink) {
+    self.log("_unsquashPermalink here, looks like I'm defined");
+    if (!permalink)
+        return '';
+
+    var linkParams = permalink.split(/,/g);
+    var link = "/r/" + subreddit + "/";
+
+    if (linkParams[0] == "l") {
+        link += "comments/" + linkParams[1] + "/";
+        if (linkParams.length > 2)
+            link += "-/" + linkParams[2] + "/";
+    }
+    else if (linkParams[0] == "m") {
+        link += "message/messages/" + linkParams [1];
+    }
+    else {
+        self.log("just _unsquashPermalink again, I'll be returning a blank string, but not because I'm undefined.");
+        return "";
+    }
+
+    self.log("just _unsquashPermalink again, I'll be returning: " + link + "... because I'm not undefined.");
+    return link;
 };
 
 TB.register_module(self);

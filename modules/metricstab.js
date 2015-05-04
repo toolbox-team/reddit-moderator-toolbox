@@ -32,9 +32,9 @@ self.init = function () {
             'Karmalb': 'http://www.karmalb.com/user/{subSection}',
             'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
             'RateRedditors': 'http://rateredditors.com/{subSection}',
-            'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}'
+            'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}',
+            'RedditInvestigator': 'http://www.redditinvestigator.com/{subSection}'
             //'RedditInsight': 'http://www.redditinsight.com/#trackuser', // donno if we want to add ones that don't propagate the user name.
-            //'RedditInvestigator': 'http://www.redditinvestigator.com/'
         },
 
         r: {

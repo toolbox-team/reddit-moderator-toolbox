@@ -25,14 +25,23 @@ self.init = function () {
 
     var metrics = {
         user: {
-            'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}',
             'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html',
-            'Karmawhores': 'http://www.karmawhores.net/user/{subSection}'
+            'MetaReddit': 'http://metareddit.com/stalk?user={subSection}',
+            'Karmawhores': 'http://www.karmawhores.net/user/{subSection}',
+            'Karmalb': 'http://www.karmalb.com/user/{subSection}' ,
+            'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
+            'Redective': 'http://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
+            'RateRedditors': 'http://rateredditors.com/{subSection}',
+            'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}'
+            //'RedditInsight': 'http://www.redditinsight.com/#trackuser', // donno if we want to add ones that don't propagate the user name.
+            //'RedditInvestigator': 'http://www.redditinvestigator.com/'
         },
 
         r: {
+            'Observatory': 'http://0bservat0ry.com/reddit/r/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/r/{subSection}',
-            'RedditMetrics': 'http://redditmetrics.com/r/{subSection}'
+            'RedditMetrics': 'http://redditmetrics.com/r/{subSection}',
+            'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}',
         }
     };
 
@@ -49,7 +58,7 @@ self.init = function () {
 
     $tabList.css('overflow', 'visible');
 
-    var $listItem = $("<li class='tb-metrics' style=''><a href='#'>Metrics</a></li>"),
+    var $listItem = $("<li class='tb-metrics''><a href='javascript:;'>metrics</a></li>"),
         $tbMetricsList = $body.find('#tb-metrics-expand-list');
 
 

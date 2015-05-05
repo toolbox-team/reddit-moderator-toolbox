@@ -394,7 +394,7 @@ self.modmailpro = function() {
             threadID = threadInfo.id,
             subreddit = threadInfo.subreddit,
             title = threadInfo.title,
-            sender = threadInfo.author,
+            sender = threadInfo.author.toLowerCase(),
             replyCount = ($entries.length - 1);
 
         // Set subreddit name.
@@ -448,9 +448,11 @@ self.modmailpro = function() {
         }
 
         if (filterBots) {
-            if ($.inArray(sender, botsToFilter) != -1) {
-                $thread.addClass('botspam');
-            }
+            botsToFilter.forEach(function (botName) {
+                if (botName.toLowerCase() == sender) {
+                    $thread.addClass('botspam');
+                }
+            });
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what

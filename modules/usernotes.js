@@ -957,9 +957,10 @@ self._unsquashPermalink = function(subreddit, permalink) {
         link += "message/messages/" + linkParams [1];
     }
     else {
-        self.log("just _unsquashPermalink again, I'll be returning a blank string, but not because I'm undefined.");
         return "";
     }
+
+    return link;
 };
 
 TB.register_module(self);

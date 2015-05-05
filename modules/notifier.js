@@ -356,9 +356,9 @@ self.init = function () {
                                 author = value.data.author;
 
                             if (!notificationbody) {
-                                notificationbody = 'reply from: ' + author + '. in:' + subreddit + '\n';
+                                notificationbody = 'reply from: ' + author + '. in: ' + subreddit + '\n';
                             } else {
-                                notificationbody = notificationbody + 'reply from: ' + author + '. in:' + subreddit + '\n';
+                                notificationbody = notificationbody + 'reply from: ' + author + '. in: ' + subreddit + '\n';
                             }
                             messagecount++;
                             pushedunread.push(value.data.name);
@@ -422,7 +422,7 @@ self.init = function () {
 		                        author = value.data.subreddit;
 	                        }
 
-                            TBUtils.notification('New message:' + subject, $(body_html).text() + '\u2026 \n \n from:' + author, '/message/messages/' + id);
+                            TBUtils.notification('New message:' + subject, $(body_html).text() + '\u2026 \n \n from: ' + author, '/message/messages/' + id);
                             pushedunread.push(value.data.name);
                         }
                     });
@@ -445,7 +445,7 @@ self.init = function () {
                     infotitle = jsondata.data.children[0].data.title,
                     infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink = infopermalink + mqidname.substring(3);
-                TBUtils.notification('Modqueue - /r/' + infosubreddit + ' - comment:', mqreportauthor + '\'s comment in ' + infotitle, infopermalink + '?context=3');
+                TBUtils.notification('Modqueue - /r/' + infosubreddit + ' - comment:', mqreportauthor + '\'s comment in: ' + infotitle, infopermalink + '?context=3');
             });
         }
 
@@ -486,9 +486,9 @@ self.init = function () {
                                 author = value.data.author;
 
                             if (!notificationbody) {
-                                notificationbody = 'comment from: ' + author + ', in ' + subreddit + '\n';
+                                notificationbody = 'comment from: ' + author + ', in: ' + subreddit + '\n';
                             } else if (queuecount <= 6) {
-                                notificationbody = notificationbody + 'comment from: ' + author + ',  in ' + subreddit + '\n';
+                                notificationbody = notificationbody + 'comment from: ' + author + ',  in: ' + subreddit + '\n';
                             } else if (queuecount > 6) {
                                 xmoreModqueue++;
                             }
@@ -666,9 +666,9 @@ self.init = function () {
                             if (messagecount > newCount) return false;
 
                             if (!notificationbody) {
-                                notificationbody = 'from: ' + author + ', in:' + subreddit + '\n';
+                                notificationbody = 'from: ' + author + ', in: ' + subreddit + '\n';
                             } else if (messagecount <= 6) {
-                                notificationbody = notificationbody + 'from: ' + author + ', in:' + subreddit + '\n';
+                                notificationbody = notificationbody + 'from: ' + author + ', in: ' + subreddit + '\n';
                             } else if (messagecount > 6) {
                                 xmoreModMail++;
                             }

@@ -770,7 +770,7 @@ function initwrapper() {
     };
 
     TBUtils.cleanSubredditName = function (dirtySub) {
-        dirtySub = dirtySub.replace('/r/', '').replace('/', '').replace('?', '').replace('+', '').trim();
+        dirtySub = dirtySub.replace('/r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
         return dirtySub;
     };
 

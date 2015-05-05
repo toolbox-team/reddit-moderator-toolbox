@@ -333,7 +333,6 @@ self.usernotes = function usernotes(){
         TBui.textFeedback((deleteNote ? "Removing" : "Adding")+" user note...", TBui.FEEDBACK_NEUTRAL);
 
         self.getUserNotes(subreddit, function(success, notes, pageError) {
-            self.log("Save get callback");
             // Only page errors git different treatment.
             if (!success && pageError) {
                 self.log("  Page error");
@@ -353,7 +352,6 @@ self.usernotes = function usernotes(){
             }
 
             if (notes) {
-                self.log("  Notes exist");
                 if (notes.corrupted) {
                     TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
                 }
@@ -615,6 +613,8 @@ self.usernotesManager = function () {
 
 // Get usernotes from wiki
 self.getUserNotes = function(subreddit, callback, forceSkipCache) {
+    self.log("Getting usernotes (sub="+subreddit+")");
+    
     if (!callback) return;
     if (!subreddit) return returnFalse();
     
@@ -635,6 +635,8 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     
     // Read notes from wiki page
     TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
+        self.log("WHO THE FUCK CALLED READFROMWIKI?");
+        
         // Errors when reading notes
         //// These errors are bad
         if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -666,7 +668,6 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     });
 
     function returnFalse(pageError){
-        self.log('returning false');
         if (callback) callback(false, null, pageError);
     }
     
@@ -810,12 +811,10 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
         return time;
     }
     
-
 };
 
 // Save usernotes to wiki
 self.saveUserNotes = function(sub, notes, reason, callback) {
-
     TBui.textFeedback("Saving user notes...", TBui.FEEDBACK_NEUTRAL);
     
     // Upgrade usernotes if only upgrading
@@ -846,9 +845,11 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
     // Decovert notes to wiki format based on version (note: deconversion is actually conversion in the opposite direction)
     function deconvertNotes(notes) {
         if(notes.ver <= 5) {
+            self.log("  Is v5");
             return deflateNotes(notes);
         }
         else if(notes.ver <= 6) {
+            self.log("  Is v6");
             notes = deflateNotes(notes);
             return compressBlob(notes);
         }
@@ -877,15 +878,17 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
         };
 
         var mgr = new self._constManager(deflated.constants);
-
+        
         $.each(notes.users, function (name, user) {
+            //self.log("    Before deflation");
             deflated.users[name] = {
                 "ns": user.notes.map(function (note) {
                     return deflateNote(notes.ver, note, mgr);
                 })
             };
+            //self.log("    After deflation");
         });
-
+        
         return deflated;
     }
     
@@ -902,6 +905,10 @@ self.saveUserNotes = function(sub, notes, reason, callback) {
     
     // Compression utilities
     function deflateTime(version, time) {
+        if (time === undefined) {
+            // Yeah, you time deleters get no time!
+            return 0;
+        }
         if (version >= 5 && time.toString().length > 10) {
             time = Math.trunc(time / 1000);
         }
@@ -929,7 +936,6 @@ self._constManager = function _constManager(init_pools) {
 // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined and all links are erased
 // Yeah, calling bullshit.
 self._squashPermalink = function(permalink) {
-    self.log("_squashPermalink here, looks like I'm defined");
     if(!permalink)
         return "";
 
@@ -948,18 +954,15 @@ self._squashPermalink = function(permalink) {
         return squashed;
     }
     else if (modMailMatches) {
-        self.log("just _squashPermalink again, I'll be returning: " + modMailMatches[1] + "... because I'm not undefined.");
         return "m," + modMailMatches[1];
     }
     else {
-        self.log("just _squashPermalink again, I'll be returning a blank string, but not because I'm undefined.");
         return "";
     }
 };
 
 // DO NOT MOVE THIS METHOD, otherwise calling it always returns undefined
 self._unsquashPermalink = function(subreddit, permalink) {
-    self.log("_unsquashPermalink here, looks like I'm defined");
     if (!permalink)
         return '';
 
@@ -978,9 +981,6 @@ self._unsquashPermalink = function(subreddit, permalink) {
         self.log("just _unsquashPermalink again, I'll be returning a blank string, but not because I'm undefined.");
         return "";
     }
-
-    self.log("just _unsquashPermalink again, I'll be returning: " + link + "... because I'm not undefined.");
-    return link;
 };
 
 TB.register_module(self);

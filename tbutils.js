@@ -1120,7 +1120,7 @@ function initwrapper() {
                 return data;
             }
         })
-            .done(function (json) {
+            .success(function (json) {
                 var wikiData = json.data.content_md;
 
                 if (!wikiData) {
@@ -1129,19 +1129,23 @@ function initwrapper() {
                 }
 
                 if (isJSON) {
+                    var parsedWikiData;
                     try {
-                        wikiData = JSON.parse(wikiData);
-                        if (wikiData) {
-                            callback(wikiData);
-                        } else {
-                            callback(TBUtils.NO_WIKI_PAGE);
-                        }
+                        parsedWikiData = JSON.parse(wikiData);
                     }
                     catch (err) {
                         // we should really have a INVAILD_DATA error for this.
                         $.log(err, false, SHORTNAME);
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
+                    
+                    // Moved out of the try so random exceptions don't erase the entire wiki page
+                    if (parsedWikiData) {
+                        callback(parsedWikiData);
+                    } else {
+                        callback(TBUtils.NO_WIKI_PAGE);
+                    }
+                    
                     return;
                 }
 
@@ -1149,7 +1153,7 @@ function initwrapper() {
                 callback(wikiData);
 
             })
-            .fail(function (jqXHR, textStatus, e) {
+            .error(function (jqXHR, textStatus, e) {
                 $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, SHORTNAME);
                 if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);

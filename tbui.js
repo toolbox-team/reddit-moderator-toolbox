@@ -177,7 +177,13 @@
 
 
     // Popup HTML generator
-    TBui.popup = function popup(title, tabs, meta, css_class) {
+    TBui.popup = function popup(title, tabs, meta, css_class, opts) {
+	    var defaults = {
+		    draggable: false
+	    };
+
+	    var options = $.extend(defaults, opts);
+
         meta = (typeof meta !== "undefined") ? meta : null;
         css_class = (typeof css_class !== "undefined") ? css_class : '';
 
@@ -238,6 +244,9 @@
                 $tab.appendTo($popup);
             }
         }
+
+	    if(options.draggable)
+	        $popup.drag($popup.find('.tb-popup-title'));
 
         return $popup;
     };

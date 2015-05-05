@@ -160,7 +160,10 @@ self.init = function () {
                 }
             ],
             '',
-            'history-button-popup'
+            'history-button-popup',
+	        {
+		        draggable: true
+	        }
         ).appendTo('body')
             .css({
                 left: event.pageX - 50,

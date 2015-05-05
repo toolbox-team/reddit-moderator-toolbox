@@ -18,17 +18,14 @@ self.getURLParameter = function getURLParameter(url, name) {
 };
 
 self.init = function () {
-    if (!(location.pathname.match(/\/about\/(?:banned)\/?/)
-        || location.pathname.match(/\/about\/(?:contributors)\/?/))
-    ) {
-        return;
-    }
+    if (!TB.utils.isEditUserPage) return;
 
     var banlist_updating = false,
         banlist_last_update = 0,
         last_request = 0,
         time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
-        pages_back = 0;
+        pages_back = 0,
+        $num_bans = $('<span id="ban_count"></span>');
 
     function _get_next_ban_page(after, pages_back) {
 
@@ -148,7 +145,6 @@ self.init = function () {
         var $user = $('#user');
 
         // counter for number of bans
-        var $num_bans = $('<span id="ban_count"></span>');
         $num_bans.appendTo($user.parent());
 
         $user.prop('placeholder', 'Begin typing to live filter the list.');

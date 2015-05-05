@@ -673,28 +673,7 @@ self.getUserNotes = function(subreddit, callback, forceSkipCache) {
     
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes, sub) {
-        if (notes.ver <= 2) {
-            var newUsers = [];
-            var corruptedNotes = false;
-            //TODO: v2 support drops next version
-            notes.users.forEach(function (user) {
-                if (!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) {
-                    corruptedNotes = true;
-                } else {
-                    user.notes.forEach(function (note) {
-                        if (note.link && note.link.trim()) {
-                            note.link = self._squashPermalink(note.link);
-                        }
-                    });
-                    newUsers.push(user);
-                }
-            });
-            notes.users = newUsers;
-            notes.ver = TBUtils.notesSchema;
-            notes.corrupted = corruptedNotes;
-            return keyOnUsername(decodeNoteText(notes));
-        }
-        else if (notes.ver == 3) {
+        if (notes.ver == 3) {
             notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes, sub)));
             notes.ver = TBUtils.notesSchema;
             return notes;

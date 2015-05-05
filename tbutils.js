@@ -62,7 +62,7 @@ function initwrapper() {
     TBUtils.releaseName = 'A BRAVER NEWER MMP';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
-    TBUtils.notesMinSchema = 2;
+    TBUtils.notesMinSchema = 3;
     TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';

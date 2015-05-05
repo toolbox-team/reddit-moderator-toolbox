@@ -28,7 +28,7 @@ self.register_setting('rtsComment', {
  * Attach an [H] button to all users
  */
 self.run = function () {
-    var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history" target="_blank">H</a>]</span>';
+    var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history">H</a>]</span>';
 
     if (TBUtils.isModmail) {
         $('.thing .entry .head:not(.tb-history)').each(function () {
@@ -85,8 +85,8 @@ self.init = function () {
     });
 
     $body.on('click', '.user-history-button', function (event) {
-        self.subreddits = {submissions: {}, comments: {}},
-            self.counters = {submissions: 0, comments: 0};
+        self.subreddits = {submissions: {}, comments: {}};
+        self.counters = {submissions: 0, comments: 0};
         self.subredditList = [];
         self.domainList = [];
         self.commentSubredditList = [];

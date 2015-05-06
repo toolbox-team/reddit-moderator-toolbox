@@ -1060,7 +1060,7 @@ function initwrapper() {
                     $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
                 }
 
-                if (chunkSize+10 > parseInt(ratelimitRemaining)) {
+                if (chunkSize+20 > parseInt(ratelimitRemaining)) {
                     $body.find('#ratelimit-counter').show();
                     var count = parseInt(ratelimitReset);
                     $.log(count);

@@ -517,7 +517,7 @@ self.usernotesManager = function () {
             },
 
             function () {
-                TB.ui.longLoadSpinner(false, "Usenotes loaded", TB.ui.FEEDBACK_POSITIVE);
+                TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
                 var infoHTML = '\
                 <div class="tb-un-info">\
@@ -554,6 +554,8 @@ self.usernotesManager = function () {
 
         // Get the account status for all users.
         $body.find('#tb-un-prune-sb').on('click', function () {
+            var emptyProfiles = [];
+
             TB.ui.longLoadSpinner(true, "Pruning usernotes", TB.ui.FEEDBACK_NEUTRAL);
             var usersPrune = Object.keys(subUsenotes.users);
             var userCountPrune = usersPrune.length;
@@ -568,11 +570,38 @@ self.usernotesManager = function () {
 
                     if (!succ) {
                         $body.find('#tb-un-note-content-wrap div[data-user="' + user + '"]').css('text-decoration', 'line-through');
+                        emptyProfiles.push(user);
                     }
                 });},
 
                 function () {
-                    TB.ui.longLoadSpinner(false, "Usernotes pruned", TB.ui.FEEDBACK_POSITIVE);
+
+
+                    self.log(emptyProfiles);
+                    if (emptyProfiles.length > 0) {
+                        var deleteEmptyProfile = confirm(emptyProfiles.length +  ' deleted or shadowbanned users. Delete all notes for these users?');
+                        if (deleteEmptyProfile == true) {
+                            self.log('You pressed OK!');
+
+                            emptyProfiles.forEach(function (emptyProfile) {
+                                delete subUsenotes.users[emptyProfile];
+                                $body.find('#tb-un-note-content-wrap div[data-user="' + emptyProfile + '"]').css('background-color', 'rgb(244, 179, 179)');
+                            });
+
+                            TB.utils.noteCache[sub] = subUsenotes;
+                            self.saveUserNotes(sub, subUsenotes, "pruned all deleted/shadowbanned users.");
+
+                            TB.ui.longLoadSpinner(false, 'Profiles checked, notes for '+ emptyProfiles.length + ' missing users deleted', TB.ui.FEEDBACK_POSITIVE);
+                        } else {
+                            self.log('You pressed Cancel!');
+
+                            TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
+                        }
+                    } else {
+                        TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
+                    }
+
+
             });
         });
 

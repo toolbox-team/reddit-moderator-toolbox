@@ -239,13 +239,13 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         case "achievement_save":
                             noWrap = true;
                             
-                            $.log("----------");
-                            $.log("GENERATING ACHIEVEMENT PAGE");
+                            $.log("----------", false, "TBModule");
+                            $.log("GENERATING ACHIEVEMENT PAGE", false, "TBModule");
                             var total = module.manager.getAchievementTotal(),
                                 unlocked = module.manager.getUnlockedCount();
 
-                            $.log("  total="+total);
-                            $.log("  unlocked="+unlocked);
+                            $.log("  total="+total, false, "TBModule");
+                            $.log("  unlocked="+unlocked, false, "TBModule");
                             
                             $setting = $('<div>').attr('class', 'achievements');
                             $setting.append($('<h1>').text("Mod Achievements"));
@@ -257,9 +257,9 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
                             var $list = $('<div>').attr('class', 'achievements-list');
                             for(var saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
-                                $.log("  saveIndex: "+saveIndex);
+                                $.log("  saveIndex: "+saveIndex, false, "TBModule");
                                 for (var index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
-                                    $.log("  index: "+index);
+                                    $.log("  index: "+index, false, "TBModule");
                                     var aTitle = "???",
                                         aDescr = "??????",
                                         aClass = "";

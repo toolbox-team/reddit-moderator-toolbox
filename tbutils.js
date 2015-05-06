@@ -48,7 +48,8 @@ function initwrapper() {
             "I dunno what this 'Safari' thing is.",
             "eeeeew... why is there PHP code in this room?",
             "nah there is an actual difference between stuff",
-            "...have you paid money *out of your own pocket* to anyone to vet this product"];
+            "...have you paid money *out of your own pocket* to anyone to vet this product",
+            "first I want to make sure my thing actually does work sort of "];
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
@@ -62,7 +63,7 @@ function initwrapper() {
     TBUtils.releaseName = 'A BRAVER NEWER MMP';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
-    TBUtils.notesMinSchema = 2;
+    TBUtils.notesMinSchema = 3;
     TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
@@ -148,7 +149,7 @@ function initwrapper() {
     }
 
     if (seenNotes.length > 250) {
-        $.log("clearing seen notes");
+        $.log("clearing seen notes", false, SHORTNAME);
         seenNotes.splice(150, (seenNotes.length - 150));
         TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
     }
@@ -635,7 +636,7 @@ function initwrapper() {
 
         if (!('Notification' in window)) {
             // fallback on a javascript notification
-            $.log('boring old rickety browser, falling back on jquery based notifications');
+            $.log('boring old rickety browser, falling back on jquery based notifications', false, SHORTNAME);
             body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
             $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', {'autoclose': timeout});
 
@@ -770,13 +771,13 @@ function initwrapper() {
     };
 
     TBUtils.cleanSubredditName = function (dirtySub) {
-        dirtySub = dirtySub.replace('/r/', '').replace('/', '').trim();
+        dirtySub = dirtySub.replace('/r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
         return dirtySub;
     };
 
 
     TBUtils.getModSubs = function (callback) {
-        //$.log('getting mod subs');
+        $.log('getting mod subs', false, SHORTNAME);
         // If it has been more than ten minutes, refresh mod cache.
         if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
             // time to refresh
@@ -786,7 +787,7 @@ function initwrapper() {
                 getModSubsCallbacks.push(callback);
             } else {
                 // start the process
-                $.log('getting new subs.');
+                $.log('getting new subs.', false, SHORTNAME);
 
                 gettingModSubs = true;
                 TBUtils.mySubs = []; // reset
@@ -851,7 +852,7 @@ function initwrapper() {
                 // Go!
                 while (getModSubsCallbacks.length > 0) {
                     // call them in the order they were added
-                    $.log("calling callback " + getModSubsCallbacks[0].name);
+                    $.log("calling callback " + getModSubsCallbacks[0].name, false, SHORTNAME);
                     getModSubsCallbacks[0]();
                     getModSubsCallbacks.splice(0, 1); // pop first element
                 }
@@ -976,12 +977,12 @@ function initwrapper() {
             ham: ham,
             mod: TBUtils.logged
         };
-        //$.log(info);
+        //$.log(info, false, SHORTNAME);
         return info;
     };
 
     TBUtils.replaceTokens = function (info, content) {
-        $.log(info);
+        $.log(info, false, SHORTNAME);
         for (var i in info) {
             var pattern = new RegExp('{' + i + '}', 'mig');
             content = content.replace(pattern, info[i]);
@@ -1126,7 +1127,7 @@ function initwrapper() {
             data = JSON.stringify(data);
         }
 
-        $.log("Posting /r/" + subreddit + "/api/wiki/edit/" + page);
+        $.log("Posting /r/" + subreddit + "/api/wiki/edit/" + page, false, SHORTNAME);
 
 
         // If we update automoderator we want to replace any tabs with four spaces.
@@ -1142,7 +1143,7 @@ function initwrapper() {
         })
 
             .error(function postToWiki_error(err) {
-                $.log(err.responseText);
+                $.log(err.responseText, false, SHORTNAME);
                 callback(false, err);
             })
 
@@ -1196,7 +1197,7 @@ function initwrapper() {
                 return data;
             }
         })
-            .done(function (json) {
+            .success(function (json) {
                 var wikiData = json.data.content_md;
 
                 if (!wikiData) {
@@ -1205,19 +1206,23 @@ function initwrapper() {
                 }
 
                 if (isJSON) {
+                    var parsedWikiData;
                     try {
-                        wikiData = JSON.parse(wikiData);
-                        if (wikiData) {
-                            callback(wikiData);
-                        } else {
-                            callback(TBUtils.NO_WIKI_PAGE);
-                        }
+                        parsedWikiData = JSON.parse(wikiData);
                     }
                     catch (err) {
                         // we should really have a INVAILD_DATA error for this.
                         $.log(err, false, SHORTNAME);
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
+                    
+                    // Moved out of the try so random exceptions don't erase the entire wiki page
+                    if (parsedWikiData) {
+                        callback(parsedWikiData);
+                    } else {
+                        callback(TBUtils.NO_WIKI_PAGE);
+                    }
+                    
                     return;
                 }
 
@@ -1225,7 +1230,7 @@ function initwrapper() {
                 callback(wikiData);
 
             })
-            .fail(function (jqXHR, textStatus, e) {
+            .error(function (jqXHR, textStatus, e) {
                 $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, SHORTNAME);
                 if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
@@ -1255,7 +1260,7 @@ function initwrapper() {
                     callback(true);
             })
             .error(function (error) {
-                $.log(error);
+                $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1409,20 +1414,20 @@ function initwrapper() {
         })
             .success(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    $.log("Failed to post comment to on " + parent);
-                    $.log(response.json.errors);
+                    $.log("Failed to post comment to on " + parent, false, SHORTNAME);
+                    $.log(response.json.errors, false, SHORTNAME);
                     if (typeof callback !== "undefined")
                         callback(false, response.json.errors);
                     return;
                 }
 
-                $.log("Successfully posted comment on " + parent);
+                $.log("Successfully posted comment on " + parent, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
             .error(function (error) {
-                $.log("Failed to post link to on" + parent);
-                $.log(error);
+                $.log("Failed to post link to on" + parent, false, SHORTNAME);
+                $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1440,20 +1445,20 @@ function initwrapper() {
         })
             .success(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    $.log("Failed to post link to /r/" + subreddit);
-                    $.log(response.json.errors);
+                    $.log("Failed to post link to /r/" + subreddit, false, SHORTNAME);
+                    $.log(response.json.errors, false, SHORTNAME);
                     if (typeof callback !== "undefined")
                         callback(false, response.json.errors);
                     return;
                 }
 
-                $.log("Successfully posted link to /r/" + subreddit);
+                $.log("Successfully posted link to /r/" + subreddit, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
             .error(function (error) {
-                $.log("Failed to post link to /r/" + subreddit);
-                $.log(error);
+                $.log("Failed to post link to /r/" + subreddit, false, SHORTNAME);
+                $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1470,20 +1475,20 @@ function initwrapper() {
         })
             .success(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    $.log("Failed to send link to /u/" + user);
-                    $.log(response.json.errors);
+                    $.log("Failed to send link to /u/" + user, false, SHORTNAME);
+                    $.log(response.json.errors, false, SHORTNAME);
                     if (typeof callback !== "undefined")
                         callback(false, response.json.errors);
                     return;
                 }
 
-                $.log("Successfully send link to /u/" + user);
+                $.log("Successfully send link to /u/" + user, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
             .error(function (error) {
-                $.log("Failed to send link to /u/" + user);
-                $.log(error);
+                $.log("Failed to send link to /u/" + user, false, SHORTNAME);
+                $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1556,13 +1561,13 @@ function initwrapper() {
 
             if (TBStorage.domain != 'www') {
                 TBui.textFeedback("Cannot import from " + TBStorage.domain + ".reddit.com.");
-                $.log("Cannot import from " + TBStorage.domain + ".reddit.com.");
+                $.log("Cannot import from " + TBStorage.domain + ".reddit.com.", false, SHORTNAME);
                 return;
             }
 
             if (resp['Utils.lastversion'] < 300) {
                 TBui.textFeedback("Cannot import from a toolbox version under 3.0");
-                $.log("Cannot import from a toolbox version under 3.0");
+                $.log("Cannot import from a toolbox version under 3.0", false, SHORTNAME);
                 return;
             }
 
@@ -1651,7 +1656,7 @@ function initwrapper() {
     
     
     TBUtils.clearCache = function () {
-        $.log('TBUtils.clearCache()');
+        $.log('TBUtils.clearCache()', false, SHORTNAME);
 
         TBUtils.noteCache = {};
         TBUtils.configCache = {};

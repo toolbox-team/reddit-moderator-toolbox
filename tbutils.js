@@ -1023,6 +1023,82 @@ function initwrapper() {
         }
     };
 
+
+    // Chunking abused for ratelimiting
+    TBUtils.forEachChunkedRateLimit = function (array, chunkSize, call, complete, start) {
+        if (array === null) finish();
+        if (chunkSize === null || chunkSize < 1) finish();
+        if (call === null) finish();
+        var counter = 0;
+        //var length = array.length;
+
+
+        function doChunk() {
+            if (counter == 0 && start) {
+                start();
+            }
+
+            for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+                var ret = call(array[counter], counter, array);
+                if (ret === false) finish();
+            }
+            if (counter < array.length) {
+                getRatelimit();
+            } else {
+                finish();
+            }
+        }
+
+        function getRatelimit() {
+            $.getJSON('/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
+                var $body = $('body');
+                var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
+                var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+
+                if (!$body.find('#ratelimit-counter').length ) {
+                    $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
+                }
+
+                if (chunkSize+10 > parseInt(ratelimitRemaining)) {
+                    $body.find('#ratelimit-counter').show();
+                    var count = parseInt(ratelimitReset);
+                    $.log(count);
+                    var counter = setInterval(timer, 1000);
+
+                    function timer() {
+                        count = count - 1;
+                        if (count <= 0) {
+                            clearInterval(counter);
+                            $body.find('#ratelimit-counter').empty();
+                            $body.find('#ratelimit-counter').hide();
+                            doChunk();
+                            return;
+                        }
+
+                        var minutes = Math.floor(count / 60);
+                        var seconds = count - minutes * 60;
+
+                        $body.find('#ratelimit-counter').html('<b>Oh dear, it seems we have hit a limit, waiting for ' + minutes + ' minutes and ' + seconds + ' seconds before resuming operations.</b>\
+                <br><br>\
+                <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimitRemaining + ' requests</i>. We are currently trying to process <i>' + parseInt(chunkSize) + ' items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+                ');
+                    }
+
+                } else {
+                    doChunk();
+                }
+            });
+        }
+
+        getRatelimit();
+
+        function finish() {
+            return complete ? complete() : false;
+        }
+    };
+
+
+
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {
         $.getJSON('/r/toolbox/about.json').done(function (data, status, jqxhr) {

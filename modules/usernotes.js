@@ -525,6 +525,8 @@ self.usernotesManager = function () {
                 <div class="tb-un-info">\
                     <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                     <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
+                    <br><br>\
+                    <a id="tb-un-prune-sb" href="javascript:;">Prune user profiles.</a>\
                 </div></br></br>';
 
                 var infocontent = TB.utils.template(infoHTML, {
@@ -550,6 +552,32 @@ self.usernotesManager = function () {
                 userSearchValue.test($(thing).attr('data-user').toUpperCase()) ? $(this).show() : $(this).hide();
             });
         });
+
+
+        // Get the account status for all users.
+        $body.find('#tb-un-prune-sb').on('click', function () {
+            TB.ui.longLoadSpinner(true, "Pruning usernotes", TB.ui.FEEDBACK_NEUTRAL);
+            var usersPrune = Object.keys(subUsenotes.users);
+            var userCountPrune = usersPrune.length;
+
+
+            TBUtils.forEachChunkedRateLimit(usersPrune, 20, function (user, counter) {
+
+                TB.ui.textFeedback("Pruning user " + counter + " of " + userCountPrune, TB.ui.FEEDBACK_POSITIVE);
+
+
+                TB.utils.aboutUser(user, function (succ) {
+
+                    if (!succ) {
+                        $body.find('#tb-un-note-content-wrap div[data-user="' + user + '"]').css('text-decoration', 'line-through');
+                    }
+                });},
+
+                function () {
+                    TB.ui.longLoadSpinner(false, "Usernotes pruned", TB.ui.FEEDBACK_POSITIVE);
+            });
+        });
+
 
         // Update user status.
         $body.find('.tb-un-refresh').on('click', function () {

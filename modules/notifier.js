@@ -422,7 +422,7 @@ self.init = function () {
 		                        author = value.data.subreddit;
 	                        }
 
-                            TBUtils.notification('New message:' + subject, $(body_html).text() + '\u2026 \n \n from: ' + author, '/message/messages/' + id);
+                            TBUtils.notification('New message: ' + subject, $(body_html).text() + '\u2026 \n \n from: ' + author, '/message/messages/' + id);
                             pushedunread.push(value.data.name);
                         }
                     });

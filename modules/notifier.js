@@ -445,7 +445,7 @@ self.init = function () {
                     infotitle = jsondata.data.children[0].data.title,
                     infosubreddit = jsondata.data.children[0].data.subreddit;
                 infopermalink = infopermalink + mqidname.substring(3);
-                TBUtils.notification('Modqueue - /r/' + infosubreddit + ' - comment:', mqreportauthor + '\'s comment in: ' + infotitle, infopermalink + '?context=3');
+                TBUtils.notification('Modqueue - /r/' + infosubreddit + ' - comment: ', mqreportauthor + '\'s comment in: ' + infotitle, infopermalink + '?context=3');
             });
         }
 

@@ -549,7 +549,7 @@ made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/
 <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
 <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
 <h3>License:</h3>\
-<span>Copyright 2014 Toolbox development team. </span>\
+<span>Copyright 2013-2015 Toolbox development team. </span>\
 <p>Licensed under the Apache License, Version 2.0 (the "License"); <br>\
 you may not use this file except in compliance with the License. <br>\
 You may obtain a copy of the License at </p>\

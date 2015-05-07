@@ -54,10 +54,11 @@ function initwrapper() {
             "Remember, toolbox loves you.",
             "toolbox will be back later, gone fishing.",
             "toolbox is 'doing things', don't ask.",
-            "Tuning probability drive parameters",
+            "Tuning probability drive parameters.",
             "Initiating data transfer: NSA_backdoor_package. ",
-            "Hijacking your account to post puppy pictures, so fluffy!",
-            "Toolbox is on strike, we demand more shekels!"];
+            "Please post puppy pictures, they are so fluffy!",
+            "RES is visiting for a sleepover,  no time right now",
+            "Toolbox is on strike, we demand more karma!"];
 
 
 

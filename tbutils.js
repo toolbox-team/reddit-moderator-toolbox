@@ -49,7 +49,16 @@ function initwrapper() {
             "eeeeew... why is there PHP code in this room?",
             "nah there is an actual difference between stuff",
             "...have you paid money *out of your own pocket* to anyone to vet this product",
-            "first I want to make sure my thing actually does work sort of "];
+            "first I want to make sure my thing actually does work sort of "],
+        RandomFeedbackText = ["Please hold, your call is important to us.",
+            "Remember, toolbox loves you.",
+            "toolbox will be back later, gone fishing.",
+            "toolbox is 'doing things', don't ask.",
+            "Tuning probability drive parameters",
+            "Initiating data transfer: NSA_backdoor_package. ",
+            "Hijacking your account to post puppy pictures, so fluffy!",
+            "Toolbox is on strike, we demand more shekels!"];
+
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
@@ -83,6 +92,7 @@ function initwrapper() {
     TBUtils.isMod = $('body.moderator').length;
     TBUtils.isExtension = true;
     TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
+    TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
     TBUtils.log = [];
     TBUtils.logModules = [];
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);

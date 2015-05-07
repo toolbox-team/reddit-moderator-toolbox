@@ -455,7 +455,17 @@
                     bottom: 10px !important\
                 }\
                 </style>');
+                $('.footer-parent').append('<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">' + TBUtils.RandomFeedback + '</span></span></div>');
                 $('.footer-parent').append('<div id="tb-loading"></div>');
+                var $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
+                var randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
+                    randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
+
+                $randomFeedbackWindow.css({
+                    'margin-left': '-' + randomFeedbackLeftMargin + 'px',
+                    'margin-top': '-' + randomFeedbackTopMargin + 'px'
+                });
+
                 TBui.longLoadArray.push('load');
 
                 // if requested and the element is already present
@@ -465,7 +475,8 @@
                 // if done and the only instance
             } else if (!createOrDestroy && TBui.longLoadArray.length == 1) {
                 $('head').find('#tb-long-load-style').remove();
-                $('#tb-loading').remove();
+                $('body').find('#tb-loading').remove();
+                $('body').find('#tb-loading-stuff').remove();
                 TBui.longLoadArray.pop();
 
                 // if done but other process still running
@@ -476,7 +487,7 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration, displayLocation);
             }
         }
     };
@@ -494,7 +505,19 @@
                 }\
                 </style>');
 
+
+                $('.footer-parent').append('<div id="tb-loading-stuff-non-persistent"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">' + TBUtils.RandomFeedback + '</span></span></div>');
                 $('.footer-parent').append('<div id="tb-loading-non-persistent"></div>');
+
+                var $randomFeedbackWindow = $('body').find('#tb-loading-stuff-non-persistent');
+                var randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
+                    randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
+
+                $randomFeedbackWindow.css({
+                    'margin-left': '-' + randomFeedbackLeftMargin + 'px',
+                    'margin-top': '-' + randomFeedbackTopMargin + 'px'
+                });
+
                 TBui.longLoadArrayNonPersistent.push('load');
 
                 // if requested and the element is already present
@@ -504,7 +527,8 @@
                 // if done and the only instance
             } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length == 1) {
                 $('head').find('#tb-long-load-style-non-persistent').remove();
-                $('#tb-loading-non-persistent').remove();
+                $('body').find('#tb-loading-non-persistent').remove();
+                $('body').find('#tb-loading-stuff-non-persistent').remove();
                 TBui.longLoadArrayNonPersistent.pop();
 
                 // if done but other process still running
@@ -515,7 +539,7 @@
 
             // Support for text feedback removing the need to fire two function calls from a module.
             if (feedbackText !== undefined && feedbackKind !== undefined) {
-                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration);
+                TBui.textFeedback(feedbackText, feedbackKind, feedbackDuration, displayLocation);
             }
         }
     };

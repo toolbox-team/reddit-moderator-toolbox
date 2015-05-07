@@ -1312,6 +1312,43 @@ height: 300px;
     background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 
+
+#tb-loading-stuff .tb-loading-content,
+#tb-loading-stuff-non-persistent .tb-loading-content{
+    background-color: rgb(255, 255, 255);
+    margin: 0px;
+    display: block;
+    padding: 5px;
+    font-size: 12px;
+}
+
+#tb-loading-stuff .tb-loading-content img,
+#tb-loading-stuff-non-persistent .tb-loading-content img{
+    vertical-align: middle;
+}
+
+#tb-loading-stuff .tb-loading-content .tb-loading-text,
+#tb-loading-stuff-non-persistent .tb-loading-content .tb-loading-text{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+#tb-loading-stuff,
+#tb-loading-stuff-non-persistent {
+    max-width: 500px;
+    position: fixed;
+    z-index: 2147483647;
+    bottom: 40px;
+    left: 50%;
+    padding: 10px;
+    min-width: 150px;
+    text-align: center;
+    background-color: rgb(206, 227, 248);
+    border: 1px solid rgb(182, 201, 221);
+    box-shadow: rgba(214, 214, 214, 0.470588) 0 1px 3px 1px;
+}
+
 .tb-internal-overlay {
     display: block;
     position: absolute;

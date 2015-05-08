@@ -7,7 +7,7 @@
 	<key>Builder Version</key>
 	<string>10600.4.10.7</string>
 	<key>CFBundleDisplayName</key>
-	<string>Moderator toolbox for reddit</string>
+	<string>toolbox for reddit</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.reddit.toolbox</string>
 	<key>CFBundleInfoDictionaryVersion</key>

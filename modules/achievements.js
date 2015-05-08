@@ -204,8 +204,8 @@ self.init = function () {
         self.setting('last_seen', now);
     });
 
-    //Toolbox Loves You: Look at the about page
-    self.manager.register("Toolbox Loves You", 'Looked at the about page. <3', function (saveIndex) {
+    //toolbox Loves You: Look at the about page
+    self.manager.register("toolbox Loves You", 'Looked at the about page. <3', function (saveIndex) {
         TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
             self.manager.unlock(saveIndex);
         });

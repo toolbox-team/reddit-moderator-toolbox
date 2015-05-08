@@ -546,7 +546,7 @@
 
     TBui.beforeunload = function () {
         if (longLoadArray.length > 0) {
-            return 'Toolbox is still busy!';
+            return 'toolbox is still busy!';
         }
     };
 

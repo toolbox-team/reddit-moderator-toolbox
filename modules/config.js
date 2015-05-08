@@ -1,5 +1,5 @@
 function tbconfig() {
-var self = new TB.Module('Toolbox Config');
+var self = new TB.Module('toolbox Config');
 self.shortname = 'TBConfig'; // for backwards compatibility
 
 //Default settings
@@ -23,7 +23,7 @@ self.init = function() {
 
 
         $overlay = TB.ui.overlay(
-            'Toolbox Configuration - /r/' + subredditConfig,
+            'toolbox Configuration - /r/' + subredditConfig,
             [
                 {
                     title: 'Settings Home',
@@ -519,7 +519,7 @@ self.init = function() {
 
     // Now we have all our data and the functions in place to use it, let's use it!
 
-    // Toolbox config WIKI tab
+    // toolbox config WIKI tab
     $body.on('click', '.tb-window-tabs .edit_toolbox_config', function () {
         var $this = $(this);
         if (!$this.hasClass('content-populated')) {
@@ -583,7 +583,7 @@ self.init = function() {
         postToWiki(actualPage, text, editNote, false, updateAM);
     });
 
-    // Toolbox config FORM tab save
+    // toolbox config FORM tab save
     $body.on('click', '.save-removal-settings', function () {
 
 

@@ -1,5 +1,5 @@
 function modbar() {
-var self = new TB.Module('Toolbox UI (modbar)');
+var self = new TB.Module('toolbox UI (modbar)');
 self.shortname = 'Modbar';
 
 self.settings['enabled']['default'] = true;
@@ -155,7 +155,7 @@ self.init = function() {
     <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
     <div class="tb-debug-content">\
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
-        <input type="text" class="tb-debug-input" placeholder="eval() in Toolbox scope" />\
+        <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />\
     </div>\
     <div class="tb-debug-footer">\
         <select class="module-select"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
@@ -432,7 +432,7 @@ self.init = function() {
         var html = '\
 <div class="tb-page-overlay tb-settings tb-personal-settings"><div class="tb-window-wrapper">\
     <div class="tb-window-header">\
-        Toolbox Settings\
+        toolbox Settings\
         <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a><a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
     </div>\
     <div class="tb-window-tabs"></div>\
@@ -481,19 +481,19 @@ self.init = function() {
 <p>\
     <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
 </p>\
-<div class="tb-help-main-content">Edit Toolbox general settings</div>\
+<div class="tb-help-main-content">Edit toolbox general settings</div>\
 </div>\
 ');
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">Toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'toolbox');
 
         // Settings to toggle the modules
         var htmlmodules = '\
 <div class="tb-window-content-modules">\
-<div class="tb-help-main-content">Here you can enable/disable Toolbox modules.</div>\
+<div class="tb-help-main-content">Here you can enable/disable toolbox modules.</div>\
 </div>\
 ';
         $(htmlmodules).appendTo('.tb-window-content').hide();
@@ -549,7 +549,7 @@ made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/
 <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
 <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
 <h3>License:</h3>\
-<span>Copyright 2013-2015 Toolbox development team. </span>\
+<span>Copyright 2013-2015 toolbox development team. </span>\
 <p>Licensed under the Apache License, Version 2.0 (the "License"); <br>\
 you may not use this file except in compliance with the License. <br>\
 You may obtain a copy of the License at </p>\

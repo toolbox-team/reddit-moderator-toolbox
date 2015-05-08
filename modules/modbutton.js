@@ -1,5 +1,4 @@
 function modbutton() {
-// @copyright 2014 Toolbox Devs, dakta
 
 var self = new TB.Module('Mod Button');
 self.shortname = 'ModButton';

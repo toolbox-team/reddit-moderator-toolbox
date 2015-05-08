@@ -386,7 +386,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
     }
 };
 
-// Prototype for all Toolbox modules
+// Prototype for all toolbox modules
 TB.Module = function Module(name) {
     // PUBLIC: Module Metadata
     this.name = name;

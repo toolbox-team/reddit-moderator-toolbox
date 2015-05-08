@@ -245,7 +245,7 @@ self.init = function() {
             TB.ui.textFeedback('That already is a note.', TB.ui.FEEDBACK_NEGATIVE);
         } else {
             notesArray.push(newNotename);
-            saveNoteWiki(newNotename, notewiki, 'New note', 'Toolbox new personal note', true);
+            saveNoteWiki(newNotename, notewiki, 'New note', 'toolbox new personal note', true);
         }
 
     });

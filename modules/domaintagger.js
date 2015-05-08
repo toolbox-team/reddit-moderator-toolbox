@@ -201,7 +201,7 @@ self.init = function() {
             if (resp === TBUtils.NO_WIKI_PAGE) {
                 config.domainTags = [];
                 config.domainTags.push(domainTag);
-                postToWiki(subreddit, config, 'domain tagger: create new Toolbox config');
+                postToWiki(subreddit, config, 'domain tagger: create new toolbox config');
                 return;
             }
 

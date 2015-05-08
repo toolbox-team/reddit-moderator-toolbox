@@ -353,7 +353,7 @@ self.usernotes = function usernotes(){
 
             if (notes) {
                 if (notes.corrupted) {
-                    TBUtils.alert('Toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
+                    TBUtils.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
                 }
                 
                 var u = getUser(notes.users, user);

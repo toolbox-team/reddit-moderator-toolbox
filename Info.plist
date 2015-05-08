@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>Author</key>
-	<string>Toolbox Team</string>
+	<string>toolbox Team</string>
 	<key>Builder Version</key>
 	<string>10600.4.10.7</string>
 	<key>CFBundleDisplayName</key>
-	<string>Moderator Toolbox for reddit</string>
+	<string>Moderator toolbox for reddit</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.reddit.toolbox</string>
 	<key>CFBundleInfoDictionaryVersion</key>

@@ -273,8 +273,9 @@ self.init = function() {
                     $body.find('.edit_automoderator_config .error').hide();
                 }
                 self.log("clearing cache");
-                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
                 TBUtils.clearCache();
+
+                TB.ui.textFeedback('wiki page saved', TB.ui.FEEDBACK_POSITIVE);
             }
         });
     }
@@ -679,11 +680,8 @@ self.init = function() {
         config.removalReasons.reasons[reasonsNum].title = reasonTitle;
 
         postToWiki('toolbox', config, editNote, true);
-        if (TBUtils.configCache[subreddit] !== undefined) {
-            delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-        }
 
-        var label = unescape(reasonText);
+         var label = unescape(reasonText);
         if (label == '') {
             label = '<span style="color: #cecece">(no reason)</span>';
         } else {
@@ -717,9 +715,7 @@ self.init = function() {
                 return;
             }
             postToWiki('toolbox', config, 'delete reason #' + reasonsNum, true);
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al Aren't removal reasons cached? - cr
-            }
+
 
             $this.closest('.removal-reason').remove();
         }
@@ -760,9 +756,8 @@ self.init = function() {
         config.removalReasons.reasons.push(reason);
 
         postToWiki('toolbox', config, editNote, true);
-        if (TBUtils.configCache[subreddit] !== undefined) {
-            delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-        }
+
+
         // And finally we repopulate the reasons list and hide the current form.
         $body.find('#tb-removal-reasons-list').html('');
         removalReasonsContent();
@@ -853,9 +848,7 @@ self.init = function() {
         config.modMacros[macroNum].title = macroTitle;
 
         postToWiki('toolbox', config, editNote, true);
-        if (TBUtils.configCache[subreddit] !== undefined) {
-            delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-        }
+
 
         var label = unescape(macroText);
 
@@ -889,9 +882,7 @@ self.init = function() {
                 return;
             }
             postToWiki('toolbox', config, 'delete macro #' + macroNum, true);
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-            }
+
 
             $this.closest('.mod-macro').remove();
         }
@@ -926,10 +917,8 @@ self.init = function() {
         config.modMacros.push(macro);
 
         postToWiki('toolbox', config, editNote, true);
-        if (TBUtils.configCache[subreddit] !== undefined) {
-            delete TBUtils.configCache[subreddit]; // should this use TBUtils.clearCache?  I'm not clear on what this does. -al
-        }
-        // And finally we repopulate the macro list and hide the current form.
+
+          // And finally we repopulate the macro list and hide the current form.
         $body.find('#tb-mod-macros-list').html('');
         modMacrosContent();
         $body.find('#tb-add-mod-macro').show();

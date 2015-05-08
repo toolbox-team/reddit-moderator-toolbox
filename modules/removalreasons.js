@@ -628,7 +628,14 @@ self.init = function() {
         // Function to send PM and comment
         function sendRemovalMessage(logLink) {
             // If there is no message to send, don't send one.
-            if (reasonlength < 1) return status.text(NO_REASON_ERROR);
+            if (reasonlength < 1) {
+                if ((flairText != "" || flairCSS != "") && data.kind != "comment") {
+                    // We'll flair only flair, we are done here.
+                    return removePopup(popup);
+                } else {
+                    return status.text(NO_REASON_ERROR);
+                }
+            }
 
             // Check if a valid notification type is selected
             if ((!notifyBy && !notifyAsSub) || (logLink == null && notifyBy == 'none')) {

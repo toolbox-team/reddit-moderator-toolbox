@@ -108,12 +108,12 @@ self.usernotes = function usernotes(){
 
             // Alert the user
             var msg = notes.ver > TBUtils.notesMaxSchema ?
-                "/r/"+ subreddit +" is using a version of toolbox that cannot read a newer usernote data format. Please update your extension." :
-                "/r/"+ subreddit +" is using a version of toolbox that cannot read an old usernote data format, schema v" + notes.ver + ". Message /r/toolbox for assistance.";
+                "You are using a version of toolbox that cannot read a newer usernote data format in: /r/"+ subreddit +". Please update your extension." :
+                "You are using a version of toolbox that cannot read an old usernote data format in: /r/"+ subreddit +", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
 
             TBUtils.alert(msg, function (clicked) {
                 if (clicked)
-                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" : "/message/compose?to=%2Fr%2Ftoolbox");
+                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" : "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F"+ subreddit+"%20is%20using%20usernotes%20schema%20v" + notes.ver + ");
             });
             return;
         }

@@ -108,8 +108,8 @@ self.usernotes = function usernotes(){
 
             // Alert the user
             var msg = notes.ver > TBUtils.notesMaxSchema ?
-                "You are using a version of toolbox that cannot read a newer usernote data format. Please update your extension." :
-                "You are using a version of toolbox that cannot read an old usernote data format, schema v" + notes.ver + ". Message /r/toolbox for assistance.";
+                "/r/"+ subreddit +" is using a version of toolbox that cannot read a newer usernote data format. Please update your extension." :
+                "/r/"+ subreddit +" is using a version of toolbox that cannot read an old usernote data format, schema v" + notes.ver + ". Message /r/toolbox for assistance.";
 
             TBUtils.alert(msg, function (clicked) {
                 if (clicked)

@@ -112,8 +112,10 @@ self.usernotes = function usernotes(){
                 "You are using a version of toolbox that cannot read an old usernote data format in: /r/"+ subreddit +", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
 
             TBUtils.alert(msg, function (clicked) {
-                if (clicked)
-                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" : "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F"+ subreddit+"%20is%20using%20usernotes%20schema%20v" + notes.ver + ");
+                if (clicked) {
+                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" : 
+                    "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F"+ subreddit+"%20is%20using%20usernotes%20schema%20v" + notes.ver);
+                }
             });
             return;
         }

@@ -428,7 +428,7 @@ self.init = function() {
                         <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
                     </td>\
                     <td class="removal-reasons-content" data-reason="{{i}}">\
-                        <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="reason-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
+                        <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
                         <span class="removal-reason-edit">\
                             <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
                             <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\

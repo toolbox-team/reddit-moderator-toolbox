@@ -128,7 +128,10 @@ self.init = function() {
         });
     }
 
-    $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
+    if (!TB.utils.isModmail) {
+        self.log('adding "add removal reasons" button');
+        $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
+    }
     // Open reason drop-down when we remove something as ham.
     $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
         var $button = $(this),

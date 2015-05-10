@@ -506,17 +506,8 @@
                 </style>');
 
 
-                $('.footer-parent').append('<div id="tb-loading-stuff-non-persistent"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">' + TBUtils.RandomFeedback + '</span></span></div>');
                 $('.footer-parent').append('<div id="tb-loading-non-persistent"></div>');
 
-                var $randomFeedbackWindow = $('body').find('#tb-loading-stuff-non-persistent');
-                var randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
-                    randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
-
-                $randomFeedbackWindow.css({
-                    'margin-left': '-' + randomFeedbackLeftMargin + 'px',
-                    'margin-top': '-' + randomFeedbackTopMargin + 'px'
-                });
 
                 TBui.longLoadArrayNonPersistent.push('load');
 
@@ -528,7 +519,6 @@
             } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length == 1) {
                 $('head').find('#tb-long-load-style-non-persistent').remove();
                 $('body').find('#tb-loading-non-persistent').remove();
-                $('body').find('#tb-loading-stuff-non-persistent').remove();
                 TBui.longLoadArrayNonPersistent.pop();
 
                 // if done but other process still running

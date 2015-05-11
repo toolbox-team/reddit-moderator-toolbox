@@ -187,9 +187,7 @@ self.init = function () {
     });
 
     // Still Alive (TODO: can we make links work?)
-    //self.manager.register("not dead yet", '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">Spent a week away from reddit</a>', function (saveIndex) {
-    self.manager.register("not dead yet", 'Spent a week away from reddit', function (saveIndex) {
-
+    self.manager.register("not dead yet", '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">Spent a week away from reddit</a>', function (saveIndex) {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
         var now = TBUtils.getTime(),
@@ -205,7 +203,7 @@ self.init = function () {
     });
 
     //toolbox Loves You: Look at the about page
-    self.manager.register("toolbox Loves You", 'Looked at the about page. <3', function (saveIndex) {
+    self.manager.register("toolbox Loves You", '<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">Looked at the about page. \<3</a>', function (saveIndex) {
         TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
             self.manager.unlock(saveIndex);
         });

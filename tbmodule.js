@@ -273,7 +273,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
                                     var $a = $('<div>').attr('class', 'achievement ' + aClass);
                                     $a.append($('<p>').attr('class', 'title').text(aTitle));
-                                    $a.append($('<p>').attr('class', 'description').text(aDescr));
+                                    $a.append($('<p>').attr('class', 'description').html(aDescr));
                                     $list.append($a);
                                 }
                             }

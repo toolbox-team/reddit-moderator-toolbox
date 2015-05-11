@@ -176,6 +176,7 @@ self.init = function () {
 
 
     // Random awesome
+    self.manager.register("being awesome", '<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">toolbox just feels like you\'re awesome today</a>', function (saveIndex) {
         var awesome = 7,
             chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 

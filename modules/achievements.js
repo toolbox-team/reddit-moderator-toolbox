@@ -48,10 +48,10 @@ function Manager() {
             var title = titles[i],
                 maxValue = maxValues[i];
 
-            self.log("Registering Achievement");
-            if (TB.utils.devMode) self.log("  name=" + title); // spoilers
-            self.log("  maxValue=" + maxValue);
-            self.log("  saveIndex=" + saveIndex);
+            self.log('Registering Achievement');
+            if (TB.utils.devMode) self.log('  name=' + title); // spoilers
+            self.log('  maxValue=' + maxValue);
+            self.log('  saveIndex=' + saveIndex);
 
             achievementsBlock.push({
                 title: title,
@@ -70,21 +70,21 @@ function Manager() {
         if (value === undefined) {
             value = 1;
         }
-        self.log("Unlocking achievement block: index=" + saveIndex + ", value=" + value);
+        self.log('Unlocking achievement block: index=' + saveIndex + ', value=' + value);
 
         var old = saves[saveIndex];
-        self.log("  Old value: " + saves[saveIndex]);
+        self.log('  Old value: ' + saves[saveIndex]);
         saves[saveIndex] += value;
-        self.log("  New value: " + saves[saveIndex]);
+        self.log('  New value: ' + saves[saveIndex]);
 
         var achievementsBlock = achievements[saveIndex];
         for (var index = 0; index < achievementsBlock.length; index++) {
-            self.log("  Checking achievement " + index);
+            self.log('  Checking achievement ' + index);
             var achievement = achievementsBlock[index];
-            self.log("    Comparing to max value: " + achievement.maxValue);
+            self.log('    Comparing to max value: ' + achievement.maxValue);
             if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
-                self.log("    Unlocked!");
-                TBUtils.notification("Mod achievement unlocked!", achievement.title, window.location + "#?tbsettings=" + self.shortname);
+                self.log('    Unlocked!');
+                TBUtils.notification('Mod achievement unlocked!', achievement.title, window.location + '#?tbsettings=' + self.shortname);
             }
         }
 
@@ -99,7 +99,7 @@ function Manager() {
         saves.forEach(function (saveValue, saveIndex) {
             save += saveValue;
             if (saveIndex < saves.length - 1) {
-                save += ";";
+                save += ';';
             }
         });
         save = btoa(save);
@@ -109,8 +109,8 @@ function Manager() {
     // Utilities
 
     this.decodeSave = function (save) {
-        var vals = atob(self.setting('save')).split(";");
-        // Because "2" + 1 = 21
+        var vals = atob(self.setting('save')).split(';');
+        // Because '2' + 1 = 21
         if (vals && vals.length > 0) {
             for (var i = 0; i < vals.length; i++) {
                 vals[i] = parseInt(vals[i]);
@@ -172,22 +172,22 @@ self.init = function () {
     var lastSeen = self.setting('last_seen');
 
     // Achievement definitions
-    self.log("Registering achievements");
+    self.log('Registering achievements');
 
 
     // Random awesome
-    self.manager.register("being awesome", '<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">toolbox just feels like you\'re awesome today</a>', function (saveIndex) {
+    self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
         var awesome = 7,
             chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
-        self.log("You rolled a: " + chanceOfBeingAwesome);
+        self.log('You rolled a: ' + chanceOfBeingAwesome);
         if (awesome == chanceOfBeingAwesome) {
             self.manager.unlock(saveIndex);
         }
     });
 
     // Still Alive (TODO: can we make links work?)
-    self.manager.register("not dead yet", '<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">Spent a week away from reddit</a>', function (saveIndex) {
+    self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', function (saveIndex) {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
         var now = TBUtils.getTime(),
@@ -203,21 +203,21 @@ self.init = function () {
     });
 
     //toolbox Loves You: Look at the about page
-    self.manager.register("toolbox loves you", '<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">Looked at the about page. \<3</a>', function (saveIndex) {
+    self.manager.register('<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">toolbox loves you</a>', 'Looked at the about page. <3', function (saveIndex) {
         TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
             self.manager.unlock(saveIndex);
         });
     });
 
     // Beta testers
-    self.manager.register("bug hunter", "Beta testing toolbox", function (saveIndex) {
+    self.manager.register('bug hunter', 'Beta testing toolbox', function (saveIndex) {
         if (TB.utils.betaRelease) {
             self.manager.unlock(saveIndex, 1);
         }
     });
 
     // Judas
-    self.manager.register("Judas", "Why do you hate toolbox devs? :'( ", function (saveIndex) {
+    self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", function (saveIndex) {
         $body.on('click', 'a:contains("remove")', function () {
             var $this = $(this),
                 auth = TB.utils.getThingInfo($this).author;
@@ -233,7 +233,7 @@ self.init = function () {
     });
 
     // approving stuff
-    self.manager.registerSeries(["too nice", "way too nice", "big softie", "approvening master"], "Approved {0} things", [50, 200, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master'], 'Approved {0} things', [50, 200, 1000, 10000], function (saveIndex) {
         $body.on('click', '.pretty-button, .approve-button', function () {
             var $this = $(this);
             if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
@@ -243,14 +243,14 @@ self.init = function () {
     });
 
     // Mod mail
-    self.manager.registerSeries(["hic sunt dracones", "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=rAlaDNDqpJM" target="_blank">Please Mr. Postman</a>', "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=rAlaDNDqpJM" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], function (saveIndex) {
         if (TB.utils.isModmail) {
             self.manager.unlock(saveIndex, 1);
         }
     });
 
     // Empty queue
-    self.manager.registerSeries(["kitteh get!", '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
+    self.manager.registerSeries(['kitteh get!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 700, 1500], function (saveIndex) {
         if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
             self.manager.unlock(saveIndex, 1);
         }
@@ -261,7 +261,7 @@ TB.register_module(self);
 }
 
 (function() {
-    window.addEventListener("TBModuleLoaded", function () {
+    window.addEventListener('TBModuleLoaded', function () {
         achievements();
     });
 })();

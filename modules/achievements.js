@@ -176,7 +176,6 @@ self.init = function () {
 
 
     // Random awesome
-    self.manager.register("being awesome", "toolbox just feels like you're awesome today", function (saveIndex) {
         var awesome = 7,
             chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
@@ -250,7 +249,7 @@ self.init = function () {
     });
 
     // Empty queue
-    self.manager.registerSeries(["kitteh get!", "Dr. Jan Itor", "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
+    self.manager.registerSeries(["kitteh get!", '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', "/u/Kylde"], "Cleared your queues {0} times!", [10, 700, 1500], function (saveIndex) {
         if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
             self.manager.unlock(saveIndex, 1);
         }

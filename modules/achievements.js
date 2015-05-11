@@ -203,7 +203,7 @@ self.init = function () {
     });
 
     //toolbox Loves You: Look at the about page
-    self.manager.register("toolbox Loves You", '<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">Looked at the about page. \<3</a>', function (saveIndex) {
+    self.manager.register("toolbox loves you", '<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">Looked at the about page. \<3</a>', function (saveIndex) {
         TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
             self.manager.unlock(saveIndex);
         });
@@ -243,7 +243,7 @@ self.init = function () {
     });
 
     // Mod mail
-    self.manager.registerSeries(["hic sunt dracones", "just checkin' the mail", "dear mister postman", "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(["hic sunt dracones", "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=rAlaDNDqpJM" target="_blank">Please Mr. Postman</a>', "You've got mail!"], "Checked mod mail {0} times!", [1, 100, 1000, 10000], function (saveIndex) {
         if (TB.utils.isModmail) {
             self.manager.unlock(saveIndex, 1);
         }

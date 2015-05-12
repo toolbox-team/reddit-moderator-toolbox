@@ -211,6 +211,9 @@ function initwrapper() {
         TBStorage.setSetting('Metrics', 'enabled', TBStorage.getSetting('Stattit', 'enabled', true));
         localStorage.removeItem('Toolbox.Stattit.enabled');
 
+        // Enable macros by default
+        TBStorage.setSetting('ModMacros', 'enabled', true);
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

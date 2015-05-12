@@ -102,7 +102,6 @@ self.usernotes = function usernotes() {
         if (!status) return;
 
         self.log('/r/' + subreddit + ' is using usernote schema v' + notes.ver);
-
         // Check if the version of loaded notes is within the supported versions
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
             self.log("Failed usernotes version check:");
@@ -125,20 +124,6 @@ self.usernotes = function usernotes() {
                     "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F" + subreddit + "%20is%20using%20usernotes%20schema%20v" + notes.ver);
                 }
             });
-            return;
-        }
-
-
-        if (notes.ver === TBUtils.notesDeprecatedSchema) {
-            TBUtils.alert("The usernotes in /r/" + subreddit + ", are stored using schema v" + notes.ver + ". This data version id deprecated.  Please click here to updated to v" + TBUtils.notesSchema,
-                function (clicked) {
-                    if (clicked) {
-                        self.saveUserNotes(subreddit, notes, 'updated notes to schema v' + TBUtils.notesSchema, function (succ) {
-                            if (succ) TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
-                        });
-                    }
-                });
-
             return;
         }
 
@@ -757,6 +742,8 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
 
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes, sub) {
+        var orgVer = notes.ver;
+
         if (notes.ver >= TBUtils.notesMinSchema) {
             if (notes.ver <= 2) {
                 var newUsers = [];
@@ -777,24 +764,45 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
                 notes.users = newUsers;
                 notes.ver = TBUtils.notesSchema;
                 notes.corrupted = corruptedNotes;
-                return keyOnUsername(decodeNoteText(notes));
+                notes = keyOnUsername(decodeNoteText(notes));
             }
             else if (notes.ver == 3) {
                 notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes, sub)));
                 notes.ver = TBUtils.notesSchema;
-                return notes;
             }
             else if (notes.ver <= 5) {
-                return inflateNotes(notes, sub);
+                notes = inflateNotes(notes, sub);
             }
             else if (notes.ver <= 6) {
                 notes = decompressBlob(notes);
-                return inflateNotes(notes, sub);
+                notes = inflateNotes(notes, sub);
             }
         }
 
-        self.log("Unknown usernotes version " + notes.ver + ". That's not good!");
-        return notes;
+        // This doesn't belong here and shouldn't be here.  Like at all.
+        // This is the only place this check can go without re-writting 50% of usernotes.
+        if (orgVer === TB.utils.notesDeprecatedSchema) {
+            self.log('Found deprecated notes in ' + subreddit + ': S' + orgVer);
+
+            // Remove the option to add notes
+            $('.usernote-span-' + subreddit).remove();
+
+            // upgrade notes
+            TBUtils.alert('The usernotes in /r/' + subreddit + ', are stored using schema v' + orgVer + '. This data version id deprecated.  Please click here to updated to v' + TBUtils.notesSchema,
+                function (clicked) {
+                    if (clicked) {
+                        self.saveUserNotes(subreddit, notes, 'updated notes to schema v' + TBUtils.notesSchema, function (succ) {
+                            if (succ) {
+                                TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
+            returnFalse();
+        } else {
+            return notes;
+        }
 
         // Utilities
         function decompressBlob(notes) {

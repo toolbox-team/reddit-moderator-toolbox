@@ -7,7 +7,7 @@ function modmacros() {
 var self = new TB.Module('Mod Macros');
 self.shortname = 'ModMacros';
 
-self.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = true;
 
 self.init = function () {
     var $body = $('body'),

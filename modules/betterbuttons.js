@@ -4,6 +4,7 @@ self.shortname = 'BButtons';
 
 // Default settings
 self.settings['enabled']['default'] = false;
+self.config['betamode'] = true;
 
 self.register_setting('enableModSave', {
     'type': 'boolean',

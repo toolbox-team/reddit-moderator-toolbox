@@ -101,6 +101,8 @@ self.usernotes = function usernotes(){
     function setNotes(status, notes, subreddit) {
         if (!status) return;
 
+        self.log('/r/' + subreddit + ' is using usernote schema v' + notes.ver);
+
         // Check if the version of loaded notes is within the supported versions
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
             self.log("Failed usernotes version check:");
@@ -114,15 +116,29 @@ self.usernotes = function usernotes(){
 
             // Alert the user
             var msg = notes.ver > TBUtils.notesMaxSchema ?
-                "You are using a version of toolbox that cannot read a newer usernote data format in: /r/"+ subreddit +". Please update your extension." :
-                "You are using a version of toolbox that cannot read an old usernote data format in: /r/"+ subreddit +", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
+            "You are using a version of toolbox that cannot read a newer usernote data format in: /r/"+ subreddit +". Please update your extension." :
+            "You are using a version of toolbox that cannot read an old usernote data format in: /r/"+ subreddit +", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
 
             TBUtils.alert(msg, function (clicked) {
                 if (clicked) {
-                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" : 
+                    window.open(notes.ver > TBUtils.notesMaxSchema ?"/r/toolbox/wiki/get" :
                     "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F"+ subreddit+"%20is%20using%20usernotes%20schema%20v" + notes.ver);
                 }
             });
+            return;
+        }
+
+
+        if (notes.ver === TBUtils.notesDeprecatedSchema) {
+            TBUtils.alert("The usernotes in /r/" + subreddit + ", are stored using schema v" + notes.ver + ". This data version id deprecated.  Please click here to updated to v" + TBUtils.notesSchema,
+                function (clicked) {
+                    if (clicked) {
+                        self.saveUserNotes(subreddit, notes, 'updated notes to schema v' + TBUtils.notesSchema, function (succ) {
+                            if (succ) TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                        });
+                    }
+                });
+
             return;
         }
 

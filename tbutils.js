@@ -50,6 +50,7 @@ function initwrapper() {
             "nah there is an actual difference between stuff",
             "...have you paid money *out of your own pocket* to anyone to vet this product",
             "first I want to make sure my thing actually does work sort of "],
+
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
             "toolbox will be back later, gone fishing.",
@@ -73,7 +74,8 @@ function initwrapper() {
     TBUtils.releaseName = 'A BRAVER NEWER MMP';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
-    TBUtils.notesMinSchema = 3;
+    TBUtils.notesMinSchema = 2;
+    TBUtils.notesDeprecatedSchema = 2;
     TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';

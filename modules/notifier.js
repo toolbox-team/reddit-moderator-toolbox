@@ -488,7 +488,7 @@ self.init = function () {
                             if (!notificationbody) {
                                 notificationbody = 'comment from: ' + author + ', in: ' + subreddit + '\n';
                             } else if (queuecount <= 6) {
-                                notificationbody = notificationbody + 'comment from: ' + author + ',  in: ' + subreddit + '\n';
+                                notificationbody = notificationbody + 'comment from: ' + author + ', in: ' + subreddit + '\n';
                             } else if (queuecount > 6) {
                                 xmoreModqueue++;
                             }

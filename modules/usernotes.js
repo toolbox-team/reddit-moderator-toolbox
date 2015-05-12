@@ -55,11 +55,12 @@ self.usernotes = function usernotes(){
     });
 
     function processThing(thing) {
+        var $thing = $(thing);
 
-        if ($(thing).hasClass('ut-processed')) {
+        if ($thing.hasClass('ut-processed')) {
             return;
         }
-        $(thing).addClass('ut-processed');
+        $thing.addClass('ut-processed');
 
         var subreddit = TBUtils.getThingInfo(thing, true).subreddit;
 
@@ -69,10 +70,10 @@ self.usernotes = function usernotes(){
             subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<a class="add-user-tag-' +
             subreddit + '" id="add-user-tag" "href="javascript:;">N</a>]</span>';
 
-        $(thing).attr('subreddit', subreddit);
+        $thing.attr('subreddit', subreddit);
 
         // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
-        var userattrs = $(thing).find('.userattrs');
+        var userattrs = $thing.find('.userattrs');
         if ($(userattrs).length > 0) {
             if (TBUtils.isModmail && $(userattrs).length > 1) {
                 $(userattrs).eq(0).after(tag);
@@ -80,7 +81,12 @@ self.usernotes = function usernotes(){
                 $(userattrs).after(tag);
             }
         } else {
-            $(thing).find('.head').append(tag);
+            // moar mod mail fuckery.  Cocksucking motherfucking hell.
+            // don't show your own tag after 'load full conversation'
+            var $head = $thing.find('.head');
+            if ($head.find('recipient') > 0) {
+                $head.append(tag);
+            }
         }
 
         if ($.inArray(subreddit, subs) == -1) {

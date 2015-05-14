@@ -288,7 +288,7 @@ self.init = function() {
         switch (tabname) {
             case 'edit_toolbox_config':
                 page = 'toolbox';
-                actualPage = 'usernotes';
+                actualPage = 'toolbox';
                 break;
             case 'edit_user_notes':
                 page = 'usernotes';

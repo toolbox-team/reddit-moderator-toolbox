@@ -794,6 +794,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
                         self.saveUserNotes(subreddit, notes, 'updated notes to schema v' + TBUtils.notesSchema, function (succ) {
                             if (succ) {
                                 TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
+                                TB.utils.clearCache();
                                 window.location.reload();
                             }
                         });

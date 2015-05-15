@@ -29,7 +29,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
 
@@ -71,7 +71,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.1.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'A BRAVER NEWER MMP';
+    TBUtils.releaseName = 'Valuing Viper';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;

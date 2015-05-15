@@ -1,6 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Moderator toolbox for reddit",
+  "short_name": "toolbox",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
   "version": "3.1.0",
   "permissions": [

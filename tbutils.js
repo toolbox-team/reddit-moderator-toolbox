@@ -29,7 +29,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
 
@@ -69,9 +69,9 @@ function initwrapper() {
     TBUtils.browsers = TBStorage.browsers;
 
     // Public variables
-    TBUtils.toolboxVersion = '3.1.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 310; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Valuing Vulture';
+    TBUtils.toolboxVersion = '3.2.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 320; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'TBD';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 5;
     TBUtils.notesMinSchema = 2;
@@ -185,34 +185,9 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.1 version changes
+        // 3.2 version changes
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
 
-        var botCheck = TBStorage.getSetting('QueueTools', 'botCheckmark', ['AutoModerator']),
-            index = botCheck.indexOf('automoderator');
-        if (index > -1) {
-            botCheck[index] = 'AutoModerator';
-            TBStorage.setSetting('QueueTools', 'botCheckmark', botCheck);
-        }
-
-        // no longer used.
-        localStorage.removeItem('Toolbox.UserNotes.unManager');
-
-        // MMP use to store filtered subs in lower case.  We should not.
-        TBStorage.setSetting('ModMail', 'filteredSubs', []);
-
-        // Re-enable MMP by default
-        TBStorage.setSetting('ModMail', 'enabled', true);
-
-        // enable autoload by default.
-        TBStorage.setSetting('ModMail', 'autoLoad', true);
-
-        // 'stattit tab' is now 'metrics tab'.  Migrate enabled, delete old key.
-        TBStorage.setSetting('Metrics', 'enabled', TBStorage.getSetting('Stattit', 'enabled', true));
-        localStorage.removeItem('Toolbox.Stattit.enabled');
-
-        // Enable macros by default
-        TBStorage.setSetting('ModMacros', 'enabled', true);
 
         // End: version changes.
 

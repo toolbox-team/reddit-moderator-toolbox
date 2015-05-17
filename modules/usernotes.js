@@ -1033,7 +1033,7 @@ self._squashPermalink = function (permalink) {
 
     // Compatibility with Sweden
     var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+))?)?/,
-        MODMAIL_LINK_RE = /\/messages\/(\w+)\/?(\?.*)?$/,
+        MODMAIL_LINK_RE = /\/messages\/(\w+)/,
 
         linkMatches = permalink.match(COMMENTS_LINK_RE),
         modMailMatches = permalink.match(MODMAIL_LINK_RE);

@@ -38,7 +38,6 @@
 				<string>libs/mode-yaml.js</string>
 				<string>libs/ace-themes.js</string>
 				<string>libs/redditapi.js</string>
-				<string>libs/es6-promise.js</string>
 				<string>tbstorage.js</string>
 				<string>tbui.js</string>
 				<string>tbutils.js</string>

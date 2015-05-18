@@ -2,6 +2,7 @@ function historybutton() {
 var self = new TB.Module('History Button');
 
 self.subreddits = {submissions: {}, comments: {}};
+self.accounts = {};
 self.counters = {submissions: 0, comments: 0};
 self.subredditList = [];
 self.domainList = [];
@@ -87,6 +88,7 @@ self.init = function () {
     $body.on('click', '.user-history-button', function (event) {
         self.subreddits = {submissions: {}, comments: {}};
         self.counters = {submissions: 0, comments: 0};
+        self.accounts = {};
         self.subredditList = [];
         self.domainList = [];
         self.commentSubredditList = [];
@@ -100,6 +102,7 @@ self.init = function () {
             <a href="/user/' + self.author + '" target="_blank">' + self.author + '</a>\
             <span class="karma" />\
             <a class="comment-report" href="javascript:;">get comment history</a> \
+            <a class="account-report" href="javascript:;">website account history</a> \
             <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> \
             <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a><br />\
             <span class="redditorTime"></span>\
@@ -138,6 +141,20 @@ self.init = function () {
                     <thead>\
                         <tr>\
                             <th class="url-td">subreddit commented in</th>\
+                            <th class="url-count">count</th>\
+                            <th class="url-percentage">%</th>\
+                        </tr>\
+                    </thead>\
+                    <tbody>\
+                        <tr><td colspan="6" class="error">loading...</td></tr>\
+                    </tbody>\
+                </table>\
+            </div>\
+            <div class="table account-table" style="display: none">\
+                <table>\
+                    <thead>\
+                        <tr>\
+                            <th class="url-td">account submitted from</th>\
                             <th class="url-count">count</th>\
                             <th class="url-percentage">%</th>\
                         </tr>\
@@ -194,6 +211,7 @@ self.init = function () {
         $histButtonPopup.on('click', '.markdown-report', self.showMarkdownReport);
         $histButtonPopup.on('click', '.rts-report', self.reportAuthorToSpam);
         $histButtonPopup.on('click', '.comment-report', self.populateCommentHistory);
+        $histButtonPopup.on('click', '.account-report', self.populateAccountHistory);
     });
 };
 
@@ -399,6 +417,98 @@ self.populateSubmissionHistory = function (after) {
     });
 };
 
+/**
+ * Populate the submission account history for a user
+ */
+self.populateAccountHistory = function () {
+    var $contentBox = $('.history-button-popup'),
+        $accountTable = $contentBox.find('.account-table tbody');
+
+    $contentBox.width(1000);
+    $accountTable.empty();
+
+    $contentBox.find('.account-table').show();
+    $accountTable.append('<tr><td colspan="6" class="error">Loading... (0 submissions)</td></tr>');
+
+    grabListing('/user/' + self.author + '/submitted.json?limit=100', updateSubmissions)
+        .then(function(listing) {
+            if (listing === null) {
+                $accountTable.find('.error').html('unable to load userdata<br />shadowbanned?');
+
+                return false;
+            }
+
+            $.each(listing, function (index, value) {
+                var data = value.data;
+
+                if (data.media && data.media.oembed && data.media.oembed.author_url) {
+                    var oembed = data.media.oembed;
+
+                    if (self.accounts[oembed.author_url]) {
+                        self.accounts[oembed.author_url].count++
+                    } else {
+                        self.accounts[oembed.author_url] = {
+                            count: 1,
+                            name: oembed.author_name,
+                            url: oembed.author_url,
+                            provider: oembed.provider_name,
+                            provider_url: oembed.provider_url
+                        }
+                    }
+                }
+            });
+
+            tableify();
+        });
+
+    function updateSubmissions(amount) {
+        $accountTable.find('.error').text('Loading... (' + amount + ' submissions)');
+    }
+
+    function tableify() {
+        //Get the total account of account submissions
+        var totalAccountCount = 0,
+            accountList = [];
+
+        for (var account in self.accounts) {
+            totalAccountCount = totalAccountCount + self.accounts[account].count;
+
+            accountList.push(account);
+        }
+
+        //Sort the domains by submission count
+        accountList.sort(function (a, b) {
+            return self.accounts[b].count - self.accounts[a].count;
+        });
+
+        $accountTable.empty();
+
+        $.each(accountList, function(index, account) {
+            var account = self.accounts[account],
+                percentage = Math.round(account.count / totalAccountCount * 100);
+
+            $accountTable.append(
+                '<tr>\
+                    <td class="url-td">\
+                        <a href="' + account.url + '" target="_blank">' +
+                            account.name +
+                        '</a> - \
+                        <a href="' + account.provider_url + '" target="_blank">' +
+                            account.provider +
+                        '</a>\
+                    </td>\
+                    <td class="count-td">' + 
+                        account.count +
+                    '</td>\
+                    <td class="percentage-td">' +
+                        percentage +'%\
+                    </td>\
+                </tr>'
+            );
+        });
+    }
+};
+
 self.populateCommentHistory = function (after) {
     // fuck it; it's their ratelimit.
     //if (self.gettingUserData) return;
@@ -510,6 +620,81 @@ self.reportAuthorToSpam = function () {
         }
     });
 };
+
+
+/**
+ * Automatically get all entries of a listing.
+ * Returns a Promise
+ *
+ * {string} a url pointing to a reddit listing
+ * {function} a function that will be called whenever the length of the listing array grows
+ */
+function grabListing(url, update) {
+    return new Promise(function (resolve) {
+        var listing = [];
+
+        if (update) {
+            update(listing.length);
+        }
+
+        function listingRequest(after) {
+            if (typeof after === 'string') {
+                var reqUrl = url + (url.indexOf('?') !== -1 ? '&after=' : '?after=') + after;
+            } else {
+                var reqUrl = url;
+            }
+
+            rateLimit().then(function() {
+                $.get(reqUrl)
+                    .error(function() {
+                        resolve(null);
+                    })
+                    .done(function(response) {
+                        if (response.data.children && response.data.children.length) {
+                            listing = listing.concat(response.data.children);
+                        }
+
+                        if (update) {
+                            update(listing.length);
+                        }
+
+                        if (response.data.after) {
+                            listingRequest(response.data.after);
+                        } else {
+                            resolve(listing);
+                        }
+                    });
+            });
+        }
+
+        listingRequest();
+    });
+}
+
+var lastRequest = 0;
+
+/**
+ * Very basic ratelimiter
+ * Will apply all passed arguments to the resolve function, in case it's used in a promise chain
+ */
+function rateLimit() {
+    return new Promise(function (resolve) {
+        var curTime = Date.now(),
+            args = arguments;
+
+        if (curTime - lastRequest > 2000) {
+            resolve.apply(null, args);
+
+            lastRequest = curTime;
+        } else {
+            setTimeout(function(){
+                resolve.apply(null, args);
+
+                lastRequest = Date.now();
+            }, curTime - lastRequest);
+        }
+    });
+}
 
 TB.register_module(self);
 }

@@ -1001,6 +1001,10 @@ body .thing.flaired {
     display: inline-block;
     width: 300px;
 }
+.history-button-popup div.table.account-table {
+    display: inline-block;
+    width: 300px;
+}
 .history-button-popup div.tb-popup-content {
     min-width: 650px;
 }
@@ -1053,7 +1057,7 @@ body .thing.flaired {
     text-align: center;
 }
 
-.rts-report,.rts-report-clicked, .markdown-report, .comment-report {
+.rts-report,.rts-report-clicked, .markdown-report, .comment-report, .account-report {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;

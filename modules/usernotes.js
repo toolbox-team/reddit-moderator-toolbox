@@ -590,31 +590,32 @@ self.usernotesManager = function () {
 
                 function () {
 
+                    // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
+                    setTimeout(function(){
+                        self.log(emptyProfiles);
+                        if (emptyProfiles.length > 0) {
+                            var deleteEmptyProfile = confirm(emptyProfiles.length + ' deleted or shadowbanned users. Delete all notes for these users?');
+                            if (deleteEmptyProfile == true) {
+                                self.log('You pressed OK!');
 
-                    self.log(emptyProfiles);
-                    if (emptyProfiles.length > 0) {
-                        var deleteEmptyProfile = confirm(emptyProfiles.length + ' deleted or shadowbanned users. Delete all notes for these users?');
-                        if (deleteEmptyProfile == true) {
-                            self.log('You pressed OK!');
+                                emptyProfiles.forEach(function (emptyProfile) {
+                                    delete subUsenotes.users[emptyProfile];
+                                    $body.find('#tb-un-note-content-wrap div[data-user="' + emptyProfile + '"]').css('background-color', 'rgb(244, 179, 179)');
+                                });
 
-                            emptyProfiles.forEach(function (emptyProfile) {
-                                delete subUsenotes.users[emptyProfile];
-                                $body.find('#tb-un-note-content-wrap div[data-user="' + emptyProfile + '"]').css('background-color', 'rgb(244, 179, 179)');
-                            });
+                                TB.utils.noteCache[sub] = subUsenotes;
+                                self.saveUserNotes(sub, subUsenotes, "pruned all deleted/shadowbanned users.");
 
-                            TB.utils.noteCache[sub] = subUsenotes;
-                            self.saveUserNotes(sub, subUsenotes, "pruned all deleted/shadowbanned users.");
+                                TB.ui.longLoadSpinner(false, 'Profiles checked, notes for ' + emptyProfiles.length + ' missing users deleted', TB.ui.FEEDBACK_POSITIVE);
+                            } else {
+                                self.log('You pressed Cancel!');
 
-                            TB.ui.longLoadSpinner(false, 'Profiles checked, notes for ' + emptyProfiles.length + ' missing users deleted', TB.ui.FEEDBACK_POSITIVE);
+                                TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
+                            }
                         } else {
-                            self.log('You pressed Cancel!');
-
-                            TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
+                            TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
                         }
-                    } else {
-                        TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
-                    }
-
+                    }, 2000);
 
                 });
         });

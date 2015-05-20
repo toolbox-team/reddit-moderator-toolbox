@@ -84,7 +84,7 @@ function Manager() {
             self.log('    Comparing to max value: ' + achievement.maxValue);
             if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                 self.log('    Unlocked!');
-                TBUtils.notification('Mod achievement unlocked!', achievement.title, window.location + '#?tbsettings=' + self.shortname);
+                TBUtils.notification('Mod achievement unlocked!', achievement.descr, window.location + '#?tbsettings=' + self.shortname);
             }
         }
 

@@ -59,7 +59,8 @@ function initwrapper() {
             "Initiating data transfer: NSA_backdoor_package. ",
             "Please post puppy pictures, they are so fluffy!",
             "RES is visiting for a sleepover,  no time right now",
-            "toolbox is on strike, we demand more karma!"];
+            "toolbox is on strike, we demand more karma!",
+            "brb... kicking Gustavobc from #toolbox"];
 
 
 

@@ -83,8 +83,9 @@ function Manager() {
             var achievement = achievementsBlock[index];
             self.log('    Comparing to max value: ' + achievement.maxValue);
             if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
+                var title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
                 self.log('    Unlocked!');
-                TBUtils.notification('Mod achievement unlocked!', achievement.descr, window.location + '#?tbsettings=' + self.shortname);
+                TBUtils.notification('Mod achievement unlocked!', title, window.location + '#?tbsettings=' + self.shortname);
             }
         }
 

@@ -526,26 +526,24 @@ self.populateCommentHistory = function (after) {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
     }).done(function (d) {
 
+
+        $.each(d.data.children, function (index, value) {
+            var data = value.data;
+            if (!self.subreddits.comments[data.subreddit]) {
+                self.subreddits.comments[data.subreddit] = {count: 0};
+                self.commentSubredditList.push(data.subreddit);
+            }
+
+            self.subreddits.comments[data.subreddit].count++;
+            self.counters.comments++;
+        });
+
         var after = d.data.after;
-        if ($.isEmptyObject(d.data.children)) {
-            after = false;
-        }
-
         if (after) {
-            $.each(d.data.children, function (index, value) {
-                var data = value.data;
-                if (!self.subreddits.comments[data.subreddit]) {
-                    self.subreddits.comments[data.subreddit] = {count: 0};
-                    self.commentSubredditList.push(data.subreddit);
-                }
-
-                self.subreddits.comments[data.subreddit].count++;
-                self.counters.comments++;
-            });
-
             self.populateCommentHistory(after);
         }
-        else {
+
+        if ($.isEmptyObject(d.data.children) || !after) {
             self.commentSubredditList.sort(function (a, b) {
                 return self.subreddits.comments[b].count - self.subreddits.comments[a].count;
             });

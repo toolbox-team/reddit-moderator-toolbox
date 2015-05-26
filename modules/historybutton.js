@@ -104,7 +104,7 @@ self.init = function () {
             <a class="comment-report" href="javascript:;">get comment history</a> \
             <a class="account-report" href="javascript:;">website account history</a> \
             <a class="markdown-report" href="javascript:;">view report in markdown</a> \
-            <a class="rts-report" href="javascript:;" data-commentbody="">report Spammer</a><br />\
+            <a class="rts-report" href="javascript:;" data-commentbody="">report spammer</a><br />\
             <span class="redditorTime"></span>\
             <br /><b>Submission history:</b> <label class="submission-count"></label></div>\
             <div class="table domain-table">\

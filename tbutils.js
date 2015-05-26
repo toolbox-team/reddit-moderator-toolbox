@@ -190,6 +190,9 @@ function initwrapper() {
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
 
 
+        // remove bnw shim
+        localStorage.removeItem('Toolbox.Storage.resetKey');
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
@@ -1766,13 +1769,6 @@ function initwrapper() {
 
         // Just in case.
         TBStorage.unloading();
-
-
-        //localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
-
-        if (TBStorage.bnwShim) {
-            localStorage[TBStorage.BNW_SHIM_KEY] = true;
-        }
     };
 
 

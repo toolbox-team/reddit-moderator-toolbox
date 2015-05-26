@@ -103,8 +103,8 @@ self.init = function () {
             <span class="karma" />\
             <a class="comment-report" href="javascript:;">get comment history</a> \
             <a class="account-report" href="javascript:;">website account history</a> \
-            <a class="markdown-report" style="display:none" href="javascript:;">view report in markdown</a> \
-            <a class="rts-report" style="display:none" href="javascript:;" data-commentbody="">Report Spammer</a><br />\
+            <a class="markdown-report" href="javascript:;">view report in markdown</a> \
+            <a class="rts-report" href="javascript:;" data-commentbody="">report Spammer</a><br />\
             <span class="redditorTime"></span>\
             <br /><b>Submission history:</b> <label class="submission-count"></label></div>\
             <div class="table domain-table">\
@@ -582,11 +582,11 @@ self.reportAuthorToSpam = function () {
     TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
         if (!successful) {
             $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ' + submission[0][1] + '</span>');
-            $rtsLink.hide();
+            //$rtsLink.hide();
         } else {
             if (submission.json.errors.length) {
                 $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
-                $rtsLink.hide();
+                //$rtsLink.hide();
                 if (submission.json.errors[0][0] == 'ALREADY_SUB') {
                     rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on';
                 }
@@ -605,11 +605,11 @@ self.reportAuthorToSpam = function () {
             TBUtils.postComment(submission.json.data.name, commentBody, function (successful, comment) {
                 if (!successful) {
                     $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ' + comment[0][1] + '</span>');
-                    $rtsLink.hide();
+                    //$rtsLink.hide();
                 } else {
                     if (comment.json.errors.length) {
                         $rtsLink.after('<span class="error" style="font-size:x-small; cursor: default;">' + comment.json.errors[1] + '</error>');
-                        $rtsLink.hide();
+                        //$rtsLink.hide();
                         return
                     }
                     rtsNativeLink.textContent = 'Reported';

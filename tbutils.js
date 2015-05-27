@@ -48,8 +48,8 @@ function initwrapper() {
             "I dunno what this 'Safari' thing is.",
             "eeeeew... why is there PHP code in this room?",
             "nah there is an actual difference between stuff",
-            "...have you paid money *out of your own pocket* to anyone to vet this product",
-            "first I want to make sure my thing actually does work sort of "],
+            "...have you paid money *out of your own pocket* to anyone to vet this product?",
+            "first I want to make sure my thing actually does work sort of"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
@@ -192,6 +192,14 @@ function initwrapper() {
 
         // remove bnw shim
         localStorage.removeItem('Toolbox.Storage.resetKey');
+
+        // queue creatures conversion.
+        // We only need to worry if they disabled kitteh, since it's still the default in the new setting.
+        if (!TBStorage.getSetting('QueueTools', 'kitteh', true)) {
+            TBStorage.setSetting('QueueTools', 'queueCreature', 'i_have_no_soul');
+        }
+        localStorage.removeItem('Toolbox.QueueTools.kitteh');
+
 
         // End: version changes.
 

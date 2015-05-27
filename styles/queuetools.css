@@ -29,3 +29,14 @@
     text-indent: -1000px;
     overflow: hidden;
 }
+
+.mod-toolbox .tb-puppy {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://a.thumbs.redditmedia.com/L8eKqhvo2mcjB0E8t87nOlu1_oMoSQ8F8LzqbFHumK8.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}

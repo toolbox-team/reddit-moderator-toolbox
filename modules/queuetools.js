@@ -61,10 +61,19 @@ self.register_setting('botCheckmark', {
     'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
 });
 
+/*
 self.register_setting('kitteh', {
     'type': 'boolean',
     'default': true,
     'title': 'Kitteh?'
+});
+*/
+
+self.register_setting('queueCreature', {
+    'type': 'selector',
+    'values': ['kitteh', 'puppy', 'i have no soul'],
+    'default': 'kitteh',
+    'title': 'Queue Creature'
 });
 
 self.register_setting('subredditColor', {
@@ -92,7 +101,8 @@ self.init = function () {
         sortUnmoderated = self.setting('sortUnmoderated'),
         linkToQueues = self.setting('linkToQueues'),
         subredditColor = self.setting('subredditColor'),
-        subredditColorSalt = self.setting('subredditColorSalt');
+        subredditColorSalt = self.setting('subredditColorSalt'),
+        queueCreature = self.setting('queueCreature');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -105,8 +115,13 @@ self.init = function () {
         }
     }
 
-    if (TBUtils.isModpage && self.setting('kitteh')) {
-        $body.find('p#noresults').addClass('tb-kitteh')
+    var $noResults = $body.find('p#noresults');
+    if (TBUtils.isModpage && queueCreature !== 'i_have_no_soul' && $noResults.length > 0) {
+        if (queueCreature === 'puppy') {
+            $noResults.addClass('tb-puppy')
+        } else if (queueCreature === 'kitteh') {
+            $noResults.addClass('tb-kitteh')
+        }
     }
 
     // Ideally, this should be moved somewhere else to be common with the removal reasons module

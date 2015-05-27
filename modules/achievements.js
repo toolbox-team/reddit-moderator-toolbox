@@ -83,8 +83,16 @@ function Manager() {
             var achievement = achievementsBlock[index];
             self.log('    Comparing to max value: ' + achievement.maxValue);
             if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
-                var title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
-                self.log('    Unlocked!');
+                var title = achievement.title;
+
+                // eh, close enough.
+                // any better solution for links requires re-writing all the rewriting register functions
+                // to support another prop.  If someone want to do that, go for it.
+                try {
+                    title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
+                } catch(e) {}
+
+                self.log('    '+ title +' Unlocked!');
                 TBUtils.notification('Mod achievement unlocked!', title, window.location + '#?tbsettings=' + self.shortname);
             }
         }

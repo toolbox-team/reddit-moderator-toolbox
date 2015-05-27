@@ -434,7 +434,9 @@ self.init = function () {
 
                 if (approve) {
                     TBUtils.approveThing(id, function (success) {
-                        //Insert useful error handling here (or not)
+                        if (success){
+                            TB.utils.sendEvent(TB.utils.events.TB_APPROVE_THING);
+                        }
                     });
                 }
                 else {

@@ -234,12 +234,19 @@ self.init = function () {
     });
 
     // approving stuff
-    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master'], 'Approved {0} things', [50, 200, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], function (saveIndex) {
+
+        // If just the button is used.
         $body.on('click', '.pretty-button, .approve-button', function () {
             var $this = $(this);
             if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
                 self.manager.unlock(saveIndex, 1);
             }
+        });
+
+        // If the API is used
+        TB.utils.catchEvent(TB.utils.events.TB_APPROVE_THING, function () {
+            self.manager.unlock(saveIndex, 1);
         });
     });
 

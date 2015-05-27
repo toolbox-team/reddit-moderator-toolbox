@@ -242,7 +242,8 @@ function initwrapper() {
     };
 
     TBUtils.events = {
-        TB_ABOUT_PAGE: "TB_ABOUT_PAGE"
+        TB_ABOUT_PAGE: "TB_ABOUT_PAGE",
+        TB_APPROVE_THING: "TB_APPROVE_THING"
     };
 
     // Methods and stuff

@@ -19,6 +19,6 @@ insert_final_newline = true
 trim_trailing_whitespace = false
 
 # Just in case it causes issues with safari
-[*.xml]
+[*.plist]
 indent_style = tab
 

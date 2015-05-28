@@ -49,7 +49,8 @@ function initwrapper() {
             "eeeeew... why is there PHP code in this room?",
             "nah there is an actual difference between stuff",
             "...have you paid money *out of your own pocket* to anyone to vet this product?",
-            "first I want to make sure my thing actually does work sort of"],
+            "first I want to make sure my thing actually does work sort of",
+            "Don't let \"perfect\" get in the way of \"good.\""],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

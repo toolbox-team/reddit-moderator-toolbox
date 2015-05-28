@@ -18,4 +18,7 @@ insert_final_newline = true
 [*.md]
 trim_trailing_whitespace = false
 
+# Just in case it causes issues with safari
+[*.xml]
+indent_style = tab
 

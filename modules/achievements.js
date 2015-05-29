@@ -10,7 +10,7 @@ self.register_setting('save', {
     'default': ''
 });
 
-self.register_setting('last_seen', {
+self.register_setting('lastSeen', {
     'type': 'number',
     'default': TBUtils.getTime(),
     'hidden': true
@@ -178,7 +178,7 @@ self.init = function () {
     self.manager.init();
 
     // Individual achievement stuff
-    var lastSeen = self.setting('last_seen');
+    var lastSeen = self.setting('lastSeen');
 
     // Achievement definitions
     self.log('Registering achievements');
@@ -201,14 +201,15 @@ self.init = function () {
         // I tried defaulting to now but it's still wonky.
         var now = TBUtils.getTime(),
             timeSince = now - lastSeen,
-            daysSince = TBUtils.daysToMilliseconds(timeSince);
+            daysSince = TBUtils.millisecondsToDays(timeSince);
+        self.log('daysSince: ' + daysSince);
 
         if (daysSince >= 7) {
-            self.log("you've got an award!");
-            //self.manager.unlock(saveIndex);
+            //self.log("you've got an award!");
+            self.manager.unlock(saveIndex);
         }
 
-        self.setting('last_seen', now);
+        self.setting('lastSeen', now);
     });
 
     //toolbox Loves You: Look at the about page

@@ -201,6 +201,15 @@ function initwrapper() {
         }
         localStorage.removeItem('Toolbox.QueueTools.kitteh');
 
+        // TOOLBOX IS NOT WRITTEN IN PYTHON!
+        var lastSeen = TBStorage.getSetting('Achievements', 'last_seen', 0);
+        if (lastSeen > 0) {
+            TBStorage.setSetting('Achievements', 'lastSeen', lastSeen);
+        } else {
+            TBStorage.setSetting('Achievements', 'lastSeen', now);
+        }
+        localStorage.removeItem('Toolbox.Achievements.last_seen');
+
 
         // End: version changes.
 
@@ -344,7 +353,7 @@ function initwrapper() {
 			return entityMap[s];
 		});
 	};
-    
+
     TBUtils.getTime = function() {
         return new Date().getTime();
     };
@@ -352,7 +361,7 @@ function initwrapper() {
     TBUtils.getRandomNumber = function(maxInt){
         return Math.floor((Math.random() * maxInt) + 1)
     };
-    
+
     //
     TBUtils.minutesToMilliseconds = function (mins) {
         var oneMin = 60000,
@@ -365,11 +374,15 @@ function initwrapper() {
 
         return milliseconds;
     };
-    
+
     TBUtils.daysToMilliseconds = function (days) {
         return days * 86400000;
     };
-    
+
+    TBUtils.millisecondsToDays = function (milliseconds) {
+        return milliseconds / 86400000;
+    };
+
     // convert unix epoch timestamps to ISO format
     TBUtils.timeConverterISO = function (UNIX_timestamp) {
         var a = new Date(UNIX_timestamp * 1000);
@@ -734,7 +747,7 @@ function initwrapper() {
         }
         return str.slice(0, -1);
     };
-    
+
     TBUtils.stringFormat = function(format) {
         var args = Array.prototype.slice.call(arguments, 1);
         return format.replace(/{(\d+)}/g, function(match, number) {
@@ -1220,14 +1233,14 @@ function initwrapper() {
                         $.log(err, false, SHORTNAME);
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                    
+
                     // Moved out of the try so random exceptions don't erase the entire wiki page
                     if (parsedWikiData) {
                         callback(parsedWikiData);
                     } else {
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
-                    
+
                     return;
                 }
 
@@ -1639,8 +1652,8 @@ function initwrapper() {
     TBUtils.htmlDecode = function (value) {
         return $('<div/>').html(value).text();
     };
-    
-    
+
+
     TBUtils.zlibInflate = function (stringThing) {
         // Expand base64
         stringThing = atob(stringThing);
@@ -1649,7 +1662,7 @@ function initwrapper() {
         inflate.push(stringThing);
         return inflate.result;
     };
-    
+
     TBUtils.zlibDeflate = function (objThing) {
         // zlib time!
         var deflate = new pako.Deflate({to:'string'});
@@ -1658,8 +1671,8 @@ function initwrapper() {
         // Collapse to base64
         return btoa(objThing);
     };
-    
-    
+
+
     TBUtils.clearCache = function () {
         $.log('TBUtils.clearCache()', false, SHORTNAME);
 

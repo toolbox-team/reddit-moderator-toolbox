@@ -223,7 +223,7 @@ self.init = function () {
     <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;"> \
         <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
         <span>\
-            <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">&lt;/&gt;</a> \
+            <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">invert</a> \
             <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
             <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
                 <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
@@ -414,7 +414,10 @@ self.init = function () {
                     selector = '.self';
                     break;
                 case 'flair':
-                    selector = ':has(.linkflair)';
+                    selector = ':has(.linkflairlabel)';
+                    break;
+                case 'noflair':
+                    selector = ':not(.linkflairlabel)';
                     break;
             }
             things.filter(selector).find('input[type=checkbox]').prop('checked', true);

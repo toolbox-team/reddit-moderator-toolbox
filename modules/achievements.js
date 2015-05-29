@@ -266,7 +266,7 @@ self.init = function () {
     });
 
     // Empty queue
-    self.manager.registerSeries(['kitteh get!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 700, 1500], function (saveIndex) {
+    self.manager.registerSeries(['kitteh get!', 'puppy power!','<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], function (saveIndex) {
         if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
             self.manager.unlock(saveIndex, 1);
         }

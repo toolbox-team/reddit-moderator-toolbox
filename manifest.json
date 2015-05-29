@@ -1,84 +1,84 @@
 {
-  "manifest_version": 2,
-  "name": "Moderator toolbox for reddit",
-  "short_name": "toolbox",
-  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "version": "3.2.0",
-  "permissions": [
-	"https://*.reddit.com/",
-	"http://*.reddit.com/",
-	"tabs",
-	"storage",
-	"unlimitedStorage"
-  ],
-  "icons": {
-	"16": "/images/icon16.png",
-	"48": "/images/icon48.png",
-	"128": "/images/icon128.png"
-  },
-  "content_scripts": [
-	{
-	  "matches": [
-		"http://*.reddit.com/*",
-		"https://*.reddit.com/*"
-	  ],
-	  "css": [
-		"styles/toolbox.css",
-		"styles/modmatrix.css",
-		"styles/removalreasons.css",
-		"styles/personalnotes.css",
-		"styles/modmaillite.css",
-		"styles/queuetools.css",
-		"styles/modmailpro.css",
-        "styles/achievements.css"
-	  ],
-	  "js": [
-		"libs/jquery-2.1.1.js",
-		"libs/tbplugins.js",
-		"libs/snuownd.js",
-		"libs/ace.js",
-        "libs/pako.js",
-		"libs/worker-css.js",
-		"libs/mode-css.js",
-		"libs/mode-json.js",
-		"libs/mode-yaml.js",
-		"libs/ace-themes.js",
-		"libs/redditapi.js",
-		"tbstorage.js",
-		"tbui.js",
-		"tbutils.js",
-		"tbmodule.js",
-		"modules/modbar.js",
-		"modules/notifier.js",
-		"modules/modmailpro.js",
-		"modules/domaintagger.js",
-		"modules/usernotes.js",
-		"modules/modbutton.js",
-		"modules/metricstab.js",
-		"modules/comment.js",
-		"modules/config.js",
-		"modules/modmatrix.js",
-		"modules/banlist.js",
-		"modules/removalreasons.js",
-		"modules/historybutton.js",
-		"modules/syntax.js",
-		"modules/macros.js",
-		"modules/realtime.js",
-		"modules/nukecomments.js",
-		"modules/personalnotes.js",
-		"modules/modmaillite.js",
-		"modules/betterbuttons.js",
-		"modules/bagel.js",
-		"modules/flyingsnoo.js",
-        "modules/achievements.js",
-		"modules/queuetools.js",
-		"tbmoduleinit.js"
-	  ]
-	}
-  ],
-  "web_accessible_resources": [
-	"libs/jquery-2.1.1.min.js",
-	"libs/snuownd.js",
-	"libs/worker-css.js"
-  ]
+    "manifest_version": 2,
+    "name": "Moderator toolbox for reddit",
+    "short_name": "toolbox",
+    "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+    "version": "3.2.0",
+    "permissions": [
+        "https://*.reddit.com/",
+        "http://*.reddit.com/",
+        "tabs",
+        "storage",
+        "unlimitedStorage"
+    ],
+    "icons": {
+        "16": "/images/icon16.png",
+        "48": "/images/icon48.png",
+        "128": "/images/icon128.png"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*.reddit.com/*",
+                "https://*.reddit.com/*"
+            ],
+            "css": [
+                "styles/toolbox.css",
+                "styles/modmatrix.css",
+                "styles/removalreasons.css",
+                "styles/personalnotes.css",
+                "styles/modmaillite.css",
+                "styles/queuetools.css",
+                "styles/modmailpro.css",
+                "styles/achievements.css"
+            ],
+            "js": [
+                "libs/jquery-2.1.1.js",
+                "libs/tbplugins.js",
+                "libs/snuownd.js",
+                "libs/ace.js",
+                "libs/pako.js",
+                "libs/worker-css.js",
+                "libs/mode-css.js",
+                "libs/mode-json.js",
+                "libs/mode-yaml.js",
+                "libs/ace-themes.js",
+                "libs/redditapi.js",
+                "tbstorage.js",
+                "tbui.js",
+                "tbutils.js",
+                "tbmodule.js",
+                "modules/modbar.js",
+                "modules/notifier.js",
+                "modules/modmailpro.js",
+                "modules/domaintagger.js",
+                "modules/usernotes.js",
+                "modules/modbutton.js",
+                "modules/metricstab.js",
+                "modules/comment.js",
+                "modules/config.js",
+                "modules/modmatrix.js",
+                "modules/banlist.js",
+                "modules/removalreasons.js",
+                "modules/historybutton.js",
+                "modules/syntax.js",
+                "modules/macros.js",
+                "modules/realtime.js",
+                "modules/nukecomments.js",
+                "modules/personalnotes.js",
+                "modules/modmaillite.js",
+                "modules/betterbuttons.js",
+                "modules/bagel.js",
+                "modules/flyingsnoo.js",
+                "modules/achievements.js",
+                "modules/queuetools.js",
+                "tbmoduleinit.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "libs/jquery-2.1.1.min.js",
+        "libs/snuownd.js",
+        "libs/worker-css.js"
+    ]
 }

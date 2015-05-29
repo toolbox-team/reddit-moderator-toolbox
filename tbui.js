@@ -159,7 +159,8 @@
 
     TBui.standardColors = {
         "red": "#FF0000",
-        "green": "#00F51E",
+        "green": "#347235",
+        "lightgreen": "#00F51E",
         "blue": "#0082FF",
         "magenta": "#DC00C8",
         "cyan": "#00F0F0",

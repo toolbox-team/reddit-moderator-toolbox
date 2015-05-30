@@ -50,7 +50,8 @@ function initwrapper() {
             "nah there is an actual difference between stuff",
             "...have you paid money *out of your own pocket* to anyone to vet this product?",
             "first I want to make sure my thing actually does work sort of",
-            "Don't let \"perfect\" get in the way of \"good.\""],
+            "Don't let \"perfect\" get in the way of \"good.\"",
+            "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

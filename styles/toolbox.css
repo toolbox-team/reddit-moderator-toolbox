@@ -79,6 +79,7 @@
 }
 
 .mod-toolbox #tb-modmail {
+	top: 2px;
     display: inline-block;
     height: 16px;
     overflow: hidden;
@@ -128,7 +129,7 @@
     background-repeat: no-repeat;
     line-height: 8px;
     position: relative;
-    top: 2px;
+    top: 3px;
     display: inline-block;
     text-indent: -9999px;
     overflow: hidden;

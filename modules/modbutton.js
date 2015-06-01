@@ -41,8 +41,12 @@ self.processThing = function (thing) {
         // try to insert it to the left of 'reply'
         var $insertionPoint = $(thing).find('.flat-list.buttons a[onClick="return reply(this)"]');
         if ($insertionPoint.length == 0) {
-            // otherwise stick it to the left of the last button
-            $insertionPoint = $(thing).find('.buttons > li:last');
+			// otherwise stick it to the left of 'flair'
+			var $insertionPoint = $(thing).find('.flat-list.buttons .flairselectbtn');
+			if ($insertionPoint.length == 0) {
+    	        // if that doesn't work either stick it to the left of the last button
+	            $insertionPoint = $(thing).find('.buttons > li:last');
+			}
         }
         $insertionPoint.before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
     }

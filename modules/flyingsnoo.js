@@ -19,6 +19,9 @@ self.init = function () {
         var width = 87,
             height = 145;
 
+        // unlock achievement
+        TB.utils.sendEvent(TB.utils.events.TB_FLY_SNOO);
+
         var floater = $("<div></div>").css({
             height: height + "px",
             width: width + "px",
@@ -111,6 +114,9 @@ self.init = function () {
                         "top": (documentHeight - height) + "px"
                     });
                     floater.css("background", "url(//d.thumbs.redditmedia.com/tIFOjQQ5pPahJKP-.png)");
+
+                    // unlock achievement
+                    TB.utils.sendEvent(TB.utils.events.TB_KILL_SNOO);
                 }
             }, 50);
         });

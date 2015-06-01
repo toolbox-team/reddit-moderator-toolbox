@@ -272,6 +272,20 @@ self.init = function () {
             self.manager.unlock(saveIndex, 1);
         }
     });
+
+    // Found flying Snoo
+    self.manager.register('Cadbury Bunny', 'Found flying Snoo.', function (saveIndex) {
+        TB.utils.catchEvent(TB.utils.events.TB_FLY_SNOO, function () {
+            self.manager.unlock(saveIndex);
+        });
+    });
+
+    // Killed Snoo
+    self.manager.register('you bastard!', 'Killed Snoo.', function (saveIndex) {
+        TB.utils.catchEvent(TB.utils.events.TB_KILL_SNOO, function () {
+            self.manager.unlock(saveIndex);
+        });
+    });
 };
 
 TB.register_module(self);

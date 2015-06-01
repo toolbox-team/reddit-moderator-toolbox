@@ -1811,9 +1811,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 /* This should probably be somewhere else */
 
 #moderation_tools .icon-menu .toolbox-edit {
-    margin-left: 6px;
+    margin-left: 5px;
 }
 
+#moderation_tools .icon-menu .tb-un-manager {
+    margin-left: 1px;
+}
 
 /* metrics tab/dropdown stuff */
 #tb-metrics-expand-list {

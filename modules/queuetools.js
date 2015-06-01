@@ -416,9 +416,6 @@ self.init = function () {
                 case 'flair':
                     selector = ':has(.linkflairlabel)';
                     break;
-                case 'noflair':
-                    selector = ':not(.linkflairlabel)';
-                    break;
             }
             things.filter(selector).find('input[type=checkbox]').prop('checked', true);
         });
@@ -652,7 +649,8 @@ self.init = function () {
 
             var now = new Date().valueOf(),
                 subs = {},
-                delay = 0;
+                delay = 0,
+                refrshDelay = 10800000; //three hours
 
             // Update modqueue items count
             var modSubs = [];
@@ -664,7 +662,7 @@ self.init = function () {
 
                 // Update count and re-cache data if more than an hour old.
                 elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
-                if (now > data[1] + 3600000)
+                if (now > data[1] + refrshDelay)
                     setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
             });
             //TBUtils.setSetting('QueueTools', type + TBUtils.logged, modSubs); //this, uh... doesn't do anything?

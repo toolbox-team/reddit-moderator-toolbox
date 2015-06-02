@@ -983,7 +983,7 @@ body .thing.flaired {
 }
 
 .pretty-button.inoffensive.pressed {
-    background-position: 0 -200px!important;
+    background-position: 0 -82px!important;
 }
 
 .thing+input[type="checkbox"]:focus {

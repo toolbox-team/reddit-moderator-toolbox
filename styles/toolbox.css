@@ -974,8 +974,8 @@ body .thing.flaired {
 }
 
 .pretty-button.inoffensive {
-    background-position: 0 -240px;
-    background-image: url(//www.redditstatic.com/sprite-reddit.rQ7y8qN-wzQ.png);
+    background-position: 0px -105px;
+    background-image: url(http://a.thumbs.redditmedia.com/Ec85AWdAyumYZeFVgEaxwSr6Go8NZyCgGmtTVQsQqc8.png);
     background-repeat: repeat;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -1313,7 +1313,7 @@ height: 300px;
     margin-left: 0;
     margin-right: 0;
     width: auto;
-    height: 10px;    
+    height: 10px;
     background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 

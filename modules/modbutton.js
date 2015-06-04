@@ -190,7 +190,7 @@ self.init = function () {
                 </div>\
                 <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
                 <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
-                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)"> <label class="ban-span-include-time"><input type="checkbox" name="ban-include-time" class="ban-include-time" value="ban-include-time"> Include in message </label>\
+                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)">\
                 </div>',
                     footer: '\
                 <span class="status error left"></span>\
@@ -371,11 +371,10 @@ self.init = function () {
             banReason = $popup.find('.ban-note').val(),
             banMessage = $popup.find('textarea.ban-message').val(),
             banDuration = $popup.find('.ban-duration').val(),
-            includeDuration = $popup.find('.ban-include-time').is(':checked'),
             subreddits = [],
             user = $popup.find('.user').text();
-        
-        banMessage = createBanReason(banMessage, includeDuration, banDuration);
+
+        banMessage = createBanReason(banMessage);
 
         self.setting('lastAction', actionName);
 
@@ -424,25 +423,18 @@ self.init = function () {
         }
 
         var $timer;
-        
-        function createBanReason(message, includeDuration, duration) {
+
+        function createBanReason(message) {
             var reason = "";
-            
+
             // Add message if exists
             if(message && message.length > 0) {
                 reason += "{0}";
             }
-            // Add duration if exists and required
-            if(includeDuration && !isNaN(duration) && duration > 0) {
-                if(reason.length > 0) {
-                    reason += "\n\n";
-                }
-                reason += "You are banned for: {1}";
-            }
-            
-            return TBUtils.stringFormat(reason, message, TBUtils.humaniseDays(banDuration));
+
+            return TBUtils.stringFormat(reason, message);
         }
-        
+
         function completeCheck(failedSubs) {
             $timer.stop();
             TB.utils.pageOverlay(null, false);

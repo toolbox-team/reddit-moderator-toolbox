@@ -25,6 +25,12 @@ self.register_setting('enableTopLink', {
     'hidden': true,
     'title': 'Show top link in modbar'
 });
+self.register_setting('enableModSubs', {
+    'type': 'boolean',
+    'default': true,
+    'hidden': true,
+    'title': 'Show Moderated Subreddits modbar'
+});
 
 // private settings.    // there is no JSON setting type.
 self.register_setting('shortcuts', {
@@ -74,6 +80,7 @@ self.init = function() {
         consoleShowing = self.setting('consoleShowing'),
         lockscroll = self.setting('lockScroll'),
         enableTopLink = self.setting('enableTopLink'),
+        enableModSubs = self.setting('enableModSubs'),
         customCSS = self.setting('customCSS'),
 
         debugMode = TBUtils.debugMode,
@@ -173,80 +180,89 @@ self.init = function() {
 
     $body.append(modBar);
 
+    // Always add moderated subreddits, but hide it.  Reason: personal notes needs the elem to exist.
+    $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+
     // moderated subreddits button.
-    var subList = '',
-        livefilterCount,
-        mySubsTemplate = '  <div id="tb-my-subreddits">\
+    if (enableModSubs) {
+        var subList = '',
+            livefilterCount,
+            mySubsTemplate = '  <div id="tb-my-subreddits">\
                             <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
                             <span class="tb-livefilter-count">{{livefilterCount}}</span>\
                             <br>\
                             <table id="tb-my-subreddit-list">{{subList}}</table>\
                         </div>';
 
-    $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs">Moderated Subreddits</a> ');
-
-    TBUtils.getModSubs(function () {
-        $(TBUtils.mySubsData).each(function () {
-            subList = subList + '\
+        TBUtils.getModSubs(function () {
+            self.log('got mod subs');
+            self.log(TBUtils.mySubs.length);
+            self.log(TBUtils.mySubsData.length);
+            $(TBUtils.mySubsData).each(function () {
+                subList = subList + '\
 <tr data-subreddit="' + this.subreddit + '"><td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td> \
 <td class="tb-my-subreddits-subreddit"><a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
 <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
 <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a></td></tr>\
 ';
-        });
-        livefilterCount = TBUtils.mySubs.length;
-    });
-
-    var modSubsPopupContent = TBUtils.template(mySubsTemplate, {
-        'livefilterCount': livefilterCount,
-        'subList': subList
-    });
-
-
-    $body.on('click', '#tb-toolbar-mysubs', function () {
-        var $this = $(this);
-        if (!$this.hasClass('tb-mysubs-activated')) {
-            $this.addClass('tb-mysubs-activated');
-            TB.ui.popup(
-                'Subreddits you moderate',
-                [
-                    {
-                        title: 'Subreddits you moderate',
-                        id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
-                        tooltip: 'Subreddits you moderate',
-                        content: modSubsPopupContent,
-                        footer: ''
-                    }
-                ],
-                '',
-                'subreddits-you-mod-popup' // class
-            ).appendTo('body').css({
-                    'position': 'fixed',
-                    'bottom': '31px',
-                    'left': '20px'
-                });
-        }
-
-        $body.find('#tb-livefilter-input').keyup(function () {
-            var LiveSearchValue = $(this).val();
-            $body.find('#tb-my-subreddits table tr').each(function () {
-                var $this = $(this),
-                    subredditName = $this.attr('data-subreddit');
-
-                if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-                    $this.hide();
-                } else {
-                    $this.show();
-                }
-                $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
             });
-        });
-    });
+            livefilterCount = TBUtils.mySubs.length;
 
-    $body.on('click', '.subreddits-you-mod-popup .close', function () {
-        $(this).closest('.subreddits-you-mod-popup').remove();
-        $body.find('#tb-toolbar-mysubs').removeClass('tb-mysubs-activated');
-    });
+            var modSubsPopupContent = TBUtils.template(mySubsTemplate, {
+                'livefilterCount': livefilterCount,
+                'subList': subList
+            });
+
+
+            $body.on('click', '#tb-toolbar-mysubs', function () {
+                var $this = $(this);
+                if (!$this.hasClass('tb-mysubs-activated')) {
+                    $this.addClass('tb-mysubs-activated');
+                    TB.ui.popup(
+                        'Subreddits you moderate',
+                        [
+                            {
+                                title: 'Subreddits you moderate',
+                                id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
+                                tooltip: 'Subreddits you moderate',
+                                content: modSubsPopupContent,
+                                footer: ''
+                            }
+                        ],
+                        '',
+                        'subreddits-you-mod-popup' // class
+                    ).appendTo('body').css({
+                            'position': 'fixed',
+                            'bottom': '31px',
+                            'left': '20px'
+                        });
+                }
+
+                $body.find('#tb-livefilter-input').keyup(function () {
+                    var LiveSearchValue = $(this).val();
+                    $body.find('#tb-my-subreddits table tr').each(function () {
+                        var $this = $(this),
+                            subredditName = $this.attr('data-subreddit');
+
+                        if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
+                            $this.hide();
+                        } else {
+                            $this.show();
+                        }
+                        $('.tb-livefilter-count').text($('#tb-my-subreddits table tr:visible').length);
+                    });
+                });
+            });
+
+            $body.on('click', '.subreddits-you-mod-popup .close', function () {
+                $(this).closest('.subreddits-you-mod-popup').remove();
+                $body.find('#tb-toolbar-mysubs').removeClass('tb-mysubs-activated');
+            });
+
+            // only show the button once it's populated.
+            $('#tb-toolbar-mysubs').show();
+        });
+    }
 
     if (TBUtils.firstRun) {
         $('.tb-first-run').show();
@@ -469,6 +485,9 @@ self.init = function() {
     <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
 </p>\
 <p>\
+    <label><input type="checkbox" id="enableModSubs" ' + ((enableModSubs) ? "checked" : "") + '> Show Moderated Subreddits modbar</label>\
+</p>\
+<p>\
     <label><input type="checkbox" id="unmoderatedOn" ' + ((unmoderatedOn) ? "checked" : "") + '> Show icon for unmoderated</label>\
 </p>\
     Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
@@ -487,7 +506,7 @@ self.init = function() {
 
         // add them to the dialog
         $toolboxSettings.appendTo('.tb-window-content');
-        $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">toolbox Settings</a>').addClass('active').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">General Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'toolbox');
 
         // Settings to toggle the modules
@@ -662,6 +681,7 @@ See the License for the specific language governing permissions and limitations 
         // TODO: Check if the settings below work as intended.
         self.setting('compactHide', $("#compactHide").prop('checked'));
         self.setting('enableTopLink', $("#enableTopLink").prop('checked'));
+        self.setting('enableModSubs', $("#enableModSubs").prop('checked'));
         self.setting('unmoderatedOn', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));

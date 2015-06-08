@@ -132,17 +132,29 @@ function initwrapper() {
     TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
     TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
+    if (TBUtils.debugMode) {
+        var consoleText = 'toolbox version: ' + TBUtils.toolboxVersion +
+            ', Browser: ' + TBUtils.browser +
+            ', Extension: ' + TBUtils.isExtension +
+            ', Beta features: ' + TBUtils.betaMode +
+            '\n\n"' + TBUtils.RandomQuote+ '"\n';
+
+        TBUtils.log.push(consoleText);
+    }
 
     // Update cache vars as needed.
     if (newLogin) {
+        $.log('Account changed', false, SHORTNAME);
         TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBUtils.logged);
     }
 
     if (getnewLong) {
+        $.log('Long cache expired', false, SHORTNAME);
         TBStorage.setCache(SETTINGS_NAME, 'lastGetLong', now);
     }
 
     if (getnewShort) {
+        $.log('Short cache expired', false, SHORTNAME);
         TBStorage.setCache(SETTINGS_NAME, 'lastGetShort', now);
     }
 
@@ -221,17 +233,6 @@ function initwrapper() {
         TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
         TBUtils.debugMode = false;
         TBUtils.betaMode = false;
-    }
-
-
-    if (TBUtils.debugMode) {
-        var consoleText = 'toolbox version: ' + TBUtils.toolboxVersion +
-            ', Browser: ' + TBUtils.browser +
-            ', Extension: ' + TBUtils.isExtension +
-            ', Beta features: ' + TBUtils.betaMode +
-            '\n\n"' + TBUtils.RandomQuote+ '"\n';
-
-        TBUtils.log.push(consoleText);
     }
 
 

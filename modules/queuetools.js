@@ -71,7 +71,7 @@ self.register_setting('kitteh', {
 
 self.register_setting('queueCreature', {
     'type': 'selector',
-    'values': ['kitteh', 'puppy', 'i have no soul'],
+    'values': ['kitteh', 'puppy', '/r/babyelephantgifs','i have no soul'],
     'default': 'kitteh',
     'title': 'Queue Creature'
 });
@@ -117,10 +117,13 @@ self.init = function () {
 
     var $noResults = $body.find('p#noresults');
     if (TBUtils.isModpage && queueCreature !== 'i_have_no_soul' && $noResults.length > 0) {
+        self.log(queueCreature);
         if (queueCreature === 'puppy') {
             $noResults.addClass('tb-puppy')
         } else if (queueCreature === 'kitteh') {
             $noResults.addClass('tb-kitteh')
+        } else if (queueCreature === '/r/babyelephantgifs') {
+            $noResults.addClass('tb-begifs')
         }
     }
 

@@ -40,3 +40,18 @@
     text-indent: -1000px;
     overflow: hidden;
 }
+
+.mod-toolbox .tb-begifs {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("http://i.imgur.com/TnlhFA8.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox .tb-begifs:after {
+    content: "baby elephant is pleased!";
+}

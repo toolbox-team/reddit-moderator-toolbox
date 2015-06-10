@@ -23,13 +23,13 @@ self.register_setting('enableTopLink', {
     'type': 'boolean',
     'default': false,
     'hidden': true,
-    'title': 'Show top link in modbar'
+    'title': 'Show Top link in the modbar'
 });
 self.register_setting('enableModSubs', {
     'type': 'boolean',
     'default': true,
     'hidden': true,
-    'title': 'Show Moderated Subreddits modbar'
+    'title': 'Show Moderated Subreddits in the modbar'
 });
 
 // private settings.    // there is no JSON setting type.

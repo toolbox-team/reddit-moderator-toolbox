@@ -171,11 +171,13 @@ function Manager() {
     };
 }
 
+// Always load the manager so achievements can still be viewed if the module is disabled
+self.manager = new Manager();
+self.manager.init();
+
 // Init module
 self.init = function () {
     var $body = $('body');
-    self.manager = new Manager();
-    self.manager.init();
 
     // Individual achievement stuff
     var lastSeen = self.setting('lastSeen');

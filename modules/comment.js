@@ -545,9 +545,9 @@ self.init = function() {
                                 submissionTitle = value.data.link_title,
                                 linkId = value.data.link_id,
                                 linkUrl = value.data.link_url;
-								
+
 							var hit = true;
-							
+
 							for(var option in options) {
 								if(!value.data[option] || !options[option].test(""+value.data[option])) {
 									hit = false;
@@ -612,7 +612,7 @@ self.init = function() {
                                 htmlProfileCommentViewBuffer = htmlProfileCommentViewBuffer + htmlConstructedComment;
                             }
                         });
-						
+
 						// Buffer
 						if (htmlProfileCommentViewBuffer) {
 							$('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
@@ -640,7 +640,7 @@ self.init = function() {
                         }
                     });
                 }
-				
+
 				function regExpEscape(query) {
 					return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 				}
@@ -659,6 +659,15 @@ self.init = function() {
     }
 
     commentSearch();
+
+    var $modComments = $('.moderator');
+    if ($modComments.length > 0 ){
+        $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-mod-comments">hide mod comments</a>');
+
+        $body.on('click', '.hide-mod-comments', function () {
+            $modComments.closest('.thing').hide();
+        })
+    }
 };
 
 TB.register_module(self);

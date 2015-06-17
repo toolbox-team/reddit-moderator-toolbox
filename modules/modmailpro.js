@@ -179,6 +179,7 @@ self.modmailpro = function() {
         twoPhaseProcessing = self.setting('twoPhaseProcessing'),
         filterBots = self.setting('filterBots'),
         botsToFilter = self.setting('botsToFilter'),
+        filteredSubs = self.setting('filteredSubs'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -201,8 +202,7 @@ self.modmailpro = function() {
         $botsLink = $('<li><a class="botslink" href="javascript:;" data-view="' + BOTS + '">bots</a></li>'),
         $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
-        $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>'),
-        $subFilter = $('<a href="javascript:;" class="filter-sub-link" title="Filter/unfilter thread subreddit."></a>');
+        $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
 
     var infoArea =
         '<span class="info-area correspondent">\
@@ -333,7 +333,6 @@ self.modmailpro = function() {
             }
 
             // Set views.
-            setFilterLinks($unprocessedThreads);
             setReplied($unprocessedThreads);
             setView();
 
@@ -508,7 +507,6 @@ self.modmailpro = function() {
             $subredditArea.css('background-color', 'yellow');
 
             setView($thread);
-            setFilterLinks($thread);
 
             if (collapsed) {
                 $thread.find('.entry').css('display', 'none');
@@ -537,7 +535,6 @@ self.modmailpro = function() {
                 $thread.addClass('process-new');
             }
 
-            setFilterLinks($thread);
             setReplied($thread);
         }
 
@@ -548,7 +545,6 @@ self.modmailpro = function() {
         var $subArea = $threads.find('.correspondent:first');
         $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
         $subArea.prepend(collapseLink);
-        $subArea.append($subFilter);
         $subArea.after(infoArea);
     }
 
@@ -695,8 +691,7 @@ self.modmailpro = function() {
     }
 
     function setView() {
-        var a = [], //hacky-hack for 'all' view.
-            filteredSubs = getFilteredSubs();
+        var a = []; //hacky-hack for 'all' view.
 
         // Neither a switch nor === will work correctly.
         if (inbox == ALL) {
@@ -812,25 +807,6 @@ self.modmailpro = function() {
         });
     }
 
-    function setFilterLinks(threads) {
-        if (threads === undefined) {
-            threads = $('.message-parent');
-        }
-
-        // I think I could do this by just locating .filter-sub-link.
-        threads.each(function () {
-            var $this = $(this),
-                subname = $this.data('subreddit'),
-                linktext = 'F';
-
-            if ($.inArray(subname, getFilteredSubs()) !== -1) {
-                linktext = 'U';
-            }
-
-            $this.find('.filter-sub-link').text(linktext);
-        });
-    }
-
     function setReplied(threads) {
         if (threads === undefined) {
             threads = $('.message-parent');
@@ -845,10 +821,6 @@ self.modmailpro = function() {
                 $this.removeClass('invitespam'); //it's not spam if we replied.
             }
         });
-    }
-
-    function getFilteredSubs() {
-        return self.setting('filteredSubs');
     }
 
     function getRepliedThreads() {
@@ -1021,27 +993,6 @@ self.modmailpro = function() {
 
     $body.on('click', '.tb-thread-view', function () {
         threadModmail($(this).closest('.message-parent').data('fullname'));
-    });
-
-    $body.on('click', '.filter-sub-link', function (e) {
-        var subname = $(e.target).closest('.message-parent').data('subreddit'),
-            filtersubs = getFilteredSubs();
-
-        // Add sub to filtered subs.
-        if ($.inArray(subname, filtersubs) === -1) {
-            filtersubs.push(subname);
-        } else {
-            filtersubs.splice(filtersubs.indexOf(subname), 1);
-        }
-
-        // Save new filter list.
-        self.setting('filteredSubs', filtersubs);
-
-        // Refilter if in filter mode.
-        setView();
-
-        // Relabel links
-        setFilterLinks();
     });
 };
 

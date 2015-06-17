@@ -62,7 +62,7 @@
     display: inline-block !important;
     height: 17px;
     padding: 2px 4px;
-    
+
     border-bottom-right-radius: 7px;
     border-left: medium none !important;
     border-top-right-radius: 7px;
@@ -71,21 +71,6 @@
 .tb-modmail-pro .message-parent.has-replies > .subject .info-area {
     padding-left: 8px;
     padding-right: 8px;
-}
-
-/* Filtering */
-
-.tb-modmail-pro .filter-sub-link {
-    display: inline-block;
-    width: 18px;
-    
-    text-align: center;
-    color: rgb(255, 69, 0);
-    margin-left: 4px;
-}
-
-.tb-modmail-pro .filter-sub-link:hover {
-    color: rgba(255, 69, 0, 0.7);
 }
 
 /* Message count */
@@ -113,7 +98,7 @@
 .tb-modmail-pro .message.new-messages .new-label {
     display: inline;
     color: black;
-    
+
     margin-right: 4px;
     padding: 1px;
 }

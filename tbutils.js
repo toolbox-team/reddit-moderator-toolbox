@@ -1463,6 +1463,7 @@ function initwrapper() {
             uh: TBUtils.modhash,
             title: title,
             sr: subreddit,
+            sendreplies: 'true', //this is the default on reddit.com, so it should be our default.
             api_type: 'json'
         })
             .success(function (response) {

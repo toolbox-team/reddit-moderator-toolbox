@@ -467,7 +467,7 @@ self.init = function() {
 
                 var subredditsearch = $body.find('#subredditsearch').val(),
                     usersearch = $('#header-bottom-left .pagename').text(),
-					contentsearch = $body.find('#contentsearch').val();
+                    contentsearch = $body.find('#contentsearch').val();
 
                 subredditsearch = subredditsearch.replace(/\/?r\//g, '');
                 subredditsearch = TBUtils.htmlEncode(subredditsearch);
@@ -516,7 +516,7 @@ self.init = function() {
 <div class="clearleft"></div>';
 
                 var htmlProfileCommentViewBuffer = '';
-				var hasHits = false;
+                var hasHits = false;
                 $('.sitetable.linklisting').empty();
                 $body.find('#progressIndicator').remove();
                 TB.ui.longLoadSpinner(true, 'searching for comments by ' + usersearch, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
@@ -534,7 +534,7 @@ self.init = function() {
                                 authorFlairText = value.data.author_flair_text,
                                 bannedBy = value.data.banned_by,
                                 bodyHtml = value.data.body_html,
-								body = value.data.body,
+                                body = value.data.body,
                                 createdUTC = value.data.created_utc,
                                 distinguished = value.data.distinguished,
                                 commentID = value.data.id,
@@ -546,14 +546,14 @@ self.init = function() {
                                 linkId = value.data.link_id,
                                 linkUrl = value.data.link_url;
 
-							var hit = true;
+                            var hit = true;
 
-							for(var option in options) {
-								if(!value.data[option] || !options[option].test(""+value.data[option])) {
-									hit = false;
-									break;
-								}
-							}
+                            for (var option in options) {
+                                if (!value.data[option] || !options[option].test("" + value.data[option])) {
+                                    hit = false;
+                                    break;
+                                }
+                            }
 
                             if (hit) {
                                 // figure out if we need to add author and mod stuff.
@@ -613,17 +613,17 @@ self.init = function() {
                             }
                         });
 
-						// Buffer
-						if (htmlProfileCommentViewBuffer) {
-							$('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
-							htmlProfileCommentViewBuffer = "";
-							hasHits = true;
-						}
+                        // Buffer
+                        if (htmlProfileCommentViewBuffer) {
+                            $('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
+                            htmlProfileCommentViewBuffer = "";
+                            hasHits = true;
+                        }
 
                         if (!data.data.after) {
                             if (!hasHits) {
                                 htmlProfileCommentViewBuffer = '<div class="error">no results found</div>';
-								$('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
+                                $('.sitetable.linklisting').append(htmlProfileCommentViewBuffer);
                             }
 
                             $("time.timeago").timeago();
@@ -641,17 +641,17 @@ self.init = function() {
                     });
                 }
 
-				function regExpEscape(query) {
-					return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-				}
-				var searchOptions = {
-				};
-				if(subredditsearch) {
-					searchOptions.subreddit = new RegExp("^" + regExpEscape(subredditsearch) + "$","i");
-				}
-				if(contentsearch) {
-					searchOptions.body = new RegExp(regExpEscape(contentsearch),"gi");
-				}
+                function regExpEscape(query) {
+                    return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                }
+
+                var searchOptions = {};
+                if (subredditsearch) {
+                    searchOptions.subreddit = new RegExp("^" + regExpEscape(subredditsearch) + "$", "i");
+                }
+                if (contentsearch) {
+                    searchOptions.body = new RegExp(regExpEscape(contentsearch), "gi");
+                }
                 searchComments(usersearch, searchOptions);
                 return false;
             });
@@ -660,11 +660,14 @@ self.init = function() {
 
     commentSearch();
 
+    // hide mod comments option.
     var $modComments = $('.moderator');
-    if ($modComments.length > 0 ){
+    if ($modComments.length > 0) {
+        self.log('found mod comments');
         $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-mod-comments">hide mod comments</a>');
 
         $body.on('click', '.hide-mod-comments', function () {
+            self.log('hiding mod comments');
             $modComments.closest('.thing').hide();
         })
     }

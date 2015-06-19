@@ -3,7 +3,6 @@ var self = new TB.Module('Comments');
 self.shortname = 'Comments'; // historical precedent for settings
 
 self.settings['enabled']['default'] = true;
-self.config['betamode'] = false;
 
 self.register_setting('hideRemoved', {
     'type': 'boolean',
@@ -669,6 +668,18 @@ self.init = function() {
         $body.on('click', '.hide-mod-comments', function () {
             self.log('hiding mod comments');
             $modComments.closest('.thing').hide();
+        })
+    }
+
+    // hide old comments
+    if (TBUtils.betaMode) {
+        // Sadly, this also hides new child comments of old parent comments.
+        // Needs to work recursively or some shit.
+        $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-old">hide old</a>');
+        $body.on('click', '.hide-old', function () {
+            self.log('hiding old comments');
+            $('.thing').show(); //reset before hiding.
+            $('.thing:not(.new-comment)').hide();
         })
     }
 };

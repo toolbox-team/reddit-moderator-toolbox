@@ -54,6 +54,16 @@ self.register_setting('customCSS', {
     'default': '',
     'hidden': true
 });
+self.register_setting('lastExport', {
+    'type': 'number',
+    'default': 0,
+    'hidden': true
+});
+self.register_setting('showExportReminder', {
+    'type': 'boolean',
+    'default': true,
+    'hidden': true
+});
 
 self.init = function() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
@@ -95,7 +105,24 @@ self.init = function() {
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
+
+        // last export stuff
+        lastExport = self.setting('lastExport'),
+        showExportReminder = self.setting('showExportReminder'),
+        lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
+        lastExportLabel = (lastExport === 0) ? 'Never' : lastExportDays + ' days ago',
+        lastExportColor = (lastExportDays < 15)  ? TB.ui.standardColors.lightgreen : TB.ui.standardColors.yellow;
+
+
+    if (lastExportDays > 30 || lastExport === 0) {
+        lastExportColor = TB.ui.standardColors.red;
+
+        if (showExportReminder && settingSub !== ''){
+            TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 2000, TB.ui.DISPLAY_BOTTOM);
+        }
+    }
+
 
     // Custom CSS for devmode/testing
     if (customCSS) {
@@ -468,11 +495,14 @@ self.init = function() {
         var $toolboxSettings = $('\
 <div class="tb-window-content-toolbox">\
     <p>\
-        Import/export toolbox settings to a wiki page:<br>\
+        Backup/restore toolbox settings to a wiki page:<br>\
         <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
-        <input class="tb-settings-import" type="button" value="import">\
-        <input class="tb-settings-export" type="button" value="export">\
+        <input class="tb-settings-export" type="button" value="backup">\
+        <input class="tb-settings-import" type="button" value="restore">\
         <b> Important:</b> This will reload the page without saving!\
+        &nbsp;&nbsp;<lable style="color:'+ lastExportColor +'">Last backup: <b>'+ lastExportLabel +'</b>\
+    </p><p>\
+        <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show backup reminder every 30 days.</label>\
     </p><p>\
         <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
     </p><p ' + ((debugMode) ? '' : 'style="display:none;"') + '>\
@@ -610,6 +640,7 @@ self.init = function() {
         }
         else {
             TBUtils.exportSettings(sub, function () {
+                self.setting('lastExport', TB.utils.getTime());
                 TBUtils.clearCache();
                 window.location.reload();
             });
@@ -697,8 +728,9 @@ self.init = function() {
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
         TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
-
         TB.storage.setSetting('Utils', 'skipLocalConsole', $("#browserConsole").prop('checked'));
+
+        self.setting('showExportReminder', $("#showExportReminder").prop('checked'));
 
         // Save shortcuts
         var $shortcuts = $('.tb-window-content-shortcuts-tr');

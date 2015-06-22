@@ -11,7 +11,8 @@ function initwrapper() {
         TBUtils.post_site = "";
     }
 
-    var SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
+    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
+        ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
     //Private variables
     var modMineURL = '/subreddits/mine/moderator.json?count=100',
@@ -65,12 +66,6 @@ function initwrapper() {
             "brb... kicking Gustavobc from #toolbox"];
 
 
-
-    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
-        ECHO = 'echo', TB_KEY = 'Toolbox.';
-
-    TBUtils.browsers = TBStorage.browsers;
-
     // Public variables
     TBUtils.toolboxVersion = '3.2.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 320; //don't forget to change this one!  This is used for the 'new version' notification.
@@ -104,10 +99,14 @@ function initwrapper() {
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
-    TBUtils.browser = TBStorage.browser;
     TBUtils.firstRun = false;
     TBUtils.tbDevs = toolboxDevs;
     TBUtils.betaRelease = betaRelease;
+    
+    // Stuff from TBStorage
+    TBUtils.browser = TBStorage.browser;
+    TBUtils.domain = TBStorage.domain;
+    TBUtils.browsers = TBStorage.browsers;
 
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
@@ -1582,9 +1581,9 @@ function initwrapper() {
                 return;
             }
 
-            if (TBStorage.domain != 'www') {
-                TBui.textFeedback("Cannot import from " + TBStorage.domain + ".reddit.com.");
-                $.log("Cannot import from " + TBStorage.domain + ".reddit.com.", false, SHORTNAME);
+            if (TBUtils.domain != 'www') {
+                TBui.textFeedback("Cannot import from " + TBUtils.domain + ".reddit.com.");
+                $.log("Cannot import from " + TBUtils.domain + ".reddit.com.", false, SHORTNAME);
                 return;
             }
 

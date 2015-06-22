@@ -85,6 +85,12 @@ self.register_setting('checkInterval', {
     'title': 'Interval to check for new items (time in minutes).'
 });
 
+self.register_setting('wwwNotifications', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Only check for notifications on www.reddit.com (prevents duplicate notifications)'
+});
+
 /// Private storage settings.
 self.register_setting('unreadMessageCount', {
     'type': 'number',
@@ -134,8 +140,9 @@ self.register_setting('modqueuePushed', {
 
 self.init = function () {
 
-    var modNotifications = self.setting('modNotifications'),  // these need to be converted to booleans.
-        messageNotifications = self.setting('messageNotifications'), // these need to be converted to booleans.
+    var wwwNotifications = self.setting('wwwNotifications'),
+        modNotifications = self.setting('modNotifications'),
+        messageNotifications = self.setting('messageNotifications'),
         modmailNotifications = self.setting('modmailNotifications'),
         unmoderatedNotifications = self.setting('unmoderatedNotifications'),
         consolidatedMessages = self.setting('consolidatedMessages'),
@@ -153,7 +160,7 @@ self.init = function () {
         modmailunreadlink = self.setting('modmailUnreadLink'),
         modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
 
-        checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')),//setting is in seconds, convet to milliseconds.
+        checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')),//setting is in seconds, convert to milliseconds.
         newLoad = true,
         now = new Date().getTime(),
         unreadMessageCount = self.setting('unreadMessageCount'),
@@ -213,7 +220,10 @@ self.init = function () {
     }
 
 
+
     function getmessages() {
+        self.log('getting messages');
+
         // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
         var lastchecked = self.setting('lastChecked'),
             author = '',
@@ -221,7 +231,6 @@ self.init = function () {
 
         // Update now.
         now = TB.utils.getTime();
-
 
         // Update counters.
         unreadMessageCount = self.setting('unreadMessageCount');
@@ -300,6 +309,18 @@ self.init = function () {
         }
 
         if (!newLoad && (now - lastchecked) < checkInterval) {
+            updateMessagesCount(unreadMessageCount);
+            updateModqueueCount(modqueueCount);
+            updateUnmodCount(unmoderatedCount);
+            updateModMailCount(modmailCount);
+            return;
+        }
+
+
+        // We still want counts updated, just no notifications shown.
+        // That's why we do this here.
+        if (wwwNotifications && TB.utils.domain !== 'www') {
+            self.log("non-www domain; don't show notifications");
             updateMessagesCount(unreadMessageCount);
             updateModqueueCount(modqueueCount);
             updateUnmodCount(unmoderatedCount);
@@ -718,18 +739,6 @@ self.init = function () {
         });
     }
 
-    // How often we check for new messages, this will later be adjustable in the settings.
-    // if (notifierEnabled) {
-    //     setInterval(getmessages, checkInterval);
-    //     getmessages();
-    // } else { // todo: this is a temp hack until 2.2
-    //     self.setting('unreadMessageCount', 0);
-    //     self.setting('modqueueCount', 0);
-    //     self.setting('unmoderatedCount', 0);
-    //     self.setting('modmailCount', 0);
-    // }
-
-    // that temp hack stopped being relevant with the module port
     setInterval(getmessages, checkInterval);
     getmessages();
 };

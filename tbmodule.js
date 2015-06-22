@@ -118,6 +118,7 @@ TB = {
 
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting == "enabled") {
+                        moduleIsEnabled = (module.setting(setting) ? true : false);
                         if (options.hasOwnProperty("hidden") && options["hidden"] && !TB.utils.devMode) continue;
 
                         // blank slate
@@ -125,7 +126,6 @@ TB = {
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
                         $('.tb-window-content .tb-window-content-modules').append($setting);
-                        moduleIsEnabled = (module.setting(setting) ? true : false);
                         // don't need this on the module's tab, too
                         continue;
                     }
@@ -238,7 +238,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             break;
                         case "achievement_save":
                             noWrap = true;
-                            
+
                             $.log("----------", false, "TBModule");
                             $.log("GENERATING ACHIEVEMENT PAGE", false, "TBModule");
                             var total = module.manager.getAchievementTotal(),
@@ -246,12 +246,12 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
                             $.log("  total="+total, false, "TBModule");
                             $.log("  unlocked="+unlocked, false, "TBModule");
-                            
+
                             $setting = $('<div>').attr('class', 'achievements');
                             $setting.append($('<h1>').text("Mod Achievements"));
                             $setting.append($('<p>').text(unlocked + " of " + total + " unlocked"));
                             $setting.append('<br />');
-                            
+
                             var save = module.setting(setting);
                             save = module.manager.decodeSave(save);
 
@@ -278,7 +278,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 }
                             }
                             $setting.append($list);
-                            
+
                             break;
                         default:
                             // what in the world would we do here? maybe raw JSON?

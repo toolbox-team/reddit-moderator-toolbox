@@ -1,5 +1,5 @@
 function modbar() {
-var self = new TB.Module('toolbox UI (modbar)');
+var self = new TB.Module('Modbar');
 self.shortname = 'Modbar';
 
 self.settings['enabled']['default'] = true;
@@ -10,25 +10,21 @@ self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 self.register_setting('compactHide', {
     'type': 'boolean',
     'default': false,
-    'hidden': true,
-    'title': 'Use compact mode for mod bar'
+    'title': 'Use compact mode for modbar'
 });
 self.register_setting('unmoderatedOn', {
     'type': 'boolean',
     'default': true,
-    'hidden': true,
     'title': 'Show icon for unmoderated'
 });
 self.register_setting('enableTopLink', {
     'type': 'boolean',
     'default': false,
-    'hidden': true,
     'title': 'Show Top link in the modbar'
 });
 self.register_setting('enableModSubs', {
     'type': 'boolean',
     'default': true,
-    'hidden': true,
     'title': 'Show Moderated Subreddits in the modbar'
 });
 
@@ -478,19 +474,11 @@ self.init = function() {
         <input class="tb-settings-export" type="button" value="export">\
         <b> Important:</b> This will reload the page without saving!\
     </p><p>\
-        <label><input type="checkbox" id="compactHide" ' + ((compactHide) ? "checked" : "") + '> Use compact mode for mod bar </label>\
-    </p><p>\
         <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
     </p><p ' + ((debugMode) ? '' : 'style="display:none;"') + '>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
     </p><p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
-    </p><p>\
-        <label><input type="checkbox" id="enableTopLink" ' + ((enableTopLink) ? "checked" : "") + '> Show top link in modbar</label>\
-    </p><p>\
-        <label><input type="checkbox" id="enableModSubs" ' + ((enableModSubs) ? "checked" : "") + '> Show Moderated Subreddits modbar</label>\
-    </p><p>\
-        <label><input type="checkbox" id="unmoderatedOn" ' + ((unmoderatedOn) ? "checked" : "") + '> Show icon for unmoderated</label>\
     </p><p>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
@@ -705,12 +693,6 @@ self.init = function() {
     // Save the settings
     $body.on('click', '.tb-save, .tb-save-reload', function (e) {
         var reload = (e.target.className === 'tb-save-reload');
-
-        // TODO: Check if the settings below work as intended.
-        self.setting('compactHide', $("#compactHide").prop('checked'));
-        self.setting('enableTopLink', $("#enableTopLink").prop('checked'));
-        self.setting('enableModSubs', $("#enableModSubs").prop('checked'));
-        self.setting('unmoderatedOn', $("#unmoderatedOn").prop('checked'));
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));

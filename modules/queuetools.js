@@ -9,32 +9,26 @@ self.register_setting('hideActionedItems', {
     'default': false,
     'title': 'Hide items after mod action'
 });
+
 self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
     'title': 'Ignore reports on approved items'
 });
+
 self.register_setting('linkToQueues', {
     'type': 'boolean',
     'default': false,
     'title': 'Link to subreddit queue on mod pages'
 });
-self.register_setting('sortModqueue', {
-    'type': 'boolean',
-    'default': false,
-    'title': 'Sort Modqueue in /r/mod sidebar according to queue count (warning: slows page loading drastically)'
-});
-self.register_setting('sortUnmoderated', {
-    'type': 'boolean',
-    'default': false,
-    'title': 'Sort Unmoderated in /r/mod sidebar according to unmoderated count (warning: slows page loading drastically)'
-});
+
 self.register_setting('reportsOrder', {
     'type': 'selector',
     'values': ['age', 'score', 'reports'],
     'default': 'age',
     'title': 'Sort by'
 });
+
 self.register_setting('reportsThreshold', {
     'type': 'number',
     'min': 0,
@@ -43,6 +37,7 @@ self.register_setting('reportsThreshold', {
     'default': 1,
     'title': 'Reports threshold'
 });
+
 self.register_setting('reportsAscending', {
     'type': 'boolean',
     'default': false,
@@ -60,14 +55,6 @@ self.register_setting('botCheckmark', {
     'default': ['AutoModerator'],
     'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
 });
-
-/*
-self.register_setting('kitteh', {
-    'type': 'boolean',
-    'default': true,
-    'title': 'Kitteh?'
-});
-*/
 
 self.register_setting('queueCreature', {
     'type': 'selector',
@@ -634,26 +621,29 @@ self.init = function () {
             return rate_limit(action);
         };
 
-        if ((sortModQueue || sortUnmoderated) && TBUtils.isModFakereddit) {
-            var prefix = '', page = '', type = '';
-            if (TBUtils.isUnmoderatedPage && sortUnmoderated) {
+        // sort sidebars
+        if (TBUtils.isModFakereddit) {
+            $('.sidecontentbox').find('.title:first').append('&nbsp;<a href="javascript:;" class="sort-subs">sort by items</a>');
+        }
+
+        $body.on('click', '.sort-subs', function () {
+            var prefix = '', page = '';
+            if (TBUtils.isUnmoderatedPage) {
                 self.log('sorting unmod');
                 prefix = 'umq-';
                 page = 'unmoderated';
-                //type = 'unmod-';
-            } else if (TBUtils.isModQueuePage && sortModQueue) {
+            } else if (TBUtils.isModQueuePage) {
                 self.log('sorting mod queue');
                 prefix = 'mq-';
                 page = 'modqueue';
-                //type = 'mod-';
             } else {
                 return;
             }
 
+            self.log('sorting queue sidebar');
+
             var now = new Date().valueOf(),
-                subs = {},
-                delay = 0,
-                refrshDelay = 10800000; //three hours
+                delay = 0;
 
             // Update modqueue items count
             var modSubs = [];
@@ -665,10 +655,9 @@ self.init = function () {
 
                 // Update count and re-cache data if more than an hour old.
                 elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
-                if (now > data[1] + refrshDelay)
+                if (now > data[1])
                     setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
             });
-            //TBUtils.setSetting('QueueTools', type + TBUtils.logged, modSubs); //this, uh... doesn't do anything?
 
             function sortSubreddits() {
                 var subs = $('.subscription-box li').sort(function (a, b) {
@@ -681,12 +670,14 @@ self.init = function () {
 
             function updateModqueueCount(sr) {
                 $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
-                    TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + d.data.children.length + ',' + new Date().valueOf() + ']');
+                    var items = d.data.children.length;
+                    self.log('  subreddit: ' + sr + ' items: ' + items);
+                    TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + items + ',' + new Date().valueOf() + ']');
                     $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
                     sortSubreddits();
                 });
             }
-        }
+        });
 
         // This method is evil and breaks shit if it's called too early.
         function sortThings(order, asc) {

@@ -102,7 +102,7 @@ function initwrapper() {
     TBUtils.firstRun = false;
     TBUtils.tbDevs = toolboxDevs;
     TBUtils.betaRelease = betaRelease;
-    
+
     // Stuff from TBStorage
     TBUtils.browser = TBStorage.browser;
     TBUtils.domain = TBStorage.domain;
@@ -221,6 +221,10 @@ function initwrapper() {
             TBStorage.setSetting('Achievements', 'lastSeen', now);
         }
         localStorage.removeItem('Toolbox.Achievements.last_seen');
+
+        // these are no longer settings, they are button actions
+        localStorage.removeItem('Toolbox.QueueTools.sortModqueue');
+        localStorage.removeItem('Toolbox.QueueTools.sortUnmoderated');
 
 
         // End: version changes.

@@ -12,7 +12,7 @@ self.register_setting('hideActionedItems', {
 
 self.register_setting('showAutomodActionReason', {
     'type': 'boolean',
-    'default': false,
+    'default': true,
     'title': 'Show the action reason from automoderator in the queue'
 });
 

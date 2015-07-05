@@ -342,13 +342,13 @@ self.populateSubmissionHistory = function (after) {
         $.each(self.domainList, function (index, value) {
             var domain = value,
                 domainCount = self.domains[domain].count,
-                url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new',
+                url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search',
                 match = domain.match(/^self.(\w+)$/);
 
             var percentage = Math.round(domainCount / totalDomainCount * 100);
 
             //If the domain is a self post, change the URL
-            if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new';
+            if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search';
 
             //Append domain to the table
             $domainTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
@@ -382,7 +382,7 @@ self.populateSubmissionHistory = function (after) {
         $.each(self.subredditList, function (index, value) {
             var subreddit = value,
                 subredditCount = self.subreddits.submissions[subreddit].count,
-                url = '/r/' + subreddit + '/search?q=author%3A%27' + self.author + '%27&restrict_sr=on&sort=new';
+                url = '/r/' + subreddit + '/search?q=author%3A%27' + self.author + '%27&restrict_sr=on&sort=new&feature=legacy_search';
 
             var percentage = Math.round(subredditCount / totalSubredditCount * 100);
             $subredditTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted to /r/' + subreddit + '/">' + subreddit + '</a></td><td class="count-td">' + subredditCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
@@ -497,7 +497,7 @@ self.populateAccountHistory = function () {
                             account.provider +
                         '</a>\
                     </td>\
-                    <td class="count-td">' + 
+                    <td class="count-td">' +
                         account.count +
                     '</td>\
                     <td class="percentage-td">' +
@@ -586,7 +586,7 @@ self.reportAuthorToSpam = function () {
                 $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
                 //$rtsLink.hide();
                 if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                    rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on';
+                    rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on&feature=legacy_search';
                 }
                 return;
             }

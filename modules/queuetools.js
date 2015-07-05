@@ -10,6 +10,12 @@ self.register_setting('hideActionedItems', {
     'title': 'Hide items after mod action'
 });
 
+self.register_setting('showAutomodActionReason', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show the action reason from automoderator in the queue'
+});
+
 self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
@@ -83,6 +89,7 @@ self.init = function () {
     // Cached data
     var notEnabled = [],
         hideActionedItems = self.setting('hideActionedItems'),
+        showAutomodActionReason = self.setting('showAutomodActionReason'),
         ignoreOnApprove = self.setting('ignoreOnApprove'),
         sortModQueue = self.setting('sortModqueue'),
         sortUnmoderated = self.setting('sortUnmoderated'),
@@ -718,6 +725,50 @@ self.init = function () {
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
         $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
     }
+
+
+    // Show automod action reasons
+
+    if (TBUtils.isModpage && showAutomodActionReason) {
+        var queueSubs = [];
+
+        $('#siteTable .thing').each(function() {
+            var subreddit = $(this).find('a.subreddit').attr('href');
+            var removedBy = $(this).find('.flat-list li[title^="removed at"]').text();
+
+            self.log(subreddit);
+            self.log(removedBy);
+
+
+
+            if($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
+                queueSubs.push(subreddit);
+            }
+
+        });
+
+        self.log(queueSubs);
+
+        for (var i = 0; i < queueSubs.length; i++) {
+
+            var mailSub = queueSubs[i].match(/https?:\/\/www.reddit.com\/r\/(.*)\//);
+
+            $.getJSON(queueSubs[i] + 'about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
+                $.each(json.data.children, function (i, value) {
+                    $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
+<b>Automod action:</b> ' + value.data.details + '\
+<br><a href="https://www.reddit.com/message/compose?to=/r/' + mailSub[1] + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
+%0A%0A \
+Url: ' + value.data.target_permalink + ' %0A %0A \
+Action reason: ' + value.data.details + '\
+" target="_blank">ask for a second opinion in modmail</a> </div>');
+
+                });
+            });
+        }
+
+    }
+
 
     // Let's make bot approved posts stand out!
     var checkmarkLength = self.setting('botCheckmark').length;

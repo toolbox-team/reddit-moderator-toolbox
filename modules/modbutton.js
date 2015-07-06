@@ -38,18 +38,15 @@ self.processThing = function (thing) {
         $(thing).addClass('mod-button');
 
         // Defer info gathering until button is clicked.
-        // try to insert it to the left of 'reply'
-        var $insertionPoint = $(thing).find('.flat-list.buttons a[onClick="return reply(this)"]');
+        // try to insert it to the right of first button
+        var $insertionPoint = $(thing).find('.flat-list.buttons .first');
         if ($insertionPoint.length == 0) {
-            // otherwise stick it to the left of 'flair'
-            var $insertionPoint = $(thing).find('.flat-list.buttons .flairselectbtn');
-            if ($insertionPoint.length == 0) {
-                // if that doesn't work either stick it to the left of the last button
-	            $insertionPoint = $(thing).find('.buttons > li:last');
-            }
+            // if that doesn't work either stick it to the right of the first button
+            $insertionPoint = $(thing).find('.buttons > li:first');
         }
-        $insertionPoint.before('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
     }
+    $insertionPoint.after('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
+
 };
 
 // need this for RES NER support
@@ -237,12 +234,6 @@ self.init = function () {
                 display: 'block'
             });
 
-
-        // // wtf even happened to this originally?
-        // $.each(TB.utils.mySubs, function (i, v) {
-        //     $popup.find('select.'+modButton.OTHER).append($('<option></option>').text(this).attr('value', this));
-        // });
-
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
         }
@@ -254,13 +245,6 @@ self.init = function () {
             // We can only edit flair in the current sub.
             $popup.find('.tb-popup-tabs .user_flair').remove();
             $popup.find('.tb-popup-tabs .send_message').remove();
-            // We can oly nuke comments in subs we mod.
-            $popup.find('.tb-popup-tabs .nuke_comment_chain').remove();
-        }
-
-        if (TB.utils.isModmail || TB.utils.isModpage) {
-            // Nothing to nuke in mod mail or on mod pages.
-            $popup.find('.nuke_comment_chain').remove();
         }
 
         // only works if we're a mod of the sub in question
@@ -544,13 +528,6 @@ self.init = function () {
         $(this).parents('.mod-popup').remove();
     });
 
-    $body.on('click', '.nuke-comment-chain', function () {
-        var $popup = $(this).parents('.mod-popup'),
-            thing_id = $popup.find('.thing_id').text();
-
-        self.log(thing_id);
-    });
-
     // send a message to the user.
     $body.on('click', '.mod-popup .message-send', function () {
 
@@ -626,30 +603,6 @@ self.init = function () {
             css_class = $popup.find('.flair-class').val();
 
         $status.text('saving user flair...');
-
-        /*
-         if (!text && !css_class) {
-         $.post('/api/deleteflair', {
-         api_type: 'json',
-         name: user,
-         r: subreddit,
-         uh: TB.utils.modhash
-         })
-
-         .error(function (err) {
-         console.log(err.responseText);
-         $popup.remove();
-         return;
-         })
-
-         .success(function () {
-         $popup.remove();
-         return;
-         });
-
-         return;
-         }
-         */
 
         TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
             if (success) {

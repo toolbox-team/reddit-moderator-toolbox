@@ -145,6 +145,7 @@ self.init = function () {
     $body.on('click', '.global-mod-button', function (event) {
         var benbutton = event.target; //huehuehue
         $(benbutton).text('loading...');
+        self.log('displaying mod button popup');
 
         var display = (self.savedSubs.length < 1) ? 'none' : '',
             lastaction = self.setting('lastAction'),
@@ -406,13 +407,11 @@ self.init = function () {
             }
         }
 
-        var $timer;
-
         function createBanReason(message) {
             var reason = "";
 
             // Add message if exists
-            if(message && message.length > 0) {
+            if (message && message.length > 0) {
                 reason += "{0}";
             }
 
@@ -420,10 +419,11 @@ self.init = function () {
         }
 
         function completeCheck(failedSubs) {
-            $timer.stop();
-            TB.utils.pageOverlay(null, false);
-            if (failedSubs.length > 0) {
-                var retry = confirm(failedSubs.length + ' failed.  Would you like to retry them?');
+            var failed = failedSubs.length;
+            self.log(failed + ' subs failed');
+            if (failed > 0) {
+                self.log(failed + ' subs failed');
+                var retry = confirm(failed + ' failed.  Would you like to retry them?');
                 if (retry) {
                     self.log('retrying');
                     massAction(failedSubs);
@@ -435,91 +435,59 @@ self.init = function () {
             }
             else {
                 self.log('complete');
+                TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
                 $('.mod-popup').remove();
             }
         }
 
-        function rateLimit(seconds) {
-            var delay = seconds * 1000;
-            $status.text('API ratelimit sleeping for: ' + seconds + ' seconds');
-            TB.utils.pageOverlay('API ratelimit sleeping for: ' + seconds + ' seconds');
-            setTimeout(function () {
-                self.log('resuming');
-                $timer.play();
-            }, delay);
-        }
-
         function massAction(subs) {
-            //$('.mod-popup').hide();
             var failedSubs = [];
-            var actionCount = 0;
 
-            // Ban dem trolls.
-            TB.utils.pageOverlay('', true);
-            $timer = $.timer(function () {
-                var subreddit = $(subs).get(actionCount);
+            TB.ui.longLoadSpinner(true, "Performing mod action", TB.ui.FEEDBACK_NEUTRAL);
 
-                TB.utils.pageOverlay(actionName + 'ning /u/' + user + ' from /r/' + subreddit, undefined);
+            TBUtils.forEachChunkedRateLimit(subs, 20, function (subreddit) {
+                    TB.ui.textFeedback(actionName + 'ning /u/' + user + ' from /r/' + subreddit, TB.ui.FEEDBACK_POSITIVE);
 
-                self.log('banning from: ' + subreddit);
-                if (settingState) {
-                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
-                        if (success) {
-                            if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
-                                $timer.pause();
-                                self.log('ratelimited');
-                                rateLimit(response.json.ratelimit);
-                            } else if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
+                    self.log('banning from: ' + subreddit);
+                    if (settingState) {
+                        TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                            if (success) {
+                                if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
 
-                                // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
+                                    // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
 
-                                self.log('no ban message allowed, falling back to no message.')
-                                banMessage = '';
-                                TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
-                                    if (success) {
-                                        if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
-                                            $timer.pause();
-                                            self.log('ratelimited');
-                                            rateLimit(response.json.ratelimit);
+                                    self.log('no ban message allowed, falling back to no message.');
+                                    banMessage = '';
+                                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                                        if (!success) {
+                                            self.log('missed one');
+                                            failedSubs.push(subreddit);
                                         }
-                                    }
-                                    else {
-                                        self.log('missed one');
-                                        failedSubs.push(subreddit);
-                                    }
-                                });
+                                    });
+                                }
                             }
-                        }
-                        else {
-                            self.log('missed one');
-                            failedSubs.push(subreddit);
-                        }
-                    });
-                }
-                else {
-                    TBUtils.unfriendUser(user, action, subreddit, function (success, response) {
-                        if (success) {
-                            if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'RATELIMIT') {
-                                $timer.pause();
-                                self.log('ratelimited');
-                                rateLimit(response.json.ratelimit);
+                            else {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
                             }
-                        }
-                        else {
-                            self.log('missed one');
-                            failedSubs.push(subreddit);
-                        }
-                    });
-                }
+                        });
+                    }
+                    else {
+                        TBUtils.unfriendUser(user, action, subreddit, function (success) {
+                            if (!success) {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
+                            }
+                        });
+                    }
+                },
 
-                actionCount++;
-
-                if (actionCount === subs.length) {
-                    self.log('completed ban round');
+                function () {
+                    TB.ui.longLoadSpinner(false, 'Checking for missed subs.', TB.ui.FEEDBACK_NEUTRAL);
                     completeCheck(failedSubs);
-                }
+                });
 
-            }, 250, true); //ban tax.
+
         }
     });
 

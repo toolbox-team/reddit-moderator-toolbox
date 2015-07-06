@@ -559,37 +559,6 @@ function initwrapper() {
         });
     };
 
-    // TODO: This should probably be removed in the future since text feedback can now take of this.
-    TBUtils.pageOverlay = function (text, createOrDestroy) {
-        var $body = $('body');
-
-        if (createOrDestroy !== undefined) {
-
-            // Create the overlay
-            if (createOrDestroy) {
-                var html = '\
-<div class="tb-internal-overlay">\
-<div class="tb-overlay-label"></div></div>\
-';
-                TBui.longLoadSpinner(true);
-                $body.find('.tb-popup-tabs').after(html);
-            }
-
-            // Destory the overlay
-            else {
-                $body.find('.tb-internal-overlay').remove();
-                TBui.longLoadSpinner(false);
-            }
-        }
-
-        // Regardless, update the text.  It doen't matter if you pass text for destroy.
-        $body.find('.tb-overlay-label').html(text);
-        // Also pass the text to the new text feedback
-        if (text !== null) {
-            TBui.textFeedback(text, TB.ui.FEEDBACK_NEUTRAL, 1500);
-        }
-
-    };
 
     TBUtils.alert = function (message, callback) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
@@ -1056,7 +1025,6 @@ function initwrapper() {
         if (chunkSize === null || chunkSize < 1) finish();
         if (call === null) finish();
         var counter = 0;
-        //var length = array.length;
 
 
         function doChunk() {
@@ -1076,10 +1044,10 @@ function initwrapper() {
         }
 
         function getRatelimit() {
-            $.getJSON('/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
-                var $body = $('body');
-                var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
-                var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+            $.getJSON('/r/toolbox/wiki/ratelimit.json').done(function (data, status, jqxhr) {
+                var $body = $('body'),
+                    ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
+                    ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
 
                 if (!$body.find('#ratelimit-counter').length ) {
                     $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');

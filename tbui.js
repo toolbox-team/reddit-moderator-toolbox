@@ -182,7 +182,7 @@
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class, opts) {
 	    var defaults = {
-		    draggable: false
+		    draggable: true
 	    };
 
 	    var options = $.extend(defaults, opts);

@@ -189,8 +189,8 @@ self.init = function () {
             });
 
         $popup.on('click', '.close', function () {
-            self.subreddits = {submissions: {}, comments: {}},
-                self.counters = {submissions: 0, comments: 0};
+            self.subreddits = {submissions: {}, comments: {}};
+            self.counters = {submissions: 0, comments: 0};
             self.subredditList = [];
             self.domainList = [];
             self.commentSubredditList = [];
@@ -200,6 +200,8 @@ self.init = function () {
             self.domainslist = [];
 
             $popup.remove();
+
+            TB.ui.longLoadNonPersistent(false);
         });
 
         self.gettingUserData = true;
@@ -253,7 +255,6 @@ self.showMarkdownReport = function () {
 self.populateSubmissionHistory = function (after) {
     var $contentBox = $('.history-button-popup');
     var $submissionCount = $('.history-button-popup .submission-count');
-    var $commentTable = $contentBox.find('.comment-table tbody');
     var $domainTable = $contentBox.find('.domain-table tbody');
     var $subredditTable = $contentBox.find('.subreddit-table tbody');
 
@@ -263,7 +264,7 @@ self.populateSubmissionHistory = function (after) {
     }
 
     $.get('/user/' + self.author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
-        console.log('Shadowbanned?');
+        self.log('Shadowbanned?');
         $contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
 //			populateRunning.pop();
@@ -343,15 +344,20 @@ self.populateSubmissionHistory = function (after) {
             var domain = value,
                 domainCount = self.domains[domain].count,
                 url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search',
-                match = domain.match(/^self.(\w+)$/);
+                match = domain.match(/^self.(\w+)$/),
+                bgcolor = '';
 
             var percentage = Math.round(domainCount / totalDomainCount * 100);
+
+            if (percentage >= 10){
+                bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
+            }
 
             //If the domain is a self post, change the URL
             if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search';
 
             //Append domain to the table
-            $domainTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+            $domainTable.append('<tr bgcolor="'+ bgcolor +'"><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
             //Append the first 20 domains to the report comment
             if (index < 20) commentBody += '\n[' + domain + '](' + url + ')|' + domainCount + '|' + percentage + '%';
@@ -485,10 +491,15 @@ self.populateAccountHistory = function () {
 
         $.each(accountList, function(index, account) {
             var account = self.accounts[account],
-                percentage = Math.round(account.count / totalAccountCount * 100);
+                percentage = Math.round(account.count / totalAccountCount * 100),
+                bgcolor = '';
+
+            if (percentage >= 10){
+                bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
+            }
 
             $accountTable.append(
-                '<tr>\
+                '<tr bgcolor="'+ bgcolor +'">\
                     <td class="url-td">\
                         <a href="' + account.url + '" target="_blank">' +
                             account.name +

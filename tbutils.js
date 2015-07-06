@@ -1024,7 +1024,8 @@ function initwrapper() {
         if (array === null) finish();
         if (chunkSize === null || chunkSize < 1) finish();
         if (call === null) finish();
-        var counter = 0;
+        var counter = 0,
+            delay = 100;
 
 
         function doChunk() {
@@ -1037,7 +1038,7 @@ function initwrapper() {
                 if (ret === false) finish();
             }
             if (counter < array.length) {
-                getRatelimit();
+                window.setTimeout(getRatelimit, delay);
             } else {
                 finish();
             }

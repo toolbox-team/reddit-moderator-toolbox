@@ -649,22 +649,44 @@ self.init = function () {
 
             self.log('sorting queue sidebar');
 
-            var now = new Date().valueOf(),
-                delay = 0;
+            var now = TB.utils.getTime(),
+                delay = 0,
+                modSubs = [];
 
-            // Update modqueue items count
-            var modSubs = [];
-            $('.subscription-box a.title').each(function () {
-                var elem = $(this),
-                    sr = elem.text(),
-                    data = JSON.parse(TB.storage.getCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[0,0]'));
-                modSubs.push(sr);
+            TBui.longLoadNonPersistent(true, "Sorting subs", TB.ui.FEEDBACK_NEUTRAL);
 
-                // Update count and re-cache data if more than an hour old.
-                elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
-                if (now > data[1])
-                    setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
-            });
+            TB.utils.forEachChunkedRateLimit($('.subscription-box a.title'), 20, function (elem) {
+                    var $elem = $(elem),
+                        sr = $elem.text(),
+                        data = JSON.parse(TB.storage.getCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[0,0]'));
+
+                    modSubs.push(sr);
+                    TB.ui.textFeedback("Getting items for: " + sr, TB.ui.FEEDBACK_POSITIVE, 10000, TB.ui.DISPLAY_BOTTOM);
+                    self.log("  items for: " + sr);
+
+                    // Update count and re-cache data if more than an hour old.
+                    $elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
+                    if (now > data[1]) {
+                        //setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
+                        updateModqueueCount(sr);
+                    }
+
+                    function updateModqueueCount(sr) {
+                        $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
+                            var items = d.data.children.length;
+                            self.log('  subreddit: ' + sr + ' items: ' + items);
+                            TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + items + ',' + new Date().valueOf() + ']');
+                            $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
+                            //sortSubreddits();
+                        });
+                    }
+
+                },
+
+                function () {
+                    sortSubreddits();
+                    TB.ui.longLoadNonPersistent(false, 'Sorting subs complete.', TB.ui.FEEDBACK_NEUTRAL);
+                });
 
             function sortSubreddits() {
                 var subs = $('.subscription-box li').sort(function (a, b) {
@@ -672,19 +694,9 @@ self.init = function () {
                 });
                 $('.subscription-box').empty().append(subs);
             }
-
-            sortSubreddits();
-
-            function updateModqueueCount(sr) {
-                $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
-                    var items = d.data.children.length;
-                    self.log('  subreddit: ' + sr + ' items: ' + items);
-                    TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + items + ',' + new Date().valueOf() + ']');
-                    $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
-                    sortSubreddits();
-                });
-            }
         });
+
+
 
         // This method is evil and breaks shit if it's called too early.
         function sortThings(order, asc) {

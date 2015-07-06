@@ -660,15 +660,17 @@ self.init = function () {
     commentSearch();
 
     // hide mod comments option.
-    var $modComments = $('.moderator');
-    if ($modComments.length > 0) {
-        self.log('found mod comments');
-        $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-mod-comments">hide mod comments</a>');
+    if (TB.utils.isUserPage) {
+        var $modComments = $('.moderator');
+        if ($modComments.length > 0) {
+            self.log('found mod comments');
+            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-mod-comments">hide mod comments</a>');
 
-        $body.on('click', '.hide-mod-comments', function () {
-            self.log('hiding mod comments');
-            $modComments.closest('.thing').hide();
-        })
+            $body.on('click', '.hide-mod-comments', function () {
+                self.log('hiding mod comments');
+                $modComments.closest('.thing').hide();
+            })
+        }
     }
 
     // hide old comments

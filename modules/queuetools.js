@@ -121,6 +121,35 @@ self.init = function () {
         }
     }
 
+    function colorSubreddits() {
+        var $this = $(this),
+            subredditName = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
+
+        $this.addClass('color-processed');
+
+        if ($.inArray(subredditName, TB.utils.mySubs) < 0) return 0;
+
+        var colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
+        $this.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
+        $this.addClass('tb-subreddit-color');
+    }
+
+    TB.utils.getModSubs(function () {
+        if (subredditColor) {
+            self.log('adding sub colors');
+            $('.thing').each(colorSubreddits);
+        }
+    });
+
+    // NER for coloring subs.
+    window.addEventListener("TBNewThings", function () {
+        if (subredditColor) {
+            self.log('adding sub colors (ner)');
+            $(".thing").not(".color-processed").each(colorSubreddits);
+        }
+    });
+
+
     // Ideally, this should be moved somewhere else to be common with the removal reasons module
     // Retreival of log subreddit information could also be separated
     function getRemovalReasons(subreddit, callback) {
@@ -539,19 +568,6 @@ self.init = function () {
 
         if (linkToQueues && QUEUE_URL) {
             $things.each(replaceSubLinks);
-        }
-
-        function colorSubreddits() {
-            var $this = $(this),
-                subredditName = TB.utils.cleanSubredditName($this.find('a.subreddit').text()),
-                colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
-
-            $this.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
-            $this.addClass('tb-subreddit-color');
-        }
-
-        if (subredditColor) {
-            $things.each(colorSubreddits);
         }
 
         // NER support.

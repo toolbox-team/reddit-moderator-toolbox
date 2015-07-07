@@ -278,6 +278,9 @@
 
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
+
+                if (!TB.utils.advancedMode && tab.advanced) continue;
+
                 if (tab.id === "undefined" || !tab.id) {
                     tab.id = tab.title.trim().toLowerCase();
                     tab.id = tab.id.replace(/\s/g, '_')

@@ -43,6 +43,7 @@ self.init = function() {
                 {
                     title: 'edit toolbox config',
                     tooltip: 'Edit raw JSON for subreddit config.',
+                    advanced: true,
                     content: '\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
                 <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
@@ -53,6 +54,7 @@ self.init = function() {
                 {
                     title: 'edit user notes',
                     tooltip: 'Edit raw JSON for subreddit usernotes.',
+                    advanced: true,
                     content: '\
                 <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
@@ -86,7 +88,7 @@ self.init = function() {
                     <td>Footer:</td>\
                     <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                     </tr>\
-                    <tr class="advanced-enable">\
+                    <tr class="advanced-enable" ' + ((TB.utils.advancedMode) ? '' : 'style="display:none;"') + '>\
                     <td><a href="javascript:;" class="show-advanced">show advanced settings</a></td>\
                     </tr>\
                     <tr class="rr-advanced">\

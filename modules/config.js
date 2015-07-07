@@ -80,48 +80,56 @@ self.init = function() {
                     tooltip: 'Configure the basic behavior for removal reasons here.',
                     content: '\
                 <table>\
-                    <tr>\
-                    <td>\
-                        get reason from /r/:\
-                    </td><td>\
-                        <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
-                    </tr><tr>\
-                    <td>\
-                        logsub /r/:\
-                    </td><td>\
-                        <input class="logsub" type="text" value="' + (configData.removalReasons.logsub ? configData.removalReasons.logsub : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
-                    <td>\
-                       pmsubject:\
-                    </td><td>\
-                       <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
-                    <td>\
-                        logtitle:\
-                    </td><td>\
-                        <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
-                    <td>\
-                        bantitle:\
-                    </td><td>\
-                        <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
-                    <td>\
-                        logreason:\
-                    </td><td>\
-                        <input class="logreason" type="text" value="' + (configData.removalReasons.logreason ? configData.removalReasons.logreason : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
                     <td>Header:</td>\
                     <td><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
                     </tr><tr>\
                     <td>Footer:</td>\
                     <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                     </tr>\
+                    <tr class="advanced-enable">\
+                    <td><a href="javascript:;" class="show-advanced">show advanced settings</a></td>\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                        get reason from /r/:\
+                    </td><td>\
+                        <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                        logsub /r/:\
+                    </td><td>\
+                        <input class="logsub" type="text" value="' + (configData.removalReasons.logsub ? configData.removalReasons.logsub : '') + '"/>\
+                    </td>\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                       pmsubject:\
+                    </td><td>\
+                       <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '') + '"/>\
+                    </td>\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                        logtitle:\
+                    </td><td>\
+                        <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '') + '"/>\
+                    </td>\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                        bantitle:\
+                    </td><td>\
+                        <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '') + '"/>\
+                    </td>\
+                    </tr>\
+                    <tr class="rr-advanced">\
+                    <td>\
+                        logreason:\
+                    </td><td>\
+                        <input class="logreason" type="text" value="' + (configData.removalReasons.logreason ? configData.removalReasons.logreason : '') + '"/>\
+                    </td>\
+                    </tr><tr>\
                 </table>',
                     footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'
                 },
@@ -173,6 +181,13 @@ self.init = function() {
         ).appendTo('body');
         $body.css('overflow', 'hidden');
     }
+
+
+    // Advanced removal reasons
+    $body.on('click', '.show-advanced', function () {
+        $('.advanced-enable').hide();
+        $('.rr-advanced').show();
+    });
 
     // Help click event.
     $body.on('click', '#tb-config-help', function () {
@@ -369,7 +384,7 @@ self.init = function() {
                     $saveButton.attr('page', page);
                     return;
                 }
-                
+
                 resp = humanizeUsernotes(resp);
                 resp = TBUtils.unescapeJSON(resp);
 
@@ -379,7 +394,7 @@ self.init = function() {
                 $saveButton.attr('page', page);
             });
         }
-        
+
         function humanizeUsernotes(notes) {
             if(notes.ver >= 6) {
                 return decompressBlob(notes);
@@ -387,7 +402,7 @@ self.init = function() {
             else {
                 return notes;
             }
-            
+
             function decompressBlob(notes) {
                 var decompressed = TBUtils.zlibInflate(notes.blob);
 

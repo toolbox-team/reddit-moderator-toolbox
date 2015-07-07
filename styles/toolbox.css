@@ -2161,3 +2161,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     float: right;
     padding-right: 10px;
 }
+
+.rr-advanced {
+    display: none;
+}

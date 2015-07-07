@@ -127,7 +127,7 @@ self.init = function () {
 
         $this.addClass('color-processed');
 
-        if ($.inArray(subredditName, TB.utils.mySubs) < 0) return 0;
+        if ($.inArray(subredditName, TB.utils.mySubs) < 0) return;
 
         var colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
         $this.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');

@@ -137,6 +137,7 @@ TB = {
                     ) {
                         continue;
                     }
+
                     // hide dev stuff unless debug mode enabled
                     if (options.hasOwnProperty("devmode")
                         && !TB.storage.getSetting('Utils', 'debugMode', false)
@@ -148,6 +149,13 @@ TB = {
                     // hide hidden settings, ofc
                     if (options.hasOwnProperty("hidden")
                         && options["hidden"] && !TB.utils.devMode
+                    ) {
+                        continue;
+                    }
+
+                    // hide advanced settings
+                    if (options.hasOwnProperty("advanced")
+                        && options["advanced"] && !TB.utils.advancedMode
                     ) {
                         continue;
                     }

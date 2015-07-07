@@ -99,6 +99,7 @@ function initwrapper() {
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
+    TBUtils.advancedMode = TBStorage.getSetting(SETTINGS_NAME, 'advancedMode', false);
     TBUtils.firstRun = false;
     TBUtils.tbDevs = toolboxDevs;
     TBUtils.betaRelease = betaRelease;

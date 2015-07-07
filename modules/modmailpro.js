@@ -84,6 +84,7 @@ self.register_setting('subredditColorSalt', {
     'type': 'text',
     'default': "PJSalt",
     'title': 'Text to randomly change the subreddit color',
+    'advanced': true,
     'hidden': !self.setting('subredditColor')
 });
 

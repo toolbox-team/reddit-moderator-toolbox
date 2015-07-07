@@ -92,6 +92,7 @@ self.init = function() {
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         devMode = TBUtils.devMode,
+        advancedMode = TBUtils.advancedMode;
 
         settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
         browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
@@ -510,6 +511,8 @@ self.init = function() {
     </p><p>\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
     </p><p>\
+        <label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>\
+    </p><p>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
     </p><p>\
@@ -728,6 +731,7 @@ self.init = function() {
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
         TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
+        TB.storage.setSetting('Utils', 'advancedMode', $("#advancedMode").prop('checked'));
         TB.storage.setSetting('Utils', 'skipLocalConsole', $("#browserConsole").prop('checked'));
 
         self.setting('showExportReminder', $("#showExportReminder").prop('checked'));

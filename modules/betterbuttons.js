@@ -8,7 +8,8 @@ self.config['betamode'] = true;
 
 self.register_setting('enableModSave', {
     'type': 'boolean',
-    'default': true,
+    'default': false,
+    'advanced': true,
     'title': 'Enable mod-save button'
 });
 self.register_setting('enableDistinguishToggle', {
@@ -19,6 +20,7 @@ self.register_setting('enableDistinguishToggle', {
 self.register_setting('removeRemoveConfirmation', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Remove remove/approve confirmation'
 });
 self.register_setting('approveOnIgnore', {
@@ -130,7 +132,7 @@ self.initDistinguishToggle = function initDistinguishToggle() {
 
 self.initRemoveConfirmation = function initRemoveConfirmation() {
     self.log("Adding one-click remove events");
-    
+
     // Approve
     $body.on('click', '.flat-list > .approve-button', function () {
         $(this).find('.yes').click();
@@ -147,7 +149,7 @@ self.initRemoveConfirmation = function initRemoveConfirmation() {
 
 self.initAutoApprove = function initAutoApprove() {
     self.log("Adding ignore reports toggle events");
-    
+
     $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
         self.log("Ignore reports pressed");
         var $button = $(this).parent().find('> span > .positive');
@@ -159,7 +161,7 @@ self.initAutoApprove = function initAutoApprove() {
 
 self.initAutoIgnoreReports = function initAutoIgnoreReports() {
     self.log("Adding approve toggle events");
-    
+
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
         var $button = $(this).closest('.big-mod-buttons').find('> .neutral');
         if (!$button.hasClass('pressed')) {
@@ -167,7 +169,7 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports() {
         }
     });
 };
-    
+
 // Module init
 
 self.init = function() {

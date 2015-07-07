@@ -8,18 +8,21 @@ self.settings['enabled']['default'] = true;
 self.register_setting('modSubreddits', {
     'type': 'text',
     'default': 'mod',
+    'advanced': true,
     'title': 'Multireddit of subs you want displayed in the modqueue counter'
 });
 
 self.register_setting('unmoderatedSubreddits', {
     'type': 'text',
     'default': 'mod',
+    'advanced': true,
     'title': 'Multireddit of subs you want displayed in the unmoderated counter'
 });
 
 self.register_setting('modmailSubreddits', {
     'type': 'text',
     'default': 'mod',
+    'advanced': true,
     'hidden': self.setting('modmailSubredditsFromPro'),
     'title': 'Multireddit of subs you want displayed in the modmail counter'
 });
@@ -27,6 +30,7 @@ self.register_setting('modmailSubreddits', {
 self.register_setting('modmailSubredditsFromPro', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Use filtered subreddits from ModMail Pro'
 });
 
@@ -56,12 +60,14 @@ self.register_setting('modmailUnreadLink', {
 self.register_setting('straightToInbox', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'When clicking a comment notification go to the inbox'
 });
 
 self.register_setting('consolidatedMessages', {
     'type': 'boolean',
     'default': true,
+    'advanced': true,
     'title': 'Consolidate notifications (x new messages) instead of individual notifications'
 });
 
@@ -82,6 +88,7 @@ self.register_setting('unmoderatedNotifications', {
 self.register_setting('checkInterval', {
     'type': 'number',
     'default': 1, // 60 secs.
+    'advanced': true,
     'title': 'Interval to check for new items (time in minutes).'
 });
 

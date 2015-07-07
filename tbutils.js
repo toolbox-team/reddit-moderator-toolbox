@@ -227,6 +227,12 @@ function initwrapper() {
         localStorage.removeItem('Toolbox.QueueTools.sortModqueue');
         localStorage.removeItem('Toolbox.QueueTools.sortUnmoderated');
 
+        // This should never default on.  It's broken.
+        var modSave = TBStorage.getSetting('BButtons', 'enableModSave', false);
+        if (modSave) {
+            TBStorage.setSetting('BButtons', 'enableModSave', lastSeen);
+        }
+
 
         // End: version changes.
 

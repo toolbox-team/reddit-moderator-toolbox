@@ -10,6 +10,7 @@ self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 self.register_setting('compactHide', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Use compact mode for modbar'
 });
 self.register_setting('unmoderatedOn', {
@@ -504,7 +505,7 @@ self.init = function() {
         &nbsp;&nbsp;<lable style="color:'+ lastExportColor +'">Last backup: <b>'+ lastExportLabel +'</b>\
     </p><p>\
         <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show backup reminder every 30 days.</label>\
-    </p><p>\
+    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
     </p><p ' + ((debugMode) ? '' : 'style="display:none;"') + '>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
@@ -512,10 +513,10 @@ self.init = function() {
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
     </p><p>\
         <label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>\
-    </p><p>\
+    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
-    </p><p>\
+    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         Cache subreddit user notes time (in minutes):<br>\
         <input type="text" name="shortLength" value="' + shortLength + '">\
     </p><p>\

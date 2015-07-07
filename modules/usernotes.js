@@ -23,6 +23,7 @@ self.register_setting('showOnModPages', {
 self.register_setting('maxChars', {
     'type': 'number',
     'default': 20,
+    'advanced': true,
     'title': 'Max characters to display in current note tag (excluding date)'
 });
 

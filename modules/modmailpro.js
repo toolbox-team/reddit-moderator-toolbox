@@ -59,12 +59,14 @@ self.register_setting('autoLoad', {
 self.register_setting('autoThread', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
 });
 
 self.register_setting('autoThreadOnLoad', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Automatically thread replies on page load. (Note: slows page load time)'
 });
 
@@ -91,12 +93,14 @@ self.register_setting('subredditColorSalt', {
 self.register_setting('customLimit', {
     'type': 'number',
     'default': 0, // 0 = ueser's default.
+    'advanced': true,
     'title': 'Set the amount of modmail conversations loaded by default. Selecting 0 will use your reddit settings'
 });
 
 self.register_setting('filterBots', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Filter bots from priority view'
 });
 

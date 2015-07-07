@@ -19,6 +19,7 @@ self.register_setting('rememberLastAction', {
 self.register_setting('globalButton', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Enable Global Action button'
 });
 

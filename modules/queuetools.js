@@ -30,6 +30,7 @@ self.register_setting('linkToQueues', {
 
 self.register_setting('reportsOrder', {
     'type': 'selector',
+    'advanced': true,
     'values': ['age', 'score', 'reports'],
     'default': 'age',
     'title': 'Sort by'
@@ -37,6 +38,7 @@ self.register_setting('reportsOrder', {
 
 self.register_setting('reportsThreshold', {
     'type': 'number',
+    'advanced': true,
     'min': 0,
     'max': null,
     'step': 1,
@@ -46,6 +48,7 @@ self.register_setting('reportsThreshold', {
 
 self.register_setting('reportsAscending', {
     'type': 'boolean',
+    'advanced': true,
     'default': false,
     'title': 'Sort ascending.'
 });

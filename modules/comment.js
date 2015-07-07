@@ -7,6 +7,7 @@ self.settings['enabled']['default'] = true;
 self.register_setting('hideRemoved', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Hide removed comments by default.'
 });
 self.register_setting('approveComments', {
@@ -32,6 +33,7 @@ self.register_setting('highlighted', {
 self.register_setting('highlightTitles', {
     'type': 'boolean',
     'default': true,
+    'advanced': true,
     'title': 'Also highlight titles of submissions.'
 });
 

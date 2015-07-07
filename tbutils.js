@@ -230,7 +230,7 @@ function initwrapper() {
         // This should never default on.  It's broken.
         var modSave = TBStorage.getSetting('BButtons', 'enableModSave', false);
         if (modSave) {
-            TBStorage.setSetting('BButtons', 'enableModSave', lastSeen);
+            TBStorage.setSetting('BButtons', 'enableModSave', false);
         }
 
 

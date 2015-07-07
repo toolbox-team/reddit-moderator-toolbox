@@ -738,18 +738,18 @@ self.init = function () {
 
 
     // Show automod action reasons
-
     if (TBUtils.isModpage && showAutomodActionReason) {
         var queueSubs = [];
 
+        self.log('getting automod action reasons');
+
         $('#siteTable .thing').each(function() {
-            var subreddit = $(this).find('a.subreddit').attr('href');
-            var removedBy = $(this).find('.flat-list li[title^="removed at"]').text();
+            $this = $(this);
+            var subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
+            var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
 
-            self.log(subreddit);
-            self.log(removedBy);
-
-
+            self.log('  subreddit: ' + subreddit);
+            self.log('  removedby: ' + removedBy);
 
             if($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                 queueSubs.push(subreddit);
@@ -757,17 +757,16 @@ self.init = function () {
 
         });
 
+        self.log('queuesubs:');
         self.log(queueSubs);
 
         for (var i = 0; i < queueSubs.length; i++) {
 
-            var mailSub = queueSubs[i].match(/https?:\/\/www.reddit.com\/r\/(.*)\//);
-
-            $.getJSON(queueSubs[i] + 'about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
+            $.getJSON('/r/' + queueSubs[i] + 'about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
                 $.each(json.data.children, function (i, value) {
                     $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
 <b>Automod action:</b> ' + value.data.details + '\
-<br><a href="https://www.reddit.com/message/compose?to=/r/' + mailSub[1] + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
+<br><a href="https://www.reddit.com/message/compose?to=/r/' + queueSubs[i] + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \
 Url: ' + value.data.target_permalink + ' %0A %0A \
 Action reason: ' + value.data.details + '\
@@ -776,7 +775,6 @@ Action reason: ' + value.data.details + '\
                 });
             });
         }
-
     }
 
 

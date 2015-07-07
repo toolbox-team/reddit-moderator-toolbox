@@ -81,7 +81,7 @@ function initwrapper() {
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-    TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/);
+    TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
     TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
     TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
     TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);

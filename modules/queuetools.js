@@ -654,7 +654,7 @@ self.init = function () {
                 //delay = 0,
                 modSubs = [];
 
-            TBui.longLoadNonPersistent(true, "Sorting subs", TB.ui.FEEDBACK_NEUTRAL);
+            TBui.longLoadNonPersistent(true, "Getting subreddit items...", TB.ui.FEEDBACK_NEUTRAL);
 
             TB.utils.forEachChunked($('.subscription-box a.title'), 20, 100, function (elem) {
                     var $elem = $(elem),
@@ -663,12 +663,10 @@ self.init = function () {
 
                     modSubs.push(sr);
                     TB.ui.textFeedback("Getting items for: " + sr, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
-                    //self.log("  items for: " + sr);
 
                     // Update count and re-cache data if more than an hour old.
                     $elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
                     if (now > data[1]) {
-                        //setTimeout(updateModqueueCount.bind(null, sr), delay += 500);
                         updateModqueueCount(sr);
                     }
 
@@ -678,15 +676,14 @@ self.init = function () {
                             self.log('  subreddit: ' + sr + ' items: ' + items);
                             TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + items + ',' + new Date().valueOf() + ']');
                             $('.subscription-box a[href$="/r/' + sr + '/about/' + page + '"]').text(d.data.children.length).attr('count', d.data.children.length);
-                            //sortSubreddits();
                         });
                     }
 
                 },
 
                 function () {
-                    sortSubreddits();
-                    TB.ui.longLoadNonPersistent(false, 'Sorting subs complete.', TB.ui.FEEDBACK_NEUTRAL);
+                    window.setTimeout(sortSubreddits, 2000); // wait for final callbacks
+                    TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
                 });
 
             function sortSubreddits() {

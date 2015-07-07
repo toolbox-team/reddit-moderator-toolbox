@@ -648,21 +648,22 @@ self.init = function () {
             }
 
             self.log('sorting queue sidebar');
+            $('.sort-subs').remove(); // don't allow sorting twice.
 
             var now = TB.utils.getTime(),
-                delay = 0,
+                //delay = 0,
                 modSubs = [];
 
             TBui.longLoadNonPersistent(true, "Sorting subs", TB.ui.FEEDBACK_NEUTRAL);
 
-            TB.utils.forEachChunkedRateLimit($('.subscription-box a.title'), 20, function (elem) {
+            TB.utils.forEachChunked($('.subscription-box a.title'), 20, 100, function (elem) {
                     var $elem = $(elem),
                         sr = $elem.text(),
                         data = JSON.parse(TB.storage.getCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[0,0]'));
 
                     modSubs.push(sr);
-                    TB.ui.textFeedback("Getting items for: " + sr, TB.ui.FEEDBACK_POSITIVE, 10000, TB.ui.DISPLAY_BOTTOM);
-                    self.log("  items for: " + sr);
+                    TB.ui.textFeedback("Getting items for: " + sr, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
+                    //self.log("  items for: " + sr);
 
                     // Update count and re-cache data if more than an hour old.
                     $elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');

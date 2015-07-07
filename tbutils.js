@@ -1002,12 +1002,12 @@ function initwrapper() {
 
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
-                if (ret === false) finish();
+                if (ret === false) window.setTimeout(finish, delay);
             }
             if (counter < array.length) {
                 window.setTimeout(doChunk, delay);
             } else {
-                finish();
+                window.setTimeout(finish, delay);
             }
         }
 
@@ -1035,16 +1035,17 @@ function initwrapper() {
 
             for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
                 var ret = call(array[counter], counter, array);
-                if (ret === false) finish();
+                if (ret === false) window.setTimeout(finish, delay);
             }
             if (counter < array.length) {
                 window.setTimeout(getRatelimit, delay);
             } else {
-                finish();
+                window.setTimeout(finish, delay);
             }
         }
 
         function getRatelimit() {
+            //return doChunk();
             $.getJSON('/r/toolbox/wiki/ratelimit.json').done(function (data, status, jqxhr) {
                 var $body = $('body'),
                     ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),

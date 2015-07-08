@@ -436,8 +436,8 @@ self.init = function () {
             }
             else {
                 self.log('complete');
-                TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
                 $('.mod-popup').remove();
+                //TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
             }
         }
 
@@ -484,8 +484,12 @@ self.init = function () {
                 },
 
                 function () {
-                    TB.ui.longLoadSpinner(false, 'Checking for missed subs.', TB.ui.FEEDBACK_NEUTRAL);
-                    completeCheck(failedSubs);
+                    TB.ui.longLoadSpinner(false);
+
+                    window.setTimeout(function () {
+                        completeCheck(failedSubs);
+                    }, 2000);
+
                 });
 
 

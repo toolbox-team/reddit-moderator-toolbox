@@ -102,7 +102,7 @@ self.usernotes = function usernotes() {
     function setNotes(status, notes, subreddit) {
         if (!status) return;
 
-        self.log('/r/' + subreddit + ' is using usernote schema v' + notes.ver);
+        //self.log('/r/' + subreddit + ' is using usernote schema v' + notes.ver);
         // Check if the version of loaded notes is within the supported versions
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
             self.log("Failed usernotes version check:");
@@ -127,8 +127,6 @@ self.usernotes = function usernotes() {
             });
             return;
         }
-
-        //usernotes.log('running');
 
         var things = $('div.thing .entry[subreddit=' + subreddit + ']');
         if (showOnModPages && TB.utils.isEditUserPage) {
@@ -745,30 +743,10 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
     // Inflate notes from the database, converting between versions if necessary.
     function convertNotes(notes, sub) {
         var orgVer = notes.ver;
+        self.log("Notes ver: " + orgVer);
 
         if (notes.ver >= TBUtils.notesMinSchema) {
-            if (notes.ver <= 2) {
-                var newUsers = [];
-                var corruptedNotes = false;
-                //TODO: v2 support drops next version
-                notes.users.forEach(function (user) {
-                    if (!user.hasOwnProperty('name') || !user.hasOwnProperty('notes')) {
-                        corruptedNotes = true;
-                    } else {
-                        user.notes.forEach(function (note) {
-                            if (note.link && note.link.trim()) {
-                                note.link = self._squashPermalink(note.link);
-                            }
-                        });
-                        newUsers.push(user);
-                    }
-                });
-                notes.users = newUsers;
-                notes.ver = TBUtils.notesSchema;
-                notes.corrupted = corruptedNotes;
-                notes = keyOnUsername(decodeNoteText(notes));
-            }
-            else if (notes.ver == 3) {
+            if (notes.ver == 3) {
                 notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes, sub)));
                 notes.ver = TBUtils.notesSchema;
             }
@@ -782,7 +760,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
         }
 
         // This doesn't belong here and shouldn't be here.  Like at all.
-        // This is the only place this check can go without re-writting 50% of usernotes.
+        // This is the only place this check can go without re-writing 50% of usernotes.
         if (orgVer === TB.utils.notesDeprecatedSchema) {
             self.log('Found deprecated notes in ' + subreddit + ': S' + orgVer);
 

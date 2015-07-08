@@ -780,12 +780,13 @@ self.init = function () {
         self.log(queueSubs);
 
         for (var i = 0; i < queueSubs.length; i++) {
+            var sub  = queueSubs[i];
 
-            $.getJSON('/r/' + queueSubs[i] + 'about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
+            $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
                 $.each(json.data.children, function (i, value) {
                     $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
 <b>Automod action:</b> ' + value.data.details + '\
-<br><a href="https://www.reddit.com/message/compose?to=/r/' + queueSubs[i] + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
+<br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \
 Url: ' + value.data.target_permalink + ' %0A %0A \
 Action reason: ' + value.data.details + '\

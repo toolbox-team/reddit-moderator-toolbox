@@ -628,7 +628,7 @@ self.init = function() {
 
     $body.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
         var sub = $("input[name=settingssub]").val();
-        if (!sub) return;
+        if (!sub) return self.log('no setting sub');
 
         // Just to be safe.
         sub = TB.utils.cleanSubredditName(sub);

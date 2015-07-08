@@ -1559,6 +1559,7 @@ function initwrapper() {
     TBUtils.importSettings = function (subreddit, callback) {
         TBUtils.readFromWiki(subreddit, 'tbsettings', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                $.log("Error loading wiki page", false, SHORTNAME);
                 return;
             }
 

@@ -134,15 +134,23 @@ self.initRemoveConfirmation = function initRemoveConfirmation() {
     self.log("Adding one-click remove events");
 
     // Approve
-    $body.on('click', '.flat-list > .approve-button', function () {
-        $(this).find('.yes').click();
+    $body.on('click', '.flat-list .approve-button .togglebutton', function () {
+        var yes = $(this).closest('.approve-button').find('.yes')[0];
+        yes.click();
+        // setTimeout(function () {
+        //     yes.click();
+        // }, 100);
     });
     // Remove and spam
-    $body.on('click', '.flat-list > .remove-button', function () {
-        var $button = $(this);
+    $body.on('click', '.flat-list .remove-button .togglebutton', function () {
+        var $button = $(this).closest('.remove-button');
+
         // Don't remove if removal reasons are enabled and the button isn't for spam
-        if (!$body.hasClass('tb-removal-reasons') || $button.children().first().attr('value') === 'spammed') {
-            $button.find('.yes').click();
+        if (!$body.hasClass('tb-removal-reasons')
+            || ($body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons'))
+            || $button.children().first().attr('value') === 'spammed'
+        ) {
+            $button.find('.yes')[0].click();
         }
     });
 };

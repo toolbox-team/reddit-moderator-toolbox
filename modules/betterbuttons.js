@@ -4,12 +4,10 @@ self.shortname = 'BButtons';
 
 // Default settings
 self.settings['enabled']['default'] = false;
-self.config['betamode'] = true;
 
 self.register_setting('enableModSave', {
     'type': 'boolean',
     'default': false,
-    'advanced': true,
     'title': 'Enable mod-save button'
 });
 self.register_setting('enableDistinguishToggle', {
@@ -39,6 +37,7 @@ self.register_setting('ignoreOnApprove', {
 var $body = $('body');
 
 self.initModSave = function initModSave() {
+    if (TB.utils.isModmail) return;
     self.log("Adding mod save buttons");
 
     //Watches for changes in the DOM
@@ -69,9 +68,10 @@ self.initModSave = function initModSave() {
     });
 
     //Add the mod save button next to each comment save button
-    var saveButton = $('body.moderator button.save');
-    if (saveButton.css("display") != "none")
+    var saveButton = $('.commentarea>.usertext .usertext-buttons .save');
+    if (saveButton.css("display") != "none") {
         saveButton.after('<button class="save-mod">mod save</button>');
+    }
 
     //Add actions to the mod save buttons
     $('body').on('click', 'button.save-mod', function (e) {

@@ -16,12 +16,6 @@ self.register_setting('showAutomodActionReason', {
     'title': 'Show the action reason from automoderator in the queue'
 });
 
-self.register_setting('ignoreOnApprove', {
-    'type': 'boolean',
-    'default': false,
-    'title': 'Ignore reports on approved items'
-});
-
 self.register_setting('linkToQueues', {
     'type': 'boolean',
     'default': false,
@@ -93,7 +87,6 @@ self.init = function () {
     var notEnabled = [],
         hideActionedItems = self.setting('hideActionedItems'),
         showAutomodActionReason = self.setting('showAutomodActionReason'),
-        ignoreOnApprove = self.setting('ignoreOnApprove'),
         sortModQueue = self.setting('sortModqueue'),
         sortUnmoderated = self.setting('sortUnmoderated'),
         linkToQueues = self.setting('linkToQueues'),
@@ -501,16 +494,12 @@ self.init = function () {
             });
         });
 
-        var ignoreOnApproveset;
         // Uncheck anything we've taken an action, if it's checked.
         $body.on('click', '.pretty-button', function (e) {
             var thing = $(this).closest('.thing');
             $(thing).find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
                 $(thing).hide();
-            }
-            else if (ignoreOnApproveset) {
-                ignoreOnApproveset = false;
             }
             else if ($(this).hasClass('negative')) {
                 $(thing).removeClass('removed approved');
@@ -523,21 +512,6 @@ self.init = function () {
             else if ($(this).hasClass('positive')) {
                 $(thing).removeClass('removed spammed');
                 $(thing).addClass('approved');
-            }
-        });
-
-        // Open reason dropdown when we remove something as ham.
-        $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
-            if (!ignoreOnApprove) return;
-            var thing = $(this).closest('.thing');
-            $(thing).removeClass('removed');
-            $(thing).removeClass('spammed');
-            $(thing).addClass('approved');
-            ignoreOnApproveset = true;
-
-            if ($(thing).find('.reported-stamp').length) {
-                var ignore = $(thing).find('a:contains("ignore reports")');
-                if (ignore) ignore[0].click();
             }
         });
 

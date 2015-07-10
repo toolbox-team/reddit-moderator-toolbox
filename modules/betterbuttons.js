@@ -3,7 +3,7 @@ var self = new TB.Module('Better Buttons');
 self.shortname = 'BButtons';
 
 // Default settings
-self.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = true;
 
 self.register_setting('enableModSave', {
     'type': 'boolean',
@@ -23,14 +23,13 @@ self.register_setting('removeRemoveConfirmation', {
 });
 self.register_setting('approveOnIgnore', {
     'type': 'boolean',
-    'default': true,
+    'default': false,
     'title': 'Auto-approve when ignoring reports'
 });
 self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
-    'title': 'Auto-ignore reports when approving',
-    'hidden': true
+    'title': 'Auto-ignore reports when approving'
 });
 
 // Bread and buttons
@@ -161,7 +160,7 @@ self.initAutoApprove = function initAutoApprove() {
         self.log("Ignore reports pressed");
         var $button = $(this).parent().find('> span > .positive');
         if (!$button.hasClass('pressed')) {
-            $button.click();
+            $button[0].click();
         }
     });
 };
@@ -172,7 +171,7 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports() {
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
         var $button = $(this).closest('.big-mod-buttons').find('> .neutral');
         if (!$button.hasClass('pressed')) {
-            $button.click();
+            $button[0].click();
         }
     });
 };

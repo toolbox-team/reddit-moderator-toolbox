@@ -233,6 +233,15 @@ function initwrapper() {
             TBStorage.setSetting('BButtons', 'enableModSave', false);
         }
 
+        // IgnoreOn is now part of better buttons.
+        var ignoreOn = TBStorage.getSetting('QueueTools', 'ignoreOnApprove', false);
+        if (ignoreOn) {
+            TBStorage.setSetting('BButtons', 'ignoreOnApprove', true);
+        }
+
+        // no longer part of QT
+        localStorage.removeItem('Toolbox.QueueTools.ignoreOnApprove');
+
 
         // End: version changes.
 

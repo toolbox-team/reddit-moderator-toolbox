@@ -529,6 +529,10 @@ self.modmailpro = function() {
                 $thread.find('.expand-btn').css('display', 'none');
             }
 
+            if (newTabLinks) {
+                $thread.find('.md a').attr('target', '_blank');
+            }
+
             $thread.fadeIn("slow");
         }
 
@@ -549,6 +553,10 @@ self.modmailpro = function() {
                 $subredditArea.addClass('new-highlight');
                 $thread.addClass('new-messages');
                 $thread.addClass('process-new');
+            }
+
+            if (newTabLinks) {
+                $thread.find('.md a').attr('target', '_blank');
             }
 
             setReplied($thread);

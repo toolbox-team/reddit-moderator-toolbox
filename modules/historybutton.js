@@ -345,11 +345,10 @@ self.populateSubmissionHistory = function (after) {
                 domainCount = self.domains[domain].count,
                 url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search',
                 match = domain.match(/^self.(\w+)$/),
+                percentage = Math.round(domainCount / totalDomainCount * 100),
                 bgcolor = '';
 
-            var percentage = Math.round(domainCount / totalDomainCount * 100);
-
-            if (percentage >= 10){
+            if (percentage >= 10  && domainCount > 4){
                 bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
             }
 
@@ -490,11 +489,12 @@ self.populateAccountHistory = function () {
         $accountTable.empty();
 
         $.each(accountList, function(index, account) {
-            var account = self.accounts[account],
-                percentage = Math.round(account.count / totalAccountCount * 100),
+                account = self.accounts[account];
+
+            var percentage = Math.round(account.count / totalAccountCount * 100),
                 bgcolor = '';
 
-            if (percentage >= 10){
+            if (percentage >= 10 && account.count > 4){
                 bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
             }
 

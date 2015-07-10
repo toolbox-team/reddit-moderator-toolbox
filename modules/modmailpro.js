@@ -111,6 +111,12 @@ self.register_setting('botsToFilter', {
     'hidden': !self.setting('filterBots')
 });
 
+self.register_setting('newTabLinks', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Open links in modmail comments in new tab'
+});
+
 /// Private setting storage
 self.register_setting('lastVisited', {
     'type': 'number',
@@ -185,6 +191,7 @@ self.modmailpro = function() {
         filterBots = self.setting('filterBots'),
         botsToFilter = self.setting('botsToFilter'),
         filteredSubs = self.setting('filteredSubs'),
+        newTabLinks = self.setting('newTabLinks'),
         unreadPage = location.pathname.match(/\/moderator\/(?:unread)\/?/), //TBUtils.isUnreadPage doesn't wok for this.  Needs or for moderator/messages.
         moreCommentThreads = [],
         unreadThreads = [],
@@ -258,6 +265,10 @@ self.modmailpro = function() {
     function initialize() {
         self.startProfile('initialize');
         self.log('MMP init');
+
+        if (newTabLinks) {
+            $('.sitetable  .md a').attr('target', '_blank');
+        }
 
         TB.ui.longLoadNonPersistent(true);
 

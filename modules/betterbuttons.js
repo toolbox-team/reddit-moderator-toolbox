@@ -36,7 +36,6 @@ self.register_setting('ignoreOnApprove', {
 });
 
 // Bread and buttons
-
 var $body = $('body');
 
 self.initModSave = function initModSave() {
@@ -136,7 +135,7 @@ self.initRemoveConfirmation = function initRemoveConfirmation() {
     // Approve
     $body.on('click', '.flat-list .approve-button .togglebutton', function () {
         var yes = $(this).closest('.approve-button').find('.yes')[0];
-        yes.click();
+        if (yes) yes.click();
         // setTimeout(function () {
         //     yes.click();
         // }, 100);

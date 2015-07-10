@@ -12,11 +12,25 @@ self.register_setting('modSubreddits', {
     'title': 'Multireddit of subs you want displayed in the modqueue counter'
 });
 
+self.register_setting('modSubredditsFMod', {
+    'type': 'boolean',
+    'default': false,
+    'advanced': true,
+    'title': 'Use /f/mod/about/modqueue/ instead.'
+});
+
 self.register_setting('unmoderatedSubreddits', {
     'type': 'text',
     'default': 'mod',
     'advanced': true,
     'title': 'Multireddit of subs you want displayed in the unmoderated counter'
+});
+
+self.register_setting('unmoderatedSubredditsFMod', {
+    'type': 'boolean',
+    'default': false,
+    'advanced': true,
+    'title': 'Use /f/mod/about/unmoderated/ instead.'
 });
 
 self.register_setting('modmailSubreddits', {
@@ -155,7 +169,9 @@ self.init = function () {
         consolidatedMessages = self.setting('consolidatedMessages'),
         straightToInbox = self.setting('straightToInbox'),
         modSubreddits = self.setting('modSubreddits'),
+        modSubredditsFMod = self.setting('modSubredditsFMod'),
         unmoderatedSubreddits = self.setting('unmoderatedSubreddits'),
+        unmoderatedSubredditsFMod = self.setting('unmoderatedSubredditsFMod'),
         modmailSubreddits = self.setting('modmailSubreddits'),
 
         modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
@@ -478,7 +494,14 @@ self.init = function () {
         }
 
         // getting modqueue
-        $.getJSON('/r/' + modSubreddits + '/about/modqueue.json?limit=100').done(function (json) {
+        var modQueueURL;
+        if (modSubredditsFMod) {
+            modQueueURL = '/me/f/mod/about/modqueue';
+        } else {
+            modQueueURL = '/r/' + modSubreddits + '/about/modqueue';
+        }
+
+        $.getJSON(modQueueURL + '.json?limit=100').done(function (json) {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
             //$.log(modNotifications);
@@ -531,10 +554,10 @@ self.init = function () {
                     //$.log(queuecount);
                     //$.log(notificationbody);
                     if (queuecount === 1) {
-                        TBUtils.notification('One new modqueue item!', notificationbody, '/r/' + modSubreddits + '/about/modqueue');
+                        TBUtils.notification('One new modqueue item!', notificationbody, modQueueURL);
 
                     } else if (queuecount > 1) {
-                        TBUtils.notification(queuecount.toString() + ' new modqueue items!', notificationbody, '/r/' + modSubreddits + '/about/modqueue');
+                        TBUtils.notification(queuecount.toString() + ' new modqueue items!', notificationbody, modQueueURL);
                     }
 
                 } else {
@@ -576,7 +599,15 @@ self.init = function () {
         //
         // getting unmoderated queue
         if (unmoderatedOn || unmoderatedNotifications) {
-            $.getJSON('/r/' + unmoderatedSubreddits + '/about/unmoderated.json?limit=100').done(function (json) {
+
+            var unModeratedURL;
+            if (unmoderatedSubredditsFMod) {
+                unModeratedURL = '/me/f/mod/about/unmoderated';
+            } else {
+                unModeratedURL = '/r/' + unmoderatedSubreddits + '/about/unmoderated';
+            }
+
+            $.getJSON(unModeratedURL + '.json?limit=100').done(function (json) {
                 var count = json.data.children.length || 0;
 
 
@@ -608,9 +639,9 @@ self.init = function () {
                         }
 
                         if (queuecount === 1) {
-                            TBUtils.notification('One new unmoderated item!', notificationbody, '/r/' + unmoderatedSubreddits + '/about/unmoderated');
+                            TBUtils.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                         } else {
-                            TBUtils.notification(queuecount.toString() + ' new unmoderated items!', notificationbody, '/r/' + unmoderatedSubreddits + '/about/unmoderated');
+                            TBUtils.notification(queuecount.toString() + ' new unmoderated items!', notificationbody, unModeratedURL);
                         }
                     } else {
                         $.each(json.data.children, function (i, value) {

@@ -1,0 +1,12 @@
+.backup-warning {
+    margin-left: 6px;
+    color: #EAC117;
+}
+
+.backup-warning.happy {
+    color: #54c355;
+}
+
+.backup-warning.sad {
+    color: #FF0000;
+}

@@ -93,7 +93,7 @@ self.init = function() {
         debugMode = TBUtils.debugMode,
         betaMode = TBUtils.betaMode,
         devMode = TBUtils.devMode,
-        advancedMode = TBUtils.advancedMode;
+        advancedMode = TBUtils.advancedMode,
 
         settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
         browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
@@ -114,15 +114,17 @@ self.init = function() {
         showExportReminder = self.setting('showExportReminder'),
         lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
         lastExportLabel = (lastExport === 0) ? 'Never' : lastExportDays + ' days ago',
-        lastExportColor = (lastExportDays < 15)  ? TB.ui.standardColors.lightgreen : TB.ui.standardColors.yellow;
-
+        lastExportState = "";
 
     if (lastExportDays > 30 || lastExport === 0) {
-        lastExportColor = TB.ui.standardColors.red;
+        lastExportState = "sad";
 
         if (showExportReminder && settingSub !== ''){
             TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 2000, TB.ui.DISPLAY_BOTTOM);
         }
+    }
+    else if (lastExportDays < 15) {
+        lastExportState = "happy";
     }
 
 
@@ -502,7 +504,7 @@ self.init = function() {
         <input class="tb-settings-export" type="button" value="backup">\
         <input class="tb-settings-import" type="button" value="restore">\
         <b> Important:</b> This will reload the page without saving!\
-        &nbsp;&nbsp;<lable style="color:'+ lastExportColor +'">Last backup: <b>'+ lastExportLabel +'</b>\
+        <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
     </p><p>\
         <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show backup reminder every 30 days.</label>\
     </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\

@@ -78,6 +78,7 @@
 			<string>styles/queuetools.css</string>
 			<string>styles/modmailpro.css</string>
 			<string>styles/modbar.css</string>
+			<string>styles/historybutton.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

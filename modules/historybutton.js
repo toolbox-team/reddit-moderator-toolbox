@@ -346,7 +346,7 @@ self.populateSubmissionHistory = function (after) {
                 url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search',
                 match = domain.match(/^self.(\w+)$/),
                 percentage = Math.round(domainCount / totalDomainCount * 100),
-                bgcolor = '';
+                bgcolor = 'fff';
 
             if (percentage >= 10  && domainCount > 4){
                 bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
@@ -356,7 +356,7 @@ self.populateSubmissionHistory = function (after) {
             if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search';
 
             //Append domain to the table
-            $domainTable.append('<tr bgcolor="'+ bgcolor +'"><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+            $domainTable.append('<tr style="background-color: #'+ bgcolor +'"><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
 
             //Append the first 20 domains to the report comment
             if (index < 20) commentBody += '\n[' + domain + '](' + url + ')|' + domainCount + '|' + percentage + '%';
@@ -492,14 +492,14 @@ self.populateAccountHistory = function () {
                 account = self.accounts[account];
 
             var percentage = Math.round(account.count / totalAccountCount * 100),
-                bgcolor = '';
+                bgcolor = 'fff';
 
             if (percentage >= 10 && account.count > 4){
                 bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
             }
 
             $accountTable.append(
-                '<tr bgcolor="'+ bgcolor +'">\
+                '<tr style="background-color: #'+ bgcolor +'">\
                     <td class="url-td">\
                         <a href="' + account.url + '" target="_blank">' +
                             account.name +

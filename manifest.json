@@ -31,7 +31,8 @@
                 "styles/queuetools.css",
                 "styles/modmailpro.css",
                 "styles/achievements.css",
-                "styles/modbar.css"
+                "styles/modbar.css",
+                "styles/historybutton.css"
             ],
             "js": [
                 "libs/jquery-2.1.1.js",

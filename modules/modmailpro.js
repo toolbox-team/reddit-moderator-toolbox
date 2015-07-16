@@ -903,15 +903,8 @@ self.modmailpro = function() {
         $link.css(selectedCSS);
 
         // Hide threads.
-        if (threads === undefined) {
-            threads = $('.message-parent');
-        }
-
-        TBUtils.forEachChunked(threads, 25, 250, function () {
-            $this = $(this);
-            $this.find('.entry').css('display', 'none');
-            $this.find('.expand-btn').css('display', 'none');
-        });
+        $body.find('.entry').css('display', 'none');
+        $body.find('.expand-btn').css('display', 'none');
 
         $link.text('expand all');
         $('.tb-collapse-link').text('+');
@@ -926,11 +919,11 @@ self.modmailpro = function() {
 
         // Show threads.
         var threads = $('.message-parent');
+        $body.find('.entry').css('display', '');
+        $body.find('.expand-btn').css('display', '');
 
-        TBUtils.forEachChunked(threads, 35, 250, function (thread) {
-            $this = $(this);
-            $this.find('.entry').css('display', '');
-            $this.find('.expand-btn').css('display', '');
+        TBUtils.forEachChunked(threads, 10, 300, function (thread) {
+            var $this = $(thread);
 
             if (expandReplies) {
                 $this.find('.expand-btn:first')[0].click();

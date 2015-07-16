@@ -677,14 +677,27 @@ self.init = function () {
 
     // hide old comments
     if (TBUtils.betaMode) {
-        // Sadly, this also hides new child comments of old parent comments.
-        // Needs to work recursively or some shit.
         $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-old">hide old</a>');
+
         $body.on('click', '.hide-old', function () {
             self.log('hiding old comments');
-            $('.thing').show(); //reset before hiding.
-            $('.thing:not(.new-comment)').hide();
-        })
+            $('.entry').show(); //reset before hiding.
+            $('.old-expand').removeClass('old-expand'); // new old expands
+
+            // this likely isn't language safe.
+            if ($('#comment-visits option:selected' ).text() === 'no highlighting') return;
+
+            $('.thing:not(.new-comment)').each(function() {
+                var $this = $(this);
+                $this.toggleClass('old-expand');
+
+                $this.find('.entry:first').hide();
+            });
+        });
+
+        $body.on('click', '.old-expand', function () {
+           $(this).removeClass('old-expand').children().show();
+        });
     }
 };
 

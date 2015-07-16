@@ -40,7 +40,7 @@ self.processThing = function (thing) {
 
         // Defer info gathering until button is clicked.
         // try to insert it to the right of first button
-        var $insertionPoint = $(thing).find('.flat-list.buttons .first');
+        var $insertionPoint = $(thing).find('.flat-list.buttons .first:first');
         if ($insertionPoint.length == 0) {
             // if that doesn't work either stick it to the right of the first button
             $insertionPoint = $(thing).find('.buttons > li:first');

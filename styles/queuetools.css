@@ -68,3 +68,9 @@
 .action-reason a {
     font-size: 10px;
 }
+
+
+/* Color borders */
+.comment.tb-subreddit-color {
+    padding-left: 10px;
+}

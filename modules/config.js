@@ -142,7 +142,7 @@ self.init = function() {
                 <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a>\
                 <a href="javascript:;" id="tb-config-help" data-module="rreasons">[help]</a></br>\
                 <span id="tb-add-removal-reason-form">\
-                    <textarea class="edit-area"></textarea><br/>\
+                    <textarea class="edit-area" placeholder="reason comment text (optional if you\'re using flair only)"></textarea><br/>\
                     <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
                     <input type="text" name="flair-text" placeholder="flair text" /><br/>\
                     <input type="text" name="flair-css" placeholder="flair css" /><br/>\

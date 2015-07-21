@@ -87,7 +87,6 @@ self.init = function () {
     var notEnabled = [],
         hideActionedItems = self.setting('hideActionedItems'),
         showAutomodActionReason = self.setting('showAutomodActionReason'),
-        sortModQueue = self.setting('sortModqueue'),
         sortUnmoderated = self.setting('sortUnmoderated'),
         linkToQueues = self.setting('linkToQueues'),
         subredditColor = self.setting('subredditColor'),
@@ -485,6 +484,10 @@ self.init = function () {
             $actioned.css('opacity', '1');
             $actioned.removeClass('flaired spammed removed approved');
             $actioned.addClass(approve ? 'approved' : (spam ? 'spammed' : 'removed'));
+
+            if (hideActionedItems) {
+                $actioned.hide();
+            }
         });
 
         // menuarea pretty-button feedback.
@@ -495,23 +498,26 @@ self.init = function () {
         });
 
         // Uncheck anything we've taken an action, if it's checked.
-        $body.on('click', '.pretty-button', function (e) {
-            var thing = $(this).closest('.thing');
-            $(thing).find('input[type=checkbox]').prop('checked', false);
+        $body.on('click', '.pretty-button', function () {
+            var $this = $(this),
+                $thing = $this.closest('.thing');
+
+            $thing.find('input[type=checkbox]').prop('checked', false);
             if (hideActionedItems) {
-                $(thing).hide();
+                self.log('hiding item');
+                $thing.hide();
             }
-            else if ($(this).hasClass('negative')) {
-                $(thing).removeClass('removed approved');
-                $(thing).addClass('spammed');
+            else if ($this.hasClass('negative')) {
+                $thing.removeClass('removed approved');
+                $thing.addClass('spammed');
             }
-            else if ($(this).hasClass('neutral')) {
-                $(thing).removeClass('spammed approved');
-                $(thing).addClass('removed');
+            else if ($this.hasClass('neutral')) {
+                $thing.removeClass('spammed approved');
+                $thing.addClass('removed');
             }
-            else if ($(this).hasClass('positive')) {
-                $(thing).removeClass('removed spammed');
-                $(thing).addClass('approved');
+            else if ($this.hasClass('positive')) {
+                $thing.removeClass('removed spammed');
+                $thing.addClass('approved');
             }
         });
 

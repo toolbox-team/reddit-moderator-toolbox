@@ -141,14 +141,15 @@ self.initRemoveConfirmation = function initRemoveConfirmation() {
     });
     // Remove and spam
     $body.on('click', '.flat-list .remove-button .togglebutton', function () {
-        var $button = $(this).closest('.remove-button');
+        var $button = $(this).closest('.remove-button'),
+            yes = $button.find('.yes')[0];
 
         // Don't remove if removal reasons are enabled and the button isn't for spam
         if (!$body.hasClass('tb-removal-reasons')
             || ($body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons'))
             || $button.children().first().attr('value') === 'spammed'
         ) {
-            $button.find('.yes')[0].click();
+            if (yes) yes.click();
         }
     });
 };
@@ -158,9 +159,10 @@ self.initAutoApprove = function initAutoApprove() {
 
     $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
         self.log("Ignore reports pressed");
-        var $button = $(this).parent().find('> span > .positive');
+        var $button = $(this).parent().find('> span > .positive'),
+            button = $button[0];
         if (!$button.hasClass('pressed')) {
-            $button[0].click();
+            if (button) button.click();
         }
     });
 };
@@ -169,9 +171,10 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports() {
     self.log("Adding approve toggle events");
 
     $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
-        var $button = $(this).closest('.big-mod-buttons').find('> .neutral');
+        var $button = $(this).closest('.big-mod-buttons').find('> .neutral'),
+            button = $button[0];
         if (!$button.hasClass('pressed')) {
-            $button[0].click();
+            if (button) button.click();
         }
     });
 };

@@ -67,7 +67,7 @@ self.initModSave = function initModSave() {
     });
 
     //Add the mod save button next to each comment save button
-    var saveButton = $('.commentarea>.usertext .usertext-buttons .save');
+    var saveButton = $('.moderator .commentarea>.usertext .usertext-buttons .save');
     if (saveButton.css("display") != "none") {
         saveButton.after('<button class="save-mod">mod save</button>');
     }

@@ -30,7 +30,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
 
@@ -69,7 +69,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.2.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 320; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'TBD';
+    TBUtils.releaseName = 'Blackout Bear';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 3;

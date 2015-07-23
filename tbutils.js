@@ -30,7 +30,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
 
@@ -67,9 +67,9 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.2.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 320; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Blackout Bear';
+    TBUtils.toolboxVersion = '3.3.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 330; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'YO MAMA';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 3;
@@ -201,47 +201,8 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.2 version changes
+        // 3.3 version changes
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
-
-
-        // remove bnw shim
-        localStorage.removeItem('Toolbox.Storage.resetKey');
-
-        // queue creatures conversion.
-        // We only need to worry if they disabled kitteh, since it's still the default in the new setting.
-        if (!TBStorage.getSetting('QueueTools', 'kitteh', true)) {
-            TBStorage.setSetting('QueueTools', 'queueCreature', 'i_have_no_soul');
-        }
-        localStorage.removeItem('Toolbox.QueueTools.kitteh');
-
-        // TOOLBOX IS NOT WRITTEN IN PYTHON!
-        var lastSeen = TBStorage.getSetting('Achievements', 'last_seen', 0);
-        if (lastSeen > 0) {
-            TBStorage.setSetting('Achievements', 'lastSeen', lastSeen);
-        } else {
-            TBStorage.setSetting('Achievements', 'lastSeen', now);
-        }
-        localStorage.removeItem('Toolbox.Achievements.last_seen');
-
-        // these are no longer settings, they are button actions
-        localStorage.removeItem('Toolbox.QueueTools.sortModqueue');
-        localStorage.removeItem('Toolbox.QueueTools.sortUnmoderated');
-
-        // This should never default on.  It's broken.
-        var modSave = TBStorage.getSetting('BButtons', 'enableModSave', false);
-        if (modSave) {
-            TBStorage.setSetting('BButtons', 'enableModSave', false);
-        }
-
-        // IgnoreOn is now part of better buttons.
-        var ignoreOn = TBStorage.getSetting('QueueTools', 'ignoreOnApprove', false);
-        if (ignoreOn) {
-            TBStorage.setSetting('BButtons', 'ignoreOnApprove', true);
-        }
-
-        // no longer part of QT
-        localStorage.removeItem('Toolbox.QueueTools.ignoreOnApprove');
 
 
         // End: version changes.

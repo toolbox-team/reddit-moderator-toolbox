@@ -96,6 +96,7 @@ function initwrapper() {
     TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
     TBUtils.log = [];
     TBUtils.logModules = [];
+    TBUtils.rateLimit = 0;
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
@@ -1040,9 +1041,16 @@ function initwrapper() {
         if (array === null) finish();
         if (chunkSize === null || chunkSize < 1) finish();
         if (call === null) finish();
-        var counter = 0,
-            delay = 100;
 
+        var length = array.length,
+            counter = 0,
+            delay = 100,
+            limit = (length > chunkSize) ? 20 : 0;
+
+
+        if (length < chunkSize) {
+            chunkSize = length;
+        }
 
         function doChunk() {
             if (counter == 0 && start) {
@@ -1066,15 +1074,15 @@ function initwrapper() {
                 var $body = $('body'),
                     ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                     ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+                $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
 
                 if (!$body.find('#ratelimit-counter').length ) {
                     $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
                 }
 
-                if (chunkSize+20 > parseInt(ratelimitRemaining)) {
+                if (chunkSize + limit > parseInt(ratelimitRemaining)) {
                     $body.find('#ratelimit-counter').show();
                     var count = parseInt(ratelimitReset);
-                    $.log(count);
                     var counter = setInterval(timer, 1000);
 
                     function timer() {
@@ -1113,7 +1121,7 @@ function initwrapper() {
 
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {
-        $.getJSON('/r/toolbox/about.json').done(function (data, status, jqxhr) {
+        $.getJSON('/r/toolbox/wiki/ratelimit.json').done(function (data, status, jqxhr) {
             var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                 ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
             $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
@@ -1845,6 +1853,11 @@ function initwrapper() {
                 });
             });
         }
+    })();
+
+    // get rate limit
+    (function getRateLimit() {
+        TBUtils.rateLimit = TBUtils.getRatelimit();
     })();
 
 }(TBUtils = window.TBUtils || {}));

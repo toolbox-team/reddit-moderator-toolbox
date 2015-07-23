@@ -1100,10 +1100,12 @@ function initwrapper() {
                 ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
             $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
 
-            callback({
-                'ratelimitRemaining': ratelimitRemaining,
-                'ratelimitReset': ratelimitReset
-            })
+            if (typeof callback !== "undefined") {
+                callback({
+                    'ratelimitRemaining': ratelimitRemaining,
+                    'ratelimitReset': ratelimitReset
+                });
+            }
         });
     };
 

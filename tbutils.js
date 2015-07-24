@@ -96,7 +96,6 @@ function initwrapper() {
     TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
     TBUtils.log = [];
     TBUtils.logModules = [];
-    TBUtils.rateLimit = 0;
     TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
@@ -1095,11 +1094,11 @@ function initwrapper() {
 
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {
-        $.getJSON('/r/toolbox/wiki/ratelimit.json').done(function (data, status, jqxhr) {
+        TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
+            function (status, jqxhr) {
             var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                 ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
             $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
-            TBUtils.rateLimit = ratelimitRemaining;
 
             callback({
                 'ratelimitRemaining': ratelimitRemaining,
@@ -1831,9 +1830,11 @@ function initwrapper() {
     })();
 
     // get rate limit
-    (function getRateLimit() {
-        TBUtils.getRatelimit();
-    })();
+    if (TBUtils.debugMode) {
+        (function getRateLimit() {
+            TBUtils.getRatelimit();
+        })();
+    }
 
 }(TBUtils = window.TBUtils || {}));
 }

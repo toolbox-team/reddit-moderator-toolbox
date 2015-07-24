@@ -385,7 +385,6 @@ self.init = function () {
             // Are we allowed to show a popup?
             if (messageNotifications && count > unreadMessageCount) {
 
-
                 // set up an array in which we will load the last 100 messages that have been displayed.
                 // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                 var pushedunread = self.setting('unreadPushed');
@@ -393,8 +392,6 @@ self.init = function () {
                 if (consolidatedMessages) {
                     var notificationbody, messagecount = 0;
                     $.each(json.data.children, function (i, value) {
-
-
                         if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
                             var subreddit = value.data.subreddit,
                                 author = value.data.author;
@@ -427,16 +424,21 @@ self.init = function () {
                         }
                     });
 
+                    function youveGotMail() {
+                        var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
+                        audio.play();
+                    }
 
                     //$.log(messagecount);
                     //$.log(notificationbody);
                     if (messagecount === 1) {
                         TBUtils.notification('One new message!', notificationbody, messageunreadurl);
+                        youveGotMail();
 
                     } else if (messagecount > 1) {
                         TBUtils.notification(messagecount.toString() + ' new messages!', notificationbody, messageunreadurl);
+                        youveGotMail();
                     }
-
 
                 } else {
                     $.each(json.data.children, function (i, value) {

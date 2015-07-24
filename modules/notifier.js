@@ -54,6 +54,12 @@ self.register_setting('messageNotifications', {
     'title': 'Get notifications for new messages'
 });
 
+self.register_setting('messageNotificationSound', {
+    'type': 'boolean',
+    'default': false,
+    'title': "You've got mail."
+});
+
 self.register_setting('messageUnreadLink', {
     'type': 'boolean',
     'default': false,
@@ -164,6 +170,7 @@ self.init = function () {
     var wwwNotifications = self.setting('wwwNotifications'),
         modNotifications = self.setting('modNotifications'),
         messageNotifications = self.setting('messageNotifications'),
+        messageNotificationSound = self.setting('messageNotificationSound'),
         modmailNotifications = self.setting('modmailNotifications'),
         unmoderatedNotifications = self.setting('unmoderatedNotifications'),
         consolidatedMessages = self.setting('consolidatedMessages'),
@@ -425,8 +432,10 @@ self.init = function () {
                     });
 
                     function youveGotMail() {
-                        var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
-                        audio.play();
+                        if (messageNotificationSound) {
+                            var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
+                            audio.play();
+                        }
                     }
 
                     //$.log(messagecount);

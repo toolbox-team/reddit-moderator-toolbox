@@ -1037,14 +1037,14 @@ function initwrapper() {
                     ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                 $.log('ratelimitRemaining: ' + ratelimitRemaining + ' ratelimitReset: ' + (ratelimitReset / 60), false, SHORTNAME);
 
-                if (!$body.find('#ratelimit-counter').length ) {
+                if (!$body.find('#ratelimit-counter').length) {
                     $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
                 }
 
                 if (chunkSize + limit > parseInt(ratelimitRemaining)) {
                     $body.find('#ratelimit-counter').show();
-                    var count = parseInt(ratelimitReset);
-                    var counter = setInterval(timer, 1000);
+                    var count = parseInt(ratelimitReset),
+                        counter = 0;
 
                     function timer() {
                         count = count - 1;
@@ -1064,6 +1064,8 @@ function initwrapper() {
                 <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit\'s current ratelimit allows for <i>' + ratelimitRemaining + ' requests</i>. We are currently trying to process <i>' + parseInt(chunkSize) + ' items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
                 ');
                     }
+
+                    counter = setInterval(timer, 1000);
 
                 } else {
                     doChunk();

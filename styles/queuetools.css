@@ -74,3 +74,38 @@
 .comment.tb-subreddit-color {
     padding-left: 10px;
 }
+
+
+/* queue sort counter */
+
+a.tb-subreddit-item-count {
+    background-color: #D56F18;
+    color: #FFF;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0px 3px 3px 3px;
+    margin: 3px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.subscription-box li {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+a.tb-subreddit-item-count {
+    -ms-flex-order: -1;
+    order: -1;
+}
+
+a.tb-sort-subs {
+    font-size: 13px;
+}

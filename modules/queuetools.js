@@ -629,10 +629,10 @@ self.init = function () {
 
         // sort sidebars
         if (TBUtils.isModFakereddit) {
-            $('.sidecontentbox').find('.title:first').append('&nbsp;<a href="javascript:;" class="sort-subs">sort by items</a>');
+            $('.sidecontentbox').find('.title:contains(THESE SUBREDDITS)').append('&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,' + TB.ui.iconSort + '" />sort by items</a>');
         }
 
-        $body.on('click', '.sort-subs', function () {
+        $body.on('click', '.tb-sort-subs', function () {
             var prefix = '', page = '';
             if (TBUtils.isUnmoderatedPage) {
                 self.log('sorting unmod');
@@ -647,7 +647,7 @@ self.init = function () {
             }
 
             self.log('sorting queue sidebar');
-            $('.sort-subs').remove(); // don't allow sorting twice.
+            $('.tb-sort-subs').remove(); // don't allow sorting twice.
 
             var now = TB.utils.getTime(),
                 //delay = 0,
@@ -664,7 +664,7 @@ self.init = function () {
                     TB.ui.textFeedback("Getting items for: " + sr, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
                     // Update count and re-cache data if more than an hour old.
-                    $elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '">' + data[0] + '</a>');
+                    $elem.parent().append('<a href="/r/' + sr + '/about/' + page + '" count="' + data[0] + '" class="tb-subreddit-item-count">' + data[0] + '</a>');
                     if (now > data[1]) {
                         updateModqueueCount(sr);
                     }

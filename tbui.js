@@ -133,6 +133,12 @@
                      v77KKXBI24kp086GsgmJVuWk9JtX43WGxRNcMcGfERrC3hIUC5A4jFYK+BbfvtSqC9xjTmKeNdaxWhzjrjWHWJEgBoOiBJOkGccW2ZuLLi+BNq80HUiuIcK4DZGCahXv4FY4eX45ww+AQAAAAASUVORK\
                      5CYII=";
 
+    TBui.iconSort = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QAAAAAAAD5Q7t/AAAAC\
+                    XBIWXMAAAsSAAALEgHS3X78AAABwUlEQVQ4y6WTTUvUURTGH6cZYcJVMU6IWQtFg4aEoIyxQKVNQjtXUquyaVGLMr9GUe0mog8QEVI0EOFGzVai0MIsDWkTIy2de8/bbTH8//NOYGd1OM/ld59z7j3Af0ZX\
+                    lMx/LoQQAlQMKopnky+7mg8/XL3zRcX4yZXieFRLRImZYexYHpcyeTBxy00PVuY2MsnshUx3b75QurEe1ZNRoqwQE5gZmAR1zrpN7Wsm1Tt4quc0zAzOudGbr2e2mDgXA5ilCggGchQDVPS9ivZLQmM9feQo\
+                    yNEAEy/WAL4KUDOQq7Xw+HLxKgDcfjcb+ntOQs2w+/snyNHEm1sf1mIAeQarwoLC1zlop5f/lPF2rrTWMAPyBFaGBW1o4V96DeCo2kInBx30GOArDFaGdnDQSU8CwPTzqbF0Kg02gZnCO27roJ2euPZ0skSOl\
+                    rLHs2AVsAn6TvTh7L3hykhh8GPswFGs1ztIeEfXfYX3yvv7EKs+JTODvfxikunmGYgJ2NccJD8tLBOA4fOPcusHB5VRVcX3rR+b34o751qGqAxD409tWJgzd4eWhSW1/WL3YvMMcvdHgrBCWKCi2Hm117Js\
+                    h4q/ZJNiXWodqQgAAAAASUVORK5CYII=";
     // Do we ever care about loading image assets from disk? Here's how:
     // switch (TBUtils.browser) {
     //     case TBUtils.browsers.CHROME:

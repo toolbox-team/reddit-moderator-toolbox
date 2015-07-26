@@ -714,11 +714,12 @@ self.init = function () {
         var $modComments = $('.moderator');
         if ($modComments.length > 0) {
             self.log('found mod comments');
-            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-mod-comments">hide mod comments</a>');
+            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-mod-comments tb-general-button">hide mod comments</a>');
 
-            $body.on('click', '.hide-mod-comments', function () {
+            $body.on('click', '.tb-hide-mod-comments', function () {
                 self.log('hiding mod comments');
                 $modComments.closest('.thing').hide();
+                $(this).hide();
             })
         }
     }

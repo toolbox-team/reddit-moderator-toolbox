@@ -877,7 +877,7 @@ img.note-close {
 }
 
 .mod-popup .flair-text {
-    width: initial;
+    width: initial !important;
 }
 
 .tb-popup-footer {

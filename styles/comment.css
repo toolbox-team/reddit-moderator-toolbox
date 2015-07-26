@@ -12,3 +12,8 @@
     color: #F7FAFD;
     font-weight: bold;
 }
+
+.mod-toolbox #tb-searchuser input[type="submit"] {
+    padding: 0 !important;
+    margin-left: 4px;
+}

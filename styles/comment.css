@@ -1,7 +1,14 @@
-#tb-flatview-search {
+.mod-toolbox #tb-flatview-search {
     background-color: #F7FAFD;
     color: #696969;
     border: 1px solid #B6C9DD;
     padding: 3px;
     margin: 11px
+}
+
+.mod-toolbox #tb-flatview-search-count {
+    background-color: #B6C9DD;
+    padding: 4px;
+    color: #F7FAFD;
+    font-weight: bold;
 }

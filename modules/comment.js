@@ -390,16 +390,22 @@ self.init = function () {
 
                 // Add filter options to the page
                 if (!$body.find('#tb-flatview-search').length) {
-                    var $filterHTML = $('<div id="tb-flatview-search">Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   </div>');
+                    var $filterHTML = $('<div id="tb-flatview-search">\
+                            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  \
+                            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   \
+                            <span id="tb-flatview-search-count"></span>\
+                        </div>');
                     var FilterRightPosition = $('.side').outerWidth() + 5;
                     $filterHTML.css({
                         'margin-right': FilterRightPosition + 'px'
                     });
 
                     $(siteTable).before($filterHTML);
+                    $('#tb-flatview-search-count').text($body.find(siteTable + ' .thing.comment:visible').length);
                 } else {
                     $body.find('#tb-flatview-search-name').val('');
                     $body.find('#tb-flatview-search-content').val('');
+                    $('#tb-flatview-search-count').text($body.find(siteTable + ' .thing.comment:visible').length);
                 }
 
                 $body.find('.tb-flatview-search-input').keyup(function () {
@@ -424,6 +430,7 @@ self.init = function () {
 
 
                         }
+                        $('#tb-flatview-search-count').text($body.find(siteTable + ' .thing.comment:visible').length);
                     });
                 });
 

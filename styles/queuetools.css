@@ -106,6 +106,21 @@ a.tb-subreddit-item-count {
     order: -1;
 }
 
-a.tb-sort-subs {
+.mod-toolbox .tb-sort-subs {
+    float: right;
+    margin: 4px;
+    border: 1px solid #B6C9DD;
+    border-left: 2px solid #B6C9DD;
+    padding: 3px;
+    background-color: white;
     font-size: 13px;
+}
+
+.mod-toolbox .tb-sort-subs:hover {
+    background-color: #E2EEFA;
+}
+
+.mod-toolbox .tb-sort-subs img {
+    margin-bottom: -3px;
+    margin-right: 3px;
 }

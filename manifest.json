@@ -24,6 +24,7 @@
             ],
             "css": [
                 "styles/toolbox.css",
+                "styles/comment.css",
                 "styles/modmatrix.css",
                 "styles/removalreasons.css",
                 "styles/personalnotes.css",

@@ -388,6 +388,47 @@ self.init = function () {
                 // add the new comment list to the page.
                 $(siteTable).append(htmlCommentView);
 
+                // Add filter options to the page
+                if (!$body.find('#tb-flatview-search').length) {
+                    var $filterHTML = $('<div id="tb-flatview-search">Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   </div>');
+                    var FilterRightPosition = $('.side').outerWidth() + 5;
+                    $filterHTML.css({
+                        'margin-right': FilterRightPosition + 'px'
+                    });
+
+                    $(siteTable).before($filterHTML);
+                } else {
+                    $body.find('#tb-flatview-search-name').val('');
+                    $body.find('#tb-flatview-search-content').val('');
+                }
+
+                $body.find('.tb-flatview-search-input').keyup(function () {
+                    self.log('typing');
+                    var FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
+                    var FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
+
+                    self.log(FlatViewSearchName);
+                    self.log(FlatViewSearchContent);
+
+                    $body.find(siteTable + ' .thing.comment').each(function () {
+                        var $this = $(this);
+
+                        var flatUserName = $this.find('.tagline a.author').text();
+                        var flatContent = $this.find('.usertext-body .md').text();
+
+                        if (flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0 || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0) {
+                            $this.hide();
+                        } else {
+                            $this.show();
+
+
+
+                        }
+                    });
+                });
+
+
+
                 // and simulate reddits timeago function with our native function.
                 $("time.timeago").timeago();
 

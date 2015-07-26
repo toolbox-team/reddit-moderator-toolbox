@@ -15,6 +15,22 @@
     height: 40px;
 }
 
+/* general UI stuff */
+
+.mod-toolbox .tb-general-button {
+    background-color: #F7FAFD;
+    color: #696969;
+    border: 1px solid #B6C9DD;
+    border-left: 2px solid #B6C9DD;
+    padding: 1px 5px;
+    text-align: center;
+}
+
+.mod-toolbox .tb-general-button:hover {
+    background-color: #E2EEFA;
+}
+
+
 .mod-toolbox .tb-highlight {
     background-color: #ffff16;
 }

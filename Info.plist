@@ -43,11 +43,11 @@
 				<string>tbutils.js</string>
 				<string>tbmodule.js</string>
 				<string>modules/modbar.js</string>
+				<string>modules/modbutton.js</string>
 				<string>modules/notifier.js</string>
 				<string>modules/modmailpro.js</string>
 				<string>modules/domaintagger.js</string>
 				<string>modules/usernotes.js</string>
-				<string>modules/modbutton.js</string>
 				<string>modules/metricstab.js</string>
 				<string>modules/comment.js</string>
 				<string>modules/config.js</string>

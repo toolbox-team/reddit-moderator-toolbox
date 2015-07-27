@@ -36,6 +36,12 @@ self.register_setting('highlightTitles', {
     'advanced': true,
     'title': 'Also highlight titles of submissions.'
 });
+self.register_setting('showHideOld', {
+    'type': 'boolean',
+    'default': true,
+    'advanced': false,
+    'title': 'Show button to hide old comments.'
+});
 
 self.init = function () {
     var $body = $('body');
@@ -725,18 +731,22 @@ self.init = function () {
     }
 
     // hide old comments
-    if (TBUtils.betaMode) {
-        $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="hide-old">hide old</a>');
+    if (self.setting('showHideOld')) {
+        var NO_HIGHLIGHTING = 'no highlighting',
+            $commentvisits = $('#comment-visits');
 
-        $body.on('click', '.hide-old', function () {
+        $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
+
+        $body.on('click', '.tb-hide-old', function () {
             self.log('hiding old comments');
             $('.entry').show(); //reset before hiding.
             $('.old-expand').removeClass('old-expand'); // new old expands
 
             // this likely isn't language safe.
-            if ($('#comment-visits option:selected' ).text() === 'no highlighting') return;
+            if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING) return;
 
-            $('.thing:not(.new-comment)').each(function() {
+
+            $('.thing:not(.new-comment,.link)').each(function() {
                 var $this = $(this);
                 $this.toggleClass('old-expand');
 
@@ -746,6 +756,14 @@ self.init = function () {
 
         $body.on('click', '.old-expand', function () {
            $(this).removeClass('old-expand').children().show();
+        });
+
+        $body.on( "change", '#comment-visits', function () {
+            var $hideOld = $('.tb-hide-old');
+            $hideOld.text('hide old');
+            if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING){
+                $hideOld.text('show all');
+            }
         });
     }
 };

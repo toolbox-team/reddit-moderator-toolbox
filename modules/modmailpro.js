@@ -56,20 +56,6 @@ self.register_setting('autoLoad', {
     'title': 'Automatically load new mod mail when received.'
 });
 
-self.register_setting('autoThread', {
-    'type': 'boolean',
-    'default': false,
-    'advanced': true,
-    'title': 'Automatically thread replies when expanding. (Note: slows expanding time)'
-});
-
-self.register_setting('autoThreadOnLoad', {
-    'type': 'boolean',
-    'default': false,
-    'advanced': true,
-    'title': 'Automatically thread replies on page load. (Note: slows page load time)'
-});
-
 self.register_setting('fadeRecipient', {
     'type': 'boolean',
     'default': true,
@@ -196,8 +182,6 @@ self.modmailpro = function() {
         moreCommentThreads = [],
         unreadThreads = [],
         unansweredThreads = [],
-        threadAlways = self.setting('autoThreadOnLoad'),
-        threadOnExpand = threadAlways || self.setting('autoThread'),
         sentFromMMP = false,
         newThreadSupport = false;
     self.endProfile('settings-access');
@@ -401,9 +385,6 @@ self.modmailpro = function() {
             $messageCount = $infoArea.find('.tb-message-count'),
             $collapseLink = $thread.find(".tb-collapse-link"),
             $subredditArea = $thread.find('.correspondent:first'),
-            $subject = $thread.find(".subject"),
-            $threadTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-thread-view').text("threaded view"),
-            $flatTrigger = $('<a>').attr('href', 'javascript:;').addClass('expand-btn tb-flat-view').text("flat view"),
 
             threadInfo = TB.utils.getThingInfo($thread),
             threadID = threadInfo.id,
@@ -425,16 +406,11 @@ self.modmailpro = function() {
         if (collapsed && !lmcThread) {
             $collapseLink.text('+');
             $thread.addClass('mmp-collapsed');
-            $flatTrigger[0].style.display = 'none';
-            $threadTrigger[0].style.display = 'none';
         }
 
         self.endProfile("thread-info");
 
         // Add MMP UI
-        $subject.append($threadTrigger);
-        $subject.append($flatTrigger);
-
         if (replyCount > 0) {
             if ($thread.hasClass('moremessages')) {
                 replyCount = replyCount.toString() + '+';
@@ -443,12 +419,6 @@ self.modmailpro = function() {
 
             $thread.addClass("has-replies");
             $messageCount.text(replyCount);
-
-            //Thread the message if required
-            if (threadAlways) {
-                threadModmail(threadID);
-            }
-
         }
         else {
             unansweredThreads.push(threadID);
@@ -540,9 +510,6 @@ self.modmailpro = function() {
         // Deal with LMC threads
         if (lmcThread) {
             self.log("LMC Thread!");
-            if (threadOnExpand) {
-                threadModmail(threadID);
-            }
 
             if (expandReplies) {
                 $thread.find('.expand-btn:first')[0].click();
@@ -780,58 +747,6 @@ self.modmailpro = function() {
         $(this).parents(".thing:first").find("> .child").hide();
     }
 
-    function noncollapse() {
-        $(this).parents(".thing:first").find("> .child").show();
-    }
-
-    function threadModmail(fullname) {
-        self.startProfile("threading");
-
-        var $firstMessage = $("div.thing.id-" + fullname).addClass("threaded-modmail");
-
-        if ($firstMessage.hasClass("has-replies")) {
-            $firstMessage.find(".thing").each(function () {
-                var parent = $("div.thing.id-" + $(this).data("parent"));
-                $(this).appendTo(parent.find("> .child"));
-            });
-        }
-        else {
-            var id = fullname.substring(3);
-
-            $.getJSON("//www.reddit.com/message/messages/" + id + ".json", null, function (data) {
-                var messages = data.data.children[0].data.replies.data.children;
-
-                for (var i = 0; i < messages.length; i++) {
-                    var item = messages[i].data;
-
-                    var $message = $("div.thing.id-" + item.name);
-                    var $dummy = $("<div></div>").addClass("modmail-dummy-" + item.name);
-                    var $parent = $("div.thing.id-" + item.parent_id);
-
-                    $message.data("parent", item.parent_id);
-
-                    $dummy.insertAfter($message);
-                    $message.appendTo($parent.find("> .child"));
-
-                    $message.find("> .entry .noncollapsed .expand").bind("click", collapse);
-                    $message.find("> .entry .collapsed .expand").bind("click", noncollapse);
-
-                    $firstMessage.addClass("has-replies");
-                }
-            });
-        }
-
-        self.endProfile("threading");
-    }
-
-    function flatModmail(fullname) {
-        var firstMessage = $("div.thing.id-" + fullname).removeClass("threaded-modmail");
-
-        firstMessage.find(".thing").each(function () {
-            $(this).insertBefore(firstMessage.find(".modmail-dummy-" + $(this).data("fullname")));
-        });
-    }
-
     function setReplied(threads) {
         if (threads === undefined) {
             threads = $('.message-parent');
@@ -1002,15 +917,6 @@ self.modmailpro = function() {
                 $parent.find('.tb-thread-view')[0].click();
             }
         }
-    });
-
-    // Threading methods.
-    $body.on('click', '.tb-flat-view', function () {
-        flatModmail($(this).closest('.message-parent').data('fullname'));
-    });
-
-    $body.on('click', '.tb-thread-view', function () {
-        threadModmail($(this).closest('.message-parent').data('fullname'));
     });
 };
 

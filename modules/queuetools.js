@@ -244,10 +244,10 @@ self.init = function () {
     <div class="menuarea modtools" style="padding: 5px 0;margin: 5px 0;"> \
         <input style="margin:5px;float:left" title="Select all/none" type="checkbox" id="select-all" title="select all/none"/> \
         <span>\
-            <a href="javascript:;" class="pretty-button invert inoffensive" accesskey="I" title="invert selection">invert</a> \
-            <a href="javascript:;" class="pretty-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
+            <a href="javascript:;" class="tb-general-button invert inoffensive" accesskey="I" title="invert selection">invert</a> \
+            <a href="javascript:;" class="tb-general-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a> \
             <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
-                <a href="javascript:;" class="pretty-button inoffensive select"> [select...]</a> \
+                <a href="javascript:;" class="tb-general-button inoffensive select"> [select...]</a> \
             </div>\
             <div class="drop-choices lightdrop select-options"> \
                 ' + (viewingreports ? '' : '<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>\
@@ -267,10 +267,10 @@ self.init = function () {
                 <a class="choice" href="javascript:;" type="flair">posts with flair</a> \
             </div>\
             &nbsp; \
-            <a href="javascript:;" class="pretty-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
-            <a href="javascript:;" class="pretty-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
-            <a href="javascript:;" class="pretty-button inoffensive expand-reports"   >expand&nbsp;reports</a> \
-            <a href="javascript:;" class="pretty-button inoffensive collapse-reports"   >collapse&nbsp;reports</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive expand-reports"   >expand&nbsp;reports</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive collapse-reports"   >collapse&nbsp;reports</a> \
             <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \

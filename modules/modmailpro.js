@@ -441,6 +441,7 @@ self.modmailpro = function() {
                 moreCommentThreads.push(threadID);
             }
 
+            $thread.addClass("has-replies");
             $messageCount.text(replyCount);
 
             //Thread the message if required

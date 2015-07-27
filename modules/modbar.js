@@ -75,7 +75,6 @@ self.init = function() {
         DEFAULT_MODULE = 'DEFAULT_MODULE',
         currentModule = DEFAULT_MODULE;
 
-    $body.addClass('mod-toolbox');
 
     //
     // preload some generic variables
@@ -119,8 +118,8 @@ self.init = function() {
     if (lastExportDays > 30 || lastExport === 0) {
         lastExportState = "sad";
 
-        if (showExportReminder && settingSub !== ''){
-            TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 2000, TB.ui.DISPLAY_BOTTOM);
+        if (showExportReminder && settingSub !== '' && lastExport !== 0){
+            TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
         }
     }
     else if (lastExportDays < 15) {

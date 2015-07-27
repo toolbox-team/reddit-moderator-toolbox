@@ -208,7 +208,10 @@ self.init = function () {
             sortAscending = self.setting('reportsAscending'),
             viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
             viewingreports = !!location.pathname.match(/\/about\/reports/),
-            allSelected = false;
+            allSelected = false,
+            expandReports = self.setting('expandReports'),
+            EXPAND_TITLE = 'expand reports',
+            COLLAPSE_TITLE = 'collapse reports';
 
         if (viewingspam && listingOrder == 'reports') {
             listingOrder = 'age';
@@ -269,8 +272,7 @@ self.init = function () {
             &nbsp; \
             <a href="javascript:;" class="tb-general-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
             <a href="javascript:;" class="tb-general-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
-            <a href="javascript:;" class="tb-general-button inoffensive expand-reports"   >expand&nbsp;reports</a> \
-            <a href="javascript:;" class="tb-general-button inoffensive collapse-reports"   >collapse&nbsp;reports</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive toggle-reports"  >'+ EXPAND_TITLE +'</a> \
             <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
@@ -301,6 +303,15 @@ self.init = function () {
         //add class to processed threads.
         var $things = $('.thing');
         $things.addClass('mte-processed');
+
+
+        if (expandReports) {
+            var $toggleReports = $('.toggle-reports');
+            $toggleReports.addClass('expanded');
+            $toggleReports.text(COLLAPSE_TITLE);
+
+            $('.reported-stamp').siblings('.report-reasons').show();
+        }
 
         // Add context & history stuff TODO: Figure out what the hell this did. History has been moved to historybutton though.
 
@@ -451,12 +462,18 @@ self.init = function () {
         });
 
         // Expand reports on click.
-        $('.expand-reports').click(function () {
-            $('.reported-stamp').siblings('.report-reasons').show();
-        });
+        $('.toggle-reports').click(function () {
+            var $this = $(this);
 
-        $('.collapse-reports').click(function () {
-            $('.reported-stamp').siblings('.report-reasons').hide();
+            if ($this.hasClass('expanded')){
+                $this.removeClass('expanded');
+                $this.text(EXPAND_TITLE);
+                $('.reported-stamp').siblings('.report-reasons').hide();
+            } else {
+                $this.addClass('expanded');
+                $this.text(COLLAPSE_TITLE);
+                $('.reported-stamp').siblings('.report-reasons').show();
+            }
         });
 
         // Mass spam/remove/approve
@@ -603,7 +620,7 @@ self.init = function () {
         //Process new things loaded by RES or flowwit.
         function processNewThings(things) {
             // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
-            if (self.setting('expandReports')) {
+            if (expandReports) {
                 $(things).find('.reported-stamp').siblings('.report-reasons').show();
             }
             //add class to processed threads.
@@ -726,9 +743,6 @@ self.init = function () {
     // Add mod tools or mod tools toggle button if applicable
     if (TBUtils.isModpage) {
         addModtools();
-        if (self.setting('expandReports')) {
-            $('.reported-stamp').siblings('.report-reasons').show();
-        }
     }
 
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {

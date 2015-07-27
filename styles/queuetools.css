@@ -124,3 +124,45 @@ a.tb-subreddit-item-count {
     margin-bottom: -3px;
     margin-right: 3px;
 }
+
+
+/* pretty buttons */
+.menuarea.modtools a.pretty-button {
+    border-radius: 0 !important;
+    border-width: 1px 1px 1px 2px;
+    border-color: #778696;
+    border-style: solid;
+    padding: 1px 5px;
+    text-align: center;
+    font-size: inherit;
+}
+
+.menuarea.modtools  .pretty-button.negative {
+    background: none;
+    background-color: #EDBDBE;
+
+}
+.menuarea.modtools  .pretty-button.positive {
+    background: none;
+    background-color: #D1EABF;
+}
+
+.menuarea.modtools  .pretty-button.neutral {
+    background-image: none;
+    background-color: #D5D5D5;
+}
+
+.menuarea.modtools  .pretty-button.negative.pressed {
+    background: none;
+    background-color: #886B6C;
+
+}
+.menuarea.modtools  .pretty-button.positive.pressed {
+    background: none;
+    background-color: #849479;
+}
+
+.menuarea.modtools  .pretty-button.neutral.pressed {
+    background-image: none;
+    background-color: #9E9C9C;
+}

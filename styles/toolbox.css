@@ -20,8 +20,9 @@
 .mod-toolbox .tb-general-button {
     background-color: #F7FAFD;
     color: #696969;
-    border: 1px solid #B6C9DD;
-    border-left: 2px solid #B6C9DD;
+    border-width: 1px 1px 1px 2px;
+    border-color: #B6C9DD;
+    border-style: solid;
     padding: 1px 5px;
     text-align: center;
 }

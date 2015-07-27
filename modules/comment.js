@@ -176,9 +176,9 @@ self.init = function () {
         run();
 
         // Add flat view link.
-        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="loadFlat tb-general-button">Load comments in flat view</a>');
+        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="tb-loadFlat tb-general-button">Load comments in flat view</a>');
 
-        $body.on("click", ".loadFlat", function () {
+        $body.on("click", ".tb-loadFlat", function () {
 
             // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
             htmlComment = '\
@@ -282,7 +282,7 @@ self.init = function () {
             var jsonurl = $('.entry a.comments').attr('href');
 
             // Lets get the comments.
-            $.getJSON(jsonurl + '.json?limit=500').done(function (data, status, jqxhr) {
+            $.getJSON(jsonurl + '.json?limit=1500').done(function (data, status, jqxhr) {
                 // put the json through our deconstructor.
                 data[1].isreply = false;
                 parseComments(data[1]);

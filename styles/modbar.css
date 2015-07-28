@@ -10,3 +10,23 @@
 .backup-warning.sad {
     color: #FF0000;
 }
+
+.edit-settings {
+    width: 99%;
+    font: normal small verdana,arial,helvetica,sans-serif;
+    -webkit-appearance: textarea;
+    background-color: white;
+    border: 1px solid;
+    -webkit-rtl-ordering: logical;
+    -webkit-user-select: text;
+    -webkit-flex-direction: column;
+    cursor: auto;
+    padding: 2px !important;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: white;
+}
+
+.mod-toolbox span.tb-settings-display {
+    max-width: 59em;
+}

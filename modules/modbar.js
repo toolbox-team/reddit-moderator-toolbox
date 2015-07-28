@@ -523,6 +523,9 @@ self.init = function() {
     </p><p>\
         <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
     </p>\
+    <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
+        <input type="button" id="anonSettings" value="anonSettings" />\
+    </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
 </div>\
 ');
@@ -782,6 +785,28 @@ self.init = function() {
                 TB.ui.textFeedback("Save could not be verified", TB.ui.FEEDBACK_NEGATIVE);
             }
         });
+    });
+
+    $body.on('click', '#anonSettings', function () {
+        $overlay = TB.ui.overlay(
+            'toolbox setting display',
+            [
+                {
+                    title: '',
+                    tooltip: '',
+                    content: '\
+                <span class="tb-settings-display">\
+                <textarea class="edit-settings" rows="20" cols="20"></textarea>\
+                </br>\
+                </span>\
+                ',
+                    footer: ''
+                }
+            ],
+            '', // meta
+            'tb-settings' // so, uh.... if you change this, the close button stops working?
+        ).appendTo('body');
+        $body.css('overflow', 'hidden');
     });
 
 

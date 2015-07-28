@@ -642,6 +642,7 @@ self.init = function() {
 
         if ($(e.target).hasClass('tb-settings-import')) {
             TBUtils.importSettings(sub, function () {
+                self.setting('lastExport', TB.utils.getTime());
                 TBUtils.clearCache();
                 window.location.reload();
             });

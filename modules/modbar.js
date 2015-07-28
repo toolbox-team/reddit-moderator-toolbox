@@ -524,7 +524,7 @@ self.init = function() {
         <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
     </p>\
     <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
-        <input type="button" id="anonSettings" value="anonSettings" />\
+        <input type="button" id="showSettings" value="Show Settings" />\
     </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
 </div>\
@@ -787,7 +787,7 @@ self.init = function() {
         });
     });
 
-    $body.on('click', '#anonSettings', function () {
+    $body.on('click', '#showSettings', function () {
         $overlay = TB.ui.overlay(
             'toolbox setting display',
             [
@@ -800,7 +800,7 @@ self.init = function() {
                 </br>\
                 </span>\
                 ',
-                    footer: ''
+                    footer: '<input class="anonymize-settings" type="button" value="Anonymize Settings">'
                 }
             ],
             '', // meta
@@ -810,8 +810,14 @@ self.init = function() {
 
         var $editSettings = $('.edit-settings');
 
-        TB.storage.getAnonymizedSettingsObject(function (sObject) {
+        TB.storage.getSettingsObject(function (sObject) {
             $editSettings.val(JSON.stringify(sObject, null, 2));
+        });
+
+        $body.on('click', '.anonymize-settings', function () {
+            TB.storage.getAnonymizedSettingsObject(function (sObject) {
+                $editSettings.val(JSON.stringify(sObject, null, 2));
+            });
         });
 
 

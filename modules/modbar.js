@@ -807,6 +807,14 @@ self.init = function() {
             'tb-settings' // so, uh.... if you change this, the close button stops working?
         ).appendTo('body');
         $body.css('overflow', 'hidden');
+
+        var $editSettings = $('.edit-settings');
+
+        TB.storage.getAnonymizedSettingsObject(function (sObject) {
+            $editSettings.val(JSON.stringify(sObject, null, 2));
+        });
+
+
     });
 
 

@@ -193,6 +193,67 @@ function storagewrapper() {
         saveSettingsToBrowser();
     };
 
+    TBStorage.getSettingsObject = function(callback){
+        if (!callback) return;
+        settingsToObject(function (sObject) {
+            callback(sObject);
+        });
+    };
+
+    TBStorage.getAnonymizedSettingsObject = function(callback){
+        if (!callback) return;
+        settingsToObject(function (sObject) {
+
+            // settings we delete
+            delete sObject['Toolbox.Achievements.lastSeen'];
+            delete sObject['Toolbox.Achievements.last_seen'];
+            delete sObject['Toolbox.Bagels.bagelType'];
+            delete sObject['Toolbox.Bagels.enabled'];
+            delete sObject['Toolbox.Modbar.customCSS'];
+            delete sObject['Toolbox.ModMail.lastVisited'];
+            delete sObject['Toolbox.ModMail.replied'];
+            delete sObject['Toolbox.ModMail.subredditColorSalt'];
+            delete sObject['Toolbox.Notifier.lastChecked'];
+            delete sObject['Toolbox.Notifier.lastSeenModmail'];
+            delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
+            delete sObject['Toolbox.Notifier.modmailCount'];
+            delete sObject['Toolbox.Notifier.modqueueCount'];
+            delete sObject['Toolbox.Notifier.modqueuePushed'];
+            delete sObject['Toolbox.Notifier.unmoderatedCount'];
+            delete sObject['Toolbox.Notifier.unreadMessageCount'];
+            delete sObject['Toolbox.Notifier.unreadPushed'];
+            delete sObject['Toolbox.QueueTools.kitteh'];
+            delete sObject['Toolbox.RReasons.customRemovalReason'];
+            delete sObject['Toolbox.Snoo.enabled'];
+            delete sObject['Toolbox.Storage.settings'];
+            delete sObject['Toolbox.Utils.echoTest'];
+            delete sObject['Toolbox.Utils.tbDevs'];
+
+            // these settings we want the length of the val.
+            sObject['Toolbox.Comments.highlighted'] = sObject['Toolbox.Comments.highlighted'].length;
+            sObject['Toolbox.ModButton.savedSubs'] = sObject['Toolbox.ModButton.savedSubs'].length;
+            sObject['Toolbox.ModMail.botsToFilter'] = sObject['Toolbox.ModMail.botsToFilter'].length;
+            sObject['Toolbox.ModMail.filteredSubs'] = sObject['Toolbox.ModMail.filteredSubs'].length;
+            sObject['Toolbox.Modbar.shortcuts'] = sObject['Toolbox.Modbar.shortcuts'].length;
+            sObject['Toolbox.QueueTools.botCheckmark'] = sObject['Toolbox.QueueTools.botCheckmark'].length;
+            sObject['Toolbox.Utils.seenNotes'] = sObject['Toolbox.Utils.seenNotes'].length;
+
+            // these settings we just want to know if they are populated at all
+            sObject['Toolbox.Achievements.save'] = sObject['Toolbox.Achievements.save'].length ? true : false;
+            sObject['Toolbox.Modbar.lastExport'] = sObject['Toolbox.Modbar.lastExport'].length ? true : false;
+            sObject['Toolbox.Notifier.modSubreddits'] = sObject['Toolbox.Notifier.modSubreddits'].length ? true : false;
+            sObject['Toolbox.Notifier.modmailSubreddits'] = sObject['Toolbox.Notifier.modmailSubreddits'].length ? true : false;
+            sObject['Toolbox.Notifier.unmoderatedSubreddits'] = sObject['Toolbox.Notifier.unmoderatedSubreddits'].length ? true : false;
+            sObject['Toolbox.PNotes.noteWiki'] = sObject['Toolbox.PNotes.noteWiki'].length ? true : false;
+            sObject['Toolbox.QueueTools.queueCreature'] = sObject['Toolbox.QueueTools.queueCreature'].length ? true : false;
+            sObject['Toolbox.QueueTools.subredditColorSalt'] = sObject['Toolbox.QueueTools.subredditColorSalt'].length ? true : false;
+
+
+            callback(sObject);
+        });
+    };
+
+
 
     TBStorage.clearCache = function () {
 

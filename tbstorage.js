@@ -230,26 +230,35 @@ function storagewrapper() {
             delete sObject['Toolbox.Utils.tbDevs'];
 
             // these settings we want the length of the val.
-            sObject['Toolbox.Comments.highlighted'] = sObject['Toolbox.Comments.highlighted'].length;
-            sObject['Toolbox.ModButton.savedSubs'] = sObject['Toolbox.ModButton.savedSubs'].length;
-            sObject['Toolbox.ModMail.botsToFilter'] = sObject['Toolbox.ModMail.botsToFilter'].length;
-            sObject['Toolbox.ModMail.filteredSubs'] = sObject['Toolbox.ModMail.filteredSubs'].length;
-            sObject['Toolbox.Modbar.shortcuts'] = sObject['Toolbox.Modbar.shortcuts'].length;
-            sObject['Toolbox.QueueTools.botCheckmark'] = sObject['Toolbox.QueueTools.botCheckmark'].length;
-            sObject['Toolbox.Utils.seenNotes'] = sObject['Toolbox.Utils.seenNotes'].length;
+            sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
+            sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
+            sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
+            sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
+            sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
+            sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
+            sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
 
             // these settings we just want to know if they are populated at all
-            sObject['Toolbox.Achievements.save'] = sObject['Toolbox.Achievements.save'].length ? true : false;
-            sObject['Toolbox.Modbar.lastExport'] = sObject['Toolbox.Modbar.lastExport'].length ? true : false;
-            sObject['Toolbox.Notifier.modSubreddits'] = sObject['Toolbox.Notifier.modSubreddits'].length ? true : false;
-            sObject['Toolbox.Notifier.modmailSubreddits'] = sObject['Toolbox.Notifier.modmailSubreddits'].length ? true : false;
-            sObject['Toolbox.Notifier.unmoderatedSubreddits'] = sObject['Toolbox.Notifier.unmoderatedSubreddits'].length ? true : false;
-            sObject['Toolbox.PNotes.noteWiki'] = sObject['Toolbox.PNotes.noteWiki'].length ? true : false;
-            sObject['Toolbox.QueueTools.queueCreature'] = sObject['Toolbox.QueueTools.queueCreature'].length ? true : false;
-            sObject['Toolbox.QueueTools.subredditColorSalt'] = sObject['Toolbox.QueueTools.subredditColorSalt'].length ? true : false;
+            sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
+            sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
+            sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
+            sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modmailSubreddits']);
+            sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.unmoderatedSubreddits']);
+            sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
+            sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
+            sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(sObject['Toolbox.QueueTools.subredditColorSalt']);
 
 
             callback(sObject);
+
+            function undefindedOrLength(setting){
+                return (setting === undefined) ?  0 : setting.length;
+            }
+
+            function undefindedOrTrue(setting){
+                if (!setting || setting === undefined) return false;
+                if (setting.length > 0) return true;
+            }
         });
     };
 

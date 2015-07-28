@@ -52,7 +52,9 @@ function initwrapper() {
             "...have you paid money *out of your own pocket* to anyone to vet this product?",
             "first I want to make sure my thing actually does work sort of",
             "Don't let \"perfect\" get in the way of \"good.\"",
-            "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me"],
+            "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me",
+            "It's not even kinda bad... It's strangely awful.",
+            "Like a good neighbor, /u/andytuba is there"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
@@ -63,7 +65,8 @@ function initwrapper() {
             "Please post puppy pictures, they are so fluffy!",
             "RES is visiting for a sleepover,  no time right now",
             "toolbox is on strike, we demand more karma!",
-            "brb... kicking Gustavobc from #toolbox"];
+            "brb... kicking Gustavobc from #toolbox",
+            "Requesting a new insurance quote from /u/andytuba"];
 
 
     // Public variables

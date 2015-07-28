@@ -208,6 +208,9 @@ function initwrapper() {
         // 3.3 version changes
         $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
 
+        // No longer settings.
+        localStorage.removeItem('Toolbox.ModMail.autoThread');
+        localStorage.removeItem('Toolbox.ModMail.autoThreadOnLoad');
 
         // End: version changes.
 

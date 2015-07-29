@@ -54,7 +54,8 @@ function initwrapper() {
             "Don't let \"perfect\" get in the way of \"good.\"",
             "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me",
             "It's not even kinda bad... It's strangely awful.",
-            "Like a good neighbor, /u/andytuba is there"],
+            "Like a good neighbor, /u/andytuba is there",
+            "toolbox is build on beer"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

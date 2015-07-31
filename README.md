@@ -1,4 +1,4 @@
-toolbox for reddit
+tolbox for reddit
 ========================
 
 Bundled extension of the /r/toolbox moderator tools for reddit.com

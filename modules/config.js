@@ -145,7 +145,7 @@ self.init = function() {
                     <textarea class="edit-area" placeholder="reason comment text (optional if you\'re using flair only)"></textarea><br/>\
                     <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
                     <input type="text" name="flair-text" placeholder="flair text" /><br/>\
-                    <input type="text" name="flair-css" placeholder="flair css" /><br/>\
+                    <input type="text" name="flair-css" placeholder="flair css class" /><br/>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-reason" type="button" value="Save new reason"><input class="cancel-new-reason" type="button" value="Cancel adding reason">\
                 </span>\
@@ -450,7 +450,7 @@ self.init = function() {
                             <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
                             <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\
                             <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
-                            <input type="text" name="flair-css" placeholder="flair css" value="{{removalReasonFlairCSS}}"/><br/>\
+                            <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel">\
                         </span>\

@@ -419,6 +419,7 @@ self.modmailpro = function() {
 
             $thread.addClass("has-replies");
             $messageCount.text(replyCount);
+            $thread.find('.most-recent .head').prepend($('<span>').addClass('new-label new-highlight').text('[LAST]'));
         }
         else {
             unansweredThreads.push(threadID);

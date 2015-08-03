@@ -80,7 +80,9 @@
 
 function storagewrapper() {
 (function (TBStorage) {
-    if (!$("form.logout input[name=uh]").val()) return; // not logged in.
+    if (!$("form.logout input[name=uh]").val() || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
+
+
     var SHORTNAME = 'TBStorage';
 
     // Type safe keys.

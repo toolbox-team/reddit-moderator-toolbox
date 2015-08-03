@@ -213,6 +213,9 @@ function initwrapper() {
         localStorage.removeItem('Toolbox.ModMail.autoThread');
         localStorage.removeItem('Toolbox.ModMail.autoThreadOnLoad');
 
+        // This should have been removed long ago.
+        localStorage.removeItem('Toolbox.Utils.lastversion');
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

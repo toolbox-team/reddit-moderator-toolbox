@@ -188,7 +188,7 @@ self.init = function () {
                     <select class="' + self.OTHER + '" for="action-' + self.OTHER + '"><option value="' + self.OTHER + '">(select subreddit)</option></select>\
                 </div>\
                 <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
-                <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" ></textarea><br>\
+                <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>\
                 <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)">\
                 </div>',
                     footer: '\

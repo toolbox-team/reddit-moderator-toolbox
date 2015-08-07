@@ -130,13 +130,13 @@ self.init = function() {
 
     if (!TB.utils.isModmail) {
         self.log('adding "add removal reasons" button');
-        $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;">add removal reason</a></li>');
+        $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
     }
     // Open reason drop-down when we remove something as ham.
     $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
         var $button = $(this),
             $thing = $button.closest('.thing');
-        
+
         //Don't show removal reasons for spam button.
         if ($button.children().first().attr('value') === 'spammed')
             return;
@@ -144,7 +144,7 @@ self.init = function() {
         // Ignore if a comment and comment reasons disabled
         if (!commentReasons && $thing.hasClass('comment'))
             return;
-        
+
         // Get link/comment attributes
         var yes = $button.find('.yes')[0],
             info = TBUtils.getThingInfo($button),

@@ -751,6 +751,28 @@ self.init = function () {
 
 
     // Show automod action reasons
+
+    function getAutomodActionReason(sub) {
+        var sub = 'history';
+        $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
+            $.each(json.data.children, function (i, value) {
+                $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
+<b>Automod action:</b> ' + value.data.details + '\
+<br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
+%0A%0A \
+Url: ' + value.data.target_permalink + ' %0A %0A \
+Action reason: ' + value.data.details + '\
+" target="_blank">ask for a second opinion in modmail</a> </div>');
+
+            });
+        });
+    }
+
+    if(TBUtils.isMod && TBUtils.isCommentsPage && showAutomodActionReason && $('.thing.spam').length) {
+        var currentSubreddit = $('.side .titlebox h1.redditname a').text();
+        getAutomodActionReason(currentSubreddit);
+    }
+
     if (TBUtils.isModpage && showAutomodActionReason) {
         var queueSubs = [];
 
@@ -758,7 +780,7 @@ self.init = function () {
 
         $('#siteTable .thing').each(function() {
             $this = $(this);
-            var subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
+            var subreddit = 'history';
             var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
 
             self.log('  subreddit: ' + subreddit);
@@ -776,18 +798,7 @@ self.init = function () {
         for (var i = 0; i < queueSubs.length; i++) {
             var sub  = queueSubs[i];
 
-            $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
-                $.each(json.data.children, function (i, value) {
-                    $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
-<b>Automod action:</b> ' + value.data.details + '\
-<br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
-%0A%0A \
-Url: ' + value.data.target_permalink + ' %0A %0A \
-Action reason: ' + value.data.details + '\
-" target="_blank">ask for a second opinion in modmail</a> </div>');
-
-                });
-            });
+            getAutomodActionReason(sub);
         }
     }
 

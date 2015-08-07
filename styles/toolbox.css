@@ -17,7 +17,8 @@
 
 /* general UI stuff */
 
-.mod-toolbox .tb-general-button {
+body.mod-toolbox .tb-general-button,
+body.mod-toolbox li a.tb-general-button {
     background-color: #F7FAFD;
     color: #696969;
     border-width: 1px 1px 1px 2px;
@@ -27,8 +28,10 @@
     text-align: center;
 }
 
-.mod-toolbox .tb-general-button:hover {
+body.mod-toolbox .tb-general-button:hover,
+body.mod-toolbox li a.tb-general-button:hover {
     background-color: #E2EEFA;
+    text-decoration: none;
 }
 
 

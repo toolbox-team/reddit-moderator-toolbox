@@ -130,7 +130,13 @@ self.init = function() {
 
     if (!TB.utils.isModmail) {
         self.log('adding "add removal reasons" button');
-        $body.find('.linklisting .thing.spam .flat-list.buttons').append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
+        $body.find('.linklisting .thing.spam .flat-list.buttons').each(function() {
+            var $this = $(this);
+            var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
+            if (removedBy != '[ removed ]') {
+                $this.append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
+            }
+        });
     }
     // Open reason drop-down when we remove something as ham.
     $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {

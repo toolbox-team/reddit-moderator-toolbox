@@ -753,7 +753,7 @@ self.init = function () {
     // Show automod action reasons
 
     function getAutomodActionReason(sub) {
-        var sub = 'history';
+        var sub = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
         $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
                 $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\

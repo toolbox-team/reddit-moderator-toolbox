@@ -753,9 +753,10 @@ self.init = function () {
     // Show automod action reasons
 
     function getAutomodActionReason(sub) {
+        self.log(sub);
         $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
-                $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
+                $body.find('.thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
 <b>Automod action:</b> ' + value.data.details + '\
 <br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \
@@ -769,6 +770,7 @@ Action reason: ' + value.data.details + '\
 
     if(TBUtils.isMod && TBUtils.isCommentsPage && showAutomodActionReason && $('.thing.spam').length) {
         var currentSubreddit = $('.side .titlebox h1.redditname a').text();
+
         getAutomodActionReason(currentSubreddit);
     }
 

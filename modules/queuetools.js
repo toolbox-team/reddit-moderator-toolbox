@@ -753,7 +753,6 @@ self.init = function () {
     // Show automod action reasons
 
     function getAutomodActionReason(sub) {
-        var sub = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
         $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
                 $body.find('#siteTable .thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
@@ -780,7 +779,7 @@ Action reason: ' + value.data.details + '\
 
         $('#siteTable .thing').each(function() {
             $this = $(this);
-            var subreddit = 'history';
+            var subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
             var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
 
             self.log('  subreddit: ' + subreddit);

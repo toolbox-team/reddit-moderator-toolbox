@@ -130,10 +130,10 @@ self.init = function() {
 
     if (!TB.utils.isModmail) {
         self.log('adding "add removal reasons" button');
+        console.log('test');
         $body.find('.linklisting .thing.spam .flat-list.buttons').each(function() {
             var $this = $(this);
-            var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
-            if (removedBy != '[ removed ]') {
+            if (!$this.find('li[title^="removed at"]').length) {
                 $this.append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
             }
         });

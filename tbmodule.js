@@ -309,10 +309,29 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             break;
                     }
                     if(!noWrap) {
+                        var moduleName = module.shortname.toLowerCase(),
+                            settingName = setting.toLowerCase(),
+                            linkClass = 'tb-setting-link-'+ settingName,
+                            inputClass = 'tb-setting-input-'+ settingName,
+                            http =  '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')';
+
+                        $setting.append('&nbsp;<a ' + ((displaySetting) ? '' : 'style="display:none;"') +
+                            ' data-setting="'+ settingName +'" href="javascript:;"" class="'+ linkClass +'">[link]</a>' +
+                            '&nbsp;<input style="display:none;" class="'+ inputClass +'" type="text" readonly="readonly" value="'+ http +'"/>');
+
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                        $setting.attr('id', 'tb-' + module.shortname.toLowerCase() + '-' + setting.toLowerCase());
+                        $setting.attr('id', 'tb-' + moduleName + '-' + settingName);
                         $setting.data('module', module.shortname);
                         $setting.data('setting', setting);
+
+                       // console.log('#' + linkClass);
+                        $body.on('click', '.' + linkClass, function () {
+                            var $this = $(this),
+                                set = $this.data('setting');
+
+                            $this.hide();
+                            $('.tb-setting-input-' + set).show();
+                        });
                     }
 
                     $settings.append($setting);

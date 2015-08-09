@@ -27,6 +27,7 @@ body.mod-toolbox li a.tb-general-button {
     padding: 1px 5px;
     text-align: center;
     font-weight: normal;
+    text-decoration: none;
 }
 
 body.mod-toolbox .tb-general-button:hover,

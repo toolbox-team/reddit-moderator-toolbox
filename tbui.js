@@ -183,6 +183,9 @@
     TBui.DISPLAY_BOTTOM = 'bottom';
     TBui.DISPLAY_CURSOR = 'cursor';
 
+    TBui.button = function button(text, classes) {
+        return '<a href="javascript:;" class="tb-general-button '+ classes +'">'+ text +'</a>'
+    };
 
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class, opts) {

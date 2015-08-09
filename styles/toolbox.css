@@ -36,6 +36,21 @@ body.mod-toolbox li a.tb-general-button:hover {
     text-decoration: none;
 }
 
+body.mod-toolbox .tb-action-button {
+    border-radius: 1px !important;
+    border-color: #3366A0;
+    color: #17324E;
+}
+
+body.mod-toolbox .tb-action-button:active {
+    border-color: #9FBAD6;
+    box-shadow: none;
+}
+
+body.mod-toolbox .tb-action-button:hover {
+    background-color: #E2EEFA;
+    text-decoration: none;
+}
 
 .mod-toolbox .tb-highlight {
     background-color: #ffff16;

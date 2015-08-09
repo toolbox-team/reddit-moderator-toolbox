@@ -175,7 +175,7 @@ TB = {
                             if (!options.event || !options.class) break;
                             var event = options.event;
 
-                            $setting.append(TB.ui.button(title, options.class));
+                            $setting.append(TB.ui.actionButton(title, options.class));
 
                             $body.on('click', '.' + options.class, function () {
                                 TB.utils.sendEvent(event);

@@ -187,6 +187,10 @@
         return '<a href="javascript:;" class="tb-general-button '+ classes +'">'+ text +'</a>'
     };
 
+    TBui.actionButton = function button(text, classes) {
+        return '<a href="javascript:;" class="tb-action-button '+ classes +'">'+ text +'</a>'
+    };
+
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class, opts) {
 	    var defaults = {

@@ -257,7 +257,8 @@ function initwrapper() {
         TB_ABOUT_PAGE: "TB_ABOUT_PAGE",
         TB_APPROVE_THING: "TB_APPROVE_THING",
         TB_FLY_SNOO: 'TB_FLY_SNOO',
-        TB_KILL_SNOO: 'TB_KILL_SNOO'
+        TB_KILL_SNOO: 'TB_KILL_SNOO',
+        TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND'
     };
 
     // Methods and stuff

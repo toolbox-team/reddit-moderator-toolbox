@@ -60,6 +60,13 @@ self.register_setting('messageNotificationSound', {
     'title': "You've got mail."
 });
 
+self.register_setting('sampleSound', {
+    'type': 'action',
+    'title': 'sample sound',
+    'class': 'tb-sample-sound',
+    'event': TB.utils.events.TB_SAMPLE_SOUND
+});
+
 self.register_setting('messageUnreadLink', {
     'type': 'boolean',
     'default': false,
@@ -249,6 +256,13 @@ self.init = function () {
         });
     }
 
+
+    TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, function () {
+        self.log('playing sound');
+
+        var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
+        audio.play();
+    });
 
 
     function getmessages() {

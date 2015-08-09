@@ -172,11 +172,12 @@ TB = {
                     switch (options.type) {
                         case 'action':
                             if (!options.event || !options.class) break;
+                            var event = options.event;
 
                             $setting.append(TB.ui.button(title, options.class));
 
                             $body.on('click', '.' + options.class, function () {
-                                TB.utils.sendEvent(options.event);
+                                TB.utils.sendEvent(event);
                             });
 
                             break;

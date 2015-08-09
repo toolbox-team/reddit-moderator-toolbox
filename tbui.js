@@ -139,6 +139,11 @@
                     yNEAEy/WAL4KUDOQq7Xw+HLxKgDcfjcb+ntOQs2w+/snyNHEm1sf1mIAeQarwoLC1zlop5f/lPF2rrTWMAPyBFaGBW1o4V96DeCo2kInBx30GOArDFaGdnDQSU8CwPTzqbF0Kg02gZnCO27roJ2euPZ0skSOl\
                     rLHs2AVsAn6TvTh7L3hykhh8GPswFGs1ztIeEfXfYX3yvv7EKs+JTODvfxikunmGYgJ2NccJD8tLBOA4fOPcusHB5VRVcX3rR+b34o751qGqAxD409tWJgzd4eWhSW1/WL3YvMMcvdHgrBCWKCi2Hm117Js\
                     h4q/ZJNiXWodqQgAAAAASUVORK5CYII=";
+
+    TBui.iconLink = 'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADpSURBVCjPY/jPgB8y0EmBHXdWaeu7ef9r\
+                    HuaY50jU3J33v/VdVqkdN1SBEZtP18T/L/7f/X/wf+O96kM3f9z9f+T/xP8+XUZsYAWGfsUfrr6L2Ob9J/X/pP+V/1P/e/+J2LbiYfEHQz+ICV1N3yen+3PZf977/9z/Q//X/rf/7M81Ob3pu1EXWIFu\
+                    Zvr7aSVBOx1/uf0PBEK3/46/gnZOK0l/r5sJVqCp6Xu99/2qt+v+T/9f+L8CSK77v+pt73vf65qaYAVqzPYGXvdTvmR/z/4ZHhfunP0p+3vKF6/79gZqzPQLSYoUAABKPQ+kpVV/igAAAABJRU5ErkJg\
+                    gg==';
     // Do we ever care about loading image assets from disk? Here's how:
     // switch (TBUtils.browser) {
     //     case TBUtils.browsers.CHROME:

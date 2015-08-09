@@ -316,7 +316,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             http =  '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')';
 
                         $setting.append('&nbsp;<a ' + ((displaySetting) ? '' : 'style="display:none;"') +
-                            ' data-setting="'+ settingName +'" href="javascript:;"" class="'+ linkClass +'">[link]</a>' +
+                            ' data-setting="'+ settingName +'" href="javascript:;"" class="'+ linkClass +'"><img src="data:image/png;base64,' + TB.ui.iconLink + '" /></a>' +
                             '&nbsp;<input style="display:none;" class="'+ inputClass +'" type="text" readonly="readonly" value="'+ http +'"/>');
 
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);

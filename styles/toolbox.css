@@ -2210,7 +2210,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     display: none;
 }
 
-a[href*="#?tbsettings"]:after {
+a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     height:16px;
     width:16px;
     display:inline-block;

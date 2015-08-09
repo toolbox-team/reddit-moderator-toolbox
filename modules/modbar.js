@@ -370,7 +370,7 @@ self.init = function() {
 
     // Append shortcuts
     $.each(shortcuts, function (index, value) {
-        var shortcut = $('<span>- <a href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
+        var shortcut = $('<span>- <a class="tb-no-gustavobc" href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
 
         $(shortcut).appendTo('#tb-toolbarshortcuts');
     });

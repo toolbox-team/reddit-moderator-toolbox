@@ -310,7 +310,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                     }
                     if(!noWrap) {
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                        $setting.attr('id', 'tb-' + module.shortname.toLocaleLowerCase() + '-' + setting.toLocaleLowerCase());
+                        $setting.attr('id', 'tb-' + module.shortname.toLowerCase() + '-' + setting.toLowerCase());
                         $setting.data('module', module.shortname);
                         $setting.data('setting', setting);
                     }

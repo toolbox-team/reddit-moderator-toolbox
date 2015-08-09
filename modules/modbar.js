@@ -697,10 +697,10 @@ self.init = function() {
                 // prevent tbsetting URL hash from persisting on reload.
                 history.pushState("", document.title, window.location.pathname);
 
-                module = module.toLocaleLowerCase();
-                setting = setting.toLocaleLowerCase();
+                module = module.toLowerCase();
 
                 if (setting) {
+                    setting = setting.toLowerCase();
                     var id = '#tb-' + module + '-' + setting,
                         highlightedCSS = id + ' p {background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
                     $('head').append('<style type="text/css">' + highlightedCSS + '</style>');

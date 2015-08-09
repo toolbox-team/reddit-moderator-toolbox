@@ -153,17 +153,18 @@ TB = {
                         continue;
                     }
 
-                    // hide advanced settings
+                    // hide advanced settings, but do it via CSS so it can be overridden.
+                    var displaySetting = true;
                     if (options.hasOwnProperty("advanced")
                         && options["advanced"] && !TB.utils.advancedMode
                     ) {
-                        continue;
+                        displaySetting = false;
                     }
 
                     moduleHasSettingTab = true;
 
                     // blank slate
-                    var $setting = $('<p></p>'),
+                    var $setting = $('<p ' + ((displaySetting) ? '' : 'style="display:none;"') + '></p>'),
                         execAfterInject = [],
                         title = (options.title) ? options.title : '(' + setting + ')',
                         noWrap = false;
@@ -309,7 +310,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                     }
                     if(!noWrap) {
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                        $setting.attr('id', 'tb-' + module.shortname + '-' + setting);
+                        $setting.attr('id', 'tb-' + module.shortname.toLocaleLowerCase() + '-' + setting.toLocaleLowerCase());
                         $setting.data('module', module.shortname);
                         $setting.data('setting', setting);
                     }

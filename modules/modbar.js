@@ -687,21 +687,37 @@ self.init = function() {
         $('div.tb-window-content-' + module).show();
     }
 
-    if(window.location.hash) {
-        var module = TB.utils.getHashParameter('tbsettings');
+    function checkHash() {
+        if (window.location.hash) {
+            var module = TB.utils.getHashParameter('tbsettings'),
+                setting = TB.utils.getHashParameter('setting');
 
-        if (module) {
-            module = module.toLocaleLowerCase();
+            self.log(setting);
+            if (module) {
+                // prevent tbsetting URL hash from persisting on reload.
+                history.pushState("", document.title, window.location.pathname);
 
-            // Wait a sec for stuff to load.
-            setTimeout(function () {
+                module = module.toLocaleLowerCase();
+                setting = setting.toLocaleLowerCase();
 
-                showSettings();
-                TB.injectSettings();
-                switchTab(module);
-            }, 1000);
+                if (setting) {
+                    var id = '#tb-' + module + '-' + setting,
+                        highlightedCSS = id + ' p {background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
+                    $('head').append('<style type="text/css">' + highlightedCSS + '</style>');
+                }
+
+                // Wait a sec for stuff to load.
+                setTimeout(function () {
+
+                    showSettings();
+                    TB.injectSettings();
+                    switchTab(module);
+                }, 1000);
+            }
         }
     }
+    checkHash();
+    setInterval(checkHash, 500);
 
     // change tabs
     $body.on('click', '.tb-window-tabs a:not(.active)', function () {

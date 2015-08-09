@@ -497,33 +497,33 @@ self.init = function() {
         // Settings for the tool bar.
         var $toolboxSettings = $('\
 <div class="tb-window-content-toolbox">\
-    <p>\
+    <p id="tb-toolbox-settingssub">\
         Backup/restore toolbox settings to a wiki page:<br>\
         <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
         <input class="tb-settings-export" type="button" value="backup">\
         <input class="tb-settings-import" type="button" value="restore">\
         <b> Important:</b> This will reload the page without saving!\
         <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
-    </p><p>\
+    </p><p id="tb-toolbox-showexportreminder">\
         <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show backup reminder every 30 days.</label>\
-    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+    </p><p id="tb-toolbox-debugmode"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
-    </p><p ' + ((debugMode) ? '' : 'style="display:none;"') + '>\
+    </p><p id="tb-toolbox-browserconsole"' + ((debugMode) ? '' : 'style="display:none;"') + '>\
         <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
-    </p><p>\
+    </p><p id="tb-toolbox-betamode">\
         <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
-    </p><p>\
+    </p><p id="tb-toolbox-advancedmode">\
         <label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>\
-    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+    </p><p id="tb-toolbox-longlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
         <input type="text" name="longLength" value="' + longLength + '">\
-    </p><p ' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+    </p><p id="tb-toolbox-shortlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
         Cache subreddit user notes time (in minutes):<br>\
         <input type="text" name="shortLength" value="' + shortLength + '">\
-    </p><p>\
+    </p><p id="tb-toolbox-clearcache">\
         <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
     </p>\
-    <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
+    <p id="tb-toolbox-showsettings"' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
         <input type="button" id="showSettings" value="Show Settings" />\
     </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
@@ -703,6 +703,9 @@ self.init = function() {
                     setting = setting.toLowerCase();
                     var id = '#tb-' + module + '-' + setting,
                         highlightedCSS = id + ' p {background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
+
+                    // this next line is to deal with legacy settings
+                    highlightedCSS += id + '{background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
                     highlightedCSS += '.tb-setting-link-' + setting + ' {display: block !important;}';
 
                     $('head').append('<style type="text/css">' + highlightedCSS + '</style>');

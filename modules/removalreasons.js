@@ -133,7 +133,9 @@ self.init = function() {
         console.log('test');
         $body.find('.linklisting .thing.spam .flat-list.buttons').each(function() {
             var $this = $(this);
-            if (!$this.find('li[title^="removed at"]').length) {
+            var removedBy = $this.find('li[title^="removed at"]').text();
+
+            if (removedBy != '[ removed ]' && removedBy != '[ removed by AutoModerator (remove not spam) ]') {
                 $this.append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
             }
         });

@@ -76,8 +76,8 @@ function initwrapper() {
     TBUtils.releaseName = 'YO MAMA';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
-    TBUtils.notesMinSchema = 3;
-    TBUtils.notesDeprecatedSchema = 3;
+    TBUtils.notesMinSchema = 4;
+    TBUtils.notesDeprecatedSchema = 4;
     TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';

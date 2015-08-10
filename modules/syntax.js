@@ -85,9 +85,26 @@ self.init = function () {
         }
         session.setMode("ace/mode/css");
 
+
         session.setValue(textarea.val());
-        session.on('change', function () {
+        var tbAceButtonsHTML = '<div id="tb-ace-buttons">{{save}} - {{preview}}</div>';
+
+        var tbAceButtons = TB.utils.template(tbAceButtonsHTML, {
+            'save': TB.ui.actionButton('save', 'tb-ace-button-save'),
+            'preview': TB.ui.actionButton('preview', 'tb-ace-button-preview')
+        });
+
+
+        $body.find('.sheets .buttons').before(tbAceButtons);
+
+        $body.delegate('.tb-ace-button-save', 'click', function() {
             textarea.val(session.getValue());
+            $('.sheets .buttons .btn[name="save"]').click();
+        });
+
+        $body.delegate('.tb-ace-button-preview', 'click', function() {
+            textarea.val(session.getValue());
+            $('.sheets .buttons .btn[name="preview"]').click();
         });
 
 
@@ -109,6 +126,8 @@ self.init = function () {
         || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)
 
     ) {
+        $body.addClass('mod-toolbox-ace');
+        $body.find('.markdownEditor-wrapper, .RESBigEditorPop, .help-toggle').remove();
         var $editform = $('#editform');
 
         $editform.prepend('<div id="wiki_contents_div"></div>');
@@ -129,10 +148,14 @@ self.init = function () {
             session.setMode("ace/mode/json");
         }
         session.setValue(textarea.val());
-        session.on('change', function () {
+
+        $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-ace-button-save-wiki'));
+
+        $body.delegate('.tb-ace-button-save-wiki', 'click', function() {
             textarea.val(session.getValue());
+            $('#wiki_save_button').click();
         });
-        $body.addClass('mod-toolbox-ace');
+
 
         $editform.prepend(this.themeSelect);
 

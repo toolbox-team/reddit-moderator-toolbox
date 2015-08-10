@@ -1346,6 +1346,19 @@ height: 300px;
    resize: none;
 }
 
+.mod-toolbox.mod-toolbox-ace .sheets .buttons .btn,
+.mod-toolbox.mod-toolbox-ace  #wiki_save_button{
+    display: none;
+}
+
+.mod-toolbox.mod-toolbox-ace #tb-ace-buttons,
+.mod-toolbox.mod-toolbox-ace .sheets .buttons {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+
+
 /* toolbox loading */
 #tb-loading {
     left:0;

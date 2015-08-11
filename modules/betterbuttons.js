@@ -31,6 +31,17 @@ self.register_setting('ignoreOnApprove', {
     'default': false,
     'title': 'Auto-ignore reports when approving'
 });
+self.register_setting('spamRemoved', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show spam button on submissions removed as ham.'
+});
+self.register_setting('hamSpammed', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Show remove (not spam) button on submissions removed as spam.'
+});
+
 
 // Bread and buttons
 var $body = $('body');
@@ -179,6 +190,44 @@ self.initAutoIgnoreReports = function initAutoIgnoreReports() {
     });
 };
 
+self.initAddRemoveButtons = function initRemoveButtons() {
+    // only need to iterate if at least one of the options is enabled
+    $('.thing.link:not(.tb-removebuttons-checked)').each(function () {
+        $(this).addClass('tb-removebuttons-checked');
+
+        var thing = TBUtils.getThingInfo(this, true);
+
+        if (self.setting('spamRemoved')) {
+            // only for subreddits we mod
+            // and for comments that have been removed as ham ("remove not spam")
+            if (thing.subreddit && thing.ham) {
+                // and only if there isn't already one
+                if ($(this).children('.entry').find('.big-mod-buttons .negative').length == 0) {
+                    // lifted straight from the "spam" big mod button
+                    $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
+                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
+                    $('<span class="status-msg spammed">spammed</span>')
+                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                }
+            }
+        }
+
+        if (self.setting('hamSpammed')) {
+            // only for subreddits we mod
+            // and for comments that have been removed as spam ("spam" or "confirm spam")
+            if (thing.subreddit && thing.spam) {
+                // and only if there isn't already one
+                if ($(this).children('.entry').find('.big-mod-buttons .neutral').length == 0) {
+                    // lifted straight from the "remove" big mod button
+                    $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
+                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
+                    $('<span class="status-msg removed">removed</span>')
+                        .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                }
+            }
+        }
+    });
+};
 // Module init
 
 self.init = function() {
@@ -192,6 +241,8 @@ self.init = function() {
         self.initAutoApprove();
     if (self.setting('ignoreOnApprove'))
         self.initAutoIgnoreReports();
+    if (self.setting('spamRemoved') || self.setting('hamSpammed'))
+        self.initAddRemoveButtons();
 };
 
 TB.register_module(self);

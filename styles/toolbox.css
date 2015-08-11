@@ -39,7 +39,7 @@ body.mod-toolbox li a.tb-general-button:hover {
 body.mod-toolbox .tb-action-button {
     background-color: #F7FAFD;
     border-radius: 1px !important;
-    border-width: 1px 1px 1px 2px;
+    border-width: 1px 1px 2px 2px;
     border-color: #3366A0;
     border-style: solid;
     color: #17324E;
@@ -47,9 +47,11 @@ body.mod-toolbox .tb-action-button {
     text-align: center;
     font-weight: normal;
     text-decoration: none;
+    transition: all 0.15s ease-in-out;
 }
 
 body.mod-toolbox .tb-action-button:active {
+    border-width: 1px;
     border-color: #9FBAD6;
     box-shadow: none;
 }

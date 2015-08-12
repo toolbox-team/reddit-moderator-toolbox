@@ -426,6 +426,38 @@ self.populateSubmissionHistory = function (after) {
  * Populate the submission account history for a user
  */
 self.populateAccountHistory = function () {
+
+    var TYPE = {
+        PATH: 1,		// e.g. example.org/path/user
+        SUBDOMAIN: 2	// e.g. user.example.org
+    };
+
+    var domainSpecs = {
+        // keys are the supported sites, and determine if we have a match
+        'flickr.com': {
+            path: 'photos/',
+            provider: 'flickr',
+            type: TYPE.PATH
+        },
+        'medium.com': {
+            path: '@',
+            provider: 'Medium',
+            type: TYPE.PATH
+        },
+        'speakerdeck.com': {
+            provider: 'Speaker Deck',
+            type: TYPE.PATH
+        },
+        'blogspot.com': {
+            provider: 'Blogspot',
+            type: TYPE.SUBDOMAIN
+        },
+        'tumblr.com': {
+            provider: 'Tumblr',
+            type: TYPE.SUBDOMAIN
+        }
+    };
+
     var $contentBox = $('.history-button-popup'),
         $accountTable = $contentBox.find('.account-table tbody');
 
@@ -449,15 +481,27 @@ self.populateAccountHistory = function () {
                 if (data.media && data.media.oembed && data.media.oembed.author_url) {
                     var oembed = data.media.oembed;
 
-                    if (self.accounts[oembed.author_url]) {
-                        self.accounts[oembed.author_url].count++
-                    } else {
-                        self.accounts[oembed.author_url] = {
-                            count: 1,
-                            name: oembed.author_name,
-                            url: oembed.author_url,
-                            provider: oembed.provider_name,
-                            provider_url: oembed.provider_url
+                    addAccount({
+                        name: oembed.author_name,
+                        provider: oembed.provider_name,
+                        provider_url: oembed.provider_url,
+                        url: oembed.author_url
+                    });
+                } else {
+                    var spec = domainSpecs[data.domain],
+                        details, domain;
+
+                    if (!spec) {
+                        // "sub.dom.ain.domain.com" -> "domain.com" (NOTE: does not support "domain.co.uk")
+                        domain = data.domain.split('.').slice(-2).join('.');
+                        spec = domainSpecs[domain];
+                    }
+
+                    if (spec) {
+                        spec.domain = domain || data.domain;
+                        details = getDomainDetails(spec, data.url);
+                        if (details) {
+                            addAccount(details);
                         }
                     }
                 }
@@ -489,7 +533,7 @@ self.populateAccountHistory = function () {
         $accountTable.empty();
 
         $.each(accountList, function(index, account) {
-                account = self.accounts[account];
+            account = self.accounts[account];
 
             var percentage = Math.round(account.count / totalAccountCount * 100),
                 bgcolor = 'fff';
@@ -517,6 +561,59 @@ self.populateAccountHistory = function () {
                 </tr>'
             );
         });
+    }
+
+    /**
+     * Take an object and add it to `self.accounts`.
+     *
+     * @param details {Object}
+     */
+    function addAccount(details) {
+        if (!self.accounts[details.url]) {
+            self.accounts[details.url] = details;
+            self.accounts[details.url].count = 0;
+        }
+        self.accounts[details.url].count++;
+    }
+
+    /**
+     * Generate a `details` object that mimics the oembed object to be passed to `addAccount()`.
+     *
+     * @param spec {Object} from domainSpecs
+     * @param url {String}
+     * @returns {Object|undefined}
+     */
+    function getDomainDetails(spec, url) {
+        // cache the dynamic rx's
+        if (!spec.rx) {
+            if (spec.type === TYPE.PATH) {
+                spec.rx = new RegExp(spec.domain + '/' + (spec.path || '') + '([\\w-@]+)');
+            } else if (spec.type === TYPE.SUBDOMAIN) {
+                spec.rx = /:\/\/([\w-]+)/;
+            }
+        }
+
+        var match = url.match(spec.rx),
+            author = match && match[1],
+            scheme, author_url, provider_url;
+
+        if (author) {
+            scheme = url.split('://')[0] + '://';
+            provider_url = scheme + spec.domain + '/';
+
+            if (spec.type === TYPE.PATH) {
+                author_url = provider_url + (spec.path || '') + author;
+            } else if (spec.type === TYPE.SUBDOMAIN) {
+                author_url = scheme + author + '.' + spec.domain;
+            }
+
+            return {
+                name: author,
+                provider: spec.provider,
+                provider_url: provider_url,
+                url: author_url
+            };
+        }
     }
 };
 

@@ -575,15 +575,15 @@ self.init = function () {
             text = $popup.find('.flair-text').val(),
             css_class = $popup.find('.flair-class').val();
 
-        TBui.textFeedback('saving user flair...', Tbui.FEEDBACK_NEUTRAL);
+        TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 
         TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
             if (success) {
-                TBui.textFeedback('saved user flair', Tbui.FEEDBACK_POSITIVE);
+                TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
             }
             else {
                 self.log(err.responseText);
-                TBui.textFeedback(err.responseText, Tbui.FEEDBACK_NEGATIVE);
+                TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
                 $status.text(err.responseText);
             }
         });

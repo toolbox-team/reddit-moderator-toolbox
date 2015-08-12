@@ -428,6 +428,21 @@ text-align: left;
     margin: 2px;
 }
 
+.mod-toolbox .tb-window-content  a.tb-setting-link {
+    opacity: 0.5;
+    display: inline-block;
+}
+
+.mod-toolbox .tb-window-content  a.tb-setting-link img {
+    vertical-align: middle;
+}
+
+.mod-toolbox .tb-window-content  input.tb-setting-input {
+    font-style: italic;
+}
+
+
+
 .tb-window-footer {
     width: 100%;
     height: 30px;
@@ -467,7 +482,7 @@ text-align: left;
 }
 
 .mod-toolbox .tb-window-content input[type="text"] {
-    width: 98%;
+    width: 94%;
 }
 
 .mod-toolbox .tb-mark-unread {
@@ -2215,6 +2230,8 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     margin: 5px !important;
 }
 
+
+/* Random stuff people decided to dump here? Pls... comment stuff */
 
 #tb-config-help {
     float: right;

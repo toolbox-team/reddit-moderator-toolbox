@@ -316,21 +316,30 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             link = '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')';
 
                         $setting.append('&nbsp;<a ' + ((displaySetting) ? '' : 'style="display:none;"') +
-                            ' data-setting="'+ settingName +'" href="javascript:;"" class="'+ linkClass +'"><img src="data:image/png;base64,' + TB.ui.iconLink + '" /></a>' +
-                            '&nbsp;<input style="display:none;" class="'+ inputClass +'" type="text" readonly="readonly" value="'+ link +'"/>');
+                            ' data-setting="'+ settingName +'" href="javascript:;"" class="tb-setting-link '+ linkClass +'"><img src="data:image/png;base64,' + TB.ui.iconLink + '" /></a>' +
+                            '&nbsp;<input style="display:none;" class="tb-setting-input '+ inputClass +'" type="text" readonly="readonly" value="'+ link +'"/>');
 
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
                         $setting.attr('id', 'tb-' + moduleName + '-' + settingName);
-                        $setting.data('module', module.shortname);
-                        $setting.data('setting', setting);
+                        $setting.attr('data-module', module.shortname);
+                        $setting.attr('data-setting', setting);
 
                        // console.log('#' + linkClass);
                         $body.on('click', '.' + linkClass, function () {
                             var $this = $(this),
-                                set = $this.data('setting');
+                                tbSet = $this.attr('data-setting');
 
-                            $this.hide();
-                            $('.tb-setting-input-' + set).show();
+                            var $inputSetting = $('.tb-setting-input-' + tbSet);
+
+                            if($inputSetting.is(":visible")) {
+                                $inputSetting.hide();
+                                $this.css('opacity', '0.5');
+                            } else {
+                                $this.css('opacity', '1');
+                                $inputSetting.show(function() {
+                                    $(this).select();
+                                });
+                            }
                         });
                     }
 

@@ -68,7 +68,8 @@ function initwrapper() {
             "RES is visiting for a sleepover,  no time right now",
             "toolbox is on strike, we demand more karma!",
             "brb... kicking Gustavobc from #toolbox",
-            "Requesting a new insurance quote from /u/andytuba"];
+            "Requesting a new insurance quote from /u/andytuba",
+            "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
 
     // Public variables

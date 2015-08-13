@@ -55,7 +55,8 @@ function initwrapper() {
             "damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me",
             "It's not even kinda bad... It's strangely awful.",
             "Like a good neighbor, /u/andytuba is there",
-            "toolbox is build on beer"],
+            "toolbox is build on beer",
+            "my poop never smelled worse than when i lived off pizza bagel bites"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

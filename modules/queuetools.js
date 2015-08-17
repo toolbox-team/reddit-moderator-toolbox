@@ -756,7 +756,7 @@ self.init = function () {
         self.log(sub);
         $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
-                $body.find('.thing[data-fullname="'+ value.data.target_fullname + '"] .entry').after('<div class="action-reason">\
+                $body.find('.thing[data-fullname="'+ value.data.target_fullname + '"]>.entry').after('<div class="action-reason">\
 <b>Automod action:</b> ' + value.data.details + '\
 <br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \

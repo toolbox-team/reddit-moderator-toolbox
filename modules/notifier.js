@@ -8,35 +8,35 @@ self.settings['enabled']['default'] = true;
 self.register_setting('modSubreddits', {
     'type': 'text',
     'default': 'mod',
-    'advanced': true,
+    'advanced': false,
     'title': 'Multireddit of subs you want displayed in the modqueue counter'
 });
 
 self.register_setting('modSubredditsFMod', {
     'type': 'boolean',
     'default': false,
-    'advanced': true,
+    'advanced': false,
     'title': 'Use /f/mod/about/modqueue/ instead.'
 });
 
 self.register_setting('unmoderatedSubreddits', {
     'type': 'text',
     'default': 'mod',
-    'advanced': true,
+    'advanced': false,
     'title': 'Multireddit of subs you want displayed in the unmoderated counter'
 });
 
 self.register_setting('unmoderatedSubredditsFMod', {
     'type': 'boolean',
     'default': false,
-    'advanced': true,
+    'advanced': false,
     'title': 'Use /f/mod/about/unmoderated/ instead.'
 });
 
 self.register_setting('modmailSubreddits', {
     'type': 'text',
     'default': 'mod',
-    'advanced': true,
+    'advanced': false,
     'hidden': self.setting('modmailSubredditsFromPro'),
     'title': 'Multireddit of subs you want displayed in the modmail counter'
 });

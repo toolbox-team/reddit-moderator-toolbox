@@ -195,8 +195,14 @@ self.usernotes = function usernotes() {
     }
 
     $body.on('click', '#add-user-tag', function (e) {
-        var thing = $(e.target).closest('.thing .entry'),
-            info = TBUtils.getThingInfo(thing),
+        var $target = $(e.target),
+            $thing = $target.closest('.thing .entry');
+
+        if ($thing.length < 1){
+            $thing = $target.closest('.user');
+        }
+
+        var info = TBUtils.getThingInfo($thing),
             subreddit = info.subreddit,
             user = info.user,
             link = info.permalink;

@@ -199,7 +199,7 @@ self.init = function () {
     if (self.setting('automatic')) {
         liveFilter();
     } else {
-        var $tb_liveFilter = $('<button type="button" name="tb_liveFilter">Live Filter</button>');
+        var $tb_liveFilter = $('<button class="tb-action-button" type="button" name="tb_liveFilter">Live Filter</button>');
         $tb_liveFilter.insertAfter($('input#user').next());
         $tb_liveFilter.click(function () {
             liveFilter();

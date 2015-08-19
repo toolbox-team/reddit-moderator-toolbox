@@ -26,7 +26,7 @@ self.init = function() {
                     id: 'personal-notes', // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Edit macro',
                     content: notesPopupContent,
-                    footer: '<input type="button" id="save-personal-note" value="save note">'
+                    footer: '<input type="button" class="tb-action-button" id="save-personal-note" value="save note">'
                 }
             ],
             '',
@@ -142,7 +142,7 @@ self.init = function() {
                                     Create note:\
                                 </label> \
                                 <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
-                                <input type="button" id="create-personal-note" value="create note">\
+                                <input type="button" id="create-personal-note" class="tb-action-button" value="create note">\
                             </div>\
                             \
                         </td>\

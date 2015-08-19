@@ -487,7 +487,7 @@ self.init = function() {
         </div>\
         <div class="tb-window-tabs"></div>\
         <div class="tb-window-content"></div>\
-        <div class="tb-window-footer"><input class="tb-save" type="button" value="save">' + (devMode ? '&nbsp;<input class="tb-save-reload" type="button" value="save and reload">' : '') + '</div>\
+        <div class="tb-window-footer"><input class="tb-save tb-action-button" type="button" value="save">' + (devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '') + '</div>\
     </div>\
 </div>\
 ';
@@ -500,8 +500,8 @@ self.init = function() {
     <p id="tb-toolbox-settingssub">\
         Backup/restore toolbox settings to a wiki page:<br>\
         <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
-        <input class="tb-settings-export" type="button" value="backup">\
-        <input class="tb-settings-import" type="button" value="restore">\
+        <input class="tb-settings-export tb-action-button" type="button" value="backup">\
+        <input class="tb-settings-import tb-action-button" type="button" value="restore">\
         <b> Important:</b> This will reload the page without saving!\
         <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
     </p><p id="tb-toolbox-showexportreminder">\
@@ -524,7 +524,7 @@ self.init = function() {
         <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
     </p>\
     <p id="tb-toolbox-showsettings"' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
-        <input type="button" id="showSettings" value="Show Settings" />\
+        <input type="button" id="showSettings" class="tb-action-button" value="Show Settings" />\
     </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
 </div>\
@@ -822,7 +822,7 @@ self.init = function() {
                 </br>\
                 </span>\
                 ',
-                    footer: '<input class="anonymize-settings" type="button" value="Anonymize Settings">'
+                    footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">'
                 }
             ],
             '', // meta

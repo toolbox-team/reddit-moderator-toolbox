@@ -49,7 +49,7 @@ self.init = function() {
                 <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                    footer: '<input class="save-wiki-data" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
+                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
                     title: 'edit user notes',
@@ -61,7 +61,7 @@ self.init = function() {
                 <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                    footer: '<input class="save-wiki-data" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
+                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
                     title: 'edit automoderator config',
@@ -75,7 +75,7 @@ self.init = function() {
                 <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
-                    footer: '<input class="save-wiki-data" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
+                    footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
                     title: 'removal reasons settings',
@@ -133,7 +133,7 @@ self.init = function() {
                     </td>\
                     </tr><tr>\
                 </table>',
-                    footer: '<input class="save-removal-settings" type="button" value="Save removal reasons settings">'
+                    footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">'
                 },
                 {
                     title: 'edit removal reasons',
@@ -147,7 +147,7 @@ self.init = function() {
                     <input type="text" name="flair-text" placeholder="flair text" /><br/>\
                     <input type="text" name="flair-css" placeholder="flair css class" /><br/>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                    <input class="save-new-reason" type="button" value="Save new reason"><input class="cancel-new-reason" type="button" value="Cancel adding reason">\
+                    <input class="save-new-reason tb-action-button" type="button" value="Save new reason"><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason">\
                 </span>\
                 <table id="tb-removal-reasons-list">\
                 </table>\
@@ -164,7 +164,7 @@ self.init = function() {
                     <textarea class="edit-area"></textarea><br/>\
                     <input type="text" class="macro-title" name="macro-title" placeholder="macro title" />\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                    <input class="save-new-macro" type="button" value="Save new macro"><input class="cancel-new-macro" type="button" value="Cancel adding macro">\
+                    <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
                 <table id="tb-mod-macros-list">\
                 </table>\
@@ -175,7 +175,7 @@ self.init = function() {
                     title: 'domain tags',
                     tooltip: 'basic domain tags stuff.',
                     content: '<p>import tags from /r/:&nbsp;<input class="importfrom" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
-                    footer: '<input class="import" type="button" value="import" />'
+                    footer: '<input class="import tb-action-button" type="button" value="import" />'
                 }
             ],
             '', // meta
@@ -452,7 +452,7 @@ self.init = function() {
                             <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
                             <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-reason" type="button" value="Save reason"><input class="cancel-edit-reason" type="button" value="Cancel">\
+                            <input class="save-edit-reason tb-action-button" type="button" value="Save reason"><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel">\
                         </span>\
                     </td>\
                 </tr>';
@@ -509,7 +509,7 @@ self.init = function() {
                             <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
                             <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" />\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-macro" type="button" value="Save macro"><input class="cancel-edit-macro" type="button" value="Cancel editing macro">\
+                            <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\
                     </td>\
                 </tr>';

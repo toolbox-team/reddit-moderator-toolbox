@@ -159,7 +159,7 @@ self.init = function() {
                 <p>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</p>\
             </div>\
             <div class="dtagger-popup-footer">\
-               <button class="save-domain" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com">save</button>\
+               <button class="save-domain tb-action-button" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com">save</button>\
             </div>\
         <div>')
             .appendTo('body')

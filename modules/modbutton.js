@@ -201,8 +201,8 @@ self.init = function () {
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                 </select>\
-                <button class="save">' + self.saveButton + '</button>\
-                <button title="Global Action (perform action on all subs)" class="global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
+                <button class="save tb-action-button">' + self.saveButton + '</button>\
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
                     title: 'User Flair',
@@ -212,7 +212,7 @@ self.init = function () {
                     <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
                     footer: '\
                 <span class="status error left"></span>\
-                <button class="flair-save">Save Flair</button>'
+                <button class="flair-save tb-action-button">Save Flair</button>'
                 },
                 {
                     title: 'Send Message',
@@ -224,7 +224,7 @@ self.init = function () {
                     ',
                     footer: '\
                 <span class="status error left"></span>\
-                <button class="message-send">Send Message</button>'
+                <button class="message-send tb-action-button">Send Message</button>'
                 }
             ],
             '<label class="user">' + user + '</label><label class="subreddit">' + subreddit + '</label><label class="thing_id">' + thing_id + '</label>',

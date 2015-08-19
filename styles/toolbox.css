@@ -15,7 +15,18 @@
     height: 40px;
 }
 
-/* general UI stuff */
+/*
+general UI stuff
+*/
+
+/* link colors (for those themes that change all the link colors */
+body.mod-toolbox .tb-page-overlay a,
+body.mod-toolbox .tb-popup a,
+body.mod-toolbox .tb-toolbar a
+{
+    color: #369;
+    box-sizing: initial !important;
+}
 
 body.mod-toolbox .tb-general-button,
 body.mod-toolbox li a.tb-general-button {
@@ -36,40 +47,58 @@ body.mod-toolbox li a.tb-general-button:hover {
     text-decoration: none;
 }
 
+/* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF  */
+
 body.mod-toolbox .tb-action-button {
-    background-color: #F7FAFD;
+    display: inline-block !important;
+    padding: 2px 6px 3px 6px !important;
+    font-family: verdana,arial,helvetica,sans-serif !important;
+    font-size: 13px !important;
+    margin: 0 !important;
+    text-shadow: none !important;
+    text-decoration: none !important;
+    text-align: center !important;
+    text-indent: 0 !important;
+    text-rendering: auto !important;
+    text-transform: none !important;
+    font-stretch: normal !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    font-weight: normal !important;
+    height: 23px !important;
+    letter-spacing: normal !important;
+    line-height: 15px !important;
+    background-color: #F7FAFD !important;
     border-radius: 1px !important;
-    border-width: 1px 1px 2px 2px;
-    border-color: #72869A;
-    border-style: solid;
-    color: #17324E;
-    padding: 2px 6px 3px;
-    text-align: center;
-    font-weight: normal;
-    text-decoration: none;
-    transition: all 0.15s ease-in-out;
+    border-width: 1px 1px 2px 2px !important;
+    border-color: #72869A !important;
+    border-style: solid !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    color: #17324E !important;
+    transition: all 0.15s ease-in-out !important;
 }
 
 body.mod-toolbox .tb-action-button:active {
-    border-width: 1px;
-    border-color: #9FBAD6;
-    box-shadow: none;
+    border-width: 1px !important;
+    border-color: #9FBAD6 !important;
+    box-shadow: none !important;
 }
 
 body.mod-toolbox .tb-action-button:focus {
-    outline: none;
+    outline: none !important;
 }
 
 body.mod-toolbox .tb-action-button:hover {
-    background-color: #E2EEFA;
-    text-decoration: none;
+    background-color: #E2EEFA !important;
+    text-decoration: none !important;
 }
 
 .mod-toolbox .tb-highlight {
     background-color: #ffff16;
 }
 
-.mod-toolbox #tb-bottombar {
+body.mod-toolbox #tb-bottombar {
     bottom: 0;
     z-index: 2147483646 !important;
     position: fixed;
@@ -84,6 +113,7 @@ body.mod-toolbox .tb-action-button:hover {
     border-top: solid 1px #B6C9DD;
     left: 0;
     right: 0;
+    box-sizing: initial !important;
 }
 
 .mod-toolbox #tb-bottombar-hidden {

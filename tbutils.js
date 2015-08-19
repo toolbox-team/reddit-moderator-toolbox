@@ -131,7 +131,6 @@ function initwrapper() {
 
     $('body').addClass('mod-toolbox');
 
-
     // Get cached info.
     TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
     TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});

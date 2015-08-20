@@ -419,7 +419,6 @@ self.modmailpro = function() {
 
             $thread.addClass("has-replies");
             $messageCount.text(replyCount);
-            $thread.find('.most-recent .head').prepend($('<span>').addClass('new-label new-highlight').text('[LAST]'));
         }
         else {
             unansweredThreads.push(threadID);
@@ -628,20 +627,21 @@ self.modmailpro = function() {
 
         self.endProfile('highlight-new-jquery');
 
-        TBUtils.forEachChunked($('.process-new').find('.entry'), 10, entryProcessRate, function (entry) {
+        TBUtils.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, function (message) {
             self.startProfile('highlight-new-internal');
 
-            var $entry = $(entry),
+            var $message = $(message),
+                $entry = $message.find('.entry'),
                 timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
-            // don't process new threads twice.
+            // Don't process new threads twice.
             $entry.closest('.process-new').removeClass('process-new');
 
             if (timestamp > lastVisited) {
-                $entry.find('.head').prepend($('<span>').addClass('new-label new-highlight').text('[NEW]'));
+                $message.addClass('new-message');
 
                 // Expand thread / highlight new
-                if ($entry.parent().hasClass('collapsed')) {
+                if ($message.hasClass('collapsed')) {
                     $entry.find('.expand:first').click();
                 }
 

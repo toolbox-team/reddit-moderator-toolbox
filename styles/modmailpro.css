@@ -91,16 +91,20 @@
     background-color: lightgreen;
 }
 
-.message.new-messages .new-label {
-    display: none;
-}
-
-.tb-modmail-pro .message.new-messages .new-label {
+.tb-modmail-pro .message.new-message > .entry > .tagline > .head::before {
+    content: "[NEW]";
     display: inline;
-    color: black;
-
     margin-right: 4px;
     padding: 1px;
+
+    background-color: lightgreen;
+    color: black;
+}
+
+.tb-modmail-pro .message.most-recent > .entry > .tagline > .head::before {
+    content: "[LATEST]";
+    display: inline;
+    margin-right: 4px;
 }
 
 /* No red mod mail! */
@@ -120,6 +124,7 @@
 .tb-fade-recipient .message .entry .tb-recipient {
     background-color: rgba(0, 0, 0, 0) !important;
     color: #888 !important;
+    font-weight: bold;
 }
 
 .tb-fade-recipient .message .entry .tb-recipient.moderator {

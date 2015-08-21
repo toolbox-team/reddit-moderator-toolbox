@@ -176,7 +176,7 @@ self.init = function () {
         run();
 
         // Add flat view link.
-        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="tb-loadFlat tb-general-button">Load comments in flat view</a>');
+        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="tb-loadFlat tb-general-button">flat view</a>');
 
         $body.on("click", ".tb-loadFlat", function () {
 
@@ -459,8 +459,8 @@ self.init = function () {
         if ($body.hasClass('profile-page')) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content">\
-<input type="submit" value="go"></form>');
+            $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content (optional)">\
+<input type="submit" value=" search " class="tb-action-button"></form>');
 
             $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 

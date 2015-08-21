@@ -701,9 +701,9 @@ self.reportAuthorToSpam = function () {
 
             // Post stats as a comment.
             if (!commentBody.length || !rtsComment) {
-                rtsNativeLink.textContent = 'Reported';
+                rtsNativeLink.textContent = 'reported';
                 rtsNativeLink.href = submission.json.data.url;
-                rtsNativeLink.className = '';
+                rtsNativeLink.className = 'tb-general-button';
                 return;
             }
 
@@ -718,9 +718,9 @@ self.reportAuthorToSpam = function () {
                         //$rtsLink.hide();
                         return
                     }
-                    rtsNativeLink.textContent = 'Reported';
+                    rtsNativeLink.textContent = 'reported';
                     rtsNativeLink.href = submission.json.data.url;
-                    rtsNativeLink.className = '';
+                    rtsNativeLink.className = 'tb-general-button';
                 }
             });
         }

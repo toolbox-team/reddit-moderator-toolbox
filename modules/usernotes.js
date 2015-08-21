@@ -132,8 +132,8 @@ self.usernotes = function usernotes() {
         if (showOnModPages && TB.utils.isEditUserPage) {
             var $userSpan = $('span.user:not(:first)'),
                 tag = '<span class="usernote-span-' +
-                    subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<label class="add-user-tag-' +
-                    subreddit + '" id="add-user-tag" "href="javascript:;">N</label>]</span>';
+                    subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<label class="tb-general-button add-user-tag-' +
+                    subreddit + '" id="add-user-tag" "href="javascript:;">N</label></span>';
 
             self.log('running on ban page');
             things = $userSpan.find('a:first');

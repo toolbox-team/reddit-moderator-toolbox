@@ -41,6 +41,11 @@ body.mod-toolbox li a.tb-general-button {
     text-decoration: none;
 }
 
+body.mod-toolbox .tagline .tb-general-button {
+	padding: 0 1px;
+    font-size: 9px;
+}
+
 body.mod-toolbox .tb-general-button:hover,
 body.mod-toolbox li a.tb-general-button:hover {
     background-color: #E2EEFA;

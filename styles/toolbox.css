@@ -48,7 +48,7 @@ body.mod-toolbox li a.tb-general-button:hover {
 }
 
 body.mod-toolbox .tb-general-button img {
-	vertical-aling: top;
+	vertical-align: top;
 }
 
 /* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! */

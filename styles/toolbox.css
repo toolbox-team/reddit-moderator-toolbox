@@ -2285,3 +2285,10 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     margin-left:3px;
     content: "";
 }
+
+
+/* macro width fix */
+
+.mod-toolbox select.tb-macro-select { 
+    max-width: 77px;
+}

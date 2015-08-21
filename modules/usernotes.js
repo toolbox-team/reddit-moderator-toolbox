@@ -68,8 +68,8 @@ self.usernotes = function usernotes() {
         if (!subreddit) return;
 
         var tag = '<span class="usernote-span-' +
-            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;[<a class="add-user-tag-' +
-            subreddit + '" id="add-user-tag" "href="javascript:;">N</a>]</span>';
+            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<a class="tb-general-button add-user-tag-' +
+            subreddit + '" id="add-user-tag" "href="javascript:;">N</a></span>';
 
         $thing.attr('subreddit', subreddit);
 
@@ -226,7 +226,7 @@ self.usernotes = function usernotes() {
             </span>',
                     footer: '\
             <span class="tb-popup-error" style="display:none"/>\
-            <input type="button" class="utagger-save-user" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
+            <input type="button" class="utagger-save-user tb-action-button" id="utagger-save-user" value="save for /r/' + subreddit + '" />'
                 }
             ],
             '', // meta to inject in popup header; just a placeholder
@@ -542,7 +542,7 @@ self.usernotesManager = function () {
                 <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                 <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                 <br><br>\
-                <a id="tb-un-prune-sb" href="javascript:;">Prune user profiles.</a>\
+                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune user profiles</a>\
             </div></br></br>';
 
                 var infocontent = TB.utils.template(infoHTML, {

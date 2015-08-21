@@ -187,16 +187,16 @@ self.modmailpro = function() {
     self.endProfile('settings-access');
 
     self.startProfile('common-element-gen');
-    var separator = '<span class="separator">|</span>',
+    var separator = '<span class="tb-separator"></span>',
         spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-        $allLink = $('<li><a class="alllink" href="javascript:;" data-view="' + ALL + '">all</a></li>'),
-        $priorityLink = $('<li><a class="prioritylink" href="javascript:;" data-view="' + PRIORITY + '">priority</a></li>'),
-        $filteredLink = $('<li><a class="filteredlink" href="javascript:;" data-view="' + FILTERED + '">filtered</a></li>'),
-        $repliedLink = $('<li><a class="repliedlink" href="javascript:;" data-view="' + REPLIED + '">replied</a></li>'),
-        $unreadLink = $('<li><a class="unreadlink" href="javascript:;" data-view="' + UNREAD + '">unread</a></li>'),
-        $unansweredLink = $('<li><a class="unansweredlink" href="javascript:;" data-view="' + UNANSWERED + '">unanswered</a></li>'),
-        $botsLink = $('<li><a class="botslink" href="javascript:;" data-view="' + BOTS + '">bots</a></li>'),
-        $collapseLink = $('<li><a class="collapse-all-link" href="javascript:;">collapse all</a></li>'),
+        $allLink = $('<li><a class="alllink tb-general-button" href="javascript:;" data-view="' + ALL + '">all</a></li>'),
+        $priorityLink = $('<li><a class="prioritylink tb-general-button" href="javascript:;" data-view="' + PRIORITY + '">priority</a></li>'),
+        $filteredLink = $('<li><a class="filteredlink tb-general-button" href="javascript:;" data-view="' + FILTERED + '">filtered</a></li>'),
+        $repliedLink = $('<li><a class="repliedlink tb-general-button" href="javascript:;" data-view="' + REPLIED + '">replied</a></li>'),
+        $unreadLink = $('<li><a class="unreadlink tb-general-button" href="javascript:;" data-view="' + UNREAD + '">unread</a></li>'),
+        $unansweredLink = $('<li><a class="unansweredlink tb-general-button" href="javascript:;" data-view="' + UNANSWERED + '">unanswered</a></li>'),
+        $botsLink = $('<li><a class="botslink tb-general-button" href="javascript:;" data-view="' + BOTS + '">bots</a></li>'),
+        $collapseLink = $('<li><a class="collapse-all-link tb-general-button" href="javascript:;">collapse all</a></li>'),
         $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
         $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
 
@@ -931,7 +931,7 @@ self.autoLoad = function() {
 
     var delay = 5000, // Default 5 sec delay between checking for new modmail.
         refreshLimit = 15, // Default five items per request.
-        refreshLink = $('<li><a class="refresh-link" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>'),
+        refreshLink = $('<li><a class="refresh-link tb-general-button" href="javascript:;" title="NOTE: this will only show new threads, not replies.">refresh</a></li>'),
         updateURL = '/message/moderator?limit=',
         menulist = $('.menuarea ul.flat-list:first');
 

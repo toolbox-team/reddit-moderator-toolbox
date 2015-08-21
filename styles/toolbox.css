@@ -47,7 +47,7 @@ body.mod-toolbox li a.tb-general-button:hover {
     text-decoration: none;
 }
 
-/* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF  */
+/* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! */
 
 body.mod-toolbox .tb-action-button {
     display: inline-block !important;
@@ -1157,8 +1157,9 @@ body .thing.flaired {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;
-    border-left: solid 1px #369;
+    /*border-left: solid 1px #369;*/
     float: right;
+    margin-left: 3px;
 }
 
 .toolbox-edit:hover {

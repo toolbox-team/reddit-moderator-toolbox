@@ -195,7 +195,7 @@ self.init = function() {
         <select class="module-select"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
         <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll</label>\
         <!--input class="tb-console-copy" type="button" value="copy text"-->\
-        <input class="tb-console-clear" type="button" value="clear console">\
+        <input class="tb-console-clear tb-action-button" type="button" value="clear console">\
     </div>\
 </div>\
 ');

@@ -33,8 +33,8 @@ self.init = function() {
                 Through this window you can edit the settings for /r/' + subredditConfig + '. </br>\
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
                 </br>\
-                </br><a href="/r/' + subredditConfig + '/w/pages/">All Wiki Pages</a>\
-                </br><a ' + ((unManager) ? 'style="display:none;"' : '') + ' href="/r/' + subredditConfig + '/about/usernotes/">Manage Usernotes</a>\
+                </br><a href="/r/' + subredditConfig + '/w/pages/" class="tb-general-button">All Wiki Pages</a>\
+                </br><a ' + ((unManager) ? 'style="display:none;"' : '') + ' href="/r/' + subredditConfig + '/about/usernotes/" class="tb-general-button">Manage Usernotes</a>\
                 \
                 </span>\
                 ',
@@ -139,8 +139,8 @@ self.init = function() {
                     title: 'edit removal reasons',
                     tooltip: 'Edit and add your removal reasons here.',
                     content: '\
-                <a href="javascript:;" id="tb-add-removal-reason"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a>\
-                <a href="javascript:;" id="tb-config-help" data-module="rreasons">[help]</a></br>\
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a>\
+                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>\
                 <span id="tb-add-removal-reason-form">\
                     <textarea class="edit-area" placeholder="reason comment text (optional if you\'re using flair only)"></textarea><br/>\
                     <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
@@ -158,8 +158,8 @@ self.init = function() {
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
                     content: '\
-                <a href="javascript:;" id="tb-add-mod-macro"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new mod macro</a>\
-                <a href="javascript:;" id="tb-config-help" data-module="modmacros">[help]</a></br>\
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new mod macro</a>\
+                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>\
                 <span id="tb-add-mod-macro-form">\
                     <textarea class="edit-area"></textarea><br/>\
                     <input type="text" class="macro-title" name="macro-title" placeholder="macro title" />\

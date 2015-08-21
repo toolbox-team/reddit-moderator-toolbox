@@ -145,3 +145,7 @@
 {
     display: none !important;
 }
+
+.tb-separator {
+    margin-left: 3px;
+}

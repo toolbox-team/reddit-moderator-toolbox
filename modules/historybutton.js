@@ -29,7 +29,7 @@ self.register_setting('rtsComment', {
  * Attach an [H] button to all users
  */
 self.run = function () {
-    var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;[<a href="javascript:;" class="user-history-button" title="view user history">H</a>]</span>';
+    var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;<a href="javascript:;" class="user-history-button tb-general-button" title="view user history">H</a></span>';
 
     if (TBUtils.isModmail) {
         $('.thing .entry .head:not(.tb-history)').each(function () {
@@ -101,10 +101,10 @@ self.init = function () {
         var popupContent = '<div>\
             <a href="/user/' + self.author + '" target="_blank">' + self.author + '</a>\
             <span class="karma" />\
-            <a class="comment-report" href="javascript:;">get comment history</a> \
-            <a class="account-report" href="javascript:;">website account history</a> \
-            <a class="markdown-report" href="javascript:;">view report in markdown</a> \
-            <a class="rts-report" href="javascript:;" data-commentbody="">report spammer</a><br />\
+            <a class="comment-report tb-general-button" href="javascript:;">comment history</a> \
+            <a class="account-report tb-general-button" href="javascript:;">website account history</a> \
+            <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a> \
+            <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a><br />\
             <span class="redditorTime"></span>\
             <br /><b>Submission history:</b> <label class="submission-count"></label></div>\
             <div class="table domain-table">\

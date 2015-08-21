@@ -89,7 +89,7 @@ self.init = function() {
                     <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                     </tr>\
                     <tr class="advanced-enable" ' + ((TB.utils.advancedMode) ? '' : 'style="display:none;"') + '>\
-                    <td><a href="javascript:;" class="show-advanced">show advanced settings</a></td>\
+                    <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>\
                     </tr>\
                     <tr class="rr-advanced">\
                     <td>\

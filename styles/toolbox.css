@@ -47,6 +47,10 @@ body.mod-toolbox li a.tb-general-button:hover {
     text-decoration: none;
 }
 
+body.mod-toolbox .tb-general-button img {
+	vertical-aling: top;
+}
+
 /* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! */
 
 body.mod-toolbox .tb-action-button {

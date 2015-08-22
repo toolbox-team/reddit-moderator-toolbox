@@ -11,8 +11,7 @@ self.settings['enabled']['default'] = true;
 
 self.init = function () {
     var $body = $('body'),
-        MACROS = 'TB-MACROS',
-        STYLE = 'background: transparent;padding-top: 2px;padding-right: 1px;padding-bottom: 4px;padding-left: 3px;';
+        MACROS = 'TB-MACROS';
 
 
     function getConfig(sub, callback) {
@@ -84,7 +83,7 @@ self.init = function () {
             getConfig(TB.utils.post_site, function (success, config) {
                 // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
-                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select" style="' + STYLE + '"  data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>');
+                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select tb-action-button" data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>');
                     populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
                 }
             });
@@ -115,7 +114,7 @@ self.init = function () {
             getConfig(info.subreddit, function (success, config) {
                 // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
-                    $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" style="' + STYLE + '" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>');
+                    $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>');
                     populateSelect('.tb-macro-select', info.subreddit, config);
                 }
             });

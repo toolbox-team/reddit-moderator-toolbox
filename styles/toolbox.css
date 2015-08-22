@@ -96,9 +96,12 @@ body.mod-toolbox .tb-action-button:active {
 
 /* modmacro tweak*/
 
-.mod-toolbox select.tb-macro-select.tb-action-button {
+.mod-toolbox select.tb-macro-select.tb-action-button,
+.mod-toolbox select.tb-top-macro-select.tb-action-button
+{
     max-width: 90px;
 }
+
 
 .mod-toolbox select.tb-action-button:active {
     border-width: 1px 1px 2px 2px !important;

@@ -91,7 +91,7 @@ self.init = function () {
                     if ($tbUsertextButtons.length) {
                         $tbUsertextButtons.append(macroButtonHtml);
                     } else {
-                        $usertextButtons.append('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
+                        $usertextButtons.find('.status').before('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
                     }
 
 
@@ -132,7 +132,7 @@ self.init = function () {
                     if ($tbUsertextButtons.length) {
                         $tbUsertextButtons.append(macroButtonHtml);
                     } else {
-                        $thing.find('.usertext-buttons').append('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
+                        $thing.find('.usertext-buttons .status').before('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
                     }
 
                     populateSelect('.tb-macro-select', info.subreddit, config);

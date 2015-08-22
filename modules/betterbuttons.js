@@ -85,7 +85,7 @@ self.initModSave = function initModSave() {
         if ($tbUsertextButtons.length) {
             $tbUsertextButtons.prepend('<button class="save-mod tb-action-button">mod save</button>');
         } else {
-            $saveButton.parent().append('<div class="tb-usertext-buttons"><button class="save-mod">mod save</button></div>');
+            $saveButton.parent().find('.status').before('<div class="tb-usertext-buttons"><button class="save-mod tb-action-button">mod save</button></div>');
         }
     }
 

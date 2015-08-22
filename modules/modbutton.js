@@ -22,6 +22,11 @@ self.register_setting('globalButton', {
     'advanced': true,
     'title': 'Enable Global Action button'
 });
+self.register_setting('showInUsernameArea', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Move mod button from bottom links to the username links'
+});
 
 // private storage
 self.register_setting('lastAction', {
@@ -34,20 +39,25 @@ var $body = $('body');
 
 // Add mod button to all users
 self.processThing = function (thing) {
-    if (!$(thing).hasClass('mod-button')) {
+    var $thing = $(thing);
+    if (!$thing.hasClass('mod-button')) {
         // Add the class so we don't add buttons twice.
-        $(thing).addClass('mod-button');
+        $thing.addClass('mod-button');
 
-        // Defer info gathering until button is clicked.
-        // try to insert it to the right of first button
-        var $insertionPoint = $(thing).find('.flat-list.buttons .first:first');
-        if ($insertionPoint.length == 0) {
-            // if that doesn't work either stick it to the right of the first button
-            $insertionPoint = $(thing).find('.buttons > li:first');
+        if (!self.setting('showInUsernameArea')) {
+            // Defer info gathering until button is clicked.
+            // try to insert it to the right of first button
+            var $insertionPoint = $thing.find('.flat-list.buttons .first:first');
+            if ($insertionPoint.length == 0) {
+                // if that doesn't work either stick it to the right of the first button
+                $insertionPoint = $thing.find('.buttons > li:first');
+            }
+            $insertionPoint.after('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
+        } else {
+            $thing.find('.userattrs:first')
+                .after('&nbsp;<a href="javascript:;" class="global-mod-button tb-general-button">' + self.buttonName + '</a>');
         }
     }
-    $insertionPoint.after('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
-
 };
 
 // need this for RES NER support
@@ -121,7 +131,7 @@ self.updateSavedSubs = function () {
 };
 
 self.init = function () {
-    self.buttonName = 'mod';
+    self.buttonName = self.setting('showInUsernameArea') ? 'M' : 'mod';
     self.saveButton = 'Save';
     self.OTHER = 'other-sub';
 

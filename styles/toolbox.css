@@ -1002,9 +1002,9 @@ img.note-close {
     text-decoration: none;
 }
 
-body.mod-toolbox .mod-popup .global-button {
-    text-decoration: none;
-    color: red;
+body.mod-toolbox .mod-popup .tb-action-button.global-button {
+    text-decoration: none !important;
+    color: red !important;
 }
 
 .mod-popup .current-sub,
@@ -2296,6 +2296,6 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
 
 /* macro width fix */
 
-.mod-toolbox select.tb-macro-select { 
+.mod-toolbox select.tb-macro-select {
     max-width: 77px;
 }

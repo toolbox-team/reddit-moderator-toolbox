@@ -83,7 +83,18 @@ self.init = function () {
             getConfig(TB.utils.post_site, function (success, config) {
                 // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
-                    $('.commentarea>.usertext .usertext-buttons .save').after('<select class="tb-top-macro-select tb-action-button" data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>');
+
+                    var $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
+                    var $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
+                        macroButtonHtml = '<select class="tb-top-macro-select tb-action-button" data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>';
+
+                    if ($tbUsertextButtons.length) {
+                        $tbUsertextButtons.append(macroButtonHtml);
+                    } else {
+                        $usertextButtons.append('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
+                    }
+
+
                     populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
                 }
             });
@@ -114,7 +125,16 @@ self.init = function () {
             getConfig(info.subreddit, function (success, config) {
                 // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
-                    $thing.find('.usertext-buttons .cancel').after('<select class="tb-macro-select" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>');
+
+                    var $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
+                        macroButtonHtml = '<select class="tb-macro-select tb-action-button" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>';
+
+                    if ($tbUsertextButtons.length) {
+                        $tbUsertextButtons.append(macroButtonHtml);
+                    } else {
+                        $thing.find('.usertext-buttons').append('<div class="tb-usertext-buttons">'+ macroButtonHtml +'</div>');
+                    }
+
                     populateSelect('.tb-macro-select', info.subreddit, config);
                 }
             });

@@ -78,9 +78,15 @@ self.initModSave = function initModSave() {
     });
 
     //Add the mod save button next to each comment save button
-    var saveButton = $('.moderator .commentarea>.usertext .usertext-buttons .save');
-    if (saveButton.css("display") != "none") {
-        saveButton.after('<button class="save-mod">mod save</button>');
+    var $usertextButtons = $('.moderator .commentarea>.usertext .usertext-buttons');
+    var $saveButton = $usertextButtons.find('.save');
+    if ($saveButton.css("display") != "none") {
+        var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
+        if ($tbUsertextButtons.length) {
+            $tbUsertextButtons.prepend('<button class="save-mod tb-action-button">mod save</button>');
+        } else {
+            $saveButton.parent().append('<div class="tb-usertext-buttons"><button class="save-mod">mod save</button></div>');
+        }
     }
 
     //Add actions to the mod save buttons
@@ -92,7 +98,7 @@ self.initModSave = function initModSave() {
             attributes: false,
             characterData: false
         });
-        $(this).parent().find('button.save').click();
+        $(this).closest('.usertext-buttons').find('button.save').click();
     });
 };
 

@@ -2283,6 +2283,10 @@ body[class*="wiki-page-livedocs"] * {
     font-size: 14px !important;
 }
 
+body[class*="wiki-page-livedocs"] .md.wiki pre {
+    margin-right: 0 !important;
+}
+
 body[class*="wiki-page-livedocs"]  div#header,
 body[class*="wiki-page-livedocs"] div.side,
 body[class*="wiki-page-livedocs"] a[name=content],

@@ -140,7 +140,7 @@ self.processComment = function (comment, num) {
 // need this for RES NER support
 self.run = function () {
     // Not a mod, don't bother.
-    if (!TB.utils.isMod) {
+    if (!TB.utils.isMod  || TB.utils.isModQueuePage) {
         //self.log('Not a mod of the sub, d\'oh!');
         return;
     }

@@ -2313,7 +2313,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 
 #tb-config-help {
     float: right;
-    padding-right: 10px;
+    margin-right: 10px;
 }
 
 .rr-advanced {

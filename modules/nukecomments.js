@@ -133,7 +133,7 @@ self.processComment = function (comment, num) {
         // Defer info gathering until button is clicked.
         // the report button is always visible, so we don't have to do anything special for the big mod action buttons
         $comment.find('.userattrs:first')
-            .after('&nbsp;<a href="javascript:;" class="nuke-button tb-general-button">' + self.button + '</a>');
+            .after('&nbsp;<a href="javascript:;" class="nuke-button tb-bracket-button">' + self.button + '</a>');
     }
 };
 

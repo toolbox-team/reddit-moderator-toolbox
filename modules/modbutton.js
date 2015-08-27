@@ -55,7 +55,7 @@ self.processThing = function (thing) {
             $insertionPoint.after('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
         } else {
             $thing.find('.userattrs:first')
-                .after('&nbsp;<a href="javascript:;" class="global-mod-button tb-general-button">' + self.buttonName + '</a>');
+                .after('&nbsp;<a href="javascript:;" class="global-mod-button tb-bracket-button">' + self.buttonName + '</a>');
         }
     }
 };

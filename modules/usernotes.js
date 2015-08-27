@@ -68,7 +68,7 @@ self.usernotes = function usernotes() {
         if (!subreddit) return;
 
         var tag = '<span class="usernote-span-' +
-            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<a class="tb-general-button add-user-tag-' +
+            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<a class="tb-bracket-button add-user-tag-' +
             subreddit + '" id="add-user-tag" "href="javascript:;">N</a></span>';
 
         $thing.attr('subreddit', subreddit);

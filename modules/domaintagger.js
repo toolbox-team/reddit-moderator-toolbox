@@ -48,7 +48,7 @@ self.init = function() {
     }
 
     function processThing(thing) {
-        var tag = '<span style="color:#888888; font-size:x-small;">&nbsp;<a class="add-domain-tag tb-general-button" "href="javascript:;">T</a></span>';
+        var tag = '<span style="color:#888888; font-size:x-small;">&nbsp;<a class="add-domain-tag tb-bracket-button" "href="javascript:;">T</a></span>';
 
         if ($(thing).hasClass('dt-processed')) {
             return;

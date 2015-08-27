@@ -56,6 +56,7 @@ function initwrapper() {
             "It's not even kinda bad... It's strangely awful.",
             "Like a good neighbor, /u/andytuba is there",
             "toolbox is build on beer",
+            "aww, i thought this was about real tools",
             "my poop never smelled worse than when i lived off pizza bagel bites"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",

@@ -524,7 +524,7 @@ self.init = function() {
         <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
     </p>\
     <p id="tb-toolbox-showsettings"' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
-        <input type="button" id="showSettings" class="tb-action-button" value="Show Settings" />\
+        <input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />\
     </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
 </div>\
@@ -809,9 +809,9 @@ self.init = function() {
         });
     });
 
-    $body.on('click', '#showSettings', function () {
+    $body.on('click', '#showRawSettings', function () {
         $overlay = TB.ui.overlay(
-            'toolbox setting display',
+            'toolbox raw setting display',
             [
                 {
                     title: '',
@@ -826,7 +826,7 @@ self.init = function() {
                 }
             ],
             '', // meta
-            'tb-settings' // so, uh.... if you change this, the close button stops working?
+            'tb-raw-settings'
         ).appendTo('body');
         $body.css('overflow', 'hidden');
 
@@ -843,6 +843,10 @@ self.init = function() {
         });
 
 
+    });
+
+    $body.on('click', '.tb-raw-settings .close', function () {
+        $('.tb-raw-settings').remove(); // should we have some confirmation dialog here?
     });
 
 

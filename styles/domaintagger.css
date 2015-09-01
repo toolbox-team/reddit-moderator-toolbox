@@ -100,3 +100,10 @@
 .dtagger-popup th {
     padding-right: 10px !important;
 }
+
+
+.tb-dt-little-dot {
+    margin-right: 3px;
+    font-size: 20px;
+    line-height: 0px;
+}

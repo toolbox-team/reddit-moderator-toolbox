@@ -124,7 +124,7 @@ self.init = function() {
                             });
                             break;
                         case "little_dot":
-                            var $span = $('<span>&#9679;</span>').css({
+                            var $span = $('<span class="tb-dt-little-dot">&#9679;</span>').css({
                                 'color': d.color
                             });
                             $domain.before($span);

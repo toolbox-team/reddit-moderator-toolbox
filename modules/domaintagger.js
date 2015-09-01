@@ -256,7 +256,7 @@ self.init = function() {
 
     function getThingDomain($thing) {
         self.log("Getting thing domain");
-        var domain = $thing.find('span.domain a').attr('href').toLocaleLowerCase();
+        var domain = $thing.find('span.domain a').attr('href').toLowerCase();
         self.log("  Raw = " + domain);
         var match = /\/domain\/(.+)\//.exec(domain);
         if (!match) {

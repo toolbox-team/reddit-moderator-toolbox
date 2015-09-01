@@ -33,7 +33,8 @@
                 "styles/modmailpro.css",
                 "styles/achievements.css",
                 "styles/modbar.css",
-                "styles/historybutton.css"
+                "styles/historybutton.css",
+                "styles/domaintagger.css"
             ],
             "js": [
                 "libs/jquery-2.1.1.js",

@@ -1,4 +1,5 @@
 function domaintagger() {
+
 var self = new TB.Module('Domain Tagger');
 self.shortname = 'DTagger';
 
@@ -7,7 +8,7 @@ self.settings['enabled']['default'] = false;
 
 self.register_setting('displayType', {
     'type': 'selector',
-    'values': ['Post border', 'Domain background', 'Domain border'],
+    'values': ['Post border', 'Post title', 'Domain background', 'Domain border'],
     'default': 'post_border',
     'title': 'Tag location'
 });
@@ -15,8 +16,7 @@ self.register_setting('displayType', {
 self.init = function() {
     //Get settings
     var tagType = this.setting('displayType'),
-        $body = $('body'),
-        subs = [];
+        $body = $('body');
 
     TBUtils.getModSubs(function () {
         run();
@@ -40,74 +40,70 @@ self.init = function() {
     });
 
     function run() {
-        var things = $('div.thing:not(.dt-processed)');
+        var $things = $('div.thing.link:not(.dt-processed)'),
+            subs = {};
 
-        TBUtils.forEachChunked(things, 25, 500, processThing, function () {
-            TBUtils.forEachChunked(subs, 10, 500, processSub);
+        // Build object lists per subreddit
+        self.log("Processing things");
+        TBUtils.forEachChunked($things, 25, 500, function(thing) {
+            var sub = processThing($(thing));
+            if (subs[sub] === undefined) {
+                subs[sub] = [];
+            }
+            subs[sub].push(thing);
+        }, function () {
+            self.log("Processing subreddits");
+            self.log(Object.keys(subs));
+
+            // Process each subreddit's object list
+            TBUtils.forEachChunked(Object.keys(subs), 10, 500, function (sub) {
+                processSubreddit(sub, subs[sub]);
+            });
         });
     }
 
-    function processThing(thing) {
-        var tag = '<span style="color:#888888; font-size:x-small;">&nbsp;<a class="add-domain-tag tb-bracket-button" "href="javascript:;">T</a></span>';
-
-        if ($(thing).hasClass('dt-processed')) {
+    function processThing($thing) {
+        self.log("  Processing thing");
+        if ($thing.hasClass('dt-processed')) {
             return;
         }
-        $(thing).addClass('dt-processed');
+        $thing.addClass('dt-processed');
 
-        var subreddit = TBUtils.getThingInfo(thing, true).subreddit;
+        var subreddit = TBUtils.getThingInfo($thing, true).subreddit;
         if (!subreddit) {
             return;
         }
+        self.log("  In /r/" + subreddit);
+        $thing.attr('subreddit', subreddit);
 
-        $(thing).attr('subreddit', subreddit);
+        var tag = '<a class="add-domain-tag tb-bracket-button" "href="javascript:;">T</a>';
+        $thing.find('span.domain a').after(tag);
 
-        $(thing).find('span.domain:first').after(tag);
-
-        if ($.inArray(subreddit, subs) == -1) {
-            subs.push(subreddit);
-        }
+        return subreddit;
     }
 
-    function processSub(currsub) {
-        if (TBUtils.configCache[currsub] !== undefined) {
-            setTag(TBUtils.configCache[currsub], currsub);
-            return;
-        }
-
-        if (!currsub || TBUtils.noConfig.indexOf(currsub) != -1) return;
-
-        TBUtils.readFromWiki(currsub, 'toolbox', true, function (resp) {
-            if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                return;
+    function processSubreddit(sub, things) {
+        self.log("  Processing subreddit: /r/" + sub);
+        TBUtils.getConfig(sub, function (config) {
+            self.log("    Config retrieved for /r/" + sub);
+            if (config && config.domainTags && config.domainTags.length > 0) {
+                setTags(config.domainTags, things);
             }
-
-            if (resp === TBUtils.NO_WIKI_PAGE) {
-                TBUtils.noConfig.push(currsub);
-                return;
-            }
-
-            // We likely have a god config, but maybe not domain tags.
-            TBUtils.configCache[currsub] = resp;
-            setTag(resp, currsub);
         });
     }
 
-    function setTag(config, subreddit) {
-        if (!config.domainTags || config.domainTags.length < 1) {
-            return;
-        }
+    function setTags(domainTags, things) {
+        self.log("    Setting tags");
 
-        // looks like we have domain tags
-        var $things = $('div.thing[subreddit=' + subreddit + ']');
-        TBUtils.forEachChunked($things, 25, 250, function (thing) {
-            var $entry = $(thing).find('.entry');
-            var $domain = $(thing).find('span.domain:first');
-            var domain = $domain.text().replace('(', '').replace(')', '').toLocaleLowerCase();
+        TBUtils.forEachChunked(things, 25, 250, function (thing) {
+            var $entry = $(thing).find('.entry'),
+                $domain = $entry.find('span.domain'),
+                domain = getThingDomain($(thing));
 
-            $.grep(config.domainTags, function (d) {
-                if (domain.indexOf(d.name) !== -1) {
-                    switch (self.setting('displayType')) {
+            $.each(domainTags, function (i, d) {
+                // Check if the domain ends with a tagged domain (to allow for subdomains)
+                if (domain.indexOf(d.name, domain.length - d.name.length) !== -1) {
+                    switch (tagType) {
                         case "domain_background":
                             $domain.css({
                                 'background-color': d.color,
@@ -122,6 +118,11 @@ self.init = function() {
                                 'border-radius': '3px'
                             });
                             break;
+                        case "post_title":
+                            $entry.find('a.title').css({
+                                'color': d.color
+                            });
+                            break;
                         case "post_border":
                         default:
                             $entry.css({
@@ -134,35 +135,37 @@ self.init = function() {
         });
     }
 
+    // Button events
+
     $body.on('click', '.add-domain-tag', function (e) {
-        // TODO: This should use getThingInfo(), but I don't want to introduce any bugs for 2.0 by messing with it.
         var $thing = $(e.target).closest('.thing'),
-            $domain = $($thing).find('span.domain:first').text().replace('(', '').replace(')', '').toLocaleLowerCase(),
-            $subreddit = ($($thing).find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
+            domain = getThingDomain($thing),
+            subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
 
-        $subreddit = TB.utils.cleanSubredditName($subreddit);
+        subreddit = TB.utils.cleanSubredditName(subreddit);
 
-        // Make box & add subreddit radio buttons
-        var $popup = $('\
-        <div class="dtagger-popup">\
-            <div class="dtagger-popup-header">\
-            <div class="dtagger-popup-title">Domain Tagger - /r/' + $subreddit + '</div>\
-                <span class="buttons"><a class="close" href="javascript:;">✕</a></span>\
-            </div>\
-            <div class="dtagger-popup-content">\
-                <p>\
-                    <input type="text" class="domain-name" value="' + $domain + '" subreddit="' + $subreddit + '"/>\
-                    <select class="domain-color">\
-                        <option value="none">none</option>\
-                    </select>\
-                </p>\
-                <p>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</p>\
-            </div>\
-            <div class="dtagger-popup-footer">\
-               <button class="save-domain tb-action-button" title="NOTE: this will tag the domain as shown.\nDon\'t save i.imgur.com if you mean to tag imgur.com">save</button>\
-            </div>\
-        <div>')
-            .appendTo('body')
+        var popupContent = '\
+            <p>\
+                <input type="text" class="domain-name" value="' + domain + '" subreddit="' + subreddit + '"/>\
+                <select class="domain-color">\
+                    <option value="none">none</option>\
+                </select>\
+            </p>\
+            <p>This will tag the domain as shown. IE: i.imgur.com is not imgur.com</p>';
+
+        var popupSave = '<button class="save-domain tb-action-button">save</button>';
+
+        var $popup = TBui.popup("Domain Tagger - /r/" + subreddit, [{
+            id: "dtagger_popup_" + subreddit,
+            title: "",
+            tooltip: "",
+            help_text: "",
+            help_url: "",
+            content: popupContent,
+            footer: popupSave
+        }], null, "dtagger-popup");
+
+        $popup.appendTo('body')
             .css({
                 left: e.pageX - 50,
                 top: e.pageY - 10,
@@ -242,6 +245,21 @@ self.init = function() {
     $body.on('click', '.dtagger-popup .close', function () {
         $(this).parents('.dtagger-popup').remove();
     });
+
+    // Utilities
+
+    function getThingDomain($thing) {
+        self.log("Getting thing domain");
+        var domain = $thing.find('span.domain a').attr('href').toLocaleLowerCase();
+        self.log("  Raw = " + domain);
+        var match = /\/domain\/(.+)\//.exec(domain);
+        if (!match) {
+            match = /(\/r\/.+)\//.exec(domain);
+        }
+        domain = match[1];
+        self.log("  Result = " + domain);
+        return domain;
+    }
 };
 
 TB.register_module(self);

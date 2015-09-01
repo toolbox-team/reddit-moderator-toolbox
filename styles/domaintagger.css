@@ -1,0 +1,102 @@
+.add-domain-tag {
+    margin-left: 2px;
+}
+
+.add-domain-tag:hover {
+    cursor: pointer;
+}
+
+/* Popup */
+
+.tb-popup.dtagger-popup {
+    max-width: 900px;
+    padding: 0 !important;
+    background-color: #FFF;
+    border: solid 1px #A2BAD3;
+    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
+    position: absolute;
+    z-index: 10000;
+}
+
+.tb-popup-header {
+    right: 0;
+    left: 0;
+    text-align: left;
+    position: relative;
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    background-color: #CEE3F8;
+    font-weight: bold;
+    padding: 0 21px 0 0 !important;
+    font-size: small;
+    border-bottom: solid 1px #B6C9DD;
+}
+
+.tb-popup-header .tb-popup-title {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+    padding: 0 4px 0 4px;
+}
+
+.mod-toolbox .dtagger-popup .tb-popup-header .buttons {
+    display: inline-block;
+    position: absolute;
+    right: 0 !important;
+    top: 0 !important;
+    background-color: #C7D6E6;
+    line-height: 20px;
+    border-left: 1px solid #B6C9DD;
+}
+
+.mod-toolbox .dtagger-popup .tb-popup-header .buttons:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox .dtagger-popup .tb-popup-header .buttons a.close {
+    padding: 0 5px 0 5px;
+}
+
+.tb-popup-content {
+    overflow: auto;
+    left: 0;
+    right: 0;
+    padding: 5px !important;
+}
+
+.dtagger-popup-footer {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    border-top: solid 1px #B6C9DD;
+}
+
+.dtagger-popup .right {
+    float: right;
+}
+
+.dtagger-popup .left {
+    float: left;
+}
+
+.dtagger-popup .status {
+    display: none;
+}
+
+.dtagger-popup tbody tr {
+    width: 225px;
+    vertical-align: top;
+    border-bottom: 1px solid gray;
+    display: block;
+    padding: 5px;
+}
+
+.dtagger-popup th {
+    padding-right: 10px !important;
+}

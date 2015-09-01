@@ -1563,7 +1563,6 @@ function initwrapper() {
         });
     };
 
-
     TBUtils.importSettings = function (subreddit, callback) {
         TBUtils.readFromWiki(subreddit, 'tbsettings', true, function (resp) {
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
@@ -1667,6 +1666,8 @@ function initwrapper() {
     };
 
 
+    // Cache manipulation
+
     TBUtils.clearCache = function () {
         $.log('TBUtils.clearCache()', false, SHORTNAME);
 
@@ -1679,7 +1680,6 @@ function initwrapper() {
 
         TBStorage.clearCache();
     };
-
 
     TBUtils.getReasonsFromCSS = function (sub, callback) {
 
@@ -1737,6 +1737,41 @@ function initwrapper() {
         }).error(function () {
             callback(false);
         });
+    };
+
+    TBUtils.hasNoConfig = function (sub) {
+        return TBUtils.noConfig.indexOf(sub) != -1;
+    };
+
+    TBUtils.hasConfig = function (sub) {
+        return TBUtils.configCache[sub] !== undefined;
+    };
+
+    TBUtils.getConfig = function(sub, callback) {
+        if (TBUtils.hasNoConfig(sub)) {
+            callback(false, sub);
+        }
+        else if (TBUtils.hasConfig(sub)) {
+            callback(TBUtils.configCache[sub], sub);
+        }
+        else {
+            TBUtils.readFromWiki(sub, 'toolbox', true, function (resp) {
+                // Complete and utter failure
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
+                    callback(false, sub);
+                }
+                // Subreddit not configured yet
+                else if (resp === TBUtils.NO_WIKI_PAGE) {
+                    TBUtils.noConfig.push(currsub);
+                    callback(false, sub);
+                }
+                // It works!
+                else {
+                    TBUtils.configCache[sub] = resp;
+                    callback(resp, sub);
+                }
+            });
+        }
     };
 
     // private functions

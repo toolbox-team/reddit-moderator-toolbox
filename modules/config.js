@@ -19,7 +19,7 @@ self.init = function() {
 
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
-    function showSettings(subredditConfig, configData) {
+    function showConfig(subredditConfig, configData) {
 
 
         $overlay = TB.ui.overlay(
@@ -179,7 +179,7 @@ self.init = function() {
                 }
             ],
             '', // meta
-            'tb-settings' // class
+            'tb-config' // class
         ).appendTo('body');
         $body.css('overflow', 'hidden');
     }
@@ -232,7 +232,7 @@ self.init = function() {
     // Oh dear! One of the buttons we created is clicked! What do we do!!?!
     // If it is on a subreddit we already know the sub and can just activate the whole bunch.
     $body.on('click', '.toolbox-edit', function () {
-        showSettings(subreddit, config);
+        showConfig(subreddit, config);
     });
 
     // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
@@ -245,11 +245,11 @@ self.init = function() {
                 self.log('Failed: wiki config');
 
                 config = TBUtils.config;
-                showSettings(subreddit, config);
+                showConfig(subreddit, config);
             } else {
                 config = resp;
 
-                showSettings(subreddit, config);
+                showConfig(subreddit, config);
             }
         });
 
@@ -257,8 +257,8 @@ self.init = function() {
 
     // First before we do all the cool stuff, let's assume that people at one point also want to close the damn thing.
 
-    $body.on('click', '.tb-settings .close', function () {
-        $('.tb-settings').remove();
+    $body.on('click', '.tb-config .close', function () {
+        $('.tb-config').remove();
         $body.css('overflow', 'auto');
     });
 

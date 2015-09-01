@@ -8,7 +8,7 @@ self.settings['enabled']['default'] = false;
 
 self.register_setting('displayType', {
     'type': 'selector',
-    'values': ['Post border', 'Post title', 'Domain background', 'Domain border'],
+    'values': ['Post border', 'Post title', 'Domain background', 'Domain border', 'Little circle'],
     'default': 'post_border',
     'title': 'Tag location'
 });
@@ -122,6 +122,17 @@ self.init = function() {
                             $entry.find('a.title').css({
                                 'color': d.color
                             });
+                            break;
+                        case "little_circle":
+                            var $span = $('<span>').css({
+                                'box-sizing': 'border-box',
+                                'border-radius': '100%',
+                                'width': '10px',
+                                'height': '10px',
+                                'display': 'block',
+                                'background-color': d.color
+                            });
+                            $domain.after($span);
                             break;
                         case "post_border":
                         default:

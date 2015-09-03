@@ -447,9 +447,8 @@ text-align: left;
 
 .mod-toolbox .tb-personal-settings .tb-window-tabs {
     display: inline-block;
-    width: 130px;
+    width: 135px;
     height: 100%;
-    margin-right: -4px;
     border-bottom: 0;
 }
 
@@ -461,7 +460,8 @@ text-align: left;
 }
 
 .mod-toolbox .tb-personal-settings .tb-window-tabs a {
-    width: 109px;
+    box-sizing: border-box !important;
+    width: 100%;
     border-bottom: 1px dotted #FFF;
 }
 
@@ -490,11 +490,10 @@ text-align: left;
     font-size: 12px !important;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-content {
+.mod-toolbox .tb-personal-settings .tb-window-tabs-wrapper {
     display: inline-block;
     vertical-align: top;
-    width: 700px;
-    background-color: #fff;
+    width: 705px;
 }
 
 .mod-toolbox .tb-window-content input {
@@ -527,15 +526,6 @@ text-align: left;
     border-top: solid 1px #B6C9DD;
 }
 
-.tb-window-header-options {
-    display: inline-block;
-    position: absolute;
-    background-color: #C7D6E6;
-    line-height: 24px;
-    border-left: 1px solid #B6C9DD;
-    right: 0;
-    top: 0;
-}
 
 .mod-toolbox .tb-close {
     cursor: pointer;
@@ -550,8 +540,8 @@ text-align: left;
 }
 
 .mod-toolbox .tb-window-content p {
-    padding-top: 10px !important;
-    padding-bottom: 2px !important;
+    padding-top: 6px !important;
+    padding-bottom: 5px;
     border-bottom: 1px dotted #E0E0E0;
 }
 
@@ -1991,27 +1981,22 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 .mod-toolbox .tb-window-header .buttons {
     display: inline-block;
     position: absolute;
-    background-color: #C7D6E6;
-    line-height: 24px;
-    border-left: 1px solid #B6C9DD;
     right: 0;
     top: 0;
 }
-
-.mod-toolbox .tb-page-overlay a.tb-close,
-.mod-toolbox .tb-page-overlay a.tb-help-main {
-    padding: 4px 6px;
-
+.mod-toolbox .tb-window-header .buttons a {
+    display: inline-block;
+    background-color: #C7D6E6;
+    border-left: 1px solid #B6C9DD;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    text-align: center;
 }
 
 .mod-toolbox .tb-page-overlay a.close:hover,
-.mod-toolbox .tb-page-overlay a.tb-close:hover,
 .mod-toolbox .tb-page-overlay a.tb-help-main:hover {
     background-color: #9FBAD6;
-}
-
-.mod-toolbox .tb-page-overlay .buttons a.close {
-    padding: 4px 6px;
 }
 
 .mod-toolbox #tb-removal-reasons-list,

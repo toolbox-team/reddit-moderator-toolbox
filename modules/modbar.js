@@ -186,7 +186,7 @@ self.init = function() {
 
         var $console = $('\
 <div class="tb-debug-window">\
-    <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="tb-debug-header-options"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
+    <div class="tb-debug-header"><div id="tb-debug-header-handle"> Debug Console </div><span class="buttons"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
     <div class="tb-debug-content">\
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
         <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />\
@@ -482,11 +482,11 @@ self.init = function() {
 <div class="tb-page-overlay tb-settings tb-personal-settings">\
     <div class="tb-window-wrapper">\
         <div class="tb-window-header">\
-            toolbox Settings\
-            <span class="tb-window-header-options"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a><a class="tb-close" title="Close Settings" href="javascript:;">✕</a></span>\
+            <div class="tb-window-header-title">toolbox Settings</div>\
+            <div class="buttons"><a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a><a class="tb-close" title="Close Settings" href="javascript:;">✕</a></div>\
         </div>\
         <div class="tb-window-tabs"></div>\
-        <div class="tb-window-content"></div>\
+        <div class="tb-window-tabs-wrapper"></div>\
         <div class="tb-window-footer"><input class="tb-save tb-action-button" type="button" value="save">' + (devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '') + '</div>\
     </div>\
 </div>\
@@ -496,7 +496,7 @@ self.init = function() {
 
         // Settings for the tool bar.
         var $toolboxSettings = $('\
-<div class="tb-window-content-toolbox">\
+<div class="tb-window-tab toolbox"><div class="tb-window-content">\
     <p id="tb-toolbox-settingssub">\
         Backup/restore toolbox settings to a wiki page:<br>\
         <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
@@ -527,33 +527,33 @@ self.init = function() {
         <input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />\
     </p>\
     <div class="tb-help-main-content">Edit toolbox general settings</div>\
-</div>\
+</div></div>\
 ');
 
         // add them to the dialog
-        $toolboxSettings.appendTo('.tb-window-content');
+        $toolboxSettings.appendTo('.tb-window-tabs-wrapper');
         $('<a href="javascript:;" class="tb-window-content-toolbox" data-module="toolbox">General Settings</a>').addClass('active').appendTo('.tb-window-tabs');
         $('.tb-help-main').attr('currentpage', 'toolbox');
 
         // Settings to toggle the modules
         var htmlmodules = '\
-<div class="tb-window-content-modules">\
+<div class="tb-window-tab modules"><div class="tb-window-content">\
     <div class="tb-help-main-content">Here you can enable/disable toolbox modules.</div>\
-</div>\
+</div></div>\
 ';
-        $(htmlmodules).appendTo('.tb-window-content').hide();
+        $(htmlmodules).appendTo('.tb-window-tabs-wrapper').hide();
         $('<a href="javascript:;" class="tb-window-content-modules" data-module="modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
 
         // Edit shortcuts
         var htmlshorcuts = '\
-<div class="tb-window-content-shortcuts">\
+<div class="tb-window-tab shortcuts"><div class="tb-window-content">\
     <table class="tb-window-content-shortcuts-table"><tr><td>name</td><td> url </td><td class="tb-window-content-shortcuts-td-remove"> remove</td></tr></table>\
     <a class="tb-add-shortcuts" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a>\
     <div class="tb-help-main-content">Add or remove shortcuts here!</div>\
-</div>\
+</div></div>\
 ';
-        $(htmlshorcuts).appendTo('.tb-window-content').hide();
+        $(htmlshorcuts).appendTo('.tb-window-tabs-wrapper').hide();
 
         if ($.isEmptyObject(shortcuts)) {
             $('\
@@ -593,7 +593,7 @@ self.init = function() {
 
         // About page
         var htmlabout = '\
-<div class="tb-window-content-about">\
+<div class="tb-window-tab about"><div class="tb-window-content">\
     <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
     <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
     <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
@@ -623,10 +623,10 @@ self.init = function() {
         <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
     </p>\
     <div class="tb-help-main-content">This is a about page!</div>\
-</div>\
+</div></div>\
 ';
 
-        $(htmlabout).appendTo('.tb-window-content').hide();
+        $(htmlabout).appendTo('.tb-window-tabs-wrapper').hide();
         $('<a href="javascript:;" class="tb-window-content-about" data-module="about">About</a>').appendTo('.tb-window-tabs');
     }
 
@@ -683,8 +683,8 @@ self.init = function() {
         if ($this.data('module')) {
             $tb_help_mains.data('module', $this.data('module'));
         }
-        $('.tb-window-content').children().hide();
-        $('div.tb-window-content-' + module).show();
+        $('.tb-window-wrapper .tb-window-tab').hide();
+        $('.tb-window-wrapper .tb-window-tab.' + module).show();
     }
 
     function checkHash() {

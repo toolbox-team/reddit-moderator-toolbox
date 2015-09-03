@@ -101,7 +101,7 @@ TB = {
                 var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
                     moduleIsEnabled = false,
                     $tab = $('<a href="javascript:;" class="tb-window-content-' + module.shortname.toLowerCase() + '" data-module="' + module.shortname.toLowerCase() + '">' + module.name + '</a>'),
-                    $settings = $('<div class="tb-window-content-' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-help-main-content"></div></div>');
+                    $settings = $('<div class="tb-window-tab ' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-window-content"></div></div>');
 
                 $tab.data('module', module.shortname);
 
@@ -125,7 +125,7 @@ TB = {
                         var $setting = $('<p></p>');
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
-                        $('.tb-window-content .tb-window-content-modules').append($setting);
+                        $('.tb-personal-settings .tb-window-tab.modules .tb-window-content').append($setting);
                         // don't need this on the module's tab, too
                         continue;
                     }
@@ -343,7 +343,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         });
                     }
 
-                    $settings.append($setting);
+                    $settings.find('.tb-window-content').append($setting);
                 }
 
                 // if ($settings.find('input').length > 0) {
@@ -355,7 +355,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>')
                     }
                     $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
-                    $('.tb-settings .tb-window-content').append($settings);
+                    $('.tb-settings .tb-window-tabs-wrapper').append($settings);
 
                     // stuff to exec after inject:
                     for (var i = 0; i < execAfterInject.length; i++) {
@@ -373,11 +373,11 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                 // We get one additional click handler for each module that gets injected.
                 $body.bindFirst('click', '.tb-save', function (event) {
                     // handle module enable/disable on Toggle Modules first
-                    var $moduleEnabled = $('.tb-window-content .tb-window-content-modules #' + module.shortname + 'Enabled').prop('checked');
+                    var $moduleEnabled = $('.tb-settings .tb-window-tabs-wrapper .tb-window-tab.modules #' + module.shortname + 'Enabled').prop('checked');
                     module.setting('enabled', $moduleEnabled);
 
                     // handle the regular settings tab
-                    var $settings_page = $('.tb-window-content-' + module.shortname.toLowerCase());
+                    var $settings_page = $('.tb-window-tab.' + module.shortname.toLowerCase() + ' .tb-window-content');
 
                     $settings_page.find('span.setting-item').each(function () {
                         var $this = $(this),

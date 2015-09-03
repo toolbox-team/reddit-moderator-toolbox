@@ -163,7 +163,7 @@ TB = {
                         var $setting = $('<p></p>');
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
-                        $('.tb-personal-settings .tb-window-tab.modules .tb-window-content').append($setting);
+                        $('.tb-personal-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
                         // don't need this on the module's tab, too
                         continue;
                     }

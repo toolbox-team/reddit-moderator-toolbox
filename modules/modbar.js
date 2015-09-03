@@ -538,12 +538,12 @@ self.init = function() {
 
         // Settings to toggle the modules
         var htmlmodules = '\
-<div class="tb-window-tab modules"><div class="tb-window-content">\
+<div class="tb-window-tab toggle_modules"><div class="tb-window-content">\
     <div class="tb-help-main-content">Here you can enable/disable toolbox modules.</div>\
 </div></div>\
 ';
         $(htmlmodules).appendTo('.tb-window-tabs-wrapper').hide();
-        $('<a href="javascript:;" class="tb-window-content-modules" data-module="modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
+        $('<a href="javascript:;" class="tb-window-content-modules" data-module="toggle_modules">Toggle Modules</a>').appendTo('.tb-window-tabs');
 
 
         // Edit shortcuts

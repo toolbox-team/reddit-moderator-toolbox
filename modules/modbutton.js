@@ -206,8 +206,8 @@ self.init = function () {
                 <select class="mod-action">\
                     <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
                     <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                    <option class="mod-action-positive" data-action="contributor" data-api="friend">approve</option> \
-                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >unapprove</option> \
+                    <option class="mod-action-positive" data-action="contributor" data-api="friend">contributor</option> \
+                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >uncontributor</option> \
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                 </select>\

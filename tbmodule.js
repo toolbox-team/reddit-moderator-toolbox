@@ -61,6 +61,44 @@ TB = {
         }
     },
 
+    showSettings: function showSettings() {
+        var self = this;
+
+        var $settingsDialog = TB.ui.overlay(
+            // title
+            'toolbox Settings',
+            // tabs
+            [],
+            // extra header buttons TODO: make this generic
+            '<a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a>',
+            // overlay main class
+            'tb-personal-settings',
+            // optional, overriding single footer
+            '<input class="tb-save tb-action-button" type="button" value="save">' + (TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '')
+        );
+
+        $settingsDialog.on('click', '.buttons .close', function (e) {
+            // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
+            // We also encapsulate the handler to the injected content, so we don't have to worry about selector overlap between multiple open dialogs.
+
+            // "event.delegateTarget" always refers to the element that .on() is bound to, e.g. $settingsDialog
+            // "this" always refers to the element matched by the selector, e.g. '.buttons .close'
+            // "element.target" always refers to the clicked element, e.g. also '.buttons .close'
+
+            // NOTE: "this" is not always the same element as "event.target", e.g. when the clicked element is a descendant of the selector
+            // So, we had '.buttons' for our selector, and clicked on '.close' (a descendant of '.buttons'), then:
+            //  - "this" would be '.buttons' and
+            //  - "element.target" would be '.buttons .close'
+            var settingsDialog = e.delegateTarget;
+
+            $(settingsDialog).hide();
+            $('body').css('overflow', 'auto');
+        });
+
+        $settingsDialog.appendTo('body').show();
+        $('body').css('overflow', 'hidden');
+    },
+
     injectSettings: function injectSettings() {
         for (var i = 0; i < this.moduleList.length; i++) {
             var idx = i,

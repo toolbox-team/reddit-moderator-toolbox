@@ -451,6 +451,7 @@ self.modmailpro = function() {
 
             $thread.attr('style', 'border-left: solid 3px ' + colorForSub + ' !important');
             $thread.addClass('tb-subreddit-color');
+            $thread.find('.marker-dot').css('background-color', colorForSub);
 
             self.endProfile("thread-sr-color");
         }

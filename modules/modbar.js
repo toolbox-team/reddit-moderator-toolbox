@@ -479,7 +479,7 @@ self.init = function() {
 
 
         // The window in which all settings will be showed.
-        var html = '\
+        var $html = $('\
 <div class="tb-page-overlay tb-settings tb-personal-settings">\
     <div class="tb-window-wrapper">\
         <div class="tb-window-header">\
@@ -491,8 +491,8 @@ self.init = function() {
         <div class="tb-window-footer"><input class="tb-save tb-action-button" type="button" value="save">' + (devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '') + '</div>\
     </div>\
 </div>\
-';
-        $(html).appendTo('body').show();
+');
+        $html.appendTo('body').show();
         $body.css('overflow', 'hidden');
 
         // Settings for the tool bar.
@@ -761,7 +761,7 @@ self.init = function() {
     });
 
     // Save the settings
-    $body.on('click', '.tb-save, .tb-save-reload', function (e) {
+    $body.on('click', '.tb-settings .tb-save, .tb-settings .tb-save-reload', function (e) {
         var reload = (e.target.className === 'tb-save-reload');
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));

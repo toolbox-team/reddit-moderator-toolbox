@@ -178,8 +178,9 @@ self.init = function() {
                     footer: '<input class="import tb-action-button" type="button" value="import" />'
                 }
             ],
-            '', // meta
-            'tb-config' // class
+            [], // extra header buttons
+            'tb-config', // class
+            false // single overriding footer
         ).appendTo('body');
         $body.css('overflow', 'hidden');
     }

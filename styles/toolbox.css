@@ -516,7 +516,7 @@ text-align: left;
 }
 
 
-
+/* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
 .tb-window-footer {
     width: 100%;
     height: 30px;

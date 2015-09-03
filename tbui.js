@@ -273,25 +273,31 @@
 
 
     // Window Overlay HTML generator
-    TBui.overlay = function overlay(title, tabs, meta, css_class) {
-        meta = (typeof meta !== "undefined") ? meta : null;
+    TBui.overlay = function overlay(title, tabs, buttons, css_class, single_footer) {
+        buttons = (typeof buttons !== "undefined") ? buttons : '';
         css_class = (typeof css_class !== "undefined") ? css_class : '';
+        single_footer = (typeof single_footer !== "undefined") ? single_footer : false;
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         var $overlay = $('\
 <div class="tb-page-overlay ' + (css_class ? ' ' + css_class : '') + '">\
-<div class="tb-window-wrapper ' + (css_class ? ' ' + css_class : '') + '">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
+<div class="tb-window-wrapper ' + (css_class ? ' ' + css_class : '') + '">\
     <div class="tb-window-header">\
         <div class="tb-window-title">' + title + '</div>\
-        <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
+        <div class="buttons">' + buttons + '<a class="close" href="javascript:;">✕</a></div>\
     </div>\
 </div>');
 
+        // we need a way to handle closing the overlay with a default, but also with use-specific cleanup code to run
+        // NOTE: Click handler binds should be attached to the parent element of the relevant object, not $(body).
+        // $overlay.on('click', '.buttons .close', function () {});
+
         if (tabs.length == 1) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tab"><div class="tb-window-content">' + tabs[0].content + '</div></div>'));
-            $overlay.find('.tb-window-wrapper .tb-window-tab').append($('<div class="tb-window-footer">' + tabs[0].footer + '</div>'));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content">' + tabs[0].content + '</div>'));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer">' + (single_footer ? single_footer : tabs[0].footer) + '</div>'));
         } else if (tabs.length > 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
 
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
@@ -304,6 +310,7 @@
                 }
 
                 var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+                // click handler for tabs
                 $button.click({tab: tab}, function (e) {
                     var tab = e.data.tab;
 
@@ -318,27 +325,31 @@
                     e.preventDefault();
                 });
 
-                // default first tab is active tab
-                if (i == 0) {
-                    $button.addClass('active');
-                }
-
                 $button.appendTo($overlay.find('.tb-window-tabs'));
 
-
                 var $tab = $('<div class="tb-window-tab ' + tab.id + '"></div>');
+                // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
                 $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
-                $tab.append($('<div class="tb-window-footer">' + tab.footer + '</div>'));
+                // individual tab footers (as used in .tb-config)
+                if (!single_footer) {
+                    $tab.append($('<div class="tb-window-footer">' + tab.footer + '</div>'));
+                }
 
-                // default first tab is visible; hide others
+                // default first tab is active = visible; hide others
                 if (i == 0) {
+                    $button.addClass('active');
                     $tab.show();
                 } else {
                     $tab.hide();
                 }
 
-                $tab.appendTo($overlay.find('.tb-window-wrapper'));
+                $tab.appendTo($overlay.find('.tb-window-wrapper .tb-window-tabs-wrapper'));
             }
+        }
+
+        // single footer for all tabs (as used in .tb-settings)
+        if (single_footer) {
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer">' + single_footer + '</div>'));
         }
 
         return $overlay;

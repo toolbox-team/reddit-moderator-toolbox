@@ -1763,7 +1763,7 @@ function initwrapper() {
                 }
                 // Subreddit not configured yet
                 else if (resp === TBUtils.NO_WIKI_PAGE) {
-                    TBUtils.noConfig.push(currsub);
+                    TBUtils.noConfig.push(sub);
                     callback(false, sub);
                 }
                 // It works!

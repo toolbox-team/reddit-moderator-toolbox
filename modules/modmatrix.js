@@ -225,7 +225,6 @@ self.renderMatrix = function () {
     // Unless we're on /r/mod or a /m/ulti, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
     if (this.subredditName != "mod" && !this.isMulti) {
         var subredditNames = this.subredditName.split("+");
-        var self = this;
 
         for (var i = 0; i < subredditNames.length; i++) {
             $.getJSON("/r/" + subredditNames[i] + "/about/moderators.json", function (moderatorData) {
@@ -420,7 +419,7 @@ self.getActions = function (callback) {
 
     if (this.after != null) requestData.after = this.after;
 
-    TBUtils.log.push("Retreiving " + requestData.count + " to " + (requestData.count + requestData.limit));
+    self.log("Retreiving " + requestData.count + " to " + (requestData.count + requestData.limit));
     $("#mod-matrix-statistics").text("loading entries " + requestData.count + " to " + (requestData.count + requestData.limit) + "...");
     $("#mod-matrix-settings input[type=submit]").attr("disabled", "disabled");
 
@@ -431,15 +430,15 @@ self.getActions = function (callback) {
         self.processData(this.dataCache[cacheKey], callback);
     } else {
         $.getJSON(url, requestData, function (response) {
-            TBUtils.log.push("Got " + requestData.count + " to " + (requestData.count + requestData.limit));
+            self.log("Got " + requestData.count + " to " + (requestData.count + requestData.limit));
             var data = response.data;
             self.processData(data, callback);
             self.dataCache[cacheKey] = data;
         })
             .fail(function (jqxhr, textStatus, error) {
-                TBUtils.log.push("Mod log request " + requestData.count + "to " + (requestData.count + requestData.limit) + " failed (" + jqxhr.status + "), " + textStatus + ": " + error);
+                self.log("Mod log request " + requestData.count + "to " + (requestData.count + requestData.limit) + " failed (" + jqxhr.status + "), " + textStatus + ": " + error);
                 if (jqxhr.status == 504) {
-                    TBUtils.log.push("Retrying mod log request...");
+                    self.log("Retrying mod log request...");
                     self.getActions(callback);
                 }
                 else {
@@ -846,6 +845,7 @@ self.init = function () {
     });
 };
 
+self.log("Registering module");
 TB.register_module(self);
 }
 

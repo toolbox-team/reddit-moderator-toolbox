@@ -4,12 +4,12 @@ var self = new TB.Module('Domain Tagger');
 self.shortname = 'DTagger';
 
 ////Default settings
-self.settings['enabled']['default'] = false;
+self.settings['enabled']['default'] = true;
 
 self.register_setting('displayType', {
     'type': 'selector',
-    'values': ['Post border', 'Post title', 'Domain background', 'Domain border', 'Little dot'],
-    'default': 'post_border',
+    'values': ['Title dot', 'Post border', 'Post title', 'Domain background', 'Domain border'],
+    'default': 'title_dot',
     'title': 'Tag location'
 });
 
@@ -123,7 +123,7 @@ self.init = function() {
                                 'color': d.color
                             });
                             break;
-                        case "little_dot":
+                        case "title_dot":
                             var $span = $('<span class="tb-dt-little-dot">&#9679;</span>').css({
                                 'color': d.color
                             });

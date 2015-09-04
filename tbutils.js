@@ -219,6 +219,10 @@ function initwrapper() {
         // This should have been removed long ago.
         localStorage.removeItem('Toolbox.Utils.lastversion');
 
+        // Re-enable domain tagger by default and set tag to title dot.
+        TBStorage.setSetting('DTagger', 'enabled', true);
+        TBStorage.setSetting('DTagger', 'displayType', 'title_dot');
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

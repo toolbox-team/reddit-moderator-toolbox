@@ -762,7 +762,7 @@ self.init = function() {
 
     // Save the settings
     $body.on('click', '.tb-old-settings .tb-save, .tb-old-settings .tb-save-reload', function (e) {
-        var reload = (e.target.className === 'tb-save-reload');
+        var reload = $(e.target).hasClass('tb-save-reload');
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
         TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));

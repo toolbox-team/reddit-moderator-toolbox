@@ -47,10 +47,12 @@ self.init = function() {
         self.log("Processing things");
         TBUtils.forEachChunked($things, 25, 500, function(thing) {
             var sub = processThing($(thing));
-            if (subs[sub] === undefined) {
-                subs[sub] = [];
+            if (sub !== undefined) {
+                if (subs[sub] === undefined) {
+                    subs[sub] = [];
+                }
+                subs[sub].push(thing);
             }
-            subs[sub].push(thing);
         }, function () {
             self.log("Processing subreddits");
             self.log(Object.keys(subs));
@@ -63,7 +65,6 @@ self.init = function() {
     }
 
     function processThing($thing) {
-        self.log("  Processing thing");
         if ($thing.hasClass('dt-processed')) {
             return;
         }
@@ -73,7 +74,6 @@ self.init = function() {
         if (!subreddit) {
             return;
         }
-        self.log("  In /r/" + subreddit);
         $thing.attr('subreddit', subreddit);
 
         var tag = '<a class="add-domain-tag tb-bracket-button" "href="javascript:;">T</a>';

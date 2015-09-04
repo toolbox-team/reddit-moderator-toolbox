@@ -123,17 +123,17 @@ self.init = function() {
                                 'color': d.color
                             });
                             break;
+                        case "post_border":
+                            $entry.css({
+                                'border': '3px solid' + d.color
+                            });
+                            break;
                         case "title_dot":
+                        default:
                             var $span = $('<span class="tb-dt-little-dot">&#9679;</span>').css({
                                 'color': d.color
                             });
                             $domain.before($span);
-                            break;
-                        case "post_border":
-                        default:
-                            $entry.css({
-                                'border': '3px solid' + d.color
-                            });
                             break;
                     }
                 }

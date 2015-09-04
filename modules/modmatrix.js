@@ -362,7 +362,7 @@ self.submitForm = function (form) {
 
     self.maxDate = toUTC.getTime();
     self.minDate = fromUTC.getTime();
-
+    TB.ui.longLoadSpinner(true);
     this.getRecursiveActions(null, null);
 };
 
@@ -385,6 +385,7 @@ self.getRecursiveActions = function (data, hasMoreData) {
         self.getActions(self.getRecursiveActions);
     } else {
         self.refreshTable();
+        TB.ui.longLoadSpinner(false);
     }
 };
 

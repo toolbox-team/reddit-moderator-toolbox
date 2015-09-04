@@ -405,7 +405,7 @@ text-align: left;
     font-size: small;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-wrapper {
+.mod-toolbox .tb-settings .tb-window-wrapper {
     width: 845px;
 }
 
@@ -445,7 +445,7 @@ text-align: left;
     font-size: 11px !important;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-tabs {
+.mod-toolbox .tb-settings .tb-window-tabs {
     display: inline-block;
     width: 135px;
     height: 100%;
@@ -459,13 +459,13 @@ text-align: left;
     padding: 10px !important;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-tabs a {
+.mod-toolbox .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;
     border-bottom: 1px dotted #FFF;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-tabs a:nth-last-of-type(1) {
+.mod-toolbox .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
     border-bottom: 0;
 }
 
@@ -490,7 +490,7 @@ text-align: left;
     font-size: 12px !important;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-tabs-wrapper {
+.mod-toolbox .tb-settings .tb-window-tabs-wrapper {
     display: inline-block;
     vertical-align: top;
     width: 705px;
@@ -1561,7 +1561,7 @@ border: solid 1px #808080;
     color: #369;
 }
 
-.mod-toolbox.res-nightmode .tb-personal-settings .tb-window-content {
+.mod-toolbox.res-nightmode .tb-settings .tb-window-content {
     background-color: #878787;
 }
 

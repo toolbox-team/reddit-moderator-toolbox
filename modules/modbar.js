@@ -480,7 +480,7 @@ self.init = function() {
 
         // The window in which all settings will be showed.
         var $html = $('\
-<div class="tb-page-overlay tb-settings tb-personal-settings">\
+<div class="tb-page-overlay tb-settings tb-old-settings">\
     <div class="tb-window-wrapper">\
         <div class="tb-window-header">\
             <div class="tb-window-header-title">toolbox Settings</div>\
@@ -761,7 +761,7 @@ self.init = function() {
     });
 
     // Save the settings
-    $body.on('click', '.tb-settings .tb-save, .tb-settings .tb-save-reload', function (e) {
+    $body.on('click', '.tb-old-settings .tb-save, .tb-old-settings .tb-save-reload', function (e) {
         var reload = (e.target.className === 'tb-save-reload');
 
         TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
@@ -800,7 +800,7 @@ self.init = function() {
             TBUtils.clearCache();
         }
 
-        $('.tb-settings').remove();
+        $('.tb-old-settings').remove();
         $body.css('overflow', 'auto');
 
         TB.storage.verifiedSettingsSave(function (succ) {
@@ -874,7 +874,7 @@ self.init = function() {
 
     // Close the Settings menu
     $body.on('click', '.tb-close', function () {
-        $('.tb-settings').remove();
+        $('.tb-old-settings').remove();
         $body.css('overflow', 'auto');
     });
 };

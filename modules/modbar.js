@@ -150,7 +150,7 @@ self.init = function() {
 <div id="tb-bottombar" class="tb-toolbar">\
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
     <a class="tb-toolbar tb-toolbarsettings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGear + '" title="toolbox settings"/></a>\
-    <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGripper + '" title="toolbox new settings"/></a>\
+    <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGear + '" title="toolbox new settings"/></a>\
     <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
     <span>&nbsp;</span>\
     <span id="tb-toolbarshortcuts"></span>\
@@ -585,7 +585,7 @@ self.init = function() {
     </td></td></td>\
 </tr><br><br>\
 ';
-                //console.log(shortcutinput);
+
                 $(shortcutinput).appendTo('.tb-window-content-shortcuts-table');
             });
         }
@@ -661,6 +661,7 @@ self.init = function() {
     $body.on('click', '.tb-toolbarsettings', function () {
         TB.utils.getModSubs(function () {
             showSettings();
+            // just for now, we have them side by side
             TB.injectSettings();
         });
     });
@@ -669,7 +670,6 @@ self.init = function() {
     $body.on('click', '.tb-toolbar-new-settings', function () {
         TB.utils.getModSubs(function () {
             TB.showSettings();
-            TB.injectSettings();
         });
     });
 

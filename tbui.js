@@ -395,10 +395,14 @@
             $selected_list = $select_multiple.find('.selected-list'),
             $available_list = $select_multiple.find('.available-list');
 
-
         $select_multiple.on('click', '.remove-item', function (e) {
+            var $select_multiple = $(e.delegateTarget);
+            $select_multiple.find('.selected-list option:selected').remove();
         });
 
+        $select_multiple.on('click', '.add-item', function (e) {
+            var $select_multiple = $(e.delegateTarget);
+            var $add_item = $select_multiple.find('.available-list option:selected');
 
             // Don't add the sub twice.
             var exists = false;
@@ -423,6 +427,60 @@
         });
 
         return $select_multiple;
+    };
+
+    TBui.mapInput = function (labels, items) {
+        var keyLabel = labels[0],
+            valueLabel = labels[1];
+
+        var $mapInput = $('<div>\
+            <table class="tb-map-input-table">\
+                <thead><tr>\
+                    <td>' + keyLabel + '</td>\
+                    <td>' + valueLabel + '</td>\
+                    <td class="tb-map-input-td-remove">remove</td>\
+                </tr></thead>\
+                <tbody></tbody>\
+            </table>\
+            <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a></div>');
+
+        var emptyRow = '\
+            <tr class="tb-map-input-tr">\
+                <td><input type="text" name="key"></td>\
+                <td><input type="text" name="value"></td>\
+                <td class="tb-map-input-td-remove">\
+                    <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a>\
+                </td>\
+            </tr>';
+
+        // remove item
+        $mapInput.on('click', '.tb-map-input-remove', function () {
+            $(this).closest('.tb-map-input-tr').remove();
+        });
+
+        // add empty item
+        $mapInput.on('click', '.tb-map-input-add', function () {
+            $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
+        });
+
+        // populate items
+        if ($.isEmptyObject(items)) {
+            $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
+        } else {
+            $.each(items, function (key, value) {
+                $item = $('\
+                <tr class="tb-map-input-tr">\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(key)) + '" name="key"></td>\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="value"></td>\
+                    <td class="tb-map-input-td-remove">\
+                        <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a>\
+                    </td>\
+                </tr>');
+                $item.appendTo($mapInput.find('.tb-map-input-table tbody'));
+            });
+        }
+
+        return $mapInput;
     };
 
     TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration, displayLocation) {

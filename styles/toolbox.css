@@ -575,6 +575,20 @@ text-align: left;
     width: 25px;
 }
 
+.mod-toolbox .tb-map-input-table td {
+    width: 50%;
+    padding: 3px;
+}
+
+.mod-toolbox .tb-map-input-table td input {
+    width: 98%;
+}
+
+.mod-toolbox .tb-map-input-td-remove {
+    width: 25px;
+}
+
+
 .mod-toolbox .tb-form td {
     padding: 2px;
 }

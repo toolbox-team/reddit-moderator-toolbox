@@ -31,9 +31,11 @@ self.register_setting('enableModSubs', {
 
 // private settings.    // there is no JSON setting type.
 self.register_setting('shortcuts', {
-    'type': 'JSON',
+    'type': 'map',
     'default': {},
-    'hidden': true
+    'labels': ['name', 'url'],
+    'title': 'Shortcuts',
+    'hidden': false
 });
 self.register_setting('modbarHidden', {
     'type': 'boolean',
@@ -79,7 +81,7 @@ self.init = function() {
     //
     // preload some generic variables
     //
-    var shortcuts = self.setting('shortcuts'),//TB.storage.getSetting('Modbar','shortcuts', {}),// there is no JSON setting type.
+    var shortcuts = self.setting('shortcuts'),
         modbarHidden = self.setting('modbarHidden'),
         compactHide = self.setting('compactHide'),
         unmoderatedOn = self.setting('unmoderatedOn'),

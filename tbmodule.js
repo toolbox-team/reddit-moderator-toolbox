@@ -403,6 +403,10 @@ TB = {
                             $setting.append(title + ':<br />');
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
                             break;
+                        case "map":
+                            $setting.append(title + ':<br />');
+                            $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
+                            break;
                         case "selector":
                             var v = module.setting(setting);
                             $setting.append(title + ':<br />');
@@ -519,7 +523,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         $setting.attr('data-module', module.shortname);
                         $setting.attr('data-setting', setting);
 
-                       // console.log('#' + linkClass);
+                        // TODO: somebody document this
                         $body.on('click', '.' + linkClass, function () {
                             var $this = $(this),
                                 tbSet = $this.attr('data-setting');
@@ -612,6 +616,17 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 value = [];
                                 $.each($this.find('.selected-list option'), function () {
                                     value.push($(this).val());
+                                });
+                                break;
+                            case 'map':
+                                value = {};
+                                $.each($this.find('.tb-map-input-table tbody tr'), function () {
+                                    var key = escape($(this).find('input[name=key]').val()).trim(),
+                                        val = escape($(this).find('input[name=value]').val()).trim();
+
+                                    if (key !== '' || val !== '') {
+                                        value[key] = val;
+                                    }
                                 });
                                 break;
                             case 'selector':

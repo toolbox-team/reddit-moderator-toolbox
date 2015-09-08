@@ -101,6 +101,7 @@ TB = {
             {
                 title: 'General Settings',
                 tooltip: 'Edit toolbox general settings',
+                help_page: 'toolbox',
                 content: '\
                     <p id="tb-toolbox-settingssub">\
                         Backup/restore toolbox settings to a wiki page:<br>\
@@ -135,49 +136,47 @@ TB = {
             {
                 title: 'Toggle Modules',
                 tooltip: 'Enable/disable individual modules',
+                help_page: 'toggle-modules',
                 content: '' // this gets propagated magically
+            },
+            {
+                title: 'About',
+                tooltip: '',
+                help_page: 'about',
+                content: '\
+                    <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
+                    <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
+                    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
+                    <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/garethp">/u/garethp</a><br><br> "\
+                    <i>' + TBUtils.RandomQuote + '</i>"<br><br>\
+                    <h3>Documentation by:</h3>\
+                    <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/gorillagnomes">/u/gorillagnomes</a>, <a href="/user/x_minus_one">/u/x_minus_one</a>, <a href="/user/Gustavobc">/u/Gustavobc</a> and <a href="/user/hermithome">/u/hermithome</a><br><br>\
+                    <h3>Special thanks to:</h3>\
+                    <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
+                    <h3>Credits:</h3>\
+                    <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
+                    <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
+                    <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>\
+                    <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
+                    <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
+                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
+                    <h3>License:</h3>\
+                    <span>Copyright 2013-2015 toolbox development team. </span>\
+                    <p>Licensed under the Apache License, Version 2.0 (the "License");\
+                        <br> you may not use this file except in compliance with the License.\
+                        <br> You may obtain a copy of the License at </p>\
+                    <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
+                    <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\
+                        <br> See the License for the specific language governing permissions and limitations under the License.</p>\
+                    <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
+                        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
+                    </p>'
             }
         ];
 
+        // This was a clever idea, but for now it's easier to inject them
         // settingsTabs.push.apply(settingsTabs, this.generateSettings());
-
-        var debugMode = TBUtils.debugMode,
-            devMode = TBUtils.devMode;
-
-        settingsTabs.push({
-            title: 'About',
-            tooltip: '',
-            content: '\
-                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
-                <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
-                <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
-                <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/garethp">/u/garethp</a><br><br> "\
-                <i>' + TBUtils.RandomQuote + '</i>"<br><br>\
-                <h3>Documentation by:</h3>\
-                <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/gorillagnomes">/u/gorillagnomes</a>, <a href="/user/x_minus_one">/u/x_minus_one</a>, <a href="/user/Gustavobc">/u/Gustavobc</a> and <a href="/user/hermithome">/u/hermithome</a><br><br>\
-                <h3>Special thanks to:</h3>\
-                <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
-                <h3>Credits:</h3>\
-                <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
-                <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
-                <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>\
-                <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
-                <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
-                <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
-                <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
-                <h3>License:</h3>\
-                <span>Copyright 2013-2015 toolbox development team. </span>\
-                <p>Licensed under the Apache License, Version 2.0 (the "License");\
-                    <br> you may not use this file except in compliance with the License.\
-                    <br> You may obtain a copy of the License at </p>\
-                <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
-                <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\
-                    <br> See the License for the specific language governing permissions and limitations under the License.</p>\
-                <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
-                    <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
-                </p>\
-                <div class="tb-help-main-content">This is a about page!</div>'
-        });
 
         var $settingsDialog = TB.ui.overlay(
             // title
@@ -191,6 +190,12 @@ TB = {
             // optional, overriding single footer
             '<input class="tb-save tb-action-button" type="button" value="save">' + (TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '')
         );
+
+        $settingsDialog.on('click', '.tb-help-main', function (e) {
+            var settingsDialog = e.delegateTarget;
+            var page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
+            window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + page, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
 
         $settingsDialog.on('click', '.buttons .close', function (e) {
             // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
@@ -299,6 +304,7 @@ TB = {
                     $settings = $('<div class="tb-window-tab ' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-window-content"></div></div>');
 
                 $tab.data('module', module.shortname);
+                $tab.data('help_page', module.shortname);
 
                 var $body = $('body');
 

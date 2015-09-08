@@ -303,6 +303,7 @@
                 var tab = tabs[i];
 
                 tab.disabled = (typeof tab.disabled === "boolean") ? tab.disabled : false;
+                tab.help_page = (typeof tab.help_page !== "undefined") ? tab.help_page : '';
 
                 if (!TB.utils.advancedMode && tab.advanced) continue;
 
@@ -312,6 +313,8 @@
                 }
 
                 var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+
+                $button.data('help_page', tab.help_page);
 
                 if (tab.disabled) {
                     $button.addClass('tb-module-disabled');

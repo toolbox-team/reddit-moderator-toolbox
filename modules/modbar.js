@@ -856,18 +856,18 @@ self.init = function() {
 
     });
 
-    $body.on('click', '.tb-raw-settings .close', function () {
+    $body.on('click', '.tb-old-settings .tb-raw-settings .close', function () {
         $('.tb-raw-settings').remove(); // should we have some confirmation dialog here?
     });
 
 
-    $body.on('click', '.tb-help-toggle', function () {
+    $body.on('click', '.tb-old-settings .tb-help-toggle', function () {
         var module = $(this).attr('data-module');
         window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
 
     });
 
-    $body.on('click', '.tb-help-main', function () {
+    $body.on('click', '.tb-old-settings .tb-help-main', function () {
         var $this = $(this),
             module = $this.attr('currentpage');
 
@@ -875,7 +875,7 @@ self.init = function() {
     });
 
     // Close the Settings menu
-    $body.on('click', '.tb-close', function () {
+    $body.on('click', '.tb-old-settings .tb-close', function () {
         $('.tb-old-settings').remove();
         $body.css('overflow', 'auto');
     });

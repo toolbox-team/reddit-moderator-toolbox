@@ -278,7 +278,7 @@
         css_class = (typeof css_class !== "undefined") ? css_class : '';
         single_footer = (typeof single_footer !== "undefined") ? single_footer : false;
 
-        // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
+        // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         var $overlay = $('\
 <div class="tb-page-overlay ' + (css_class ? ' ' + css_class : '') + '">\
 <div class="tb-window-wrapper">\

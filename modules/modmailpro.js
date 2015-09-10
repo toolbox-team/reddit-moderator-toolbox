@@ -326,16 +326,17 @@ self.modmailpro = function() {
             if (unreadPage) {
                 var entries = $('.entry'),
                     newCount = entries.length;
-                inbox = ALL;
+
+                setView(ALL);
                 $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
                 $('.unread-count').html('<b>' + newCount + '</b> - new mod mail thread' + (newCount == 1 ? '' : 's'));
                 $(entries).click();
             }
-
-            // Set views.
-            setReplied($unprocessedThreads);
-            setView();
-
+            // Otherwise setup the view
+            else {
+                setReplied($unprocessedThreads);
+                updateView();
+            }
 
             TB.ui.longLoadNonPersistent(false);
 
@@ -494,7 +495,7 @@ self.modmailpro = function() {
             $infoArea.css('background-color', 'yellow');
             $subredditArea.css('background-color', 'yellow');
 
-            setView($thread);
+            updateView();
 
             if (collapsed) {
                 $thread.find('.entry').css('display', 'none');
@@ -684,40 +685,42 @@ self.modmailpro = function() {
         self.log("--------------------------");
     }
 
-    function setView() {
-        var a = []; //hacky-hack for 'all' view.
+    function setView(newView) {
+        self.log("Setting view to " + newView + " from " + inbox);
+        inbox = newView;
+        updateView();
+    }
 
-        // Neither a switch nor === will work correctly.
-        if (inbox == ALL) {
-            $allLink.closest('li').addClass('selected');
-            hideThreads(a); // basically hideThreads(none);
-            return;
-
-        } else if (inbox == PRIORITY) {
-            $priorityLink.closest('li').addClass('selected');
-            hideThreads(filteredSubs);
-
-        } else if (inbox == FILTERED) {
-            $filteredLink.closest('li').addClass('selected');
-            showThreads(filteredSubs);
-
-        } else if (inbox == REPLIED) {
-            $repliedLink.closest('li').addClass('selected');
-            showThreads(getRepliedThreads(), true);
-
-        } else if (inbox == UNREAD) {
-            $unreadLink.closest('li').addClass('selected');
-            showThreads(unreadThreads, true);
-
-        } else if (inbox == UNANSWERED) {
-            $unansweredLink.closest('li').addClass('selected');
-            showThreads(unansweredThreads, true);
-        }
-
-        else if (inbox == BOTS) {
-            $botsLink.closest('li').addClass('selected');
-            self.log(getBotThreads());
-            showThreads(getBotThreads(), true);
+    function updateView() {
+        switch(inbox.toLowerCase()) {
+            case PRIORITY:
+                $priorityLink.closest('li').addClass('selected');
+                hideThreads(filteredSubs);
+                break;
+            case FILTERED:
+                $filteredLink.closest('li').addClass('selected');
+                showThreads(filteredSubs);
+                break;
+            case REPLIED:
+                $repliedLink.closest('li').addClass('selected');
+                showThreads(getRepliedThreads(), true);
+                break;
+            case UNREAD:
+                $unreadLink.closest('li').addClass('selected');
+                showThreads(unreadThreads, true);
+                break;
+            case UNANSWERED:
+                $unansweredLink.closest('li').addClass('selected');
+                showThreads(unansweredThreads, true);
+                break;
+            case BOTS:
+                $botsLink.closest('li').addClass('selected');
+                showThreads(getBotThreads(), true);
+                break;
+            default: // ALL
+                $allLink.closest('li').addClass('selected');
+                showAllThreads();
+                return;
         }
 
         // Hide invite spam.
@@ -799,6 +802,10 @@ self.modmailpro = function() {
         });
     }
 
+    function showAllThreads() {
+        $('.message-parent').css('display', '');
+    }
+
     function hideThreads(subs) {
         $('.message-parent').each(function () {
             var $this = $(this),
@@ -846,10 +853,6 @@ self.modmailpro = function() {
             if (expandReplies) {
                 $this.find('.expand-btn:first')[0].click();
             }
-
-            if (threadOnExpand) {
-                $this.find('.tb-thread-view')[0].click();
-            }
         });
 
         $link.text('collapse all');
@@ -883,9 +886,8 @@ self.modmailpro = function() {
         // Just unselect all, then select the caller.
         $($menuList).find('li').removeClass('selected');
 
-        inbox = $(e.target).data('view');
-
-        setView();
+        var newView = $(e.target).data('view');
+        setView(newView);
     });
 
     $body.on('click', '.collapse-all-link', function () {

@@ -44,15 +44,6 @@ TB = {
                     if (module.setting('enabled')) {
                         $.log('Loading ' + module.name + ' module', false, 'TBinit');
                         module.init();
-                        // unnecessary; we do it in TB.utils.getModSubs now
-                        // if (module.config["needs_mod_subs"]) {
-                        //     $.log("  We require additional mod subs");
-                        //     TB.utils.getModSubs(function init() {
-                        //         module.init();
-                        //     });
-                        // } else {
-                        //     module.init();
-                        // }
                     }
 
                 }
@@ -64,18 +55,138 @@ TB = {
     showSettings: function showSettings() {
         var self = this;
 
+        //
+        // preload some generic variables
+        //
+        var shortcuts = self.modules['Modbar'].setting('shortcuts'),
+
+            debugMode = TBUtils.debugMode,
+            betaMode = TBUtils.betaMode,
+            devMode = TBUtils.devMode,
+            advancedMode = TBUtils.advancedMode,
+
+            settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
+            browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
+            shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
+            longLength = TB.storage.getSetting('Utils', 'longLength', 45),
+
+            // last export stuff
+            lastExport = self.modules['Modbar'].setting('lastExport'),
+            showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
+            lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
+            lastExportLabel = (lastExport === 0) ? 'Never' : lastExportDays + ' days ago',
+            lastExportState = "";
+
+        if (lastExportDays > 30 || lastExport === 0) {
+            lastExportState = "sad";
+
+            if (showExportReminder && settingSub !== '' && lastExport !== 0) {
+                TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
+            }
+        } else if (lastExportDays < 15) {
+            lastExportState = "happy";
+        }
+
+
+        var settingsTabs = [
+            {
+                title: 'General Settings',
+                tooltip: 'Edit toolbox general settings',
+                help_page: 'toolbox',
+                content: '\
+                    <p id="tb-toolbox-settingssub">\
+                        Backup/restore toolbox settings to a wiki page:<br>\
+                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+                        <input class="tb-settings-export tb-action-button" type="button" value="backup">\
+                        <input class="tb-settings-import tb-action-button" type="button" value="restore">\
+                        <b> Important:</b> This will reload the page without saving!\
+                        <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
+                    </p><p id="tb-toolbox-showexportreminder">\
+                        <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show backup reminder every 30 days.</label>\
+                    </p><p id="tb-toolbox-debugmode"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+                        <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
+                    </p><p id="tb-toolbox-browserconsole"' + ((debugMode) ? '' : 'style="display:none;"') + '>\
+                        <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
+                    </p><p id="tb-toolbox-betamode">\
+                        <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
+                    </p><p id="tb-toolbox-advancedmode">\
+                        <label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>\
+                    </p><p id="tb-toolbox-longlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+                        Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                        <input type="text" name="longLength" value="' + longLength + '">\
+                    </p><p id="tb-toolbox-shortlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
+                        Cache subreddit user notes time (in minutes):<br>\
+                        <input type="text" name="shortLength" value="' + shortLength + '">\
+                    </p><p id="tb-toolbox-clearcache">\
+                        <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
+                    </p>\
+                    <p id="tb-toolbox-showsettings"' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
+                        <input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />\
+                    </p>'
+            },
+            {
+                title: 'Toggle Modules',
+                tooltip: 'Enable/disable individual modules',
+                help_page: 'toggle-modules',
+                content: '' // this gets propagated magically
+            },
+            {
+                title: 'About',
+                tooltip: '',
+                help_page: 'about',
+                content: '\
+                    <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
+                    <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
+                    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
+                    <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/garethp">/u/garethp</a><br><br> "\
+                    <i>' + TBUtils.RandomQuote + '</i>"<br><br>\
+                    <h3>Documentation by:</h3>\
+                    <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/gorillagnomes">/u/gorillagnomes</a>, <a href="/user/x_minus_one">/u/x_minus_one</a>, <a href="/user/Gustavobc">/u/Gustavobc</a> and <a href="/user/hermithome">/u/hermithome</a><br><br>\
+                    <h3>Special thanks to:</h3>\
+                    <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
+                    <h3>Credits:</h3>\
+                    <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
+                    <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
+                    <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>\
+                    <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
+                    <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
+                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
+                    <h3>License:</h3>\
+                    <span>Copyright 2013-2015 toolbox development team. </span>\
+                    <p>Licensed under the Apache License, Version 2.0 (the "License");\
+                        <br> you may not use this file except in compliance with the License.\
+                        <br> You may obtain a copy of the License at </p>\
+                    <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
+                    <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\
+                        <br> See the License for the specific language governing permissions and limitations under the License.</p>\
+                    <p ' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
+                        <label><input type="checkbox" id="devMode" ' + ((devMode) ? "checked" : "") + '> DEVMODE: DON\'T EVER ENABLE THIS!</label>\
+                    </p>'
+            }
+        ];
+
+        // This was a clever idea, but for now it's easier to inject them
+        // settingsTabs.push.apply(settingsTabs, this.generateSettings());
+
         var $settingsDialog = TB.ui.overlay(
             // title
             'toolbox Settings',
             // tabs
-            [],
+            settingsTabs,
             // extra header buttons TODO: make this generic
             '<a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a>',
             // overlay main class
-            'tb-personal-settings',
+            'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
             // optional, overriding single footer
             '<input class="tb-save tb-action-button" type="button" value="save">' + (TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : '')
         );
+
+        $settingsDialog.on('click', '.tb-help-main', function (e) {
+            var settingsDialog = e.delegateTarget;
+            var page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
+            window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + page, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
 
         $settingsDialog.on('click', '.buttons .close', function (e) {
             // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
@@ -91,12 +202,54 @@ TB = {
             //  - "element.target" would be '.buttons .close'
             var settingsDialog = e.delegateTarget;
 
-            $(settingsDialog).hide();
+            $(settingsDialog).remove();
             $('body').css('overflow', 'auto');
         });
 
+        $settingsDialog.on('click', '.tb-save, .tb-save-reload', function (e) {
+            var settingsDialog = e.delegateTarget,
+                reload = $(e.target).hasClass('tb-save-reload');
+
+            TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
+            TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
+            TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
+            TB.storage.setSetting('Utils', 'advancedMode', $("#advancedMode").prop('checked'));
+            TB.storage.setSetting('Utils', 'skipLocalConsole', $("#browserConsole").prop('checked'));
+
+            self.modules['Modbar'].setting('showExportReminder', $("#showExportReminder").prop('checked'));
+
+            // save cache settings.
+            TB.storage.setSetting('Utils', 'longLength', $("input[name=longLength]").val());
+            TB.storage.setSetting('Utils', 'shortLength', $("input[name=shortLength]").val());
+
+            if ($("#clearcache").prop('checked')) {
+                TBUtils.clearCache();
+            }
+
+            $(settingsDialog).remove();
+            $('body').css('overflow', 'auto');
+
+            TB.storage.verifiedSettingsSave(function (succ) {
+                if (succ) {
+                    TB.ui.textFeedback("Settings saved and verified", TB.ui.FEEDBACK_POSITIVE);
+                    setTimeout(function () {
+                        // Only reload in dev mode if we asked to.
+                        if (!devMode || reload) {
+                            window.location.reload();
+                        }
+                    }, 1000);
+                } else {
+                    TB.ui.textFeedback("Save could not be verified", TB.ui.FEEDBACK_NEGATIVE);
+                }
+            });
+        });
+
+        // Lock 'n load
         $settingsDialog.appendTo('body').show();
         $('body').css('overflow', 'hidden');
+
+        // and finally...
+        this.injectSettings();
     },
 
     injectSettings: function injectSettings() {
@@ -142,6 +295,7 @@ TB = {
                     $settings = $('<div class="tb-window-tab ' + module.shortname.toLowerCase() + '" style="display: none;"><div class="tb-window-content"></div></div>');
 
                 $tab.data('module', module.shortname);
+                $tab.data('help_page', module.shortname);
 
                 var $body = $('body');
 
@@ -163,7 +317,7 @@ TB = {
                         var $setting = $('<p></p>');
                         $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
 
-                        $('.tb-personal-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
+                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
                         // don't need this on the module's tab, too
                         continue;
                     }
@@ -245,6 +399,10 @@ TB = {
                         case "sublist":
                             $setting.append(title + ':<br />');
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
+                            break;
+                        case "map":
+                            $setting.append(title + ':<br />');
+                            $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
                             break;
                         case "selector":
                             var v = module.setting(setting);
@@ -343,7 +501,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             // yes, we do raw JSON
                             var json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(title + ':<br />');
-                            $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                            $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                             break;
                     }
                     if(!noWrap) {
@@ -362,7 +520,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         $setting.attr('data-module', module.shortname);
                         $setting.attr('data-setting', setting);
 
-                       // console.log('#' + linkClass);
+                        // TODO: somebody document this
                         $body.on('click', '.' + linkClass, function () {
                             var $this = $(this),
                                 tbSet = $this.attr('data-setting');
@@ -403,15 +561,15 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                     // module has no settings, for now don't inject a tab
                 }
 
-
                 // we use a jQuery hack to stick this bind call at the top of the queue,
                 // so that it runs before the bind call in notifier.js
                 // this way we don't have to touch notifier.js to make it work.
                 //
                 // We get one additional click handler for each module that gets injected.
-                $body.bindFirst('click', '.tb-save', function (event) {
+                // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
+                $('.tb-settings').bindFirst('click', '.tb-save', function (event) {
                     // handle module enable/disable on Toggle Modules first
-                    var $moduleEnabled = $('.tb-settings .tb-window-tabs-wrapper .tb-window-tab.modules #' + module.shortname + 'Enabled').prop('checked');
+                    var $moduleEnabled = $('.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #' + module.shortname + 'Enabled').prop('checked');
                     module.setting('enabled', $moduleEnabled);
 
                     // handle the regular settings tab
@@ -456,6 +614,17 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                     value.push($(this).val());
                                 });
                                 break;
+                            case 'map':
+                                value = {};
+                                $.each($this.find('.tb-map-input-table tbody tr'), function () {
+                                    var key = escape($(this).find('input[name=key]').val()).trim(),
+                                        val = escape($(this).find('input[name=value]').val()).trim();
+
+                                    if (key !== '' || val !== '') {
+                                        value[key] = val;
+                                    }
+                                });
+                                break;
                             case 'selector':
                                 value = $this.find('.selector').val();
                                 break;
@@ -482,8 +651,7 @@ TB.Module = function Module(name) {
 
     this.config = {
         "betamode": false,
-        "devmode": false,
-        "needs_mod_subs": false
+        "devmode": false
     };
 
     this.settings = {};

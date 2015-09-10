@@ -330,26 +330,27 @@ self.init = function () {
         function updateModMailCount(count) {
             var $modmail = $('#modmail'),
                 $tb_modmail = $('#tb-modmail');
+
             if (count < 1) {
                 $tb_modmail.attr('class', 'nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
-                // $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator');
+                $tb_modmail.attr('href', '/message/moderator/');
                 if (parseInt(modmailCustomLimit) > 0) {
-                    $tb_modmail.attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
-                } else {
-                    $tb_modmail.attr('href', '/message/moderator');
+                    $tb_modmail.attr('href', $tb_modmail.attr('href') + '?limit=' + modmailCustomLimit);
                 }
-
             } else {
                 $modmail.attr('class', 'havemail');
                 $modmail.attr('title', 'new mail!');
                 $modmail.attr('href', modmailunreadurl);
                 $tb_modmail.attr('class', 'havemail');
                 $tb_modmail.attr('title', 'new mail!');
-                $tb_modmail.attr('href', modmailunreadurl);
+                if (modmailFilteredSubreddits == 'mod') {
+                    $tb_modmail.attr('href', '/message/moderator/');
+                } else {
+                    $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator/');
+                }
             }
             $('#tb-modmailcount').text('[' + count + ']');
-            // $tb_modmail.attr('href', '/message/moderator/');
         }
 
         if (!newLoad && (now - lastchecked) < checkInterval) {

@@ -278,10 +278,10 @@
         css_class = (typeof css_class !== "undefined") ? css_class : '';
         single_footer = (typeof single_footer !== "undefined") ? single_footer : false;
 
-        // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
+        // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         var $overlay = $('\
 <div class="tb-page-overlay ' + (css_class ? ' ' + css_class : '') + '">\
-<div class="tb-window-wrapper ' + (css_class ? ' ' + css_class : '') + '">\
+<div class="tb-window-wrapper">\
     <div class="tb-window-header">\
         <div class="tb-window-title">' + title + '</div>\
         <div class="buttons">' + buttons + '<a class="close" href="javascript:;">✕</a></div>\
@@ -293,14 +293,17 @@
         // $overlay.on('click', '.buttons .close', function () {});
 
         if (tabs.length == 1) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content">' + tabs[0].content + '</div>'));
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer">' + (single_footer ? single_footer : tabs[0].footer) + '</div>'));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append( (single_footer ? single_footer : tabs[0].footer) ));
         } else if (tabs.length > 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
 
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
+
+                tab.disabled = (typeof tab.disabled === "boolean") ? tab.disabled : false;
+                tab.help_page = (typeof tab.help_page !== "undefined") ? tab.help_page : '';
 
                 if (!TB.utils.advancedMode && tab.advanced) continue;
 
@@ -310,6 +313,14 @@
                 }
 
                 var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+
+                $button.data('help_page', tab.help_page);
+
+                if (tab.disabled) {
+                    $button.addClass('tb-module-disabled');
+                    $button.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.');
+                }
+
                 // click handler for tabs
                 $button.click({tab: tab}, function (e) {
                     var tab = e.data.tab;
@@ -329,10 +340,10 @@
 
                 var $tab = $('<div class="tb-window-tab ' + tab.id + '"></div>');
                 // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
-                $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
+                $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
                 if (!single_footer) {
-                    $tab.append($('<div class="tb-window-footer">' + tab.footer + '</div>'));
+                    $tab.append($('<div class="tb-window-footer"></div>').append(tab.footer));
                 }
 
                 // default first tab is active = visible; hide others
@@ -349,7 +360,7 @@
 
         // single footer for all tabs (as used in .tb-settings)
         if (single_footer) {
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer">' + single_footer + '</div>'));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append(single_footer));
         }
 
         return $overlay;
@@ -387,14 +398,14 @@
             $selected_list = $select_multiple.find('.selected-list'),
             $available_list = $select_multiple.find('.available-list');
 
-        $select_multiple.find('.remove-item').click(function () {
-            var remove_item = $selected_list.find('option:selected').val();
-
-            $selected_list.find('option[value="' + remove_item + '"]').remove();
+        $select_multiple.on('click', '.remove-item', function (e) {
+            var $select_multiple = $(e.delegateTarget);
+            $select_multiple.find('.selected-list option:selected').remove();
         });
 
-        $select_multiple.find('.add-item').click(function () {
-            var $add_item = $available_list.find('option:selected');
+        $select_multiple.on('click', '.add-item', function (e) {
+            var $select_multiple = $(e.delegateTarget);
+            var $add_item = $select_multiple.find('.available-list option:selected');
 
             // Don't add the sub twice.
             var exists = false;
@@ -419,6 +430,60 @@
         });
 
         return $select_multiple;
+    };
+
+    TBui.mapInput = function (labels, items) {
+        var keyLabel = labels[0],
+            valueLabel = labels[1];
+
+        var $mapInput = $('<div>\
+            <table class="tb-map-input-table">\
+                <thead><tr>\
+                    <td>' + keyLabel + '</td>\
+                    <td>' + valueLabel + '</td>\
+                    <td class="tb-map-input-td-remove">remove</td>\
+                </tr></thead>\
+                <tbody></tbody>\
+            </table>\
+            <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconAdd + '" /></a></div>');
+
+        var emptyRow = '\
+            <tr class="tb-map-input-tr">\
+                <td><input type="text" name="key"></td>\
+                <td><input type="text" name="value"></td>\
+                <td class="tb-map-input-td-remove">\
+                    <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a>\
+                </td>\
+            </tr>';
+
+        // remove item
+        $mapInput.on('click', '.tb-map-input-remove', function () {
+            $(this).closest('.tb-map-input-tr').remove();
+        });
+
+        // add empty item
+        $mapInput.on('click', '.tb-map-input-add', function () {
+            $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
+        });
+
+        // populate items
+        if ($.isEmptyObject(items)) {
+            $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
+        } else {
+            $.each(items, function (key, value) {
+                $item = $('\
+                <tr class="tb-map-input-tr">\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(key)) + '" name="key"></td>\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="value"></td>\
+                    <td class="tb-map-input-td-remove">\
+                        <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a>\
+                    </td>\
+                </tr>');
+                $item.appendTo($mapInput.find('.tb-map-input-table tbody'));
+            });
+        }
+
+        return $mapInput;
     };
 
     TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration, displayLocation) {

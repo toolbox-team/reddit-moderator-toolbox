@@ -334,7 +334,7 @@ self.init = function () {
                 $tb_modmail = $('#tb-modmail');
 
                 // Determine if we need to point to a filtered inbox.
-                if (modmailFilteredSubreddits == 'mod') {
+                if (modmailFilteredSubreddits === 'mod') {
                     $tb_modmail.attr('href', '/message/moderator/');
                 } else {
                     $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator/');

@@ -224,11 +224,20 @@ self.init = function () {
         function removeUnmoddable() {
             if (!TBUtils.isModpage) {
                 TBUtils.getModSubs(function () {
-                    $('.thing .subreddit').each(function () {
-                        // Just to be safe.
-                        var sub = TB.utils.cleanSubredditName($(this).text());
-                        if ($.inArray(sub, TBUtils.mySubs) === -1) {
-                            $(this).parents('.thing').remove();
+                    $('.thing').each(function () {
+                        var $thing = $(this),
+                            $sub = $thing.find('.subreddit');
+
+                        // Remove if the sub isn't moderated
+                        if($sub.length > 0) {
+                            var sub = TB.utils.cleanSubredditName($sub.text());
+                            if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                                $thing.remove();
+                            }
+                        }
+                        // Always remove things not in a sub, like sponsored links (can't mod those)
+                        else {
+                            $thing.remove();
                         }
                     });
                 });

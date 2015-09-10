@@ -44,15 +44,6 @@ TB = {
                     if (module.setting('enabled')) {
                         $.log('Loading ' + module.name + ' module', false, 'TBinit');
                         module.init();
-                        // unnecessary; we do it in TB.utils.getModSubs now
-                        // if (module.config["needs_mod_subs"]) {
-                        //     $.log("  We require additional mod subs");
-                        //     TB.utils.getModSubs(function init() {
-                        //         module.init();
-                        //     });
-                        // } else {
-                        //     module.init();
-                        // }
                     }
 
                 }
@@ -510,7 +501,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             // yes, we do raw JSON
                             var json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(title + ':<br />');
-                            $setting.append($('<textarea rows="1">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                            $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                             break;
                     }
                     if(!noWrap) {
@@ -569,7 +560,6 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                 } else {
                     // module has no settings, for now don't inject a tab
                 }
-
 
                 // we use a jQuery hack to stick this bind call at the top of the queue,
                 // so that it runs before the bind call in notifier.js
@@ -661,8 +651,7 @@ TB.Module = function Module(name) {
 
     this.config = {
         "betamode": false,
-        "devmode": false,
-        "needs_mod_subs": false
+        "devmode": false
     };
 
     this.settings = {};

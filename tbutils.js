@@ -96,6 +96,7 @@ function initwrapper() {
     TBUtils.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
+    TBUtils.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
     TBUtils.isUserPage = location.pathname.match(/\/(?:user)\/?/);
     TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
     TBUtils.isMod = $('body.moderator').length;

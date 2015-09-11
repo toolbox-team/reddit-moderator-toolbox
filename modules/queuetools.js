@@ -222,7 +222,7 @@ self.init = function () {
 
         // remove stuff we can't moderate (in non-mod queues only)
         function removeUnmoddable() {
-            if (!TBUtils.isModpage) {
+            if (!TBUtils.isModpage && !TBUtils.isSubCommentsPage) {
                 TBUtils.getModSubs(function () {
                     $('.thing').each(function () {
                         var $thing = $(this),

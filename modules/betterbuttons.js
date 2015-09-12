@@ -78,7 +78,7 @@ self.initModSave = function initModSave() {
     });
 
     //Add the mod save button next to each comment save button
-    var $usertextButtons = $('.moderator .commentarea>.usertext .usertext-buttons');
+    var $usertextButtons = $('.moderator .usertext-edit .usertext-buttons');
     var $saveButton = $usertextButtons.find('.save');
     if ($saveButton.css("display") != "none") {
         var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');

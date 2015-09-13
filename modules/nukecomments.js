@@ -16,6 +16,12 @@ self.register_setting('hideAfterNuke', {
     'title': 'Hide nuked comments after they are removed'
 });
 
+self.register_setting('ignoreMods', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Ignore moderators\' comments when removing'
+});
+
 self.register_setting('confirmNuke', {
     'type': 'boolean',
     'default': true,
@@ -101,15 +107,30 @@ self.init = function () {
 };
 
 self.deleteThreadFromComment = function ($thread_root) {
+    var ignoreMods = self.setting('ignoreMods');
+
     var $removeButtons = $thread_root.find('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
     TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
+    self.log("Nuking " + $removeButtons.length + " comments");
+
     // we need a delay between every single click of >1sec
     // this should be re-written to use the API
-    TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment($button, num) {
+    TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment(button, num) {
         var msg = 'removing comment ' + (num + 1) + '/' + $removeButtons.length;
         TB.ui.textFeedback(msg, 'neutral');
-        self.log(msg, false, 'nuke');
-        $button.click();
+
+        if (ignoreMods) {
+            var $entry = $(button).parents('.entry'),
+                $author = $entry.find('a.author');
+
+            if ($author.hasClass('moderator')) {
+                self.log("  " + (num + 1) + "... ignored");
+                return;
+            }
+        }
+
+        self.log("  " + (num + 1) + "... removed");
+        button.click();
     }, function complete() {
         if (self.setting('hideAfterNuke')) {
             $thread_root.hide(750);

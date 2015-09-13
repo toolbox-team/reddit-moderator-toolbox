@@ -22,6 +22,7 @@ Documentation: http://www.reddit.com/r/toolbox/w/docs
 
 All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes.
 
-Example:
+Examples:
 
 - https://github.com/creesch/reddit-moderator-toolbox/wiki/JSON:-usernotes
+- https://github.com/creesch/reddit-moderator-toolbox/wiki/JSON:-toolbox-config

@@ -1,9 +1,4 @@
 function modmacros() {
-// SUPER ULTRA COPYRIGHT FOURPOINTFIVEBILLIONYEARSAGO-THEHEATDEATHOFTHEFUCKINGUNIVERSE agentlame
-// IF YOU EVEN LOOK AT THIS CODE I OWN YOUR SOUL
-// Jesus fuck, please stop putting copyright headers on files--the ones we have I left because we used **other people's code**.
-// As always, agent "I include the full GPLv3 in my three-line shell script" lame loves you!
-
 var self = new TB.Module('Mod Macros');
 self.shortname = 'ModMacros';
 
@@ -62,10 +57,10 @@ self.init = function () {
             self.log(sub + ' ' + subreddit);
 
             if (sub == subreddit) {
-                $(config).each(function (i, item) {
+                $(config).each(function (idx, item) {
                     $($select)
                         .append($('<option>', {
-                            value: item.text
+                            value: idx
                         })
                             .text(item.title));
                 });
@@ -141,10 +136,14 @@ self.init = function () {
         }
     });
 
-    function editMacro(dropdown, info, comment, topLevel) {
+    function editMacro(dropdown, info, macro, topLevel) {
         // get some placement variables
 
-        var $usertext = dropdown.closest('.usertext-edit');
+        var $usertext = dropdown.closest('.usertext-edit'),
+            comment = unescape(macro.text);
+
+        // replace token.
+        comment = TB.utils.replaceTokens(info, comment);
 
         var offset = $usertext.offset(),
             offsetLeft = offset.left,
@@ -229,25 +228,31 @@ self.init = function () {
     $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {
 
         var $this = $(this),
-            comment = unescape($this.val()),
-            topLevel = (e.target.className === 'tb-top-macro-select'),
+            sub = $this.closest('select').attr('data-subreddit'),
+            index = $this.val(),
+            topLevel = $this.hasClass('tb-top-macro-select'),
             info;
 
         // disable the select box to prevent a mess with creating multiple popup boxes.
         $this.prop('disabled', 'disabled');
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
+            self.log('toplevel');
             info = TB.utils.getThingInfo($('#siteTable .thing:first'));
         } else {
             info = TB.utils.getThingInfo($this);
         }
 
-        // replace token.
-        comment = TB.utils.replaceTokens(info, comment);
+        self.log(sub);
+        getConfig(sub, function (success, config) {
+            if (success && config.length > 0) {
+                var macro = config[index];
 
-        // add unique id to the dropdown
-        $this.attr('id', 'macro-dropdown-' + info.id);
-        editMacro($this, info, comment, topLevel);
+                // add unique id to the dropdown
+                $this.attr('id', 'macro-dropdown-' + info.id);
+                editMacro($this, info, macro, topLevel);
+            }
+        });
     });
 };
 

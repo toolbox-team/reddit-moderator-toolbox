@@ -514,13 +514,13 @@ self.init = function() {
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>\
                         <span class="mod-macro-edit">\
                             <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
-                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" />\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
+                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>\
                             <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>\
                             <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>\
                             <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
-                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
+                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label><br>\
+                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\
                     </td>\

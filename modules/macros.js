@@ -149,6 +149,11 @@ self.init = function () {
             actionList = 'The following actions will be performed:<br>- Your reply will be saved',
             kind = info.kind;
 
+        // If it's undefined assume previous default behaviour and always distinguish.
+        if (macro.distinguish === undefined) {
+            distinguish = true;
+        }
+
         if (!TB.utils.isModmail) {
             if (remove) {
                 actionList += '<br>- This ' + kind + ' will be removed';

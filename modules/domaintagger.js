@@ -77,7 +77,7 @@ self.init = function() {
         $thing.attr('subreddit', subreddit);
 
         var tag = '<a class="add-domain-tag tb-bracket-button" "href="javascript:;">T</a>';
-        $thing.find('span.domain a').after(tag);
+        $thing.find('span.domain').after(tag);
 
         return subreddit;
     }

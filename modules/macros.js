@@ -231,7 +231,7 @@ self.init = function () {
                             $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
                         }
 
-                        if (distinguish) {
+                        if (distinguish && !TB.utils.isModmail) {
                             // Distinguish the new reply
                             TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
                                 if (!successful) {
@@ -245,7 +245,7 @@ self.init = function () {
 
                 if (!TB.utils.isModmail) {
                     if (remove) {
-                        TB.utils.removeThing(info.id);
+                        TB.utils.removeThing(info.id, false);
                     }
 
                     if (approve) {

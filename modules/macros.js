@@ -140,7 +140,37 @@ self.init = function () {
         // get some placement variables
 
         var $usertext = dropdown.closest('.usertext-edit'),
-            comment = unescape(macro.text);
+            comment = unescape(macro.text),
+            remove = macro.remove,
+            approve = macro.approve,
+            ban = macro.ban,
+            mute = macro.mute,
+            distinguish = macro.distinguish,
+            actionList = 'The following actions will be performed:<br>- Your reply will be saved',
+            kind = info.kind;
+
+        if (!TB.utils.isModmail) {
+            if (remove) {
+                actionList += '<br>- This ' + kind + ' will be removed';
+            }
+
+            if (approve) {
+                actionList += '<br>- This ' + kind + ' will be approved';
+            }
+
+            if (distinguish) {
+                actionList += '<br>- This reply will be distinguished';
+            }
+        }
+
+        if (ban) {
+            actionList += '<br>- This user will be banned';
+        }
+
+        if (mute) {
+            actionList += '<br>- This user will be muted';
+        }
+
 
         // replace token.
         comment = TB.utils.replaceTokens(info, comment);
@@ -154,15 +184,16 @@ self.init = function () {
 
         var title = dropdown.find('option:selected').text();
         self.log(title);
-        $macroPopup = TB.ui.popup(
+        var $macroPopup = TB.ui.popup(
             'Mod Macro: ' + title,
             [
                 {
                     title: 'Mod Macro:',
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Mod Macro:' + title,
-                    content: '<textarea class="macro-edit-area" data-toplevel="' + topLevel + '" data-id="' + info.id + '">' + comment + '</textarea>',
-                    footer: '<button class="macro-send tb-action-button">Post Macro</button>'
+                    content: '<textarea class="macro-edit-area">' + comment + '</textarea><br>\
+                    <span>'+ actionList +'</span>',
+                    footer: '<button class="macro-send-'+ info.id +' tb-action-button">Post Macro</button>'
                 }
             ],
             '',
@@ -180,6 +211,61 @@ self.init = function () {
             'min-height': editMinHeight + 'px',
             'min-width': editMinWidth + 'px'
         });
+
+        $body.on('click', '.macro-popup .macro-send-'+ info.id +'', function () {
+            var $currentMacroPopup = $(this).closest('.macro-popup'),
+                $selectElement = $body.find('#macro-dropdown-' + info.id),
+                editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+
+            if ($selectElement.val() !== MACROS) {
+                TBUtils.postComment(info.id, editedcomment, function (successful, response) {
+                    if (!successful) {
+                        TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
+                    } else {
+                        TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                        $currentMacroPopup.remove();
+                        $selectElement.prop('disabled', false);
+                        if (topLevel) {
+                            $selectElement.val(MACROS);
+                        } else {
+                            $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
+                        }
+
+                        if (distinguish) {
+                            // Distinguish the new reply
+                            TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
+                                if (!successful) {
+                                    $currentMacroPopup.remove();
+                                    TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                }
+                            });
+                        }
+                    }
+                });
+
+                if (!TB.utils.isModmail) {
+                    if (remove) {
+                        TB.utils.removeThing(info.id);
+                    }
+
+                    if (approve) {
+                        TB.utils.approveThing(info.id);
+                    }
+                }
+
+                if (ban) {
+                    TBUtils.friendUser(info.author, 'banned', info.subreddit,
+                    'Banned from: ' + info.permalink,
+                    'For the following '+ kind + ': ' + info.permalink);
+                }
+
+                if (mute) {
+                    TBUtils.friendUser(info.author, 'muted', info.subreddit,
+                        'Banned from: ' + info.permalink);
+                }
+
+            }
+        });
     }
 
     $body.on('click', '.macro-popup .close', function (e) {
@@ -190,39 +276,6 @@ self.init = function () {
         $selectElement.val(MACROS);
         $currentMacroPopup.remove();
         $selectElement.prop('disabled', false);
-    });
-
-    $body.on('click', '.macro-popup .macro-send', function () {
-        var $currentMacroPopup = $(this).closest('.macro-popup'),
-            topLevel = $currentMacroPopup.find('.macro-edit-area').data('toplevel'),
-            infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
-            $selectElement = $body.find('#macro-dropdown-' + infoId),
-            editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
-
-        if ($selectElement.val() !== MACROS) {
-            TBUtils.postComment(infoId, editedcomment, function (successful, response) {
-                if (!successful) {
-                    TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
-                } else {
-                    // Distinguish the new reply
-                    TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
-                        if (!successful) {
-                            $currentMacroPopup.remove();
-                            TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                        } else {
-                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                            $currentMacroPopup.remove();
-                            $selectElement.prop('disabled', false);
-                            if (topLevel) {
-                                $selectElement.val(MACROS);
-                            } else {
-                                $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
-                            }
-                        }
-                    });
-                }
-            });
-        }
     });
 
     $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {

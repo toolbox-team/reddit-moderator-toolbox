@@ -162,7 +162,12 @@ self.init = function() {
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>\
                 <span id="tb-add-mod-macro-form">\
                     <textarea class="edit-area"></textarea><br/>\
-                    <input type="text" class="macro-title" name="macro-title" placeholder="macro title" />\
+                    <input type="text" class="macro-title" name="macro-title" placeholder="macro title" /><br>\
+                    <label><input type="checkbox" id="distinguish" checked>distinguish</label>\
+                    <label><input type="checkbox" id="banuser">ban user</label>\
+                    <label><input type="checkbox" id="muteuser">mute user</label>\
+                    <label><input type="checkbox" id="removeitem">remove item</label>\
+                    <label><input type="checkbox" id="approveitem">approve item</label><br>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
@@ -495,8 +500,9 @@ self.init = function() {
                     }
                     label = TBUtils.htmlEncode(label);
                 }
-                var modMacroText = unescape(config.modMacros[i].text) || '',
-                    modMacroTitle = config.modMacros[i].title || '';
+                var macro = config.modMacros[i];
+                    modMacroText = unescape(macro.text) || '',
+                    modMacroTitle = macro.title || '';
 
                 var modMacroTemplate = '\
                 <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">\
@@ -510,6 +516,11 @@ self.init = function() {
                             <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
                             <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" />\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
+                            <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>\
+                            <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>\
+                            <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
+                            <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
+                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\
                     </td>\
@@ -527,6 +538,12 @@ self.init = function() {
 
                 var $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');
                 $removalReasonsList.append(modMacroTemplateHTML);
+
+                $('.' + i + '-distinguish').prop('checked', macro.distinguish);
+                $('.' + i + '-banuser').prop('checked', macro.ban);
+                $('.' + i + '-muteuser').prop('checked', macro.mute);
+                $('.' + i + '-removeitem').prop('checked', macro.remove);
+                $('.' + i + '-approveitem').prop('checked', macro.approve);
 
             });
 
@@ -801,7 +818,7 @@ self.init = function() {
 
     // Mod macros tab is clicked.
     $body.on('click', '.tb-window-tabs .edit_mod_macros', function () {
-        $this = $(this);
+        var $this = $(this);
         if (!$this.hasClass('content-populated')) {
 
             // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
@@ -837,10 +854,16 @@ self.init = function() {
     $body.on('click', '.mod-macro-edit .cancel-edit-macro', function () {
         var $this = $(this),
             $macroContent = $this.closest('td.mod-macros-content'),
-            reasonsNum = $macroContent.attr('data-macro');
+            macroNum = $macroContent.attr('data-macro'),
+            macro = config.modMacros[macroNum];
 
-        $macroContent.find('.edit-area').val(unescape(config.modMacros[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
-        $macroContent.find('input[name=macro-title]').val(config.modMacros[reasonsNum].title || '');
+        $macroContent.find('.edit-area').val(unescape(macro.text) || '<span style="color: #cecece">(no macro)</span>');
+        $macroContent.find('input[name=macro-title]').val(macro.title || '');
+        $macroContent.find('#distinguish').prop("checked", macro.distinguish);
+        $macroContent.find('#banuser').prop("checked", macro.ban);
+        $macroContent.find('#muteuser').prop("checked", macro.mute);
+        $macroContent.find('#removeitem').prop("checked", macro.remove);
+        $macroContent.find('#approveitem').prop("checked", macro.approve);
         $macroContent.find('input[name=edit-note]').val('');
 
         $macroContent.find('.mod-macro-label').show();
@@ -854,7 +877,13 @@ self.init = function() {
             macroNum = $macroContent.attr('data-macro'),
             macroText = $macroContent.find('.edit-area').val(),
             macroTitle = $macroContent.find('input[name=macro-title]').val(),
-            editNote = $macroContent.find('input[name=edit-note]').val();
+            distinguish = $macroContent.find('#distinguish').prop("checked"),
+            banuser = $macroContent.find('#banuser').prop("checked"),
+            muteuser = $macroContent.find('#muteuser').prop("checked"),
+            removeitem = $macroContent.find('#removeitem').prop("checked"),
+            approveitem = $macroContent.find('#approveitem').prop("checked"),
+            editNote = $macroContent.find('input[name=edit-note]').val(),
+            macro = config.modMacros[macroNum];
 
         if (!editNote) {
             // default note
@@ -862,8 +891,13 @@ self.init = function() {
         }
         editNote += ', macro #' + macroNum;
 
-        config.modMacros[macroNum].text = escape(macroText);
-        config.modMacros[macroNum].title = macroTitle;
+        macro.text = escape(macroText);
+        macro.title = macroTitle;
+        macro.distinguish = distinguish;
+        macro.ban = banuser;
+        macro.mute = muteuser;
+        macro.remove = removeitem;
+        macro.approve = approveitem;
 
         postToWiki('toolbox', config, editNote, true);
 
@@ -918,6 +952,11 @@ self.init = function() {
     $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function () {
         var macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
             macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
+            distinguish = $body.find('#distinguish').prop("checked"),
+            banuser = $body.find('#banuser').prop("checked"),
+            muteuser = $body.find('#muteuser').prop("checked"),
+            removeitem = $body.find('#removeitem').prop("checked"),
+            approveitem = $body.find('#approveitem').prop("checked"),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
         editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
@@ -927,6 +966,11 @@ self.init = function() {
         };
 
         macro.title = macroTitle;
+        macro.distinguish = distinguish;
+        macro.ban = banuser;
+        macro.mute = muteuser;
+        macro.remove = removeitem;
+        macro.approve = approveitem;
 
         if (!config.modMacros) {
             config.modMacros = [];
@@ -942,9 +986,13 @@ self.init = function() {
         $body.find('#tb-add-mod-macro').show();
         $body.find('#tb-add-mod-macro-form').hide();
         $body.find('#tb-add-mod-macro-form .edit-area').val('');
-        $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
-        $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
+        $body.find('#tb-add-mod-macro-form input[name=macro-title]').val('');
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
+        $body.find('#distinguish').prop("checked", false);
+        $body.find('#banuser').prop("checked", false);
+        $body.find('#muteuser').prop("checked", false);
+        $body.find('#removeitem').prop("checked", false);
+        $body.find('#approveitem').prop("checked", false);
     });
 
     // cancel
@@ -952,9 +1000,13 @@ self.init = function() {
         $body.find('#tb-add-mod-macro').show();
         $body.find('#tb-add-mod-macro-form').hide();
         $body.find('#tb-add-mod-macro-form .edit-area').val('');
-        $body.find('#tb-add-mod-macro-form input[name=flair-text]').val('');
-        $body.find('#tb-add-mod-macro-form input[name=flair-css]').val('');
+        $body.find('#tb-add-mod-macro-form input[name=macro-title]').val('');
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
+        $body.find('#distinguish').prop("checked", false);
+        $body.find('#banuser').prop("checked", false);
+        $body.find('#muteuser').prop("checked", false);
+        $body.find('#removeitem').prop("checked", false);
+        $body.find('#approveitem').prop("checked", false);
     });
 
     // When the import button is clicked on the domain tags thing.

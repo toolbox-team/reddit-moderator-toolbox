@@ -235,8 +235,8 @@ self.init = function () {
                                 $thing.remove();
                             }
                         }
-                        // Always remove things not in a sub, like sponsored links (can't mod those)
-                        else {
+                        // Always remove things like sponsored links (can't mod those)
+                        else if($thing.find('.parent a.author').text() === 'redditads') {
                             $thing.remove();
                         }
                     });

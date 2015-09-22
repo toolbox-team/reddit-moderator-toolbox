@@ -19,8 +19,6 @@ self.subredditModerators = null;
 self.subredditActions = null;
 self.total = 0;
 
-self.isMulti = false;
-
 // These need moved into TB.ui.
 self.downSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQklEQVQoU2NkoAAwUqCXYVQziaGHLcD+4zEDRT2u0MZmAIZafFGFbABWdYTiGWQATjWENOMNQoo1M5EYQ3DlFNkMAOsiBBL3uxzDAAAAAElFTkSuQmCC";
 self.upSortingIcon = "iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAAQ0lEQVQoU2NkoAAwUqCXAaSZiVwDKLaZXIvBzsYH/gMlcarBpxmkEQawqsOlGVkjTgOwacamEasBhPyMN0BGNZOY1gDYfgQSUTVBXwAAAABJRU5ErkJggg==";
@@ -36,20 +34,9 @@ self.run = function () {
     var regex = new RegExp(/reddit\.com\/r\/([^\/]+)\//g);
     var matches = regex.exec(subredditUrl);
 
-    this.isMulti = false;
-
-    if (matches == null) {
-
-        regex = new RegExp(/reddit\.com\/user\/[^\/]+\/m\/([^\/]+)\//g);
-        matches = regex.exec(subredditUrl);
-
-        if (matches == null) {
-            return false;
-        }
-
-        this.isMulti = true;
+    if (matches != null) {
+        this.subredditName = matches[1];
     }
-    this.subredditName = matches[1];
 
     if (location.hash != null && location.hash == "#matrix")
         self.renderMatrix();
@@ -223,7 +210,7 @@ self.renderMatrix = function () {
     });
 
     // Unless we're on /r/mod or a /m/ulti, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
-    if (this.subredditName != "mod" && !this.isMulti) {
+    if (this.subredditName && this.subredditName != "mod" && !TBUtils.isModLogPage) {
         var subredditNames = this.subredditName.split("+");
 
         for (var i = 0; i < subredditNames.length; i++) {

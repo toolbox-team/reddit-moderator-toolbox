@@ -99,6 +99,7 @@ function initwrapper() {
     TBUtils.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
     TBUtils.isUserPage = location.pathname.match(/\/(?:user)\/?/);
     TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
+    TBUtils.isMultiPage = location.pathname.match(/^\/(?:user\/)?\w+\/m\/\w+/);
     TBUtils.isMod = $('body.moderator').length;
     TBUtils.isExtension = true;
     TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];

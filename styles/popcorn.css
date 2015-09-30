@@ -1,0 +1,19 @@
+.numchildren {
+ display: inline !important;
+}
+
+.controversial > .entry{
+box-shadow: -2px 0 rgba(255,0,0,1) !important; 
+}
+
+.controversial:not(.link) > .entry{
+background-color: rgba(255,0,0,0.2) !important; 
+}
+
+.drama{
+box-shadow: -2px 0 rgba(255,0,0,0.5) !important; 
+}
+
+.thing:before{/*for testing*/
+ content: attr(data-nchildren); 
+}

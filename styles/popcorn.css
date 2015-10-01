@@ -1,19 +1,23 @@
 .numchildren {
- display: inline !important;
+    display: inline !important;
 }
 
 .controversial > .entry{
-box-shadow: -2px 0 rgba(255,0,0,1) !important; 
+    box-shadow: -2px 0 rgba(255,0,0,1) !important; 
 }
 
 .controversial:not(.link) > .entry{
-background-color: rgba(255,0,0,0.2) !important; 
+    background-color: rgba(255,0,0,0.2) !important; 
 }
 
 .drama{
-box-shadow: -2px 0 rgba(255,0,0,0.5) !important; 
+    box-shadow: -2px 0 rgba(255,0,0,0.5) !important; 
 }
 
-.thing:before{/*for testing*/
- content: attr(data-nchildren); 
+.thing:before{
+    content: attr(data-nchildren); 
+}
+
+.thing.collapsed:before{
+    position: absolute;
 }

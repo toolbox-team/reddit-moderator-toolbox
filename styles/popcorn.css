@@ -1,0 +1,48 @@
+body.tb-popcorn .controversial > .entry{
+    box-shadow: -2px 0 rgba(255,0,0,1); 
+}
+
+body.tb-popcorn .controversial:not(.link) > .entry{
+    background-color: rgba(255,0,0,0.2); 
+}
+
+.tb-drama{
+    box-shadow: -2px 0 rgba(255,0,0,0.5); 
+}
+
+.tb-neg:not(.link) > .entry{
+    background-color: rgba(0,0,255,0.2) !important; 
+}
+
+.tb-neg > .entry{
+    box-shadow: -2px 0 rgba(0,0,255,1); 
+}
+
+.tb-ndrama{
+    box-shadow: -2px 0 rgba(0,0,255,0.5); 
+}
+
+body.tb-popcorn .controversial.tb-neg > .entry{
+    box-shadow: -2px 0 rgba(255,0,255,1);
+}
+.controversial.tb-neg:not(.link) > .entry{
+    background-color: rgba(255,0,255,0.2) !important; 
+}
+.tb-drama.tb-ndrama{
+    box-shadow: -2px 0 rgba(255,0,255,0.5);
+}
+
+
+
+/*  Testing Purposes */
+body.tb-popcorn .numchildren {
+    display: inline !important;
+}
+
+.thing:before{
+    content: attr(data-nchildren); 
+}
+
+body.tb-popcorn .thing.collapsed:before{
+    position: absolute;
+}

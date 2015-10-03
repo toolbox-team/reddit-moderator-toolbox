@@ -7,54 +7,62 @@ self.settings['enabled']['default'] = true;
 
 self.register_setting('negHighlightThreshold', {
     'type': 'number',
-    'default': '0',
+    'default': 0,
     'title': 'Negative comment highlight score threshold'
 });
 
-self.init = function() {
-    var neg_thresh = self.setting('negHighlightThreshold');
-    $('.commentarea > .sitetable').before($('<div style="margin:10px;">')
-        .append($('<button style="margin-right:10px;">Popcorn!</button>').click(sortChildren))
-        .append($('<button>Salt Please!</button>').click(collapseNonDrama))
-        );
 
-    $('.morecomments').click(function(){
-        $(this).parents('.thing').eq(1).find('.thing').last().after($('<button style="margin:10px;">Re-Pop!</button>')
-            .click(repop)
-            );
+
+self.init = function() {
+    var $siteTable = $('.commentarea > .sitetable'),
+        $body = $('body').addClass('tb-popcorn'),
+        neg_thresh = self.setting('negHighlightThreshold');
+
+
+    $siteTable.before(
+        $('<div style="margin:10px;">')
+            .append($('<button style="margin-right:10px;">Popcorn!</button>').click(sortChildren))
+            .append($('<button>Salt Please!</button>').click(collapseNonDrama))
+    ).before(
+        $('<input type="checkbox" class="tb-hideNonDrama tb-cb" data-text="hide non-drama">')
+    );
+
+    window.addEventListener("TBNewThings", function () {
+        init();
     });
 
     init();
 
 
-    function init(){
-        highlight();
-    }
-
-
 
     /* Functions */
-
-    function highlight(){
-        //highlight negative children (You left code at work!)
-        $('.numchildren').each(numberChildren);
-        $('.controversial > .entry').addClass('drama')
-        .parents('.thing').addClass('drama');
+    function init(){
+        highlight();
+        markThings();
     }
 
-    function numberChildren(){
+    function highlight(){
+
+        $('.thing:not(.processed) .numchildren').each(numChildren);
+        $('.thing:not(.processed).controversial > .entry').addClass('tb-drama')
+        .parents('.thing').addClass('tb-drama');
+        $('.thing:not(.processed) .score.unvoted').each(score);
+    }
+
+    function score(){
+        var $this = $(this),
+            thing = $this.parents('.thing')[0];
+        //highlighting here to avoid another iteration
+        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ) $(thing).addClass('tb-neg tb-ndrama').parents('.thing').addClass('tb-ndrama');
+    }
+
+    function numChildren(){
         var $this = $(this);
         $this.parents('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
     }
 
-    function repop(){
-        $(this).parents('.thing').eq(0).find('.controversial > .entry')
-        .addClass('drama').parents('.thing').addClass('drama');
-        $(this).remove();
-    }
-
     function sortChildren(){
-        if($('.thing:not(.drama).controversial').length > 0) highlight();//is wierd for some reason, must test, forgot why. Investigate!
+        if($('.thing:not(.tb-drama).controversial').length > 0) highlight();//is wierd for some reason, must test, forgot why. Investigate!
         $('.sitetable').each(function(){
             var $this = $(this);
             var $things = $this.find('.thing');
@@ -63,22 +71,27 @@ self.init = function() {
             .sort(function(a, b){
                 return (b.dataset.nchildren - a.dataset.nchildren);
             });
-            $this.prepend($things).prepend($this.children('.thing.drama'));
+            $this.prepend($things).prepend($this.children('.thing.tb-drama')).prepend($this.children('.thing.tb-ndrama'));
         });
     }
 
-    function collapseNonDrama(){
-        $('.thing:not(.drama)').addClass('collapsed').removeClass('noncollapsed');
-        $('.thing.drama').addClass('noncollapsed').removeClass('collapsed');
+    function collapseThing(){
+        $(this).addClass('collapsed').find('.expand').eq(0).text('[+]');
+    }
+    function uncollapseThing(){
+        $(this).removeClass('collapsed').find('.expand').eq(0).text('[–]');
     }
 
+    function collapseNonDrama(){
+        $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
+        $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
+        .each(collapseThing);
+    }
+
+    function markThings(){
+        $('.thing:not(.tb-processed)').addClass('tb-processed');
+    }
 /*  TODO
-    
-    Don't reselect different .thing's all the time?  Is it faster to reselect by class or to probe exesting collection ( .hasClass() )?
-
-    highlight should be child based so on init() it grabs the appropriate parent, but on morecomments() it grabs child.things
-
-    Steal .collapsed css make .tb-collapsed
 
     Calculate %upvoted to get real numbers.
 

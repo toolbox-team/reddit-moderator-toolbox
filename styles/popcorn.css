@@ -23,13 +23,13 @@ body.tb-popcorn .controversial:not(.link) > .entry{
 }
 
 body.tb-popcorn .controversial.tb-neg > .entry{
-    box-shadow: -2px 0 rgba(255,0,0,1), inset 2px 0 rgba(0,0,255,1); 
+    box-shadow: -2px 0 rgba(255,0,255,1);
 }
 .controversial.tb-neg:not(.link) > .entry{
     background-color: rgba(255,0,255,0.2) !important; 
 }
 .tb-drama.tb-ndrama{
-    box-shadow: -2px 0 rgba(255,0,0,0.5), inset 2px 0 rgba(0,0,255,0.5); 
+    box-shadow: -2px 0 rgba(255,0,255,0.5);
 }
 
 

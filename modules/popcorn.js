@@ -3,7 +3,13 @@ function popcorn() {
     self.shortname = 'popcorn';
 
 //Default settings
-self.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = false;
+
+self.register_setting('highlight', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Highlight downvoted/controversial comments'
+});
 
 self.register_setting('negHighlightThreshold', {
     'type': 'number',
@@ -17,17 +23,44 @@ self.register_setting('expandOnLoad', {
     'title': 'Expand all downvoted/controversial comments on page load'
 });
 
+self.register_setting('sortOnMoreChildren', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Continue to sort children on "load more comments"'
+});
+
+self.sorted = false;
+self.pending = [];
+
 self.init = function() {
     var neg_thresh = self.setting('negHighlightThreshold'),
-        expand = self.setting('expandOnLoad');
+        expand = self.setting('expandOnLoad'),
+        highlight = self.setting('highlight'),
+        sortOnMoreChildren = self.setting('sortOnMoreChildren'),
+        $body = $('body'),
+        $sitetable;
 
-    $('body').addClass('tb-popcorn');
+    // if(!TBUtils.isMod) return;
 
-    $('.commentarea > .sitetable').before(
+    if(highlight) $body.addClass('tb-popcorn');
+
+    if(!TBUtils.isCommentsPage) return;
+
+    if($body.hasClass('listing-page')){
+        $sitetable = $('.content > .sitetable');
+    } else {
+        $sitetable = $('.commentarea > .sitetable');
+    }
+
+    $sitetable.before(
         $('<div style="margin:10px;">')
             .append($('<button style="margin-right:10px;">Popcorn!</button>').click(sortChildren))
             .append($('<button>Salt Please!</button>').click(collapseNonDrama))
     );
+
+    $('.commentarea').on('click', '.morecomments', function(){
+        if(sortOnMoreChildren) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+    })
 
     window.addEventListener("TBNewThings", function () {
         init();
@@ -36,12 +69,17 @@ self.init = function() {
     init();
 
     function init(){
-        highlight();
+
+        highlightComments();
+
+        if(expand) $('.thing:not(.tb-pc-proc).tb-drama, .thing:not(.tb-pc-proc).tb-ndrama').each(uncollapseThing);
+
+        if(self.sorted) while(self.pending.length) self.pending.pop()();
+
         markProcessedThings();
-        if(expand) $('.tb-drama, .tb-ndrama').each(uncollapseThing);
     }
 
-    function highlight(){
+    function highlightComments(){
 
         $('.thing:not(.tb-pc-proc) .numchildren').each(numChildren);
         //Consider storing $('.thing:not(.tb-pc-proc)')
@@ -69,22 +107,22 @@ self.init = function() {
     }
 
     function sortChildren(){
+
+        self.sorted = true;
         
-        $('.sitetable').each(function(){
-            var $this = $(this),
-                $things = $this.find('.thing');
+        $(this).closest('.sitetable, .commentarea, .content').find('.sitetable').each(sortMe);
+    }
 
-            if($things.length < 2) return;
-
+    function sortMe(){
+        var $this = $(this),
             $things = $this.children('.thing:not(.morechildren)')
-                .sort(function(a, b){
-                    return (b.dataset.nchildren - a.dataset.nchildren);
-                });
+            .sort(function(a, b){
+                return (b.dataset.nchildren - a.dataset.nchildren);
+            }).each(sortMe);
 
-            $this.prepend($things)
-                .prepend($this.children('.thing.tb-drama'))
-                .prepend($this.children('.thing.tb-ndrama'));
-        });
+        $this.prepend($things)
+            .prepend($this.children('.thing.tb-drama'))
+            .prepend($this.children('.thing.tb-ndrama'));
     }
 
     function collapseThing(){
@@ -107,6 +145,10 @@ self.init = function() {
             .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
 /*  TODO
+    
+    Include below threshold comments when the score is hidden?
+
+    Build a filter for collections so elements can remove themselves if they don't need being "dealt with"
 
     Calculate %upvoted to get real numbers.
 

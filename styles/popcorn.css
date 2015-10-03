@@ -32,15 +32,6 @@ body.tb-popcorn .controversial.tb-neg > .entry{
     box-shadow: -2px 0 rgba(255,0,0,0.5), inset 2px 0 rgba(0,0,255,0.5); 
 }
 
-.tb-cb{
-    visibility:hidden;
-    position: relative;
-}
-
-.tb-cb:before{
-  position: absolute;
-  visibility: visible;
-}
 
 
 /*  Testing Purposes */

@@ -11,20 +11,22 @@ self.register_setting('negHighlightThreshold', {
     'title': 'Negative comment highlight score threshold'
 });
 
-
+self.register_setting('expandOnLoad', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Expand all downvoted/controversial comments on page load'
+});
 
 self.init = function() {
-    var $siteTable = $('.commentarea > .sitetable'),
-        $body = $('body').addClass('tb-popcorn'),
-        neg_thresh = self.setting('negHighlightThreshold');
+    var neg_thresh = self.setting('negHighlightThreshold'),
+        expand = self.setting('expandOnLoad');
 
+    $('body').addClass('tb-popcorn');
 
-    $siteTable.before(
+    $('.commentarea > .sitetable').before(
         $('<div style="margin:10px;">')
             .append($('<button style="margin-right:10px;">Popcorn!</button>').click(sortChildren))
             .append($('<button>Salt Please!</button>').click(collapseNonDrama))
-    ).before(
-        $('<input type="checkbox" class="tb-hideNonDrama tb-cb" data-text="hide non-drama">')
     );
 
     window.addEventListener("TBNewThings", function () {
@@ -33,63 +35,76 @@ self.init = function() {
 
     init();
 
-
-
-    /* Functions */
     function init(){
         highlight();
-        markThings();
+        markProcessedThings();
+        if(expand) $('.tb-drama, .tb-ndrama').each(uncollapseThing);
     }
 
     function highlight(){
 
-        $('.thing:not(.processed) .numchildren').each(numChildren);
-        $('.thing:not(.processed).controversial > .entry').addClass('tb-drama')
-        .parents('.thing').addClass('tb-drama');
-        $('.thing:not(.processed) .score.unvoted').each(score);
+        $('.thing:not(.tb-pc-proc) .numchildren').each(numChildren);
+        //Consider storing $('.thing:not(.tb-pc-proc)')
+        $('.thing:not(.tb-pc-proc) .score.unvoted').each(score);
+
+        $('.thing:not(.tb-pc-proc).controversial > .entry').addClass('tb-drama')
+            .parents('.thing').addClass('tb-drama');
     }
 
     function score(){
         var $this = $(this),
             thing = $this.parents('.thing')[0];
-        //highlighting here to avoid another iteration
-        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ) $(thing).addClass('tb-neg tb-ndrama').parents('.thing').addClass('tb-ndrama');
+
+        //highlighting here to avoid another .each() iteration
+        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
+            $(thing).addClass('tb-neg tb-ndrama')
+                .parents('.thing').addClass('tb-ndrama');
+        }
     }
 
     function numChildren(){
         var $this = $(this);
+
         $this.parents('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
     }
 
     function sortChildren(){
-        if($('.thing:not(.tb-drama).controversial').length > 0) highlight();//is wierd for some reason, must test, forgot why. Investigate!
+        
         $('.sitetable').each(function(){
-            var $this = $(this);
-            var $things = $this.find('.thing');
+            var $this = $(this),
+                $things = $this.find('.thing');
+
             if($things.length < 2) return;
+
             $things = $this.children('.thing:not(.morechildren)')
-            .sort(function(a, b){
-                return (b.dataset.nchildren - a.dataset.nchildren);
-            });
-            $this.prepend($things).prepend($this.children('.thing.tb-drama')).prepend($this.children('.thing.tb-ndrama'));
+                .sort(function(a, b){
+                    return (b.dataset.nchildren - a.dataset.nchildren);
+                });
+
+            $this.prepend($things)
+                .prepend($this.children('.thing.tb-drama'))
+                .prepend($this.children('.thing.tb-ndrama'));
         });
     }
 
     function collapseThing(){
         $(this).addClass('collapsed').find('.expand').eq(0).text('[+]');
     }
+
     function uncollapseThing(){
         $(this).removeClass('collapsed').find('.expand').eq(0).text('[–]');
     }
 
-    function collapseNonDrama(){
-        $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
-        $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
-        .each(collapseThing);
+    function markProcessedThings(){
+        $('.thing:not(.tb-pc-proc)').addClass('tb-pc-proc');
     }
 
-    function markThings(){
-        $('.thing:not(.tb-processed)').addClass('tb-processed');
+    function collapseNonDrama(){
+        
+        $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
+
+        $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
+            .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
 /*  TODO
 

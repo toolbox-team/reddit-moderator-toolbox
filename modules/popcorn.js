@@ -59,7 +59,7 @@ self.init = function() {
     );
 
     $('.commentarea').on('click', '.morecomments', function(){
-        self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+        if(sortOnMoreChildren) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
     })
 
     window.addEventListener("TBNewThings", function () {

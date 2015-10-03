@@ -36,7 +36,7 @@ self.init = function() {
     var neg_thresh = self.setting('negHighlightThreshold'),
         expand = self.setting('expandOnLoad'),
         highlight = self.setting('highlight'),
-        sortOnMoreChildren = self.settin('sortOnMoreChildren').
+        sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         $body = $('body'),
         $sitetable;
 

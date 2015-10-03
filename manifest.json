@@ -34,6 +34,7 @@
                 "styles/achievements.css",
                 "styles/modbar.css",
                 "styles/historybutton.css",
+                "styles/popcorn.css",
                 "styles/domaintagger.css"
             ],
             "js": [
@@ -76,6 +77,7 @@
                 "modules/flyingsnoo.js",
                 "modules/achievements.js",
                 "modules/queuetools.js",
+                "modules/popcorn.js",
                 "tbmoduleinit.js"
             ]
         }

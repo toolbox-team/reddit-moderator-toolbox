@@ -1,48 +1,51 @@
-body.tb-popcorn .controversial > .entry{
-    box-shadow: -2px 0 rgba(255,0,0,1); 
+.mod-toolbox.tb-popcorn .controversial > .entry{
+    box-shadow: -2px 0 rgba(255,0,0,1);
 }
 
-body.tb-popcorn .controversial:not(.link) > .entry{
-    background-color: rgba(255,0,0,0.2); 
+.mod-toolbox.tb-popcorn  .controversial:not(.link) > .entry{
+    background-color: rgba(255,0,0,0.2);
 }
 
-.tb-drama{
-    box-shadow: -2px 0 rgba(255,0,0,0.5); 
+.mod-toolbox .tb-drama{
+    box-shadow: -2px 0 rgba(255,0,0,0.5);
 }
 
-.tb-neg:not(.link) > .entry{
-    background-color: rgba(0,0,255,0.2) !important; 
+.mod-toolbox .tb-neg:not(.link) > .entry{
+    background-color: rgba(0,0,255,0.2) !important;
 }
 
-.tb-neg > .entry{
-    box-shadow: -2px 0 rgba(0,0,255,1); 
+.mod-toolbox .tb-neg > .entry{
+    box-shadow: -2px 0 rgba(0,0,255,1);
 }
 
-.tb-ndrama{
-    box-shadow: -2px 0 rgba(0,0,255,0.5); 
+.mod-toolbox .tb-ndrama{
+    box-shadow: -2px 0 rgba(0,0,255,0.5);
 }
 
-body.tb-popcorn .controversial.tb-neg > .entry{
+.mod-toolbox.tb-popcorn  .controversial.tb-neg > .entry{
     box-shadow: -2px 0 rgba(255,0,255,1);
 }
-.controversial.tb-neg:not(.link) > .entry{
-    background-color: rgba(255,0,255,0.2) !important; 
+.mod-toolbox  .controversial.tb-neg:not(.link) > .entry{
+    background-color: rgba(255,0,255,0.2) !important;
 }
-.tb-drama.tb-ndrama{
+.mod-toolbox .tb-drama.tb-ndrama{
     box-shadow: -2px 0 rgba(255,0,255,0.5);
 }
 
+.mod-toolbox #tb-popcorn-buttons {
+    margin: 0px 5px 15px;
+}
 
 
 /*  Testing Purposes */
-body.tb-popcorn .numchildren {
+.mod-toolbox.tb-popcorn .numchildren {
     display: inline !important;
 }
 
-.thing:before{
-    content: attr(data-nchildren); 
+.mod-toolbox.tb-popcorn .thing:before{
+    content: attr(data-nchildren);
 }
 
-body.tb-popcorn .thing.collapsed:before{
+.mod-toolbox.tb-popcorn .thing.collapsed:before{
     position: absolute;
 }

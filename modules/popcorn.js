@@ -53,9 +53,9 @@ self.init = function() {
     }
 
     $sitetable.before(
-        $('<div style="margin:10px;">')
-            .append($('<button style="margin-right:10px;">Popcorn!</button>').click(sortChildren))
-            .append($('<button>Salt Please!</button>').click(collapseNonDrama))
+        $('<div id="tb-popcorn-buttons">')
+            .append($('<button style="margin-right:10px;" id="tb-popcorn-popcorn" class="tb-action-button">Popcorn!</button>').click(sortChildren))
+            .append($('<button class="tb-action-button" id="tb-popcorn-salt">Salt Please!</button>').click(collapseNonDrama))
     );
 
     $('.commentarea').on('click', '.morecomments', function(){
@@ -109,7 +109,7 @@ self.init = function() {
     function sortChildren(){
 
         self.sorted = true;
-        
+
         $(this).closest('.sitetable, .commentarea, .content').find('.sitetable').each(sortMe);
     }
 
@@ -138,14 +138,14 @@ self.init = function() {
     }
 
     function collapseNonDrama(){
-        
+
         $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
 
         $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
             .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
 /*  TODO
-    
+
     Include below threshold comments when the score is hidden?
 
     Build a filter for collections so elements can remove themselves if they don't need being "dealt with"

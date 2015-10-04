@@ -125,6 +125,12 @@ self.register_setting('wwwNotifications', {
     'title': 'Only check for notifications on www.reddit.com (prevents duplicate notifications)'
 });
 
+self.register_setting('customModmailIcon', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Use custom modmail icon'
+});
+
 /// Private storage settings.
 self.register_setting('unreadMessageCount', {
     'type': 'number',
@@ -172,6 +178,7 @@ self.register_setting('modqueuePushed', {
     'hidden': true
 });
 
+
 self.init = function () {
 
     var wwwNotifications = self.setting('wwwNotifications'),
@@ -187,6 +194,7 @@ self.init = function () {
         unmoderatedSubreddits = self.setting('unmoderatedSubreddits'),
         unmoderatedSubredditsFMod = self.setting('unmoderatedSubredditsFMod'),
         modmailSubreddits = self.setting('modmailSubreddits'),
+        customModmailIcon = self.setting('customModmailIcon'),
 
         modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
@@ -207,6 +215,15 @@ self.init = function () {
 
         messageunreadurl = '/message/inbox/',
         modmailunreadurl = '/message/moderator/';
+
+    // Use custom modmail icons if applicable
+    if(customModmailIcon) {
+        var $modmail = $('#modmail'),
+            $tb_modmail = $('#tb-modmail');
+
+        $modmail.addClass('custom');
+        $tb_modmail.addClass('custom');
+    }
 
     // use filter subs from MMP, if appropriate
     if (modmailSubredditsFromPro) {
@@ -342,16 +359,25 @@ self.init = function () {
                 }
 
             if (count < 1) {
-                $tb_modmail.attr('class', 'nohavemail');
+
+                // We are doing it like this to preserve other classes
+                $tb_modmail.removeClass('havemail');
+                $tb_modmail.addClass('nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
                 if (parseInt(modmailCustomLimit) > 0) {
                     $tb_modmail.attr('href', $tb_modmail.attr('href') + '?limit=' + modmailCustomLimit);
                 }
             } else {
-                $modmail.attr('class', 'havemail');
+                // We are doing it like this to preserve other classes
+                $modmail.removeClass('nohavemail');
+                $modmail.addClass('havemail');
+
                 $modmail.attr('title', 'new mail!');
                 $modmail.attr('href', modmailunreadurl);
-                $tb_modmail.attr('class', 'havemail');
+
+                // We are doing it like this to preserve other classes
+                $tb_modmail.removeClass('nohavemail');
+                $tb_modmail.addClass('havemail');
                 $tb_modmail.attr('title', 'new mail!');
 
             }

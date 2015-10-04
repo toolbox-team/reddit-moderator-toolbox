@@ -35,6 +35,7 @@
                 "styles/modbar.css",
                 "styles/historybutton.css",
                 "styles/popcorn.css",
+                "styles/notifier.css",
                 "styles/domaintagger.css"
             ],
             "js": [

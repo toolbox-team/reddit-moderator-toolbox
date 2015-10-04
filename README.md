@@ -2,7 +2,7 @@ toolbox for reddit
 ========================
 
 Bundled extension of the /r/toolbox moderator tools for reddit.com
-
+ 
 Containing:
 - Comments Module: Highlight keywords and hide removed comments.
 - Mod button: Adds a button to submissions and comments that allows you to Ban, unban, mod, unmod, approve, unapprove a user from that spot. If a user is banned it will also load the ban reason on the spot. Very handy when someone modmails you asking why they are banned!

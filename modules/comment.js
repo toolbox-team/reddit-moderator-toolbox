@@ -201,6 +201,9 @@ self.init = function () {
         <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
     </li>\
     <li>\
+        <a href="javascript:;" class="global-mod-button">mod</a>\
+    </li>\
+    <li>\
         <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
     </li> \
     <li>\
@@ -208,9 +211,6 @@ self.init = function () {
     </li> \
     {{bannedBy}}\
     {{modButtons}}\
-    <li>\
-        <a href="javascript:;" class="global-mod-button">mod</a>\
-    </li>\
     <li>\
         <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
 </ul>\
@@ -554,6 +554,9 @@ self.init = function () {
             <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
         </li>\
         <li>\
+            <a href="javascript:;" class="global-mod-button">mod</a>\
+        </li>\
+        <li>\
             <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
         </li> \
         <li>\
@@ -561,9 +564,6 @@ self.init = function () {
         </li> \
         {{bannedBy}}\
         {{modButtons}}\
-        <li>\
-            <a href="javascript:;" class="global-mod-button">mod</a>\
-        </li>\
     </ul>\
 </div>\
 <div class="child"></div>\

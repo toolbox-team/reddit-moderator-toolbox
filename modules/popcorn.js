@@ -70,7 +70,7 @@ self.init = function() {
                 .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));
 
         $('.commentarea').on('click', '.morecomments', function(){
-            if(sortOnMoreChildren) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+            if(sortOnMoreChildren && self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
         });
 
         window.addEventListener("TBNewThings", function () {

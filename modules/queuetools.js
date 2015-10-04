@@ -345,7 +345,15 @@ self.init = function () {
         });
 
         $(window).scroll(function () {
-            if ($(window).scrollTop() > offsetTop) {
+            if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-sub')) {
+                $modtoolsMenu.css({
+                    'top': ($(window).scrollTop()) - offsetTop + 20 + 'px'
+                });
+            } else if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-header')) {
+                $modtoolsMenu.css({
+                    'top': ($(window).scrollTop()) - offsetTop + 72 + 'px'
+                });
+            } else if ($(window).scrollTop() > offsetTop) {
                 $modtoolsMenu.css({
                     'top': ($(window).scrollTop()) - offsetTop + 5 + 'px'
                 });

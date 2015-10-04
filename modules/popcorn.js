@@ -39,7 +39,7 @@ self.init = function() {
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         $body = $('body'),
         $buttons = $('<div id="tb-popcorn-buttons">'),
-        $init = $('<button id="tb-popcorn-init" class="tb-action-button">Trouble-seeker</button>').click(init),
+        $init_btn = $('<button id="tb-popcorn-init" class="tb-action-button">Trouble-seeker</button>').click(init),
         $sitetable;
 
     // if(!TBUtils.isMod) return;
@@ -53,14 +53,14 @@ self.init = function() {
     $sitetable.before($buttons);
 
     if(auto){
-        init();
+        start();
     } else {
-        $buttons.append($init);
+        $buttons.append($init_btn);
     }
 
-    function init(){
+    function start(){
 
-        $init.remove();
+        $init_btn.remove();
 
         $body.addClass('tb-popcorn');
 

@@ -43,6 +43,9 @@ self.init = function() {
         $sitetable;
 
     // if(!TBUtils.isMod) return;
+    
+    if(!TBUtils.isCommentsPage) return;
+
 
     if($body.hasClass('listing-page')){
         $sitetable = $('.content > .sitetable');
@@ -63,8 +66,6 @@ self.init = function() {
         $init_btn.remove();
 
         $body.addClass('tb-popcorn');
-
-        if(!TBUtils.isCommentsPage) return;
 
         $buttons.append($('<button id="tb-popcorn-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));

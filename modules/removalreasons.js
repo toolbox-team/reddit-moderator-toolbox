@@ -149,7 +149,7 @@ self.init = function() {
             return;
 
         // Ignore if a comment and comment reasons disabled
-        if (!commentReasons && $thing.hasClass('comment'))
+        if (!commentReasons && ($thing.hasClass('comment') || $thing.hasClass('was-comment')))
             return;
 
         // Get link/comment attributes

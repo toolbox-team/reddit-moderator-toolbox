@@ -1,0 +1,17 @@
+.mod-toolbox #tb-modmail.nohavemail.custom,
+#modmail.nohavemail.custom {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAKCAMAAABcxfTLAAAAulBMVEW+vr7TuIXUwY/a2trew5Thz6LsyX3tz47vizHvmyrv16bwz3Pw16Pw2JLx0XLx2Jvx2Zrx257y0lDy2Zfz01vz14Xz2Inz3bf02Xj03pj04bf04b/0473048b1ji/1oSr14KD14qf14rL23oP234D24Zr243/247D25pj25q/25rn26Zn26tH35Z345qj46Lr468356pP564X57dT67rr679H68dT79IH9+/n9/Pv+/fz/VwD/hgD///8T9eC2AAAAAWJLR0QAiAUdSAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98KBAsZCHPgRWcAAABnSURBVAjXY2DAALa2+qZawkoGUra2YC6DrZiippmCABuQBZZmUNfTNZEQ5WGwhfBtmVSVDUX4GG1hfFZJFSMhbhYYn9mYX8NcjV2WGcIHUjKC2rzilkAWkA/k2lrpcElbAGlmDMcAANrsD7yKGWjgAAAAAElFTkSuQmCC');
+}
+
+.mod-toolbox #tb-modmail.havemail.custom,
+#modmail.havemail.custom {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAKCAMAAABcxfTLAAAAulBMVEW+vr7TuIXUwY/a2trew5Thz6LsyX3tz47vizHvmyrv16bwz3Pw16Pw2JLx0XLx2Jvx2Zrx257y0lDy2Zfz01vz14Xz2Inz3bf02Xj03pj04bf04b/0473048b1ji/1oSr14KD14qf14rL23oP234D24Zr243/247D25pj25q/25rn26Zn26tH35Z345qj46Lr468356pP564X57dT67rr679H68dT79IH9+/n9/Pv+/fz/VwD/hgD///8T9eC2AAAAAWJLR0QAiAUdSAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB98KBAsYLSH/oGEAAABtSURBVAjXY7BGBQzW1ra2+qZawkoGUra2IL6tta2YoqaZggAbkAXi21qr6+maSIjygJggvq2cqrKhCB+HLYwvL6liJMTNCePbGPNrmKuxy9pA+EBKRlCbV9wSyALygVxbKx0uaQsgbQOyHwUAABv1HVBj/19nAAAAAElFTkSuQmCC');
+}
+
+.mod-toolbox #modmail.custom {
+    background-position: 0 4px;
+}
+
+.mod-toolbox #tb-modmail.custom {
+    background-position: 0 5px;
+}

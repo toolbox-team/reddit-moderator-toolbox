@@ -70,17 +70,20 @@
 		</dict>
 		<key>Stylesheets</key>
 		<array>
-			<string>styles/toolbox.css</string>
-			<string>styles/modmatrix.css</string>
-			<string>styles/removalreasons.css</string>
-			<string>styles/personalnotes.css</string>
-			<string>styles/modmaillite.css</string>
-			<string>styles/queuetools.css</string>
-			<string>styles/modmailpro.css</string>
-			<string>styles/modbar.css</string>
-			<string>styles/historybutton.css</string>
-			<string>styles/comment.css</string>
-			<string>styles/domaintagger.css</string>
+				<string>styles/toolbox.css</string>
+				<string>styles/comment.css</string>
+				<string>styles/modmatrix.css</string>
+				<string>styles/removalreasons.css</string>
+				<string>styles/personalnotes.css</string>
+				<string>styles/modmaillite.css</string>
+				<string>styles/queuetools.css</string>
+				<string>styles/modmailpro.css</string>
+				<string>styles/achievements.css</string>
+				<string>styles/modbar.css</string>
+				<string>styles/historybutton.css</string>
+				<string>styles/popcorn.css</string>
+				<string>styles/notifier.css</string>
+				<string>styles/domaintagger.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

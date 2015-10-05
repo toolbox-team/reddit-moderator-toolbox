@@ -35,7 +35,8 @@ self.register_setting('lastAction', {
     'hidden': true
 });
 
-var $body = $('body');
+var $body = $('body'),
+    titleText = 'Perform various mod actions on this user';
 
 // Add mod button to all users
 self.processThing = function (thing) {
@@ -52,10 +53,10 @@ self.processThing = function (thing) {
                 // if that doesn't work either stick it to the right of the first button
                 $insertionPoint = $thing.find('.buttons > li:first');
             }
-            $insertionPoint.after('<li><a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></li>');
+            $insertionPoint.after('<li><a href="javascript:;" title="'+ titleText +'" class="global-mod-button">' + self.buttonName + '</a></li>');
         } else {
             $thing.find('.userattrs:first')
-                .after('&nbsp;<a href="javascript:;" class="global-mod-button tb-bracket-button">' + self.buttonName + '</a>');
+                .after('&nbsp;<a href="javascript:;" title="'+ titleText +'" class="global-mod-button tb-bracket-button">' + self.buttonName + '</a>');
         }
     }
 };
@@ -66,7 +67,7 @@ self.run = function () {
     if (TB.utils.isEditUserPage) {
 
         $('span.user:not(:first)').each(function () {
-            $(this).find('a:first').after('<span> - <a href="javascript:;" class="global-mod-button">' + self.buttonName + '</a></span>');
+            $(this).find('a:first').after('<span> - <a href="javascript:;" title="'+ titleText +'" class="global-mod-button">' + self.buttonName + '</a></span>');
         });
 
         return;

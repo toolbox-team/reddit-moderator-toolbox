@@ -176,7 +176,6 @@ self.init = function () {
             actionList += '<br>- This user will be muted';
         }
 
-
         // replace token.
         comment = TB.utils.replaceTokens(info, comment);
 
@@ -196,7 +195,7 @@ self.init = function () {
                     title: 'Mod Macro:',
                     id: 'macro' + info.id, // reddit has things with class .role, so it's easier to do this than target CSS
                     tooltip: 'Mod Macro:' + title,
-                    content: '<textarea class="macro-edit-area">' + comment + '</textarea><br>\
+                    content: '<textarea class="macro-edit-area" data-response-id="'+ info.id + '">' + comment + '</textarea><br>\
                     <span>'+ actionList +'</span>',
                     footer: '<button class="macro-send-'+ info.id +' tb-action-button">Post Macro</button>'
                 }
@@ -274,9 +273,11 @@ self.init = function () {
     }
 
     $body.on('click', '.macro-popup .close', function (e) {
+
         var $currentMacroPopup = $(this).closest('.macro-popup'),
-            infoId = $currentMacroPopup.find('.macro-edit-area').data('id'),
+            infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
             $selectElement = $body.find('#macro-dropdown-' + infoId);
+
 
         $selectElement.val(MACROS);
         $currentMacroPopup.remove();

@@ -136,15 +136,43 @@ TB = {
                 tooltip: '',
                 help_page: 'about',
                 content: '\
-                    <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
-                    <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
-                    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
-                    <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/garethp">/u/garethp</a>, <a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a><br><br>, and <a href="/user/amici_ursi">/u/amici_ursi</a>"\
-                    <i>' + TBUtils.RandomQuote + '</i>"<br><br>\
+                <h1 id="tb-random-about-quote">"' + TBUtils.RandomQuote + '"</h1>\
+                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
+                    <h3> made and maintained by: </h3>\
+                    <table class="tb-about-credits">\
+                        <tr>\
+                            <td><a href="/user/creesch/">/u/creesch</a></td>\
+                            <td><a href="/user/agentlame">/u/agentlame</a></td>\
+                            <td><a href="/user/LowSociety">/u/LowSociety</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>\
+                            <td><a href="/user/dakta">/u/dakta</a></td>\
+                            <td><a href="/user/largenocream">/u/largenocream</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/noeatnosleep">/u/noeatnosleep</a></td>\
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
+                            <td><a href="/user/garethp">/u/garethp</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>\
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
+                            <td>&nbsp;</td>\
+                          </tr>\
+                    </table>\
                     <h3>Documentation by:</h3>\
-                    <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/gorillagnomes">/u/gorillagnomes</a>, <a href="/user/x_minus_one">/u/x_minus_one</a>, <a href="/user/Gustavobc">/u/Gustavobc</a>, <a href="/user/hermithome">/u/hermithome</a>, and <a href="/user/amici_ursi">/u/amici_ursi</a><br><br>\
+                    <table class="tb-about-credits">\
+                        <tr>\
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
+                            <td><a href="/user/gorillagnomes">/u/gorillagnomes</a></td>\
+                            <td><a href="/user/x_minus_one">/u/x_minus_one</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/Gustavobc">/u/Gustavobc</a></td>\
+                            <td><a href="/user/hermithome">/u/hermithome</a></td>\
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
+                        </tr>\
+                    </table>\
                     <h3>Special thanks to:</h3>\
-                    <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
+                    <a href="/user/andytuba">/u/andytuba</a>\
+                    <br>for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>\
                     <h3>Credits:</h3>\
                     <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
                     <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
@@ -152,7 +180,7 @@ TB = {
                     <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
                     <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
-                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
+                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br>\
                     <h3>License:</h3>\
                     <span>Copyright 2013-2015 toolbox development team. </span>\
                     <p>Licensed under the Apache License, Version 2.0 (the "License");\

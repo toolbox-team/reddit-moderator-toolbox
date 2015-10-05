@@ -1784,7 +1784,7 @@ function initwrapper() {
     // private functions
     function getToolboxDevs() {
         //TODO: actually pull these from /r/toolbox/about/moderators.json
-        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'noeatnosleep', 'Garethp'];
+        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'noeatnosleep', 'Garethp', 'WorseThanHipster'];
         TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
         return devs;
     }

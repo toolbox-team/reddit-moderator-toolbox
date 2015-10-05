@@ -257,7 +257,17 @@ TB = {
 
         $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
             var sub = $("input[name=settingssub]").val();
-            if (!sub) return self.log('no setting sub');
+            if (!sub) {
+                TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
+                self.log('no setting sub');
+                return;
+            }
+
+            if (TB.storage.domain !== 'www') {
+                self.log('invalid export domain');
+                TB.ui.textFeedback('Toolbox can only backup/restore settings from www.reddit.com', TB.ui.FEEDBACK_NEGATIVE);
+                return;
+            }
 
             // Just to be safe.
             sub = TB.utils.cleanSubredditName(sub);

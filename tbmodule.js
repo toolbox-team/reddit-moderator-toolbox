@@ -53,7 +53,8 @@ TB = {
     },
 
     showSettings: function showSettings() {
-        var self = this;
+        var self = this,
+            $body = $('body');
 
         //
         // preload some generic variables
@@ -210,6 +211,16 @@ TB = {
             var settingsDialog = e.delegateTarget,
                 reload = $(e.target).hasClass('tb-save-reload');
 
+            //save export sub
+            var sub = $("input[name=settingssub]").val();
+            if (sub) {
+                // Just to be safe.
+                sub = TB.utils.cleanSubredditName(sub);
+
+                // Save the sub, first.
+                TB.storage.setSetting('Utils', 'settingSub', sub);
+            }
+
             TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
             TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
             TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
@@ -244,9 +255,79 @@ TB = {
             });
         });
 
+        $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
+            var sub = $("input[name=settingssub]").val();
+            if (!sub) return self.log('no setting sub');
+
+            // Just to be safe.
+            sub = TB.utils.cleanSubredditName(sub);
+
+            // Save the sub, first.
+            TB.storage.setSetting('Utils', 'settingSub', sub);
+
+            if ($(e.target).hasClass('tb-settings-import')) {
+                TBUtils.importSettings(sub, function () {
+                    self.setting('lastExport', TB.utils.getTime());
+                    TBUtils.clearCache();
+                    window.location.reload();
+                });
+            }
+            else {
+                TBUtils.exportSettings(sub, function () {
+                    self.setting('lastExport', TB.utils.getTime());
+                    TBUtils.clearCache();
+                    window.location.reload();
+                });
+            }
+        });
+
+        $settingsDialog.on('click', '#showRawSettings', function () {
+            var $viewSettings = TB.ui.overlay(
+                'toolbox raw setting display',
+                [
+                    {
+                        title: '',
+                        tooltip: '',
+                        content: '\
+                <span class="tb-settings-display">\
+                <textarea class="edit-settings" rows="20" cols="20"></textarea>\
+                </br>\
+                </span>\
+                ',
+                        footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">'
+                    }
+                ],
+                '', // meta
+                'tb-raw-settings'
+            ).appendTo('body');
+            $body.css('overflow', 'hidden');
+
+            var $editSettings = $('.edit-settings');
+
+            TB.storage.getSettingsObject(function (sObject) {
+                $editSettings.val(JSON.stringify(sObject, null, 2));
+            });
+
+            $viewSettings.on('click', '.anonymize-settings', function () {
+                TB.storage.getAnonymizedSettingsObject(function (sObject) {
+                    $editSettings.val(JSON.stringify(sObject, null, 2));
+                });
+            });
+
+            $viewSettings.on('click', '.close', function () {
+                $viewSettings.remove(); // should we have some confirmation dialog here?
+            });
+        });
+
+        $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
+            var module = $(this).attr('data-module');
+            window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
+
+
         // Lock 'n load
         $settingsDialog.appendTo('body').show();
-        $('body').css('overflow', 'hidden');
+        $body.css('overflow', 'hidden');
 
         // and finally...
         this.injectSettings();

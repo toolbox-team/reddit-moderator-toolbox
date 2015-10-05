@@ -88,7 +88,7 @@ self.init = function() {
 
         if(expand) $('.thing:not(.tb-pc-proc).tb-drama, .thing:not(.tb-pc-proc).tb-ndrama').each(uncollapseThing);
 
-        if(self.sorted) while(self.pending.length) self.pending.pop()();
+        while(self.pending.length) self.pending.pop()();
 
         markProcessedThings();
     }

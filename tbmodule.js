@@ -389,7 +389,7 @@ TB = {
             }
             else {
                 TBUtils.exportSettings(sub, function () {
-                    self.setting('lastExport', TB.utils.getTime());
+                    self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
                     TBUtils.clearCache();
                     window.location.reload();
                 });

@@ -90,8 +90,7 @@ TB = {
 
 
         /// Template for 'general settings'.
-        var settings = [],
-            dispalyNone = 'style="display: none;"',
+        var dispalyNone = 'style="display: none;"',
             settingContent = '';
 
         var settingTemplate = '\
@@ -103,6 +102,76 @@ TB = {
             <input style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}" type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})">\
         </p>\
         ';
+
+        var settings = [
+            {
+                settingName: 'settingssub',
+                content: '\
+                        Backup/restore toolbox settings to a wiki page:<br>\
+                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
+                        <input class="tb-settings-export tb-action-button" type="button" value="backup">\
+                        <input class="tb-settings-import tb-action-button" type="button" value="restore">\
+                        <b> Important:</b> This will reload the page without saving!\
+                        <label class="backup-warning ' + lastExportState + '">Last backup: <b>' + lastExportLabel + '</b></label>\
+                        ',
+                display: ''
+            },
+            {
+                settingName: 'showexportreminder',
+                content: '<label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show reminder after 30 days of no backup.</label>',
+                display: ''
+            },
+            {
+                settingName: 'debugmode',
+                content: '<label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'browserconsole',
+                content: '<label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>',
+                display: (debugMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'betamode',
+                content: '<label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>',
+                display: ''
+            },
+            {
+                settingName: 'advancedmode',
+                content: '<label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>',
+                display: ''
+            },
+            {
+                settingName: 'longlength',
+                content: 'Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                        <input type="text" name="longLength" value="' + longLength + '">',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'shortlength',
+                content: 'Cache subreddit user notes time (in minutes):<br>\
+                      <input type="text" name="shortLength" value="' + shortLength + '">',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'clearcache',
+                content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>',
+                display: ''
+            },
+            {
+                settingName: 'showsettings',
+                content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
+                display: (debugMode && !TB.utils.devModeLock) ? '' : dispalyNone
+            }
+    ];
+
+        $.each(settings, function () {
+            settingContent += TB.utils.template(settingTemplate, {
+                'settingName': this.settingName,
+                'content': this.content,
+                'display': this.display
+            });
+        });
 
         $body.on('click', '.tb-gen-setting-link', function () {
             var $this = $(this),
@@ -121,91 +190,26 @@ TB = {
             }
         });
 
-        settings.push({
-            settingName: 'settingssub',
-            content: '\
-                        Backup/restore toolbox settings to a wiki page:<br>\
-                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
-                        <input class="tb-settings-export tb-action-button" type="button" value="backup">\
-                        <input class="tb-settings-import tb-action-button" type="button" value="restore">\
-                        <b> Important:</b> This will reload the page without saving!\
-                        <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
-                        ',
-            display: ''
-        });
-        settings.push({
-            settingName: 'showexportreminder',
-            content: '<label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show reminder after 30 days of no backup.</label>',
-            display: ''
-        });
-        settings.push({
-            settingName: 'debugmode',
-            content: '<label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>',
-            display: (advancedMode) ? '' : dispalyNone
-        });
-        settings.push({
-            settingName: 'browserconsole',
-            content: '<label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>',
-            display: (debugMode) ? '' : dispalyNone
-        });
-        settings.push({
-            settingName: 'betamode',
-            content: '<label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>',
-            display: ''
-        });
-        settings.push({
-            settingName: 'advancedmode',
-            content: '<label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>',
-            display: ''
-        });
-        settings.push({
-            settingName: 'longlength',
-            content: 'Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-                      <input type="text" name="longLength" value="' + longLength + '">',
-            display: (advancedMode) ? '' : dispalyNone
-        });
-        settings.push({
-            settingName: 'shortlength',
-            content: 'Cache subreddit user notes time (in minutes):<br>\
-                      <input type="text" name="shortLength" value="' + shortLength + '">',
-            display: (advancedMode) ? '' : dispalyNone
-        });
-        settings.push({
-            settingName: 'clearcache',
-            content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>',
-            display: ''
-        });
-        settings.push({
-            settingName: 'showsettings',
-            content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
-            display: (debugMode && !TB.utils.devModeLock) ? '' : dispalyNone
-        });
-
-        $.each(settings, function (key, val) {
-            settingContent += TB.utils.template(settingTemplate, {
-                'settingName': val.settingName,
-                'content': val.content,
-                'display': val.display
-            });
-        });
-
         var settingsTabs = [
             {
                 title: 'General Settings',
                 tooltip: 'Edit toolbox general settings',
                 help_page: 'toolbox',
+                id: 'toolbox',
                 content: settingContent
             },
             {
                 title: 'Toggle Modules',
                 tooltip: 'Enable/disable individual modules',
                 help_page: 'toggle-modules',
+                id: 'togglemodules',
                 content: '' // this gets propagated magically
             },
             {
                 title: 'About',
                 tooltip: '',
                 help_page: 'about',
+                id: 'about',
                 content: '\
                 <h1 id="tb-random-about-quote">"' + TBUtils.RandomQuote + '"</h1>\
                 <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\

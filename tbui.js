@@ -312,7 +312,7 @@
                     tab.id = tab.id.replace(/\s/g, '_')
                 }
 
-                var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+                var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' ' + (tab.id ? ' data-module="' + tab.id + '"' : '') + ' class="' + tab.id + '" >' + tab.title + ' </a>');
 
                 $button.data('help_page', tab.help_page);
 

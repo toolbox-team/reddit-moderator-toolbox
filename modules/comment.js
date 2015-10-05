@@ -727,7 +727,7 @@ self.init = function () {
                 $modComments.closest('.thing').hide();
                 $(this).hide();
                 window.addEventListener("TBNewThings", function () {
-                    $('.moderator').hide();
+                    $('.moderator').closest('.thing').hide();
                 });
             })
         }

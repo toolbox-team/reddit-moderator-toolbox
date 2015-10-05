@@ -745,7 +745,7 @@ self.init = function() {
     });
 
 
-    $body.on('click', '.tb-old-settings .tb-help-toggle', function () {
+    $body.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
         var module = $(this).attr('data-module');
         window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
 

@@ -617,10 +617,10 @@ self.init = function() {
                 if (setting) {
                     setting = setting.toLowerCase();
                     var id = '#tb-' + module + '-' + setting,
-                        highlightedCSS = id + ' p {background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
+                        highlightedCSS = id + ' p {background-color: '+ TB.ui.standardColors.softyellow +'; display: block !important;}';
 
                     // this next line is to deal with legacy settings
-                    highlightedCSS += id + '{background-color: #'+ TB.ui.standardColors.softyellow +'; display: block !important;}';
+                    highlightedCSS += id + '{background-color: '+ TB.ui.standardColors.softyellow +'; display: block !important;}';
                     highlightedCSS += '.tb-setting-link-' + setting + ' {display: block !important;}';
 
                     $('head').append('<style type="text/css">' + highlightedCSS + '</style>');

@@ -1,6 +1,6 @@
 function popcorn() {
-    var self = new TB.Module('Popcorn');
-    self.shortname = 'popcorn';
+var self = new TB.Module('Popcorn');
+self.shortname = 'popcorn';
 
 //Default settings
 self.settings['enabled']['default'] = false;
@@ -32,7 +32,7 @@ self.register_setting('sortOnMoreChildren', {
 self.sorted = false;
 self.pending = [];
 
-self.init = function() {
+self.init = function () {
     var neg_thresh = self.setting('negHighlightThreshold'),
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
@@ -43,11 +43,11 @@ self.init = function() {
         $sitetable;
 
     // if(!TBUtils.isMod) return;
-    
-    if(!TBUtils.isCommentsPage) return;
+
+    if (!TBUtils.isCommentsPage) return;
 
 
-    if($body.hasClass('listing-page')){
+    if ($body.hasClass('listing-page')) {
         $sitetable = $('.content > .sitetable');
     } else {
         $sitetable = $('.commentarea > .sitetable');
@@ -55,24 +55,24 @@ self.init = function() {
 
     $sitetable.before($buttons);
 
-    if(auto){
+    if (auto) {
         start();
     } else {
         $buttons.append($init_btn);
     }
 
-    function start(){
+    function start() {
 
         $init_btn.remove();
 
         $body.addClass('tb-popcorn');
 
         $buttons.append($('<button id="tb-popcorn-sort" class="tb-action-button">Sort</button>').click(sortChildren))
-                .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));
+            .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));
 
-        if(sortOnMoreChildren){
-            $('.commentarea').on('click', '.morecomments', function(){
-                if(self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+        if (sortOnMoreChildren) {
+            $('.commentarea').on('click', '.morecomments', function () {
+                if (self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
             });
         }
         window.addEventListener("TBNewThings", function () {
@@ -83,18 +83,18 @@ self.init = function() {
     }
 
 
-    function run(){
+    function run() {
 
         highlightComments();
 
-        if(expand) $('.thing:not(.tb-pc-proc).tb-drama, .thing:not(.tb-pc-proc).tb-ndrama').each(uncollapseThing);
+        if (expand) $('.thing:not(.tb-pc-proc).tb-drama, .thing:not(.tb-pc-proc).tb-ndrama').each(uncollapseThing);
 
-        while(self.pending.length) self.pending.pop()();
+        while (self.pending.length) self.pending.pop()();
 
         markProcessedThings();
     }
 
-    function highlightComments(){
+    function highlightComments() {
 
         $('.thing:not(.tb-pc-proc) .numchildren').each(numChildren);
         //Consider storing $('.thing:not(.tb-pc-proc)')
@@ -104,70 +104,71 @@ self.init = function() {
             .parents('.thing').addClass('tb-drama');
     }
 
-    function score(){
+    function score() {
         var $this = $(this),
             thing = $this.parents('.thing')[0];
 
         //highlighting here to avoid another .each() iteration
-        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
+        if ((thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh) {
             $(thing).addClass('tb-neg tb-ndrama')
                 .parents('.thing').addClass('tb-ndrama');
         }
     }
 
-    function numChildren(){
+    function numChildren() {
         var $this = $(this);
 
         $this.parents('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
     }
 
-    function sortChildren(){
+    function sortChildren() {
 
         self.sorted = true;
 
         $(this).closest('.sitetable, .commentarea, .content').find('.sitetable').each(sortMe);
     }
 
-    function sortMe(){
+    function sortMe() {
         var $this = $(this),
             $things = $this.children('.thing:not(.morechildren)')
-            .sort(function(a, b){
-                return (b.dataset.nchildren - a.dataset.nchildren);
-            }).each(sortMe);
+                .sort(function (a, b) {
+                    return (b.dataset.nchildren - a.dataset.nchildren);
+                }).each(sortMe);
 
         $this.prepend($things)
             .prepend($this.children('.thing.tb-drama'))
             .prepend($this.children('.thing.tb-ndrama'));
     }
 
-    function collapseThing(){
+    function collapseThing() {
         $(this).addClass('collapsed').find('.expand').eq(0).text('[+]');
     }
 
-    function uncollapseThing(){
+    function uncollapseThing() {
         $(this).removeClass('collapsed').find('.expand').eq(0).text('[–]');
     }
 
-    function markProcessedThings(){
+    function markProcessedThings() {
         $('.thing:not(.tb-pc-proc)').addClass('tb-pc-proc');
     }
 
-    function collapseNonDrama(){
+    function collapseNonDrama() {
 
         $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
 
         $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
             .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
-/*  TODO
 
-    Include below threshold comments when the score is hidden?
+    /*  TODO
 
-    Build a filter for collections so elements can remove themselves if they don't need being "dealt with"
+     Include below threshold comments when the score is hidden?
 
-    Calculate %upvoted to get real numbers.
+     Build a filter for collections so elements can remove themselves if they don't need being "dealt with"
 
-    */
+     Calculate %upvoted to get real numbers.
+
+     */
 };
 
 TB.register_module(self);

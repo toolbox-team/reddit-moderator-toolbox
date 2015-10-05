@@ -382,7 +382,7 @@ TB = {
 
             if ($(e.target).hasClass('tb-settings-import')) {
                 TBUtils.importSettings(sub, function () {
-                    self.setting('lastExport', TB.utils.getTime());
+                    self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
                     TBUtils.clearCache();
                     window.location.reload();
                 });

@@ -108,26 +108,7 @@ self.init = function() {
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
-
-        // last export stuff
-        lastExport = self.setting('lastExport'),
-        showExportReminder = self.setting('showExportReminder'),
-        lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
-        lastExportLabel = (lastExport === 0) ? 'Never' : lastExportDays + ' days ago',
-        lastExportState = "";
-
-    if (lastExportDays > 30 || lastExport === 0) {
-        lastExportState = "sad";
-
-        if (showExportReminder && settingSub !== '' && lastExport !== 0){
-            TB.ui.textFeedback('Last toolbox settings backup: ' + lastExportLabel, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
-        }
-    }
-    else if (lastExportDays < 15) {
-        lastExportState = "happy";
-    }
-
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
 
     // Custom CSS for devmode/testing
     if (customCSS) {

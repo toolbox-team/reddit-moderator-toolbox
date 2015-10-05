@@ -90,11 +90,11 @@ TB = {
 
 
         /// Template for 'general settings'.
-        var dispalyNone = 'style="display: none;"',
+        var dispalyNone = 'display: none;',
             settingContent = '';
 
         var settingTemplate = '\
-        <p id="tb-toolbox-{{settingName}} {{display}}">\
+        <p id="tb-toolbox-{{settingName}}" style="{{display}}">\
             {{content}}&nbsp;\
             <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
                 <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
@@ -202,7 +202,6 @@ TB = {
                 title: 'Toggle Modules',
                 tooltip: 'Enable/disable individual modules',
                 help_page: 'toggle-modules',
-                id: 'togglemodules',
                 content: '' // this gets propagated magically
             },
             {

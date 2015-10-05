@@ -70,10 +70,11 @@ self.init = function() {
         $buttons.append($('<button id="tb-popcorn-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));
 
-        $('.commentarea').on('click', '.morecomments', function(){
-            if(sortOnMoreChildren && self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
-        });
-
+        if(sortOnMoreChildren){
+            $('.commentarea').on('click', '.morecomments', function(){
+                if(self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+            });
+        }
         window.addEventListener("TBNewThings", function () {
             run();
         });

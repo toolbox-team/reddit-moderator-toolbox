@@ -99,7 +99,10 @@ TB = {
             <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
                 <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
             </a>&nbsp;\
-            <input style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}" type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})">\
+            <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
+                <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
+                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}})">\
+            </div>\
         </p>\
         ';
 
@@ -702,11 +705,15 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             settingName = setting.toLowerCase(),
                             linkClass = 'tb-setting-link-'+ settingName,
                             inputClass = 'tb-setting-input-'+ settingName,
-                            link = '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')';
+                            redditLink = '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')',
+                            internetLink = 'https://www.reddit.com/#?tbsettings='+ moduleName +'&setting='+ settingName;
+
 
                         $setting.append('&nbsp;<a ' + ((displaySetting) ? '' : 'style="display:none;"') +
                             ' data-setting="'+ settingName +'" href="javascript:;"" class="tb-setting-link '+ linkClass +'"><img src="data:image/png;base64,' + TB.ui.iconLink + '" /></a>' +
-                            '&nbsp;<input style="display:none;" class="tb-setting-input '+ inputClass +'" type="text" readonly="readonly" value="'+ link +'"/>');
+                            '&nbsp;<div style="display:none;" class="tb-setting-input '+ inputClass +'">' +
+                            '<input  type="text" readonly="readonly" value="'+ redditLink +'"/><br>' +
+                            '<input  type="text" readonly="readonly" value="'+ internetLink +'"/></div>');
 
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
                         $setting.attr('id', 'tb-' + moduleName + '-' + settingName);

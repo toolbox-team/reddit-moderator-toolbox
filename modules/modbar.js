@@ -629,8 +629,7 @@ self.init = function() {
                 // Wait a sec for stuff to load.
                 setTimeout(function () {
 
-                    showSettings();
-                    TB.injectSettings();
+                    TB.showSettings();
                     switchTab(module);
                 }, 1000);
             }

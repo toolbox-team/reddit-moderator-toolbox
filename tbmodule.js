@@ -820,6 +820,10 @@ TB.Module = function Module(name) {
         return profile;
     };
 
+    this.getProfile = function(key) {
+        return profile.get(key);
+    };
+
     // PUBLIC: placeholder init(), just in case
     this.init = function init() {
         // pass

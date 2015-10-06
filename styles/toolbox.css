@@ -1579,7 +1579,7 @@ border: solid 1px #808080;
     background-color: #878787;
 }
 
-.mod-toolbox.res-nightmode .tb-window-content span.tb-module-disabled {
+.mod-toolbox.res-nightmode .tb-window-tab span.tb-module-disabled {
     background-color: #B8B8B8;
 }
 
@@ -2088,7 +2088,7 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     color: #808080;
 }
 
-.mod-toolbox .tb-window-content span.tb-module-disabled {
+.mod-toolbox .tb-window-tab span.tb-module-disabled {
     font-size: 14px;
     display: block;
     padding: 4px;

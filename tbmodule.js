@@ -101,7 +101,7 @@ TB = {
             </a>&nbsp;\
             <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
                 <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
-                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}})">\
+                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">\
             </div>\
         </p>\
         ';

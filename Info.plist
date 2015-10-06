@@ -45,6 +45,7 @@
 				<string>modules/modbar.js</string>
 				<string>modules/modbutton.js</string>
 				<string>modules/notifier.js</string>
+				<string>modules/trouble.js</string>
 				<string>modules/modmailpro.js</string>
 				<string>modules/domaintagger.js</string>
 				<string>modules/usernotes.js</string>

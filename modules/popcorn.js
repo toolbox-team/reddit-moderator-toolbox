@@ -1,9 +1,10 @@
 function popcorn() {
-    var self = new TB.Module('Popcorn');
-    self.shortname = 'popcorn';
+var self = new TB.Module('Popcorn');
+self.shortname = 'Popcorn';
 
 //Default settings
 self.settings['enabled']['default'] = false;
+self.config['betamode'] = true;
 
 self.register_setting('highlightAuto', {
     'type': 'boolean',
@@ -43,7 +44,7 @@ self.init = function() {
         $sitetable;
 
     // if(!TBUtils.isMod) return;
-    
+
     if(!TBUtils.isCommentsPage) return;
 
 
@@ -83,24 +84,32 @@ self.init = function() {
     }
 
 
-    function run(){
+    function run() {
+        var start = performance.now(),
+            key = 'proc-things';
 
-        highlightComments();
+        self.startProfile(key);
+        var $things = $('.thing:not(.tb-pc-proc)');
 
-        if(expand) $('.thing:not(.tb-pc-proc).tb-drama, .thing:not(.tb-pc-proc).tb-ndrama').each(uncollapseThing);
+        highlightComments($things);
 
-        while(self.pending.length) self.pending.pop()();
+        if (expand) $things.find('.tb-drama, .tb-ndrama').each(uncollapseThing);
+
+        while (self.pending.length) self.pending.pop()();
 
         markProcessedThings();
+
+        self.endProfile(key);
+        self.log('load time: ' + self.getProfile(key).time.toFixed(4));
     }
 
-    function highlightComments(){
+    function highlightComments($things){
 
-        $('.thing:not(.tb-pc-proc) .numchildren').each(numChildren);
+        $things.find('.numchildren').each(numChildren);
         //Consider storing $('.thing:not(.tb-pc-proc)')
-        $('.thing:not(.tb-pc-proc) .score.unvoted').each(score);
+        $things.find('.score.unvoted').each(score);
 
-        $('.thing:not(.tb-pc-proc).controversial > .entry').addClass('tb-drama')
+        $things.find('.controversial > .entry').addClass('tb-drama')
             .parents('.thing').addClass('tb-drama');
     }
 

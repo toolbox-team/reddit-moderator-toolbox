@@ -6,10 +6,6 @@ function initwrapper() {
     TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
-    // validate post_site. TODO: something better than this.
-    if (TBUtils.post_site == "subreddits you moderate" || TBUtils.post_site == "mod (filtered)") {
-        TBUtils.post_site = "";
-    }
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
@@ -33,6 +29,7 @@ function initwrapper() {
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
+        invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'];
 
         randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
             "Simple solution, don't use nightmode....",
@@ -121,7 +118,7 @@ function initwrapper() {
 
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
-    if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site) {
+    if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
         TBUtils.post_site = '';
     }
 
@@ -1784,7 +1781,7 @@ function initwrapper() {
     // private functions
     function getToolboxDevs() {
         //TODO: actually pull these from /r/toolbox/about/moderators.json
-        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'noeatnosleep', 'Garethp'];
+        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'amici_ursi', 'noeatnosleep', 'Garethp', 'WorseThanHipster'];
         TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
         return devs;
     }

@@ -726,6 +726,9 @@ self.init = function () {
                 self.log('hiding mod comments');
                 $modComments.closest('.thing').hide();
                 $(this).hide();
+                window.addEventListener("TBNewThings", function () {
+                    $('.moderator').closest('.thing').hide();
+                });
             })
         }
     }

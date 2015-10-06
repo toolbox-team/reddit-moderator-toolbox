@@ -30,3 +30,37 @@
 .mod-toolbox span.tb-settings-display {
     max-width: 59em;
 }
+
+
+/* not really sure if it belongs here, but about tab styling */
+.mod-toolbox  .tb-window-tab.about .tb-window-content {
+    text-align: center;
+}
+
+.mod-toolbox  table.tb-about-credits {
+
+    border-collapse: separate;
+    border-spacing: 10px;
+    display: inline-block;
+}
+
+.mod-toolbox  table.tb-about-credits td {
+    border-bottom: solid 1px #F3F3F3;
+    width: 33.3%;
+    min-width: 140px;
+    text-align: center;
+    padding: 2px;
+}
+
+.mod-toolbox  .tb-window-tab.about h1#tb-random-about-quote {
+    font-style: italic;
+    font-family: non-serif;
+    font-size: 25px
+}
+
+.mod-toolbox  .tb-window-tab.about h3{
+    margin-top: 10px;
+    margin-bottom: 4px;
+    border-top: solid 1px #DCDCDC;
+    padding-top: 5px;
+}

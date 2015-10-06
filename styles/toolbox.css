@@ -1126,6 +1126,7 @@ body .thing.flaired {
     bottom: 30px;
     right: 20px;
     min-width: 700px;
+    max-width: none;
     min-height: 286px;
     padding: 0 !important;
     background-color: #FFF;
@@ -1206,7 +1207,6 @@ body .thing.flaired {
 
 
 .mod-toolbox #tb-debug-header-handle {
-    position: absolute;
     left: 0;
     top: 0;
     display: inline-block;
@@ -2224,5 +2224,9 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     margin-left:3px;
     content: "";
 }
+
+
+
+
 
 

@@ -53,7 +53,8 @@ TB = {
     },
 
     showSettings: function showSettings() {
-        var self = this;
+        var self = this,
+            $body = $('body');
 
         //
         // preload some generic variables
@@ -88,41 +89,117 @@ TB = {
         }
 
 
-        var settingsTabs = [
+        /// Template for 'general settings'.
+        var dispalyNone = 'display: none;',
+            settingContent = '';
+
+        var settingTemplate = '\
+        <p id="tb-toolbox-{{settingName}}" style="{{display}}">\
+            {{content}}&nbsp;\
+            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
+                <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
+            </a>&nbsp;\
+            <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
+                <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
+                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">\
+            </div>\
+        </p>\
+        ';
+
+        var settings = [
             {
-                title: 'General Settings',
-                tooltip: 'Edit toolbox general settings',
-                help_page: 'toolbox',
+                settingName: 'settingssub',
                 content: '\
-                    <p id="tb-toolbox-settingssub">\
                         Backup/restore toolbox settings to a wiki page:<br>\
                         <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">\
                         <input class="tb-settings-import tb-action-button" type="button" value="restore">\
                         <b> Important:</b> This will reload the page without saving!\
-                        <label class="backup-warning ' + lastExportState + '">Last backup: <b>'+ lastExportLabel +'</b></label>\
-                    </p><p id="tb-toolbox-showexportreminder">\
-                        <label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show reminder after 30 days of no backup.</label>\
-                    </p><p id="tb-toolbox-debugmode"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
-                        <label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>\
-                    </p><p id="tb-toolbox-browserconsole"' + ((debugMode) ? '' : 'style="display:none;"') + '>\
-                        <label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>\
-                    </p><p id="tb-toolbox-betamode">\
-                        <label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>\
-                    </p><p id="tb-toolbox-advancedmode">\
-                        <label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>\
-                    </p><p id="tb-toolbox-longlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
-                        Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-                        <input type="text" name="longLength" value="' + longLength + '">\
-                    </p><p id="tb-toolbox-shortlength"' + ((advancedMode) ? '' : 'style="display:none;"') + '>\
-                        Cache subreddit user notes time (in minutes):<br>\
-                        <input type="text" name="shortLength" value="' + shortLength + '">\
-                    </p><p id="tb-toolbox-clearcache">\
-                        <label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>\
-                    </p>\
-                    <p id="tb-toolbox-showsettings"' + ((debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" ') + '>\
-                        <input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />\
-                    </p>'
+                        <label class="backup-warning ' + lastExportState + '">Last backup: <b>' + lastExportLabel + '</b></label>\
+                        ',
+                display: ''
+            },
+            {
+                settingName: 'showexportreminder',
+                content: '<label><input type="checkbox" id="showExportReminder" ' + ((showExportReminder) ? "checked" : "") + '> Show reminder after 30 days of no backup.</label>',
+                display: ''
+            },
+            {
+                settingName: 'debugmode',
+                content: '<label><input type="checkbox" id="debugMode" ' + ((debugMode) ? "checked" : "") + '> Enable debug mode</label>',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'browserconsole',
+                content: '<label><input type="checkbox" id="browserConsole" ' + ((browserConsole) ? "checked" : "") + '> Use browser\'s console</label>',
+                display: (debugMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'betamode',
+                content: '<label><input type="checkbox" id="betaMode" ' + ((betaMode) ? "checked" : "") + '> Enable beta features</label>',
+                display: ''
+            },
+            {
+                settingName: 'advancedmode',
+                content: '<label><input type="checkbox" id="advancedMode" ' + ((advancedMode) ? "checked" : "") + '> Show advanced settings</label>',
+                display: ''
+            },
+            {
+                settingName: 'longlength',
+                content: 'Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                        <input type="text" name="longLength" value="' + longLength + '">',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'shortlength',
+                content: 'Cache subreddit user notes time (in minutes):<br>\
+                      <input type="text" name="shortLength" value="' + shortLength + '">',
+                display: (advancedMode) ? '' : dispalyNone
+            },
+            {
+                settingName: 'clearcache',
+                content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>',
+                display: ''
+            },
+            {
+                settingName: 'showsettings',
+                content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
+                display: (debugMode && !TB.utils.devModeLock) ? '' : dispalyNone
+            }
+    ];
+
+        $.each(settings, function () {
+            settingContent += TB.utils.template(settingTemplate, {
+                'settingName': this.settingName,
+                'content': this.content,
+                'display': this.display
+            });
+        });
+
+        $body.on('click', '.tb-gen-setting-link', function () {
+            var $this = $(this),
+                tbSet = $this.attr('data-setting');
+
+            var $inputSetting = $('.tb-setting-input-' + tbSet);
+
+            if($inputSetting.is(":visible")) {
+                $inputSetting.hide();
+                $this.css('opacity', '0.5');
+            } else {
+                $this.css('opacity', '1');
+                $inputSetting.show(function() {
+                    $(this).select();
+                });
+            }
+        });
+
+        var settingsTabs = [
+            {
+                title: 'General Settings',
+                tooltip: 'Edit toolbox general settings',
+                help_page: 'toolbox',
+                id: 'toolbox',
+                content: settingContent
             },
             {
                 title: 'Toggle Modules',
@@ -134,16 +211,45 @@ TB = {
                 title: 'About',
                 tooltip: '',
                 help_page: 'about',
+                id: 'about',
                 content: '\
-                    <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
-                    <br> made and maintained by: <a href="/user/creesch/">/u/creesch</a>, <a href="/user/agentlame">/u/agentlame</a>, <a href="/user/LowSociety">/u/LowSociety</a>,\
-                    <a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a>, <a href="/user/dakta">/u/dakta</a>, <a href="/user/largenocream">/u/largenocream</a>,\
-                    <a href="/user/noeatnosleep">/u/noeatnosleep</a>, <a href="/user/psdtwk">/u/psdtwk</a> and <a href="/user/garethp">/u/garethp</a><br><br> "\
-                    <i>' + TBUtils.RandomQuote + '</i>"<br><br>\
+                <h1 id="tb-random-about-quote">"' + TBUtils.RandomQuote + '"</h1>\
+                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v' + TBUtils.toolboxVersion + ': "' + TBUtils.releaseName + '"</a>\
+                    <h3> made and maintained by: </h3>\
+                    <table class="tb-about-credits">\
+                        <tr>\
+                            <td><a href="/user/creesch/">/u/creesch</a></td>\
+                            <td><a href="/user/agentlame">/u/agentlame</a></td>\
+                            <td><a href="/user/LowSociety">/u/LowSociety</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>\
+                            <td><a href="/user/dakta">/u/dakta</a></td>\
+                            <td><a href="/user/largenocream">/u/largenocream</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/noeatnosleep">/u/noeatnosleep</a></td>\
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
+                            <td><a href="/user/garethp">/u/garethp</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>\
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
+                            <td>&nbsp;</td>\
+                          </tr>\
+                    </table>\
                     <h3>Documentation by:</h3>\
-                    <a href="/user/psdtwk">/u/psdtwk</a>, <a href="/user/gorillagnomes">/u/gorillagnomes</a>, <a href="/user/x_minus_one">/u/x_minus_one</a>, <a href="/user/Gustavobc">/u/Gustavobc</a> and <a href="/user/hermithome">/u/hermithome</a><br><br>\
+                    <table class="tb-about-credits">\
+                        <tr>\
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
+                            <td><a href="/user/gorillagnomes">/u/gorillagnomes</a></td>\
+                            <td><a href="/user/x_minus_one">/u/x_minus_one</a></td>\
+                        </tr><tr>\
+                            <td><a href="/user/Gustavobc">/u/Gustavobc</a></td>\
+                            <td><a href="/user/hermithome">/u/hermithome</a></td>\
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
+                        </tr>\
+                    </table>\
                     <h3>Special thanks to:</h3>\
-                    <a href="/user/andytuba">/u/andytuba</a> - for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br><br>\
+                    <a href="/user/andytuba">/u/andytuba</a>\
+                    <br>for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>\
                     <h3>Credits:</h3>\
                     <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
                     <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
@@ -151,7 +257,7 @@ TB = {
                     <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
                     <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
-                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br><br>\
+                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br>\
                     <h3>License:</h3>\
                     <span>Copyright 2013-2015 toolbox development team. </span>\
                     <p>Licensed under the Apache License, Version 2.0 (the "License");\
@@ -210,6 +316,16 @@ TB = {
             var settingsDialog = e.delegateTarget,
                 reload = $(e.target).hasClass('tb-save-reload');
 
+            //save export sub
+            var sub = $("input[name=settingssub]").val();
+            if (sub) {
+                // Just to be safe.
+                sub = TB.utils.cleanSubredditName(sub);
+
+                // Save the sub, first.
+                TB.storage.setSetting('Utils', 'settingSub', sub);
+            }
+
             TB.storage.setSetting('Utils', 'debugMode', $("#debugMode").prop('checked'));
             TB.storage.setSetting('Utils', 'betaMode', $("#betaMode").prop('checked'));
             TB.storage.setSetting('Utils', 'devMode', $("#devMode").prop('checked'));
@@ -244,9 +360,89 @@ TB = {
             });
         });
 
+        $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
+            var sub = $("input[name=settingssub]").val();
+            if (!sub) {
+                TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
+                self.log('no setting sub');
+                return;
+            }
+
+            if (TB.storage.domain !== 'www') {
+                self.log('invalid export domain');
+                TB.ui.textFeedback('Toolbox can only backup/restore settings from www.reddit.com', TB.ui.FEEDBACK_NEGATIVE);
+                return;
+            }
+
+            // Just to be safe.
+            sub = TB.utils.cleanSubredditName(sub);
+
+            // Save the sub, first.
+            TB.storage.setSetting('Utils', 'settingSub', sub);
+
+            if ($(e.target).hasClass('tb-settings-import')) {
+                TBUtils.importSettings(sub, function () {
+                    self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
+                    TBUtils.clearCache();
+                    window.location.reload();
+                });
+            }
+            else {
+                TBUtils.exportSettings(sub, function () {
+                    self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
+                    TBUtils.clearCache();
+                    window.location.reload();
+                });
+            }
+        });
+
+        $settingsDialog.on('click', '#showRawSettings', function () {
+            var $viewSettings = TB.ui.overlay(
+                'toolbox raw setting display',
+                [
+                    {
+                        title: '',
+                        tooltip: '',
+                        content: '\
+                <span class="tb-settings-display">\
+                <textarea class="edit-settings" rows="20" cols="20"></textarea>\
+                </br>\
+                </span>\
+                ',
+                        footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">'
+                    }
+                ],
+                '', // meta
+                'tb-raw-settings'
+            ).appendTo('body');
+            $body.css('overflow', 'hidden');
+
+            var $editSettings = $('.edit-settings');
+
+            TB.storage.getSettingsObject(function (sObject) {
+                $editSettings.val(JSON.stringify(sObject, null, 2));
+            });
+
+            $viewSettings.on('click', '.anonymize-settings', function () {
+                TB.storage.getAnonymizedSettingsObject(function (sObject) {
+                    $editSettings.val(JSON.stringify(sObject, null, 2));
+                });
+            });
+
+            $viewSettings.on('click', '.close', function () {
+                $viewSettings.remove(); // should we have some confirmation dialog here?
+            });
+        });
+
+        $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
+            var module = $(this).attr('data-module');
+            window.open('https://www.reddit.com/r/toolbox/wiki/livedocs/' + module, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+        });
+
+
         // Lock 'n load
         $settingsDialog.appendTo('body').show();
-        $('body').css('overflow', 'hidden');
+        $body.css('overflow', 'hidden');
 
         // and finally...
         this.injectSettings();
@@ -509,11 +705,15 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             settingName = setting.toLowerCase(),
                             linkClass = 'tb-setting-link-'+ settingName,
                             inputClass = 'tb-setting-input-'+ settingName,
-                            link = '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')';
+                            redditLink = '['+ setting +'](#?tbsettings='+ moduleName +'&setting='+ settingName + ')',
+                            internetLink = 'https://www.reddit.com/#?tbsettings='+ moduleName +'&setting='+ settingName;
+
 
                         $setting.append('&nbsp;<a ' + ((displaySetting) ? '' : 'style="display:none;"') +
                             ' data-setting="'+ settingName +'" href="javascript:;"" class="tb-setting-link '+ linkClass +'"><img src="data:image/png;base64,' + TB.ui.iconLink + '" /></a>' +
-                            '&nbsp;<input style="display:none;" class="tb-setting-input '+ inputClass +'" type="text" readonly="readonly" value="'+ link +'"/>');
+                            '&nbsp;<div style="display:none;" class="tb-setting-input '+ inputClass +'">' +
+                            '<input  type="text" readonly="readonly" value="'+ redditLink +'"/><br>' +
+                            '<input  type="text" readonly="readonly" value="'+ internetLink +'"/></div>');
 
                         $setting = $('<span>').attr('class', 'setting-item').append($setting);
                         $setting.attr('id', 'tb-' + moduleName + '-' + settingName);
@@ -737,6 +937,10 @@ TB.Module = function Module(name) {
 
     this.getProfiles = function () {
         return profile;
+    };
+
+    this.getProfile = function(key) {
+        return profile.get(key);
     };
 
     // PUBLIC: placeholder init(), just in case

@@ -349,13 +349,18 @@ self.init = function () {
             // $modmail is native to reddit $tb_modmail in the modbar.
             var $modmail = $('#modmail'),
                 $tb_modmail = $('#tb-modmail');
+				$tbModmailCount = $('#tb-modmailcount');
 
                 // Determine if we need to point to a filtered inbox.
-                if (modmailFilteredSubreddits === 'mod') {
-                    $tb_modmail.attr('href', '/message/moderator/');
-                } else {
-                    $tb_modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator/');
-                    $modmail.attr('href', '/r/' + modmailFilteredSubreddits + '/message/moderator/');
+                if (modmailFilteredSubreddits !== 'mod') {
+					var modmailHrefAttr = '/r/' + modmailFilteredSubreddits + '/message/moderator/';
+				    if (modmailCustomLimit > 0) {
+                        modmailHrefAttr = modmailHrefAttr + '?limit=' + modmailCustomLimit;
+                    }
+					
+					$tb_modmail.attr('href', modmailHrefAttr);
+                    $modmail.attr('href', modmailHrefAttr);
+					$tbModmailCount.attr('href', modmailHrefAttr);
                 }
 
             if (count < 1) {
@@ -364,9 +369,6 @@ self.init = function () {
                 $tb_modmail.removeClass('havemail');
                 $tb_modmail.addClass('nohavemail');
                 $tb_modmail.attr('title', 'no new mail!');
-                if (parseInt(modmailCustomLimit) > 0) {
-                    $tb_modmail.attr('href', $tb_modmail.attr('href') + '?limit=' + modmailCustomLimit);
-                }
             } else {
                 // We are doing it like this to preserve other classes
                 $modmail.removeClass('nohavemail');

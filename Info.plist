@@ -45,6 +45,7 @@
 				<string>modules/modbar.js</string>
 				<string>modules/modbutton.js</string>
 				<string>modules/notifier.js</string>
+				<string>modules/trouble.js</string>
 				<string>modules/modmailpro.js</string>
 				<string>modules/domaintagger.js</string>
 				<string>modules/usernotes.js</string>
@@ -81,7 +82,7 @@
 				<string>styles/achievements.css</string>
 				<string>styles/modbar.css</string>
 				<string>styles/historybutton.css</string>
-				<string>styles/popcorn.css</string>
+				<string>styles/trouble.css</string>
 				<string>styles/notifier.css</string>
 				<string>styles/domaintagger.css</string>
 		</array>

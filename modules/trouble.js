@@ -1,6 +1,6 @@
-function popcorn() {
-var self = new TB.Module('Popcorn');
-self.shortname = 'Popcorn';
+function trouble() {
+var self = new TB.Module('Trouble');
+self.shortname = 'Trouble';
 
 //Default settings
 self.settings['enabled']['default'] = false;
@@ -39,8 +39,8 @@ self.init = function() {
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         $body = $('body'),
-        $buttons = $('<div id="tb-popcorn-buttons">'),
-        $init_btn = $('<button id="tb-popcorn-init" class="tb-action-button">Trouble-seeker</button>').click(start),
+        $buttons = $('<div id="tb-trouble-buttons">'),
+        $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble-seeker</button>').click(start),
         $sitetable;
 
     // if(!TBUtils.isMod) return;
@@ -66,10 +66,10 @@ self.init = function() {
 
         $init_btn.remove();
 
-        $body.addClass('tb-popcorn');
+        $body.addClass('tb-trouble');
 
-        $buttons.append($('<button id="tb-popcorn-sort" class="tb-action-button">Sort</button>').click(sortChildren))
-                .append($('<button class="tb-action-button" id="tb-popcorn-collapse">Collapse</button>').click(collapseNonDrama));
+        $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
+                .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
 
         if(sortOnMoreChildren){
             $('.commentarea').on('click', '.morecomments', function(){
@@ -184,6 +184,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBModuleLoaded", function () {
-        popcorn(); //run
+        trouble(); //run
     });
 })();

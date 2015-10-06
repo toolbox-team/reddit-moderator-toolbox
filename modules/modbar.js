@@ -122,11 +122,15 @@ self.init = function() {
     // toolbar, this will display all counters, quick links and other settings for the toolbox
 
 
-
-    var modMailUrl = '/message/moderator/';
+    // This is here in case notifier is disabled which is where this normally is set. 
+	// Atleast, I think.... - creesch
+    var modMailUrl = $('#modmail').attr('href');
     if (parseInt(modmailCustomLimit) > 0) {
+
         modMailUrl += '?limit=' + modmailCustomLimit;
-        $('#modmail').attr('href', '/message/moderator/?limit=' + modmailCustomLimit);
+        $('#modmail').attr('href', modMailUrl);
+        $('#tb-modmail').attr('href', modMailUrl);
+        $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
     var modBar = $('\

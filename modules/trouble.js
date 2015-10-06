@@ -1,5 +1,5 @@
 function trouble() {
-var self = new TB.Module('Trouble');
+var self = new TB.Module('Trouble Shooter');
 self.shortname = 'Trouble';
 
 //Default settings

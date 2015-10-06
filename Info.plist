@@ -45,7 +45,6 @@
 				<string>modules/modbar.js</string>
 				<string>modules/modbutton.js</string>
 				<string>modules/notifier.js</string>
-				<string>modules/trouble.js</string>
 				<string>modules/modmailpro.js</string>
 				<string>modules/domaintagger.js</string>
 				<string>modules/usernotes.js</string>
@@ -65,6 +64,8 @@
 				<string>modules/betterbuttons.js</string>
 				<string>modules/bagel.js</string>
 				<string>modules/flyingsnoo.js</string>
+				<string>modules/achievements.js</string>
+				<string>modules/trouble.js</string>
 				<string>modules/queuetools.js</string>
 				<string>tbmoduleinit.js</string>
 			</array>

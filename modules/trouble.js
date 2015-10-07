@@ -34,7 +34,7 @@ self.sorted = false;
 self.pending = [];
 
 self.init = function() {
-    var neg_thresh = self.setting('negHighlightThreshold'),
+    var neg_thresh_pref = self.setting('negHighlightThreshold'),
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
@@ -89,7 +89,7 @@ self.init = function() {
             key = 'proc-things';
 
         self.startProfile(key);
-        var $things = $('.thing:not(.tb-pc-proc)');
+        var $things = $('.thing.comment:not(.tb-pc-proc)');
 
         highlightComments($things);
 
@@ -116,11 +116,15 @@ self.init = function() {
 
     function score(){
         var $this = $(this),
-            thing = $this.parents('.thing')[0];
+            $thing = $this.closest('.thing'),
+            neg_thresh = neg_thresh_pref;
+
+        //lower the threashold by one for user's comments
+        if(RegExp("\/"+TBUtils.logged+"\\b").test($thing.find('> .entry .author')[0].href)) --neg_thresh;
 
         //highlighting here to avoid another .each() iteration
-        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
-            $(thing).addClass('tb-neg tb-ndrama')
+        if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
+            $thing.addClass('tb-neg tb-ndrama')
                 .parents('.thing').addClass('tb-ndrama');
         }
     }

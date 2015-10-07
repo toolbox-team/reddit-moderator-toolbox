@@ -128,14 +128,14 @@ self.init = function() {
     function numChildren(){
         var $this = $(this);
 
-        $this.parents('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
+        $this.closest('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
     }
 
     function sortChildren(){
 
         self.sorted = true;
 
-        $(this).closest('.sitetable, .commentarea, .content').find('.sitetable').each(sortMe);
+        sortMe.call($(this).closest('.sitetable, .commentarea, .content').find('.sitetable').eq(0));
     }
 
     function sortMe(){

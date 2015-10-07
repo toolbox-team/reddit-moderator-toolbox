@@ -40,7 +40,7 @@ self.init = function() {
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         $body = $('body'),
         $buttons = $('<div id="tb-trouble-buttons">'),
-        $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble-seeker</button>').click(start),
+        $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
         $sitetable;
 
     // if(!TBUtils.isMod) return;
@@ -104,12 +104,13 @@ self.init = function() {
     }
 
     function highlightComments($things){
+        var controversial = new RegExp(/\bcontroversial\b/);
 
         $things.find('.numchildren').each(numChildren);
-        //Consider storing $('.thing:not(.tb-pc-proc)')
+
         $things.find('.score.unvoted').each(score);
 
-        $things.find('.controversial > .entry').addClass('tb-drama')
+        $things.filter(function(){ return controversial.test(this.className); }).children('.entry').addClass('tb-drama')
             .parents('.thing').addClass('tb-drama');
     }
 

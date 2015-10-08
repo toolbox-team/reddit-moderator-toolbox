@@ -84,7 +84,6 @@ self.init = function() {
         if (expand) $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
     }
 
-
     function run() {
         var start = performance.now(),
             key = 'proc-things';
@@ -94,8 +93,9 @@ self.init = function() {
 
         highlightComments($things);
 
-
         while (self.pending.length) self.pending.pop()();
+
+        if (expand) $('.thing.tb-drama:not(.tb-pc-proc), .thing.tb-ndrama:not(.tb-pc-proc)').each(uncollapseThing);
 
         markProcessedThings();
 

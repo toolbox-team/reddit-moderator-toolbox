@@ -47,7 +47,6 @@ self.init = function() {
 
     if(!TBUtils.isCommentsPage) return;
 
-
     if($body.hasClass('listing-page')){
         $sitetable = $('.content > .sitetable');
     } else {
@@ -81,6 +80,8 @@ self.init = function() {
         });
 
         run();
+
+        if (expand) $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
     }
 
 
@@ -93,7 +94,6 @@ self.init = function() {
 
         highlightComments($things);
 
-        if (expand) $things.find('.tb-drama, .tb-ndrama').each(uncollapseThing);
 
         while (self.pending.length) self.pending.pop()();
 

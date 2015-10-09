@@ -1859,8 +1859,9 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 /* This should probably be somewhere else */
 
-#moderation_tools .icon-menu .toolbox-edit {
-    margin-left: 5px;
+#moderation_tools .tb-moderation-tools-icons {
+    margin: 0 5px 0 1px;
+    vertical-align: bottom;
 }
 
 #moderation_tools .icon-menu .tb-un-manager {

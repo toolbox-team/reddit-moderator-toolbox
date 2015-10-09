@@ -1864,10 +1864,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     vertical-align: bottom;
 }
 
-#moderation_tools .icon-menu .tb-un-manager {
-    margin-left: 1px;
-}
-
 /* metrics tab/dropdown stuff */
 #tb-metrics-expand-list {
     display: none;

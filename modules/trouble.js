@@ -1,5 +1,5 @@
 function trouble() {
-var self = new TB.Module('Trouble');
+var self = new TB.Module('Trouble Shooter');
 self.shortname = 'Trouble';
 
 //Default settings
@@ -34,19 +34,18 @@ self.sorted = false;
 self.pending = [];
 
 self.init = function() {
-    var neg_thresh = self.setting('negHighlightThreshold'),
+    var neg_thresh_pref = self.setting('negHighlightThreshold'),
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         $body = $('body'),
         $buttons = $('<div id="tb-trouble-buttons">'),
-        $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble-seeker</button>').click(start),
+        $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
         $sitetable;
 
     // if(!TBUtils.isMod) return;
 
     if(!TBUtils.isCommentsPage) return;
-
 
     if($body.hasClass('listing-page')){
         $sitetable = $('.content > .sitetable');
@@ -81,21 +80,22 @@ self.init = function() {
         });
 
         run();
-    }
 
+        if (expand) $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
+    }
 
     function run() {
         var start = performance.now(),
             key = 'proc-things';
 
         self.startProfile(key);
-        var $things = $('.thing:not(.tb-pc-proc)');
+        var $things = $('.thing.comment:not(.tb-pc-proc)');
 
         highlightComments($things);
 
-        if (expand) $things.find('.tb-drama, .tb-ndrama').each(uncollapseThing);
-
         while (self.pending.length) self.pending.pop()();
+
+        if (expand) $('.thing.tb-drama:not(.tb-pc-proc), .thing.tb-ndrama:not(.tb-pc-proc)').each(uncollapseThing);
 
         markProcessedThings();
 
@@ -104,22 +104,27 @@ self.init = function() {
     }
 
     function highlightComments($things){
+        var controversial = new RegExp(/\bcontroversial\b/);
 
         $things.find('.numchildren').each(numChildren);
-        //Consider storing $('.thing:not(.tb-pc-proc)')
+
         $things.find('.score.unvoted').each(score);
 
-        $things.find('.controversial > .entry').addClass('tb-drama')
+        $things.filter(function(){ return controversial.test(this.className); }).children('.entry').addClass('tb-drama')
             .parents('.thing').addClass('tb-drama');
     }
 
     function score(){
         var $this = $(this),
-            thing = $this.parents('.thing')[0];
+            $thing = $this.closest('.thing'),
+            neg_thresh = neg_thresh_pref;
+
+        //lower the threashold by one for user's comments
+        if(RegExp("\/"+TBUtils.logged+"\\b").test($thing.find('> .entry .author')[0].href)) --neg_thresh;
 
         //highlighting here to avoid another .each() iteration
-        if( (thing.dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
-            $(thing).addClass('tb-neg tb-ndrama')
+        if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
+            $thing.addClass('tb-neg tb-ndrama')
                 .parents('.thing').addClass('tb-ndrama');
         }
     }
@@ -127,14 +132,14 @@ self.init = function() {
     function numChildren(){
         var $this = $(this);
 
-        $this.parents('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
+        $this.closest('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
     }
 
     function sortChildren(){
 
         self.sorted = true;
 
-        $(this).closest('.sitetable, .commentarea, .content').find('.sitetable').each(sortMe);
+        sortMe.call($(this).closest('.sitetable, .commentarea, .content').find('> .sitetable'));
     }
 
     function sortMe(){
@@ -142,11 +147,13 @@ self.init = function() {
             $things = $this.children('.thing:not(.morechildren)')
             .sort(function(a, b){
                 return (b.dataset.nchildren - a.dataset.nchildren);
-            }).each(sortMe);
+            });
 
         $this.prepend($things)
             .prepend($this.children('.thing.tb-drama'))
             .prepend($this.children('.thing.tb-ndrama'));
+
+        $things.find('> .child > .sitetable').each(sortMe);
     }
 
     function collapseThing(){

@@ -455,6 +455,15 @@ self.populateAccountHistory = function () {
         'tumblr.com': {
             provider: 'Tumblr',
             type: TYPE.SUBDOMAIN
+        },
+        'deviantart.com': {
+            provider: 'deviantart',
+            type: TYPE.SUBDOMAIN
+        },
+        'artstation.com': {
+            path: 'artwork/',
+            provider: 'artstation',
+            type: TYPE.PATH
         }
     };
 

@@ -273,6 +273,7 @@ self.init = function () {
                 <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
                 <a class="choice" href="javascript:;" type="user">user...</a> \
                 <a class="choice" href="javascript:;" type="title">title...</a> \
+                <a class="choice" href="javascript:;" type="subreddit">subreddit...</a> \
                 <a class="choice dashed" href="javascript:;" type="comments">all comments</a> \
                 <a class="choice" href="javascript:;" type="links">all submissions</a> \
                 <a class="choice dashed" href="javascript:;" type="self">self posts</a> \
@@ -452,6 +453,9 @@ self.init = function () {
                     break;
                 case 'title':
                     selector = ':has(a.title:contains(' + prompt('title contains:\n(case sensitive)', '') + '))';
+                    break;
+                case 'subreddit':
+                    selector = ':has(a.subreddit:contains(' + prompt('subreddit contains:\n(case sensitive)', '') + '))';
                     break;
                 case 'comments':
                     selector = '.comment';

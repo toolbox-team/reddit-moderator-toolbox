@@ -81,7 +81,7 @@ self.init = function () {
 
                     var $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
                     var $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                        macroButtonHtml = '<select class="tb-top-macro-select tb-action-button" data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>';
+                        macroButtonHtml = '<select class="tb-top-macro-select tb-general-button" data-subreddit="'+ TB.utils.post_site +'"><option value=' + MACROS + '>macros</option></select>';
 
                     if ($tbUsertextButtons.length) {
                         $tbUsertextButtons.append(macroButtonHtml);

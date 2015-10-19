@@ -153,7 +153,7 @@ self.init = function() {
         var popupContent = '\
             <p>\
                 <input type="text" class="domain-name" value="' + domain + '" subreddit="' + subreddit + '"/>\
-                <select class="domain-color tb-general-button">\
+                <select class="domain-color tb-action-button inline-button">\
                     <option value="none">none</option>\
                 </select>\
             </p>\

@@ -369,7 +369,7 @@
     TBui.selectSingular = function selectSingular(choices, selected) {
         var $selector = $('\
         <div class="select-single">\
-            <select class="selector tb-general-button"></select>\
+            <select class="selector tb-action-button"></select>\
         </div>'),
             $selector_list = $selector.find('.selector');
 
@@ -391,8 +391,8 @@
 
         var $select_multiple = $('\
         <div class="select-multiple">\
-            <select class="selected-list left tb-general-button"></select><button class="remove-item right tb-action-button">remove</button>\
-            <select class="available-list left tb-general-button"></select><button class="add-item right tb-action-button">add</button>\
+            <select class="selected-list left tb-action-button"></select>&nbsp;<button class="remove-item right tb-action-button">remove</button>&nbsp;\
+            <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;\
             <div style="clear:both"></div>\
         </div>'),
             $selected_list = $select_multiple.find('.selected-list'),

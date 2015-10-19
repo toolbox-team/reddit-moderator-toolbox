@@ -179,10 +179,10 @@ self.init = function() {
         <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />\
     </div>\
     <div class="tb-debug-footer">\
-        <select class="module-select tb-general-button"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
+        <select class="module-select tb-action-button inline-button"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
         <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll</label>\
         <!--input class="tb-console-copy" type="button" value="copy text"-->\
-        <input class="tb-console-clear tb-action-button" type="button" value="clear console">\
+        <input class="tb-console-clear tb-action-button inline-button" type="button" value="clear console">\
     </div>\
 </div>\
 ');

@@ -107,6 +107,10 @@
     color: black;
 }
 
+.reason-popup select {
+    max-width: 200px;
+}
+
 .reason-popup .styled-reason {
     margin-top: 4px;
     padding: 1px 3px 3px 3px;

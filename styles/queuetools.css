@@ -45,7 +45,18 @@
     display: block;
     min-width: 360px;
     min-height: 460px;
-    background-image: url("http://i.imgur.com/TnlhFA8.gif");
+    background-image: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/begifs.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox .tb-spiders {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/spiderbro.png");
     background-repeat: no-repeat;
     background-position: center center;
     text-indent: -1000px;

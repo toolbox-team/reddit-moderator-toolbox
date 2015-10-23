@@ -168,7 +168,7 @@ self.init = function() {
             };
 
         // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
-        if (!data.subreddit || notEnabled.indexOf(data.subreddit) != -1 || TBUtils.isModmail) {
+        if (!data.subreddit || (notEnabled.indexOf(data.subreddit) != -1 && !alwaysShow) || TBUtils.isModmail) {
             return;
         }
 

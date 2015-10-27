@@ -1419,6 +1419,36 @@ function initwrapper() {
             });
     };
 
+    TBUtils.lockThread = function (id, callback) {
+        $.post('/api/lock', {
+            id: id,
+            uh: TBUtils.modhash
+        })
+            .success(function () {
+                if (typeof callback !== "undefined")
+                    callback(true);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+
+    TBUtils.unlockThread = function (id, callback) {
+        $.post('/api/unlock', {
+            uh: TBUtils.modhash,
+            id: id
+        })
+            .success(function () {
+                if (typeof callback !== "undefined")
+                    callback(true);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+
     TBUtils.postComment = function (parent, text, callback) {
         $.post('/api/comment', {
             parent: parent,

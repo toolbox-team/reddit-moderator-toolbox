@@ -167,7 +167,8 @@ self.init = function() {
                     <label><input type="checkbox" id="banuser">ban user</label>\
                     <label><input type="checkbox" id="muteuser">mute user</label>\
                     <label><input type="checkbox" id="removeitem">remove item</label>\
-                    <label><input type="checkbox" id="approveitem">approve item</label><br>\
+                    <label><input type="checkbox" id="approveitem">approve item</label>\
+                    <label><input type="checkbox" id="lockthread">lock thread</label><br>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
@@ -519,7 +520,8 @@ self.init = function() {
                             <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>\
                             <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
-                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label><br>\
+                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
+                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock thread</label><br>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\
@@ -544,6 +546,7 @@ self.init = function() {
                 $('.' + i + '-muteuser').prop('checked', macro.mute);
                 $('.' + i + '-removeitem').prop('checked', macro.remove);
                 $('.' + i + '-approveitem').prop('checked', macro.approve);
+                $('.' + i + '-lockthread').prop('checked', macro.lockthread);
 
             });
 
@@ -864,6 +867,7 @@ self.init = function() {
         $macroContent.find('#muteuser').prop("checked", macro.mute);
         $macroContent.find('#removeitem').prop("checked", macro.remove);
         $macroContent.find('#approveitem').prop("checked", macro.approve);
+        $macroContent.find('#lockthread').prop("checked", macro.lockthread);
         $macroContent.find('input[name=edit-note]').val('');
 
         $macroContent.find('.mod-macro-label').show();
@@ -882,6 +886,7 @@ self.init = function() {
             muteuser = $macroContent.find('#muteuser').prop("checked"),
             removeitem = $macroContent.find('#removeitem').prop("checked"),
             approveitem = $macroContent.find('#approveitem').prop("checked"),
+            lockthread = $macroContent.find('#lockthread').prop("checked"),
             editNote = $macroContent.find('input[name=edit-note]').val(),
             macro = config.modMacros[macroNum];
 
@@ -898,6 +903,7 @@ self.init = function() {
         macro.mute = muteuser;
         macro.remove = removeitem;
         macro.approve = approveitem;
+        macro.lockthread = lockthread;
 
         postToWiki('toolbox', config, editNote, true);
 
@@ -957,6 +963,7 @@ self.init = function() {
             muteuser = $body.find('#muteuser').prop("checked"),
             removeitem = $body.find('#removeitem').prop("checked"),
             approveitem = $body.find('#approveitem').prop("checked"),
+            lockthread = $body.find('#lockthread').prop("checked"),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
         editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
@@ -971,6 +978,7 @@ self.init = function() {
         macro.mute = muteuser;
         macro.remove = removeitem;
         macro.approve = approveitem;
+        macro.lockthread = lockthread;
 
         if (!config.modMacros) {
             config.modMacros = [];
@@ -993,6 +1001,7 @@ self.init = function() {
         $body.find('#muteuser').prop("checked", false);
         $body.find('#removeitem').prop("checked", false);
         $body.find('#approveitem').prop("checked", false);
+        $body.find('#lockthread').prop("checked", false);
     });
 
     // cancel
@@ -1007,6 +1016,7 @@ self.init = function() {
         $body.find('#muteuser').prop("checked", false);
         $body.find('#removeitem').prop("checked", false);
         $body.find('#approveitem').prop("checked", false);
+        $body.find('#lockthread').prop("checked", false);
     });
 
     // When the import button is clicked on the domain tags thing.

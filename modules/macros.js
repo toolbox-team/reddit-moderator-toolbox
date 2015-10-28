@@ -169,7 +169,7 @@ self.init = function () {
             }
 
             if (lock) {
-                actionList += '<br>- This reply will be locked';
+                actionList += '<br>- This post will be locked';
             }
         }
 

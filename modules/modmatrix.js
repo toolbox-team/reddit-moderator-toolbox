@@ -649,10 +649,13 @@ self.getSubredditUrl = function () {
 };
 
 self.getSubredditModerators = function () {
-    var modItems = $(".drop-choices.lightdrop:not(.modaction-drop) a, .dropdown.lightdrop:not(.modaction-drop) .selected");
+    var modItems = $('.drop-choices.lightdrop:not(.modaction-drop) a:not(.primary)');
+
+    if( $('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length ){ 
+        modItems = modItems.add('.dropdown.lightdrop:not(.modaction-drop) .selected');
+    }
 
     modItems = $.makeArray(modItems);
-
 
     modItems.sort(function (a, b) {
         var aText = $(a).text().toLowerCase(),

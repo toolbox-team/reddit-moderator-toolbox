@@ -168,7 +168,7 @@ self.init = function() {
                     <label><input type="checkbox" id="muteuser">mute user</label>\
                     <label><input type="checkbox" id="removeitem">remove item</label>\
                     <label><input type="checkbox" id="approveitem">approve item</label>\
-                    <label><input type="checkbox" id="lockthread">lock thread</label><br>\
+                    <label><input type="checkbox" id="lockthread">lock post</label><br>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
@@ -521,7 +521,7 @@ self.init = function() {
                             <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
                             <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
-                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock thread</label><br>\
+                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label><br>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\

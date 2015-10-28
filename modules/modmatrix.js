@@ -670,8 +670,7 @@ self.getSubredditModerators = function () {
 
     $(modItems).each(function () {
         var mod = $(this).text();
-        if (mod == "all" || mod == "admins*")
-            return;
+        if (mod == "all" || /\*/.test(mod)) return;
 
         moderators[$(this).text()] = {};
     });

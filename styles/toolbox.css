@@ -33,6 +33,7 @@ body.mod-toolbox li a.tb-general-button,
 body.mod-toolbox .tb-bracket-button {
     background-color: #F7FAFD;
     color: #696969;
+    font-size: 11px;
     border-width: 1px 1px 1px 2px;
     border-color: #B6C9DD;
     border-style: solid;
@@ -101,9 +102,16 @@ body.mod-toolbox .tb-action-button:active {
     -moz-appearance:none; /* Firefox */
     -webkit-appearance:none; /* Safari and Chrome */
     appearance:none;
-    padding-right: 20px !important;
+    padding: 1px 20px 2px 6px !important;
 }
-/* modmacro tweak*/
+
+
+.mod-toolbox select.tb-action-button:active {
+    border-width: 1px 1px 2px 2px !important;
+    padding: 1px 20px 2px 6px !important;
+}
+
+
 .mod-toolbox select.tb-macro-select.tb-action-button,
 .mod-toolbox select.tb-top-macro-select.tb-action-button
 {
@@ -112,14 +120,28 @@ body.mod-toolbox .tb-action-button:active {
     height: 26px !important;
 }
 
+/* inline action buttons */
+
+.mod-toolbox .tb-action-button.inline-button,
+.mod-toolbox select.tb-action-button.inline-button {
+    padding: 1px 15px 1px 5px !important;
+    font-size: 11px !important;
+}
+
+.mod-toolbox .tb-action-button.inline-button:active {
+    padding: 1px 5px !important;
+}
+
+.mod-toolbox select.tb-action-button.inline-button:active {
+    border-width: 1px 1px 2px 2px !important;
+    padding: 1px 15px 1px 5px !important;
+
+}
+
+
 .mod-toolbox button.save-mod.tb-action-button {
     box-sizing: border-box !important;
     height: 26px !important;
-}
-
-.mod-toolbox select.tb-action-button:active {
-    border-width: 1px 1px 2px 2px !important;
-    padding-right: 20px !important;
 }
 
 
@@ -133,6 +155,8 @@ body.mod-toolbox .tb-action-button:hover {
     text-decoration: none !important;
     outline: none !important;
 }
+
+/* END: action buttons */
 
 .mod-toolbox .tb-highlight {
     background-color: #ffff16;

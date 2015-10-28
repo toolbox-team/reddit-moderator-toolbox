@@ -196,7 +196,7 @@ self.init = function () {
                 </div>\
                 <div class="other-subs">\
                     <input type="checkbox" class="action-sub ' + self.OTHER + '-checkbox name="action-sub" value="' + self.OTHER + '">\
-                    <select class="' + self.OTHER + '" for="action-' + self.OTHER + '"><option value="' + self.OTHER + '">(select subreddit)</option></select>\
+                    <select class="' + self.OTHER + ' tb-action-button inline-button" for="action-' + self.OTHER + '"><option value="' + self.OTHER + '">(select subreddit)</option></select>\
                 </div>\
                 <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
                 <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>\
@@ -204,7 +204,7 @@ self.init = function () {
                 </div>',
                     footer: '\
                 <span class="status error left"></span>\
-                <select class="mod-action">\
+                <select class="mod-action tb-action-button inline-button">\
                     <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
                     <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
                     <option class="mod-action-positive" data-action="contributor" data-api="friend">contributor</option> \
@@ -212,8 +212,8 @@ self.init = function () {
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                 </select>\
-                <button class="save tb-action-button">' + self.saveButton + '</button>\
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
+                <button class="save tb-action-button inline-button">' + self.saveButton + '</button>\
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
                 },
                 {
                     title: 'User Flair',

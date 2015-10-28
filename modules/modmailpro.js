@@ -987,8 +987,8 @@ self.mailDropDowns = function() {
     var COMPOSE = 'compose-message',
         SWITCH = 'switch-modmail',
         composeURL = '/message/compose?to=%2Fr%2F',
-        $composeSelect = $('<li><select class="compose-mail"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
-        $switchSelect = $('<li><select class="switch-mail"><option value="' + SWITCH + '">switch mod mail</option></select></li>'),
+        $composeSelect = $('<li><select class="compose-mail tb-action-button inline-button"><option value="' + COMPOSE + '">compose mod mail</option></select></li>'),
+        $switchSelect = $('<li><select class="switch-mail tb-action-button inline-button"><option value="' + SWITCH + '">switch mod mail</option></select></li>'),
         $mmpMenu = $('.mmp-menu');
 
     TBUtils.getModSubs(function () {

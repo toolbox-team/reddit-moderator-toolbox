@@ -649,7 +649,7 @@ self.getSubredditUrl = function () {
 };
 
 self.getSubredditModerators = function () {
-    var modItems = $(".drop-choices.lightdrop:not(.modaction-drop) a");
+    var modItems = $(".drop-choices.lightdrop:not(.modaction-drop) a, .dropdown.lightdrop:not(.modaction-drop) .selected");
 
     modItems = $.makeArray(modItems);
 

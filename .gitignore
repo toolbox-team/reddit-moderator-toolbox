@@ -5,3 +5,4 @@
 /project.json
 *.zip
 *.xpi
+/node_modules

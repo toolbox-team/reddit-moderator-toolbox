@@ -30,10 +30,10 @@ Install jpm and gulp globally.
 $ npm install --global jpm gulp
 ```
 
-Then navigate to the root of the toolbox folder and install these modules
+Then navigate to the root of the toolbox folder and install the dependencies
 
 ```sh
-$ npm install gulp gulp-zip gulp-shell
+$ npm install 
 ```
 
 To build toolbox now simply run

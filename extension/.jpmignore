@@ -5,6 +5,5 @@
 *.bat
 *.plist
 
-/node_modules/*
 /data/background-safari.html
 /data/manifest.json

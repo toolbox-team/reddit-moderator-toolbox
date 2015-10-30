@@ -19,6 +19,39 @@ Containing:
 
 Documentation: http://www.reddit.com/r/toolbox/w/docs
 
+
+# Building 
+
+Building is relatively easy with gulp. 
+
+First make sure jpm is installed for building the firefox addon
+
+```sh
+$ npm install --global jpm
+```
+
+Then install gulp
+
+```sh
+$ npm install --global gulp
+```
+
+Then navigate to the root of the toolbox folder and install these modules
+
+```sh
+$ npm install gulp
+$ npm install gulp-zip
+$ npm install gulp-shell
+```
+
+To build toolbox now simply run
+
+```sh
+$ gulp
+```
+
+Or if you have followed these steps before and are on windows click the build.bat file.
+
 ### Third party support.
 
 All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes.

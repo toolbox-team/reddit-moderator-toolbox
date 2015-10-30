@@ -1,6 +1,7 @@
-/reddit-moderator-toolbox.zip
 /modules/modtalkadvisory.js
 *.bak
 /.idea
 /.settings
 /project.json
+*.zip
+*.xpi

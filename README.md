@@ -24,24 +24,16 @@ Documentation: http://www.reddit.com/r/toolbox/w/docs
 
 Building is relatively easy with gulp. 
 
-First make sure jpm is installed for building the firefox addon
+Install jpm and gulp globally.
 
 ```sh
-$ npm install --global jpm
-```
-
-Then install gulp
-
-```sh
-$ npm install --global gulp
+$ npm install --global jpm gulp
 ```
 
 Then navigate to the root of the toolbox folder and install these modules
 
 ```sh
-$ npm install gulp
-$ npm install gulp-zip
-$ npm install gulp-shell
+$ npm install gulp gulp-zip gulp-shell
 ```
 
 To build toolbox now simply run

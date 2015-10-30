@@ -61,7 +61,7 @@ self.register_setting('botCheckmark', {
 
 self.register_setting('queueCreature', {
     'type': 'selector',
-    'values': ['kitteh', 'puppy', '/r/babyelephantgifs','i have no soul'],
+    'values': ['kitteh', 'puppy', '/r/babyelephantgifs','/r/spiderbros','i have no soul'],
     'default': 'kitteh',
     'title': 'Queue Creature'
 });
@@ -113,6 +113,8 @@ self.init = function () {
             $noResults.addClass('tb-kitteh')
         } else if (queueCreature === '/r/babyelephantgifs') {
             $noResults.addClass('tb-begifs')
+        } else if (queueCreature === '/r/spiderbros') {
+            $noResults.addClass('tb-spiders')
         }
     }
 

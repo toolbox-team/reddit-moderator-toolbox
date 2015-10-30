@@ -146,6 +146,7 @@ self.init = function () {
             ban = macro.ban,
             mute = macro.mute,
             distinguish = macro.distinguish,
+            lock = macro.lockthread,
             actionList = 'The following actions will be performed:<br>- Your reply will be saved',
             kind = info.kind;
 
@@ -165,6 +166,10 @@ self.init = function () {
 
             if (distinguish) {
                 actionList += '<br>- This reply will be distinguished';
+            }
+
+            if (lock) {
+                actionList += '<br>- This post will be locked';
             }
         }
 
@@ -254,6 +259,10 @@ self.init = function () {
 
                     if (approve) {
                         TB.utils.approveThing(info.id);
+                    }
+
+                    if (lock) {
+                        TB.utils.lockThread(info.id);
                     }
                 }
 

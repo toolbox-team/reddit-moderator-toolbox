@@ -649,10 +649,13 @@ self.getSubredditUrl = function () {
 };
 
 self.getSubredditModerators = function () {
-    var modItems = $(".drop-choices.lightdrop:not(.modaction-drop) a");
+    var modItems = $('.drop-choices.lightdrop:not(.modaction-drop) a:not(.primary)');
+
+    if( $('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length ){ 
+        modItems = modItems.add('.dropdown.lightdrop:not(.modaction-drop) .selected');
+    }
 
     modItems = $.makeArray(modItems);
-
 
     modItems.sort(function (a, b) {
         var aText = $(a).text().toLowerCase(),
@@ -667,8 +670,7 @@ self.getSubredditModerators = function () {
 
     $(modItems).each(function () {
         var mod = $(this).text();
-        if (mod == "all" || mod == "admins*")
-            return;
+        if (mod == "all" || /\*/.test(mod)) return;
 
         moderators[$(this).text()] = {};
     });

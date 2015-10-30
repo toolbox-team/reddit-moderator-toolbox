@@ -213,7 +213,7 @@ self.init = function () {
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                 </select>\
                 <button class="save tb-action-button inline-button">' + self.saveButton + '</button>\
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"' + (showglobal ? '' : 'style="display:none;"') + ';">Global Action</button>'
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"' + (showglobal ? '' : 'style="display:none!important;"') + '>Global Action</button>'
                 },
                 {
                     title: 'User Flair',

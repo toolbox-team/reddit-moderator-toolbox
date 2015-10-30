@@ -69,6 +69,13 @@ self.register_setting('showExportReminder', {
 });
 
 
+self.register_setting('subredditColorSalt', {
+    'type': 'text',
+    'default': TB.storage.getSetting('ModMail', 'subredditColorSalt', 'PJSalt'),
+    'hidden': true
+});
+
+
 self.init = function() {
     if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
@@ -201,6 +208,7 @@ self.init = function() {
     if (enableModSubs) {
         var subList = '',
             livefilterCount,
+            subredditColorSalt = self.setting('subredditColorSalt'),
             mySubsTemplate = '\
 <div id="tb-my-subreddits">\
     <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
@@ -216,7 +224,7 @@ self.init = function() {
             self.log(TBUtils.mySubsData.length);
             $(TBUtils.mySubsData).each(function () {
                 subList = subList + '\
-<tr data-subreddit="' + this.subreddit + '">\
+<tr style="border-left: solid 3px ' + TBUtils.stringToColor(this.subreddit + subredditColorSalt) + ' !important;" data-subreddit="' + this.subreddit + '">\
     <td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td>\
     <td class="tb-my-subreddits-subreddit">\
         <a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\

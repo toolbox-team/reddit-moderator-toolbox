@@ -95,47 +95,63 @@ self.init = function() {
     function setTags(domainTags, things) {
         self.log("    Setting tags");
 
+        function applyTag($domain, d, $entry) {
+            switch (tagType) {
+                case "domain_background":
+                    $domain.css({
+                        'background-color': d.color,
+                        'padding': '0 1px 1px',
+                        'border-radius': '3px'
+                    });
+                    break;
+                case "domain_border":
+                    $domain.css({
+                        'border': "1px solid " + d.color,
+                        'padding': '0 1px',
+                        'border-radius': '3px'
+                    });
+                    break;
+                case "post_title":
+                    $entry.find('a.title').css({
+                        'color': d.color
+                    });
+                    break;
+                case "post_border":
+                    $entry.css({
+                        'border': '3px solid' + d.color
+                    });
+                    break;
+                case "title_dot":
+                default:
+                    var $span = $domain.parent().find('.tb-dt-little-dot');
+                    if ($span.length < 1) {
+                        $span = $('<span class="tb-dt-little-dot">&#9679;</span>');
+                        $domain.before($span);
+                    }
+
+                    $span.css({
+                        'color': d.color
+                    });
+                    break;
+            }
+        }
+
         TBUtils.forEachChunked(things, 25, 250, function (thing) {
-            var $entry = $(thing).find('.entry'),
+            var $thing = $(thing),
+                $entry = $thing.find('.entry'),
                 $domain = $entry.find('span.domain'),
-                domain = getThingDomain($(thing));
+                domain = getThingDomain($thing),
+                thingID = $thing.attr('data-fullname'),
+                tagged = [];
 
             $.each(domainTags, function (i, d) {
                 // Check if the domain ends with a tagged domain (to allow for subdomains)
-                if (domain.indexOf(d.name, domain.length - d.name.length) !== -1) {
-                    switch (tagType) {
-                        case "domain_background":
-                            $domain.css({
-                                'background-color': d.color,
-                                'padding': '0 1px 1px',
-                                'border-radius': '3px'
-                            });
-                            break;
-                        case "domain_border":
-                            $domain.css({
-                                'border': "1px solid " + d.color,
-                                'padding': '0 1px',
-                                'border-radius': '3px'
-                            });
-                            break;
-                        case "post_title":
-                            $entry.find('a.title').css({
-                                'color': d.color
-                            });
-                            break;
-                        case "post_border":
-                            $entry.css({
-                                'border': '3px solid' + d.color
-                            });
-                            break;
-                        case "title_dot":
-                        default:
-                            var $span = $('<span class="tb-dt-little-dot">&#9679;</span>').css({
-                                'color': d.color
-                            });
-                            $domain.before($span);
-                            break;
-                    }
+                if (domain === d.name) {
+                    applyTag($domain, d, $entry);
+                    tagged.push(thingID);
+                } else if (domain.indexOf(d.name, domain.length - d.name.length) !== -1
+                    && tagged.indexOf(thingID) === -1) {
+                    applyTag($domain, d, $entry);
                 }
             });
         });

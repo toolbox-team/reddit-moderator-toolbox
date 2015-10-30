@@ -15,6 +15,7 @@ Containing:
 - Notifications of new (mod)mails, queue items, etc.
 - Toolbar with queue counters
 - Banlist live search: If you have a big ban list this is a awesome feature, it basically turn the banlist search bar in a live search bar that automatically updates with matchers.
+- Trouble Shooter (beta): Highlights and sorts comments in subreddits you moderate to help guide you to potential sources of trouble i.e. controversial and negative score comments.
 
 Documentation: http://www.reddit.com/r/toolbox/w/docs
 

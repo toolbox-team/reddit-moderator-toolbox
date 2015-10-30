@@ -5,12 +5,13 @@ var shell = require('gulp-shell');
 gulp.task('zip', function() {
     console.log(process.cwd());
 
-    return gulp.src(['extension/data/*',
-        '!data/*.plist',
-        '!data/background-safari.html',
-        '!data/Icon.png',
-        '!data/index.js',
-        '!data/package.js'
+    return gulp.src(['extension/**',
+        '!extension/*.plist',
+        '!extension/*.zip',
+        '!extension/*.xpi',
+        '!extension/.jpmignore',
+        '!extension/data/background-safari.html',
+        '!extension/data/Icon.png'
     ])
         .pipe(zip('chrome-moderator-toolbox.zip'))
         .pipe(gulp.dest('extension/'));

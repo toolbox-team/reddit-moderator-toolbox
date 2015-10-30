@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Author</key>
+	<string>toolbox Team</string>
+	<key>Builder Version</key>
+	<string>10600.8.9</string>
+	<key>CFBundleDisplayName</key>
+	<string>Moderator toolbox for reddit</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.reddit.toolbox</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.3.0</string>
+	<key>CFBundleVersion</key>
+	<string>330</string>
+	<key>Chrome</key>
+	<dict>
+		<key>Global Page</key>
+		<string>background-safari.html</string>
+	</dict>
+	<key>Content</key>
+	<dict>
+		<key>Scripts</key>
+		<dict>
+			<key>End</key>
+			<array>
+				<string>data/libs/jquery-2.1.1.js</string>
+				<string>data/libs/tbplugins.js</string>
+				<string>data/libs/snuownd.js</string>
+				<string>data/libs/ace.js</string>
+				<string>data/libs/pako.js</string>
+				<string>data/libs/worker-css.js</string>
+				<string>data/libs/mode-css.js</string>
+				<string>data/libs/mode-json.js</string>
+				<string>data/libs/mode-yaml.js</string>
+				<string>data/libs/ace-themes.js</string>
+				<string>data/libs/redditapi.js</string>
+				<string>data/tbstorage.js</string>
+				<string>data/tbui.js</string>
+				<string>data/tbutils.js</string>
+				<string>data/tbmodule.js</string>
+				<string>data/modules/modbar.js</string>
+				<string>data/modules/modbutton.js</string>
+				<string>data/modules/notifier.js</string>
+				<string>data/modules/modmailpro.js</string>
+				<string>data/modules/domaintagger.js</string>
+				<string>data/modules/usernotes.js</string>
+				<string>data/modules/metricstab.js</string>
+				<string>data/modules/comment.js</string>
+				<string>data/modules/config.js</string>
+				<string>data/modules/modmatrix.js</string>
+				<string>data/modules/banlist.js</string>
+				<string>data/modules/removalreasons.js</string>
+				<string>data/modules/historybutton.js</string>
+				<string>data/modules/syntax.js</string>
+				<string>data/modules/macros.js</string>
+				<string>data/modules/realtime.js</string>
+				<string>data/modules/nukecomments.js</string>
+				<string>data/modules/personalnotes.js</string>
+				<string>data/modules/modmaillite.js</string>
+				<string>data/modules/betterbuttons.js</string>
+				<string>data/modules/bagel.js</string>
+				<string>data/modules/flyingsnoo.js</string>
+				<string>data/modules/achievements.js</string>
+				<string>data/modules/trouble.js</string>
+				<string>data/modules/queuetools.js</string>
+				<string>data/tbmoduleinit.js</string>
+			</array>
+		</dict>
+		<key>Stylesheets</key>
+		<array>
+				<string>data/styles/toolbox.css</string>
+				<string>data/styles/comment.css</string>
+				<string>data/styles/modmatrix.css</string>
+				<string>data/styles/removalreasons.css</string>
+				<string>data/styles/personalnotes.css</string>
+				<string>data/styles/modmaillite.css</string>
+				<string>data/styles/queuetools.css</string>
+				<string>data/styles/modmailpro.css</string>
+				<string>data/styles/achievements.css</string>
+				<string>data/styles/modbar.css</string>
+				<string>data/styles/historybutton.css</string>
+				<string>data/styles/trouble.css</string>
+				<string>data/styles/notifier.css</string>
+				<string>data/styles/domaintagger.css</string>
+		</array>
+	</dict>
+	<key>Description</key>
+	<string>A set of tools to be used by moderators on reddit in order to make their jobs easier.</string>
+	<key>DeveloperIdentifier</key>
+	<string>42X34WDLP5</string>
+	<key>ExtensionInfoDictionaryVersion</key>
+	<string>1.0</string>
+	<key>Permissions</key>
+	<dict>
+		<key>Website Access</key>
+		<dict>
+			<key>Allowed Domains</key>
+			<array>
+				<string>*.reddit.com</string>
+			</array>
+			<key>Include Secure Pages</key>
+			<true/>
+			<key>Level</key>
+			<string>Some</string>
+		</dict>
+	</dict>
+	<key>Update Manifest URL</key>
+	<string>http://creesch.github.io/reddit-moderator-toolbox/update/UpdateManifest.plist</string>
+	<key>Website</key>
+	<string>http://reddit.com/r/toolbox</string>
+</dict>
+</plist>

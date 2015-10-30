@@ -122,14 +122,16 @@ body.mod-toolbox .tb-action-button:active {
 
 /* inline action buttons */
 
-.mod-toolbox .tb-action-button.inline-button,
+.mod-toolbox .tb-action-button.inline-button {
+    font-size: 11px !important;
+}
 .mod-toolbox select.tb-action-button.inline-button {
     padding: 1px 15px 1px 5px !important;
     font-size: 11px !important;
 }
 
 .mod-toolbox .tb-action-button.inline-button:active {
-    padding: 1px 5px !important;
+    padding: 2px 6px 4px 7px !important;
 }
 
 .mod-toolbox select.tb-action-button.inline-button:active {

@@ -635,7 +635,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 editorSettings.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
 
                                 if (TBUtils.browser == 'chrome') {
-                                    ace.config.set("workerPath", chrome.extension.getURL("/libs/"));
+                                    ace.config.set("workerPath", chrome.extension.getURL("/data/libs/"));
                                 }
                                 editorSettings.getSession().setMode("ace/mode/css");
 

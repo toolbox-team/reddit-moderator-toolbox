@@ -1,16 +1,17 @@
 {
-  "id": "yes@jetpack",
-  "title": "Moderator toolbox for reddit",
-  "name": "reddit_mod_tb",
-  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-  "author": "team toolbox",
-  "license": "Apache 2.0",
+  "name": "moderator-toolbox-for-reddit",
   "version": "3.3.0",
-  
-  "engines": {
-    "firefox": ">=38.0a1"
+  "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+  "private": true,
+  "homepage": "http://www.reddit.com/r/toolbox",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/creesch/reddit-moderator-toolbox.git"
   },
-  "permissions": {
-    "private-browsing": true
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-shell": "^0.5.1",
+    "gulp-zip": "^3.0.2"
   }
 }

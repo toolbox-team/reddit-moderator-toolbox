@@ -19,6 +19,31 @@ Containing:
 
 Documentation: http://www.reddit.com/r/toolbox/w/docs
 
+
+# Building 
+
+Building is relatively easy with gulp. 
+
+Install jpm and gulp globally.
+
+```sh
+$ npm install --global jpm gulp
+```
+
+Then navigate to the root of the toolbox folder and install the dependencies
+
+```sh
+$ npm install 
+```
+
+To build toolbox now simply run
+
+```sh
+$ gulp
+```
+
+Or if you have followed these steps before and are on windows click the build.bat file.
+
 ### Third party support.
 
 All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes.

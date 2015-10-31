@@ -1,0 +1,9 @@
+.*
+*.crx
+*.xpi
+*.zip
+*.bat
+*.plist
+
+/data/background-safari.html
+/data/manifest.json

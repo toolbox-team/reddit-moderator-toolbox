@@ -99,11 +99,11 @@ TB = {
             <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
                 <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
             </a>&nbsp;\
-            <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
-                <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
-                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">\
-            </div>\
         </p>\
+        <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
+            <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
+            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">\
+        </div>\
         ';
 
         var settings = [

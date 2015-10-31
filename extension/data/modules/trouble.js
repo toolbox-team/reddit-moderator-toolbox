@@ -142,12 +142,24 @@ self.init = function() {
         sortMe.call($(this).closest('.sitetable, .commentarea, .content').find('> .sitetable'));
     }
 
+    function fixFlatNER($this){
+        var $NERs = $this.find('.linklisting');
+        if(!$NERs.length) return;
+
+        $this.append($NERs.children('.thing'));
+        $('.NERPageMarker, .clearleft + .clearleft').css('display', 'none');
+    }
+
     function sortMe(){
         var $this = $(this),
-            $things = $this.children('.thing:not(.morechildren)')
-            .sort(function(a, b){
-                return (b.dataset.nchildren - a.dataset.nchildren);
-            });
+            $things;
+
+        fixFlatNER($this);
+
+        $things = $this.children('.thing:not(.morechildren)')
+        .sort(function(a, b){
+            return (b.dataset.nchildren - a.dataset.nchildren);
+        });
 
         $this.prepend($things)
             .prepend($this.children('.thing.tb-drama'))

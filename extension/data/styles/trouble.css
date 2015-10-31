@@ -52,7 +52,7 @@
     display: inline !important;
 }
 
-.mod-toolbox.tb-trouble .thing:before{
+.mod-toolbox.tb-trouble.tb-nchildren .thing:before{
     content: attr(data-nchildren);
 }
 

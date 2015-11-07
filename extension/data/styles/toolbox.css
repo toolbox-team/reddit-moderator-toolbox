@@ -1006,6 +1006,10 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     width: 190px;
 }
 
+.mod-action {
+    max-width: 60px;
+}
+
 .mod-action-positive {
     background-color: #E5F0E1;
 }

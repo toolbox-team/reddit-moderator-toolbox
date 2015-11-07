@@ -55,7 +55,8 @@ function initwrapper() {
             "toolbox is build on beer",
             "aww, i thought this was about real tools",
             "my poop never smelled worse than when i lived off pizza bagel bites",
-            "Little dot, little dot ♪ You are not so little anymore ♫"],
+            "Little dot, little dot ♪ You are not so little anymore ♫",
+            "How great will it be that trouble's wiki page will also include pizza ordering instructions?"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

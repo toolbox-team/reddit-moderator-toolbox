@@ -183,12 +183,13 @@ TB = {
             var $inputSetting = $('.tb-setting-input-' + tbSet);
 
             if($inputSetting.is(":visible")) {
-                $inputSetting.hide();
-                $this.css('opacity', '0.5');
-            } else {
                 $this.css('opacity', '1');
+                $inputSetting.hide();
+
+            } else {
+                $this.css('opacity', '0.5');
                 $inputSetting.show(function() {
-                    $(this).select();
+                    $(this).find('input:first-child').select();
                 });
             }
         });

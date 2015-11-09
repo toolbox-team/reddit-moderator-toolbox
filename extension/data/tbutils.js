@@ -55,7 +55,8 @@ function initwrapper() {
             "toolbox is build on beer",
             "aww, i thought this was about real tools",
             "my poop never smelled worse than when i lived off pizza bagel bites",
-            "Little dot, little dot ♪ You are not so little anymore ♫"],
+            "Little dot, little dot ♪ You are not so little anymore ♫",
+            "How great will it be that trouble's wiki page will also include pizza ordering instructions?"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
@@ -74,7 +75,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.3.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 330; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'YO MAMA';
+    TBUtils.releaseName = 'Locking Lizard';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;

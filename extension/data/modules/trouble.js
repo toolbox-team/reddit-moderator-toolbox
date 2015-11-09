@@ -30,6 +30,12 @@ self.register_setting('sortOnMoreChildren', {
     'title': 'Continue to sort children on "load more comments"'
 });
 
+self.register_setting('displayNChildren', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.'
+});
+
 self.sorted = false;
 self.pending = [];
 
@@ -38,12 +44,13 @@ self.init = function() {
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
+        nChildren = self.setting('displayNChildren'),
         $body = $('body'),
         $buttons = $('<div id="tb-trouble-buttons">'),
         $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
         $sitetable;
 
-    // if(!TBUtils.isMod) return;
+    if(!TBUtils.isMod) return;
 
     if(!TBUtils.isCommentsPage) return;
 
@@ -66,6 +73,7 @@ self.init = function() {
         $init_btn.remove();
 
         $body.addClass('tb-trouble');
+        if(nChildren) $body.addClass('tb-nchildren');
 
         $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
@@ -142,12 +150,24 @@ self.init = function() {
         sortMe.call($(this).closest('.sitetable, .commentarea, .content').find('> .sitetable'));
     }
 
+    function fixFlatNER($this){
+        var $NERs = $this.find('.linklisting');
+        if(!$NERs.length) return;
+
+        $this.append($NERs.children('.thing'));
+        $('.NERPageMarker, .clearleft + .clearleft').css('display', 'none');
+    }
+
     function sortMe(){
         var $this = $(this),
-            $things = $this.children('.thing:not(.morechildren)')
-            .sort(function(a, b){
-                return (b.dataset.nchildren - a.dataset.nchildren);
-            });
+            $things;
+
+        fixFlatNER($this);
+
+        $things = $this.children('.thing:not(.morechildren)')
+        .sort(function(a, b){
+            return (b.dataset.nchildren - a.dataset.nchildren);
+        });
 
         $this.prepend($things)
             .prepend($this.children('.thing.tb-drama'))

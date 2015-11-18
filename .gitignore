@@ -2,6 +2,7 @@
 *.bak
 /.idea
 /.settings
+/.vscode
 /project.json
 *.zip
 *.xpi

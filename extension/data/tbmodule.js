@@ -164,7 +164,7 @@ TB = {
             {
                 settingName: 'showsettings',
                 content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
-                display: (debugMode && !TB.utils.devModeLock) ? '' : dispalyNone
+                display: ''
             }
     ];
 

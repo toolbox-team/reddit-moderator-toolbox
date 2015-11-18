@@ -889,6 +889,12 @@ self.init = function() {
             lockthread = $macroContent.find('#lockthread').prop("checked"),
             editNote = $macroContent.find('input[name=edit-note]').val(),
             macro = config.modMacros[macroNum];
+            
+            
+        if (macroTitle.length < 1) {
+            TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
+            return;
+        }
 
         if (!editNote) {
             // default note
@@ -965,6 +971,11 @@ self.init = function() {
             approveitem = $body.find('#approveitem').prop("checked"),
             lockthread = $body.find('#lockthread').prop("checked"),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
+            
+        if (macroTitle.length < 1) {
+            TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
+            return;
+        }
 
         editNote = 'create new macro ' + (editNote ? ', ' + editNote : '');
 

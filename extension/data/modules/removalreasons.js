@@ -145,7 +145,7 @@ self.init = function() {
             $thing = $button.closest('.thing');
 
         //Don't show removal reasons for spam button.
-        if ($button.children().first().attr('value') === 'spammed')
+        if ($button.text() === 'spammed')
             return;
 
         // Ignore if a comment and comment reasons disabled

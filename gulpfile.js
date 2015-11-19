@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var zip = require('gulp-zip');
-var shell = require('gulp-shell');
+var exec = require('child_process').exec;
+
+var dest_dir = "extension/";
 
 gulp.task('zip', function() {
     console.log(process.cwd());
@@ -14,13 +16,17 @@ gulp.task('zip', function() {
         '!extension/data/Icon.png'
     ])
         .pipe(zip('chrome-moderator-toolbox.zip'))
-        .pipe(gulp.dest('extension/'));
+        .pipe(gulp.dest(dest_dir));
 });
 
-gulp.task('xpi', shell.task([
-    'jpm xpi'
-], {
-    cwd: 'extension/'
-}));
+gulp.task('xpi', function(cb) {
+    exec('jpm xpi', {cwd: 'extension/'}, function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        
+        gulp.src('extension/*.xpi')
+            .pipe(gulp.dest(dest_dir));
+    });
+});
 
 gulp.task('default', ['zip', 'xpi']);

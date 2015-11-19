@@ -30,12 +30,6 @@ self.register_setting('sortOnMoreChildren', {
     'title': 'Continue to sort children on "load more comments"'
 });
 
-self.register_setting('displayNativeNChildren', {
-    'type': 'boolean',
-    'default': true,
-    'title': 'Make `(n children)` visible for uncollapsed comments.'
-});
-
 self.register_setting('displayNChildren', {
     'type': 'boolean',
     'default': false,
@@ -50,7 +44,6 @@ self.init = function() {
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
-        nativeNChildren = self.setting('displayNativeNChildren'),
         nChildren = self.setting('displayNChildren'),
         $body = $('body'),
         $buttons = $('<div id="tb-trouble-buttons">'),
@@ -80,7 +73,6 @@ self.init = function() {
         $init_btn.remove();
 
         $body.addClass('tb-trouble');
-        if(nativeNChildren) $body.addClass('tb-nativenchildren');
         if(nChildren) $body.addClass('tb-nchildren');
 
         $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))

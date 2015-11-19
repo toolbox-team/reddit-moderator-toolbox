@@ -681,6 +681,10 @@ self.getSubredditModerators = function () {
 self.getSubredditActions = function () {
     var actionItems = $(".drop-choices.lightdrop.modaction-drop a");
 
+    if( $('.drop-choices.lightdrop.modaction-drop a.primary').length ){ 
+        actionItems = actionItems.add('.dropdown.lightdrop.modaction-drop .selected');
+    }
+
     var actions = {};
 
     actionItems.each(function () {

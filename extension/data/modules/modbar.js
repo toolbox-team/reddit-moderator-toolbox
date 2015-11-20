@@ -516,7 +516,7 @@ self.init = function() {
 
                     // this next line is to deal with legacy settings
                     highlightedCSS += id + '{background-color: '+ TB.ui.standardColors.softyellow +'; display: block !important;}';
-                    highlightedCSS += '.tb-setting-link-' + setting + ' {display: block !important;}';
+                    highlightedCSS += '.tb-setting-link-' + setting + ' {display: inline !important;}';
 
                     $('head').append('<style type="text/css">' + highlightedCSS + '</style>');
                 }

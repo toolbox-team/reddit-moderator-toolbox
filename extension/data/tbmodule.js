@@ -176,7 +176,7 @@ TB = {
             });
         });
 
-        $body.on('click', '.tb-gen-setting-link', function () {
+        $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
             var $this = $(this),
                 tbSet = $this.attr('data-setting');
 
@@ -509,10 +509,23 @@ TB = {
                     if (setting == "enabled") {
                         moduleIsEnabled = (module.setting(setting) ? true : false);
                         if (options.hasOwnProperty("hidden") && options["hidden"] && !TB.utils.devMode) continue;
+                        var name = module.shortname.toLowerCase();
 
-                        // blank slate
-                        var $setting = $('<p></p>');
-                        $setting.append($('<label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '> ' + options.title + '</label> <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>'));
+                        var $setting = '\
+        <p id="tb-toggle_modules-' + name + '">\
+            <label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '>' + options.title + '</label>\
+                    <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>\
+            <a data-setting="' + name + '" href="javascript:;" class="tb-module-setting-link tb-setting-link-' + name + '">\
+                <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
+            </a>&nbsp;\
+        </p>\
+        <div style="display: none;" class="tb-setting-input tb-setting-input-' + name + '">\
+            <input type="text" readonly="readonly" value="[' + name + '](#?tbsettings=toggle_modules&setting=' + name + ')"><br>\
+            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=' + name + '">\
+        </div>\
+        ';
+
+
 
                         $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
                         // don't need this on the module's tab, too

@@ -183,11 +183,11 @@ TB = {
             var $inputSetting = $('.tb-setting-input-' + tbSet);
 
             if($inputSetting.is(":visible")) {
-                $this.css('opacity', '1');
+                $this.css('opacity', '0.5');
                 $inputSetting.hide();
 
             } else {
-                $this.css('opacity', '0.5');
+                $this.css('opacity', '1');
                 $inputSetting.show(function() {
                     $(this).find('input:first-child').select();
                 });
@@ -744,6 +744,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             if($inputSetting.is(":visible")) {
                                 $inputSetting.hide();
                                 $this.css('opacity', '0.5');
+
                             } else {
                                 $this.css('opacity', '1');
                                 $inputSetting.show(function() {

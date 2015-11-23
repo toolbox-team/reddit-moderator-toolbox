@@ -527,12 +527,12 @@ text-align: left;
     margin: 2px;
 }
 
-.mod-toolbox .tb-window-content  a.tb-setting-link {
+.mod-toolbox .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link {
     opacity: 0.5;
     display: inline-block;
 }
 
-.mod-toolbox .tb-window-content  a.tb-setting-link img {
+.mod-toolbox .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link img {
     vertical-align: middle;
 }
 

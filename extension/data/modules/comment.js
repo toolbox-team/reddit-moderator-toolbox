@@ -176,7 +176,7 @@ self.init = function () {
         run();
 
         // Add flat view link.
-        $(".commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="tb-loadFlat tb-general-button">comment flat view</a>');
+        $(".comments-page .commentarea .panestack-title .title").after(' <a href="javascript:void(0)" class="tb-loadFlat tb-general-button">comment flat view</a>');
 
         $body.on("click", ".tb-loadFlat", function () {
 

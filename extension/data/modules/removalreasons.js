@@ -321,9 +321,9 @@ self.init = function() {
             <div class="reason-popup-footer"> \
                 <input type="hidden" name="tom_or_not" value="no-tom"> \
                 <span class="status error" style="display:none">This is an easter egg.</span> \
-                <button class="save">send</button> \
-                <button class="no-reason">no reason</button> \
-                <button class="cancel">cancel and approve</button> \
+                <button class="save tb-action-button">send</button> \
+                <button class="no-reason tb-action-button">no reason</button> \
+                <button class="cancel tb-action-button">cancel and approve</button> \
             </div> \
         </div> \
     </div>');

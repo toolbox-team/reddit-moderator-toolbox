@@ -7,3 +7,4 @@
 *.zip
 *.xpi
 /node_modules
+extension/data/modules/trollatroll.js

@@ -29,7 +29,7 @@ function initwrapper() {
         betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
-        invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'];
+        invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
 
         randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
             "Simple solution, don't use nightmode....",

@@ -262,7 +262,7 @@ self.init = function () {
     });
 
     // Mod mail
-    self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=rAlaDNDqpJM" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], function (saveIndex) {
+    self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=amRXYuAO-Do" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], function (saveIndex) {
         if (TB.utils.isModmail) {
             self.manager.unlock(saveIndex, 1);
         }

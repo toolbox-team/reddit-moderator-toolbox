@@ -223,6 +223,9 @@ function initwrapper() {
         TBStorage.setSetting('DTagger', 'enabled', true);
         TBStorage.setSetting('DTagger', 'displayType', 'title_dot');
 
+        // Disable distingush toggle by default.
+        TBStorage.setSetting('BButtons', 'enableDistinguishToggle', false);
+
         // End: version changes.
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

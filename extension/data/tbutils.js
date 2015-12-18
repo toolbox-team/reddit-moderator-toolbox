@@ -26,7 +26,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
         invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -73,9 +73,9 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.3.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 330; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Locking Lizard';
+    TBUtils.toolboxVersion = '3.4.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 340; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'The Dev Awakens';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;
@@ -209,22 +209,8 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.3 version changes
-        $.log('Running ' + TBUtils.toolboxVersion + ' changes', true, SHORTNAME);
+        // 3.4 version changes
 
-        // No longer settings.
-        localStorage.removeItem('Toolbox.ModMail.autoThread');
-        localStorage.removeItem('Toolbox.ModMail.autoThreadOnLoad');
-
-        // This should have been removed long ago.
-        localStorage.removeItem('Toolbox.Utils.lastversion');
-
-        // Re-enable domain tagger by default and set tag to title dot.
-        TBStorage.setSetting('DTagger', 'enabled', true);
-        TBStorage.setSetting('DTagger', 'displayType', 'title_dot');
-
-        // Disable distingush toggle by default.
-        TBStorage.setSetting('BButtons', 'enableDistinguishToggle', false);
 
         // End: version changes.
 

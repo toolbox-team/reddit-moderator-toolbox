@@ -671,7 +671,7 @@ self.init = function() {
                         }
                         else {
                             // Distinguish the new reply
-                            TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful, response) {
+                            TBUtils.distinguishThing(response.json.data.things[0].data.id, false, function (successful, response) {
                                 if (successful) {
                                     if (notifyByPM)
                                         sendPM();

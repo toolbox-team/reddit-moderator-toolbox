@@ -1362,9 +1362,10 @@ function initwrapper() {
             });
     };
 
-    TBUtils.distinguishThing = function (id, callback) {
+    TBUtils.distinguishThing = function (id, sticky, callback) {
         $.post('/api/distinguish/yes', {
             id: id,
+            sticky: sticky,
             uh: TBUtils.modhash
         })
             .success(function () {

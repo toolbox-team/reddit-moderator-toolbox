@@ -147,6 +147,7 @@ self.init = function () {
             mute = macro.mute,
             distinguish = macro.distinguish,
             lock = macro.lockthread,
+            sticky = macro.sticky,
             actionList = 'The following actions will be performed:<br>- Your reply will be saved',
             kind = info.kind;
 
@@ -170,6 +171,10 @@ self.init = function () {
 
             if (lock) {
                 actionList += '<br>- This post will be locked';
+            }
+
+            if (sticky && topLevel) {
+                actionList += '<br>- This reply will be stickied';
             }
         }
 
@@ -242,7 +247,7 @@ self.init = function () {
 
                         if (distinguish && !TB.utils.isModmail) {
                             // Distinguish the new reply
-                            TBUtils.distinguishThing(response.json.data.things[0].data.id, function (successful) {
+                            TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky, function (successful) {
                                 if (!successful) {
                                     $currentMacroPopup.remove();
                                     TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);

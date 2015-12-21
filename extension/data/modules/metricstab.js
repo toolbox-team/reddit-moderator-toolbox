@@ -28,6 +28,7 @@ self.init = function () {
             'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/stalk?user={subSection}',
             'Redective': 'http://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
+            'Hivemind': 'http://www.hivemind.cc/rank/u/{subSection}',
             'Karmawhores': 'http://www.karmawhores.net/user/{subSection}',
             'Karmalb': 'http://www.karmalb.com/user/{subSection}',
             'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
@@ -42,6 +43,7 @@ self.init = function () {
             'Observatory': 'http://0bservat0ry.com/reddit/r/{subSection}.html',
             'MetaReddit': 'http://metareddit.com/r/{subSection}',
             'Redective': 'http://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
+            'Hivemind': 'http://www.hivemind.cc/rank/r/{subSection}',
             'RedditMetrics': 'http://redditmetrics.com/r/{subSection}',
             'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}'
         }

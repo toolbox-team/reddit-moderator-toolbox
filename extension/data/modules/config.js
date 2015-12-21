@@ -168,7 +168,8 @@ self.init = function() {
                     <label><input type="checkbox" id="muteuser">mute user</label>\
                     <label><input type="checkbox" id="removeitem">remove item</label>\
                     <label><input type="checkbox" id="approveitem">approve item</label>\
-                    <label><input type="checkbox" id="lockthread">lock post</label><br>\
+                    <label><input type="checkbox" id="lockthread">lock post</label>\
+                    <label><input type="checkbox" id="sticky">sticky comment</label><br>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
@@ -521,7 +522,8 @@ self.init = function() {
                             <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
                             <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
-                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label><br>\
+                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>\
+                            <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label><br>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
                         </span>\
@@ -547,6 +549,7 @@ self.init = function() {
                 $('.' + i + '-removeitem').prop('checked', macro.remove);
                 $('.' + i + '-approveitem').prop('checked', macro.approve);
                 $('.' + i + '-lockthread').prop('checked', macro.lockthread);
+                $('.' + i + '-sticky').prop('checked', macro.sticky);
 
             });
 
@@ -868,6 +871,7 @@ self.init = function() {
         $macroContent.find('#removeitem').prop("checked", macro.remove);
         $macroContent.find('#approveitem').prop("checked", macro.approve);
         $macroContent.find('#lockthread').prop("checked", macro.lockthread);
+        $macroContent.find('#sticky').prop("checked", macro.sticky);
         $macroContent.find('input[name=edit-note]').val('');
 
         $macroContent.find('.mod-macro-label').show();
@@ -887,6 +891,7 @@ self.init = function() {
             removeitem = $macroContent.find('#removeitem').prop("checked"),
             approveitem = $macroContent.find('#approveitem').prop("checked"),
             lockthread = $macroContent.find('#lockthread').prop("checked"),
+            sticky = $macroContent.find('#sticky').prop("checked"),
             editNote = $macroContent.find('input[name=edit-note]').val(),
             macro = config.modMacros[macroNum];
 
@@ -910,6 +915,7 @@ self.init = function() {
         macro.remove = removeitem;
         macro.approve = approveitem;
         macro.lockthread = lockthread;
+        macro.sticky = sticky;
 
         postToWiki('toolbox', config, editNote, true);
 
@@ -970,6 +976,7 @@ self.init = function() {
             removeitem = $body.find('#removeitem').prop("checked"),
             approveitem = $body.find('#approveitem').prop("checked"),
             lockthread = $body.find('#lockthread').prop("checked"),
+            sticky = $body.find('#sticky').prop("checked"),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
         if (macroTitle.length < 1) {
@@ -990,6 +997,7 @@ self.init = function() {
         macro.remove = removeitem;
         macro.approve = approveitem;
         macro.lockthread = lockthread;
+        macro.sticky = sticky;
 
         if (!config.modMacros) {
             config.modMacros = [];
@@ -1013,6 +1021,7 @@ self.init = function() {
         $body.find('#removeitem').prop("checked", false);
         $body.find('#approveitem').prop("checked", false);
         $body.find('#lockthread').prop("checked", false);
+        $body.find('#sticky').prop("checked", false);
     });
 
     // cancel
@@ -1028,6 +1037,7 @@ self.init = function() {
         $body.find('#removeitem').prop("checked", false);
         $body.find('#approveitem').prop("checked", false);
         $body.find('#lockthread').prop("checked", false);
+        $body.find('#sticky').prop("checked", false);
     });
 
     // When the import button is clicked on the domain tags thing.

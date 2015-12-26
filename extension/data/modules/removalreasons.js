@@ -132,9 +132,8 @@ self.init = function() {
         self.log('adding "add removal reasons" button');
         $body.find('.linklisting .thing.spam .flat-list.buttons').each(function() {
             var $this = $(this);
-            var removedBy = $this.find('li[title^="removed at"]').text();
-
-            if (removedBy != '[ removed ]' && removedBy != '[ removed by AutoModerator (remove not spam) ]') {
+            var prettyButtonCount = $this.find('.pretty-button').length;
+            if (prettyButtonCount === 1) {
                 $this.append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
             }
         });

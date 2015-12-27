@@ -103,24 +103,63 @@ self.initModSave = function initModSave() {
 };
 
 self.initDistinguishToggle = function initDistinguishToggle() {
+
+    // Check for top level comments so we can add & sticky to the mix
+    var stickyHtml = '<li class="toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
+
+    function addSticky() {
+        $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
+            $this = $(this);
+            if(!$this.find('.tb-sticky-comment').length) {
+                $this.after(stickyHtml);
+            }
+        });
+    }
+
+    // Add back the sticky button after distinguishing and other DOM events.
+    window.addEventListener("TBNewThings", function () {
+        addSticky();
+    });
+
+    addSticky();
+
     //Get a comment's distinguish state
     function getDistinguishState(post) {
         var author = $(post).find('a.author').first();
         return author.hasClass('moderator');
     }
 
-    //Toggle the distinguished state
-    function distinguishClicked() {
-        parentPost = $(this).parents('.thing').first();
-        var distinguished = getDistinguishState(parentPost);
+    //Get a comment's sticky state
+    function getStickyState(post) {
+        var stickied = $(post).find('.stickied-tagline');
+        return stickied.length;
+    }
 
-        $(this).find('.option > a').get(distinguished ? 1 : 0).click();
+    //Toggle the distinguished state
+    function distinguishClicked(e) {
+        var $parentPost = $(this).closest('.thing');
+        if(e.hasOwnProperty('originalEvent')) {
+            var distinguished = getDistinguishState($parentPost);
+            $(this).find('.option > a').get(distinguished ? 2 : 0).click();
+        } else {
+            var stickied = getStickyState($parentPost);
+            $(this).find('.option > a').get(stickied ? 2 : 1).click();
+        }
+
+    }
+
+    //Toggle the sticky state
+    function stickyClicked() {
+        var $siblingDistinguish = $(this).closest('li').prev();
+        $siblingDistinguish.find('form[action="/post/distinguish"]').click();
     }
 
     self.log("Adding distinguish toggle events");
 
     //Add distinguish button listeners
     $body.on('click', 'form[action="/post/distinguish"]', distinguishClicked);
+
+    $body.on('click', '.tb-sticky-comment', stickyClicked);
 
     //Watches for changes in DOM to add distinguish button listeners if needed
     var commentObserver = new MutationObserver(function (mutations) {

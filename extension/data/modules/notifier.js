@@ -357,7 +357,7 @@ self.init = function () {
 				    if (modmailCustomLimit > 0) {
                         modmailHrefAttr = modmailHrefAttr + '?limit=' + modmailCustomLimit;
                     }
-					
+
 					$tb_modmail.attr('href', modmailHrefAttr);
                     $modmail.attr('href', modmailHrefAttr);
 					$tbModmailCount.attr('href', modmailHrefAttr);
@@ -818,12 +818,12 @@ self.init = function () {
                             messagecount++;
                             if (messagecount > newCount) return false;
 
-                            var modmailbody = value.data.body;
-                            modmailsubject = value.data.subject;
-                            modmailsubreddit = value.data.subreddit;
-                            modmailpermalink = value.data.id;
+                            var modmailbody = TBUtils.htmlDecode(value.data.body),
+                                modmailsubject = value.data.subject,
+                                modmailsubreddit = value.data.subreddit,
+                                modmailpermalink = value.data.id;
 
-                            TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, modmailbody, '/message/messages/' + modmailpermalink);
+                            TBUtils.notification('Modmail: /r/' + modmailsubreddit + ' : ' + modmailsubject, $(modmailbody).text(), '/message/messages/' + modmailpermalink);
                         }
                     });
 

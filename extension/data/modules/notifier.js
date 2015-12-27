@@ -818,7 +818,7 @@ self.init = function () {
                             messagecount++;
                             if (messagecount > newCount) return false;
 
-                            var modmailbody = TBUtils.htmlDecode(value.data.body),
+                            var modmailbody = TBUtils.htmlDecode(value.data.body_html),
                                 modmailsubject = value.data.subject,
                                 modmailsubreddit = value.data.subreddit,
                                 modmailpermalink = value.data.id;

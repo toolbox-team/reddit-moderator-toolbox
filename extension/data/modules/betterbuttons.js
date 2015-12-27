@@ -13,7 +13,7 @@ self.register_setting('enableModSave', {
 self.register_setting('enableDistinguishToggle', {
     'type': 'boolean',
     'default': false,
-    'title': 'Enable distinguish & sticky toggling.'
+    'title': 'Enable distinguish and sticky toggling.'
 });
 self.register_setting('removeRemoveConfirmation', {
     'type': 'boolean',

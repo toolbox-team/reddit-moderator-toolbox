@@ -7,19 +7,19 @@ self.settings['enabled']['default'] = true;
 self.register_setting('hideActionedItems', {
     'type': 'boolean',
     'default': false,
-    'title': 'Hide items after mod action'
+    'title': 'Hide items after mod action.'
 });
 
 self.register_setting('showAutomodActionReason', {
     'type': 'boolean',
     'default': true,
-    'title': 'Show the action reason from automoderator in the queue'
+    'title': 'Show the action reason from automoderator below submissions and comments.'
 });
 
 self.register_setting('linkToQueues', {
     'type': 'boolean',
     'default': false,
-    'title': 'Link to subreddit queue on mod pages'
+    'title': 'Link to subreddit queue on mod pages.'
 });
 
 self.register_setting('reportsOrder', {
@@ -27,7 +27,7 @@ self.register_setting('reportsOrder', {
     'advanced': true,
     'values': ['age', 'score', 'reports'],
     'default': 'age',
-    'title': 'Sort by'
+    'title': 'Sort by.'
 });
 
 self.register_setting('reportsThreshold', {
@@ -37,7 +37,7 @@ self.register_setting('reportsThreshold', {
     'max': null,
     'step': 1,
     'default': 1,
-    'title': 'Reports threshold'
+    'title': 'Reports threshold.'
 });
 
 self.register_setting('reportsAscending', {
@@ -56,7 +56,7 @@ self.register_setting('expandReports', {
 self.register_setting('botCheckmark', {
     'type': 'list',
     'default': ['AutoModerator'],
-    'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive'
+    'title': 'Make bot approved checkmarks have a different look <img src="data:image/png;base64,' + TBui.iconBot + '">. Bot names should entered separated by a comma without spaces and are case sensitive.'
 });
 
 self.register_setting('queueCreature', {

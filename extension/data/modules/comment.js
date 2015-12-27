@@ -28,7 +28,7 @@ self.register_setting('hamSpammed', {
 self.register_setting('highlighted', {
     'type': 'list',
     'default': [],
-    'title': 'Highlight keywords, keywords should entered separated by a comma without spaces'
+    'title': 'Highlight keywords, keywords should entered separated by a comma without spaces.'
 });
 self.register_setting('highlightTitles', {
     'type': 'boolean',

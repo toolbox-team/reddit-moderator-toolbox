@@ -78,16 +78,17 @@ self.initModSave = function initModSave() {
     });
 
     //Add the mod save button next to each comment save button
-    var $usertextButtons = $('.moderator .usertext-edit .usertext-buttons');
+    var $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
+
     var $saveButton = $usertextButtons.find('.save');
-    if ($saveButton.is(":visible")) {
         var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
         if ($tbUsertextButtons.length) {
             $tbUsertextButtons.prepend('<button class="save-mod tb-action-button">mod save</button>');
         } else {
+
             $saveButton.parent().find('.status').before('<div class="tb-usertext-buttons"><button class="save-mod tb-action-button">mod save</button></div>');
         }
-    }
+
 
     //Add actions to the mod save buttons
     $('body').on('click', 'button.save-mod', function (e) {

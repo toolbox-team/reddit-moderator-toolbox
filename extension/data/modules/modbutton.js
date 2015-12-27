@@ -435,7 +435,7 @@ self.init = function () {
             self.log(failed + ' subs failed');
             if (failed > 0) {
                 self.log(failed + ' subs failed');
-                var retry = confirm(failed + ' failed.  Would you like to retry them?');
+                var retry = confirm('Action complete, however ' + failed + ' failed.  Would you like to retry these?');
                 if (retry) {
                     self.log('retrying');
                     massAction(failedSubs);

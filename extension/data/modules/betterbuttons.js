@@ -8,28 +8,28 @@ self.settings['enabled']['default'] = true;
 self.register_setting('enableModSave', {
     'type': 'boolean',
     'default': false,
-    'title': 'Enable mod-save button'
+    'title': 'Enable mod-save button, will save and distinguish comments.'
 });
 self.register_setting('enableDistinguishToggle', {
     'type': 'boolean',
     'default': false,
-    'title': 'Enable distinguish toggling'
+    'title': 'Enable distinguish & sticky toggling.'
 });
 self.register_setting('removeRemoveConfirmation', {
     'type': 'boolean',
     'default': false,
     'advanced': true,
-    'title': 'Remove remove/approve confirmation'
+    'title': 'Remove remove/approve confirmation when removing items.'
 });
 self.register_setting('approveOnIgnore', {
     'type': 'boolean',
     'default': false,
-    'title': 'Auto-approve when ignoring reports'
+    'title': 'Auto-approve items when ignoring reports.'
 });
 self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
-    'title': 'Auto-ignore reports when approving'
+    'title': 'Auto-ignore reports when approving something.'
 });
 self.register_setting('spamRemoved', {
     'type': 'boolean',

@@ -29,7 +29,7 @@ self.register_setting('approveOnIgnore', {
 self.register_setting('ignoreOnApprove', {
     'type': 'boolean',
     'default': false,
-    'title': 'Auto-ignore reports when approving something.'
+    'title': 'Auto-ignore reports when approving items.'
 });
 self.register_setting('spamRemoved', {
     'type': 'boolean',

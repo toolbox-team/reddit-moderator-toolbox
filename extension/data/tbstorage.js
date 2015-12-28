@@ -279,8 +279,10 @@ function storagewrapper() {
 
         setCache('Utils', 'configCache', {});
         setCache('Utils', 'noteCache', {});
+        setCache('Utils', 'rulesCache', {});
         setCache('Utils', 'noConfig', []);
         setCache('Utils', 'noNotes', []);
+        setCache('Utils', 'noRules', []);
         setCache('Utils', 'moderatedSubs', []);
         setCache('Utils', 'moderatedSubsData', []);
     };

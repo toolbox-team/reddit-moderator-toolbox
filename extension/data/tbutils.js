@@ -136,8 +136,10 @@ function initwrapper() {
     // Get cached info.
     TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
     TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});
+    TBUtils.rulesCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {});
     TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
     TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
+    TBUtils.noRules = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noRules', {});
     TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
     TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
@@ -1577,6 +1579,21 @@ function initwrapper() {
             });
     };
 
+    TBUtils.getRules = function (sub, callback) {
+        $.get('/r/' + sub + '/about/rules.json', {
+                uh: TBUtils.modhash
+            })
+            .success(function (response) {
+                if (typeof callback !== "undefined")
+                    callback(true, response);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error.responseText);
+            });
+    };
+
+
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {
         var settingsObject = {};
@@ -1706,8 +1723,10 @@ function initwrapper() {
 
         TBUtils.noteCache = {};
         TBUtils.configCache = {};
+        TBUtils.rulesCache = {};
         TBUtils.noConfig = [];
         TBUtils.noNotes = [];
+        TBUtils.noRules = [];
         TBUtils.mySubs = [];
         TBUtils.mySubsData = [];
 

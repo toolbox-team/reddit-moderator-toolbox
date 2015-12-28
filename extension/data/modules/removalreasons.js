@@ -62,6 +62,59 @@ self.init = function() {
     var alwaysShow = self.setting('alwaysShow'),
         commentReasons = self.setting('commentReasons');
 
+
+    function getRules(subreddit, callback) {
+
+
+        // Nothing to do if no toolbox config
+        if (TBUtils.noRules.indexOf(subreddit) != -1) {
+            callback(false);
+            return;
+        }
+
+        self.log('getting rules: ' + subreddit);
+        var rules = '';
+
+        // See if we have the rules in the cache.
+        if (TBUtils.rulesCache[subreddit] !== undefined) {
+            rules = TBUtils.rulesCache[subreddit].rules;
+        }
+
+
+        // If we have rules, send them back.
+        if (rules) {
+            self.log('returning: cache');
+            callback(rules);
+            return;
+        }
+
+
+        // OK, they are not cached.  Try the sub.
+        TBUtils.getRules(subreddit, function (status, resp) {
+            if (!resp || !resp.rules) {
+                callback(false);
+                return;
+            }
+
+            // We have a valid config, cache it.
+            TBUtils.rulesCache[subreddit] = resp;
+            rules = resp.rules;
+
+            // Last try, or return false.
+            if (rules) {
+                self.log('returning: no cache');
+                callback(rules);
+                return;
+            }
+
+            self.log('failed: all');
+            TBUtils.noRules.push(subreddit);
+            callback(false);
+        });
+
+    }
+
+
     function getRemovalReasons(subreddit, callback) {
 
 
@@ -124,6 +177,7 @@ self.init = function() {
             }
 
             self.log('failed: all');
+            TBUtils.noConfig.push(subreddit);
             callback(false);
         });
     }
@@ -170,6 +224,11 @@ self.init = function() {
         if (!data.subreddit || (notEnabled.indexOf(data.subreddit) != -1 && !alwaysShow) || TBUtils.isModmail) {
             return;
         }
+
+        getRules(data.subreddit,function(rules){
+            self.log('getting rules');
+            self.log(rules);
+        });
 
         // Set attributes and open reason box if one already exists for this subreddit
         var $popup = $('#reason-popup-' + data.subreddit);

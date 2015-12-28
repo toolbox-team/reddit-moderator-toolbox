@@ -12,7 +12,7 @@ gulp.task('zip', function() {
         '!extension/*.zip',
         '!extension/*.xpi',
         '!extension/.jpmignore',
-        '!extension/data/background-safari.html',
+        '!extension/data/background/',
         '!extension/data/Icon.png'
     ])
         .pipe(zip('chrome-moderator-toolbox.zip'))
@@ -23,7 +23,7 @@ gulp.task('xpi', function(cb) {
     exec('jpm xpi', {cwd: 'extension/'}, function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
-        
+
         gulp.src('extension/*.xpi')
             .pipe(gulp.dest(dest_dir));
     });

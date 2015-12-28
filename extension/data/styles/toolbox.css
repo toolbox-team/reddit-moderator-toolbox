@@ -291,12 +291,6 @@ body.mod-toolbox #tb-bottombar {
     font-weight: bold;
 }
 
-.mod-toolbox #tb-top-link {
-    float: right;
-    display: inline-block;
-    margin-right: 5px;
-}
-
 .mod-toolbox #tb-reload-link {
     float: right;
     display: inline-block;

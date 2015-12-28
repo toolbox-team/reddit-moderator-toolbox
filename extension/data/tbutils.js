@@ -213,6 +213,8 @@ function initwrapper() {
 
         // 3.4 version changes
 
+        // RES now has this feature.
+        localStorage.removeItem('Toolbox.Modbar.enableTopLink');
 
         // End: version changes.
 

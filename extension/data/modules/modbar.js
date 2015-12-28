@@ -18,11 +18,6 @@ self.register_setting('unmoderatedOn', {
     'default': true,
     'title': 'Show icon for unmoderated'
 });
-self.register_setting('enableTopLink', {
-    'type': 'boolean',
-    'default': false,
-    'title': 'Show Top link in the modbar'
-});
 self.register_setting('enableModSubs', {
     'type': 'boolean',
     'default': true,
@@ -94,7 +89,6 @@ self.init = function() {
         unmoderatedOn = self.setting('unmoderatedOn'),
         consoleShowing = self.setting('consoleShowing'),
         lockscroll = self.setting('lockScroll'),
-        enableTopLink = self.setting('enableTopLink'),
         enableModSubs = self.setting('enableModSubs'),
         customCSS = self.setting('customCSS'),
 
@@ -303,10 +297,6 @@ self.init = function() {
             self.log('reloading chrome');
             TB.utils.reloadToolbox();
         });
-    }
-
-    if (enableTopLink) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="#content" id="tb-top-link"><img title="go to top" src="data:image/png;base64,' + TBui.topIcon + '" /></a>');
     }
 
     // Debug mode/console

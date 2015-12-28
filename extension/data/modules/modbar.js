@@ -296,15 +296,22 @@ self.init = function() {
         $('.tb-first-run').show();
     }
 
+    if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
+        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-reload-link"><img title="reload toolbox" src="data:image/png;base64,' + TBui.iconRefresh + '" /></a>');
+
+        $body.on('click', '#tb-reload-link', function () {
+            self.log('reloading chrome');
+            TB.utils.reloadToolbox();
+        });
+    }
+
     if (enableTopLink) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="#content" id="tb-top-link"><img title="go to top" src="data:image/png;base64,' + TBui.topIcon + '" /></a>'); // needs an icon.
+        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="#content" id="tb-top-link"><img title="go to top" src="data:image/png;base64,' + TBui.topIcon + '" /></a>');
     }
 
     // Debug mode/console
     if (debugMode) {
-        $('#tb-bottombar').find('#tb-toolbarcounters').before('\
-<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a>\
-');
+        $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a>');
 
         var $consoleText = $('.tb-debug-console');
 

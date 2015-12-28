@@ -16,6 +16,9 @@
         "48": "data/images/icon48.png",
         "128": "data/images/icon128.png"
     },
+    "background": {
+        "page": "data/background/chrome.html"
+    },
     "content_scripts": [
         {
             "matches": [

@@ -1099,7 +1099,15 @@ function initwrapper() {
         }
     };
 
-
+    TBUtils.reloadToolbox = function () {
+        if (chrome !== undefined) {
+            TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
+            chrome.extension.sendMessage({greeting: "tb-reload"}, function () {
+                TBStorage.clearCache();
+                window.location.reload();
+            });
+        }
+    };
 
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {

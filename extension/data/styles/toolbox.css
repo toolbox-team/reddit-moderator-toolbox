@@ -297,6 +297,12 @@ body.mod-toolbox #tb-bottombar {
     margin-right: 5px;
 }
 
+.mod-toolbox #tb-reload-link {
+    float: right;
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .mod-toolbox #tb-my-subreddits {
     max-height: 65vh;
     width: 265px;

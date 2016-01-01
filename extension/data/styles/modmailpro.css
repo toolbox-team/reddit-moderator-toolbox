@@ -149,3 +149,43 @@
 .tb-separator {
     margin-left: 3px;
 }
+
+/* Threaded modmail css enhancements */
+
+body.tb-mmp-thread .message-parent.threaded .most-recent {
+    border-left: solid 5px #D0D0D0;
+}
+
+
+body.tb-mmp-thread .message-parent.threaded  .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child .child .child .child .child>.sitetable>.thing>.entry
+{
+    background-color: #F5F5F5 !important;
+    border-radius: 0 !important;
+}
+
+body.tb-mmp-thread .message-parent.threaded  .child {
+    border: 0;
+}
+
+body.tb-mmp-thread .message.message-parent .entry {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #E6E6E6;
+    padding-top: 5px;
+    margin-top: 2px;
+    padding-left: 5px;
+
+}
+
+body.tb-mmp-thread .message-parent.threaded  .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child .child .child .child>.sitetable>.thing>.entry,
+body.tb-mmp-thread .message-parent.threaded  .child .child .child .child .child .child .child .child .child .child>.sitetable>.thing>.entry {
+    background-color: #fff !important;
+    border-radius: 0 !important;
+}

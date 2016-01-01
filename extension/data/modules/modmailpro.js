@@ -68,6 +68,12 @@ self.register_setting('subredditColor', {
     'title': 'Add a left border to modmail conversations with a color unique to the subreddit name.'
 });
 
+self.register_setting('resThreadedModmail', {
+    'type': 'boolean',
+    'default': false,
+    'title': 'Style threaded modmail in a similar style as RES does for comments.'
+});
+
 self.register_setting('subredditColorSalt', {
     'type': 'text',
     'default': "PJSalt",
@@ -170,6 +176,7 @@ self.modmailpro = function() {
         fadeRecipient = self.setting('fadeRecipient'),
         subredditColor = self.setting('subredditColor'),
         subredditColorSalt = self.setting('subredditColorSalt'),
+        resThreadedModmail = self.setting('resThreadedModmail'),
         threadProcessRate = self.setting('threadProcessRate'),
         entryProcessRate = self.setting('entryProcessRate'),
         chunkProcessSize = self.setting('chunkProcessSize'),
@@ -440,6 +447,14 @@ self.modmailpro = function() {
                     $thread.addClass('botspam');
                 }
             });
+        }
+
+        //
+        // Make threaded modmail look more like RES threaded comments.
+        //
+
+        if (resThreadedModmail) {
+            $body.addClass('tb-mmp-thread');
         }
 
         // Adds a colored border to modmail conversations where the color is unique to the subreddit. Basically similar to IRC colored names giving a visual indication what

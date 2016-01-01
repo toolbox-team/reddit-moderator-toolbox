@@ -139,7 +139,7 @@ function initwrapper() {
     TBUtils.rulesCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {});
     TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
     TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
-    TBUtils.noRules = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noRules', {});
+    TBUtils.noRules = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noRules', []);
     TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
     TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 

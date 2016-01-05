@@ -55,18 +55,13 @@ self.initModSave = function initModSave() {
         mutations.forEach(function (mutation) {
             if (mutation.addedNodes) {
                 for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                    var item = mutation.addedNodes[i];
+                    var $item = $(mutation.addedNodes[i]);
                     //Check if the added element is a comment
-                    if ($(item).is('div.comment')) {
-                        self.log($(item));
-                        self.log("");
-
+                    if ($item.is('div.comment')) {
+                        $.log("Clicking distinguish button");
                         //Distinguish the comment
-                        var things = $(item).find('form[action="/post/distinguish"] > .option > a');
-                        self.log(things);
-                        self.log("");
-                        self.log(things.first());
-                        things.first().click();
+                        var things = $item.find('form[action="/post/distinguish"] > .option > a');
+                        things.first()[0].click();
 
                         //Stop watching for changes
                         commentObserver.disconnect();
@@ -81,12 +76,13 @@ self.initModSave = function initModSave() {
     var $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
 
     var $saveButton = $usertextButtons.find('.save');
-        var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
+        var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
+            $newButton = $('<button>').addClass('save-mod tb-action-button').text("mod save");
         if ($tbUsertextButtons.length) {
-            $tbUsertextButtons.prepend('<button class="save-mod tb-action-button">mod save</button>');
-        } else {
-
-            $saveButton.parent().find('.status').before('<div class="tb-usertext-buttons"><button class="save-mod tb-action-button">mod save</button></div>');
+            $tbUsertextButtons.prepend($newButton);
+        }
+        else {
+            $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($newButton));
         }
 
 

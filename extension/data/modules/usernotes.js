@@ -165,7 +165,7 @@ self.usernotes = function usernotes() {
             $usertag.attr('title', note + ' (' + date.toLocaleString() + ')');
 
             if (note.length > maxChars) {
-                note = note.substring(0, (maxChars + 3)) + "...";
+                note = note.substring(0, maxChars) + "...";
             }
 
             if (showDate) {

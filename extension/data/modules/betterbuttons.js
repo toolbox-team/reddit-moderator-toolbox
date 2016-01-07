@@ -58,7 +58,7 @@ self.initModSave = function initModSave() {
                     var $item = $(mutation.addedNodes[i]);
                     //Check if the added element is a comment
                     if ($item.is('div.comment')) {
-                        $.log("Clicking distinguish button");
+                        self.log("Clicking distinguish button");
                         //Distinguish the comment
                         var things = $item.find('form[action="/post/distinguish"] > .option > a');
                         things.first()[0].click();
@@ -134,13 +134,47 @@ self.initDistinguishToggle = function initDistinguishToggle() {
 
     //Toggle the distinguished state
     function distinguishClicked(e) {
-        var $parentPost = $(this).closest('.thing');
+        var $this = $(this);
+        var $parentPost = $this.closest('.thing');
+        var distinguished = getDistinguishState($parentPost);
+        var stickied = getStickyState($parentPost);
+
+        // Lets ready the buttons we want to click later on.
+        var yesDistinguish = $this.find('.option > a')[0],
+            yesSticky = $this.find('.option > a')[1],
+            noButton = $this.find('.option > a')[2];
+
+
+        // User initiated click, this is the distinguish toggle
         if(e.hasOwnProperty('originalEvent')) {
-            var distinguished = getDistinguishState($parentPost);
-            $(this).find('.option > a').get(distinguished ? 2 : 0).click();
+            self.log('shit has been clicked and it is the real deal');
+            // Let's figure out if we want to sticky or unsticky
+
+            // Comment is already stickied and distinguished. The user clicks distinguish so we assume they want that state.
+            if (distinguished && stickied) {
+                if (yesDistinguish) yesDistinguish.click();
+            // Distinguished but not stickied, since the user clicked distinguish we assume distinguish off
+            } else if(distinguished && !stickied) {
+                if (noButton) noButton.click();
+            // All that is left is neutral state, simply distinguish
+            } else {
+                if (yesDistinguish) yesDistinguish.click();
+            }
+
+        // Otherwise the event is missing the origionalEvent property, meaning it was a code induced click.
+        // In this case we want to sticky (or unsticky)
         } else {
-            var stickied = getStickyState($parentPost);
-            $(this).find('.option > a').get(stickied ? 2 : 1).click();
+            self.log('shit has been clicked and it is a fake button');
+            // If it isn't stickied but it is distinguish we assume people want to sticky it and not un-distinguish.
+            if (!stickied && distinguished) {
+                if (yesSticky) yesSticky.click();
+            // Stickied so we want to un-toggle it.
+            } else if (stickied && distinguished) {
+                if (noButton) noButton.click();
+            // All that is left is neutral state, simply distinguish
+            } else {
+                if (yesSticky) yesSticky.click();
+            }
         }
 
     }
@@ -148,7 +182,11 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     //Toggle the sticky state
     function stickyClicked() {
         var $siblingDistinguish = $(this).closest('li').prev();
+
+        // DO NOT TRY TO "FIX" THIS CLICK. It needs the jquery clicky stuff for us to tell that this was a code triggered click.
         $siblingDistinguish.find('form[action="/post/distinguish"]').click();
+
+
     }
 
     self.log("Adding distinguish toggle events");

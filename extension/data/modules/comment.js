@@ -62,8 +62,10 @@ self.init = function () {
             var $comment_spam = $('.tb-comment-spam');
             if ($comment_spam.is(':visible')) {
                 $comment_spam.hide();
+                $('.action-reason').hide();
             } else {
                 $comment_spam.show();
+                $('.action-reason').show();
             }
 
         });
@@ -97,6 +99,7 @@ self.init = function () {
 
             if (hideRemoved) {
                 $('.tb-comment-spam').hide();
+                $('.action-reason').hide();
             }
 
             if (approveComments || spamRemoved || hamSpammed) {

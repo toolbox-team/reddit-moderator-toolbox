@@ -403,6 +403,6 @@ TB.register_module(self);
 
 (function() {
     window.addEventListener("TBModuleLoaded", function () {
-        //modmaillite(); //disabled.
+        modmaillite(); //disabled.
     });
 })();

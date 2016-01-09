@@ -107,6 +107,7 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     function addSticky() {
         $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
             $this = $(this);
+            $this.find('form[action="/post/distinguish"]').addClass('tb-top-level-sticky');
             if(!$this.find('.tb-sticky-comment').length) {
                 $this.after(stickyHtml);
             }
@@ -140,40 +141,51 @@ self.initDistinguishToggle = function initDistinguishToggle() {
         var stickied = getStickyState($parentPost);
 
         // Lets ready the buttons we want to click later on.
-        var yesDistinguish = $this.find('.option > a')[0],
-            yesSticky = $this.find('.option > a')[1],
-            noButton = $this.find('.option > a')[2];
+        var firstDistinguishButton = $this.find('.option > a')[0],
+            secondDistinguishButton = $this.find('.option > a')[1],
+            thirdDistinguishButton = $this.find('.option > a')[2];
 
 
-        // User initiated click, this is the distinguish toggle
-        if(e.hasOwnProperty('originalEvent')) {
-            self.log('shit has been clicked and it is the real deal');
+        // First we want to do a check to see if this is a toplevel comment or not. If it is a child comment we want to click different buttons.
+        if ($this.closest('.comment').parents('.comment').length) {
+            self.log('clicking a child comment distinguish toggle');
+            // If distinguished we'll toggle it of
+            if (distinguished) {
+                if (secondDistinguishButton) secondDistinguishButton.click();
+            // And otherwise we'll turn it on.
+            } else {
+                if (firstDistinguishButton) firstDistinguishButton.click();
+            }
+        }
+        // User initiated click, this is the distinguish toggle on a top level comment
+        else if(e.hasOwnProperty('originalEvent')) {
+            self.log('Top level comment distinguish has been clicked and it is the real deal!');
             // Let's figure out if we want to sticky or unsticky
 
             // Comment is already stickied and distinguished. The user clicks distinguish so we assume they want that state.
             if (distinguished && stickied) {
-                if (yesDistinguish) yesDistinguish.click();
+                if (firstDistinguishButton) firstDistinguishButton.click();
             // Distinguished but not stickied, since the user clicked distinguish we assume distinguish off
             } else if(distinguished && !stickied) {
-                if (noButton) noButton.click();
+                if (thirdDistinguishButton) thirdDistinguishButton.click();
             // All that is left is neutral state, simply distinguish
             } else {
-                if (yesDistinguish) yesDistinguish.click();
+                if (firstDistinguishButton) firstDistinguishButton.click();
             }
 
         // Otherwise the event is missing the origionalEvent property, meaning it was a code induced click.
         // In this case we want to sticky (or unsticky)
         } else {
-            self.log('shit has been clicked and it is a fake button');
+            self.log('Top level comment distinguish has been clicked by a robot!');
             // If it isn't stickied but it is distinguish we assume people want to sticky it and not un-distinguish.
             if (!stickied && distinguished) {
-                if (yesSticky) yesSticky.click();
+                if (secondDistinguishButton) secondDistinguishButton.click();
             // Stickied so we want to un-toggle it.
             } else if (stickied && distinguished) {
-                if (noButton) noButton.click();
+                if (thirdDistinguishButton) thirdDistinguishButton.click();
             // All that is left is neutral state, simply distinguish
             } else {
-                if (yesSticky) yesSticky.click();
+                if (secondDistinguishButton) secondDistinguishButton.click();
             }
         }
 

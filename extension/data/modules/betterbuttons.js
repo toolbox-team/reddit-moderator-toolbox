@@ -107,9 +107,10 @@ self.initDistinguishToggle = function initDistinguishToggle() {
     function addSticky() {
         $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
             $this = $(this);
-            $this.find('form[action="/post/distinguish"]').addClass('tb-top-level-sticky');
-            if(!$this.find('.tb-sticky-comment').length) {
+
+            if(!$this.closest('.comment').hasClass('tb-sticky-processed')) {
                 $this.after(stickyHtml);
+                !$this.closest('.comment').addClass('tb-sticky-processed')
             }
         });
     }
@@ -188,6 +189,12 @@ self.initDistinguishToggle = function initDistinguishToggle() {
                 if (secondDistinguishButton) secondDistinguishButton.click();
             }
         }
+
+        // Fire TBNewThings so sticky gets added back.
+        setTimeout(function () {
+            var event = new CustomEvent("TBNewThings");
+            window.dispatchEvent(event);
+        }, 1000);
 
     }
 

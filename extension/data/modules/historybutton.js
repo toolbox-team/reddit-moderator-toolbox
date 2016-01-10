@@ -533,6 +533,7 @@ self.populateSubmissionHistory = function (after, author) {
      * @param details {Object}
      */
     function addAccount(details) {
+        details.url = details.url.replace('https://', 'http://');
         if (!user.accounts[details.url]) {
             user.accounts[details.url] = details;
             user.accounts[details.url].count = 0;

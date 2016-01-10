@@ -200,9 +200,7 @@ self.init = function () {
         $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
         $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
         $popup.on('click.comment-report', '.comment-report', function(){
-            $popup.off('click.comment-report').on('click', function(){
-                $comments.toggle();
-            });
+            $popup.off('click.comment-report');
             self.populateCommentHistory('', author);
         });
         $popup.on('click.account-report', '.account-report', function(){

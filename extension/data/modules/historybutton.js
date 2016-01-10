@@ -1,23 +1,14 @@
 function historybutton() {
 var self = new TB.Module('History Button');
 
-self.subreddits = {submissions: {}, comments: {}};
-self.accounts = {};
-self.counters = {submissions: 0, comments: 0};
-self.subredditList = [];
-self.domainList = [];
-self.commentSubredditList = [];
-
-self.gettingUserData = false;
-self.author = null;
-self.domains = [];
-
 self.shortname = 'HButton';
 
 // This should be a setting, methinks.
 self.SPAM_REPORT_SUB = 'spam';
 
 self.settings['enabled']['default'] = true;
+
+self.fetched = {};//fetched histories
 
 self.register_setting('rtsComment', {
     'type': 'boolean',
@@ -32,24 +23,15 @@ self.run = function () {
     var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
 
     if (TBUtils.isModmail) {
-        $('.thing .entry .head:not(.tb-history)').each(function () {
-            var $this = $(this),
-                $userattrs = $this.find('.userattrs');
-
-            $this.addClass('tb-history');
-
-            if ($userattrs.length > 1) {
-                $userattrs.eq(0).after(UserButtonHTML);
-            } else {
-                $userattrs.after(UserButtonHTML);
-            }
-
+        $('.entry .userattrs').not('.tb-history').each(function () {
+            $(this).addClass('tb-history')
+                .find('.userattrs')
+                .after(UserButtonHTML);
         });
     } else {
-        $('.thing .entry .userattrs:not(.tb-history)').each(function () {
-            var $this = $(this);
-            $this.addClass('tb-history');
-            $this.after(UserButtonHTML);
+        $('.entry .userattrs').not('.tb-history').each(function () {
+            $(this).addClass('tb-history')
+                .after(UserButtonHTML);
         });
     }
 };
@@ -58,10 +40,6 @@ self.run = function () {
  * Initiate the module
  */
 self.init = function () {
-    var $body = $('body');
-
-    // Add context & history stuff
-    $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;border:0;line-height:12px;min-width:100px"/>');
 
     self.run();
 
@@ -70,101 +48,100 @@ self.init = function () {
         self.run();
     });
 
-    //Close the popup on click
-    $body.on('click', 'a.context', function (e) {
-        $body.on('click', '.user-history-close', function () {
-            if (populateRunning.length > 0) {
-                $.each(populateRunning, function () {
-                    TB.ui.longLoadNonPersistent(false);
-                });
-            }
+    $('body').on('click', '.user-history-button', function (event) {
+        var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
 
-            $('.inline-content').hide();
-        });
-        $('.inline-content').show().offset($(this).offset()).text('loading...').load(this.href + '&limit=5 .sitetable.nestedlisting');
-        return false;
-    });
+        if(typeof self.fetched[author] != 'undefined'){
+            self.fetched[author].popup.css({
+                left: event.pageX - 50,
+                top: event.pageY - 10,
+                display: 'block'
+            });
+            return;
+        }
 
-    $body.on('click', '.user-history-button', function (event) {
-        self.subreddits = {submissions: {}, comments: {}};
-        self.counters = {submissions: 0, comments: 0};
-        self.accounts = {};
-        self.subredditList = [];
-        self.domainList = [];
-        self.commentSubredditList = [];
+        var subreddits = {submissions: {}, comments: {}};
+            counters = {submissions: 0, comments: 0};
+            accounts = {};
+            subredditList = [];
+            domainList = [];
+            commentSubredditList = [];
 
-        self.author = TBUtils.getThingInfo($(this).closest('.entry')).user;
-        self.gettingUserData = true;
-        self.domains = [];
-        self.domainslist = [];
+            gettingUserData = true;
+            domains = [];
+            domainslist = [],
 
-        var popupContent = '<div>\
-            <a href="/user/' + self.author + '" target="_blank">' + self.author + '</a>\
-            <span class="karma" />\
-            <a class="comment-report tb-general-button" href="javascript:;">comment history</a> \
-            <a class="account-report tb-general-button" href="javascript:;">website account history</a> \
-            <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a> \
-            <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a><br />\
-            <span class="redditorTime"></span>\
-            <br /><b>Submission history:</b> <label class="submission-count"></label></div>\
-            <div class="table domain-table">\
-                <table>\
-                    <thead>\
-                        <tr>\
-                            <th class="url-td">domain submitted from</th>\
-                            <th class="url-count">count</th><th class="url-percentage">%</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody>\
-                        <tr><td colspan="6" class="error">loading...</td></tr>\
-                    </tbody>\
-                </table>\
-            </div>\
-            <div class="table subreddit-table">\
-                <table>\
-                    <thead>\
-                        <tr>\
-                            <th class="url-td">subreddit submitted to</th>\
-                            <th class="url-count">count</th>\
-                            <th class="url-percentage">%</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody>\
-                        <tr>\
-                            <td colspan="6" class="error">loading...</td>\
-                        </tr>\
-                    </tbody>\
-                </table>\
-            </div>\
-            <div class="table comment-table" style="display: none">\
-                <table>\
-                    <thead>\
-                        <tr>\
-                            <th class="url-td">subreddit commented in</th>\
-                            <th class="url-count">count</th>\
-                            <th class="url-percentage">%</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody>\
-                        <tr><td colspan="6" class="error">loading...</td></tr>\
-                    </tbody>\
-                </table>\
-            </div>\
-            <div class="table account-table" style="display: none">\
-                <table>\
-                    <thead>\
-                        <tr>\
-                            <th class="url-td">account submitted from</th>\
-                            <th class="url-count">count</th>\
-                            <th class="url-percentage">%</th>\
-                        </tr>\
-                    </thead>\
-                    <tbody>\
-                        <tr><td colspan="6" class="error">loading...</td></tr>\
-                    </tbody>\
-                </table>\
-            </div>'
-            ;
+            popupContent = 
+            `<div>
+                <a href="/user/${author}" target="_blank">${author}</a>
+                <span class="karma" />
+                <a class="comment-report tb-general-button" href="javascript:;">comment history</a> 
+                <a class="account-report tb-general-button" href="javascript:;">website account history</a> 
+                <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a> 
+                <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a>
+                <br/>
+                <span class="redditorTime"></span>
+                <br/>
+                <b>Submission history:</b> <label class="submission-count"></label></div>
+                <div class="table domain-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">domain submitted from</th>
+                                <th class="url-count">count</th><th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table subreddit-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">subreddit submitted to</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                                <th class="url-karma">karma</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="error">loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table comment-table" style="display: none">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">subreddit commented in</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table account-table" style="display: none">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="url-td">account submitted from</th>
+                                <th class="url-count">count</th>
+                                <th class="url-percentage">%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="6" class="error">loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>`;
 
         var $popup = TB.ui.popup(
             'History Button',
@@ -178,9 +155,9 @@ self.init = function () {
             ],
             '',
             'history-button-popup',
-	        {
-		        draggable: true
-	        }
+            {
+                draggable: true
+            }
         ).appendTo('body')
             .css({
                 left: event.pageX - 50,
@@ -188,62 +165,71 @@ self.init = function () {
                 display: 'block'
             });
 
+        self.fetched[author] = {
+            popup: $popup,
+            subreddits : subreddits,
+            counters : counters,
+            accounts : accounts,
+            subredditList : subredditList,
+            domainList : domainList,
+            commentSubredditList: commentSubredditList,
+            author : author,
+            gettingUserData : gettingUserData,
+            domains : domains,
+            domainslist : domainslist,
+        }
+
         $popup.on('click', '.close', function () {
-            self.subreddits = {submissions: {}, comments: {}};
-            self.counters = {submissions: 0, comments: 0};
-            self.subredditList = [];
-            self.domainList = [];
-            self.commentSubredditList = [];
-
-            self.gettingUserData = false;
-            self.domains = [];
-            self.domainslist = [];
-
-            $popup.remove();
-
-            TB.ui.longLoadNonPersistent(false);
+            $popup.hide();
         });
 
-        self.gettingUserData = true;
-        self.showAuthorInformation();
-        self.populateSubmissionHistory();
+        self.showAuthorInformation(author);
+        self.populateSubmissionHistory('', author);
 
-        var $histButtonPopup = $('.history-button-popup');
+        $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
+        $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
+        $popup.on('click.comment-report', '.comment-report', function(){
+            $popup.off('click.comment-report');
+            self.populateCommentHistory('', author);
+        });
+        $popup.on('click.account-report', '.account-report', function(){
+            $popup.off('click.account-report');
+            self.populateAccountHistory(author);
+        });
 
-        $histButtonPopup.on('click', '.markdown-report', self.showMarkdownReport);
-        $histButtonPopup.on('click', '.rts-report', self.reportAuthorToSpam);
-        $histButtonPopup.on('click', '.comment-report', self.populateCommentHistory);
-        $histButtonPopup.on('click', '.account-report', self.populateAccountHistory);
     });
 };
 
 /**
  * Show author information (Karma, How long they've been a redditor for)
  */
-self.showAuthorInformation = function () {
-    var $contentBox = $('.history-button-popup');
+self.showAuthorInformation = function (author) {
+    var $contentBox = self.fetched[author].popup;
 
-    $.get('/user/' + self.author + '/about.json').success(function (d) {
+    $.get(`/user/${author}/about.json`).success(function (d) {
         var joinedDate = new Date(d.data.created_utc * 1000),
             redditorTime = TBUtils.niceDateDiff(joinedDate);
 
-        $contentBox.find('.karma').text('(' + d.data.link_karma + ' | ' + d.data.comment_karma + ')');
-        $contentBox.find('.redditorTime').text('redditor for ' + redditorTime);
+        $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
+        $contentBox.find('.redditorTime').text(`redditor for ${redditorTime}`);
     });
 };
 
 /**
  * Show the markdown report
  */
-self.showMarkdownReport = function () {
-    var $body = $('body'),
-        $contentBox = $('.history-button-popup'),
-        markdownReport = $contentBox.find('.rts-report').attr('data-commentbody');
+self.showMarkdownReport = function (author) {
+    var $contentBox = self.fetched[author].popup,
+        markdownReport = $contentBox.find('.rts-report').attr('data-commentbody'),
+        $markdown = $contentBox.find('.submission-markdown');
 
-    if ($body.find('.submission-markdown').length > 0) {
-        $body.find('.submission-markdown').toggle();
+    if ($markdown.length > 0) {
+        $markdown.toggle();
     } else {
-        $contentBox.find('.table.domain-table').before('<div class="submission-markdown"><textarea id="submission-markdown-text">' + markdownReport + '</textarea></div>');
+        $contentBox.find('.table.domain-table').before(
+            `<div class="submission-markdown">
+                <textarea id="submission-markdown-text">${markdownReport}</textarea>
+            </div>`);
     }
 };
 
@@ -252,98 +238,99 @@ self.showMarkdownReport = function () {
  *
  * @param after A token given by reddit for paginated results, allowing us to get the next page of results
  */
-self.populateSubmissionHistory = function (after) {
-    var $contentBox = $('.history-button-popup');
-    var $submissionCount = $('.history-button-popup .submission-count');
-    var $domainTable = $contentBox.find('.domain-table tbody');
-    var $subredditTable = $contentBox.find('.subreddit-table tbody');
+self.populateSubmissionHistory = function (after, author) {
+    var user = self.fetched[author],
+        $contentBox = user.popup,
+        $submissionCount = $contentBox.find('.submission-count'),
+        $domainTable = $contentBox.find('.domain-table tbody'),
+        $subredditTable = $contentBox.find('.subreddit-table tbody'),
+        $error = $contentBox.find('.subreddit-table .error, .domain-table .error');
 
     if (typeof after === 'undefined') {
         TB.ui.longLoadNonPersistent(true);
-//			populateRunning.push('load');
     }
 
-    $.get('/user/' + self.author + '/submitted.json?limit=100&after=' + (after || '')).error(function () {
+    $.get(`/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
         self.log('Shadowbanned?');
-        $contentBox.find('.subreddit-table .error, .domain-table .error').html('unable to load userdata</br>shadowbanned?');
+        $error.html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
-//			populateRunning.pop();
     }).done(function (d) {
 
         //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
         if ($.isEmptyObject(d.data.children)) {
 
-            if (self.counters.submissions > 0) {
-                $submissionCount.html(self.counters.submissions + "+");
+            if (user.counters.submissions > 0) {
+                $submissionCount.html(user.counters.submissions + "+");
             }
             else {
-                $submissionCount.html(self.counters.submissions);
+                $submissionCount.html(user.counters.submissions);
             }
 
             TB.ui.longLoadNonPersistent(false);
             $contentBox.find('.rts-report').show();
 
             // If .error is present it means there are no results. So we show that.
-            if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {
-                $contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
-            }
-            // If it is not present we have results and we can show the links for reporting and markdown reports.
-            else {
+            if ($error.html('no submissions').length == 0) {
                 $contentBox.find('.markdown-report').show();
             }
-            self.gettingUserData = false;
+
+            user.gettingUserData = false;
         }
 
-        if (!self.gettingUserData) return;
+        if (!user.gettingUserData) return;
 
         var after = d.data.after,
-            commentBody = 'Recent Submission history for ' + self.author + ':\n\ndomain submitted from|count|%\n:-|-:|-:';
+            commentBody = `Recent Submission history for ${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
 
         //For every submission, incremenet the count for the subreddit and domain by one.
         $.each(d.data.children, function (index, value) {
             var data = value.data;
 
-            if (!self.domains[data.domain]) {
-                self.domains[data.domain] = {
+            if (!user.domains[data.domain]) {
+                user.domains[data.domain] = {
                     count: 0
                 };
-                self.domainList.push(data.domain);
+                user.domainList.push(data.domain);
             }
 
-            self.domains[data.domain].count++;
+            user.domains[data.domain].count++;
 
-            if (!self.subreddits.submissions[data.subreddit]) {
-                self.subreddits.submissions[data.subreddit] = {
-                    count: 0
+            if (!user.subreddits.submissions[data.subreddit]) {
+                user.subreddits.submissions[data.subreddit] = {
+                    count: 0,
+                    karma: 0
                 };
-                self.subredditList.push(data.subreddit);
+                user.subredditList.push(data.subreddit);
             }
-            self.subreddits.submissions[data.subreddit].count++;
-            self.counters.submissions++;
+            user.subreddits.submissions[data.subreddit].count++;
+            user.subreddits.submissions[data.subreddit].karma += data.score;
+            user.counters.submissions++;
         });
 
         //Sort the domains by submission count
-        self.domainList.sort(function (a, b) {
-            return self.domains[b].count - self.domains[a].count;
+        user.domainList.sort(function (a, b) {
+            return user.domains[b].count - user.domains[a].count;
         });
 
         //Empty the domain table
         $domainTable.empty();
 
         //Get the total account od domain submissions
-        var totalDomainCount = 0;
-        for (var domain in self.domains) {
-            totalDomainCount = totalDomainCount + self.domains[domain].count;
+        var totalDomainCount = 0,
+            totalDomainKarma = 0;
+        for (var domain in user.domains) {
+            totalDomainCount += user.domains[domain].count;
+            totalDomainKarma += user.domains[domain].karma;
         }
 
         //Are there more domains than are shown?
         var moreDomains = 0;
 
         //Append all domains to the table and to the report comment
-        $.each(self.domainList, function (index, value) {
+        $.each(user.domainList, function (index, value) {
             var domain = value,
-                domainCount = self.domains[domain].count,
-                url = '/search?q=%28and+site%3A%27' + domain + '%27+author%3A%27' + self.author + '%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search',
+                domainCount = user.domains[domain].count,
+                url = `/search?q=%28and+site%3A%27${domain}%27+author%3A%27${author}%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search`,
                 match = domain.match(/^self.(\w+)$/),
                 percentage = Math.round(domainCount / totalDomainCount * 100),
                 bgcolor = '#fff';
@@ -353,24 +340,29 @@ self.populateSubmissionHistory = function (after) {
             }
 
             //If the domain is a self post, change the URL
-            if (match) url = '/r/' + match[1] + '/search?q=%28and+author%3A%27' + self.author + '%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search';
+            if (match) url = `/r/${match[1]}/search?q=%28and+author%3A%27${author}%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search`;
 
             //Append domain to the table
-            $domainTable.append('<tr style="background-color: '+ bgcolor +'"><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted from \'' + domain + '\'">' + domain + '</a></td><td class="count-td">' + domainCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+            $domainTable.append(
+                `<tr style="background-color:${bgcolor}">
+                    <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted from '${domain}'">${domain}</a></td>
+                    <td class="count-td">${domainCount}</td>
+                    <td class="percentage-td">${percentage}%</td>
+                </tr>`);
 
             //Append the first 20 domains to the report comment
-            if (index < 20) commentBody += '\n[' + domain + '](' + url + ')|' + domainCount + '|' + percentage + '%';
+            if (index < 20) commentBody += `\n[${domain}](${url})|${domainCount}|${percentage}%`;
             moreDomains = index;
         });
 
         //If there were 20 or more domains, append to the report comment that we only displayed 20
-        if (moreDomains >= 20) commentBody += '\n\n_^...and ^' + (self.domainList.length - 20) + ' ^more_';
+        if (moreDomains >= 20) commentBody += `\n\n_^...and ^${user.domainList.length - 20} ^more_`;
 
         commentBody += '\n\nsubreddit submitted to|count|%\n:-|-:|-:';
 
         //Sort subreddit list by count
-        self.subredditList.sort(function (a, b) {
-            return self.subreddits.submissions[b].count - self.subreddits.submissions[a].count;
+        user.subredditList.sort(function (a, b) {
+            return user.subreddits.submissions[b].count - user.subreddits.submissions[a].count;
         });
 
         //Empty the subreddit table
@@ -378,46 +370,51 @@ self.populateSubmissionHistory = function (after) {
 
         //Get the total count of subreddit submissions
         var totalSubredditCount = 0;
-        for (var subreddit in self.subreddits.submissions) {
-            totalSubredditCount += self.subreddits.submissions[subreddit].count;
+        for (var subreddit in user.subreddits.submissions) {
+            totalSubredditCount += user.subreddits.submissions[subreddit].count;
         }
 
         var moreSubreddits = 0;
         //Append a list of subreddits submitted to the subreddit table and to the comment body for reports
-        $.each(self.subredditList, function (index, value) {
+        $.each(user.subredditList, function (index, value) {
             var subreddit = value,
-                subredditCount = self.subreddits.submissions[subreddit].count,
-                url = '/r/' + subreddit + '/search?q=author%3A%27' + self.author + '%27&restrict_sr=on&sort=new&feature=legacy_search';
+                subredditCount = user.subreddits.submissions[subreddit].count,
+                subredditKarma = user.subreddits.submissions[subreddit].karma,
+                url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`;
 
             var percentage = Math.round(subredditCount / totalSubredditCount * 100);
-            $subredditTable.append('<tr><td class="url-td"><a target="_blank" href="' + url + '" title="view links ' + self.author + ' recently submitted to /r/' + subreddit + '/">' + subreddit + '</a></td><td class="count-td">' + subredditCount + '</td><td class="percentage-td">' + percentage + '%</td></tr>');
+            $subredditTable.append(
+                `<tr>
+                    <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted to /r/${subreddit}/">${subreddit}</a></td>
+                    <td class="count-td">${subredditCount}</td>
+                    <td class="percentage-td">${percentage}%</td>
+                    <td class="karma-td">${subredditKarma}</td>
+                </tr>`);
 
-            if (index < 20) commentBody += '\n[' + subreddit + '](' + url + ')|' + subredditCount + '|' + percentage + '%';
+            if (index < 20) commentBody += `\n[${subreddit}](${url})|${subredditCount}|${percentage}%`;
             moreSubreddits = index;
         });
 
         //If there were more than 20 subreddits, we only put the first 20 in the report, and say that there are more
-        if (moreSubreddits >= 20) commentBody += '\n\n_^...and ^' + (self.subredditList.length - 20) + ' ^more_';
+        if (moreDomains >= 20) commentBody += `\n\n_^...and ^${user.subredditList.length - 20} ^more_`;
 
         $('.rts-report').attr('data-commentbody', commentBody);
 
         //There's still more subsmissions to load, so we're going to run again
         if (after) {
-            $submissionCount.html("Loading... (" + self.counters.submissions + ")");
-            self.populateSubmissionHistory(after);
+            $submissionCount.html(`Loading... (${user.counters.submissions})`);
+            self.populateSubmissionHistory(after, author);
         }
         //All of the submissions have been loaded at this point
         else {
-            $submissionCount.html(self.counters.submissions);
-
             TB.ui.longLoadNonPersistent(false);
+            user.gettingUserdata = false;
+
+            $submissionCount.html(user.counters.submissions);
             $contentBox.find('.rts-report').show();
-            if ($contentBox.find('.subreddit-table .error, .domain-table .error').length > 0) {  // This check is likely not need, but better safe than sorry.
-                $contentBox.find('.subreddit-table .error, .domain-table .error').html('no submissions');
-            } else {
+            if ($error.html('no submissions').length == 0) {  // This check is likely not need, but better safe than sorry.
                 $contentBox.find('.markdown-report').show();
             }
-            self.gettingUserdata = false;
         }
     });
 };
@@ -425,7 +422,7 @@ self.populateSubmissionHistory = function (after) {
 /**
  * Populate the submission account history for a user
  */
-self.populateAccountHistory = function () {
+self.populateAccountHistory = function (author) {
 
     var TYPE = {
         PATH: 1,		// e.g. example.org/path/user
@@ -467,7 +464,8 @@ self.populateAccountHistory = function () {
         }
     };
 
-    var $contentBox = $('.history-button-popup'),
+    var user = self.fetched[author],
+        $contentBox = user.popup,
         $accountTable = $contentBox.find('.account-table tbody');
 
     $contentBox.width(1000);
@@ -476,11 +474,10 @@ self.populateAccountHistory = function () {
     $contentBox.find('.account-table').show();
     $accountTable.append('<tr><td colspan="6" class="error">Loading... (0 submissions)</td></tr>');
 
-    grabListing('/user/' + self.author + '/submitted.json?limit=100', updateSubmissions)
+    grabListing(`/user/${author}/submitted.json?limit=100`, updateSubmissions)
         .then(function(listing) {
             if (listing === null) {
                 $accountTable.find('.error').html('unable to load userdata<br />shadowbanned?');
-
                 return false;
             }
 
@@ -528,21 +525,21 @@ self.populateAccountHistory = function () {
         var totalAccountCount = 0,
             accountList = [];
 
-        for (var account in self.accounts) {
-            totalAccountCount = totalAccountCount + self.accounts[account].count;
+        for (var account in user.accounts) {
+            totalAccountCount = totalAccountCount + user.accounts[account].count;
 
             accountList.push(account);
         }
 
         //Sort the domains by submission count
         accountList.sort(function (a, b) {
-            return self.accounts[b].count - self.accounts[a].count;
+            return user.accounts[b].count - user.accounts[a].count;
         });
 
         $accountTable.empty();
 
         $.each(accountList, function(index, account) {
-            account = self.accounts[account];
+            account = user.accounts[account];
 
             var percentage = Math.round(account.count / totalAccountCount * 100),
                 bgcolor = 'fff';
@@ -552,23 +549,13 @@ self.populateAccountHistory = function () {
             }
 
             $accountTable.append(
-                '<tr style="background-color: '+ bgcolor +'">\
-                    <td class="url-td">\
-                        <a href="' + account.url + '" target="_blank">' +
-                            account.name +
-                        '</a> - \
-                        <a href="' + account.provider_url + '" target="_blank">' +
-                            account.provider +
-                        '</a>\
-                    </td>\
-                    <td class="count-td">' +
-                        account.count +
-                    '</td>\
-                    <td class="percentage-td">' +
-                        percentage +'%\
-                    </td>\
-                </tr>'
-            );
+                `<tr style="background-color:${bgcolor}">
+                    <td class="url-td">
+                        <a href="${account.url}" target="_blank">${account.name}</a> - <a href="${account.provider_url}" target="_blank">${account.provider}</a>
+                    </td>
+                    <td class="count-td">${account.count}</td>
+                    <td class="percentage-td">${percentage}%</td>
+                </tr>`);
         });
     }
 
@@ -578,11 +565,11 @@ self.populateAccountHistory = function () {
      * @param details {Object}
      */
     function addAccount(details) {
-        if (!self.accounts[details.url]) {
-            self.accounts[details.url] = details;
-            self.accounts[details.url].count = 0;
+        if (!user.accounts[details.url]) {
+            user.accounts[details.url] = details;
+            user.accounts[details.url].count = 0;
         }
-        self.accounts[details.url].count++;
+        user.accounts[details.url].count++;
     }
 
     /**
@@ -626,52 +613,53 @@ self.populateAccountHistory = function () {
     }
 };
 
-self.populateCommentHistory = function (after) {
+self.populateCommentHistory = function (after, author) {
     // fuck it; it's their ratelimit.
     //if (self.gettingUserData) return;
-
-    var $contentBox = $('.history-button-popup'),
+    var user = self.fetched[author],
+        $contentBox = user.popup,
         $commentTable = $contentBox.find('.comment-table tbody');
 
     $contentBox.width(1000);
     $commentTable.empty();
 
     $contentBox.find('.comment-table').show();
-    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + self.counters.comments + ')</td></tr>');
+    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + user.counters.comments + ')</td></tr>');
 
-    $.get('/user/' + self.author + '/comments.json?limit=100&after=' + (after || '')).error(function () {
+    $.get(`/user/${author}/comments.json?limit=100&after=${after}`).error(function () {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
     }).done(function (d) {
 
-
         $.each(d.data.children, function (index, value) {
             var data = value.data;
-            if (!self.subreddits.comments[data.subreddit]) {
-                self.subreddits.comments[data.subreddit] = {count: 0};
-                self.commentSubredditList.push(data.subreddit);
+            if (!user.subreddits.comments[data.subreddit]) {
+                user.subreddits.comments[data.subreddit] = {count: 0};
+                user.commentSubredditList.push(data.subreddit);
             }
 
-            self.subreddits.comments[data.subreddit].count++;
-            self.counters.comments++;
+            user.subreddits.comments[data.subreddit].count++;
+            user.counters.comments++;
         });
 
         var after = d.data.after;
         if (after) {
-            self.populateCommentHistory(after);
+            self.populateCommentHistory(after, author);
         }
 
         if ($.isEmptyObject(d.data.children) || !after) {
-            self.commentSubredditList.sort(function (a, b) {
-                return self.subreddits.comments[b].count - self.subreddits.comments[a].count;
+            user.commentSubredditList.sort(function (a, b) {
+                return user.subreddits.comments[b].count - user.subreddits.comments[a].count;
             });
 
             $commentTable.empty();
 
-            $.each(self.commentSubredditList, function (index, value) {
-                var count = self.subreddits.comments[value].count;
-                var percentage = Math.round(count / self.counters.comments * 100);
-                $commentTable.append('<tr>' +
-                    '<td>' + value + '</td><td>' + count + '</td><td>' + percentage + '</td></tr>');
+            $.each(user.commentSubredditList, function (index, value) {
+                var count = user.subreddits.comments[value].count;
+                var percentage = Math.round(count / user.counters.comments * 100);
+                $commentTable.append(
+                    `<tr>
+                        <td>${value}</td><td>${count}</td><td>${percentage}</td>
+                    </tr>`);
             });
         }
     });
@@ -680,9 +668,10 @@ self.populateCommentHistory = function (after) {
 /**
  * Report the use to /r/spam
  */
-self.reportAuthorToSpam = function () {
-    var rtsComment = self.setting('rtsComment'),
-        $contentBox = $('.history-button-popup'),
+self.reportAuthorToSpam = function (author) {
+    var user = self.fetched[author],
+        $contentBox = user.popup,
+        rtsComment = self.setting('rtsComment'),
         $rtsLink = $contentBox.find('.rts-report'),
         rtsNativeLink = $rtsLink.get(0),
         commentBody = rtsNativeLink.getAttribute('data-commentbody');
@@ -691,8 +680,8 @@ self.reportAuthorToSpam = function () {
     rtsNativeLink.className = '.rts-report-clicked';
 
     //Submit to RTS
-    var link = 'https://www.reddit.com/user/' + self.author,
-        title = 'Overview for ' + self.author;
+    var link = 'https://www.reddit.com/user/' + author,
+        title = 'Overview for ' + author;
 
     TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
         if (!successful) {
@@ -703,7 +692,7 @@ self.reportAuthorToSpam = function () {
                 $rtsLink.after('<span class="error" style="font-size:x-small">' + submission.json.errors[0][1] + '</error>');
                 //$rtsLink.hide();
                 if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                    rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + self.author + '&restrict_sr=on&feature=legacy_search';
+                    rtsNativeLink.href = '/r/' + self.SPAM_REPORT_SUB + '/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F' + author + '&restrict_sr=on&feature=legacy_search';
                 }
                 return;
             }

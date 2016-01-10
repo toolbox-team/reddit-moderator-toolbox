@@ -1061,7 +1061,8 @@ body .thing.flaired {
 }
 .history-button-popup div.table.subreddit-table {
     display: inline-block;
-    width: 300px;
+    min-width: 310px;
+    max-width: none;
 }
 .history-button-popup div.table.comment-table {
     display: inline-block;

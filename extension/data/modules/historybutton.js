@@ -16,6 +16,13 @@ self.register_setting('rtsComment', {
     'title': 'Post user summary when submitting spam reports'
 });
 
+self.register_setting('alwaysComments', {
+    'type': 'boolean',
+    'default': false,
+    'advanced': true,
+    'title': 'Load comment history immediately'
+});
+
 /**
  * Attach an [H] button to all users
  */
@@ -51,6 +58,7 @@ self.init = function () {
     $('body').on('click', '.user-history-button', function (event) {
         var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
 
+        //If we've already got this before, just move it to the mouse
         if(typeof self.fetched[author] != 'undefined'){
             self.fetched[author].popup.css({
                 left: event.pageX - 50,
@@ -60,15 +68,15 @@ self.init = function () {
             return;
         }
 
-        var subreddits = {submissions: {}, comments: {}};
-            counters = {submissions: 0, comments: 0};
-            accounts = {};
-            subredditList = [];
-            domainList = [];
-            commentSubredditList = [];
+        var subreddits = {submissions: {}, comments: {}},
+            counters = {submissions: 0, comments: 0},
+            accounts = {},
+            subredditList = [],
+            domainList = [],
+            commentSubredditList = [],
 
-            gettingUserData = true;
-            domains = [];
+            gettingUserData = true,
+            domains = [],
             domainslist = [],
 
             popupContent = 
@@ -179,6 +187,9 @@ self.init = function () {
             domainslist : domainslist,
         }
 
+        var $comments = $popup.find('.comment-table'),
+            $accounts = $popup.find('.account-table');
+
         $popup.on('click', '.close', function () {
             $popup.hide();
         });
@@ -189,15 +200,19 @@ self.init = function () {
         $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
         $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
         $popup.on('click.comment-report', '.comment-report', function(){
-            $popup.off('click.comment-report');
+            $popup.off('click.comment-report').on('click', function(){
+                $comments.toggle();
+            });
             self.populateCommentHistory('', author);
         });
         $popup.on('click.account-report', '.account-report', function(){
-            $popup.off('click.account-report');
-            self.populateAccountHistory(author);
+            $accounts.toggle();
         });
 
+        if(self.setting('alwaysComments'))
+            $popup.find('.comment-report').click();
     });
+    
 };
 
 /**
@@ -239,23 +254,60 @@ self.showMarkdownReport = function (author) {
  * @param after A token given by reddit for paginated results, allowing us to get the next page of results
  */
 self.populateSubmissionHistory = function (after, author) {
+
     var user = self.fetched[author],
         $contentBox = user.popup,
         $submissionCount = $contentBox.find('.submission-count'),
         $domainTable = $contentBox.find('.domain-table tbody'),
         $subredditTable = $contentBox.find('.subreddit-table tbody'),
-        $error = $contentBox.find('.subreddit-table .error, .domain-table .error');
+        $error = $contentBox.find('.subreddit-table .error, .domain-table .error, .account-table-table .error'),
+        $accountTable = $contentBox.find('.account-table tbody'),
+        TYPE = {
+            PATH: 1,        // e.g. example.org/path/user
+            SUBDOMAIN: 2    // e.g. user.example.org
+        },
+        domainSpecs = {
+            // keys are the supported sites, and determine if we have a match
+            'flickr.com': {
+                path: 'photos/',
+                provider: 'flickr',
+                type: TYPE.PATH
+            },
+            'medium.com': {
+                path: '@',
+                provider: 'Medium',
+                type: TYPE.PATH
+            },
+            'speakerdeck.com': {
+                provider: 'Speaker Deck',
+                type: TYPE.PATH
+            },
+            'blogspot.com': {
+                provider: 'Blogspot',
+                type: TYPE.SUBDOMAIN
+            },
+            'tumblr.com': {
+                provider: 'Tumblr',
+                type: TYPE.SUBDOMAIN
+            },
+            'deviantart.com': {
+                provider: 'deviantart',
+                type: TYPE.SUBDOMAIN
+            },
+            'artstation.com': {
+                path: 'artwork/',
+                provider: 'artstation',
+                type: TYPE.PATH
+            }
+        };
 
-    if (typeof after === 'undefined') {
-        TB.ui.longLoadNonPersistent(true);
-    }
+    TB.ui.longLoadNonPersistent(true);
 
     $.get(`/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
         self.log('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
     }).done(function (d) {
-
         //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
         if ($.isEmptyObject(d.data.children)) {
 
@@ -266,22 +318,31 @@ self.populateSubmissionHistory = function (after, author) {
                 $submissionCount.html(user.counters.submissions);
             }
 
-            TB.ui.longLoadNonPersistent(false);
-            $contentBox.find('.rts-report').show();
-
-            // If .error is present it means there are no results. So we show that.
-            if ($error.html('no submissions').length == 0) {
-                $contentBox.find('.markdown-report').show();
-            }
+            //If the error elements can be seen it is because there are no submissions
+            $error.html('no submissions');
 
             user.gettingUserData = false;
-        }
 
-        if (!user.gettingUserData) return;
+            TB.ui.longLoadNonPersistent(false);
+            return;
+        }
 
         var after = d.data.after,
             commentBody = `Recent Submission history for ${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
 
+        user.counters.submissions += d.data.children.length;
+        //There's still more subsmissions to load, so we're going to run again
+        if (after) {
+            $submissionCount.html(`Loading... (${user.counters.submissions})`);
+            self.populateSubmissionHistory(after, author);
+        }
+        //All of the submissions have been loaded at this point
+        else {
+            user.gettingUserData = false;
+            $submissionCount.html(user.counters.submissions);
+        }
+
+        TB.ui.longLoadNonPersistent(false);
         //For every submission, incremenet the count for the subreddit and domain by one.
         $.each(d.data.children, function (index, value) {
             var data = value.data;
@@ -292,8 +353,8 @@ self.populateSubmissionHistory = function (after, author) {
                 };
                 user.domainList.push(data.domain);
             }
-
             user.domains[data.domain].count++;
+
 
             if (!user.subreddits.submissions[data.subreddit]) {
                 user.subreddits.submissions[data.subreddit] = {
@@ -304,7 +365,34 @@ self.populateSubmissionHistory = function (after, author) {
             }
             user.subreddits.submissions[data.subreddit].count++;
             user.subreddits.submissions[data.subreddit].karma += data.score;
-            user.counters.submissions++;
+
+            if (data.media && data.media.oembed && data.media.oembed.author_url) {
+                var oembed = data.media.oembed;
+
+                addAccount({
+                    name: oembed.author_name,
+                    provider: oembed.provider_name,
+                    provider_url: oembed.provider_url,
+                    url: oembed.author_url
+                });
+            } else {
+                var spec = domainSpecs[data.domain],
+                    details, domain;
+
+                if (!spec) {
+                    // "sub.dom.ain.domain.com" -> "domain.com" (NOTE: does not support "domain.co.uk")
+                    domain = data.domain.split('.').slice(-2).join('.');
+                    spec = domainSpecs[domain];
+                }
+
+                if (spec) {
+                    spec.domain = domain || data.domain;
+                    details = getDomainDetails(spec, data.url);
+                    if (details) {
+                        addAccount(details);
+                    }
+                }
+            }
         });
 
         //Sort the domains by submission count
@@ -380,9 +468,9 @@ self.populateSubmissionHistory = function (after, author) {
             var subreddit = value,
                 subredditCount = user.subreddits.submissions[subreddit].count,
                 subredditKarma = user.subreddits.submissions[subreddit].karma,
-                url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`;
+                url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`
+                percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
-            var percentage = Math.round(subredditCount / totalSubredditCount * 100);
             $subredditTable.append(
                 `<tr>
                     <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted to /r/${subreddit}/">${subreddit}</a></td>
@@ -400,134 +488,18 @@ self.populateSubmissionHistory = function (after, author) {
 
         $('.rts-report').attr('data-commentbody', commentBody);
 
-        //There's still more subsmissions to load, so we're going to run again
-        if (after) {
-            $submissionCount.html(`Loading... (${user.counters.submissions})`);
-            self.populateSubmissionHistory(after, author);
-        }
-        //All of the submissions have been loaded at this point
-        else {
-            TB.ui.longLoadNonPersistent(false);
-            user.gettingUserdata = false;
-
-            $submissionCount.html(user.counters.submissions);
-            $contentBox.find('.rts-report').show();
-            if ($error.html('no submissions').length == 0) {  // This check is likely not need, but better safe than sorry.
-                $contentBox.find('.markdown-report').show();
-            }
-        }
-    });
-};
-
-/**
- * Populate the submission account history for a user
- */
-self.populateAccountHistory = function (author) {
-
-    var TYPE = {
-        PATH: 1,		// e.g. example.org/path/user
-        SUBDOMAIN: 2	// e.g. user.example.org
-    };
-
-    var domainSpecs = {
-        // keys are the supported sites, and determine if we have a match
-        'flickr.com': {
-            path: 'photos/',
-            provider: 'flickr',
-            type: TYPE.PATH
-        },
-        'medium.com': {
-            path: '@',
-            provider: 'Medium',
-            type: TYPE.PATH
-        },
-        'speakerdeck.com': {
-            provider: 'Speaker Deck',
-            type: TYPE.PATH
-        },
-        'blogspot.com': {
-            provider: 'Blogspot',
-            type: TYPE.SUBDOMAIN
-        },
-        'tumblr.com': {
-            provider: 'Tumblr',
-            type: TYPE.SUBDOMAIN
-        },
-        'deviantart.com': {
-            provider: 'deviantart',
-            type: TYPE.SUBDOMAIN
-        },
-        'artstation.com': {
-            path: 'artwork/',
-            provider: 'artstation',
-            type: TYPE.PATH
-        }
-    };
-
-    var user = self.fetched[author],
-        $contentBox = user.popup,
-        $accountTable = $contentBox.find('.account-table tbody');
-
-    $contentBox.width(1000);
-    $accountTable.empty();
-
-    $contentBox.find('.account-table').show();
-    $accountTable.append('<tr><td colspan="6" class="error">Loading... (0 submissions)</td></tr>');
-
-    grabListing(`/user/${author}/submitted.json?limit=100`, updateSubmissions)
-        .then(function(listing) {
-            if (listing === null) {
-                $accountTable.find('.error').html('unable to load userdata<br />shadowbanned?');
-                return false;
-            }
-
-            $.each(listing, function (index, value) {
-                var data = value.data;
-
-                if (data.media && data.media.oembed && data.media.oembed.author_url) {
-                    var oembed = data.media.oembed;
-
-                    addAccount({
-                        name: oembed.author_name,
-                        provider: oembed.provider_name,
-                        provider_url: oembed.provider_url,
-                        url: oembed.author_url
-                    });
-                } else {
-                    var spec = domainSpecs[data.domain],
-                        details, domain;
-
-                    if (!spec) {
-                        // "sub.dom.ain.domain.com" -> "domain.com" (NOTE: does not support "domain.co.uk")
-                        domain = data.domain.split('.').slice(-2).join('.');
-                        spec = domainSpecs[domain];
-                    }
-
-                    if (spec) {
-                        spec.domain = domain || data.domain;
-                        details = getDomainDetails(spec, data.url);
-                        if (details) {
-                            addAccount(details);
-                        }
-                    }
-                }
-            });
-
-            tableify();
-        });
-
-    function updateSubmissions(amount) {
-        $accountTable.find('.error').text('Loading... (' + amount + ' submissions)');
-    }
+        tableify();
+    });//END DONE
 
     function tableify() {
         //Get the total account of account submissions
+        $accountTable.empty();
+
         var totalAccountCount = 0,
             accountList = [];
 
         for (var account in user.accounts) {
-            totalAccountCount = totalAccountCount + user.accounts[account].count;
-
+            totalAccountCount += user.accounts[account].count;
             accountList.push(account);
         }
 
@@ -536,7 +508,6 @@ self.populateAccountHistory = function (author) {
             return user.accounts[b].count - user.accounts[a].count;
         });
 
-        $accountTable.empty();
 
         $.each(accountList, function(index, account) {
             account = user.accounts[account];
@@ -558,7 +529,6 @@ self.populateAccountHistory = function (author) {
                 </tr>`);
         });
     }
-
     /**
      * Take an object and add it to `self.accounts`.
      *
@@ -611,11 +581,13 @@ self.populateAccountHistory = function (author) {
             };
         }
     }
+
 };
 
+
 self.populateCommentHistory = function (after, author) {
-    // fuck it; it's their ratelimit.
-    //if (self.gettingUserData) return;
+    TB.ui.longLoadNonPersistent(true);
+
     var user = self.fetched[author],
         $contentBox = user.popup,
         $commentTable = $contentBox.find('.comment-table tbody');
@@ -624,12 +596,12 @@ self.populateCommentHistory = function (after, author) {
     $commentTable.empty();
 
     $contentBox.find('.comment-table').show();
-    $commentTable.append('<tr><td colspan="6" class="error">Loading... (' + user.counters.comments + ')</td></tr>');
+    $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
     $.get(`/user/${author}/comments.json?limit=100&after=${after}`).error(function () {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
+        TB.ui.longLoadNonPersistent(false);
     }).done(function (d) {
-
         $.each(d.data.children, function (index, value) {
             var data = value.data;
             if (!user.subreddits.comments[data.subreddit]) {
@@ -645,6 +617,7 @@ self.populateCommentHistory = function (after, author) {
         if (after) {
             self.populateCommentHistory(after, author);
         }
+        TB.ui.longLoadNonPersistent(false);
 
         if ($.isEmptyObject(d.data.children) || !after) {
             user.commentSubredditList.sort(function (a, b) {
@@ -653,9 +626,11 @@ self.populateCommentHistory = function (after, author) {
 
             $commentTable.empty();
 
+            TB.ui.longLoadNonPersistent(false);
             $.each(user.commentSubredditList, function (index, value) {
-                var count = user.subreddits.comments[value].count;
-                var percentage = Math.round(count / user.counters.comments * 100);
+                var count = user.subreddits.comments[value].count,
+                    percentage = Math.round(count / user.counters.comments * 100);
+
                 $commentTable.append(
                     `<tr>
                         <td>${value}</td><td>${count}</td><td>${percentage}</td>
@@ -724,81 +699,6 @@ self.reportAuthorToSpam = function (author) {
         }
     });
 };
-
-
-/**
- * Automatically get all entries of a listing.
- * Returns a Promise
- *
- * {string} a url pointing to a reddit listing
- * {function} a function that will be called whenever the length of the listing array grows
- */
-function grabListing(url, update) {
-    return new Promise(function (resolve) {
-        var listing = [];
-
-        if (update) {
-            update(listing.length);
-        }
-
-        function listingRequest(after) {
-            if (typeof after === 'string') {
-                var reqUrl = url + (url.indexOf('?') !== -1 ? '&after=' : '?after=') + after;
-            } else {
-                var reqUrl = url;
-            }
-
-            rateLimit().then(function() {
-                $.get(reqUrl)
-                    .error(function() {
-                        resolve(null);
-                    })
-                    .done(function(response) {
-                        if (response.data.children && response.data.children.length) {
-                            listing = listing.concat(response.data.children);
-                        }
-
-                        if (update) {
-                            update(listing.length);
-                        }
-
-                        if (response.data.after) {
-                            listingRequest(response.data.after);
-                        } else {
-                            resolve(listing);
-                        }
-                    });
-            });
-        }
-
-        listingRequest();
-    });
-}
-
-var lastRequest = 0;
-
-/**
- * Very basic ratelimiter
- * Will apply all passed arguments to the resolve function, in case it's used in a promise chain
- */
-function rateLimit() {
-    return new Promise(function (resolve) {
-        var curTime = Date.now(),
-            args = arguments;
-
-        if (curTime - lastRequest > 2000) {
-            resolve.apply(null, args);
-
-            lastRequest = curTime;
-        } else {
-            setTimeout(function(){
-                resolve.apply(null, args);
-
-                lastRequest = Date.now();
-            }, curTime - lastRequest);
-        }
-    });
-}
 
 TB.register_module(self);
 }

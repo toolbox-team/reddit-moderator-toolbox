@@ -108,6 +108,7 @@ function initwrapper() {
     TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
     TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
     TBUtils.advancedMode = TBStorage.getSetting(SETTINGS_NAME, 'advancedMode', false);
+    TBUtils.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600*1000});
     TBUtils.firstRun = false;
     TBUtils.tbDevs = toolboxDevs;
     TBUtils.betaRelease = betaRelease;
@@ -116,7 +117,6 @@ function initwrapper() {
     TBUtils.browser = TBStorage.browser;
     TBUtils.domain = TBStorage.domain;
     TBUtils.browsers = TBStorage.browsers;
-
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
     if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
@@ -1101,6 +1101,59 @@ function initwrapper() {
         function finish() {
             return complete ? complete() : false;
         }
+    };
+
+    RESUtils.forEachChunked = function(array, process, options){
+        if (!array || !array.length || typeof process !== 'function') return;
+        var arr = [];
+        if (!Array.isArray(array)){
+            for (var i = 0; i < array.length; ++i)
+                arr.push(array[i]);
+        } else {
+            arr = array.concat();
+        }
+
+        var start,
+            stop,
+            fr,
+            started = false,
+            opt = Object.assign({
+                size: 25, //starting size
+                framerate: 30, //target framerate
+                nerf: 0.9, //Be careful with this one
+            }, options),
+            size = opt.size,
+            nerf = opt.nerf,
+            framerate = opt.framerate,
+
+            now = function(){ return window.performance.now(); },
+
+            again = (typeof window.requestAnimationFrame == 'function')?
+                function(callback){ window.requestAnimationFrame(callback); }:
+                function(callback){ setTimeout(callback, 1000/opt.framerate); },
+
+            optimize = function(){
+                stop = now();
+                fr = 1000/(stop - start);
+                size = Math.ceil(size*(1 + (fr/framerate - 1)*nerf));
+                return (start = stop);
+            };
+
+        return new Promise(function(resolve, reject){
+            if (typeof process != 'function') reject('No function');
+
+            var doChunk = function(){
+                if (started) optimize();
+                else started = true;
+
+                arr.splice(0, size).forEach(process);
+
+                if (arr.length) return again( doChunk );
+                return resolve(array);
+            };
+            start = now();
+            again( doChunk );
+        });
     };
 
     TBUtils.reloadToolbox = function () {

@@ -1103,7 +1103,7 @@ function initwrapper() {
         }
     };
 
-    RESUtils.forEachChunked = function(array, process, options){
+    TBUtils.forEachChunkedDynamic = function(array, process, options){
         if (!array || !array.length || typeof process !== 'function') return;
         var arr = [];
         if (!Array.isArray(array)){

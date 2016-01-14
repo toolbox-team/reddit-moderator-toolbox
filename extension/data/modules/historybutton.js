@@ -29,18 +29,9 @@ self.register_setting('alwaysComments', {
 self.run = function () {
     var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
 
-    if (TBUtils.isModmail) {
-        $('.entry .userattrs').not('.tb-history').each(function () {
-            $(this).addClass('tb-history')
-                .find('.userattrs')
-                .after(UserButtonHTML);
-        });
-    } else {
-        $('.entry .userattrs').not('.tb-history').each(function () {
-            $(this).addClass('tb-history')
-                .after(UserButtonHTML);
-        });
-    }
+    $('.entry .userattrs').not('.tb-history').each(function () {
+        $(this).addClass('tb-history').after(UserButtonHTML);
+    });
 };
 
 /**

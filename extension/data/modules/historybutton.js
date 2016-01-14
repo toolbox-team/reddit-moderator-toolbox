@@ -29,8 +29,8 @@ self.register_setting('alwaysComments', {
 self.run = function () {
     var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
 
-    $('.entry .userattrs').not('.tb-history').each(function () {
-        $(this).addClass('tb-history').after(UserButtonHTML);
+    $('.entry').not('.tb-history').each(function () {
+        $(this).addClass('tb-history').find('.userattrs').eq(0).after(UserButtonHTML);
     });
 };
 

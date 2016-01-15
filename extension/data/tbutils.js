@@ -1104,16 +1104,9 @@ function initwrapper() {
     };
 
     TBUtils.forEachChunkedDynamic = function(array, process, options){
-        if (!array || !array.length || typeof process !== 'function') return;
-        var arr = [];
-        if (!Array.isArray(array)){
-            for (var i = 0; i < array.length; ++i)
-                arr.push(array[i]);
-        } else {
-            arr = array.concat();
-        }
-
-        var start,
+        if(typeof process !== 'function') return;
+        var arr = Array.from(array);
+            start,
             stop,
             fr,
             started = false,
@@ -1140,8 +1133,6 @@ function initwrapper() {
             };
 
         return new Promise(function(resolve, reject){
-            if (typeof process != 'function') reject('No function');
-
             var doChunk = function(){
                 if (started) optimize();
                 else started = true;

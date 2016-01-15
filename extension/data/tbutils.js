@@ -1134,8 +1134,11 @@ function initwrapper() {
 
         return new Promise(function(resolve, reject){
             var doChunk = function(){
-                if (started) optimize();
-                else started = true;
+                if (started){
+                    optimize();
+                } else {
+                    started = true;
+                }
 
                 arr.splice(0, size).forEach(process);
 

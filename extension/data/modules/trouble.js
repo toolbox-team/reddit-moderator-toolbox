@@ -65,7 +65,7 @@ self.init = function() {
         $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
         $sitetable;
 
-    if(!TBUtils.isMod) return;
+    // if(!TBUtils.isMod) return;
 
     if(!TBUtils.isCommentsPage) return;
 
@@ -145,7 +145,7 @@ self.init = function() {
 
         //highlighting here to avoid another .each() iteration
         if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
-            $thing.addClass('tb-ncontroversy')
+            $thing.addClass('tb-neg tb-ncontroversy')
                 .parents('.thing').addClass('tb-ncontroversy');
         }
     }

@@ -70,9 +70,9 @@ self.init = function() {
     if(!TBUtils.isCommentsPage) return;
 
     if($body.hasClass('listing-page')){
-        $sitetable = $('.content > .sitetable');
+        $sitetable = $('.content').children('.sitetable');
     } else {
-        $sitetable = $('.commentarea > .sitetable');
+        $sitetable = $('.commentarea').children('.sitetable');
     }
 
     $sitetable.before($buttons);
@@ -110,22 +110,15 @@ self.init = function() {
     }
 
     function run() {
-        var start = performance.now(),
-            key = 'proc-things';
-
-        self.startProfile(key);
-        var $things = $('.thing.comment:not(.tb-pc-proc)');
+        var $things = $('.thing.comment').not('.tb-pc-proc');
 
         highlightComments($things);
 
         while (self.pending.length) self.pending.pop()();
 
-        if (expand) $('.thing.tb-controversy:not(.tb-pc-proc), .thing.tb-ncontroversy:not(.tb-pc-proc)').each(uncollapseThing);
+        if (expand) $('.thing.tb-controversy, .thing.tb-ncontroversy').not('.tb-pc-proc').each(uncollapseThing);
 
         markProcessedThings();
-
-        self.endProfile(key);
-        self.log('load time: ' + self.getProfile(key).time.toFixed(4));
     }
 
     function highlightComments($things){
@@ -148,11 +141,11 @@ self.init = function() {
             neg_thresh = neg_thresh_pref;
 
         //lower the threashold by one for user's comments
-        if(RegExp("\/"+TBUtils.logged+"\\b").test($thing.find('> .entry .author')[0].href)) --neg_thresh;
+        if(RegExp("\/"+TBUtils.logged+"\\b").test($thing.children('.entry').find('.author')[0].href)) --neg_thresh;
 
         //highlighting here to avoid another .each() iteration
         if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
-            $thing.addClass('tb-neg tb-ncontroversy')
+            $thing.addClass('tb-ncontroversy')
                 .parents('.thing').addClass('tb-ncontroversy');
         }
     }
@@ -167,7 +160,7 @@ self.init = function() {
 
         self.sorted = true;
 
-        sortMe.call($(this).closest('.sitetable, .commentarea, .content').find('> .sitetable'));
+        sortMe.call($(this).closest('.sitetable, .commentarea, .content').children('.sitetable'));
     }
 
     function fixFlatNER($this){
@@ -175,7 +168,7 @@ self.init = function() {
         if(!$NERs.length) return;
 
         $this.append($NERs.children('.thing'));
-        $('.NERPageMarker, .clearleft + .clearleft').css('display', 'none');
+        $('.NERPageMarker, .clearleft + .clearleft').remove();
     }
 
     function sortMe(){
@@ -184,7 +177,7 @@ self.init = function() {
 
         fixFlatNER($this);
 
-        $things = $this.children('.thing:not(.morechildren)')
+        $things = $this.children('.thing').not('.morechildren')
         .sort(function(a, b){
             return (b.dataset.nchildren - a.dataset.nchildren);
         });
@@ -193,35 +186,32 @@ self.init = function() {
             .prepend($this.children('.thing.tb-controversy'))
             .prepend($this.children('.thing.tb-ncontroversy'));
 
-        $things.find('> .child > .sitetable').each(sortMe);
+        $things.children('.child').children('.sitetable').each(sortMe);
     }
 
     function collapseThing(){
-        $(this).addClass('collapsed').find('.expand').eq(0).text('[+]');
+        $(this).addClass('collapsed').children('.entry').find('.expand').text('[+]');
     }
 
     function uncollapseThing(){
-        $(this).removeClass('collapsed').find('.expand').eq(0).text('[–]');
+        $(this).removeClass('collapsed').children('.entry').find('.expand').text('[–]');
     }
 
     function markProcessedThings(){
-        $('.thing:not(.tb-pc-proc)').addClass('tb-pc-proc');
+        $('.thing').not('.tb-pc-proc').addClass('tb-pc-proc');
     }
 
     function collapseNonDrama(){
 
         $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
 
-        $('.commentarea > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy), .thing.tb-controversy > .child > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy), .thing.tb-ncontroversy > .child > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy)')
+        $('.commentarea').add($('.thing.tb-controversy, .thing.tb-ncontroversy').children('.child'))
+            .children('.sitetable').children('.thing').not('.tb-controversy, .tb-ncontroversy')
             .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
 /*  TODO
 
     Include below threshold comments when the score is hidden?
-
-    Build a filter for collections so elements can remove themselves if they don't need being "dealt with"
-
-    Calculate %upvoted to get real numbers.
 
     */
 };

@@ -32,7 +32,14 @@ self.register_setting('sortOnMoreChildren', {
 
 self.register_setting('displayNChildren', {
     'type': 'boolean',
+    'default': true,
+    'title': 'Always display the number of children a comment has.'
+});
+
+self.register_setting('displayNChildrenTop', {
+    'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Display the number of children a comment has in the upper left.  This may change the normal flow of the comments page slightly.'
 });
 
@@ -45,6 +52,7 @@ self.init = function() {
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
         nChildren = self.setting('displayNChildren'),
+        nChildrenTop = self.setting('displayNChildrenTop'),
         $body = $('body'),
         $buttons = $('<div id="tb-trouble-buttons">'),
         $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
@@ -74,6 +82,7 @@ self.init = function() {
 
         $body.addClass('tb-trouble');
         if(nChildren) $body.addClass('tb-nchildren');
+        if(nChildrenTop) $body.addClass('tb-nchildrentop');
 
         $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
@@ -89,7 +98,7 @@ self.init = function() {
 
         run();
 
-        if (expand) $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
+        if (expand) $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
     }
 
     function run() {
@@ -103,7 +112,7 @@ self.init = function() {
 
         while (self.pending.length) self.pending.pop()();
 
-        if (expand) $('.thing.tb-drama:not(.tb-pc-proc), .thing.tb-ndrama:not(.tb-pc-proc)').each(uncollapseThing);
+        if (expand) $('.thing.tb-controversy:not(.tb-pc-proc), .thing.tb-ncontroversy:not(.tb-pc-proc)').each(uncollapseThing);
 
         markProcessedThings();
 
@@ -118,8 +127,8 @@ self.init = function() {
 
         $things.find('.score.unvoted').each(score);
 
-        $things.filter(function(){ return controversial.test(this.className); }).children('.entry').addClass('tb-drama')
-            .parents('.thing').addClass('tb-drama');
+        $things.filter(function(){ return controversial.test(this.className); }).children('.entry').addClass('tb-controversy')
+            .parents('.thing').addClass('tb-controversy');
     }
 
     function score(){
@@ -132,8 +141,8 @@ self.init = function() {
 
         //highlighting here to avoid another .each() iteration
         if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
-            $thing.addClass('tb-neg tb-ndrama')
-                .parents('.thing').addClass('tb-ndrama');
+            $thing.addClass('tb-neg tb-ncontroversy')
+                .parents('.thing').addClass('tb-ncontroversy');
         }
     }
 
@@ -170,8 +179,8 @@ self.init = function() {
         });
 
         $this.prepend($things)
-            .prepend($this.children('.thing.tb-drama'))
-            .prepend($this.children('.thing.tb-ndrama'));
+            .prepend($this.children('.thing.tb-controversy'))
+            .prepend($this.children('.thing.tb-ncontroversy'));
 
         $things.find('> .child > .sitetable').each(sortMe);
     }
@@ -190,9 +199,9 @@ self.init = function() {
 
     function collapseNonDrama(){
 
-        $('.thing.tb-drama, .thing.tb-ndrama').each(uncollapseThing);
+        $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
 
-        $('.commentarea > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-drama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama), .thing.tb-ndrama > .child > .sitetable > .thing:not(.tb-drama, .tb-ndrama)')
+        $('.commentarea > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy), .thing.tb-controversy > .child > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy), .thing.tb-ncontroversy > .child > .sitetable > .thing:not(.tb-controversy, .tb-ncontroversy)')
             .each(collapseThing);//collapsing only top-level-most comment children of drama
     }
 /*  TODO

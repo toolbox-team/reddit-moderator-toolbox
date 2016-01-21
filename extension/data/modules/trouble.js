@@ -65,7 +65,7 @@ self.init = function() {
         $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start),
         $sitetable;
 
-    // if(!TBUtils.isMod) return;
+    if(!TBUtils.isMod) return;
 
     if(!TBUtils.isCommentsPage) return;
 

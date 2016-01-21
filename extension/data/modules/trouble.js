@@ -18,6 +18,12 @@ self.register_setting('negHighlightThreshold', {
     'title': 'Negative comment highlight score threshold'
 });
 
+self.register_setting('highlightControversy', {
+    'type': 'boolean',
+    'default': true,
+    'title': 'Highlight controversial comments'
+});
+
 self.register_setting('expandOnLoad', {
     'type': 'boolean',
     'default': false,
@@ -48,6 +54,7 @@ self.pending = [];
 
 self.init = function() {
     var neg_thresh_pref = self.setting('negHighlightThreshold'),
+        highlightControversy = self.setting('highlightControversy'),
         expand = self.setting('expandOnLoad'),
         auto = self.setting('highlightAuto'),
         sortOnMoreChildren = self.setting('sortOnMoreChildren'),
@@ -81,6 +88,7 @@ self.init = function() {
         $init_btn.remove();
 
         $body.addClass('tb-trouble');
+        if(highlightControversy) $body.addClass('tb-controversy-hl');
         if(nChildren) $body.addClass('tb-nchildren');
         if(nChildrenTop) $body.addClass('tb-nchildrentop');
 
@@ -127,8 +135,11 @@ self.init = function() {
 
         $things.find('.score.unvoted').each(score);
 
-        $things.filter(function(){ return controversial.test(this.className); }).children('.entry').addClass('tb-controversy')
-            .parents('.thing').addClass('tb-controversy');
+        if(highlightControversy){
+            $things.filter(function(){ return controversial.test(this.className); })
+                .children('.entry').addClass('tb-controversy')
+                .parents('.thing').addClass('tb-controversy');
+        }
     }
 
     function score(){

@@ -18,8 +18,10 @@ self.init = function() {
     var tagType = this.setting('displayType'),
         $body = $('body');
 
+    $body.addClass('tb-dt-type-'+tagType);
+
     TBUtils.getModSubs(function () {
-        run();
+        run(true);
     });
 
     function postToWiki(sub, json, reason) {
@@ -27,7 +29,8 @@ self.init = function() {
 
         TBUtils.postToWiki('toolbox', sub, json, reason, true, false, function done(succ, err) {
             if (succ) {
-                run();
+                $('div.thing.link.dt-processed').removeClass('dt-processed');
+                run(false);
             } else {
                 self.log(err.responseText);
             }
@@ -36,17 +39,18 @@ self.init = function() {
 
     // NER support.
     window.addEventListener("TBNewThings", function () {
-        run();
+        run(true);
     });
 
-    function run() {
+    // Main stuff
+    function run(addButton) {
         var $things = $('div.thing.link:not(.dt-processed)'),
             subs = {};
 
         // Build object lists per subreddit
         self.log("Processing things");
         TBUtils.forEachChunked($things, 25, 500, function(thing) {
-            var sub = processThing($(thing));
+            var sub = processThing($(thing), addButton);
             if (sub !== undefined) {
                 if (subs[sub] === undefined) {
                     subs[sub] = [];
@@ -64,7 +68,7 @@ self.init = function() {
         });
     }
 
-    function processThing($thing) {
+    function processThing($thing, addButton) {
         if ($thing.hasClass('dt-processed')) {
             return;
         }
@@ -76,8 +80,10 @@ self.init = function() {
         }
         $thing.attr('subreddit', subreddit);
 
-        var tag = '<a class="add-domain-tag tb-bracket-button" title="Color tag domains" "href="javascript:;">T</a>';
-        $thing.find('span.domain').after(tag);
+        if (addButton) {
+            var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', "Color tag domains").attr('href', 'javascript:;').text('T');
+            $thing.find('span.domain').after(tag);
+        }
 
         return subreddit;
     }
@@ -98,6 +104,7 @@ self.init = function() {
         function applyTag($domain, d, $entry) {
             switch (tagType) {
                 case "domain_background":
+                    $domain.addClass('tb-dt-bg-' + d.color);
                     $domain.css({
                         'background-color': d.color,
                         'padding': '0 1px 1px',
@@ -261,7 +268,6 @@ self.init = function() {
                 postToWiki(subreddit, config, 'create new domain tags object, create tag "' + domainTag.name + '"');
             }
         });
-
     });
 
     $body.on('click', '.dtagger-popup .close', function () {

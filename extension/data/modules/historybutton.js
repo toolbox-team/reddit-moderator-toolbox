@@ -407,7 +407,7 @@ self.populateSubmissionHistory = function (after, author) {
         $.each(user.domainList, function (index, value) {
             var domain = value,
                 domainCount = user.domains[domain].count,
-                url = `/search?q=%28and+site%3A%27${domain}%27+author%3A%27${author}%27+is_self%3A0+%29&restrict_sr=off&sort=new&feature=legacy_search`,
+                url = `/search?q=%28and+site%3A%27${domain}%27+author%3A%27${author}%27+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`,
                 match = domain.match(/^self.(\w+)$/),
                 percentage = Math.round(domainCount / totalDomainCount * 100),
                 bgcolor = '#fff';
@@ -417,7 +417,7 @@ self.populateSubmissionHistory = function (after, author) {
             }
 
             //If the domain is a self post, change the URL
-            if (match) url = `/r/${match[1]}/search?q=%28and+author%3A%27${author}%27+is_self%3A1+%29&restrict_sr=on&sort=new&feature=legacy_search`;
+            if (match) url = `/r/${match[1]}/search?q=%28and+author%3A%27${author}%27+is_self%3A1+%29&restrict_sr=on&sort=new&syntax=cloudsearch&feature=legacy_search`;
 
             //Append domain to the table
             $domainTable.append(

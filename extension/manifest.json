@@ -39,7 +39,8 @@
                 "data/styles/historybutton.css",
                 "data/styles/trouble.css",
                 "data/styles/notifier.css",
-                "data/styles/domaintagger.css"
+                "data/styles/domaintagger.css",
+                "data/styles/usernotes.css"
             ],
             "js": [
                 "data/libs/jquery-2.1.1.js",

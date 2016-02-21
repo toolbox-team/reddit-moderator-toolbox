@@ -2129,66 +2129,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     font-weight: bold;
 }
 
-/* modbar */
-
-.mod-toolbox  #tb-toolbar-mysubs:hover, .mod-toolbox  #tb-personal-notes-button:hover {
-    background: #9FBAD6;
-
-}
-
-.mod-toolbox  #tb-toolbar-mysubs {
-    background: rgba(199, 214, 230, 0.8);
-    border-left: 1px dotted #A8B5C2;
-    border-right: 1px dotted #A8B5C2;
-    padding: 7px 3px 3px 3px;
-}
-
-
-.mod-toolbox  #tb-personal-notes-button {
-    background: rgba(199, 214, 230, 0.8);
-    border-left: 1px dotted #A8B5C2;
-    border-right: 1px dotted #A8B5C2;
-    padding: 7px 3px 3px 3px;
-}
-
-
-/* usernote manager */
-
-.mod-toolbox  a.tb-un-notedelete img {
-    width: 13px;
-    opacity: 0.8;
-    margin-bottom: -3px;
-}
-
-.mod-toolbox  .tb-un-user:nth-child(even) {
-    background: #F6F9FC;
-}
-
-
-.mod-toolbox  .tb-un-user {
-    padding: 5px;
-    margin-bottom: 3px;
-    border: solid 1px #FAFAFA;
-}
-
-.mod-toolbox  .tb-un-note-details {
-    padding: 3px;
-}
-
-.mod-toolbox  .tb-un-user-header {
-    border-bottom: solid 1px #E7E7E7;
-    margin-bottom: 3px;
-}
-
-.mod-toolbox  #tb-un-note-content-wrap {
-    max-width: 115em;
-    margin: 30px;
-}
-
-.mod-toolbox .tb-un-note-details span.mod, .mod-toolbox .tb-un-note-details span.date {
-    color: #A8A8A8;
-}
-
 /* macro.js */
 
 .macro-popup .tb-popup-content {

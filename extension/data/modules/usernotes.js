@@ -487,6 +487,120 @@ self.usernotesManager = function () {
         var userCount = Object.keys(notes.users).length,
             noteCount = 0;
 
+        var $userContentTemplate = $('<div>').addClass('tb-un-user').data('user', "NONE").append(
+            $('<div>').addClass('tb-un-user-header').append(
+                $('<a>').attr('href', 'javascript:;').addClass('tb-un-refresh').data('user', "NONE").append(
+                    $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconRefresh)
+                )
+            ).append(
+                $('<a>').attr('href', 'javascript:;').addClass('tb-un-delete').data('user', "NONE").append(
+                    $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
+                )
+            ).append(
+                $('<span>').addClass('user').append(
+                    $('<a>').attr('href', '/u/'+"NONE").text("/u/"+"NONE")
+                )
+            )
+        );//.append(
+        //    $('<div>').addClass('tb-usernotes')
+        //);
+
+        self.startProfile('manager-render');
+        TBUtils.forEachChunked(Object.keys(notes.users), 50, 50,
+            // Process a user
+            function (user, counter) {
+                self.startProfile('manager-render-user');
+                var $userContent = $userContentTemplate.clone();
+                $userContent.data('user', user);
+                $userContent.find('.tb-un-refresh, .tb-un-delete').data('user', user);
+                $userContent.find('.user a').attr('href', '/u/'+user).text("/u/"+user);
+                var $userNotes = $('<div>').addClass('tb-usernotes');//$userContent.find(".tb-usernotes");
+                $userContent.append($userNotes);
+                self.endProfile('manager-render-user');
+
+                TB.ui.textFeedback("Loading user " + counter + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
+
+                self.startProfile('manager-render-notes');
+                //var notes = [];
+                $.each(notes.users[user].notes, function (key, val) {
+                    noteCount++;
+
+                    var timeUTC = Math.round(val.time / 1000),
+                        timeISO = TBUtils.timeConverterISO(timeUTC),
+                        timeHuman = TBUtils.timeConverterRead(timeUTC);
+
+                    var $note = $('<div>').addClass('tb-un-note-details').append(
+                        $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').data('user', user).data('note', key).append(
+                            $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
+                        )
+                    ).append(
+                        $('<span>').addClass('note').append($('<a>').attr('href', val.link).text(val.note))
+                    ).append(
+                        $('<span>').text(" - ")
+                    ).append(
+                        $('<span>').addClass('mod').text("by /u/"+val.mod)
+                    ).append(
+                        $('<span>').text(" - ")
+                    ).append(
+                        $('<time>').attr('title', timeHuman).attr('datetime', timeISO).addClass('live-timestamp timeago').text(timeISO)
+                    );
+
+                    //notes.append($note);
+                    $userNotes.append($note);
+                });
+                //$userNotes.append(notes);
+                self.endProfile('manager-render-notes');
+
+                $siteTable.append($userContent);
+            },
+            // Process done
+            function () {
+                self.endProfile('manager-render');
+
+                TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
+
+                var infoHTML = '\
+            <div class="tb-un-info">\
+                <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
+                <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
+                <br><br>\
+                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune user profiles</a>\
+            </div></br></br>';
+
+                var infocontent = TB.utils.template(infoHTML, {
+                    'usercount': userCount,
+                    'notecount': noteCount
+                });
+
+                $siteTable.prepend(infocontent);
+
+                // Set events after all items are loaded.
+                noteManagerRun();
+
+                self.printProfiles();
+            }
+        );
+    }
+
+    function showSubNotesOld(status, notes) {
+        if (!status || !notes) {
+            var error = '\
+            <div class="tb-un-info">\
+                <span class="tb-info" style="color:red">No user notes were found for this subreddit.</span>\
+            </div>';
+
+            self.log('un status: ' + status + '\nnotes: ' + notes);
+
+            $siteTable.prepend(error);
+            TB.ui.longLoadSpinner(false, "No notes found", TB.ui.FEEDBACK_NEGATIVE);
+            return;
+        }
+        subUsenotes = notes;
+        self.log('showing notes');
+
+        var userCount = Object.keys(notes.users).length,
+            noteCount = 0;
+
         var userHTML = '\
     <div class="tb-un-user" data-user="{{user}}">\
         <div class="tb-un-user-header">\
@@ -505,7 +619,10 @@ self.usernotesManager = function () {
         <span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>&nbsp;\
     </div>';
 
+        self.startProfile('old-manager-render');
         TBUtils.forEachChunked(Object.keys(notes.users), 10, 100, function (user, counter) {
+                self.startProfile('manager-render-notes');
+
                 var usercontent = TB.utils.template(userHTML, {
                     'user': user
                 });
@@ -533,9 +650,13 @@ self.usernotesManager = function () {
 
                     $siteTable.find('div[data-user="' + user + '"] .tb-usernotes').append(notecontent);
                 });
+
+                self.endProfile('manager-render-notes');
             },
 
             function () {
+                self.endProfile('old-manager-render');
+
                 TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
                 var infoHTML = '\
@@ -555,11 +676,15 @@ self.usernotesManager = function () {
 
                 // Set events after all items are loaded.
                 noteManagerRun();
+
+                self.printProfiles();
             });
     }
 
     function noteManagerRun() {
-        $("time.timeago").timeago();  //what dies this do?
+        self.startProfile("manager-run");
+
+        $("time.timeago").timeago();  //what does this do?
 
         // Live search
         $body.find('#tb-unote-user-search').keyup(function () {
@@ -677,12 +802,15 @@ self.usernotesManager = function () {
             $noteSpan.remove();
             TB.ui.textFeedback('Deleted note for /u/' + user, TB.ui.FEEDBACK_POSITIVE);
         });
+
+        self.endProfile("manager-run");
     }
 
     TB.ui.longLoadSpinner(true, "Loading usernotes", TB.ui.FEEDBACK_NEUTRAL);
     setTimeout(function () {
         self.log(sub);
         self.getUserNotes(sub, showSubNotes);
+        //self.getUserNotes(sub, showSubNotesOld);
         self.log('done?');
         //getSubNotes(sub); // wait a sec to make sure spinner is loaded.
     }, 50);

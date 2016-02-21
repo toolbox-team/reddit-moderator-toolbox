@@ -958,6 +958,18 @@ TB.Module = function Module(name) {
         return profile.get(key);
     };
 
+    this.printProfiles = function() {
+        this.log("Profiling results: "+this.name);
+        this.log("--------------------------");
+        var loopthis = this;
+        this.getProfiles().forEach(function (profile, key) {
+            loopthis.log(key + ":");
+            loopthis.log("\tTime  = " + profile.time.toFixed(4));
+            loopthis.log("\tCalls = " + profile.calls);
+        });
+        this.log("--------------------------");
+    };
+
     // PUBLIC: placeholder init(), just in case
     this.init = function init() {
         // pass

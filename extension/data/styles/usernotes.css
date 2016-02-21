@@ -1,0 +1,48 @@
+/* Usernote manager */
+
+.mod-toolbox  a.tb-un-notedelete img {
+    width: 13px;
+    opacity: 0.8;
+    margin-bottom: -3px;
+}
+
+.mod-toolbox .tb-un-user:nth-child(even) {
+    background: #F6F9FC;
+}
+
+.mod-toolbox .tb-un-user {
+    padding: 5px;
+    margin-bottom: 3px;
+    border: solid 1px #FAFAFA;
+}
+
+.mod-toolbox .tb-un-note-details {
+    padding: 3px;
+}
+
+.mod-toolbox .tb-un-user-header {
+    border-bottom: solid 1px #E7E7E7;
+    margin-bottom: 3px;
+}
+
+.mod-toolbox .tb-un-user-header .tb-un-delete {
+    margin-right: 4px;
+}
+
+.mod-toolbox .tb-un-user-header .user {
+    font-size: 12px;
+}
+
+.mod-toolbox #tb-un-note-content-wrap {
+    max-width: 115em;
+    margin: 30px;
+}
+
+.mod-toolbox .tb-un-user-header .mod,
+.mod-toolbox .tb-un-note-details .date {
+    color: #A8A8A8;
+}
+
+.mod-toolbox .tb-un-user-header .tb-un-notedelete {
+    margin-right: 4px;
+}

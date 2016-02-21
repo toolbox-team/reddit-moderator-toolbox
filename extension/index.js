@@ -21,7 +21,8 @@ pageMod.PageMod({
         data.url("styles/historybutton.css"),
         data.url("styles/trouble.css"),
         data.url("styles/notifier.css"),
-        data.url("styles/domaintagger.css")
+        data.url("styles/domaintagger.css"),
+        data.url("styles/usernotes.css")
     ],
     contentScriptFile: [
         data.url("libs/jquery-2.1.1.js"),

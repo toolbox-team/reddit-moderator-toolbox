@@ -67,10 +67,8 @@ self.usernotes = function usernotes() {
 
         if (!subreddit) return;
 
-        var tag = '<span title="View and add notes about this user for /r/' +
-            subreddit + '" class="usernote-span-' +
-            subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<a class="tb-bracket-button add-user-tag-' +
-            subreddit + '" id="add-user-tag" "href="javascript:;">N</a></span>';
+        var $tag = $('<span>').attr('title', "View and add notes about this user for /r/"+subreddit).addClass('usernote-button usernote-span-'+subreddit).append(
+            $('<a>').addClass('tb-bracket-button add-user-tag-'+subreddit).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
 
         $thing.attr('subreddit', subreddit);
 
@@ -78,16 +76,18 @@ self.usernotes = function usernotes() {
         var userattrs = $thing.find('.userattrs');
         if ($(userattrs).length > 0) {
             if (TBUtils.isModmail && $(userattrs).length > 1) {
-                $(userattrs).eq(0).after(tag);
-            } else {
-                $(userattrs).after(tag);
+                $(userattrs).eq(0).after($tag);
             }
-        } else {
+            else {
+                $(userattrs).after($tag);
+            }
+        }
+        else {
             // moar mod mail fuckery.  Cocksucking motherfucking hell.
             // don't show your own tag after 'load full conversation'
             var $head = $thing.find('.head');
             if ($head.find('recipient') > 0) {
-                $head.append(tag);
+                $head.append($tag);
             }
         }
 
@@ -130,6 +130,8 @@ self.usernotes = function usernotes() {
         }
 
         var things = $('div.thing .entry[subreddit=' + subreddit + ']');
+
+        //FIXME: the UI generation should probably be moved to processThing
         if (showOnModPages && TB.utils.isEditUserPage) {
             var $userSpan = $('span.user:not(:first)'),
                 tag = '<span class="usernote-span-' +
@@ -142,12 +144,16 @@ self.usernotes = function usernotes() {
         }
 
         TBUtils.forEachChunked(things, 20, 300, function (thing) {
+            // Get all tags related to the current subreddit
             var user = TBUtils.getThingInfo(thing).user,
-                u = getUser(notes.users, user),
-                $usertag = $(thing).find('.add-user-tag-' + subreddit);
+                u = getUser(notes.users, user);
 
+            var $usertag;
             if (TB.utils.isEditUserPage) {
                 $usertag = $(thing).parent().find('.add-user-tag-' + subreddit);
+            }
+            else {
+                $usertag = $(thing).find('.add-user-tag-' + subreddit);
             }
 
             // Only happens if you delete the last note.
@@ -176,14 +182,13 @@ self.usernotes = function usernotes() {
                     }) + ')';
             }
 
-            $usertag.html('<b>' + TBUtils.htmlEncode(note) + '</b>' + ((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
+            $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
 
 
             var type = u.notes[0].type;
             if (!type) type = 'none';
 
             $usertag.css('color', TBUtils.getTypeInfo(type).color);
-
         });
     }
 

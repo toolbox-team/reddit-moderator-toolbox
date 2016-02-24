@@ -86,6 +86,7 @@
 				<string>data/styles/trouble.css</string>
 				<string>data/styles/notifier.css</string>
 				<string>data/styles/domaintagger.css</string>
+				<string>data/styles/usernotes.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

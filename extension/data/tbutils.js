@@ -227,12 +227,10 @@ function initwrapper() {
         TBUtils.betaMode = false;
     }
 
-
     TBUtils.usernotes = {
         ver: TBUtils.notesSchema,
         users: [] //typeof userNotes
     };
-
 
     TBUtils.note = {
         note: '',
@@ -242,15 +240,12 @@ function initwrapper() {
         type: ''
     };
 
-
-    TBUtils.warningType = ['gooduser', 'spamwatch', 'spamwarn', 'abusewarn', 'ban', 'permban', 'botban'];
-
-
     TBUtils.config = {
         ver: TBUtils.configSchema,
         domainTags: '',
         removalReasons: '',
-        modMacros: ''
+        modMacros: '',
+        usernoteColors: ''
     };
 
     TBUtils.events = {
@@ -281,42 +276,6 @@ function initwrapper() {
        if (!callback) return;
 
         window.addEventListener(tbuEvent, callback);
-    };
-
-    TBUtils.getTypeInfo = function (warningType) {
-        var typeInfo = {
-            name: '',
-            color: '',
-            text: ''
-        };
-
-        switch (String(warningType)) { //not sure why it gets passed as an array.
-            case 'gooduser':
-                typeInfo = {color: 'green', name: 'Contributor', text: 'Good Contributor'};
-                break;
-            case 'spamwatch':
-                typeInfo = {color: 'fuchsia', name: 'Watching', text: 'Spam Watch'};
-                break;
-            case 'spamwarn':
-                typeInfo = {color: 'purple', name: 'Warned', text: 'Spam Warning'};
-                break;
-            case 'abusewarn':
-                typeInfo = {color: 'orange', name: 'Warned', text: 'Abuse Warning'};
-                break;
-            case 'ban':
-                typeInfo = {color: 'red', name: 'Banned', text: 'Ban'};
-                break;
-            case 'permban':
-                typeInfo = {color: 'darkred', name: 'Perma-banned', text: 'Permanent Ban'};
-                break;
-            case 'botban':
-                typeInfo = {color: 'black', name: 'Bot Banned', text: 'Bot Ban'};
-                break;
-            default:
-                typeInfo = {color: '', name: '', text: 'none'};
-        }
-
-        return typeInfo;
     };
 
 	TBUtils.escapeHTML = function(html)

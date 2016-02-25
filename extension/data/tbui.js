@@ -216,10 +216,12 @@
 </div>\
 <div>');
         if (tabs.length == 1) {
-            $popup.append($('<div class="tb-popup-content">' + tabs[0].content + '</div>'));
-            $popup.append($('<div class="tb-popup-footer">' + tabs[0].footer + '</div>'));
-        } else if (tabs.length > 1) {
-            $popup.append($('<div class="tb-popup-tabs"></div>'));
+            $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
+            $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
+        }
+        else if (tabs.length > 1) {
+            var $tabs = $('<div>').addClass('tb-popup-tabs');
+            $popup.append($tabs);
 
             for (var i = 0; i < tabs.length; i++) {
                 var tab = tabs[i];
@@ -227,12 +229,17 @@
                     tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
                 }
 
-                var $button = $('<a' + (tab.tooltip ? ' title="' + tab.tooltip + '"' : '') + ' class="' + tab.id + '">' + tab.title + '</a>');
+                // Create tab button
+                var $button = $('<a>').addClass(tab.id).text(tab.title);
+                if (tab.tooltip) {
+                    $button.attr('title', tab.tooltip);
+                }
+
                 $button.click({tab: tab}, function (e) {
                     var tab = e.data.tab;
 
                     // hide others
-                    $popup.find('.tb-popup-tabs a').removeClass('active');
+                    $tabs.removeClass('active');
                     $popup.find('.tb-popup-tab').hide();
 
                     // show current
@@ -247,12 +254,12 @@
                     $button.addClass('active');
                 }
 
-                $button.appendTo($popup.find('.tb-popup-tabs'));
+                $button.appendTo($tabs);
 
 
-                var $tab = $('<div class="tb-popup-tab ' + tab.id + '"></div>');
-                $tab.append($('<div class="tb-popup-content">' + tab.content + '</div>'));
-                $tab.append($('<div class="tb-popup-footer">' + tab.footer + '</div>'));
+                var $tab = $('<div>').addClass('tb-popup-tab ' + tab.id);
+                $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
+                $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
 
                 // default first tab is visible; hide others
                 if (i == 0) {

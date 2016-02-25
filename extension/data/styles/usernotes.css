@@ -7,6 +7,18 @@
     color: #888888;
 }
 
+.usernote-button #add-user-tag {
+    cursor: pointer;
+}
+
+.usernote-button #add-user-tag:hover {
+    text-decoration: none;
+}
+
+.utagger-popup #utagger-user-note-input.error {
+    border-color: red;
+}
+
 /* Usernote manager */
 
 .mod-toolbox  a.tb-un-notedelete img {

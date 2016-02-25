@@ -821,10 +821,6 @@ img.note-close {
     padding: 1px 3px 3px;
 }
 
-#add-user-tag {
-    cursor: pointer;
-}
-
 .mod-toolbox .tb-popup {
     font-size:11px;
     max-width: 1000px;

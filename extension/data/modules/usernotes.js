@@ -963,11 +963,7 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
         self.log("Notes ver: " + notes.ver);
 
         if (notes.ver >= TBUtils.notesMinSchema) {
-            if (notes.ver == 3) {
-                notes = keyOnUsername(decodeNoteText(inflateNotesV3(notes, sub)));
-                notes.ver = TBUtils.notesSchema;
-            }
-            else if (notes.ver <= 5) {
+            if (notes.ver <= 5) {
                 notes = inflateNotes(notes, sub);
             }
             else if (notes.ver <= 6) {
@@ -1008,29 +1004,6 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
             notes.users = JSON.parse(decompressed);
             return notes;
         }
-
-        // Utilities for old versions
-        function decodeNoteText(notes) {
-            // We stopped using encode()d notes in v4
-            notes.users.forEach(function (user) {
-                user.notes.forEach(function (note) {
-                    note.note = unescape(note.note);
-                });
-            });
-            return notes;
-        }
-
-        function keyOnUsername(notes) {
-            // we have to rebuild .users to be an object keyed on .name
-            var users = {};
-            notes.users.forEach(function (user) {
-                users[user.name] = {
-                    "notes": user.notes
-                }
-            });
-            notes.users = users;
-            return notes;
-        }
     }
 
     // Decompress notes from the database into a more useful format
@@ -1053,31 +1026,6 @@ self.getUserNotes = function (subreddit, callback, forceSkipCache) {
         });
 
         return inflated;
-    }
-
-    // Decompress notes from the database into a more useful format (MIGRATION ONLY)
-    function inflateNotesV3(deflated, sub) {
-        var notes = {
-            ver: 3,
-            users: []
-        };
-
-        var mgr = new self._constManager(deflated.constants);
-
-        notes.users = deflated.users.map(function (user) {
-            return {
-                "name": mgr.get("users", user.u),
-                "notes": user.ns.map(function (note) {
-                    note = inflateNote(deflated.ver, mgr, note, sub);
-                    if (note.link) {
-                        note.link = "l," + note.link;
-                    }
-                    return note;
-                })
-            };
-        });
-
-        return notes;
     }
 
     // Inflates a single note

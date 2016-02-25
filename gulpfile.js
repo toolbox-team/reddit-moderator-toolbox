@@ -4,6 +4,8 @@ var exec = require('child_process').exec;
 
 var src_dir = "extension";
 var dest_dir = "build";
+var postPost = true;
+var postUrl = "http://localhost:8888/";
 
 gulp.task('zip', function() {
     console.log(process.cwd());
@@ -21,7 +23,7 @@ gulp.task('zip', function() {
 });
 
 gulp.task('xpi', function(cb) {
-    exec('jpm xpi', {cwd: src_dir}, function(err, stdout, stderr) {
+    exec('jpm '+(postPost ? "post --post-url "+postUrl : "xpi"), {cwd: src_dir}, function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
 

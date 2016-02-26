@@ -11,12 +11,98 @@
     cursor: pointer;
 }
 
-.usernote-button #add-user-tag:hover {
+.usernote-button .add-user-tag:hover {
     text-decoration: none;
+}
+
+/* Popup styling */
+
+.utagger-popup .right {
+    float: right;
+}
+
+.utagger-popup .left {
+    float: left;
+}
+
+.utagger-popup .utagger-date {
+    font-size: 80%;
+}
+
+.utagger-popup .utagger-notes {
+    width: 100%;
+}
+
+.utagger-popup .utagger-notes td {
+    padding: 2px !important;
+    border: solid 1px #C1BFBF;
+    vertical-align: top;
+}
+
+.utagger-popup .utagger-notes-td1 {
+    width: 65px;
+}
+
+.utagger-popup .utagger-notes-td3 {
+    width: 5px;
+    border: 0;
+}
+
+.utagger-popup .utagger-notes-td3 a {
+    color: #C92A2A;
+    font-weight: bold;
+}
+
+.utagger-popup .utagger-remove-note {
+    cursor: pointer;
+}
+
+.utagger-popup .utagger-types {
+    display: inline-block;
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    padding-top: 4px;
+
+    border-top: 1px dotted #C1BFBF;
+}
+
+.utagger-popup .utagger-type input {
+    display: none;
+}
+
+.utagger-popup .utagger-type span {
+    padding: 1px 3px;
+    border: 1px solid rgb(114, 134, 154);
+    transition: backgroun-color 0.15s ease-out;
+}
+
+.utagger-popup td:not(:last-child) .utagger-type span {
+    border-right: none;
+}
+
+.utagger-popup .utagger-type span:hover,
+.utagger-popup .utagger-type input:checked ~ span {
+    background-color: rgb(226, 238, 250);
+}
+
+.utagger-popup .utagger-user-note {
+    width: 98%;
+    margin-bottom: 2px;
 }
 
 .utagger-popup #utagger-user-note-input.error {
     border-color: red;
+}
+
+/*.utagger-popup .utagger-type input,*/
+.utagger-popup .utagger-include-link input {
+    margin-right: 1px;
+    vertical-align: sub;
+}
+
+.utagger-popup .utagger-include-link input[disabled] ~ span {
+    color: slategray;
 }
 
 /* Usernote manager */

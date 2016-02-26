@@ -39,6 +39,10 @@ self.usernotes = function usernotes() {
         showDate = self.setting('showDate'),
         showOnModPages = self.setting('showOnModPages');
 
+    var TYPE_THING = "thing",
+        TYPE_MODMAIL = "modmail",
+        TYPE_USER = "user";
+
     TBUtils.getModSubs(function () {
         run();
     });
@@ -55,250 +59,301 @@ self.usernotes = function usernotes() {
         run();
     });
 
+    function run() {
+        self.log("Running usernotes");
+        var things = findThings();
+
+        var done = false;
+        TBUtils.forEachChunked(things, 30, 100, processThing, function () {
+                self.log("Done processing things");
+                TBUtils.forEachChunked(subs, 10, 200, processSub, function () {
+                    if(done)
+                        self.printProfiles();
+                });
+            },
+            function () {
+                self.log("Done processing things");
+                done = true;
+            });
+    }
+
+    function findThings() {
+        self.startProfile("find-things");
+
+        // Find things based on page type
+        var $things;
+        if (showOnModPages && TBUtils.isEditUserPage) {
+            self.log("Finding things on mod user page");
+            $things = $('.content span.user:not(.ut-thing)');
+            $things.data('ut-type', TYPE_USER);
+        }
+        else if (TBUtils.isModmail) {
+            $things = $('div.thing.message:not(.ut-thing)');
+            $things.data('ut-type', TYPE_MODMAIL);
+        }
+        else {
+            $things = $('div.thing:not(.ut-thing)');
+            $things.data('ut-type', TYPE_THING);
+        }
+
+        $things.addClass('ut-thing');
+
+        self.endProfile("find-things");
+        return $things;
+    }
+
     function processThing(thing) {
         self.startProfile("process-thing");
 
-        var $thing = $(thing);
+        var $thing = $(thing),
+            thingType = $thing.data('ut-type');
+        self.log("Processing thing: " + thingType);
 
-        if ($thing.hasClass('ut-processed')) {
-            return;
+        // Link and comments
+        if (thingType === TYPE_THING) {
+            var subreddit = $thing.data('subreddit');
+
+            var user = $thing.data('author');
+            if (!user) {
+                user = $thing.find('.author').first().text();
+                if (user !== "[deleted]") {
+                    $thing.attr('data-author', user);
+                }
+            }
+
+            var $userattrs = $thing.find('.userattrs').first();
+            attachNoteTag($userattrs, subreddit, true);
+            foundSubreddit(subreddit);
         }
-        $thing.addClass('ut-processed');
+        // Modmail (ugh)
+        else if (thingType === TYPE_MODMAIL) {
+            //TODO: add tag on recipient; may have to reconsider how ut-thing is applied to modmail
+            var subreddit = $thing.data('subreddit');
+            var $sender = $thing.find('.sender').first();
 
-        var subreddit = TBUtils.getThingInfo(thing, true).subreddit;
+            var $author = $sender.find('.author'),
+                author = $author.text();
+            $thing.attr('data-author', author);
 
-        if (!subreddit) return;
+            var $userattrs = $sender.find('.userattrs');
+            attachNoteTag($userattrs, subreddit, true);
+            /*else {
+                // moar mod mail fuckery.  Cocksucking motherfucking hell.
+                // don't show your own tag after 'load full conversation'
+                var $head = $thing.find('.head');
+                if ($head.find('recipient') > 0) {
+                    attachNoteTag($head, subreddit);
+                }
+            }*/
 
-        var $tag = $('<span>').attr('title', "View and add notes about this user for /r/"+subreddit).addClass('usernote-button usernote-span-'+subreddit).append(
-            $('<a>').addClass('tb-bracket-button add-user-tag-'+subreddit).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
+            foundSubreddit(subreddit);
+        }
+        // Users on mod pages
+        else if (thingType === TYPE_USER) {
+            var subreddit = TBUtils.post_site;
+            $thing.attr('data-subreddit', subreddit);
 
-        $thing.attr('subreddit', subreddit);
-
-        // More mod mail hackery... all this to see your own tags in mod mail.  It's likely not worth it.
-        var userattrs = $thing.find('.userattrs');
-        if ($(userattrs).length > 0) {
-            if (TBUtils.isModmail && $(userattrs).length > 1) {
-                $(userattrs).eq(0).after($tag);
+            var $user = $thing.find('a:first'),
+                user = $user.text();
+            if (user) {
+                $thing.attr('data-author', user);
             }
-            else {
-                $(userattrs).after($tag);
-            }
+
+            attachNoteTag($user, subreddit, true);
+            foundSubreddit(subreddit);
         }
         else {
-            // moar mod mail fuckery.  Cocksucking motherfucking hell.
-            // don't show your own tag after 'load full conversation'
-            var $head = $thing.find('.head');
-            if ($head.find('recipient') > 0) {
-                $head.append($tag);
-            }
-        }
-
-        if ($.inArray(subreddit, subs) == -1) {
-            subs.push(subreddit);
+            self.log("Unknown thing type " + thingType + " (THIS IS BAD)");
         }
 
         self.endProfile("process-thing");
     }
 
-    function processSub(currsub) {
-        self.log("Processing sub: "+currsub);
-        self.getUserNotes(currsub, setNotes);
+    function attachNoteTag($element, subreddit, attachAfter) {
+        var $tag = $('<span>').attr('title', "View and add notes about this user for /r/"+subreddit).addClass('usernote-button usernote-span-'+subreddit).append(
+            $('<a>').addClass('tb-bracket-button add-user-tag-'+subreddit).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
+
+        if (attachAfter) {
+            $element.after($tag);
+        }
+        else {
+            $element.append($tag);
+        }
     }
 
-    function setNotes(status, notes, subreddit) {
-        self.log("Setting notes: status="+status);
+    function foundSubreddit(subreddit) {
+        if ($.inArray(subreddit, subs) == -1) {
+            subs.push(subreddit);
+        }
+    }
 
-        if (!status) return;
+    function processSub(subreddit) {
+        if (!subreddit) {
+            return;
+        }
 
-        //self.log('/r/' + subreddit + ' is using usernote schema v' + notes.ver);
-        // Check if the version of loaded notes is within the supported versions
+        self.log("Processing sub: "+subreddit);
+        self.getUserNotes(subreddit, function (status, notes) {
+            self.log("Usernotes retrieved for " + subreddit + ": status="+status);
+            if (!status) {
+                return;
+            }
+            if (!isNotesValidVersion(notes)) {
+                // Remove the option to add notes
+                $('.usernote-span-' + subreddit).remove();
+
+                // Alert the user
+                var msg = notes.ver > TBUtils.notesMaxSchema ?
+                "You are using a version of toolbox that cannot read a newer usernote data format in: /r/" + subreddit + ". Please update your extension." :
+                "You are using a version of toolbox that cannot read an old usernote data format in: /r/" + subreddit + ", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
+
+                TBUtils.alert(msg, function (clicked) {
+                    if (clicked) {
+                        window.open(notes.ver > TBUtils.notesMaxSchema ? "/r/toolbox/wiki/get" :
+                        "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F" + subreddit + "%20is%20using%20usernotes%20schema%20v" + notes.ver);
+                    }
+                });
+            }
+
+            self.getSubredditColors(subreddit, function (colors) {
+                setNotes(notes, subreddit, colors);
+            });
+        });
+    }
+
+    function isNotesValidVersion(notes) {
         if (notes.ver < TBUtils.notesMinSchema || notes.ver > TBUtils.notesMaxSchema) {
             self.log("Failed usernotes version check:");
             self.log("\tnotes.ver: " + notes.ver);
             self.log("\tTBUtils.notesSchema: " + TBUtils.notesSchema);
             self.log("\tTBUtils.notesMinSchema: " + TBUtils.notesMinSchema);
             self.log("\tTBUtils.notesMaxSchema: " + TBUtils.notesMaxSchema);
-
-            // Remove the option to add notes
-            $('.usernote-span-' + subreddit).remove();
-
-            // Alert the user
-            var msg = notes.ver > TBUtils.notesMaxSchema ?
-            "You are using a version of toolbox that cannot read a newer usernote data format in: /r/" + subreddit + ". Please update your extension." :
-            "You are using a version of toolbox that cannot read an old usernote data format in: /r/" + subreddit + ", schema v" + notes.ver + ". Message /r/toolbox for assistance.";
-
-            TBUtils.alert(msg, function (clicked) {
-                if (clicked) {
-                    window.open(notes.ver > TBUtils.notesMaxSchema ? "/r/toolbox/wiki/get" :
-                    "/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F" + subreddit + "%20is%20using%20usernotes%20schema%20v" + notes.ver);
-                }
-            });
-            return;
+            return false;
         }
 
-        self.getSubredditColors(subreddit, processNotes);
-
-        function processNotes(colors) {
-            self.log("Processing notes");
-            //self.log("Colors:");
-            //self.log(colors);
-
-            self.startProfile("set-notes");
-
-            self.startProfile("set-notes-find");
-            var things = $('div.thing .entry[subreddit=' + subreddit + ']');
-            self.endProfile("set-notes-find");
-
-            //FIXME: the UI generation should probably be moved to processThing
-            if (showOnModPages && TB.utils.isEditUserPage) {
-                var $userSpan = $('span.user:not(:first)'),
-                    tag = '<span class="usernote-span-' +
-                        subreddit + '" style="color:#888888; font-size:x-small;">&nbsp;<label class="tb-general-button add-user-tag-' +
-                        subreddit + '" id="add-user-tag" "href="javascript:;">N</label></span>';
-
-                self.log('running on ban page');
-                things = $userSpan.find('a:first');
-                $userSpan.append(tag);
-            }
-
-            TBUtils.forEachChunked(things, 20, 300, function (thing) {
-                self.startProfile("set-notes-process");
-
-                // Get all tags related to the current subreddit
-                var user = TBUtils.getThingInfo(thing).user,
-                    u = getUser(notes.users, user);
-
-                var $usertag;
-                if (TB.utils.isEditUserPage) {
-                    $usertag = $(thing).parent().find('.add-user-tag-' + subreddit);
-                }
-                else {
-                    $usertag = $(thing).find('.add-user-tag-' + subreddit);
-                }
-
-                // Only happens if you delete the last note.
-                if (u === undefined || u.notes.length < 1) {
-                    $usertag.css('color', '');
-                    $usertag.empty();
-                    $usertag.text('N');
-                    self.endProfile("set-notes-process");
-                    return;
-                }
-
-                var noteData = u.notes[0],
-                    note = noteData.note,
-                    date = new Date(noteData.time);
-
-                // Add title before note concat.
-                $usertag.attr('title', note + ' (' + date.toLocaleString() + ')');
-
-                if (note.length > maxChars) {
-                    note = note.substring(0, maxChars) + "...";
-                }
-
-                if (showDate) {
-                    note = note + ' (' + date.toLocaleDateString({
-                            year: 'numeric',
-                            month: 'numeric',
-                            day: 'numeric'
-                        }) + ')';
-                }
-
-                $usertag.empty();
-                $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
-
-
-                var type = u.notes[0].type;
-                if (!type) type = 'none';
-
-                var color = self._findSubredditColor(colors, type);
-                if (color) {
-                    $usertag.css('color', color.color);
-                }
-                else {
-                    $usertag.css('color', '');
-                }
-
-                self.endProfile("set-notes-process");
-            }, function () {
-                self.endProfile("set-notes");
-            });
-        }
+        return true;
     }
 
-    function run() {
-        self.log("Running usernotes");
-        var things = $('div.thing .entry:not(.ut-processed)');
+    function setNotes(notes, subreddit, colors) {
+        self.log("Setting notes for " + subreddit);
+        self.startProfile("set-notes");
 
-        var done = false;
-        TBUtils.forEachChunked(things, 20, 300, processThing, function () {
-            self.log("Done processing things");
-            TBUtils.forEachChunked(subs, 10, 300, processSub, function () {
-                if(done)
-                    self.printProfiles();
-            });
-        },
-        function () {
-            self.log("Done processing things");
-            done = true;
+        self.startProfile("set-notes-find");
+        var things = $('.ut-thing[data-subreddit=' + subreddit + ']');
+        self.endProfile("set-notes-find");
+
+        TBUtils.forEachChunked(things, 20, 300, function (thing) {
+            self.startProfile("set-notes-process");
+
+            // Get all tags related to the current subreddit
+            var $thing = $(thing),
+                user = $thing.data('author'),
+                u = getUser(notes.users, user);
+
+            var $usertag;
+            if (TBUtils.isEditUserPage) {
+                $usertag = $thing.parent().find('.add-user-tag-' + subreddit);
+            }
+            else {
+                $usertag = $thing.find('.add-user-tag-' + subreddit);
+            }
+
+            // Only happens if you delete the last note.
+            if (u === undefined || u.notes.length < 1) {
+                $usertag.css('color', '');
+                $usertag.empty();
+                $usertag.text('N');
+                self.endProfile("set-notes-process");
+                return;
+            }
+
+            var noteData = u.notes[0],
+                note = noteData.note,
+                date = new Date(noteData.time);
+
+            // Add title before note concat.
+            $usertag.attr('title', note + ' (' + date.toLocaleString() + ')');
+
+            if (note.length > maxChars) {
+                note = note.substring(0, maxChars) + "...";
+            }
+
+            if (showDate) {
+                note = note + ' (' + date.toLocaleDateString({
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric'
+                    }) + ')';
+            }
+
+            $usertag.empty();
+            $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? '  (+' + (u.notes.length - 1) + ')' : ''));
+
+
+            var type = u.notes[0].type;
+            if (!type) type = 'none';
+
+            var color = self._findSubredditColor(colors, type);
+            if (color) {
+                $usertag.css('color', color.color);
+            }
+            else {
+                $usertag.css('color', '');
+            }
+
+            self.endProfile("set-notes-process");
+        }, function () {
+            self.endProfile("set-notes");
         });
     }
 
     // Click to open dialog
     $body.on('click', '#add-user-tag', function (e) {
         var $target = $(e.target),
-            $thing = $target.closest('.thing .entry');
+            $thing = $target.closest('.ut-thing');
 
-        if ($thing.length < 1){
-            $thing = $target.closest('.user');
-        }
+        var subreddit = $thing.data('subreddit'),
+            user = $thing.data('author'),
+            link = TBUtils.getThingInfo($thing).permalink,
+            disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
 
-        var info = TBUtils.getThingInfo($thing),
-            subreddit = info.subreddit,
-            user = info.user,
-            link = info.permalink;
-
-        var $typeList = $('<tr>').addClass('utagger-type-liset'),
+        var $typeList = $('<tr>').addClass('utagger-type-list'),
+            $noteList = $('<tbody>').append(
+                $('<tr>').append(
+                    $('<td>').addClass('utagger-notes-td1').text("Author")
+                ).append(
+                    $('<td>').addClass('utagger-notes-td2').text("Note")
+                ).append(
+                    $('<td>').addClass('utagger-notes-td3')
+                )
+            ),
             $popup = TB.ui.popup(
-                'User Notes - <a href="//reddit.com/u/' + user + '" id="utagger-user-link">/u/' + user + '</a>',
+                $('<div>').addClass('utagger-title').append($('<span>').text('User Notes - ')).append($('<a>').attr('href', '//reddit.com/u/' + user).attr('id', 'utagger-user-link').text('/u/' + user)),
                 [{
                     content: $('<div>').addClass('utagger-content').append(
-                        $('<table>').addClass('utagger-notes').append(
-                            $('<tbody>').append(
-                                $('<tr>').append(
-                                    $('<td>').addClass('utagger-notes-td1').text("Author")
-                                ).append(
-                                    $('<td>').addClass('utagger-notes-td2').text("Note")
-                                ).append(
-                                    $('<td>').addClass('utagger-notes-td3')
-                                )
-                            )
+                        $('<table>').addClass('utagger-notes').append($noteList)
+                    ).append(
+                        $('<table>').addClass('utagger-types').append(
+                            $('<tbody>').append($typeList)
                         )
                     ).append(
-                        $('<table>').addClass('utagger-type').append(
-                            $('<tbody>').append(
-                                $typeList
-                            )
-                        )
-                    ).append(
-                        //span->div
                         $('<div>').addClass('utagger-input-wrapper').append(
                             $('<input>').attr('type', 'text').addClass('utagger-user-note').attr('id', 'utagger-user-note-input')
                                 .attr('placeholder', "something about the user...")
-                                .data('link', link).data('subreddit', subreddit).data('user', user)
+                                .attr('data-link', link).attr('data-subreddit', subreddit).attr('data-user', user)
                         ).append(
-                            $('<label>').append(
-                                $('<input>').attr('type', 'checkbox').addClass('utagger-include-link').prop('checked', true)
+                            $('<label>').addClass('utagger-include-link').append(
+                                $('<input>').attr('type', 'checkbox').prop('checked', !disableLink).prop('disabled', disableLink)
                             ).append(
-                                $('<span>').text("include link")
+                                $('<span>').text("Include link")
                             )
                         )
                     ),
 
                     footer: $('<div>').addClass('utagger-footer').append(
-                        $('<span>').addClass('tb-popup-error').css('display: none')
+                        $('<span>').addClass('tb-popup-error').css('display', 'none')
                     ).append(
-                        $('<input>').attr('type', 'button').addClass('utagger-save-user tb-action-button').attr('id', 'utagger-save-user').attr('value', 'save for /r/' + subreddit)
+                        $('<input>').attr('type', 'button').addClass('utagger-save-user tb-action-button').attr('id', 'utagger-save-user').attr('value', 'Save for /r/' + subreddit)
                     )
                 }],
                 '', // meta to inject in popup header; just a placeholder
@@ -310,13 +365,22 @@ self.usernotes = function usernotes() {
         });
         $body.append($popup);
 
-        // Add note types/colors and display after
+        // Generate dynamic parts of dialog and show
         self.getSubredditColors(subreddit, function (colors) {
             self.log("Adding colors to dialog");
+
+            // Create type/color selections
             colors.forEach(function (info) {
+                self.log("  "+info.key);
+                self.log("    "+info.text);
+                self.log("    "+info.color);
                 $typeList.append($('<td>').append(
-                    '<input type="radio" name="type-group" class="utagger-type-input" id="utagger-type-' + info.key + '" value="' + info.key + '"><label for="utagger-type-' + info.key + '" style="color: ' + info.color + ';">' + info.text + '</label>'
-                ));
+                    $('<label>').addClass('utagger-type').append(
+                        $('<input>').attr('type', 'radio').attr('name', 'type-group').attr('value', info.key)
+                    ).append(
+                        $('<span>').text(info.text).css('color', info.color)
+                    ))
+                );
             });
 
             $popup.show();
@@ -346,7 +410,7 @@ self.usernotes = function usernotes() {
                             typeSpan = '<span style="color: ' + info.color + ';">[' + TBUtils.htmlEncode(info.text) + ']</span> ';
                         }
 
-                        $popup.find('table.utagger-notes').append('<tr><td class="utagger-notes-td1">' + note.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
+                        $noteList.append('<tr><td class="utagger-notes-td1">' + note.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
                             new Date(note.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(note.note) +
                             '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + note.time + '" src="data:image/png;base64,' + TBui.iconDelete + '" /></td></tr>');
                         if (note.link) {
@@ -378,12 +442,12 @@ self.usernotes = function usernotes() {
             noteid = $(e.target).attr('noteid'),
             noteText = $unote.val(),
             deleteNote = (e.target.className == 'utagger-remove-note'),
-            type = $popup.find('.utagger-type-input:checked').val(),
+            type = $popup.find('.utagger-type input:checked').val(),
             link = '',
             note = TBUtils.note,
             notes = TBUtils.usernotes;
 
-        if ($popup.find('.utagger-include-link').is(':checked')) {
+        if ($popup.find('.utagger-include-link input').is(':checked')) {
             link = $unote.data('link');
         }
 

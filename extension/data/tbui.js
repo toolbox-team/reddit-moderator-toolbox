@@ -208,13 +208,18 @@
         css_class = (typeof css_class !== "undefined") ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        var $popup = $('\
-<div class="tb-popup' + (css_class ? ' ' + css_class : '') + '">' + (meta ? '<div class="meta" style="display:none">' + meta + '</div>' : '') + '\
-<div class="tb-popup-header">\
-    <div class="tb-popup-title">' + title + '</div>\
-    <div class="buttons"><a class="close" href="javascript:;">✕</a></div>\
-</div>\
-<div>');
+        var $popup = $('<div>').addClass('tb-popup' + (css_class ? ' ' + css_class : ''));
+        if (meta) {
+            $popup.append($('<div>').addClass('meta').css("display:none").append(meta));
+        }
+        $popup.append($('<div>').addClass('tb-popup-header').append(
+                $('<div>').addClass('tb-popup-title').append(title)
+            ).append(
+                $('<div>').addClass('buttons').append(
+                    $('<a>').addClass('close').attr('href', 'javascript:;').text('✕')
+                )
+            )
+        );
         if (tabs.length == 1) {
             $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));

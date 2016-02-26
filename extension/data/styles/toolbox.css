@@ -759,68 +759,6 @@ img.note-close {
     color: red;
 }
 
-.utagger-popup .right {
-    float: right;
-}
-
-.utagger-popup .left {
-    float: left;
-}
-
-.add-user-tag:hover {
-    text-decoration: underline;
-}
-
-.utagger-date {
-    font-size: 80%;
-}
-
-.utagger-notes {
-    width: 100%;
-}
-
-.utagger-notes td {
-    padding: 2px !important;
-    border: solid 1px #C1BFBF;
-    vertical-align: top;
-}
-
-.utagger-notes-td1 {
-    width: 65px;
-}
-
-.utagger-notes-td3 {
-    width: 5px;
-}
-
-.utagger-notes-td3 a {
-    color: #C92A2A;
-    font-weight: bold;
-}
-
-.utagger-remove-note {
-    cursor: pointer;
-}
-
-.utagger-notes .utagger-notes-td3 {
-    border: 0;
-}
-
-.utagger-user-note {
-    width: 98%;
-}
-
-.utagger-type {
-    border-top: 1px dotted #C1BFBF;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    width: 100%;
-}
-
-.utagger-type td {
-    padding: 1px 3px 3px;
-}
-
 .mod-toolbox .tb-popup {
     font-size:11px;
     max-width: 1000px;

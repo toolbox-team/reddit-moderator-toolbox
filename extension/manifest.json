@@ -26,6 +26,7 @@
                 "https://*.reddit.com/*"
             ],
             "css": [
+                "data/libs/spectrum.css",
                 "data/styles/toolbox.css",
                 "data/styles/comment.css",
                 "data/styles/modmatrix.css",
@@ -40,7 +41,8 @@
                 "data/styles/trouble.css",
                 "data/styles/notifier.css",
                 "data/styles/domaintagger.css",
-                "data/styles/usernotes.css"
+                "data/styles/usernotes.css",
+                "data/styles/config.css"
             ],
             "js": [
                 "data/libs/jquery-2.1.1.js",
@@ -54,6 +56,7 @@
                 "data/libs/mode-yaml.js",
                 "data/libs/ace-themes.js",
                 "data/libs/redditapi.js",
+                "data/libs/spectrum.js",
                 "data/tbstorage.js",
                 "data/tbui.js",
                 "data/tbutils.js",

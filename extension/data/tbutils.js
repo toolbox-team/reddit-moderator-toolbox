@@ -256,6 +256,17 @@ function initwrapper() {
         TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND'
     };
 
+    TBUtils.defaultUsernoteTypes = [
+        {key: 'none', color: '#369', text: 'none'},
+        {key: 'gooduser', color: 'green', text: 'Good Contributor'},
+        {key: 'spamwatch', color: 'fuchsia', text: 'Spam Watch'},
+        {key: 'spamwarn', color: 'purple', text: 'Spam Warning'},
+        {key: 'abusewarn', color: 'orange', text: 'Abuse Warning'},
+        {key: 'ban', color: 'red', text: 'Ban'},
+        {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
+        {key: 'botban', color: 'black', text: 'Bot Ban'}
+    ];
+
     // Methods and stuff
 
     if (!String.prototype.format) {

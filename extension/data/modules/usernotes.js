@@ -242,7 +242,7 @@ self.usernotes = function usernotes() {
         var things = $('.ut-thing[data-subreddit=' + subreddit + ']');
         self.endProfile("set-notes-find");
 
-        TBUtils.forEachChunked(things, 20, 300, function (thing) {
+        TBUtils.forEachChunked(things, 20, 100, function (thing) {
             self.startProfile("set-notes-process");
 
             // Get all tags related to the current subreddit
@@ -1294,16 +1294,7 @@ self.getSubredditColors = function (subreddit, callback) {
             self.log("  Config not retrieved for " + subreddit + ", using default colors");
 
             // Use default colors
-            callback([
-                {key: 'none', color: '', text: 'none'},
-                {key: 'gooduser', color: 'green', text: 'Good Contributor'},
-                {key: 'spamwatch', color: 'fuchsia', text: 'Spam Watch'},
-                {key: 'spamwarn', color: 'purple', text: 'Spam Warning'},
-                {key: 'abusewarn', color: 'orange', text: 'Abuse Warning'},
-                {key: 'ban', color: 'red', text: 'Ban'},
-                {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
-                {key: 'botban', color: 'black', text: 'Bot Ban'}
-            ]);
+            callback(TBUtils.defaultUsernoteTypes);
         }
     });
 };

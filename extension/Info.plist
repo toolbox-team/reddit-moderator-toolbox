@@ -38,6 +38,7 @@
 				<string>data/libs/mode-yaml.js</string>
 				<string>data/libs/ace-themes.js</string>
 				<string>data/libs/redditapi.js</string>
+				<string>data/libs/spectrum.js</string>
 				<string>data/tbstorage.js</string>
 				<string>data/tbui.js</string>
 				<string>data/tbutils.js</string>
@@ -72,6 +73,7 @@
 		</dict>
 		<key>Stylesheets</key>
 		<array>
+				<string>data/libs/spectrum.css</string>
 				<string>data/styles/toolbox.css</string>
 				<string>data/styles/comment.css</string>
 				<string>data/styles/modmatrix.css</string>
@@ -87,6 +89,7 @@
 				<string>data/styles/notifier.css</string>
 				<string>data/styles/domaintagger.css</string>
 				<string>data/styles/usernotes.css</string>
+				<string>data/styles/config.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

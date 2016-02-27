@@ -1,0 +1,19 @@
+/* Usernote types */
+
+#tb-config-usernote-types {
+    margin-bottom: 2px;
+}
+
+#tb-config-usernote-type-list .usernote-type {
+    display: block;
+    margin-bottom: 4px;
+}
+
+#tb-config-usernote-type-list .usernote-type td {
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.sp-container {
+    z-index: 9999999999;
+}

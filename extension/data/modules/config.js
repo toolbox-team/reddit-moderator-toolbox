@@ -6,7 +6,6 @@ self.shortname = 'TBConfig'; // for backwards compatibility
 self.settings['enabled']['default'] = true;
 
 self.init = function() {
-
     //if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
     //    return;
     //}
@@ -20,7 +19,6 @@ self.init = function() {
     // With the following function we will create the UI when we need it.
     // Create the window overlay.
     function showConfig(subredditConfig, configData) {
-
 
         $overlay = TB.ui.overlay(
             'toolbox Configuration - /r/' + subredditConfig,
@@ -62,6 +60,12 @@ self.init = function() {
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
+                },
+                {
+                    title: 'edit user note types',
+                    tooltip: 'Edit user note types and colors here.',
+                    content: genUsernoteTypesContent(),
+                    footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass('tb-action-button').prop('value', 'Save user note types')
                 },
                 {
                     title: 'edit automoderator config',
@@ -190,6 +194,25 @@ self.init = function() {
             false // single overriding footer
         ).appendTo('body');
         $body.css('overflow', 'hidden');
+
+        function genUsernoteTypesContent() {
+            return $('<div>').attr('id', 'tb-config-usernote-types').append(
+                $('<table>').append(
+                    $('<thead>').append(
+                        $('<tr>').append(
+                            $('<td>').text("Name")
+                        ).append(
+                            $('<td>').text("Key")
+                        )
+                    )
+                ).append(
+                    $('<tbody>').attr('id', 'tb-config-usernote-type-list')
+                )
+            ).append([
+                $('<a>').attr('href', 'javascript:;').attr('id', 'add-usernote-type').addClass('tb-general-button').text("Add user note type"),
+                $('<a>').attr('href', 'javascript:;').attr('id', 'tb-config-help').addClass('tb-general-button').attr('data-module', 'usernotes').text("help")
+            ]);
+        }
     }
 
 
@@ -227,7 +250,8 @@ self.init = function() {
             configLink = '<li><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit"><img class="tb-moderation-tools-icons" src="data:image/png;base64,' + TBui.iconWrench + '"/>toolbox configuration</a></li>';
         $toolbox.append(configLink);
         // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
-    } else if (TBUtils.isModpage) {
+    }
+    else if (TBUtils.isModpage) {
 
         $body.find('.subscription-box ul li').each(function () {
             var $this = $(this),
@@ -268,6 +292,8 @@ self.init = function() {
     $body.on('click', '.tb-config .close', function () {
         $('.tb-config').remove();
         $body.css('overflow', 'auto');
+
+        $('.tb-config-color-chooser').remove();
     });
 
     // now we can play around!
@@ -422,6 +448,67 @@ self.init = function() {
                 return notes;
             }
         }
+    }
+
+    function populateUsernoteTypes() {
+        var colors;
+        if (config.usernoteColors && config.usernoteColors.length > 0) {
+            colors = config.usernoteColors;
+        }
+        else {
+            // Default types
+            colors = TBUtils.defaultUsernoteTypes;
+        }
+
+        var $list;
+        colors.forEach(function (color) {
+            $list = appendUsernoteType(color.key, color.text, color.color, $list);
+        });
+    }
+
+    function appendUsernoteType(key, text, color, $list) {
+        if (!$list) {
+            $list = $('#tb-config-usernote-type-list');
+        }
+
+        var $thing = $('<tr>').addClass('usernote-type').append(
+            $('<td>').append(
+                $('<input>').prop('type', 'text').addClass('name').attr('name', 'type-name').prop('placeholder', 'name (shown when adding a note)').val(text)
+            )
+        ).append(
+            $('<td>').append(
+                $('<input>').prop('type', 'text').addClass('key').attr('name', 'type-key').prop('placeholder', 'key (should be unique)').val(key)
+            )
+        ).append(
+            $('<td>').append(
+                $('<input>').prop('type', 'text').addClass('color').attr('name', 'type-color').val(color)
+            )
+        ).append(
+            $('<td>').append([
+                $('<a>').attr('href', 'javascript:;').addClass('up-usernote-type').append(
+                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
+                ),
+                $('<a>').attr('href', 'javascript:;').addClass('down-usernote-type').append(
+                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
+                ),
+                $('<a>').attr('href', 'javascript:;').addClass('remove-usernote-type').append(
+                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.iconDelete)
+                )
+            ])
+        );
+        $list.append($thing);
+
+        $thing.find('.color').spectrum({
+            //color: color,
+            showInput: true,
+            showInitial: true,
+            allowEmpty: false,
+            showAlpha: false,
+            preferredFormat: "hex",      // Defaults to "hsv", which isn't a standard valid CSS property (wtf)
+            containerClassName: 'tb-config-color-chooser'
+        });
+
+        return $list;
     }
 
     // With this function we'll fetch the removal reasons!
@@ -586,6 +673,7 @@ self.init = function() {
             $this.addClass('content-populated');
         }
     });
+
     // Wiki tab save button is clicked.
     $body.on('click', '.save-wiki-data', function () {
         var $this = $(this),
@@ -645,6 +733,121 @@ self.init = function() {
         TB.ui.textFeedback('Removal reasons settings are saved', TB.ui.FEEDBACK_POSITIVE);
     });
 
+    // Usernote types tab
+    $body.on('click', '.tb-window-tabs .edit_user_note_types', function () {
+        var $this = $(this);
+        if (!$this.hasClass('content-populated')) {
+
+            // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
+            if ($body.hasClass('toolbox-wiki-edited')) {
+                TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                        self.log('Failed: wiki config');
+                        return;
+                    }
+
+                    config = resp;
+                    populateUsernoteTypes();
+                });
+            }
+            else {
+                populateUsernoteTypes();
+            }
+
+            $this.addClass('content-populated');
+        }
+    });
+
+    $body.on('click', '#add-usernote-type', function () {
+        appendUsernoteType("", "");
+    });
+
+    $body.on('keyup', '#tb-config-usernote-type-list .name', function () {
+        var $this = $(this),
+            name = $this.val(),
+            $key = $this.closest('.key'),
+            key = $key.val();
+        if (!key) {
+            if (name) {
+                key = name.toLowerCase().replace(/[^\w]/, '');
+            }
+            $key.val(key);
+        }
+    });
+
+    $body.on('click', '.remove-usernote-type', function () {
+        $(this).closest("tr").remove();
+    });
+
+    $body.on('click', '.up-usernote-type', function () {
+        var $row = $(this).closest("tr"),
+            $prev = $row.prev();
+        if ($prev && $prev.length > 0) {
+            $row.detach();
+            $row.insertBefore($prev);
+        }
+    });
+
+    $body.on('click', '.down-usernote-type', function () {
+        var $row = $(this).closest("tr"),
+            $next = $row.next();
+        if ($next && $next.length > 0) {
+            $row.detach();
+            $row.insertAfter($next);
+        }
+    });
+
+    $body.on('click', '#save-usernote-types', function () {
+        self.log("Saving usernote types");
+
+        var $rows = $('#tb-config-usernote-type-list').find('.usernote-type');
+        self.log("  Num types: "+$rows.length);
+        $rows.find('input').removeClass('error');
+
+        // Validate
+        self.log("  Validating type settings");
+        var error = false;
+        $rows.each(function () {
+            var $row = $(this),
+                $key = $row.find('.key'),
+                key = $key.val();
+            var $text = $row.find('.name'),
+                text = $text.val();
+            if (!key || !key.match(/^\w+$/)) {
+                $key.addClass('error');
+                error = true;
+            }
+            if (!text) {
+                $text.addClass('error');
+                error = true;
+            }
+        });
+        if (error) {
+            self.log("  Failed validation");
+            return;
+        }
+
+        // Update config
+        config.usernoteColors = [];
+        $rows.each(function () {
+            var $row = $(this),
+                key = $row.find('.key').val(),
+                text = $row.find('.name').val(),
+                color = $row.find('.color').val();
+            self.log("  key="+key+", text=\""+text+"\", color="+color);
+
+            config.usernoteColors.push({
+                key: key,
+                text: text,
+                color: color
+            });
+        });
+
+        // Save config
+        postToWiki('toolbox', config, 'Updated user note types', true);
+        TB.ui.textFeedback('User note types saved', TB.ui.FEEDBACK_POSITIVE);
+    });
+
     // Removal reasons tab
     $body.on('click', '.tb-window-tabs .edit_removal_reasons', function () {
         var $this = $(this);
@@ -697,7 +900,6 @@ self.init = function() {
     });
 
     // save
-
     $body.on('click', '.removal-reason-edit .save-edit-reason', function () {
         var $this = $(this),
             $removalContent = $this.closest('td.removal-reasons-content'),
@@ -812,7 +1014,6 @@ self.init = function() {
     });
     // cancel
     $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', function () {
-
         $body.find('#tb-add-removal-reason').show();
         $body.find('#tb-add-removal-reason-form').hide();
         $body.find('#tb-add-removal-reason-form .edit-area').val('');

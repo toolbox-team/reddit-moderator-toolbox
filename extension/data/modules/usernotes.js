@@ -60,6 +60,9 @@ self.usernotes = function usernotes() {
     });
 
     function run() {
+        // Clear existing state
+        $('.ut-thing').removeClass('ut-thing');
+
         self.log("Running usernotes");
         var things = findThings();
 
@@ -513,14 +516,16 @@ self.usernotes = function usernotes() {
                 return;
             }
 
+            var saveMsg;
             if (notes) {
                 if (notes.corrupted) {
                     TBUtils.alert('toolbox found an issue with your usernotes while they were being saved. One or more of your notes appear to be written in the wrong format; to prevent further issues these have been deleted. All is well now.');
                 }
 
                 var u = getUser(notes.users, user);
+                // User already has notes
                 if (u !== undefined) {
-                    // Delete.
+                    // Delete note
                     if (deleteNote) {
                         $(u.notes).each(function (idx) {
                             if (this.time == noteid) {
@@ -532,25 +537,18 @@ self.usernotes = function usernotes() {
                             delete notes.users[user];
                         }
 
-                        self.saveUserNotes(subreddit, notes, 'delete note ' + noteid + ' on user ' + user, function (succ) {
-                            if (succ) run();
-                        });
-                        // Add.
+                        saveMsg = 'delete note ' + noteid + ' on user ' + user;
                     }
+                    // Add note
                     else {
                         u.notes.unshift(note);
-                        self.saveUserNotes(subreddit, notes, 'create new note on user ' + user, function (succ) {
-                            if (succ) run();
-                        });
+                        saveMsg = 'create new note on user ' + user;
                     }
-
-                    // Adding a note for previously unknown user
                 }
+                // New user
                 else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
-                    self.saveUserNotes(subreddit, notes, 'create new note on new user ' + user, function (succ) {
-                        if (succ) run();
-                    });
+                    saveMsg = 'create new note on new user ' + user;
                 }
             }
             else {
@@ -558,8 +556,15 @@ self.usernotes = function usernotes() {
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
-                self.saveUserNotes(subreddit, notes, 'create new notes object, add new note on user ' + user, function (succ) {
-                    if (succ) run();
+                saveMsg = 'create new notes object, add new note on user ' + user;
+            }
+
+            // Save notes if a message was set (the only case it isn't is if notes are corrupt)
+            if (saveMsg) {
+                self.saveUserNotes(subreddit, notes, saveMsg, function (succ) {
+                    if (succ) {
+                        run();
+                    }
                 });
             }
         }, true);

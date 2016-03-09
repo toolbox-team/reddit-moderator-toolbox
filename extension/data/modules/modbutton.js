@@ -22,6 +22,13 @@ self.register_setting('globalButton', {
     'advanced': true,
     'title': 'Enable Global Action button'
 });
+self.register_setting('excludeGlobal', {
+    'type': 'sublist',
+    'default': [],
+    'advanced': true,
+    'title': 'Exclude subs from Global Actions',
+    'hidden': !self.setting('globalButton')
+});
 self.register_setting('showInUsernameArea', {
     'type': 'boolean',
     'default': false,
@@ -139,7 +146,8 @@ self.init = function () {
     self.savedSubs = self.setting('savedSubs');
 
     var rememberLastAction = self.setting('rememberLastAction'),
-        showglobal = self.setting('globalButton');
+        showglobal = self.setting('globalButton'),
+        excludeGlobal = self.setting('excludeGlobal');
 
     self.savedSubs = TB.utils.saneSort(self.savedSubs);
 
@@ -376,18 +384,18 @@ self.init = function () {
         self.setting('lastAction', actionName);
 
         // Check dem values.
-        if (!api)
-            return $status.text('error, no action selected');
+        if (!api) return $status.text('error, no action selected');
 
         if (!$(this).hasClass('global-button')) {
 
             // Get dem ban subs.
             $popup.find('.action-sub:checkbox:checked').each(function () {
-                if ($(this).val() !== self.OTHER) {
-                    subreddits.push($(this).val());
+                var subname = $(this).val();
+                if (subname !== self.OTHER) {
+                    subreddits.push(subname);
                 }
                 else {
-                    var subname = $('.' + self.OTHER + ' option:selected').val();
+                    subname = $('.' + self.OTHER + ' option:selected').val();
                     if (subname !== self.OTHER) {
                         subreddits.push(subname);
 
@@ -396,8 +404,7 @@ self.init = function () {
             });
 
             // Check dem values.
-            if (subreddits.length < 1)
-                return $status.text('error, no subreddits selected');
+            if (subreddits.length < 1) return $status.text('error, no subreddits selected');
 
             // do it.
             massAction(subreddits);
@@ -412,10 +419,12 @@ self.init = function () {
             }
 
             if (confirmban) {
-                massAction(TB.utils.mySubs);
-            }
-            else {
-                return;
+                var subs = TB.utils.mySubs;
+                excludeGlobal.forEach(function (val) {
+                    subs.splice(subs.indexOf(val), 1);
+                });
+                massAction(subs);
+
             }
         }
 

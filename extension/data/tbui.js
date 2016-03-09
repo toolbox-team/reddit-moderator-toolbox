@@ -210,7 +210,7 @@
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         var $popup = $('<div>').addClass('tb-popup' + (css_class ? ' ' + css_class : ''));
         if (meta) {
-            $popup.append($('<div>').addClass('meta').css("display:none").append(meta));
+            $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
         $popup.append($('<div>').addClass('tb-popup-header').append(
                 $('<div>').addClass('tb-popup-title').append(title)

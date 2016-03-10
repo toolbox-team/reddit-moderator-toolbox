@@ -177,10 +177,14 @@ self.usernotes = function usernotes() {
             $('<a>').addClass('tb-bracket-button add-user-tag-'+subreddit).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
 
         if (attachAfter) {
-            $element.after($tag);
+            if ($element.nextAll('.usernote-button').length === 0) {
+                $element.after($tag);
+            }
         }
         else {
-            $element.append($tag);
+            if ($element.find('.usernote-button').length === 0) {
+                $element.append($tag);
+            }
         }
     }
 
@@ -646,7 +650,7 @@ self.usernotesManager = function () {
                 )
             ).append(
                 $('<span>').addClass('user').append(
-                    $('<a>').attr('href', '/u/'+"NONE").text("/u/"+"NONE")
+                    $('<a>').attr('href', '/u/NONE').text("/u/NONE")
                 )
             )
         );//.append(
@@ -1141,8 +1145,8 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
             if (callback) callback(true);
         }
         else {
-            self.log("Failure: " + err);
-            TBui.textFeedback("Save failed: " + err, TBui.FEEDBACK_NEGATIVE, 5000);
+            self.log("Failure: " + err.responseText);
+            TBui.textFeedback("Save failed: " + err.responseText, TBui.FEEDBACK_NEGATIVE, 5000);
             if (callback) callback(false);
         }
     });
@@ -1310,7 +1314,7 @@ self._findSubredditColor = function (colors, key) {
             return colors[i];
         }
     }
-    return {key: "none", color: "", text: "none"};
+    return {key: "none", color: "", text: ""};
 };
 
 TB.register_module(self);

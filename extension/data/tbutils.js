@@ -257,7 +257,6 @@ function initwrapper() {
     };
 
     TBUtils.defaultUsernoteTypes = [
-        {key: 'none', color: '#369', text: 'none'},
         {key: 'gooduser', color: 'green', text: 'Good Contributor'},
         {key: 'spamwatch', color: 'fuchsia', text: 'Spam Watch'},
         {key: 'spamwarn', color: 'purple', text: 'Spam Warning'},

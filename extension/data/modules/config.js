@@ -782,18 +782,25 @@ self.init = function() {
     $body.on('click', '.up-usernote-type', function () {
         var $row = $(this).closest("tr"),
             $prev = $row.prev();
+
         if ($prev && $prev.length > 0) {
+            $prev.fadeOut(100);
             $row.detach();
             $row.insertBefore($prev);
+            $row.fadeIn(500);
         }
     });
 
     $body.on('click', '.down-usernote-type', function () {
         var $row = $(this).closest("tr"),
             $next = $row.next();
+
+
         if ($next && $next.length > 0) {
+            $row.fadeOut(100);
             $row.detach();
             $row.insertAfter($next);
+            $row.fadeIn(500);
         }
     });
 

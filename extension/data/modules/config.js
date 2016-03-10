@@ -784,10 +784,11 @@ self.init = function() {
             $prev = $row.prev();
 
         if ($prev && $prev.length > 0) {
-            $prev.fadeOut(100);
-            $row.detach();
-            $row.insertBefore($prev);
-            $row.fadeIn(500);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertBefore($prev);
+                $row.fadeIn(300);
+            });
         }
     });
 
@@ -795,12 +796,12 @@ self.init = function() {
         var $row = $(this).closest("tr"),
             $next = $row.next();
 
-
         if ($next && $next.length > 0) {
-            $row.fadeOut(100);
-            $row.detach();
-            $row.insertAfter($next);
-            $row.fadeIn(500);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertAfter($next);
+                $row.fadeIn(300);
+            });
         }
     });
 

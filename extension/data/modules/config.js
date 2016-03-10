@@ -489,7 +489,7 @@ self.init = function() {
                     $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
                 ),
                 $('<a>').attr('href', 'javascript:;').addClass('down-usernote-type').append(
-                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
+                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.bottomIcon)
                 ),
                 $('<a>').attr('href', 'javascript:;').addClass('remove-usernote-type').append(
                     $('<img>').attr('src', 'data:image/png;base64,'+TBui.iconDelete)

@@ -656,4 +656,15 @@
         }
     };
 
+    // Utilities
+
+    TBui.getBestTextColor = function (bgColor) {
+        if(!TBui.getBestTextColor.cache[bgColor]) {
+            var textColors = ["black", "white"];
+            TBui.getBestTextColor.cache[bgColor] = tinycolor.mostReadable(bgColor, textColors).toHexString();
+        }
+        return TBui.getBestTextColor.cache[bgColor];
+    };
+    TBui.getBestTextColor.cache = {};
+
 }(TBui = window.TBui || {}));

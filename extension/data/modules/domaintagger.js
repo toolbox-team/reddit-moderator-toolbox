@@ -110,12 +110,15 @@ self.init = function() {
         function applyTag($domain, d, $entry) {
             switch (tagType) {
                 case "domain_background":
+                    var textColor = TBui.getBestTextColor(d.color);
                     $domain.addClass('tb-dt-bg-' + d.color);
                     $domain.css({
                         'background-color': d.color,
                         'padding': '0 1px 1px',
-                        'border-radius': '3px'
+                        'border-radius': '3px',
+                        'color': textColor
                     });
+                    $domain.find('a').css('color', textColor);
                     break;
                 case "domain_border":
                     $domain.css({

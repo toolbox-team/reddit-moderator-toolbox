@@ -478,7 +478,7 @@ self.usernotes = function usernotes() {
 
         //Create new note
         note = {
-            note: noteText,
+            note: noteText.trim(),
             time: new Date().getTime(),
             mod: TBUtils.logged,
             link: link,

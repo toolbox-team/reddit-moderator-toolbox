@@ -101,6 +101,12 @@
     padding-right: 10px !important;
 }
 
+.dtagger-popup .domain-color-select {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+/* Tag styles */
 
 .tb-dt-little-dot {
     margin-right: 3px;

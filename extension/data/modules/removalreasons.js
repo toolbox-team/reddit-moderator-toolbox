@@ -280,25 +280,25 @@ self.init = function() {
                 if (yes) yes.click();
 
                 // Get PM subject line
-                data.subject = response.pmsubject || 'Your {kind} was removed from /r/{subreddit}';
+                data.subject = TBUtils.htmlEncode(response.pmsubject) || 'Your {kind} was removed from /r/{subreddit}';
 
                 // Add additional data that is found in the wiki JSON.
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
-                data.logReason = response.logreason || '';
-                data.header = unescape(response.header || '');
-                data.footer = unescape(response.footer || '');
-                data.logSub = response.logsub || '';
-                data.logTitle = response.logtitle || DEFAULT_LOG_TITLE;
-                data.banTitle = response.bantitle || DEFAULT_BAN_TITLE;
+                data.logReason = TBUtils.htmlEncode(response.logreason) || '';
+                data.header = TBUtils.htmlEncode(unescape(response.header)) || '';
+                data.footer = TBUtils.htmlEncode(unescape(response.footer)) || '';
+                data.logSub = TBUtils.htmlEncode(response.logsub) || '';
+                data.logTitle = TBUtils.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
+                data.banTitle = TBUtils.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
 
                 // Loop through the reasons... unescaping each.
                 data.reasons = [];
                 $(response.reasons).each(function () {
                     data.reasons.push({
                         text: unescape(this.text),
-                        title: this.title,
-                        flairText: this.flairText,
-                        flairCSS: this.flairCSS
+                        title: TBUtils.htmlEncode(this.title),
+                        flairText: TBUtils.htmlEncode(this.flairText),
+                        flairCSS: TBUtils.htmlEncode(this.flairCSS)
                     });
                 });
 

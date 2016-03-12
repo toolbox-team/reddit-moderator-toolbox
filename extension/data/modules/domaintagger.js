@@ -43,6 +43,7 @@ self.init = function() {
     });
 
     // Main stuff
+
     function run(addButton) {
         var $things = $('div.thing.link:not(.dt-processed)'),
             subs = {};
@@ -70,7 +71,11 @@ self.init = function() {
 
                 TBUtils.forEachChunked(Object.keys(subs), 25, 250, function (sub) {
                     processSubreddit(sub, subs[sub]);
-                });
+                },
+                    function () {
+                        self.log("Done processing things");
+                        self.printProfiles();
+                    });
             });
     }
 
@@ -80,10 +85,11 @@ self.init = function() {
         }
         $thing.addClass('dt-processed');
 
-        var subreddit = TBUtils.getThingInfo($thing, true).subreddit;
-        if (!subreddit) {
-            return;
-        }
+        //var subreddit = TBUtils.getThingInfo($thing, true).subreddit;
+        //if (!subreddit) {
+        //    return;
+        //}
+        var subreddit = $thing.data('subreddit');
         $thing.attr('subreddit', subreddit);
 
         if (addButton) {
@@ -108,6 +114,8 @@ self.init = function() {
         self.log("    Setting tags");
 
         function applyTag($domain, d, $entry) {
+            $domain.attr('data-color', d.color);
+
             switch (tagType) {
                 case "domain_background":
                     var textColor = TBui.getBestTextColor(d.color);
@@ -153,6 +161,7 @@ self.init = function() {
         }
 
         self.startProfile('set-tags');
+        var done = false;
         TBUtils.forEachChunked(things, 25, 250, function (thing) {
             self.startProfile('set-tags-inner');
             var $thing = $(thing),
@@ -167,85 +176,98 @@ self.init = function() {
                 if (domain === d.name) {
                     applyTag($domain, d, $entry);
                     tagged.push(thingID);
-                } else if (domain.indexOf(d.name, domain.length - d.name.length) !== -1
-                    && tagged.indexOf(thingID) === -1) {
+                }
+                else if (domain.indexOf(d.name, domain.length - d.name.length) !== -1
+                        && tagged.indexOf(thingID) === -1) {
                     applyTag($domain, d, $entry);
                 }
             });
             self.endProfile('set-tags-inner');
+            if(done) {
+                self.endProfile('set-tags');
+            }
         },
             function () {
-                self.endProfile('set-tags');
+                done = true;
             });
     }
 
     // Button events
 
     $body.on('click', '.add-domain-tag', function (e) {
-        var $thing = $(e.target).closest('.thing'),
+        var $this = $(e.target),
+            $domain = $this.siblings('.domain'),
+            currentColor = $domain.data('color'),
+            $thing = $this.closest('.thing'),
             domain = getThingDomain($thing),
-            subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
+            //subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
+            subreddit = $thing.data('subreddit');
 
         subreddit = TB.utils.cleanSubredditName(subreddit);
 
-        var popupContent = $('<div>').addClass('dt-popup-content').append(
-            $('<span>').addClass('dt-popup-color-content').append(
-                $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
-            ).append(
-                $('<select>').addClass('domain-color-select tb-action-button inline-button').append(
-                    $('<option>').attr('value', 'none').text("none")
+        function createPopup() {
+            var popupContent = $('<div>').addClass('dt-popup-content').append(
+                $('<span>').addClass('dt-popup-color-content').append(
+                    $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
+                ).append(
+                    $('<input>').prop('type', 'text').addClass('domain-color')
                 )
             ).append(
-                $('<input>').prop('type', 'text').addClass('domain-color')
-            )
-        ).append(
-            $('<p>').text("This will tag the domain as shown. Ex: i.imgur.com is not imgur.com")
-        );
+                $('<p>').text("This will tag the domain as shown.")
+            ).append(
+                $('<p>').text("Ex: i.imgur.com is not imgur.com")
+            );
 
-        var popupSave = $('<button>').addClass('save-domain tb-action-button').text("save");
+            var popupSave = $('<div>').append(
+                $('<button>').addClass('save-domain tb-action-button').text("save")
+            ).append(
+                $('<button>').addClass('clear-domain tb-action-button').text("clear")
+            );
 
-        var $popup = TBui.popup("Domain Tagger - /r/" + subreddit, [{
-            id: "dtagger_popup_" + subreddit,
-            title: "",
-            tooltip: "",
-            help_text: "",
-            help_url: "",
-            content: popupContent,
-            footer: popupSave
-        }], null, "dtagger-popup");
+            return TBui.popup("Domain Tagger - /r/" + subreddit, [{
+                id: "dtagger_popup_" + subreddit,
+                title: "",
+                tooltip: "",
+                help_text: "",
+                help_url: "",
+                content: popupContent,
+                footer: popupSave
+            }], null, "dtagger-popup");
+        }
 
-        $popup.hide();
-        $popup.appendTo('body')
-            .css({
-                left: e.pageX - 50,
-                top: e.pageY - 10
-            });
-
-        // Add preset colors
-        var $presetSelector = $popup.find('.domain-color-select');
-        $.each(TBui.standardColors, function (key, value) {
-            $presetSelector.append($('<option>').attr('value', value).text(key));
-        });
+        var $popup = createPopup().hide();
 
         // Init color selector
+        var colors = [];
+        for(var c in TBui.standardColors) {
+            colors.push(TBui.standardColors[c]);
+        }
+        var colorPalette = [];
+        for(var i = 0; i < colors.length; i += 2) {
+            colorPalette.push([colors[i], colors[i+1]]);
+        }
+
         var $colorSelector = $popup.find('.domain-color');
         $colorSelector.spectrum({
+            color: currentColor,
             showInput: true,
             showInitial: true,
             allowEmpty: false,
             showAlpha: false,
             preferredFormat: "hex",
-            containerClassName: 'dt-color-chooser'
+            containerClassName: 'dt-color-chooser',
+            showPalette: true,
+            showSelectionPalette: false,
+            hideAfterPaletteSelect: true,
+            palette: colorPalette
         });
 
-        // Popup events
-
-        $presetSelector.change(function () {
-            self.log("Preset selected");
-            var selectedColor = $(this).find('option:selected').val();
-            $colorSelector.spectrum("set", selectedColor);
+        // Add to page
+        $popup.appendTo('body');
+        $popup.css({
+            left: e.pageX - 50,
+            top: e.pageY - 10
         });
-
         $popup.show();
     });
 

@@ -225,14 +225,14 @@ self.showAuthorInformation = function (author) {
 self.showMarkdownReport = function (author) {
     var $contentBox = self.fetched[author].popup,
         markdownReport = $contentBox.find('.rts-report').attr('data-commentbody'),
-        $markdown = $contentBox.find('.submission-markdown');
+        $markdown = $contentBox.find('.submission-markdown-text');
 
     if ($markdown.length > 0) {
-        $markdown.toggle();
+        $markdown.html(markdownReport).toggle();
     } else {
         $contentBox.find('.table.domain-table').before(
             `<div class="submission-markdown">
-                <textarea id="submission-markdown-text">${markdownReport}</textarea>
+                <textarea class="submission-markdown-text">${markdownReport}</textarea>
             </div>`);
     }
 };
@@ -246,6 +246,7 @@ self.populateSubmissionHistory = function (after, author) {
 
     var user = self.fetched[author],
         $contentBox = user.popup,
+        $rtsLink = $contentBox.find('.rts-report'),
         $submissionCount = $contentBox.find('.submission-count'),
         $domainTable = $contentBox.find('.domain-table tbody'),
         $subredditTable = $contentBox.find('.subreddit-table tbody'),
@@ -475,7 +476,7 @@ self.populateSubmissionHistory = function (after, author) {
         //If there were more than 20 subreddits, we only put the first 20 in the report, and say that there are more
         if (moreDomains >= 20) commentBody += `\n\n_^...and ^${user.subredditList.length - 20} ^more_`;
 
-        $('.rts-report').attr('data-commentbody', commentBody);
+        $rtsLink.attr('data-commentbody', commentBody);
 
         tableify();
     });//END DONE

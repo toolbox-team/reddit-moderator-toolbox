@@ -53,13 +53,17 @@ self.init = function() {
         self.startProfile('build-object-list');
         TBUtils.forEachChunked($things, 25, 250, function(thing) {
             self.startProfile('build-object-list-inner');
-            var sub = processThing($(thing), addButton);
-            if (sub !== undefined) {
-                if (subs[sub] === undefined) {
-                    subs[sub] = [];
-                }
-                subs[sub].push(thing);
+
+            var $thing = $(thing),
+                sub = $thing.data('subreddit');
+
+            processThing($thing, addButton);
+
+            if (subs[sub] === undefined) {
+                subs[sub] = [];
             }
+            subs[sub].push(thing);
+
             self.endProfile('build-object-list-inner');
         },
             // Process subreddit objects' lists
@@ -85,19 +89,10 @@ self.init = function() {
         }
         $thing.addClass('dt-processed');
 
-        //var subreddit = TBUtils.getThingInfo($thing, true).subreddit;
-        //if (!subreddit) {
-        //    return;
-        //}
-        var subreddit = $thing.data('subreddit');
-        $thing.attr('subreddit', subreddit);
-
         if (addButton) {
             var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', "Color tag domains").attr('href', 'javascript:;').text('T');
             $thing.find('span.domain').after(tag);
         }
-
-        return subreddit;
     }
 
     function processSubreddit(sub, things) {

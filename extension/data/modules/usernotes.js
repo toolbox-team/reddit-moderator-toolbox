@@ -677,7 +677,7 @@ self.usernotesManager = function () {
                 $.each(notes.users[user].notes, function (key, val) {
                     noteCount++;
 
-                    self.justFuckingGetTheFuckingTypeFuckingInfo(sub, val.type, function (typeInfo) {
+                    //self.justFuckingGetTheFuckingTypeFuckingInfo(sub, val.type, function (typeInfo) {
 
                         var timeUTC = Math.round(val.time / 1000),
                             timeISO = TBUtils.timeConverterISO(timeUTC),
@@ -690,8 +690,8 @@ self.usernotesManager = function () {
                             )
                         ).append(
                             $('<span>').addClass('note').append($('<a>').attr('href', val.link).text(val.note))
-                        ).append(
-                            $('<span>').text(typeInfo.text ? '  [' + typeInfo.text + ']' : '').css('color', typeInfo.color)
+                        //).append(
+                        //    $('<span>').text(typeInfo.text ? '  [' + typeInfo.text + ']' : '').css('color', typeInfo.color)
                         ).append(
                             $('<span>').text(" - ")
                         ).append(
@@ -704,7 +704,7 @@ self.usernotesManager = function () {
 
                         //notes.append($note);
                         $userNotes.append($note);
-                    });
+                    //});
 
 
                 });

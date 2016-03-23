@@ -1597,6 +1597,20 @@ function initwrapper() {
             });
     };
 
+    TBUtils.getLastActive = function(user, callback){
+        $.get('/user/' + user + '.json?limit=1&sort=top', {
+                uh: TBUtils.modhash
+            })
+            .success(function (response) {
+                if (typeof callback !== "undefined")
+                    callback(true, response.data.children[0].data.created_utc);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error.responseText);
+            });
+    };
+
     TBUtils.getRules = function (sub, callback) {
         $.get('/r/' + sub + '/about/rules.json', {
                 uh: TBUtils.modhash

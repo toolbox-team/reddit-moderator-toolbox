@@ -712,7 +712,8 @@ self.usernotesManager = function () {
                 <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                 <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                 <br><br>\
-                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune user profiles</a>\
+                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>\
+                <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than a two years.</label>\
             </div></br></br>';
 
                 var infocontent = TB.utils.template(infoHTML, {
@@ -846,23 +847,33 @@ self.usernotesManager = function () {
 
         // Get the account status for all users.
         $body.find('#tb-un-prune-sb').on('click', function () {
-            var emptyProfiles = [];
+            var emptyProfiles = [],
+                pruneOld = $('.tb-prune-old').prop('checked'),
+                now = TBUtils.getTime(),
+                usersPrune = Object.keys(subUsenotes.users),
+                userCountPrune = usersPrune.length;
 
             TB.ui.longLoadSpinner(true, "Pruning usernotes", TB.ui.FEEDBACK_NEUTRAL);
-            var usersPrune = Object.keys(subUsenotes.users);
-            var userCountPrune = usersPrune.length;
-
 
             TBUtils.forEachChunkedRateLimit(usersPrune, 20, function (user, counter) {
 
                     TB.ui.textFeedback("Pruning user " + counter + " of " + userCountPrune, TB.ui.FEEDBACK_POSITIVE);
 
-
-                    TB.utils.aboutUser(user, function (succ) {
+                    TBUtils.getLastActive(user, function (succ, date) {
 
                         if (!succ) {
+                            self.log(user + ' is deleted, suspended or shadowbanned.');
                             $body.find('#tb-un-note-content-wrap div[data-user="' + user + '"]').css('text-decoration', 'line-through');
                             emptyProfiles.push(user);
+                        } else if (pruneOld) {
+                                var timeSince = now - (date * 1000),
+                                daysSince = TBUtils.millisecondsToDays(timeSince);
+
+                            if (daysSince > 730){
+                                self.log(user + ' has not been active in: ' + daysSince.toFixed() + ' days.');
+                                $body.find('#tb-un-note-content-wrap div[data-user="' + user + '"]').css('text-decoration', 'line-through');
+                                emptyProfiles.push(user);
+                            }
                         }
                     });
                 },

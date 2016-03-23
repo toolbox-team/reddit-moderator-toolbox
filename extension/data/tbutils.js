@@ -1598,7 +1598,7 @@ function initwrapper() {
     };
 
     TBUtils.getLastActive = function(user, callback){
-        $.get('/user/' + user + '.json?limit=1&sort=top', {
+        $.get('/user/' + user + '.json?limit=1&sort=new', {
                 uh: TBUtils.modhash
             })
             .success(function (response) {

@@ -677,28 +677,36 @@ self.usernotesManager = function () {
                 $.each(notes.users[user].notes, function (key, val) {
                     noteCount++;
 
-                    var timeUTC = Math.round(val.time / 1000),
-                        timeISO = TBUtils.timeConverterISO(timeUTC),
-                        timeHuman = TBUtils.timeConverterRead(timeUTC);
+                    self.justFuckingGetTheFuckingTypeFuckingInfo(sub, val.type, function (typeInfo) {
 
-                    var $note = $('<div>').addClass('tb-un-note-details').append(
-                        $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').data('user', user).data('note', key).append(
-                            $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
-                        )
-                    ).append(
-                        $('<span>').addClass('note').append($('<a>').attr('href', val.link).text(val.note))
-                    ).append(
-                        $('<span>').text(" - ")
-                    ).append(
-                        $('<span>').addClass('mod').text("by /u/"+val.mod)
-                    ).append(
-                        $('<span>').text(" - ")
-                    ).append(
-                        $('<time>').attr('title', timeHuman).attr('datetime', timeISO).addClass('live-timestamp timeago').text(timeISO)
-                    );
+                        var timeUTC = Math.round(val.time / 1000),
+                            timeISO = TBUtils.timeConverterISO(timeUTC),
+                            timeHuman = TBUtils.timeConverterRead(timeUTC);
 
-                    //notes.append($note);
-                    $userNotes.append($note);
+
+                        var $note = $('<div>').addClass('tb-un-note-details').append(
+                            $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').data('user', user).data('note', key).append(
+                                $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
+                            )
+                        ).append(
+                            $('<span>').addClass('note').append($('<a>').attr('href', val.link).text(val.note))
+                        ).append(
+                            $('<span>').text(typeInfo.text ? '  [' + typeInfo.text + ']' : '').css('color', typeInfo.color)
+                        ).append(
+                            $('<span>').text(" - ")
+                        ).append(
+                            $('<span>').addClass('mod').text("by /u/" + val.mod)
+                        ).append(
+                            $('<span>').text(" - ")
+                        ).append(
+                            $('<time>').attr('title', timeHuman).attr('datetime', timeISO).addClass('live-timestamp timeago').text(timeISO)
+                        );
+
+                        //notes.append($note);
+                        $userNotes.append($note);
+                    });
+
+
                 });
                 //$userNotes.append(notes);
                 self.endProfile('manager-render-notes');
@@ -717,7 +725,15 @@ self.usernotesManager = function () {
                 <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
                 <br><br>\
                 <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>\
-                <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than a two years.</label>\
+                <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>\
+                <select class="tb-prune-length">\
+                    <option value="365">one-year</option>\
+                    <option value="730">two-years</option>\
+                    <option value="1095">three-years</option>\
+                    <option value="1460">four-years</option>\
+                    <option value="1825">five-years</option>\
+                    <option value="2190">six-years</option>\
+                </select>\
             </div></br></br>';
 
                 var infocontent = TB.utils.template(infoHTML, {
@@ -733,105 +749,6 @@ self.usernotesManager = function () {
                 self.printProfiles();
             }
         );
-    }
-
-    function showSubNotesOld(status, notes) {
-        if (!status || !notes) {
-            var error = '\
-            <div class="tb-un-info">\
-                <span class="tb-info" style="color:red">No user notes were found for this subreddit.</span>\
-            </div>';
-
-            self.log('un status: ' + status + '\nnotes: ' + notes);
-
-            $siteTable.prepend(error);
-            TB.ui.longLoadSpinner(false, "No notes found", TB.ui.FEEDBACK_NEGATIVE);
-            return;
-        }
-        subUsenotes = notes;
-        self.log('showing notes');
-
-        var userCount = Object.keys(notes.users).length,
-            noteCount = 0;
-
-        var userHTML = '\
-    <div class="tb-un-user" data-user="{{user}}">\
-        <div class="tb-un-user-header">\
-        <a href="javascript:;" class="tb-un-refresh" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconRefresh + '" /></a>&nbsp;\
-        <a href="javascript:;" class="tb-un-delete" data-user="{{user}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>\
-        <span class="user"><a href="https://www.reddit.com/user/{{user}}">/u/{{user}}</a></span>\
-        </div>\
-        <div class="tb-usernotes">\
-        </div>\
-    </div>';
-
-        var noteHTML = '\
-    <div class="tb-un-note-details">\
-        <a href="javascript:;" class="tb-un-notedelete" data-user="{{user}}" data-note="{{key}}"><img src="data:image/png;base64,' + TB.ui.iconDelete + '" /></a>&nbsp;\
-        <span class="note"><a href="{{link}}">{{note}}</a></span>&nbsp;-&nbsp;\
-        <span class="mod">by /u/{{mod}}</span>&nbsp;-&nbsp;<span class="date"> <time title="{{timeUTC}}" datetime="{{timeISO}}" class="live-timestamp timeago">{{timeISO}}</time></span>&nbsp;\
-    </div>';
-
-        self.startProfile('old-manager-render');
-        TBUtils.forEachChunked(Object.keys(notes.users), 10, 100, function (user, counter) {
-                self.startProfile('manager-render-notes');
-
-                var usercontent = TB.utils.template(userHTML, {
-                    'user': user
-                });
-
-                $siteTable.append(usercontent);
-
-                TB.ui.textFeedback("Loading user " + counter + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
-
-                $.each(notes.users[user].notes, function (key, val) {
-                    noteCount++;
-
-                    var timeUTC = Math.round(val.time / 1000),
-                        timeISO = TBUtils.timeConverterISO(timeUTC),
-                        timeHuman = TBUtils.timeConverterRead(timeUTC);
-
-                    var notecontent = TB.utils.template(noteHTML, {
-                        'user': user,
-                        'key': key,
-                        'note': val.note,
-                        'link': val.link,
-                        'mod': val.mod,
-                        'timeUTC': timeHuman,
-                        'timeISO': timeISO
-                    });
-
-                    $siteTable.find('div[data-user="' + user + '"] .tb-usernotes').append(notecontent);
-                });
-
-                self.endProfile('manager-render-notes');
-            },
-
-            function () {
-                self.endProfile('old-manager-render');
-
-                TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
-
-                var infoHTML = '\
-            <div class="tb-un-info">\
-                <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
-                <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
-                <br><br>\
-                <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune user profiles</a>\
-            </div></br></br>';
-
-                var infocontent = TB.utils.template(infoHTML, {
-                    'usercount': userCount,
-                    'notecount': noteCount
-                });
-
-                $siteTable.prepend(infocontent);
-
-                // Set events after all items are loaded.
-                noteManagerRun();
-
-                self.printProfiles();
-            });
     }
 
     function noteManagerRun() {
@@ -853,6 +770,7 @@ self.usernotesManager = function () {
         $body.find('#tb-un-prune-sb').on('click', function () {
             var emptyProfiles = [],
                 pruneOld = $('.tb-prune-old').prop('checked'),
+                pruneLength = $('.tb-prune-length').val(),
                 now = TBUtils.getTime(),
                 usersPrune = Object.keys(subUsenotes.users),
                 userCountPrune = usersPrune.length;
@@ -873,7 +791,7 @@ self.usernotesManager = function () {
                                 var timeSince = now - (date * 1000),
                                 daysSince = TBUtils.millisecondsToDays(timeSince);
 
-                            if (daysSince > 730){
+                            if (daysSince > pruneLength){
                                 self.log(user + ' has not been active in: ' + daysSince.toFixed() + ' days.');
                                 $body.find('#tb-un-note-content-wrap div[data-user="' + user + '"]').css('text-decoration', 'line-through');
                                 emptyProfiles.push(user);
@@ -973,9 +891,7 @@ self.usernotesManager = function () {
     setTimeout(function () {
         self.log(sub);
         self.getUserNotes(sub, showSubNotes);
-        //self.getUserNotes(sub, showSubNotesOld);
-        self.log('done?');
-        //getSubNotes(sub); // wait a sec to make sure spinner is loaded.
+        self.log('done?'); // is that a question or a statement?
     }, 50);
 
 };
@@ -1300,6 +1216,14 @@ self._unsquashPermalink = function (subreddit, permalink) {
     }
 
     return link;
+};
+
+self.justFuckingGetTheFuckingTypeFuckingInfo = function(subreddit, type, callback) {
+    if (!callback) return;
+
+    self.getSubredditColors(subreddit, function (colors) {
+        callback(self._findSubredditColor(colors, type));
+    });
 };
 
 // Per-subreddit coloring

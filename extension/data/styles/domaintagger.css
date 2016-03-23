@@ -101,6 +101,25 @@
     padding-right: 10px !important;
 }
 
+.dtagger-popup .dt-popup-color-content {
+    margin-bottom: 2px;
+}
+
+.dtagger-popup .domain-name {
+    width: 150px;
+    margin-left: 2px;
+    margin-right: 7px;
+}
+
+.dtagger-popup .clear-domain {
+    margin-left: 4px;
+}
+
+body.mod-toolbox .dtagger-popup .clear-domain:hover {
+    background-color: #ffd4cf !important;
+}
+
+/* Tag styles */
 
 .tb-dt-little-dot {
     margin-right: 3px;

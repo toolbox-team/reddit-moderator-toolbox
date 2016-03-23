@@ -489,7 +489,7 @@ self.init = function() {
                     $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
                 ),
                 $('<a>').attr('href', 'javascript:;').addClass('down-usernote-type').append(
-                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.topIcon)
+                    $('<img>').attr('src', 'data:image/png;base64,'+TBui.bottomIcon)
                 ),
                 $('<a>').attr('href', 'javascript:;').addClass('remove-usernote-type').append(
                     $('<img>').attr('src', 'data:image/png;base64,'+TBui.iconDelete)
@@ -782,18 +782,26 @@ self.init = function() {
     $body.on('click', '.up-usernote-type', function () {
         var $row = $(this).closest("tr"),
             $prev = $row.prev();
+
         if ($prev && $prev.length > 0) {
-            $row.detach();
-            $row.insertBefore($prev);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertBefore($prev);
+                $row.fadeIn(300);
+            });
         }
     });
 
     $body.on('click', '.down-usernote-type', function () {
         var $row = $(this).closest("tr"),
             $next = $row.next();
+
         if ($next && $next.length > 0) {
-            $row.detach();
-            $row.insertAfter($next);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertAfter($next);
+                $row.fadeIn(300);
+            });
         }
     });
 

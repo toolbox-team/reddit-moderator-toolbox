@@ -459,7 +459,7 @@ self.init = function () {
 
     function commentSearch() {
         // Find comments made by the user in specific subreddits.
-        if ($body.hasClass('profile-page')) {
+        if ($body.hasClass('profile-page') && TBUtils.modCheck) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
             $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content (optional)">\

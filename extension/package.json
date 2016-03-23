@@ -7,7 +7,8 @@
   "license": "Apache 2.0",
   "version": "3.4.0",
   "engines": {
-    "firefox": ">=38.0a1"
+    "firefox": ">=38.0a1",
+      "palemoon": ">=25.0"
   },
   "permissions": {
     "private-browsing": true

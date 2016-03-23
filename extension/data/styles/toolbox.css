@@ -1045,7 +1045,7 @@ body .thing.flaired {
     border-bottom: 1px dotted lightgray;
 }
 
-.history-button-popup #submission-markdown-text {
+.history-button-popup .submission-markdown-text {
     width: 97% !important;
     min-height: 100px;
 }

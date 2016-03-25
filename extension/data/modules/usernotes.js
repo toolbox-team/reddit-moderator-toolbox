@@ -657,27 +657,28 @@ self.usernotesManager = function () {
         //    $('<div>').addClass('tb-usernotes')
         //);
 
-        self.startProfile('manager-render');
-        TBUtils.forEachChunked(Object.keys(notes.users), 50, 50,
-            // Process a user
-            function (user, counter) {
-                self.startProfile('manager-render-user');
-                var $userContent = $userContentTemplate.clone();
-                $userContent.data('user', user);
-                $userContent.find('.tb-un-refresh, .tb-un-delete').data('user', user);
-                $userContent.find('.user a').attr('href', '/u/'+user).text("/u/"+user);
-                var $userNotes = $('<div>').addClass('tb-usernotes');//$userContent.find(".tb-usernotes");
-                $userContent.append($userNotes);
-                self.endProfile('manager-render-user');
+        self.getSubredditColors(sub, function (colors) {
+            self.startProfile('manager-render');
+            TBUtils.forEachChunked(Object.keys(notes.users), 50, 50,
+                // Process a user
+                function (user, counter) {
+                    self.startProfile('manager-render-user');
+                    var $userContent = $userContentTemplate.clone();
+                    $userContent.data('user', user);
+                    $userContent.find('.tb-un-refresh, .tb-un-delete').data('user', user);
+                    $userContent.find('.user a').attr('href', '/u/' + user).text("/u/" + user);
+                    var $userNotes = $('<div>').addClass('tb-usernotes');//$userContent.find(".tb-usernotes");
+                    $userContent.append($userNotes);
+                    self.endProfile('manager-render-user');
 
-                TB.ui.textFeedback("Loading user " + counter + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback("Loading user " + counter + " of " + userCount, TB.ui.FEEDBACK_POSITIVE);
 
-                self.startProfile('manager-render-notes');
-                //var notes = [];
-                $.each(notes.users[user].notes, function (key, val) {
-                    noteCount++;
+                    self.startProfile('manager-render-notes');
+                    //var notes = [];
+                    $.each(notes.users[user].notes, function (key, val) {
+                        noteCount++;
 
-                    //self.justFuckingGetTheFuckingTypeFuckingInfo(sub, val.type, function (typeInfo) {
+                        var color = self._findSubredditColor(colors, val.type);
 
                         var timeUTC = Math.round(val.time / 1000),
                             timeISO = TBUtils.timeConverterISO(timeUTC),
@@ -689,9 +690,11 @@ self.usernotesManager = function () {
                                 $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
                             )
                         ).append(
-                            $('<span>').addClass('note').append($('<a>').attr('href', val.link).text(val.note))
-                        //).append(
-                        //    $('<span>').text(typeInfo.text ? '  [' + typeInfo.text + ']' : '').css('color', typeInfo.color)
+                            $('<span>').addClass('note').append(
+                                $('<span>').addClass('note-type').css('color', color.color).text("[" + color.text + "]")
+                            ).append(
+                                $('<a>').addClass('note-content').attr('href', val.link).text(val.note)
+                            )
                         ).append(
                             $('<span>').text(" - ")
                         ).append(
@@ -703,23 +706,26 @@ self.usernotesManager = function () {
                         );
 
                         //notes.append($note);
+                        if (color.key === "none") {
+                            $note.find('.note-type').hide();
+                        }
                         $userNotes.append($note);
-                    //});
+                        //});
 
 
-                });
-                //$userNotes.append(notes);
-                self.endProfile('manager-render-notes');
+                    });
+                    //$userNotes.append(notes);
+                    self.endProfile('manager-render-notes');
 
-                $siteTable.append($userContent);
-            },
-            // Process done
-            function () {
-                self.endProfile('manager-render');
+                    $siteTable.append($userContent);
+                },
+                // Process done
+                function () {
+                    self.endProfile('manager-render');
 
-                TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.longLoadSpinner(false, "Usernotes loaded", TB.ui.FEEDBACK_POSITIVE);
 
-                var infoHTML = '\
+                    var infoHTML = '\
             <div class="tb-un-info">\
                 <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
                 <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
@@ -736,19 +742,20 @@ self.usernotesManager = function () {
                 </select>\
             </div></br></br>';
 
-                var infocontent = TB.utils.template(infoHTML, {
-                    'usercount': userCount,
-                    'notecount': noteCount
-                });
+                    var infocontent = TB.utils.template(infoHTML, {
+                        'usercount': userCount,
+                        'notecount': noteCount
+                    });
 
-                $siteTable.prepend(infocontent);
+                    $siteTable.prepend(infocontent);
 
-                // Set events after all items are loaded.
-                noteManagerRun();
+                    // Set events after all items are loaded.
+                    noteManagerRun();
 
-                self.printProfiles();
-            }
-        );
+                    self.printProfiles();
+                }
+            );
+        });
     }
 
     function noteManagerRun() {
@@ -1218,14 +1225,6 @@ self._unsquashPermalink = function (subreddit, permalink) {
     return link;
 };
 
-self.justFuckingGetTheFuckingTypeFuckingInfo = function(subreddit, type, callback) {
-    if (!callback) return;
-
-    self.getSubredditColors(subreddit, function (colors) {
-        callback(self._findSubredditColor(colors, type));
-    });
-};
-
 // Per-subreddit coloring
 self.getSubredditColors = function (subreddit, callback) {
     self.log("Getting subreddit colors for /r/" + subreddit);
@@ -1244,6 +1243,7 @@ self.getSubredditColors = function (subreddit, callback) {
 };
 
 self._findSubredditColor = function (colors, key) {
+    //TODO: make more efficient for repeated operations, like using an object
     for (var i = 0; i < colors.length; i++) {
         if (colors[i].key === key) {
             return colors[i];

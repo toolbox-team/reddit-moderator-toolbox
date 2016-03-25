@@ -145,6 +145,14 @@
     margin: 30px;
 }
 
+.mod-toolbox .tb-un-note-details .note {
+    margin-left: 4px;
+}
+
+.mod-toolbox .tb-un-note-details .note .note-type {
+    margin-right: 2px;
+}
+
 .mod-toolbox .tb-un-user-header .mod,
 .mod-toolbox .tb-un-note-details .date {
     color: #A8A8A8;

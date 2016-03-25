@@ -41,6 +41,12 @@ self.register_setting('hamSpammed', {
     'default': false,
     'title': 'Show remove (not spam) button on submissions removed as spam.'
 });
+self.register_setting('addStickyButton', {
+    'type': 'boolean',
+    'default': false,
+    'advanced': true,
+    'title': 'Add unsticky button to stickied posts.'
+});
 
 
 // Bread and buttons
@@ -327,6 +333,37 @@ self.initAddRemoveButtons = function initRemoveButtons() {
         }
     });
 };
+
+self.initStickyButtons = function initStickyButtons() {
+    var $things = $('.listing-page .content .thing.stickied');
+    $things.each(function(i) {
+        var $thing = $(this),
+            $buttons = $thing.find('.flat-list');
+        $buttons.append($('<li>').addClass('sticky-button').append(
+            $('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')
+        ).append(
+            $('<span>').addClass('success').text("unstickied").hide()
+        ).append(
+            $('<span>').addClass('error').text("failed to sticky").hide()
+        ));
+    });
+
+    $('.thing .sticky-button a').click(function() {
+        var $button = $(this),
+            $thing = $button.parents('.thing'),
+            id = $thing.data('fullname');
+        TBUtils.unstickyThread(id, function(success, error) {
+            $button.hide();
+            if (success) {
+                $button.siblings('.success').show();
+            }
+            else {
+                $button.siblings('.error').show();
+            }
+        });
+    });
+};
+
 // Module init
 
 self.init = function() {
@@ -342,6 +379,8 @@ self.init = function() {
         self.initAutoIgnoreReports();
     if (self.setting('spamRemoved') || self.setting('hamSpammed'))
         self.initAddRemoveButtons();
+    if (self.setting('addStickyButton'))
+        self.initStickyButtons();
 };
 
 TB.register_module(self);

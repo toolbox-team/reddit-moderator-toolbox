@@ -1468,6 +1468,30 @@ function initwrapper() {
             });
     };
 
+    TBUtils.stickyThread = function(id, callback, state) {
+        if (state === undefined) {
+            state = true;
+        }
+
+        $.post('/api/set_subreddit_sticky', {
+                id: id,
+                state: state,
+                uh: TBUtils.modhash
+            })
+            .success(function () {
+                if (typeof callback !== "undefined")
+                    callback(true);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error);
+            });
+    };
+
+    TBUtils.unstickyThread = function(id, callback) {
+        TBUtils.stickyThread(id, callback, false);
+    };
+
     TBUtils.postComment = function (parent, text, callback) {
         $.post('/api/comment', {
             parent: parent,

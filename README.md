@@ -48,7 +48,7 @@ $ gulp
 
 Or if you have followed these steps before and are on windows click the build.bat file.
 
-## Using the jpm post parameter for development. 
+## Using the jpm post parameter for firefox development. 
 
 Simply run gulp with the following parameter attached
 

@@ -1,9 +1,13 @@
 var gulp = require('gulp');
 var zip = require('gulp-zip');
 var exec = require('child_process').exec;
+var argv = require('yargs').argv;
 
 var src_dir = "extension";
 var dest_dir = "build";
+
+// Used when the --post parameter is given to gulp in order to push the xpi to firefox.
+var postUrl = "http://localhost:8888/";
 
 gulp.task('zip', function() {
     console.log(process.cwd());
@@ -20,8 +24,10 @@ gulp.task('zip', function() {
         .pipe(gulp.dest(dest_dir));
 });
 
+
+
 gulp.task('xpi', function(cb) {
-    exec('jpm xpi', {cwd: src_dir}, function(err, stdout, stderr) {
+    exec('jpm '+(argv.post === undefined ? "xpi" : "post --post-url "+postUrl), {cwd: src_dir}, function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
 

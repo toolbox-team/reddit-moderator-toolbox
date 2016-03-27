@@ -26,7 +26,7 @@ Documentation: http://www.reddit.com/r/toolbox/w/docs
 
 # Building 
 
-Building is relatively easy with gulp. 
+Building is relatively easy through [nodejs](https://nodejs.org/) with gulp. 
 
 Install jpm and gulp globally.
 
@@ -47,6 +47,14 @@ $ gulp
 ```
 
 Or if you have followed these steps before and are on windows click the build.bat file.
+
+## Using the jpm post parameter for development. 
+
+Simply run gulp with the following parameter attached
+
+```sh
+$ gulp --post
+```
 
 ### Third party support.
 

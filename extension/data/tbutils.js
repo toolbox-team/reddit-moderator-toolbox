@@ -1174,12 +1174,12 @@ function initwrapper() {
             uh: TBUtils.modhash
         })
 
-            .error(function postToWiki_error(err) {
-                $.log(err.responseText, false, SHORTNAME);
-                callback(false, err);
+            .fail(function postToWiki_error(jqXHR) {
+                $.log(jqXHR.responseText, false, SHORTNAME);
+                callback(false, jqXHR);
             })
 
-            .success(function () {
+            .done(function () {
                 // Callback regardless of what happens next.  We wrote to the page.
                 callback(true);
 

@@ -1072,20 +1072,29 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
 
     // Write to wiki page
     self.log("Saving usernotes to wiki...");
-    TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, function postToWiki(succ, err) {
+    TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, function postToWiki(succ, jqXHR) {
         if (succ) {
             self.log("Success!");
             TBui.textFeedback("Save complete!", TBui.FEEDBACK_POSITIVE, 2000);
             if (callback) callback(true);
         }
         else {
-            self.log("Failure: " + err.responseText);
-            TBui.textFeedback("Save failed: " + err.responseText, TBui.FEEDBACK_NEGATIVE, 5000);
+            self.log("Failure: " + jqXHR.status);
+            var reason;
+            if (jqXHR.status === 413) {
+                reason = "usernotes full";
+            }
+            else {
+                reason = jqXHR.responseText;
+            }
+            self.log("  " + reason);
+
+            TBui.textFeedback("Save failed: " + reason, TBui.FEEDBACK_NEGATIVE, 5000);
             if (callback) callback(false);
         }
     });
 
-    // Decovert notes to wiki format based on version (note: deconversion is actually conversion in the opposite direction)
+    // Deconvert notes to wiki format based on version (note: deconversion is actually conversion in the opposite direction)
     function deconvertNotes(notes) {
         if (notes.ver <= 5) {
             self.log("  Is v5");
@@ -1123,13 +1132,11 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
         var mgr = new self._constManager(deflated.constants);
 
         $.each(notes.users, function (name, user) {
-            //self.log("    Before deflation");
             deflated.users[name] = {
                 "ns": user.notes.map(function (note) {
                     return deflateNote(notes.ver, note, mgr);
                 })
             };
-            //self.log("    After deflation");
         });
 
         return deflated;

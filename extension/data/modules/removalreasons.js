@@ -35,8 +35,13 @@ self.register_setting('customRemovalReason', {
 });
 
 self.init = function() {
+    // Check if removal reasons are runnable
+    if (TBUtils.isModmail) {
+        self.log("Disabled because modmail");
+        return;
+    }
+
     var $body = $('body');
-    //Add a class to the body announcing removal reasons enabled
     $body.addClass('tb-removal-reasons');
 
     // Error texts
@@ -62,10 +67,15 @@ self.init = function() {
     var alwaysShow = self.setting('alwaysShow'),
         commentReasons = self.setting('commentReasons');
 
+    // Utilities
+
+    function isDisabled(subreddit) {
+        return !subreddit || (notEnabled.indexOf(subreddit) !== -1  && !alwaysShow);
+    }
+
+    // Remote stuff retrieval
 
     function getRules(subreddit, callback) {
-
-
         // Nothing to do if no toolbox config
         if (TBUtils.noRules.indexOf(subreddit) != -1) {
             callback(false);
@@ -113,7 +123,6 @@ self.init = function() {
         });
 
     }
-
 
     function getRemovalReasons(subreddit, callback) {
 
@@ -182,16 +191,32 @@ self.init = function() {
         });
     }
 
-    if (!TB.utils.isModmail) {
-        self.log('adding "add removal reasons" button');
-        $body.find('.linklisting .thing.spam .flat-list.buttons').each(function() {
-            var $this = $(this);
-            var prettyButtonCount = $this.find('.pretty-button').length;
-            if (prettyButtonCount === 1) {
-                $this.append('<li class="remove-button"><a href="javascript:;" class="tb-general-button">add removal reason</a></li>');
-            }
-        });
-    }
+    // UI components
+
+    // Add "add removal reason" buttons
+    self.log('Adding "add removal reasons" buttons');
+    $body.find('.link.spam').each(function() {
+        self.startProfile('add-reason-button');
+        var $thing = $(this),
+            subreddit = $thing.data('subreddit');
+        if (isDisabled(subreddit)) {
+            self.log('Disabled for "'+subreddit+'"');
+            return;
+        }
+
+        var $buttons = $thing.find('.flat-list.buttons');
+        var prettyButtonCount = $buttons.find('.pretty-button').length;
+        if (prettyButtonCount === 1) {
+            $buttons.append($('<li>').addClass('remove-button').append(
+                $('<a>').attr('href', 'javascript:;').addClass('tb-general-button').text("add removal reason")));
+        }
+        self.endProfile('add-reason-button');
+    });
+
+    self.printProfiles();
+
+    // UI event handling
+
     // Open reason drop-down when we remove something as ham.
     $body.on('click', '.big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
         var $button = $(this),
@@ -220,17 +245,14 @@ self.init = function() {
                 domain: info.domain
             };
 
-        // Stop if it's modmail or the subreddit doesn't have removal reasons enabled
-        if (!data.subreddit || (notEnabled.indexOf(data.subreddit) != -1 && !alwaysShow) || TBUtils.isModmail) {
-            return;
-        }
-
-        getRules(data.subreddit,function(rules){
-            self.log('getting rules');
-            self.log(rules);
-        });
+        //TODO: Dis ain't finished
+        //getRules(data.subreddit,function(rules){
+        //    self.log('getting rules');
+        //    self.log(rules);
+        //});
 
         // Set attributes and open reason box if one already exists for this subreddit
+        self.log("Opening popup");
         var $popup = $('#reason-popup-' + data.subreddit);
         // If the popup already exists, open it
         if ($popup.length) {

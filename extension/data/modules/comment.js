@@ -274,7 +274,8 @@ self.init = function () {
 
             // Variables we need later on to be able to reconstruct comments.
             var htmlCommentView = ''; // This will contain the new html we will add to the page.
-            var fullId = $('.thing.link').attr('data-fullname'); // full id
+            var $thing = $('.thing.link');
+            var fullId = $thing.data('fullname') || $thing.attr('id').match(/thing_(t3_[a-z0-9]+)/i)[1]; // full id
             var smallId = fullId.substring(3); // small id constructed from fullId
 
             var siteTable = "#siteTable_" + fullId; // sitetable id which we will be clearing.

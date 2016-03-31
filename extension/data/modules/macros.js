@@ -140,7 +140,7 @@ self.init = function () {
         // get some placement variables
 
         var $usertext = dropdown.closest('.usertext-edit'),
-            comment = unescape(macro.text),
+            comment = decodeURIComponent(macro.text),
             remove = macro.remove,
             approve = macro.approve,
             ban = macro.ban,

@@ -490,8 +490,8 @@
             $.each(items, function (key, value) {
                 $item = $('\
                 <tr class="tb-map-input-tr">\
-                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(key)) + '" name="key"></td>\
-                    <td><input type="text" value="' + TBUtils.htmlEncode(unescape(value)) + '" name="value"></td>\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(decodeURIComponent(key)) + '" name="key"></td>\
+                    <td><input type="text" value="' + TBUtils.htmlEncode(decodeURIComponent(value)) + '" name="value"></td>\
                     <td class="tb-map-input-td-remove">\
                         <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconDelete + '" /></a>\
                     </td>\

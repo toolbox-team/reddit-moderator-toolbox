@@ -87,10 +87,10 @@ self.init = function() {
                     content: '\
                 <table>\
                     <td>Header:</td>\
-                    <td><textarea class="edit-header" >' + TBUtils.htmlEncode(decodeURIComponent(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
+                    <td><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
                     </tr><tr>\
                     <td>Footer:</td>\
-                    <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(decodeURIComponent(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
+                    <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
                     </tr>\
                     <tr class="advanced-enable" ' + ((TB.utils.advancedMode) ? '' : 'style="display:none;"') + '>\
                     <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>\
@@ -518,7 +518,7 @@ self.init = function() {
 
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
-                var label = decodeURIComponent(this.text);
+                var label = unescape(this.text);
                 if (label == '') {
                     label = '<span style="color: #cecece">(no reason)</span>';
                 } else {
@@ -528,7 +528,7 @@ self.init = function() {
                     label = TBUtils.htmlEncode(label);
                 }
 
-                var removalReasonText = decodeURIComponent(config.removalReasons.reasons[i].text) || '',
+                var removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
                     removalReasonTitle = config.removalReasons.reasons[i].title || '',
                     removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                     removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
@@ -580,7 +580,7 @@ self.init = function() {
         if (config.modMacros && config.modMacros.length > 0) {
 
             $(config.modMacros).each(function (i, item) {
-                var label = decodeURIComponent(item.text);
+                var label = unescape(item.text);
                 if (label == '') {
                     label = '<span style="color: #cecece">(no macro)</span>';
                 } else {
@@ -590,7 +590,7 @@ self.init = function() {
                     label = TBUtils.htmlEncode(label);
                 }
                 var macro = config.modMacros[i];
-                    modMacroText = decodeURIComponent(macro.text) || '',
+                    modMacroText = unescape(macro.text) || '',
                     modMacroTitle = macro.title || '';
 
                 var modMacroTemplate = '\
@@ -897,7 +897,7 @@ self.init = function() {
             $removalContent = $this.closest('td.removal-reasons-content'),
             reasonsNum = $removalContent.attr('data-reason');
 
-        $removalContent.find('.edit-area').val(decodeURIComponent(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
+        $removalContent.find('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
         $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
         $removalContent.find('input[name=flair-text]').val(config.removalReasons.reasons[reasonsNum].flairText || '');
         $removalContent.find('input[name=flair-css]').val(config.removalReasons.reasons[reasonsNum].flairCSS || '');
@@ -932,7 +932,7 @@ self.init = function() {
 
         postToWiki('toolbox', config, editNote, true);
 
-         var label = decodeURIComponent(reasonText);
+         var label = unescape(reasonText);
         if (label == '') {
             label = '<span style="color: #cecece">(no reason)</span>';
         } else {
@@ -1072,7 +1072,7 @@ self.init = function() {
             macroNum = $macroContent.attr('data-macro'),
             macro = config.modMacros[macroNum];
 
-        $macroContent.find('.edit-area').val(decodeURIComponent(macro.text) || '<span style="color: #cecece">(no macro)</span>');
+        $macroContent.find('.edit-area').val(unescape(macro.text) || '<span style="color: #cecece">(no macro)</span>');
         $macroContent.find('input[name=macro-title]').val(macro.title || '');
         $macroContent.find('#distinguish').prop("checked", macro.distinguish);
         $macroContent.find('#banuser').prop("checked", macro.ban);
@@ -1129,7 +1129,7 @@ self.init = function() {
         postToWiki('toolbox', config, editNote, true);
 
 
-        var label = decodeURIComponent(macroText);
+        var label = unescape(macroText);
 
         if (label == '') {
             label = '<span style="color: #cecece">(no macro)</span>';

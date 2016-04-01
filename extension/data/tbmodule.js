@@ -111,7 +111,7 @@ TB = {
                 settingName: 'settingssub',
                 content: '\
                         Backup/restore toolbox settings to a wiki page:<br>\
-                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(decodeURIComponent(settingSub)) + '">\
+                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="' + TBUtils.htmlEncode(unescape(settingSub)) + '">\
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">\
                         <input class="tb-settings-import tb-action-button" type="button" value="restore">\
                         <b> Important:</b> This will reload the page without saving!\

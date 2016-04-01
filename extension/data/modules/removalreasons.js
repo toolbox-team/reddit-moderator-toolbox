@@ -307,8 +307,8 @@ self.init = function() {
                 // Add additional data that is found in the wiki JSON.
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
                 data.logReason = TBUtils.htmlEncode(response.logreason) || '';
-                data.header = TBUtils.htmlEncode(decodeURIComponent(response.header)) || '';
-                data.footer = TBUtils.htmlEncode(decodeURIComponent(response.footer)) || '';
+                data.header = TBUtils.htmlEncode(unescape(response.header)) || '';
+                data.footer = TBUtils.htmlEncode(unescape(response.footer)) || '';
                 data.logSub = TBUtils.htmlEncode(response.logsub) || '';
                 data.logTitle = TBUtils.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
                 data.banTitle = TBUtils.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
@@ -317,7 +317,7 @@ self.init = function() {
                 data.reasons = [];
                 $(response.reasons).each(function () {
                     data.reasons.push({
-                        text: decodeURIComponent(this.text),
+                        text: unescape(this.text),
                         title: TBUtils.htmlEncode(this.title),
                         flairText: TBUtils.htmlEncode(this.flairText),
                         flairCSS: TBUtils.htmlEncode(this.flairCSS)

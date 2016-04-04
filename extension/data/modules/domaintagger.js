@@ -22,6 +22,8 @@ self.init = function() {
 
     TBUtils.getModSubs(function () {
         run(true);
+        self.log('run called from getModSubs');
+        self.log(TBUtils.mySubs);
     });
 
     function postToWiki(sub, json, reason) {
@@ -40,11 +42,13 @@ self.init = function() {
     // NER support.
     window.addEventListener("TBNewThings", function () {
         run(true);
+        self.log('run called from NER support');
     });
 
     // Main stuff
 
     function run(addButton) {
+        self.log('run called with: ' + addButton);
         var $things = $('div.thing.link:not(.dt-processed)'),
             subs = {};
 
@@ -55,7 +59,7 @@ self.init = function() {
             self.startProfile('build-object-list-inner');
 
             var $thing = $(thing),
-                sub = $thing.data('subreddit');
+                sub = $thing.attr('data-subreddit');
 
             processThing($thing, addButton);
 
@@ -89,7 +93,9 @@ self.init = function() {
         }
         $thing.addClass('dt-processed');
 
-        if (addButton) {
+        var subreddit = $thing.attr('data-subreddit');
+
+        if (addButton && $.inArray(subreddit, TBUtils.mySubs) > -1) {
             var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', "Color tag domains").attr('href', 'javascript:;').text('T');
             $thing.find('span.domain').after(tag);
         }

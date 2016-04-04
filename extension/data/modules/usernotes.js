@@ -125,8 +125,14 @@ self.usernotes = function usernotes() {
             }
 
             var $userattrs = $thing.find('.userattrs').first();
+
+
+
+            if($.inArray(subreddit, TBUtils.mySubs) > -1) {
             attachNoteTag($userattrs, subreddit, true);
             foundSubreddit(subreddit);
+            }
+
         }
         // Modmail (ugh)
         else if (thingType === TYPE_MODMAIL) {
@@ -162,8 +168,11 @@ self.usernotes = function usernotes() {
                 $thing.attr('data-author', user);
             }
 
-            attachNoteTag($user, subreddit, true);
-            foundSubreddit(subreddit);
+            if($.inArray(subreddit, TBUtils.mySubs) > -1) {
+                attachNoteTag($user, subreddit, true);
+                foundSubreddit(subreddit);
+            }
+
         }
         else {
             self.log("Unknown thing type " + thingType + " (THIS IS BAD)");

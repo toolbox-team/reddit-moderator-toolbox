@@ -596,6 +596,7 @@ self.populateCommentHistory = function (after, author) {
     }).done(function (d) {
         $.each(d.data.children, function (index, value) {
             var data = value.data;
+
             if (!user.subreddits.comments[data.subreddit]) {
                 user.subreddits.comments[data.subreddit] = {count: 0};
                 user.commentSubredditList.push(data.subreddit);
@@ -606,29 +607,27 @@ self.populateCommentHistory = function (after, author) {
         });
 
         var after = d.data.after;
+
         if (after) {
             self.populateCommentHistory(after, author);
         }
+
+        user.commentSubredditList.sort(function (a, b) {
+            return user.subreddits.comments[b].count - user.subreddits.comments[a].count;
+        });
+
+        $commentTable.empty();
+
+        $.each(user.commentSubredditList, function (index, value) {
+            var count = user.subreddits.comments[value].count,
+                percentage = Math.round(count / user.counters.comments * 100);
+
+            $commentTable.append(
+                `<tr>
+                    <td>${value}</td><td>${count}</td><td>${percentage}</td>
+                </tr>`);
+        });
         TB.ui.longLoadNonPersistent(false);
-
-        if ($.isEmptyObject(d.data.children) || !after) {
-            user.commentSubredditList.sort(function (a, b) {
-                return user.subreddits.comments[b].count - user.subreddits.comments[a].count;
-            });
-
-            $commentTable.empty();
-
-            TB.ui.longLoadNonPersistent(false);
-            $.each(user.commentSubredditList, function (index, value) {
-                var count = user.subreddits.comments[value].count,
-                    percentage = Math.round(count / user.counters.comments * 100);
-
-                $commentTable.append(
-                    `<tr>
-                        <td>${value}</td><td>${count}</td><td>${percentage}</td>
-                    </tr>`);
-            });
-        }
     });
 };
 

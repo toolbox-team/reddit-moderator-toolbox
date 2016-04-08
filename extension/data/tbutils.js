@@ -1555,7 +1555,7 @@ function initwrapper() {
     TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
         $.post('/api/compose', {
             from_sr: subreddit,
-            subject: subject.substr(0, 99);,
+            subject: subject.substr(0, 99),
             text: message,
             to: user,
             uh: TBUtils.modhash,

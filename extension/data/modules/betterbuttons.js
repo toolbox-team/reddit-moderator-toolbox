@@ -47,6 +47,12 @@ self.register_setting('addStickyButton', {
     'advanced': true,
     'title': 'Add unsticky button to stickied posts.'
 });
+self.register_setting('fuckRedditMobile', {
+    'type': 'boolean',
+    'default': false,
+    'advanced': true,
+    'title': 'Replace m.reddit.com links with with reddit.com.'
+});
 
 
 // Bread and buttons
@@ -364,6 +370,13 @@ self.initStickyButtons = function initStickyButtons() {
     });
 };
 
+self.fixLinks = function(){
+    $('.md a').each(function(){
+        var $this = $(this);
+        $this.attr('href', $this.attr('href').replace('m.reddit.com', 'reddit.com'));
+    });
+};
+
 // Module init
 
 self.init = function() {
@@ -381,6 +394,8 @@ self.init = function() {
         self.initAddRemoveButtons();
     if (self.setting('addStickyButton'))
         self.initStickyButtons();
+    if (self.setting('fuckRedditMobile'))
+        self.fixLinks();
 };
 
 TB.register_module(self);

@@ -23,6 +23,14 @@ self.register_setting('alwaysComments', {
     'title': 'Load comment history immediately'
 });
 
+self.register_setting('commentCount', {
+    'type': 'selector',
+    'values': ['100','200','300','400','500','600','700','800','900','1000'],
+    'default': '1000',
+    'advanced': true,
+    'title': 'Number of comments to retrieve per user history'
+});
+
 /**
  * Attach an [H] button to all users
  */
@@ -39,7 +47,7 @@ self.run = function () {
  */
 self.init = function () {
 
-    if(TBUtils.modCheck){
+    if(TBUtils.modCheck||true){
         self.run();
 
         // NER support.
@@ -608,7 +616,7 @@ self.populateCommentHistory = function (after, author) {
 
         var after = d.data.after;
 
-        if (after) {
+        if (after && user.counters.comments < Number(self.setting('commentCount'))) {
             self.populateCommentHistory(after, author);
         }
 

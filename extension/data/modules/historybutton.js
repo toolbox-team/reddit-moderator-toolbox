@@ -47,7 +47,7 @@ self.run = function () {
  */
 self.init = function () {
 
-    if(TBUtils.modCheck||true){
+    if(TBUtils.modCheck){
         self.run();
 
         // NER support.

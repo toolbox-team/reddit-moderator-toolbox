@@ -49,8 +49,15 @@ self.init = function() {
 
     function run(addButton) {
         self.log('run called with: ' + addButton);
-        var $things = $('div.thing.link:not(.dt-processed)'),
+        var $things = $('div.thing.link').not('.dt-processed'),
             subs = {};
+
+        // Mark non-mySubs as processed and remove them from collection
+        $things.filter(function(){
+            return TBUtils.mySubs.indexOf(this.dataset['subreddit']) == -1;
+        }).addClass('dt-processed');
+
+        $things = $things.not('.dt-processed');
 
         // Build object lists per subreddit
         self.log("Processing things");
@@ -60,6 +67,7 @@ self.init = function() {
 
             var $thing = $(thing),
                 sub = $thing.attr('data-subreddit');
+
 
             processThing($thing, addButton);
 
@@ -88,14 +96,12 @@ self.init = function() {
     }
 
     function processThing($thing, addButton) {
-        if ($thing.hasClass('dt-processed')) {  //FIXME: Probably unnecessary with the :not(.dt-processed) check
-            return;
-        }
+
         $thing.addClass('dt-processed');
 
         var subreddit = $thing.attr('data-subreddit');
 
-        if (addButton && $.inArray(subreddit, TBUtils.mySubs) > -1) {
+        if (addButton) {
             var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', "Color tag domains").attr('href', 'javascript:;').text('T');
             $thing.find('span.domain').after(tag);
         }

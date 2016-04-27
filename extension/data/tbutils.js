@@ -608,7 +608,7 @@ function initwrapper() {
             notification.onclick = function () {
                 // Open the page
                 $.log('notification clicked', false, SHORTNAME);
-                if (markreadid !== 'undefined') {
+                if (typeof markreadid !== 'undefined') {
                     $.post('/api/read_message', {
                         id: markreadid,
                         uh: TBUtils.modhash,
@@ -643,7 +643,7 @@ function initwrapper() {
                     notification.onclick = function () {
                         // Open the page
                         $.log('notification clicked', false, SHORTNAME);
-                        if (markreadid !== 'undefined') {
+                        if (typeof markreadid !== 'undefined') {
                             $.post('/api/read_message', {
                                 id: markreadid,
                                 uh: TBUtils.modhash,

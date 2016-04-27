@@ -734,7 +734,7 @@ self.init = function() {
             }
 
             // Finalize the reason with optional log post link
-            if (logLink !== 'undefined')
+            if (typeof logLink !== 'undefined')
                 reason = reason.replace('{loglink}', logLink);
 
             var notifyByPM = notifyBy == 'PM' || notifyBy == 'both',

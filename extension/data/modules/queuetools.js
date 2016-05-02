@@ -769,7 +769,7 @@ self.init = function () {
     }
 
     if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
-        $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
+        $('.tabmenu').first().append($('<li><a href="javascript:;" accesskey="M" class="modtools-on tb-queuetools-tab">queue tools</a></li>').click(addModtools));
     }
 
 

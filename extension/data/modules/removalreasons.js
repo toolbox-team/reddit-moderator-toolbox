@@ -693,10 +693,9 @@ self.init = function() {
             // Submit log post
             TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, function (successful, response) {
                 if (successful) {
-                    var logLink = response.json.data.url;
-                    var loglinkToken = response.json.data.url;
-                    logLink = response.json.data.name;
-                    TBUtils.approveThing(logLink);
+                    var logThingId = response.json.data.name,
+                        loglinkToken = response.json.data.url;
+                    TBUtils.approveThing(logThingId);
 
                     if (noneSelected === 'none') {
                         removePopup(popup);

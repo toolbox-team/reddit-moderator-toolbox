@@ -826,6 +826,10 @@ function initwrapper() {
         }
     };
 
+    TBUtils.modsSub = function (subreddit) {
+        return $.inArray(subreddit, TBUtils.mySubs) > -1;
+    };
+
     TBUtils.getHashParameter = function(ParameterKey)
     {
         var hash = window.location.hash.substring(1);

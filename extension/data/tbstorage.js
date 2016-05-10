@@ -39,7 +39,7 @@
 
         // Chrome
         if (typeof (chrome) !== "undefined") {
-            window.chrome.storage.local.remove('tbsettings', function () {
+            chrome.storage.local.remove('tbsettings', function () {
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
                     clearLocal();
@@ -114,6 +114,7 @@ function storagewrapper() {
         TBStorage.browser = FIREFOX;
     } else if (typeof (window.browser) !== 'undefined'){
         TBStorage.browser = EDGE;
+        chrome = window.browser;
     } else if (typeof (chrome) !== "undefined") {
         TBStorage.browser = CHROME;
 
@@ -128,7 +129,7 @@ function storagewrapper() {
     if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
         //console.log('using browser storage');
 
-        window.chrome.storage.local.get('tbsettings', function (sObject) {
+        chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                     objectToSettings(sObject.tbsettings, function () {
                         SendInit();
@@ -300,12 +301,12 @@ function storagewrapper() {
                 var settingsObject = sObject;
 
                 // save settings
-                window.chrome.storage.local.set({
+                chrome.storage.local.set({
                     'tbsettings': sObject
                 }, function () {
 
                     // now verify them
-                    window.chrome.storage.local.get('tbsettings', function (returnObject) {
+                    chrome.storage.local.get('tbsettings', function (returnObject) {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                             && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             callback(true);
@@ -413,7 +414,7 @@ function storagewrapper() {
         if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
             // chrome
             settingsToObject(function (sObject) {
-                window.chrome.storage.local.set({
+                chrome.storage.local.set({
                     'tbsettings': sObject
                 });
             });

@@ -8,7 +8,7 @@ function initwrapper() {
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
 
-    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
+    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
     //Private variables
@@ -564,6 +564,9 @@ function initwrapper() {
                 break;
             case 'safari':
                 if (TBUtils.browser == SAFARI && TBUtils.isExtension) show();
+                break;
+            case 'edge':
+                if (TBUtils.browser == EDGE && TBUtils.isExtension) show();
                 break;
             case 'script':
                 if (!TBUtils.isExtension) show();

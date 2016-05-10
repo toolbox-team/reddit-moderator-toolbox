@@ -23,7 +23,8 @@
         "128": "data/images/icon128.png"
     },
     "background": {
-        "page": "data/background/chrome.html"
+        "page": "data/background/chrome.html",
+        "persistent": false
     },
     "content_scripts": [
         {

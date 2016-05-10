@@ -39,7 +39,7 @@
 
         // Chrome
         if (typeof (chrome) !== "undefined") {
-            chrome.storage.local.remove('tbsettings', function () {
+            window.chrome.storage.local.remove('tbsettings', function () {
                 // Wait a sec for stuff to clear.
                 setTimeout(function () {
                     clearLocal();
@@ -125,10 +125,10 @@ function storagewrapper() {
     }
 
 
-    if (TBStorage.browser === CHROME) {
+    if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
         //console.log('using browser storage');
 
-        chrome.storage.local.get('tbsettings', function (sObject) {
+        window.chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                     objectToSettings(sObject.tbsettings, function () {
                         SendInit();
@@ -295,17 +295,17 @@ function storagewrapper() {
         // Don't re-store the settings after a save on the the refresh that follows.
         localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
-        if (TBStorage.browser === CHROME) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
             settingsToObject(function (sObject) {
                 var settingsObject = sObject;
 
                 // save settings
-                chrome.storage.local.set({
+                window.chrome.storage.local.set({
                     'tbsettings': sObject
                 }, function () {
 
                     // now verify them
-                    chrome.storage.local.get('tbsettings', function (returnObject) {
+                    window.chrome.storage.local.get('tbsettings', function (returnObject) {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                             && isEquivalent(returnObject.tbsettings, settingsObject)) {
                             callback(true);
@@ -410,10 +410,10 @@ function storagewrapper() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
         if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
 
-        if (TBStorage.browser === CHROME) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
             // chrome
             settingsToObject(function (sObject) {
-                chrome.storage.local.set({
+                window.chrome.storage.local.set({
                     'tbsettings': sObject
                 });
             });

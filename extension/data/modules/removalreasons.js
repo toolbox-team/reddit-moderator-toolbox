@@ -572,7 +572,7 @@ self.init = function() {
                 link: '',
                 domain: '',
                 logSub: '',
-                body: '',
+                body: ''
             };
 
         // Update status

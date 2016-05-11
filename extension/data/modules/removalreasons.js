@@ -242,7 +242,8 @@ self.init = function() {
                 mod: info.mod,
                 url: info.permalink,
                 link: info.postlink,
-                domain: info.domain
+                domain: info.domain,
+                body: info.body
             };
 
         //TODO: Dis ain't finished
@@ -570,7 +571,8 @@ self.init = function() {
                 url: '',
                 link: '',
                 domain: '',
-                logSub: ''
+                logSub: '',
+                body: '',
             };
 
         // Update status

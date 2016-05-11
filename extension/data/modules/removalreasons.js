@@ -574,7 +574,7 @@ self.init = function() {
                 domain: '',
                 logSub: '',
                 body: '',
-                raw_body: raw_body
+                raw_body: ''
             };
 
         // Update status

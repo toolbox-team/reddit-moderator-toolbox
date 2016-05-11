@@ -243,7 +243,8 @@ self.init = function() {
                 url: info.permalink,
                 link: info.postlink,
                 domain: info.domain,
-                body: info.body
+                body: info.body,
+                raw_body: info.raw_body
             };
 
         //TODO: Dis ain't finished
@@ -572,7 +573,8 @@ self.init = function() {
                 link: '',
                 domain: '',
                 logSub: '',
-                body: ''
+                body: '',
+                raw_body: raw_body
             };
 
         // Update status

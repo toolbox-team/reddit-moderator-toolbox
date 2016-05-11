@@ -859,7 +859,7 @@ function initwrapper() {
             permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href'),
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
-            body = '> ' + ($entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text()).split('\n').join('\n> '),
+            body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text(),
 
         // These need some fall backs, but only removal reasons use them for now.
             title = $thing.find('a.title').length ? $thing.find('a.title').text() : '',
@@ -937,7 +937,8 @@ function initwrapper() {
             url: permalink,
             domain: domain,
             id: id,
-            body: body,
+            body: '> ' + body.split('\n').join('\n> '),
+            raw_body: body,
             approved_by: approved_by,
             title: title,
             kind: kind,

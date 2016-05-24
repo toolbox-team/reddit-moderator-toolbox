@@ -72,6 +72,13 @@ self.register_setting('subredditColor', {
     'title': 'Add a left border to queue items with a color unique to the subreddit name.'
 });
 
+self.register_setting('showReportReasons', {
+    'type': 'boolean',
+    'default': false,
+    'beta': true,
+    'title': 'Add button to show reports on posts with ignored reports.'
+});
+
 // A better way to use another module's settings.
 self.register_setting('subredditColorSalt', {
     'type': 'text',
@@ -91,7 +98,8 @@ self.init = function () {
         linkToQueues = self.setting('linkToQueues'),
         subredditColor = self.setting('subredditColor'),
         subredditColorSalt = self.setting('subredditColorSalt'),
-        queueCreature = self.setting('queueCreature');
+        queueCreature = self.setting('queueCreature'),
+        showReportReasons = self.setting('showReportReasons');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -200,6 +208,44 @@ self.init = function () {
             self.log('falied: all');
             callback(false);
         });
+    }
+
+    if (showReportReasons && TBUtils.isCommentsPage) {
+        var $ignoreReports = $('[data-event-action="unignorereports"]:first');
+        if ($ignoreReports.length > 0) {
+            var $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
+                showing = false,
+                reportHTML = '\
+                            <ul class="report-reasons rounded" style="display: none">\
+                                <li class="report-reason-title">user reports:</li>\
+                            </ul>';
+
+            $('#siteTable').find('.flat-list:first').append(reportHTML);
+
+            $ignoreReports.before($showReasons);
+
+            $body.on('click', '.tb-show-reasons', function () {
+                if (showing) return;
+                showing = !showing;
+
+
+
+                TBUtils.getReportReasons(window.location.href, function (success, reports) {
+                    if (success) {
+                        self.log(reports.user_reports);
+                        self.log(reports.mod_reports);
+                        var $reportReasons = $('.report-reasons');
+
+
+
+                        reports.user_reports.forEach(function (report) {
+                            $reportReasons.append('<li class="report-reason" title="spam">'+ report[1] + ': ' + report[0]  +'</li>')
+                        });
+                        $reportReasons.show();
+                    }
+                });
+            });
+        }
     }
 
     // Add modtools buttons to page.

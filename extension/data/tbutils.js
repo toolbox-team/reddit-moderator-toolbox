@@ -1659,6 +1659,29 @@ function initwrapper() {
             });
     };
 
+    TBUtils.getReportReasons = function (postURL, callback) {
+        $.log('getting reports', false, SHORTNAME);
+        $.get(postURL + '.json', {
+            uh: TBUtils.modhash
+        })
+            .success(function (response) {
+                if (typeof callback !== "undefined") {
+                    var data = response[0].data.children[0].data;
+
+                    if (!data) return callback(false);
+
+                    callback(true, {
+                        user_reports: data.user_reports,
+                        mod_reports: data.mod_reports
+                    });
+                }
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error.responseText);
+            });
+    };
+
 
     // Import export methods
     TBUtils.exportSettings = function (subreddit, callback) {

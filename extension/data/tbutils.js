@@ -1661,7 +1661,7 @@ function initwrapper() {
 
     TBUtils.getReportReasons = function (postURL, callback) {
         $.log('getting reports', false, SHORTNAME);
-        $.get(postURL + '.json', {
+        $.get(postURL + '.json?limit=1', {
             uh: TBUtils.modhash
         })
             .success(function (response) {

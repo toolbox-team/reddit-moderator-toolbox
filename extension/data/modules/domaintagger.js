@@ -54,7 +54,7 @@ self.init = function() {
 
         // Mark non-mySubs as processed and remove them from collection
         $things.filter(function(){
-            return TBUtils.mySubs.indexOf(this.dataset['subreddit']) == -1;
+            return TBUtils.modsSub(this.dataset['subreddit']);
         }).addClass('dt-processed');
 
         $things = $things.not('.dt-processed');

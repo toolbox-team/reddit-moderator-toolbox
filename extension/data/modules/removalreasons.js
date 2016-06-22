@@ -57,7 +57,8 @@ self.init = function() {
         LOG_POST_ERROR = "error, failed to create log post";
 
     // Default texts
-    var DEFAULT_LOG_TITLE = "Removed: {kind} by /u/{author} to /r/{subreddit}",
+    var DEFAULT_SUBJECT = "Your {kind} was removed from /r/{subreddit}",
+        DEFAULT_LOG_TITLE = "Removed: {kind} by /u/{author} to /r/{subreddit}",
         DEFAULT_BAN_TITLE = "/u/{author} has been banned from /r/{subreddit} for {reason}";
 
     // Cached data
@@ -306,13 +307,13 @@ self.init = function() {
                 if (yes) yes.click();
 
                 // Get PM subject line
-                data.subject = TBUtils.htmlEncode(response.pmsubject) || 'Your {kind} was removed from /r/{subreddit}';
+                data.subject = TBUtils.htmlEncode(response.pmsubject) || DEFAULT_SUBJECT;
 
                 // Add additional data that is found in the wiki JSON.
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
                 data.logReason = TBUtils.htmlEncode(response.logreason) || '';
-                data.header = TBUtils.htmlEncode(unescape(response.header)) || '';
-                data.footer = TBUtils.htmlEncode(unescape(response.footer)) || '';
+                data.header = response.header ? TBUtils.htmlEncode(unescape(response.header)) : '';
+                data.footer = response.footer ? TBUtils.htmlEncode(unescape(response.footer)) : '';
                 data.logSub = TBUtils.htmlEncode(response.logsub) || '';
                 data.logTitle = TBUtils.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
                 data.banTitle = TBUtils.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;

@@ -605,7 +605,8 @@ self.init = function () {
                                 linkId = value.data.link_id,
                                 linkUrl = value.data.link_url;
 
-                            var hit = true;
+                            var hit = true,
+                                _htmlCommentProfile = htmlCommentProfile;
 
                             for (var option in options) {
                                 if (!value.data[option] || !options[option].test("" + value.data[option])) {
@@ -649,8 +650,13 @@ self.init = function () {
         ';
                                 }
 
+                                // Don't render href if author is [deleted]
+                                if(linkAuthor == '[deleted]'){
+                                    _htmlCommentProfile = htmlCommentProfile.replace('<a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>','<span class="author">{{linkAuthor}}</span>');
+                                }
+
                                 // Constructing the comment.
-                                htmlConstructedComment = TBUtils.template(htmlCommentProfile, {
+                                htmlConstructedComment = TBUtils.template(_htmlCommentProfile, {
                                     'linkAuthor': linkAuthor,
                                     'submissionTitle': submissionTitle,
                                     'thingClasses': thingClasses,

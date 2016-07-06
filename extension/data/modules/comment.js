@@ -652,7 +652,7 @@ self.init = function () {
 
                                 // Don't render href if author is [deleted]
                                 if(linkAuthor == '[deleted]'){
-                                    _htmlCommentProfile = htmlCommentProfile.replace('href="https://www.reddit.com/user/{{linkAuthor}}"','');
+                                    _htmlCommentProfile = htmlCommentProfile.replace('<a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>','<span class="author">{{linkAuthor}}</span>');
                                 }
 
                                 // Constructing the comment.

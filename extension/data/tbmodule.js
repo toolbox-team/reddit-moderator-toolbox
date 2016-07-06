@@ -158,7 +158,7 @@ TB = {
             },
             {
                 settingName: 'clearcache',
-                content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other open reddit tabs before click clearing cache.)</label>',
+                content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other reddit tabs before clearing your cache.)</label>',
                 display: ''
             },
             {

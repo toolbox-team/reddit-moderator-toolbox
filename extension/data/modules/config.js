@@ -151,7 +151,7 @@ self.init = function() {
                     <input type="text" name="flair-text" placeholder="flair text" /><br/>\
                     <input type="text" name="flair-css" placeholder="flair css class" /><br/>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                    <input class="save-new-reason tb-action-button" type="button" value="Save new reason"><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason">\
+                    <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />\
                 </span>\
                 <table id="tb-removal-reasons-list">\
                 </table>\
@@ -547,7 +547,7 @@ self.init = function() {
                             <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
                             <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-reason tb-action-button" type="button" value="Save reason"><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel">\
+                            <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />\
                         </span>\
                     </td>\
                 </tr>';
@@ -612,7 +612,7 @@ self.init = function() {
                             <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>\
                             <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label><br>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-macro tb-action-button" type="button" value="Save macro"><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro">\
+                            <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />\
                         </span>\
                     </td>\
                 </tr>';
@@ -637,12 +637,8 @@ self.init = function() {
                 $('.' + i + '-approveitem').prop('checked', macro.approve);
                 $('.' + i + '-lockthread').prop('checked', macro.lockthread);
                 $('.' + i + '-sticky').prop('checked', macro.sticky);
-
             });
-
-
         }
-
     }
 
     // Now we have all our data and the functions in place to use it, let's use it!
@@ -714,7 +710,6 @@ self.init = function() {
 
     // toolbox config FORM tab save
     $body.on('click', '.save-removal-settings', function () {
-
 
         config.removalReasons = {
             pmsubject: $('.pmsubject').val(),
@@ -932,7 +927,7 @@ self.init = function() {
 
         postToWiki('toolbox', config, editNote, true);
 
-         var label = unescape(reasonText);
+        var label = unescape(reasonText);
         if (label == '') {
             label = '<span style="color: #cecece">(no reason)</span>';
         } else {
@@ -967,21 +962,18 @@ self.init = function() {
             }
             postToWiki('toolbox', config, 'delete reason #' + (reasonsNum + 1), true);
 
-
             $this.closest('.removal-reason').remove();
         }
     });
 
     // Adding a new reason
     $body.on('click', '#tb-add-removal-reason', function () {
-
         $(this).hide();
         $body.find('#tb-add-removal-reason-form').show();
     });
 
     // Save new reason
     $body.on('click', '#tb-add-removal-reason-form .save-new-reason', function () {
-
         var reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
             reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
             reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
@@ -1003,11 +995,13 @@ self.init = function() {
                 reasons: []
             };
         }
+        else if (config.removalReasons.reasons === undefined) {
+            config.removalReasons.reasons = [];
+        }
 
         config.removalReasons.reasons.push(reason);
 
         postToWiki('toolbox', config, editNote, true);
-
 
         // And finally we repopulate the reasons list and hide the current form.
         $body.find('#tb-removal-reasons-list').html('');
@@ -1020,6 +1014,7 @@ self.init = function() {
         $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
         $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
     });
+
     // cancel
     $body.on('click', '#tb-add-removal-reason-form .cancel-new-reason', function () {
         $body.find('#tb-add-removal-reason').show();

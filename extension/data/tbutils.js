@@ -8,7 +8,7 @@ function initwrapper() {
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
 
-    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown',
+    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
     //Private variables
@@ -565,6 +565,9 @@ function initwrapper() {
             case 'safari':
                 if (TBUtils.browser == SAFARI && TBUtils.isExtension) show();
                 break;
+            case 'edge':
+                if (TBUtils.browser == EDGE && TBUtils.isExtension) show();
+                break;
             case 'script':
                 if (!TBUtils.isExtension) show();
                 break;
@@ -826,6 +829,10 @@ function initwrapper() {
         }
     };
 
+    TBUtils.modsSub = function (subreddit) {
+        return $.inArray(subreddit, TBUtils.mySubs) > -1;
+    };
+
     TBUtils.getHashParameter = function(ParameterKey)
     {
         var hash = window.location.hash.substring(1);
@@ -852,7 +859,7 @@ function initwrapper() {
             permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href'),
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
-            body = '> ' + ($entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text()).split('\n').join('\n> '),
+            body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text(),
 
         // These need some fall backs, but only removal reasons use them for now.
             title = $thing.find('a.title').length ? $thing.find('a.title').text() : '',
@@ -930,9 +937,12 @@ function initwrapper() {
             url: permalink,
             domain: domain,
             id: id,
-            body: body,
+            body: '> ' + body.split('\n').join('\n> '),
+            raw_body: body,
+            uri_body: encodeURIComponent(body).replace(/\)/g, "\\)"),
             approved_by: approved_by,
             title: title,
+            uri_title: encodeURIComponent(title).replace(/\)/g, "\\)"),
             kind: kind,
             postlink: postlink,
             link: postlink,
@@ -1642,6 +1652,29 @@ function initwrapper() {
             .success(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response);
+            })
+            .error(function (error) {
+                if (typeof callback !== "undefined")
+                    callback(false, error.responseText);
+            });
+    };
+
+    TBUtils.getReportReasons = function (postURL, callback) {
+        $.log('getting reports', false, SHORTNAME);
+        $.get(postURL + '.json?limit=1', {
+            uh: TBUtils.modhash
+        })
+            .success(function (response) {
+                if (typeof callback !== "undefined") {
+                    var data = response[0].data.children[0].data;
+
+                    if (!data) return callback(false);
+
+                    callback(true, {
+                        user_reports: data.user_reports,
+                        mod_reports: data.mod_reports
+                    });
+                }
             })
             .error(function (error) {
                 if (typeof callback !== "undefined")

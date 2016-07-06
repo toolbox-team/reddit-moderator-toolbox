@@ -1,9 +1,17 @@
 {
     "manifest_version": 2,
     "name": "Moderator toolbox for reddit",
+    "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "version": "3.4.0",
+    "options_page": "data/background/options.html",
+    "applications": {
+        "gecko": {
+            "id": "yes@jetpack",
+            "strict_min_version": "45.0.0"
+        }
+    },
     "permissions": [
         "https://*.reddit.com/",
         "http://*.reddit.com/",
@@ -17,7 +25,8 @@
         "128": "data/images/icon128.png"
     },
     "background": {
-        "page": "data/background/chrome.html"
+        "page": "data/background/chrome.html",
+        "persistent": false
     },
     "content_scripts": [
         {

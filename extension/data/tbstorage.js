@@ -96,12 +96,13 @@ function storagewrapper() {
     localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
 
 
-    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', UNKOWN_BROWSER = 'unknown';
+    var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
     TBStorage.browsers = {
         CHROME: CHROME,
         FIREFOX: FIREFOX,
         OPERA: OPERA,
         SAFARI: SAFARI,
+        EDGE: EDGE,
         UNKOWN_BROWSER: UNKOWN_BROWSER
     };
 
@@ -111,6 +112,9 @@ function storagewrapper() {
     // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
     if (typeof (InstallTrigger) !== "undefined" || 'MozBoxSizing' in document.body.style) {
         TBStorage.browser = FIREFOX;
+    } else if (typeof (window.browser) !== 'undefined'){
+        TBStorage.browser = EDGE;
+        chrome = window.browser;
     } else if (typeof (chrome) !== "undefined") {
         TBStorage.browser = CHROME;
 
@@ -122,7 +126,7 @@ function storagewrapper() {
     }
 
 
-    if (TBStorage.browser === CHROME) {
+    if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
         //console.log('using browser storage');
 
         chrome.storage.local.get('tbsettings', function (sObject) {
@@ -292,7 +296,7 @@ function storagewrapper() {
         // Don't re-store the settings after a save on the the refresh that follows.
         localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
-        if (TBStorage.browser === CHROME) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
             settingsToObject(function (sObject) {
                 var settingsObject = sObject;
 
@@ -407,7 +411,7 @@ function storagewrapper() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
         if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
 
-        if (TBStorage.browser === CHROME) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
             // chrome
             settingsToObject(function (sObject) {
                 chrome.storage.local.set({

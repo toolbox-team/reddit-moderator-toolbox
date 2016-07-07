@@ -24,15 +24,19 @@ gulp.task('zip', function() {
         .pipe(gulp.dest(dest_dir));
 });
 
-
-
 gulp.task('xpi', function(cb) {
     exec('jpm '+(argv.post === undefined ? "xpi" : "post --post-url "+postUrl), {cwd: src_dir}, function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
 
-        gulp.src(src_dir+'/*.xpi')
+        // Move XPI to build dir
+        var newPaths = gulp.src(src_dir+'/*.xpi')
             .pipe(gulp.dest(dest_dir));
+        // Delete old XPI
+        gulp.src(src_dir+'/*.xpi')
+            .pipe(vinylPaths(del));
+
+        return newPaths;
     });
 });
 

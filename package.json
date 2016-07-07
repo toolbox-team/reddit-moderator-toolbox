@@ -1,6 +1,6 @@
 {
   "name": "moderator-toolbox-for-reddit",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
   "private": true,
   "homepage": "http://www.reddit.com/r/toolbox",

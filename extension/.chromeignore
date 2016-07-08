@@ -1,0 +1,8 @@
+.*
+*.plist
+*.zip
+*.xpi
+
+/data/background
+/data/Icon.png
+/manifest-*.json

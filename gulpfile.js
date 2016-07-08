@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var zip = require('gulp-zip');
 var exec = require('child_process').exec;
 var argv = require('yargs').argv;
+var fs = require('fs');
 var Stream = require('stream');
 const Path = require('path');
 
@@ -23,7 +24,7 @@ function manifestFor(browser) {
         }
         callback(null, file);
      };
-    
+
     return stream;
 }
 
@@ -31,15 +32,18 @@ function manifestFor(browser) {
 gulp.task('zip', function() {
     console.log(process.cwd());
 
-    return gulp.src([src_dir+'/**',
-        '!'+src_dir+'/*.plist',
-        '!'+src_dir+'/*.zip',
-        '!'+src_dir+'/*.xpi',
-        '!'+src_dir+'/.jpmignore',
-        '!'+src_dir+'/data/background/',
-        '!'+src_dir+'/data/Icon.png'
-    ])
-        .pipe(manifestFor('chrome')
+    var ignores = fs.readFileSync(src_dir+'/.chromeignore').toString().split("\n");
+    for (var i = 0; i < ignores.length; i++) {
+        if (ignores[i].startsWith("/")) {
+            ignores[i] = "!"+src_dir+ignores[i];
+        }
+        else {
+            ignores[i] = "!"+ignores[i];
+        }
+    }
+
+    return gulp.src([src_dir+'/**'].concat(ignores))
+        .pipe(manifestFor('chrome'))
         .pipe(zip('chrome-moderator-toolbox.zip'))
         .pipe(gulp.dest(dest_dir));
 });

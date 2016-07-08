@@ -426,8 +426,8 @@ text-align: left;
     margin-left: auto !important;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #A2BAD3;
-    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
+    border: 0;
+    box-shadow: rgba(214, 214, 214, 0.47) 0px 1px 3px 1px;
     font-size: small;
 }
 
@@ -460,9 +460,9 @@ text-align: left;
     background-color: #CEE3F8;
     text-align: center;
     font-weight: bold;
-    padding: 4px !important;
+    padding: 10px !important;
     font-size: small;
-    border-bottom: solid 1px #B6C9DD;
+    border-bottom: 0;
 }
 
 .mod-toolbox .tb-window-tabs {
@@ -488,7 +488,7 @@ text-align: left;
 .mod-toolbox .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;
-    border-bottom: 1px dotted #FFF;
+    border-bottom: solid 1px #eef5fd;
 }
 
 .mod-toolbox .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
@@ -549,7 +549,9 @@ text-align: left;
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #B6C9DD;
+    border-top: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 
@@ -568,6 +570,9 @@ text-align: left;
 .mod-toolbox .tb-window-content p {
     padding-top: 6px !important;
     padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: 20px;
     border-bottom: 1px dotted #E0E0E0;
 }
 
@@ -764,8 +769,8 @@ img.note-close {
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #A2BAD3;
-    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
+    border: 0;
+    box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     position: absolute;
     z-index: 2147483640;
 }
@@ -781,9 +786,9 @@ img.note-close {
     display: block;
     background-color: #CEE3F8;
     font-weight: bold;
-    padding: 0 21px 0 0 !important;
     font-size: small;
-    border-bottom: solid 1px #B6C9DD;
+    border: 0;
+    padding: 3px;
 }
 .tb-popup-header .tb-popup-title {
     position: relative;
@@ -791,7 +796,7 @@ img.note-close {
     box-sizing: border-box;
     text-align: center;
     width: 100%;
-    padding: 0 4px 0 4px;
+    padding: 0px 33px 0px 5px;
 }
 
 
@@ -801,8 +806,9 @@ img.note-close {
     right: 0 !important;
     top: 0 !important;
     background-color: #C7D6E6;
-    line-height: 20px;
-    border-left: 1px solid #B6C9DD;
+    line-height: 26px;
+    border: 0;
+    margin-left: 1px;
 }
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
@@ -810,7 +816,7 @@ img.note-close {
 }
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
-    padding: 0 5px 0 5px;
+    padding: 0px 11px;
 }
 
 .tb-popup-tabs {
@@ -866,7 +872,8 @@ img.note-close {
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #B6C9DD;
+    border: 0;
+    padding: 3px 0px 3px;
 }
 
 .tb-popup .status {
@@ -1922,7 +1929,6 @@ body.res-nightmode.mod-page a.pretty-button:focus {
     min-width: 150px;
     text-align: center;
     background-color: #CEE3F8;
-    border: 1px solid #B6C9DD;
     box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 }
 
@@ -1936,12 +1942,10 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 
 #tb-feedback-window.positive {
     background: #69d47d;
-    border-color: #68A172;
 }
 
 #tb-feedback-window.negative {
     background: #ff7f4f;
-    border-color: #C77151;
 }
 
 /* config.js */
@@ -1963,10 +1967,12 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 .mod-toolbox .tb-window-header .buttons a {
     display: inline-block;
     background-color: #C7D6E6;
-    border-left: 1px solid #B6C9DD;
-    line-height: 24px;
-    width: 24px;
-    height: 24px;
+    border-left: 0;
+    height: 36px;
+    line-height: 36px;
+    width: 36px;
+    font-size: small;
+    margin-left: 1px;
     text-align: center;
 }
 

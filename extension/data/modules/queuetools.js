@@ -153,28 +153,31 @@ self.init = function () {
         }
     });
 
-    // NER for coloring subs.
+    // Negative post highlighting
+    function highlightBadPosts() {
+        var $this = $(this);
+        $this.addClass('highlight-processed');
+        var score = $this.find(".likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes").html();
+        score = /\d+/.test(score) ? parseInt(score) : 1; // If the score is still hidden, we'll assume it's fine
+        if (score > 0) return;
+        $this.attr('style', 'background-color: #FDD');
+        $this.addClass('tb-zero-highlight');
+    }
+    if (highlightNegativePosts) {
+        $('.thing').not('.highlight-processed').each(highlightBadPosts);
+    }
+
+    // NER for these things.
     window.addEventListener("TBNewThings", function () {
         if (subredditColor) {
             self.log('adding sub colors (ner)');
             $(".thing").not(".color-processed").each(colorSubreddits);
         }
+        if (highlightNegativePosts) {
+            self.log('adding zero-score highlights');
+            $('.thing').not('.highlight-processed').each(highlightBadPosts);
+        }
     });
-
-    // Negative post highlighting
-    function highlightBadPosts() {
-        var $this = $(this);
-        $this.addClass('highlight-processed');
-        // This only uses the visible score, so if a score is hidden on the listing, we should assume it's fine, hence this   ↓
-        var score = $this.find(".likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes").html();
-        score = /\d+/.test(score) ? parseInt(score) : 1; // If the score is still hidden, we'll assume it's fine
-        if (score > 0) return;
-        $this.attr('style', 'background-color: #FDD');
-        $this.addClass('tb-negative-highlight');
-    }
-    if (highlightNegativePosts) {
-        $('.thing').not('.highlight-processed').each(highlightBadPosts);
-    }
 
 
     // Ideally, this should be moved somewhere else to be common with the removal reasons module

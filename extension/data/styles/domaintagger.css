@@ -18,30 +18,6 @@
     z-index: 10000;
 }
 
-.tb-popup-header {
-    right: 0;
-    left: 0;
-    text-align: left;
-    position: relative;
-    height: 20px;
-    line-height: 20px;
-    display: block;
-    background-color: #CEE3F8;
-    font-weight: bold;
-    padding: 0 21px 0 0 !important;
-    font-size: small;
-    border-bottom: solid 1px #B6C9DD;
-}
-
-.tb-popup-header .tb-popup-title {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    text-align: center;
-    width: 100%;
-    padding: 0 4px 0 4px;
-}
-
 .mod-toolbox .dtagger-popup .tb-popup-header .buttons {
     display: inline-block;
     position: absolute;

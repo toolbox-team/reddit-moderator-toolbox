@@ -1,0 +1,101 @@
+{
+    "manifest_version": 2,
+    "name": "Moderator toolbox for reddit",
+    "author": "toolbox team",
+    "short_name": "toolbox",
+    "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
+    "version": "3.4.0",
+    "options_page": "data/background/options.html",
+    "permissions": [
+        "https://*.reddit.com/",
+        "http://*.reddit.com/",
+        "tabs",
+        "storage",
+        "unlimitedStorage"
+    ],
+    "icons": {
+        "16": "data/images/icon16.png",
+        "48": "data/images/icon48.png",
+        "128": "data/images/icon128.png"
+    },
+    "background": {
+        "page": "data/background/chrome.html",
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*.reddit.com/*",
+                "https://*.reddit.com/*"
+            ],
+            "css": [
+                "data/libs/spectrum.css",
+                "data/styles/toolbox.css",
+                "data/styles/comment.css",
+                "data/styles/modmatrix.css",
+                "data/styles/removalreasons.css",
+                "data/styles/personalnotes.css",
+                "data/styles/modmaillite.css",
+                "data/styles/queuetools.css",
+                "data/styles/modmailpro.css",
+                "data/styles/achievements.css",
+                "data/styles/modbar.css",
+                "data/styles/historybutton.css",
+                "data/styles/trouble.css",
+                "data/styles/notifier.css",
+                "data/styles/domaintagger.css",
+                "data/styles/usernotes.css",
+                "data/styles/config.css"
+            ],
+            "js": [
+                "data/libs/jquery-2.1.1.js",
+                "data/libs/tbplugins.js",
+                "data/libs/snuownd.js",
+                "data/libs/ace.js",
+                "data/libs/pako.js",
+                "data/libs/worker-css.js",
+                "data/libs/mode-css.js",
+                "data/libs/mode-json.js",
+                "data/libs/mode-yaml.js",
+                "data/libs/ace-themes.js",
+                "data/libs/redditapi.js",
+                "data/libs/spectrum.js",
+                "data/tbstorage.js",
+                "data/tbui.js",
+                "data/tbutils.js",
+                "data/tbmodule.js",
+                "data/modules/modbar.js",
+                "data/modules/modbutton.js",
+                "data/modules/notifier.js",
+                "data/modules/modmailpro.js",
+                "data/modules/domaintagger.js",
+                "data/modules/usernotes.js",
+                "data/modules/metricstab.js",
+                "data/modules/comment.js",
+                "data/modules/config.js",
+                "data/modules/modmatrix.js",
+                "data/modules/banlist.js",
+                "data/modules/removalreasons.js",
+                "data/modules/historybutton.js",
+                "data/modules/syntax.js",
+                "data/modules/macros.js",
+                "data/modules/realtime.js",
+                "data/modules/nukecomments.js",
+                "data/modules/personalnotes.js",
+                "data/modules/modmaillite.js",
+                "data/modules/betterbuttons.js",
+                "data/modules/bagel.js",
+                "data/modules/flyingsnoo.js",
+                "data/modules/achievements.js",
+                "data/modules/trouble.js",
+                "data/modules/queuetools.js",
+                "data/tbmoduleinit.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "data/libs/jquery-2.1.1.min.js",
+        "data/libs/snuownd.js",
+        "data/libs/worker-css.js"
+    ]
+}

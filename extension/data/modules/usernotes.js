@@ -737,7 +737,7 @@ self.usernotesManager = function () {
                     var infoHTML = '\
             <div class="tb-un-info">\
                 <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>\
-                <br> <input id="tb-unote-user-search" type="text" placeholder="search for user">\
+                <br> <input id="tb-unote-user-search" type="text" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" placeholder="search for note contents">\
                 <br><br>\
                 <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>\
                 <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>\
@@ -772,7 +772,7 @@ self.usernotesManager = function () {
 
         $("time.timeago").timeago();  //what does this do?
 
-        // Live search
+        // Live search - users
         $body.find('#tb-unote-user-search').keyup(function () {
             var userSearchValue = new RegExp($(this).val().toUpperCase());
 
@@ -780,6 +780,22 @@ self.usernotesManager = function () {
                 userSearchValue.test($(thing).attr('data-user').toUpperCase()) ? $(this).show() : $(this).hide();
             });
         });
+
+        // Live search - contents
+        $body.find('#tb-unote-contents-search').keyup(function () {
+            var contentsSearchValue = new RegExp($(this).val().toUpperCase());
+
+            $body.find('.note').each(function (key, thing) {
+                var wrapper = $(this).closest('.tb-un-note-details').show();
+                if (contentsSearchValue.test($(thing).html().toUpperCase())) {
+                    wrapper.show();
+                    wrapper.closest('.tb-un-user').show();
+                } else {
+                    wrapper.hide();
+                    wrapper.closest('.tb-un-user').hide();
+                }
+            })
+        })
 
 
         // Get the account status for all users.
@@ -1276,4 +1292,3 @@ TB.register_module(self);
         usernotes();
     });
 })();
-

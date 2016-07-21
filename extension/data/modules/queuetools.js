@@ -160,7 +160,6 @@ self.init = function () {
         var score = $this.find(".likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes").html();
         score = /\d+/.test(score) ? parseInt(score) : 1; // If the score is still hidden, we'll assume it's fine
         if (score > 0) return;
-        $this.attr('style', 'background-color: #FDD');
         $this.addClass('tb-zero-highlight');
     }
     if (highlightNegativePosts) {

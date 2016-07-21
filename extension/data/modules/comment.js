@@ -727,17 +727,17 @@ self.init = function () {
 
     // hide mod comments option.
     if (TB.utils.isUserPage) {
-        var $modComments = $('.moderator');
-        if ($modComments.length > 0) {
+        var $modActions = $('.moderator, [data-subreddit="spam"]');
+        if ($modActions.length > 0) {
             self.log('found mod comments');
-            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod comments</a>');
+            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod actions</a>');
 
             $body.on('click', '.tb-hide-mod-comments', function () {
-                self.log('hiding mod comments');
-                $modComments.closest('.thing').hide();
+                self.log('hiding mod actions');
+                $modActions.closest('.thing').hide();
                 $(this).hide();
                 window.addEventListener("TBNewThings", function () {
-                    $('.moderator').closest('.thing').hide();
+                    $('.moderator, [data-subreddit="spam"]').closest('.thing').hide();
                 });
             })
         }

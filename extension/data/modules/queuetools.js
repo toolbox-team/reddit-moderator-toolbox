@@ -7,7 +7,7 @@ self.settings['enabled']['default'] = true;
 self.register_setting('highlightNegativePosts', {
     'type': 'boolean',
     'default': false,
-    'title': 'Highlight items with a score of 0 or less.'
+    'title': 'Highlight posts with a score of 0.'
 })
 
 self.register_setting('hideActionedItems', {

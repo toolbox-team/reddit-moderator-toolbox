@@ -8,4 +8,3 @@
 *.xpi
 /node_modules
 extension/data/modules/trollatroll.js
-extension/manifest.json

@@ -4,6 +4,7 @@ var exec = require('child_process').exec;
 var argv = require('yargs').argv;
 var fs = require('fs');
 var vinylPaths =  require('vinyl-paths');
+var del = require('del');
 
 var src_dir = "extension";
 var dest_dir = "build";

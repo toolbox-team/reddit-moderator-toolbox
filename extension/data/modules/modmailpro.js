@@ -931,10 +931,6 @@ self.modmailpro = function() {
             if (expandReplies) {
                 $parent.find('.expand-btn:first')[0].click();
             }
-
-            if (threadOnExpand) {
-                $parent.find('.tb-thread-view')[0].click();
-            }
         }
     });
 };

@@ -742,6 +742,7 @@ self.usernotesManager = function () {
                 <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>\
                 <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>\
                 <select class="tb-prune-length">\
+                    <option value="180">six-months</option>\
                     <option value="365">one-year</option>\
                     <option value="730">two-years</option>\
                     <option value="1095">three-years</option>\

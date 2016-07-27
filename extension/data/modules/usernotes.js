@@ -673,8 +673,8 @@ self.usernotesManager = function () {
                 function (user, counter) {
                     self.startProfile('manager-render-user');
                     var $userContent = $userContentTemplate.clone();
-                    $userContent.data('user', user);
-                    $userContent.find('.tb-un-refresh, .tb-un-delete').data('user', user);
+                    $userContent.attr('data-user', user);
+                    $userContent.find('.tb-un-refresh, .tb-un-delete').attr('data-user', user);
                     $userContent.find('.user a').attr('href', '/u/' + user).text("/u/" + user);
                     var $userNotes = $('<div>').addClass('tb-usernotes');//$userContent.find(".tb-usernotes");
                     $userContent.append($userNotes);

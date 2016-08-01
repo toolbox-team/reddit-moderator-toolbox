@@ -16,7 +16,7 @@ self.init = function () {
     if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
 
     // Add checkbox;
-    $('.tabmenu').append('<li><a><label>realtime:<input id="realtime" class="tb-realtime-checkbox" type="checkbox" title="Toggle realtime mode" /></label></a></li>');
+    $('.tabmenu:first-of-type').append('<li><a><label>realtime:<input id="realtime" class="tb-realtime-checkbox" type="checkbox" title="Toggle realtime mode" /></label></a></li>');
 
     var timeout, delay = 5000,
         $checkbox = $('.tb-realtime-checkbox');

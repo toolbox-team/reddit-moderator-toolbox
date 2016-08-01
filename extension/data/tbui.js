@@ -249,7 +249,7 @@
                     var tab = e.data.tab;
 
                     // hide others
-                    $tabs.removeClass('active');
+                    $tabs.find('a').removeClass('active');
                     $popup.find('.tb-popup-tab').hide();
 
                     // show current

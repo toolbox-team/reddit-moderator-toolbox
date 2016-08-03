@@ -21,9 +21,9 @@ self.init = function() {
     $body.addClass('tb-dt-type-'+tagType);
 
     TBUtils.getModSubs(function () {
-        run(true);
         self.log('run called from getModSubs');
         self.log(TBUtils.mySubs);
+        run(true);
     });
 
     function postToWiki(sub, json, reason) {
@@ -41,20 +41,20 @@ self.init = function() {
 
     // NER support.
     window.addEventListener("TBNewThings", function () {
-        run(true);
         self.log('run called from NER support');
+        run(true);
     });
 
     // Main stuff
 
     function run(addButton) {
-        self.log('run called with: ' + addButton);
+        self.log('run called with addButton=' + addButton);
         var $things = $('div.thing.link').not('.dt-processed'),
             subs = {};
 
         // Mark non-mySubs as processed and remove them from collection
         $things.filter(function(){
-            return TBUtils.modsSub(this.dataset['subreddit']);
+            return !TBUtils.modsSub(this.dataset['subreddit']);
         }).addClass('dt-processed');
 
         $things = $things.not('.dt-processed');
@@ -67,7 +67,6 @@ self.init = function() {
 
             var $thing = $(thing),
                 sub = $thing.attr('data-subreddit');
-
 
             processThing($thing, addButton);
 

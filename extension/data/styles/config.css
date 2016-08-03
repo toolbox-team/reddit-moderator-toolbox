@@ -4,14 +4,14 @@
     margin-bottom: 2px;
 }
 
-#tb-config-usernote-type-list .usernote-type {
-    display: block;
-    margin-bottom: 4px;
+#tb-config-usernote-types th {
+    padding-left: 2px;
+    font-weight: bold;
 }
 
 #tb-config-usernote-type-list .usernote-type td {
-    display: inline-block;
-    margin-right: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
 }
 
 .sp-container {

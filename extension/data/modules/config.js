@@ -200,9 +200,9 @@ self.init = function() {
                 $('<table>').append(
                     $('<thead>').append(
                         $('<tr>').append(
-                            $('<td>').text("Name")
+                            $('<th>').text("Name")
                         ).append(
-                            $('<td>').text("Key")
+                            $('<th>').text("Key")
                         )
                     )
                 ).append(

@@ -53,6 +53,10 @@
     font-weight: bold;
 }
 
+.utagger-popup .utagger-note .note-type {
+    margin-right: 2px;
+}
+
 .utagger-popup .utagger-remove-note {
     cursor: pointer;
 }

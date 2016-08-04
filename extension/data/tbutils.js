@@ -230,19 +230,6 @@ function initwrapper() {
         TBUtils.betaMode = false;
     }
 
-    TBUtils.usernotes = {
-        ver: TBUtils.notesSchema,
-        users: [] //typeof userNotes
-    };
-
-    TBUtils.note = {
-        note: '',
-        time: '',
-        mod: '',
-        link: '',
-        type: ''
-    };
-
     TBUtils.config = {
         ver: TBUtils.configSchema,
         domainTags: '',

@@ -44,6 +44,8 @@ self.usernotes = function usernotes() {
         TYPE_USER = "user";
 
     TBUtils.getModSubs(function () {
+        self.log("Got mod subs");
+        self.log(TBUtils.mySubs);
         run();
     });
 
@@ -110,7 +112,7 @@ self.usernotes = function usernotes() {
 
         var $thing = $(thing),
             thingType = $thing.data('ut-type');
-        self.log("Processing thing: " + thingType);
+        //self.log("Processing thing: " + thingType);
 
         // Link and comments
         if (thingType === TYPE_THING) {
@@ -126,11 +128,9 @@ self.usernotes = function usernotes() {
 
             var $userattrs = $thing.find('.userattrs').first();
 
-
-
-            if($.inArray(subreddit, TBUtils.mySubs) > -1) {
-            attachNoteTag($userattrs, subreddit, true);
-            foundSubreddit(subreddit);
+            if(TBUtils.modsSub(subreddit)) {
+                attachNoteTag($userattrs, subreddit, true);
+                foundSubreddit(subreddit);
             }
 
         }
@@ -409,10 +409,10 @@ self.usernotes = function usernotes() {
                 var u = getUser(notes.users, user);
                 // User has notes
                 if (u !== undefined) {
+                    //FIXME: not selecting previous type
                     $popup.find('#utagger-type-' + u.notes[0].type).prop('checked', true);
 
-                    var i = 0;
-                    u.notes.forEach(function (note) {
+                    u.notes.forEach(function (note, i) {
                         //if (!note.type) {
                         //    note.type = 'none';
                         //}
@@ -420,19 +420,47 @@ self.usernotes = function usernotes() {
                         self.log("  Type: "+note.type);
                         var info = self._findSubredditColor(colors, note.type);
                         self.log(info);
-                        var typeSpan = '';
 
-                        if (info && info.text) {
-                            typeSpan = '<span style="color: ' + info.color + ';">[' + TBUtils.htmlEncode(info.text) + ']</span> ';
-                        }
+                        // TODO: probably shouldn't rely on time truncated to seconds as a note ID; inaccurate.
+                        // The ID of a note is set to its time when the dialog is generated. As of schema v5,
+                        // times are truncated to second accuracy. This means newly-added notes that have yet
+                        // to be saved — and therefore still retain millisecond accuracy — may not be considered
+                        // equal to saved versions if compared. This caused problems when deleting new notes,
+                        // which searches a saved version based on ID.
+                        var noteId = Math.trunc(note.time/1000)*1000,
+                            noteString = TBUtils.htmlEncode(note.note),
+                            timeString = new Date(note.time).toLocaleString();
 
-                        $noteList.append('<tr><td class="utagger-notes-td1">' + note.mod + ' <br> <span class="utagger-date" id="utagger-date-' + i + '">' +
-                            new Date(note.time).toLocaleString() + '</span></td><td lass="utagger-notes-td2">' + typeSpan + TBUtils.htmlEncode(note.note) +
-                            '</td><td class="utagger-notes-td3"><img class="utagger-remove-note" noteid="' + note.time + '" src="data:image/png;base64,' + TBui.iconDelete + '" /></td></tr>');
+                        // Construct some elements separately
+                        var timeDiv = $('<div>');
                         if (note.link) {
-                            $popup.find('#utagger-date-' + i).wrap('<a href="' + note.link + '">');
+                            timeDiv.append($('<a>').attr('href', note.link));
                         }
-                        i++;
+                        else {
+                            timeDiv.text(timeString);
+                        }
+
+                        var typeSpan = '';
+                        if (info && info.text) {
+                            typeSpan = $('<span>').addClass('note-type').css('color', info.color).text('[' + TBUtils.htmlEncode(info.text) + ']');
+                        }
+
+                        // Add note to list
+                        $noteList.append(
+                            $('<tr>').addClass('utagger-note').append(
+                                $('<td>').addClass("utagger-notes-td1").append(
+                                    $('<div>').addClass('utagger-mod').text(note.mod)
+                                ).append(
+                                    timeDiv.addClass("utagger-date").attr('id', 'utagger-date-' + i)
+                                )
+                            ).append(
+                                $('<td>').addClass('utagger-notes-td2').append(typeSpan).append($('<span>').addClass('note-text').text(noteString))
+                            ).append(
+                                $('<td>').addClass('utagger-notes-td3').append(
+                                    $('<img>').addClass('utagger-remove-note').attr('data-note-id', noteId).attr('src', 'data:image/png;base64,' + TBui.iconDelete)
+                                )
+                            )
+                        );
                     });
                 }
                 // No notes on user
@@ -455,13 +483,11 @@ self.usernotes = function usernotes() {
             $unote = $popup.find('.utagger-user-note'),
             subreddit = $unote.data('subreddit'),
             user = $unote.data('user'),
-            noteid = $(e.target).attr('noteid'),
+            noteId = $(e.target).data('note-id'),
             noteText = $unote.val(),
             deleteNote = (e.target.className == 'utagger-remove-note'),
             type = $popup.find('.utagger-type input:checked').val(),
-            link = '',
-            note = TBUtils.note,
-            notes = TBUtils.usernotes;
+            link = '';
 
         if ($popup.find('.utagger-include-link input').is(':checked')) {
             link = $unote.data('link');
@@ -486,7 +512,7 @@ self.usernotes = function usernotes() {
         }
 
         //Create new note
-        note = {
+        var note = {
             note: noteText.trim(),
             time: new Date().getTime(),
             mod: TBUtils.logged,
@@ -503,9 +529,9 @@ self.usernotes = function usernotes() {
         $popup.remove();
 
         var noteSkel = {
-            "ver": TBUtils.notesSchema,
-            "constants": {},
-            "users": {}
+            ver: TBUtils.notesSchema,
+            constants: {},
+            users: {}
         };
 
         TBui.textFeedback((deleteNote ? "Removing" : "Adding") + " user note...", TBui.FEEDBACK_NEUTRAL);
@@ -538,22 +564,37 @@ self.usernotes = function usernotes() {
                 var u = getUser(notes.users, user);
                 // User already has notes
                 if (u !== undefined) {
+                    self.log("User exists");
+
                     // Delete note
                     if (deleteNote) {
-                        $(u.notes).each(function (idx) {
-                            if (this.time == noteid) {
-                                u.notes.splice(idx, 1);
+                        self.log("Deleting note");
+                        self.log("  "+noteId);
+
+                        self.log("Removing note from:");
+                        self.log(u.notes);
+                        for(var n = 0; n < u.notes.length; n++) {
+                            var note = u.notes[n];
+                            self.log("  "+note.time);
+                            if (note.time == noteId) {
+                                self.log("  Note found: "+noteId);
+                                u.notes.splice(n, 1);
+                                self.log(u.notes);
+                                break;
                             }
-                        });
+                        }
 
                         if (u.notes.length < 1) {
+                            self.log("Removing user (is empty)");
                             delete notes.users[user];
                         }
 
-                        saveMsg = 'delete note ' + noteid + ' on user ' + user;
+                        saveMsg = 'delete note ' + noteId + ' on user ' + user;
                     }
                     // Add note
                     else {
+                        self.log("Adding note");
+
                         u.notes.unshift(note);
                         saveMsg = 'create new note on user ' + user;
                     }
@@ -565,7 +606,8 @@ self.usernotes = function usernotes() {
                 }
             }
             else {
-                self.log("  Creating new notes");
+                self.log("  Creating new user");
+
                 // create new notes object
                 notes = noteSkel;
                 notes.users[user] = userNotes;
@@ -574,6 +616,7 @@ self.usernotes = function usernotes() {
 
             // Save notes if a message was set (the only case it isn't is if notes are corrupt)
             if (saveMsg) {
+                self.log("Saving notes");
                 self.saveUserNotes(subreddit, notes, saveMsg, function (succ) {
                     if (succ) {
                         run();
@@ -796,7 +839,7 @@ self.usernotesManager = function () {
                     wrapper.closest('.tb-un-user').hide();
                 }
             })
-        })
+        });
 
 
         // Get the account status for all users.
@@ -1159,7 +1202,12 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
 
         $.each(notes.users, function (name, user) {
             deflated.users[name] = {
-                "ns": user.notes.map(function (note) {
+                "ns": user.notes.filter(function(note) {
+                    if(note === undefined) {
+                        self.log("WARNING: undefined note removed");
+                    }
+                    return note !== undefined;
+                }).map(function (note) {
                     return deflateNote(notes.ver, note, mgr);
                 })
             };
@@ -1170,6 +1218,7 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
 
     // Compresses a single note
     function deflateNote(version, note, mgr) {
+        self.log(note);
         return {
             "n": note.note,
             "t": deflateTime(version, note.time),

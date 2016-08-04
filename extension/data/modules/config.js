@@ -495,6 +495,8 @@ self.init = function() {
                     $('<img>').attr('src', 'data:image/png;base64,'+TBui.iconDelete)
                 )
             ])
+        ).append(
+            $('<td>').addClass('usernote-error error')
         );
         $list.append($thing);
 
@@ -760,13 +762,20 @@ self.init = function() {
     $body.on('keyup', '#tb-config-usernote-type-list .name', function () {
         var $this = $(this),
             name = $this.val(),
-            $key = $this.closest('.key'),
-            key = $key.val();
-        if (!key) {
-            if (name) {
-                key = name.toLowerCase().replace(/[^\w]/, '');
-            }
+            $key = $this.parents('.usernote-type').find('.key'),
+            key = $key.val(),
+            keyEdited = $key.data('edited');
+        if (!keyEdited && name) {
+            key = name.toLowerCase().replace(/ /g, '_').replace(/[^\w-]/g, '').replace(/([-_])\1+/g, '$1');
             $key.val(key);
+        }
+    });
+
+    $body.on('keyup', '#tb-config-usernote-type-list .key', function () {
+        var $this = $(this),
+            edited = $this.data('edited');
+        if (!edited) {
+            $this.attr('data-edited', true);
         }
     });
 
@@ -806,24 +815,49 @@ self.init = function() {
         var $rows = $('#tb-config-usernote-type-list').find('.usernote-type');
         self.log("  Num types: "+$rows.length);
         $rows.find('input').removeClass('error');
+        $rows.find('.usernote-error').text('');
 
         // Validate
         self.log("  Validating type settings");
         var error = false;
+        var seenKeys = [];
         $rows.each(function () {
             var $row = $(this),
+                $error = $row.find('.usernote-error'),
                 $key = $row.find('.key'),
-                key = $key.val();
-            var $text = $row.find('.name'),
+                key = $key.val(),
+                $text = $row.find('.name'),
                 text = $text.val();
-            if (!key || !key.match(/^\w+$/)) {
+
+            // Empty fields
+            if (!text || !key) {
+                if (!text) {
+                    $text.addClass('error');
+                }
+                if (!key) {
+                    $key.addClass('error')
+                }
+                $error.text("Cannot have empty fields.");
+                error = true;
+            }
+
+            // Invalid key characters
+            if (!key || !key.match(/^[\w-]+$/)) {
                 $key.addClass('error');
+                $error.text("Keys can only contain a-z, 0-9, -, and _.");
                 error = true;
             }
-            if (!text) {
-                $text.addClass('error');
+
+            // Duplicate keys
+            if (seenKeys.indexOf(key) > -1) {
+                $key.addClass('error');
+                $error.text("Keys must be unique.");
                 error = true;
             }
+            else {
+                seenKeys.push(key);
+            }
+
         });
         if (error) {
             self.log("  Failed validation");

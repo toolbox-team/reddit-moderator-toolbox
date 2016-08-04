@@ -14,6 +14,18 @@
     padding-bottom: 4px;
 }
 
+#tb-config-usernote-type-list .usernote-type input[type="text"] {
+    width: 200px;
+}
+
+#tb-config-usernote-type-list .usernote-type input.error {
+    box-shadow: 0 0 3px 0 red;
+}
+
+#tb-config-usernote-type-list .usernote-type .usernote-error {
+    padding-left: 4px;
+}
+
 .sp-container {
     z-index: 9999999999;
 }

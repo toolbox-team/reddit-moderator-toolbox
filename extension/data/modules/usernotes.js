@@ -386,13 +386,15 @@ self.usernotes = function usernotes() {
             self.log("Adding colors to dialog");
 
             // Create type/color selections
+            var group = (Math.random().toString(36)+'00000000000000000').slice(2, 7);
+
             colors.forEach(function (info) {
                 self.log("  "+info.key);
                 self.log("    "+info.text);
                 self.log("    "+info.color);
                 $typeList.append($('<td>').append(
-                    $('<label>').addClass('utagger-type').append(
-                        $('<input>').attr('type', 'radio').attr('name', 'type-group').attr('value', info.key)
+                    $('<label>').addClass('utagger-type type-'+info.key).append(
+                        $('<input>').attr('type', 'radio').attr('name', 'type-group-' + group).attr('value', info.key).addClass('type-input type-input-' + info.key)
                     ).append(
                         $('<span>').text(info.text).css('color', info.color)
                     ))
@@ -408,9 +410,9 @@ self.usernotes = function usernotes() {
 
                 var u = getUser(notes.users, user);
                 // User has notes
-                if (u !== undefined) {
+                if (u !== undefined && u.notes.length > 0) {
                     //FIXME: not selecting previous type
-                    $popup.find('#utagger-type-' + u.notes[0].type).prop('checked', true);
+                    $popup.find('.utagger-type .type-input-' + u.notes[0].type).prop('checked', true);
 
                     u.notes.forEach(function (note, i) {
                         //if (!note.type) {

@@ -12,7 +12,7 @@ function initwrapper() {
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
     //Private variables
-    var modMineURL = '/subreddits/mine/moderator.json?count=100',
+    var modMineURL = '/subreddits/mine/moderator.json?limit=100',
         now = new Date().getTime(),
 
         shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),

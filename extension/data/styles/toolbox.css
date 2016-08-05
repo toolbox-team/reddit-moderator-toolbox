@@ -786,6 +786,7 @@ img.note-close {
     display: block;
     background-color: #CEE3F8;
     font-weight: bold;
+    box-sizing: content-box;
     font-size: small;
     border: 0;
     padding: 3px;

@@ -204,11 +204,11 @@
 (function ($) {
 
     // Using it without an object
-    $.sticky = function (note, options, callback) {
-        return $.fn.sticky(note, options, callback);
+    $.sticky = function (note, title='-', url=false, options, callback) {
+        return $.fn.sticky(note, title, url, options, callback);
     };
 
-    $.fn.sticky = function (note, options, callback) {
+    $.fn.sticky = function (note, title, url, options, callback) {
         // Default settings
         var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right
 
@@ -233,7 +233,7 @@
             uniqID = Math.floor(Math.random() * 99999);
 
         // Handling duplicate notes and IDs
-        $('.sticky-note').each(function () {
+        $('.tb-sticky-note').each(function () {
             if ($(this).html() == note && $(this).is(':visible')) {
                 duplicate = 'yes';
                 if (!settings.duplicates) {
@@ -246,16 +246,16 @@
         });
 
         // Make sure the sticky queue exists
-        if (!$('body').find('.sticky-queue').html()) {
-            $('body').append('<div class="sticky-queue ' + position + '"></div>');
+        if (!$('body').find('.tb-sticky-queue').html()) {
+            $('body').append('<div class="tb-sticky-queue ' + position + '"></div>');
         }
 
         // Can it be displayed?
         if (display) {
             // Building and inserting sticky note
-            $('.sticky-queue').prepend('<div class="sticky border-' + position + '" id="' + uniqID + '"></div>');
-            $('#' + uniqID).append('<img src="data:image/png;base64,' + TBui.iconClose + '" class="sticky-close" rel="' + uniqID + '" title="Close" />');
-            $('#' + uniqID).append('<div class="sticky-note" rel="' + uniqID + '">' + note + '</div>');
+            $('.tb-sticky-queue').prepend('<div class="tb-sticky border-' + position + '" id="' + uniqID + '"></div>');
+            $('#' + uniqID).append('<div rel="' + uniqID + '" class="tb-sticky-header"><div rel="' + uniqID + '" class="tb-sticky-title">' + title + '</div><div class="tb-sticky-button" rel="' + uniqID + '" title="Close"><a class="tb-sticky-close" href="javascript:;" rel="' + uniqID + '" title="Close">✕</a></div></div>');
+            $('#' + uniqID).append('<div class="tb-sticky-note" rel="' + uniqID + '">' + note + '</div>');
 
             // Smoother animation
             var height = $('#' + uniqID).height();
@@ -266,16 +266,28 @@
         }
 
         // Listeners
-        $('.sticky').ready(function () {
+        $('.tb-sticky').ready(function () {
             // If 'autoclose' is enabled, set a timer to close the sticky
             if (settings.autoclose) {
                 $('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
             }
         });
         // Closing a sticky
-        $('.sticky-close').click(function () {
-            $('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
+        $('.tb-sticky-close').click(function () {
+            $('body').find('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
         });
+        $('#' + uniqID + ':not(.tb-sticky-close)').click(function () {
+            if(url) {
+                $(this).dequeue().fadeOut(settings.speed);
+                window.open(url);
+
+
+            }
+
+        });
+
+
+
 
         // Callback data
         var response = {

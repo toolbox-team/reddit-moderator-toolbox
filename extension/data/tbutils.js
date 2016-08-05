@@ -580,11 +580,12 @@ function initwrapper() {
             return;
         }
 
-        if (!('Notification' in window)) {
+        if (!('Notification' in window) || TBUtils.browser == EDGE) {
             // fallback on a javascript notification
-            $.log('boring old rickety browser, falling back on jquery based notifications', false, SHORTNAME);
+            $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
+            body = body.substring(0, 600);
             body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', {'autoclose': timeout});
+            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout});
 
         } else if (Notification.permission === 'granted') {
 
@@ -651,7 +652,8 @@ function initwrapper() {
         } else {
             // They have the option enabled, but won't grant permissions, so fall back.
             body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-            $.sticky('<strong>' + title + '</strong><br><p><a href="' + url + '">' + body + '<a></p>', {'autoclose': timeout});
+            body = body.substring(0, 600);
+            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout});
         }
     };
 

@@ -27,7 +27,7 @@ pageMod.PageMod({
         "./styles/config.css"
     ],
     contentScriptFile: [
-        "./libs/jquery-2.1.1.js",
+        "./libs/jquery-2.2.4.js",
         "./libs/tbplugins.js",
         "./libs/snuownd.js",
         "./libs/ace.js",

@@ -637,38 +637,90 @@ text-align: left;
     height: 100px;
 }
 
-div.sticky-queue {
+.mod-toolbox div.tb-sticky-queue {
     position: fixed;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
     border: 0;
     width: 300px;
     z-index: 5000;
 }
 
-div.sticky-note {
-    padding-right: 20px !important;
+.mod-toolbox div.tb-sticky-note {
+    padding: 10px;
     z-index: 5000;
 }
 
-div.sticky {
+.mod-toolbox div.tb-sticky {
     font-size: 11px;
-    background-color: rgba(206, 227, 248, 0.86);
+    cursor: pointer;
+    margin-bottom: 5px;
+    background-color: #FFFFFF;
+    box-shadow: 0 1px 3px 1px #D6D6D6;
     color: #696969;
     display: none;
-    padding: 10px !important;
+    padding: 0px !important;
     position: relative;
     z-index: 5000;
 }
 
-img.sticky-close {
+.mod-toolbox .tb-sticky-button {
+    display: inline-block;
     position: absolute;
-    top: 10px;
-    right: 10px;
-    height: 14px;
-    width: 14px;
-    cursor: pointer;
-    z-index: 5000;
+    right: 0 !important;
+    top: 0 !important;
+    background-color: #C7D6E6;
+    line-height: 26px;
+    border: 0;
+    margin-left: 1px;
 }
+
+.mod-toolbox .tb-sticky-button:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox a.tb-sticky-close {
+    padding: 0px 11px;
+    color: rgb(51, 102, 153);
+    box-sizing: initial;
+    font-size: small;
+    font-weight: bold;
+}
+
+.mod-toolbox .tb-sticky-header {
+    right: 0;
+    left: 0;
+    text-align: left;
+    position: relative;
+    height: 20px;
+    line-height: 20px;
+    display: block;
+    background-color: #CEE3F8;
+    font-weight: bold;
+    font-size: small;
+    border: 0;
+    padding: 3px;
+}
+.tb-popup-header .tb-sticky-title {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+    width: 100%;
+    padding: 0px 33px 0px 5px;
+}
+
+
+.mod-toolbox .tb-popup .tb-popup-header .buttons {
+    display: inline-block;
+    position: absolute;
+    right: 0 !important;
+    top: 0 !important;
+    background-color: #C7D6E6;
+    line-height: 26px;
+    border: 0;
+    margin-left: 1px;
+}
+
+
 
 img.note-close {
     position: absolute;

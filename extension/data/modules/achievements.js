@@ -230,7 +230,7 @@ self.init = function () {
 
     // Judas
     self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", function (saveIndex) {
-        $body.on('click', 'a:contains("remove")', function () {
+        $body.on('click', 'a[data-event-action="remove"], a[data-event-action="spam"]', function () {
             var $this = $(this),
                 auth = TB.utils.getThingInfo($this).author;
 

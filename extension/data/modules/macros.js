@@ -232,6 +232,8 @@ self.init = function () {
                 editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
             if ($selectElement.val() !== MACROS) {
+                self.log("Replying with:");
+                self.log("  "+editedcomment);
                 TBUtils.postComment(info.id, editedcomment, function (successful, response) {
                     if (!successful) {
                         TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
@@ -258,6 +260,8 @@ self.init = function () {
                 });
 
                 if (!TB.utils.isModmail) {
+                    self.log("Performing non-modmail actions");
+
                     if (remove) {
                         TB.utils.removeThing(info.id, false);
                     }
@@ -271,6 +275,8 @@ self.init = function () {
                     }
                 }
 
+                self.log("Performing user actions");
+
                 if (ban) {
                     TBUtils.friendUser(info.author, 'banned', info.subreddit,
                     'Banned from: ' + info.permalink,
@@ -278,6 +284,7 @@ self.init = function () {
                 }
 
                 if (mute) {
+                    self.log("  Muting \""+info.author+"\" from /r/"+info.subreddit+" @ "+info.permalink);
                     TBUtils.friendUser(info.author, 'muted', info.subreddit,
                         'Banned from: ' + info.permalink);
                 }
@@ -306,6 +313,9 @@ self.init = function () {
             topLevel = $this.hasClass('tb-top-macro-select'),
             info;
 
+        self.log("Macro selected: index="+index);
+        self.log("  subreddit="+sub);
+
         // disable the select box to prevent a mess with creating multiple popup boxes.
         $this.prop('disabled', 'disabled');
         // If it's a top-level reply we need to find the post's info.
@@ -313,10 +323,11 @@ self.init = function () {
             self.log('toplevel');
             info = TB.utils.getThingInfo($('#siteTable .thing:first'));
         } else {
-            info = TB.utils.getThingInfo($this);
+            info = TB.utils.getThingInfo($this.closest(".thing"));
         }
 
-        self.log(sub);
+        self.log(info);
+
         getConfig(sub, function (success, config) {
             if (success && config.length > 0) {
                 var macro = config[index];

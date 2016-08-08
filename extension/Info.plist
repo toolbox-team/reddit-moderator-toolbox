@@ -27,7 +27,7 @@
 		<dict>
 			<key>End</key>
 			<array>
-				<string>data/libs/jquery-2.1.1.js</string>
+				<string>data/libs/jquery-2.2.4.js</string>
 				<string>data/libs/tbplugins.js</string>
 				<string>data/libs/snuownd.js</string>
 				<string>data/libs/ace.js</string>

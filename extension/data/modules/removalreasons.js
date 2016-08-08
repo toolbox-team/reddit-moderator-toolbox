@@ -313,7 +313,7 @@ self.init = function() {
                 // Any HTML needs to me unescaped, because we store it escaped in the wiki.
                 data.logReason = TBUtils.htmlEncode(response.logreason) || '';
                 data.header = response.header ? TBUtils.htmlEncode(unescape(response.header)) : '';
-                data.footer = response.footer ? TBUtils.htmlEncode(unescape(response.footer)) : '';
+                data.footer = response.footer ? unescape(response.footer) : '';
                 data.logSub = TBUtils.htmlEncode(response.logsub) || '';
                 data.logTitle = TBUtils.htmlEncode(response.logtitle) || DEFAULT_LOG_TITLE;
                 data.banTitle = TBUtils.htmlEncode(response.bantitle) || DEFAULT_BAN_TITLE;
@@ -562,8 +562,8 @@ self.init = function() {
             attrs = popup.find('attrs'),
             subject = attrs.attr('subject'),
             logTitle = attrs.attr('logTitle'),
-            header = attrs.attr('header'),
-            footer = attrs.attr('footer'),
+            header = TBUtils.htmlDecode(attrs.attr('header')),
+            footer = TBUtils.htmlDecode(attrs.attr('footer')),
             logReason = popup.find('#log-reason-input').val(),
             data = {
                 subreddit: '',

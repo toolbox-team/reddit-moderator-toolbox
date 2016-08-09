@@ -22,7 +22,6 @@
     font-weight: bold;
     padding: 4px !important;
     font-size: small;
-    border-bottom: solid 1px #A8B5C2;
 }
 
 .reason-popup-innercontent {
@@ -39,7 +38,6 @@
     display: block;
     background-color: #CEE3F8;
     text-align: center;
-    border-top: solid 1px #A8B5C2;
 }
 
 .reason-popup input,.reason-popup select,.reason-popup textarea {
@@ -188,7 +186,6 @@
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
-    border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px #D6D6D6;
     margin-left: auto !important;
     margin-right: auto !important;

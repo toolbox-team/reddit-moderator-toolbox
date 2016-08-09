@@ -286,7 +286,7 @@ self.init = function () {
                 if (mute) {
                     self.log("  Muting \""+info.author+"\" from /r/"+info.subreddit+" @ "+info.permalink);
                     TBUtils.friendUser(info.author, 'muted', info.subreddit,
-                        'Banned from: ' + info.permalink);
+                        'Muted from: ' + info.permalink);
                 }
 
             }
@@ -321,7 +321,7 @@ self.init = function () {
         // If it's a top-level reply we need to find the post's info.
         if (topLevel) {
             self.log('toplevel');
-            info = TB.utils.getThingInfo($('#siteTable .thing:first'));
+            info = TB.utils.getThingInfo($('#siteTable').find('.thing:first'));
         } else {
             info = TB.utils.getThingInfo($this.closest(".thing"));
         }

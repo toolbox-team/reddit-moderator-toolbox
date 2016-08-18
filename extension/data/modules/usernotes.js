@@ -434,12 +434,12 @@ self.usernotes = function usernotes() {
                             timeString = new Date(note.time).toLocaleString();
 
                         // Construct some elements separately
-                        var timeDiv = $('<div>');
+                        var $timeDiv = $('<div>');
                         if (note.link) {
-                            timeDiv.append($('<a>').attr('href', note.link));
+                            $timeDiv.append($('<a>' + timeString + '</a>').attr('href', note.link));
                         }
                         else {
-                            timeDiv.text(timeString);
+                            $timeDiv.text(timeString);
                         }
 
                         var typeSpan = '';
@@ -453,7 +453,7 @@ self.usernotes = function usernotes() {
                                 $('<td>').addClass("utagger-notes-td1").append(
                                     $('<div>').addClass('utagger-mod').text(note.mod)
                                 ).append(
-                                    timeDiv.addClass("utagger-date").attr('id', 'utagger-date-' + i)
+                                    $timeDiv.addClass("utagger-date").attr('id', 'utagger-date-' + i)
                                 )
                             ).append(
                                 $('<td>').addClass('utagger-notes-td2').append(typeSpan).append($('<span>').addClass('note-text').text(noteString))

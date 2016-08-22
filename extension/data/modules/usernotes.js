@@ -431,7 +431,7 @@ self.usernotes = function usernotes() {
                         // which searches a saved version based on ID.
                         var noteId = Math.trunc(note.time/1000)*1000,
                             noteString = TBUtils.htmlEncode(note.note),
-                            timeString = new Date(note.time).toLocaleDateString();
+                            timeString = new Date(note.time).toLocaleString();
 
                         // Construct some elements separately
                         var $timeDiv = $('<div>');

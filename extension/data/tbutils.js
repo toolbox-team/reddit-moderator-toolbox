@@ -3,7 +3,7 @@ function initwrapper() {
 
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
-    TBUtils.logged = (TBUtils.modhash !== undefined) ? $('span.user a:first').html() : '';
+    TBUtils.logged = (TBUtils.modhash !== undefined || $('.App__header .Header__user').length > -1) ? $('span.user a:first').html() || $('.App__header .Header__user').html() : '';
     TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
@@ -1135,7 +1135,7 @@ function initwrapper() {
 
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {
-        TBUtils.getHead(TBUtils.baseDomain + '/r/toolbox/wiki/ratelimit.json',
+        TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
             function (status, jqxhr) {
             var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                 ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');

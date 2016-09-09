@@ -7,6 +7,16 @@ function initwrapper() {
     TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
+    // Probably a better way to this but... ah well.
+    // We don't need it right away, just when using POST
+    if(!TBUtils.modhash && window.location.hostname === 'mod.reddit.com') {
+        $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
+            TBUtils.modhash = result.data.modhash;
+
+        });
+
+        $('body').addClass('mod-toolbox-new-modmail');
+    }
     // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
     TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);
 
@@ -1932,6 +1942,34 @@ function initwrapper() {
             window.dispatchEvent(event);
         }, 1000);
     });
+
+    // New modmail REACT MADNES!!!!
+    $('html').on('DOMNodeInserted', function (e) {
+        //console.log(e);
+        var $target = $(e.target), $parentNode = $(e.target.parentNode);
+        if ($target.hasClass('Thread__message')) {
+            // Wait a sec for stuff to load.
+            setTimeout(function () {
+                var event = new CustomEvent("TBNewThings");
+                window.dispatchEvent(event);
+            }, 1000);
+        }
+    });
+
+    // Watch for page changes.
+    if (chrome !== undefined) {
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+            if(request.historyState) {
+                setTimeout(function () {
+                    var event = new CustomEvent("TBNewThings");
+                    window.dispatchEvent(event);
+                }, 1000);
+                sendResponse({received: 'History State New Page'})
+            }
+
+        });
+    }
+
 
     // NER support. todo: finish this.
     //window.addEventListener("neverEndingLoad", function () {

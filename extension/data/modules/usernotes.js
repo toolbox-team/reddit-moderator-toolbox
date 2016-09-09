@@ -41,6 +41,7 @@ self.usernotes = function usernotes() {
 
     var TYPE_THING = "thing",
         TYPE_MODMAIL = "modmail",
+        TYPE_NEW_MODMAIL = "newmodmail",
         TYPE_USER = "user";
 
     TBUtils.getModSubs(function () {
@@ -95,6 +96,10 @@ self.usernotes = function usernotes() {
         else if (TBUtils.isModmail) {
             $things = $('div.thing.message:not(.ut-thing)');
             $things.data('ut-type', TYPE_MODMAIL);
+        }
+        else if (TBUtils.domain === 'mod') {
+            $things = $('.Thread__message:not(.ut-thing)');
+            $things.data('ut-type', TYPE_NEW_MODMAIL);
         }
         else {
             $things = $('div.thing:not(.ut-thing)');
@@ -154,6 +159,19 @@ self.usernotes = function usernotes() {
                     attachNoteTag($head, subreddit);
                 }
             }*/
+
+            foundSubreddit(subreddit);
+        }
+        // NEW Modmail! (yay)
+        else if (thingType === TYPE_NEW_MODMAIL) {
+            var subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text(),
+                author = $thing.find('.Message__author').text().substring(2);
+
+            $thing.attr('data-author', author);
+            $thing.attr('data-subreddit', subreddit);
+            var $tbAttrs = $thing.find('.Message__divider').before('<span class="tb-attr"></span>');
+
+            attachNoteTag($tbAttrs, subreddit, true);
 
             foundSubreddit(subreddit);
         }

@@ -7,7 +7,10 @@ function initwrapper() {
     TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
+    // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
+    TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);
 
+    console.log(TBUtils.baseDomain);
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
@@ -697,7 +700,7 @@ function initwrapper() {
     TBUtils.getHead = function (url, doneCallback) {
         $.ajax({
             type: 'HEAD',
-            url: url
+            url: TBUtils.baseDomain + url
         })
             .done(function (data, status, jqxhr) {
                 // data isn't needed; just the tip
@@ -761,7 +764,7 @@ function initwrapper() {
         }
 
         function getSubs(URL) {
-            $.getJSON(URL, function (json) {
+            $.getJSON(TBUtils.baseDomain + URL, function (json) {
                 getSubsResult(json.data.children, json.data.after);
             });
         }
@@ -1024,7 +1027,7 @@ function initwrapper() {
 
         function getRatelimit() {
             //return doChunk();
-            TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
+            TBUtils.getHead(TBUtils.baseDomain + '/r/toolbox/wiki/ratelimit.json',
                 function (status, jqxhr) {
                     var $body = $('body'),
                         ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
@@ -1132,7 +1135,7 @@ function initwrapper() {
 
     // Reddit API stuff
     TBUtils.getRatelimit = function getRatelimit(callback) {
-        TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
+        TBUtils.getHead(TBUtils.baseDomain + '/r/toolbox/wiki/ratelimit.json',
             function (status, jqxhr) {
             var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                 ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
@@ -1168,7 +1171,7 @@ function initwrapper() {
             data = data.replace(/\t/g, "    ");
         }
 
-        $.post('/r/' + subreddit + '/api/wiki/edit', {
+        $.post(TBUtils.baseDomain + '/r/' + subreddit + '/api/wiki/edit', {
             content: data,
             page: page,
             reason: reason,
@@ -1187,7 +1190,7 @@ function initwrapper() {
                 setTimeout(function () {
 
                     // Set page access to 'mod only'.
-                    $.post('/r/' + subreddit + '/wiki/settings/', {
+                    $.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
                         page: page,
                         listed: true, //hrm, may need to make this a config setting.
                         permlevel: 2,
@@ -1197,7 +1200,7 @@ function initwrapper() {
                         // Super extra double-secret secure, just to be safe.
                         .error(function (err) {
                             alert('error setting wiki page to mod only access');
-                            window.location = '/r/' + subreddit + '/wiki/settings/' + page;
+                            window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                         });
 
                 }, 500);
@@ -1219,7 +1222,7 @@ function initwrapper() {
 
     TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-        $.ajax('/r/' + subreddit + '/wiki/' + page + '.json', {
+        $.ajax(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/' + page + '.json', {
             dataType: "json",
             dataFilter: function (data, type) {
                 //TODO: right now a lot of functions implicitly rely on reddit
@@ -1282,7 +1285,7 @@ function initwrapper() {
 
 
     TBUtils.redditLogin = function (uname, pass, remeber, callback) {
-        $.post('/api/login', {
+        $.post(TBUtils.baseDomain + '/api/login', {
             api_type: 'json',
             passwd: pass,
             user: uname,
@@ -1301,7 +1304,7 @@ function initwrapper() {
 
 
     TBUtils.getBanState = function (subreddit, user, callback) {
-        $.get("/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
+        $.get(TBUtils.baseDomain + '/r/' + subreddit + '/about/banned/.json', {user: user}, function (data) {
             var banned = data.data.children;
 
             // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -1315,7 +1318,7 @@ function initwrapper() {
 
 
     TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-        $.post('/api/flair', {
+        $.post(TBUtils.baseDomain + '/api/flair', {
             api_type: 'json',
             link: postLink,
             text: text,
@@ -1334,7 +1337,7 @@ function initwrapper() {
     };
 
     TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
-        $.post('/api/flair', {
+        $.post(TBUtils.baseDomain + '/api/flair', {
             api_type: 'json',
             name: user,
             r: subreddit,
@@ -1353,7 +1356,7 @@ function initwrapper() {
     };
 
     TBUtils.friendUser = function (user, action, subreddit, banReason, banMessage, banDuration, callback) {
-        $.post('/api/friend', {
+        $.post(TBUtils.baseDomain + '/api/friend', {
             api_type: 'json',
             uh: TBUtils.modhash,
             type: action,
@@ -1374,7 +1377,7 @@ function initwrapper() {
     };
 
     TBUtils.unfriendUser = function (user, action, subreddit, callback) {
-        $.post('/api/unfriend', {
+        $.post(TBUtils.baseDomain + '/api/unfriend', {
             api_type: 'json',
             uh: TBUtils.modhash,
             type: action,
@@ -1392,7 +1395,7 @@ function initwrapper() {
     };
 
     TBUtils.distinguishThing = function (id, sticky, callback) {
-        $.post('/api/distinguish/yes', {
+        $.post(TBUtils.baseDomain + '/api/distinguish/yes', {
             id: id,
             sticky: sticky,
             uh: TBUtils.modhash
@@ -1409,7 +1412,7 @@ function initwrapper() {
 
 
     TBUtils.approveThing = function (id, callback) {
-        $.post('/api/approve', {
+        $.post(TBUtils.baseDomain + '/api/approve', {
             id: id,
             uh: TBUtils.modhash
         })
@@ -1424,7 +1427,7 @@ function initwrapper() {
     };
 
     TBUtils.removeThing = function (id, spam, callback) {
-        $.post('/api/remove', {
+        $.post(TBUtils.baseDomain + '/api/remove', {
             uh: TBUtils.modhash,
             id: id,
             spam: spam
@@ -1440,7 +1443,7 @@ function initwrapper() {
     };
 
     TBUtils.lockThread = function (id, callback) {
-        $.post('/api/lock', {
+        $.post(TBUtils.baseDomain + '/api/lock', {
             id: id,
             uh: TBUtils.modhash
         })
@@ -1455,7 +1458,7 @@ function initwrapper() {
     };
 
     TBUtils.unlockThread = function (id, callback) {
-        $.post('/api/unlock', {
+        $.post(TBUtils.baseDomain + '/api/unlock', {
             uh: TBUtils.modhash,
             id: id
         })
@@ -1474,7 +1477,7 @@ function initwrapper() {
             state = true;
         }
 
-        $.post('/api/set_subreddit_sticky', {
+        $.post(TBUtils.baseDomain + '/api/set_subreddit_sticky', {
                 id: id,
                 state: state,
                 uh: TBUtils.modhash
@@ -1494,7 +1497,7 @@ function initwrapper() {
     };
 
     TBUtils.postComment = function (parent, text, callback) {
-        $.post('/api/comment', {
+        $.post(TBUtils.baseDomain + '/api/comment', {
             parent: parent,
             uh: TBUtils.modhash,
             text: text,
@@ -1522,7 +1525,7 @@ function initwrapper() {
     };
 
     TBUtils.postLink = function (link, title, subreddit, callback) {
-        $.post('/api/submit', {
+        $.post(TBUtils.baseDomain + '/api/submit', {
             kind: 'link',
             resubmit: 'true',
             url: link,
@@ -1554,7 +1557,7 @@ function initwrapper() {
     };
 
     TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
-        $.post('/api/compose', {
+        $.post(TBUtils.baseDomain + '/api/compose', {
             from_sr: subreddit,
             subject: subject.substr(0, 99),
             text: message,
@@ -1584,7 +1587,7 @@ function initwrapper() {
     };
 
     TBUtils.sendPM = function (to, subject, message, callback) {
-        $.post('/api/compose', {
+        $.post(TBUtils.baseDomain + '/api/compose', {
             to: to,
             uh: TBUtils.modhash,
             subject: subject,
@@ -1601,7 +1604,7 @@ function initwrapper() {
     };
 
     TBUtils.markMessageRead = function (id, callback) {
-        $.post('/api/read_message', {
+        $.post(TBUtils.baseDomain + '/api/read_message', {
             api_type: 'json',
             id: id,
             uh: TBUtils.modhash
@@ -1609,7 +1612,7 @@ function initwrapper() {
     };
 
     TBUtils.aboutUser = function (user, callback) {
-        $.get('/user/' + user + '/about.json', {
+        $.get(TBUtils.baseDomain + '/user/' + user + '/about.json', {
             uh: TBUtils.modhash
         })
             .success(function (response) {
@@ -1623,7 +1626,7 @@ function initwrapper() {
     };
 
     TBUtils.getLastActive = function(user, callback){
-        $.get('/user/' + user + '.json?limit=1&sort=new', {
+        $.get(TBUtils.baseDomain + '/user/' + user + '.json?limit=1&sort=new', {
                 uh: TBUtils.modhash
             })
             .success(function (response) {
@@ -1637,7 +1640,7 @@ function initwrapper() {
     };
 
     TBUtils.getRules = function (sub, callback) {
-        $.get('/r/' + sub + '/about/rules.json', {
+        $.get(TBUtils.baseDomain + '/r/' + sub + '/about/rules.json', {
                 uh: TBUtils.modhash
             })
             .success(function (response) {
@@ -1652,7 +1655,7 @@ function initwrapper() {
 
     TBUtils.getReportReasons = function (postURL, callback) {
         $.log('getting reports', false, SHORTNAME);
-        $.get(postURL + '.json?limit=1', {
+        $.get(TBUtils.baseDomain + postURL + '.json?limit=1', {
             uh: TBUtils.modhash
         })
             .success(function (response) {
@@ -1816,7 +1819,7 @@ function initwrapper() {
     TBUtils.getReasonsFromCSS = function (sub, callback) {
 
         // If not, build a new one, getting the XML from the stylesheet
-        $.get('/r/' + sub + '/about/stylesheet.json').success(function (response) {
+        $.get(TBUtils.baseDomain + '/r/' + sub + '/about/stylesheet.json').success(function (response) {
             if (!response.data) {
                 callback(false);
                 return;

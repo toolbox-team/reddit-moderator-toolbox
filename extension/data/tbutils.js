@@ -72,7 +72,8 @@ function initwrapper() {
             "Little dot, little dot ♪ You are not so little anymore ♫",
             "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
             "Luu",
-            "I go two and hope for the best."],
+            "I go two and hope for the best.".
+            "oh dammit, I forgot to include url shit"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

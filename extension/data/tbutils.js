@@ -1038,7 +1038,7 @@ function initwrapper() {
 
         function getRatelimit() {
             //return doChunk();
-            TBUtils.getHead(TBUtils.baseDomain + '/r/toolbox/wiki/ratelimit.json',
+            TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
                 function (status, jqxhr) {
                     var $body = $('body'),
                         ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),

@@ -170,7 +170,7 @@ self.init = function () {
         if (score > 0) return;
         $this.addClass('tb-zero-highlight');
     }
-    if (highlightNegativePosts  && TB.utils.isModpage) {
+    if (highlightNegativePosts  && TBUtils.isModpage) {
         $('.thing').not('.highlight-processed').each(highlightBadPosts);
     }
 
@@ -180,9 +180,12 @@ self.init = function () {
             self.log('adding sub colors (ner)');
             $(".thing").not(".color-processed").each(colorSubreddits);
         }
-        if (highlightNegativePosts && TB.utils.isModpage) {
+        if (highlightNegativePosts && TBUtils.isModpage) {
             self.log('adding zero-score highlights');
             $('.thing').not('.highlight-processed').each(highlightBadPosts);
+        }
+        if (TBUtils.isModpage && highlightAutomodMatches) {
+            highlightedMatches();
         }
     });
 

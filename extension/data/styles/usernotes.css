@@ -79,11 +79,10 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
 .utagger-popup .utagger-types {
     display: inline-block;
     width: 100%;
-    margin-top: 4px;
-    margin-bottom: 2px;
+    margin-top: 5px;
+    margin-bottom: 6px;
+    border-top: 0;
     padding-top: 4px;
-
-    border-top: 1px dotted #C1BFBF;
 }
 
 .utagger-popup .utagger-type input {
@@ -91,7 +90,7 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
 }
 
 .utagger-popup .utagger-type span {
-    padding: 1px 3px;
+    padding: 3px;
     border: 1px solid rgb(114, 134, 154);
     transition: backgroun-color 0.15s ease-out;
 }
@@ -100,14 +99,32 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
     border-right: none;
 }
 
-.utagger-popup .utagger-type span:hover,
+.utagger-popup .utagger-type span:hover {
+    background-color: #e2eefa;
+    cursor: pointer;
+}
 .utagger-popup .utagger-type input:checked ~ span {
-    background-color: rgb(226, 238, 250);
+    background-color: #e2eefa;
+}
+
+.utagger-popup .utagger-type span:before {
+    content: '\2713';
+    margin-right: 2px;
+    opacity: 0.5;}
+
+.utagger-popup .utagger-type span:hover:before {
+    opacity: 1;
+}
+
+.utagger-popup .utagger-type input:checked ~ span:before {
+    opacity: 1;
+    font-weight: bold;
 }
 
 .utagger-popup .utagger-user-note {
     width: 98%;
     margin-bottom: 2px;
+    padding: 2px;
 }
 
 .utagger-popup #utagger-user-note-input.error {

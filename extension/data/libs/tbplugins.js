@@ -117,7 +117,7 @@
 
 // highlight jquery plugin https://github.com/tankchintan/highlight-js
 !function ($) {
-    $.fn.highlight = function (pat, ignore) {
+    $.fn.highlight = function (pat, ignore, actionReason = false) {
         function replaceDiacritics(str) {
             var diacritics = [[/[\u00c0-\u00c6]/g, 'A'],
                     [/[\u00e0-\u00e6]/g, 'a'],
@@ -160,7 +160,11 @@
                     var pos = (ignore ? replaceDiacritics(node.data) : node.data).toUpperCase().indexOf(currentTerm);
                     if (pos >= 0) {
                         var spannode = document.createElement('span');
-                        spannode.className = 'tb-highlight';
+                        if (actionReason) {
+                            spannode.className = 'tb-highlight-action-reason';
+                        } else {
+                            spannode.className = 'tb-highlight';
+                        }
                         var middlebit = node.splitText(pos);
                         var endbit = middlebit.splitText(currentTerm.length);
                         var middleclone = middlebit.cloneNode(true);
@@ -187,7 +191,7 @@
     };
 
     $.fn.removeHighlight = function () {
-        return this.find("span.highlight").each(function () {
+        return this.find("span.tb-highlight, span.tb-highlight-action-reason").each(function () {
             this.parentNode.firstChild.nodeName;
             with (this.parentNode) {
                 replaceChild(this.firstChild, this);

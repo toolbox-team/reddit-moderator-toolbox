@@ -164,6 +164,10 @@ body.mod-toolbox .tb-action-button:hover {
     background-color: #ffff16;
 }
 
+.mod-toolbox .tb-highlight-action-reason {
+    background-color: #ffd016;
+}
+
 body.mod-toolbox #tb-bottombar {
     bottom: 0;
     z-index: 2147483646 !important;

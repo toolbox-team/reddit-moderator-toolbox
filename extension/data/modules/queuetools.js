@@ -85,6 +85,13 @@ self.register_setting('showReportReasons', {
     'title': 'Add button to show reports on posts with ignored reports.'
 });
 
+self.register_setting('highlightAutomodMatches', {
+    'type': 'boolean',
+    'default': true,
+    'beta': false,
+    'title': 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.'
+});
+
 // A better way to use another module's settings.
 self.register_setting('subredditColorSalt', {
     'type': 'text',
@@ -106,7 +113,8 @@ self.init = function () {
         subredditColor = self.setting('subredditColor'),
         subredditColorSalt = self.setting('subredditColorSalt'),
         queueCreature = self.setting('queueCreature'),
-        showReportReasons = self.setting('showReportReasons');
+        showReportReasons = self.setting('showReportReasons'),
+        highlightAutomodMatches = self.setting('highlightAutomodMatches');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -843,19 +851,48 @@ self.init = function () {
     }
 
 
-    // Show automod action reasons
 
+    // Show automod action reasons
+    // Highlight trigger words, do the same for reports
+
+    // Regex is used in multiple functions
+    var regexMatchFinder = /\[(.*?)\]/g;
+    var highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
     function getAutomodActionReason(sub) {
         self.log(sub);
         $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
-                $body.find('.thing[data-fullname="'+ value.data.target_fullname + '"]>.entry').after('<div class="action-reason">\
-<b>Automod action:</b> ' + value.data.details + '\
+                var actionReasonText = value.data.details,
+                    targetFullName = value.data.target_fullname;
+
+                $body.find('.thing[data-fullname="' + targetFullName + '"]>.entry').after('<div class="action-reason">\
+<b>Automod action:</b> ' + actionReasonText + '\
 <br><a href="https://www.reddit.com/message/compose?to=/r/' + sub + '&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \
 Url: ' + value.data.target_permalink + ' %0A %0A \
 Action reason: ' + value.data.details + '\
 " target="_blank">ask for a second opinion in modmail</a> </div>');
+
+                if(highlightAutomodMatches) {
+                    var matches, matchesArray = [];
+                    while (matches = regexMatchFinder.exec(actionReasonText)) {
+                        matchesArray.push(matches[1]);
+                    }
+
+
+                    // We want the two highlight methods to play nice.
+                    // If the general one is enabled we switch it of for a second to first apply the match and then the general one again
+
+                    if(highlightEnabled.length > 0) {
+                        $body.find('.thing[data-fullname="'+ targetFullName + '"] .md p').removeHighlight();
+                        $body.find('.thing[data-fullname="'+ targetFullName + '"] .md p').highlight(matchesArray, '', true);
+                        $body.find('.thing[data-fullname="'+ targetFullName + '"] .md p').highlight(highlightEnabled);
+                    } else {
+                        $body.find('.thing[data-fullname="'+ targetFullName + '"] .md p').highlight(matchesArray, '', true);
+                    }
+
+                }
+
 
             });
         });
@@ -867,8 +904,45 @@ Action reason: ' + value.data.details + '\
         getAutomodActionReason(currentSubreddit);
     }
 
+    function highlightedMatches() {
+        $('.report-reasons .mod-report').each(function() {
+
+            var $this = $(this);
+            if (!$this.hasClass('hl-processed')) {
+                $this.addClass('hl-processed');
+                var reportText = $this.text();
+                if(reportText.indexOf('AutoModerator:') >= 0) {
+
+
+                    var matches, matchesArray = [];
+                    while (matches = regexMatchFinder.exec(reportText)) {
+                        matchesArray.push(matches[1]);
+                    }
+
+
+                    if(highlightEnabled.length > 0) {
+                        $this.closest('.thing').find('.md p').removeHighlight();
+                        $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
+                        $this.closest('.thing').find('.md p').highlight(highlightEnabled);
+                    } else {
+                        $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
+                    }
+
+                }
+            }
+
+
+        });
+    }
+
+    if (TBUtils.isModpage && highlightAutomodMatches) {
+        highlightedMatches();
+    }
+
     if (TBUtils.isModpage && showAutomodActionReason) {
         var queueSubs = [];
+
+
 
         self.log('getting automod action reasons');
 

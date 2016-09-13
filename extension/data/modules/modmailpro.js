@@ -768,7 +768,7 @@ self.modmailpro = function() {
     }
 
     function setReplied(threads) {
-        if (threads === undefined) {
+        if (typeof threads === 'undefined') {
             threads = $('.message-parent');
         }
 

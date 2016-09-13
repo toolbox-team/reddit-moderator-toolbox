@@ -651,7 +651,7 @@ self.getSubredditUrl = function () {
 self.getSubredditModerators = function () {
     var modItems = $('.drop-choices.lightdrop:not(.modaction-drop) a:not(.primary)');
 
-    if( $('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length ){ 
+    if( $('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length ){
         modItems = modItems.add('.dropdown.lightdrop:not(.modaction-drop) .selected');
     }
 
@@ -681,7 +681,7 @@ self.getSubredditModerators = function () {
 self.getSubredditActions = function () {
     var actionItems = $(".drop-choices.lightdrop.modaction-drop a");
 
-    if( $('.drop-choices.lightdrop.modaction-drop a.primary').length ){ 
+    if( $('.drop-choices.lightdrop.modaction-drop a.primary').length ){
         actionItems = actionItems.add('.dropdown.lightdrop.modaction-drop .selected');
     }
 
@@ -777,7 +777,7 @@ self.init = function () {
     function addComments(ratelimit, ratelimitReset) {
         commentLoadActive = true;
         var commentCount = 0;
-        if (ratelimit === undefined) {
+        if (typeof ratelimit === 'undefined') {
             getRatelimit();
         } else {
             TB.ui.longLoadSpinner(true);

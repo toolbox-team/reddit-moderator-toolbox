@@ -260,11 +260,11 @@ function storagewrapper() {
             callback(sObject);
 
             function undefindedOrLength(setting){
-                return (setting === undefined) ?  0 : setting.length;
+                return (typeof setting === 'undefined') ?  0 : setting.length;
             }
 
             function undefindedOrTrue(setting){
-                if (!setting || setting === undefined) return false;
+                if (!setting || typeof setting === 'undefined') return false;
                 if (setting.length > 0) return true;
             }
         });
@@ -376,7 +376,7 @@ function storagewrapper() {
 
     function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
-        if (module === undefined || module === 'cache') return;
+        if (typeof module === 'undefined' || module === 'cache') return;
 
         var keyName = module + '.' + setting;
 
@@ -447,9 +447,9 @@ function storagewrapper() {
         var storageKey = 'Toolbox.' + module + '.' + setting;
         registerSetting(module, setting);
 
-        defaultVal = (defaultVal !== undefined) ? defaultVal : null;
+        defaultVal = (typeof defaultVal !== 'undefined') ? defaultVal : null;
 
-        if (localStorage[storageKey] === undefined) {
+        if (typeof localStorage[storageKey] === 'undefined') {
             return defaultVal;
         } else {
             var storageString = localStorage[storageKey];
@@ -490,7 +490,7 @@ function storagewrapper() {
 
         defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
-        if (localStorage[storageKey] === undefined) {
+        if (typeof localStorage[storageKey] === 'undefined') {
             return defaultVal;
         } else {
             var storageString = localStorage[storageKey];

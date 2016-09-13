@@ -617,7 +617,7 @@ TB = {
                         case "selector":
                             var v = module.setting(setting);
                             $setting.append(title + ':<br />');
-                            $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
+                            $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, typeof v === 'undefined' || v == null || v == '' ? options.default : v]));
                             break;
                         case "syntaxTheme":
                             $setting.append(title + ':<br/>');
@@ -909,7 +909,7 @@ TB.Module = function Module(name) {
 
     this.log = function (message, skip) {
         if (!TBUtils.debugMode) return;
-        if (skip === undefined) skip = false;
+        if (typeof skip === 'undefined') skip = false;
         $.log(message, skip, this.shortname);
     };
 

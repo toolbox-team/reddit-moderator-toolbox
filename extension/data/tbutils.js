@@ -140,7 +140,7 @@ function initwrapper() {
     TBUtils.browsers = TBStorage.browsers;
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
-    if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
+    if (TBUtils.isModFakereddit || typeof TBUtils.post_site === 'undefined' || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
         TBUtils.post_site = '';
     }
 
@@ -1143,7 +1143,7 @@ function initwrapper() {
     };
 
     TBUtils.reloadToolbox = function () {
-        if (chrome !== undefined) {
+        if (typeof chrome !== 'undefined') {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
             chrome.extension.sendMessage({greeting: "tb-reload"}, function () {
                 window.location.reload();
@@ -1286,7 +1286,7 @@ function initwrapper() {
             })
             .error(function (jqXHR, textStatus, e) {
                 $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, SHORTNAME);
-                if (jqXHR.responseText === undefined) {
+                if (typeof jqXHR.responseText === 'undefined') {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;
                 }
@@ -1491,7 +1491,7 @@ function initwrapper() {
     };
 
     TBUtils.stickyThread = function(id, callback, state) {
-        if (state === undefined) {
+        if (typeof state === 'undefined') {
             state = true;
         }
 
@@ -1977,7 +1977,7 @@ function initwrapper() {
     addTbModmailSidebar();
 
     // Watch for page changes.
-    if (chrome !== undefined) {
+    if (typeof chrome !== 'undefined') {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if(request.historyState) {
                 setTimeout(function () {

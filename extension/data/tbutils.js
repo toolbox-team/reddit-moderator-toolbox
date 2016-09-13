@@ -4,7 +4,7 @@ function initwrapper() {
     // We need these before we can do anything.
     TBUtils.modhash = $("form.logout input[name=uh]").val();
     TBUtils.logged = (TBUtils.modhash !== undefined || $('.App__header .Header__user').length > -1) ? $('span.user a:first').html() || $('.App__header .Header__user').html() : '';
-    TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
+
     TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
     // Probably a better way to this but... ah well.
@@ -16,6 +16,9 @@ function initwrapper() {
         });
 
         $('body').addClass('mod-toolbox-new-modmail');
+        TBUtils.modCheck = true;
+    } else {
+        TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
     }
     // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
     TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);
@@ -116,6 +119,7 @@ function initwrapper() {
     TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
     TBUtils.isMultiPage = location.pathname.match(/^\/(?:user\/)?\w+\/m\/\w+/);
     TBUtils.isMod = $('body.moderator').length;
+    TBUtils.isNewMMThread = $('body').find('.ThreadViewer').length > 0;
     TBUtils.isExtension = true;
     TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
     TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];

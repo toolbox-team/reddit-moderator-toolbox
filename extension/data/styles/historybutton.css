@@ -1,3 +1,12 @@
 td.url-td {
     background-color: #fff;
 }
+
+body.mod-toolbox.mod-toolbox-new-modmail .history-button {
+    vertical-align: middle;
+    margin-right: 3px;
+    margin-left: 2px;
+    font-size: x-small;
+    color: rgb(136, 136, 136);
+}
+

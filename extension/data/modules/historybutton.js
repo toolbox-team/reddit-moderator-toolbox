@@ -35,28 +35,64 @@ self.register_setting('commentCount', {
  * Attach an [H] button to all users
  */
 self.run = function () {
-    var UserButtonHTML = '<span style="color:#888888; font-size:x-small">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
+    var UserButtonHTML = '<span class="history-button">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
 
-    $('.entry').not('.tb-history').each(function () {
-        $(this).addClass('tb-history').find('.userattrs').eq(0).after(UserButtonHTML);
-    });
+
+
+    if (TBUtils.isNewMMThread) {
+        var $body = $('body');
+        $body.find('.Thread__message').not('.tb-history').each(function () {
+            $this = $(this);
+            if ($this.find('.tb-attr').length === 0) {
+                $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
+            }
+            var $tbAttrs = $this.find('.tb-attr');
+            $tbAttrs.append(UserButtonHTML);
+        });
+
+        var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">History</a></span></span>';
+
+        var $sidebar = $body.find('.ThreadViewer__infobar');
+
+        $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
+
+
+
+    } else {
+        $('.entry').not('.tb-history').each(function () {
+            $(this).addClass('tb-history').find('.userattrs').eq(0).after(UserButtonHTML);
+        });
+    }
+
 };
 
 /**
  * Initiate the module
  */
 self.init = function () {
-
+    var $body = $('body');
     if(TBUtils.modCheck){
         self.run();
+
 
         // NER support.
         window.addEventListener("TBNewThings", function () {
             self.run();
         });
 
-        $('body').on('click', '.user-history-button', function (event) {
-            var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+        $body.on('click', '.user-history-button', function (event) {
+            var $this = $(this);
+
+            if($body.find('.ThreadViewer').length > -1) {
+                if ($this.hasClass('modmail-sidebar')) {
+                    var author = $('.InfoBar__username').text();
+                } else {
+                    var author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
+                }
+
+            } else {
+                var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+            }
 
             //If we've already got this before, just move it to the mouse
             if(typeof self.fetched[author] != 'undefined'){
@@ -151,6 +187,14 @@ self.init = function () {
                     </div>
                 </div>`;
 
+            // We want to make sure windows fit on the screen.
+            var leftPosition;
+            if (document.documentElement.clientWidth - event.pageX < 400) {
+                leftPosition = event.pageX - 600;
+            } else {
+                leftPosition = event.pageX - 50;
+            }
+
             var $popup = TB.ui.popup(
                 'History Button',
                 [
@@ -168,7 +212,7 @@ self.init = function () {
                 }
             ).appendTo('body')
                 .css({
-                    left: event.pageX - 50,
+                    left: leftPosition,
                     top: event.pageY - 10,
                     display: 'block'
                 });
@@ -219,7 +263,7 @@ self.init = function () {
 self.showAuthorInformation = function (author) {
     var $contentBox = self.fetched[author].popup;
 
-    $.get(`/user/${author}/about.json`).success(function (d) {
+    $.get(TBUtils.baseDomain + `/user/${author}/about.json`).success(function (d) {
         var joinedDate = new Date(d.data.created_utc * 1000),
             redditorTime = TBUtils.niceDateDiff(joinedDate);
 
@@ -302,7 +346,7 @@ self.populateSubmissionHistory = function (after, author) {
 
     TB.ui.longLoadNonPersistent(true);
 
-    $.get(`/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
+    $.get(TBUtils.baseDomain + `/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
         self.log('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);

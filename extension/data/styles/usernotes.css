@@ -1,3 +1,7 @@
+body.mod-toolbox.mod-toolbox-new-modmail .InfoBar__recents.tb-recents .InfoBar__recent  {
+    margin-bottom: 3px;
+}
+
 body.mod-toolbox.mod-toolbox-new-modmail .usernote-button {
     vertical-align: middle;
     margin-right: 3px;

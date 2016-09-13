@@ -68,7 +68,7 @@ self.usernotes = function usernotes() {
         $('.ut-thing').removeClass('ut-thing');
 
         // This can be done better, but this is for the new modmail user sidebar thing.
-        if ($body.find('.ThreadViewer').length > -1) {
+        if (TBUtils.isNewMMThread) {
             var subreddit = $body.find('.ThreadTitle__community').text(),
                 author = $body.find('.InfoBar__username').text();
 
@@ -78,12 +78,12 @@ self.usernotes = function usernotes() {
             $thing.attr('data-author', author);
             $thing.attr('data-subreddit', subreddit);
 
-            if ($thing.find('.tb-attr').length === 0) {
-                $thing.find('.tb-recents').append('<span class="tb-attr InfoBar__recent"></span>');
+            if ($thing.find('.tb-attr-note').length === 0) {
+                $thing.find('.tb-recents').append('<span class="tb-attr-note InfoBar__recent"></span>');
             }
 
-            var $tbAttrs = $thing.find('.tb-attr');
-            attachNoteTag($tbAttrs, subreddit, true);
+            var $tbAttrs = $thing.find('.tb-attr-note');
+            attachNoteTag($tbAttrs, subreddit, false);
 
             foundSubreddit(subreddit);
             processSub(subreddit);
@@ -120,7 +120,7 @@ self.usernotes = function usernotes() {
             $things = $('div.thing.message:not(.ut-thing)');
             $things.data('ut-type', TYPE_MODMAIL);
         }
-        else if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > -1) {
+        else if (TBUtils.domain === 'mod' && TBUtils.isNewMMThread) {
             $things = $('.Thread__message:not(.ut-thing)');
             $things.data('ut-type', TYPE_NEW_MODMAIL);
         }
@@ -192,9 +192,13 @@ self.usernotes = function usernotes() {
 
             $thing.attr('data-author', author);
             $thing.attr('data-subreddit', subreddit);
-            var $tbAttrs = $thing.find('.Message__divider').before('<span class="tb-attr"></span>');
 
-            attachNoteTag($tbAttrs, subreddit, true);
+            if ($thing.find('.tb-attr').length === 0) {
+                $thing.find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
+            }
+
+            var $tbAttrs = $thing.find('.tb-attr');
+            attachNoteTag($tbAttrs, subreddit, false);
 
             foundSubreddit(subreddit);
         }
@@ -416,8 +420,14 @@ self.usernotes = function usernotes() {
                 '', // meta to inject in popup header; just a placeholder
                 'utagger-popup' // class
             );
+        var leftPosition;
+        if (document.documentElement.clientWidth - e.pageX < 400) {
+            leftPosition = e.pageX - 600;
+        } else {
+            leftPosition = e.pageX - 50;
+        }
         $popup.css({
-            left: e.pageX - 50,
+            left: leftPosition,
             top: e.pageY - 10
         });
         $body.append($popup);

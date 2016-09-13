@@ -114,13 +114,17 @@ self.initModSave = function initModSave() {
 self.initDistinguishToggle = function initDistinguishToggle() {
 
     // Check for top level comments so we can add & sticky to the mix
-    var stickyHtml = '<li class="toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
+    var stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
 
     function addSticky() {
         $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
             $this = $(this);
+            var $parentPost = $this.closest('.thing');
+            var distinguished = getDistinguishState($parentPost);
 
-            if(!$this.closest('.comment').hasClass('tb-sticky-processed')) {
+
+
+            if(!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
                 $this.after(stickyHtml);
                 !$this.closest('.comment').addClass('tb-sticky-processed')
             }
@@ -155,51 +159,40 @@ self.initDistinguishToggle = function initDistinguishToggle() {
 
         // Lets ready the buttons we want to click later on.
         var firstDistinguishButton = $this.find('.option > a')[0],
-            secondDistinguishButton = $this.find('.option > a')[1],
-            thirdDistinguishButton = $this.find('.option > a')[2];
+            secondDistinguishButton = $this.find('.option > a')[1];
 
 
-        // First we want to do a check to see if this is a toplevel comment or not. If it is a child comment we want to click different buttons.
-        if ($this.closest('.comment').parents('.comment').length) {
-            self.log('clicking a child comment distinguish toggle');
-            // If distinguished we'll toggle it of
-            if (distinguished) {
-                if (secondDistinguishButton) secondDistinguishButton.click();
-            // And otherwise we'll turn it on.
-            } else {
-                if (firstDistinguishButton) firstDistinguishButton.click();
-            }
-        }
+
         // User initiated click, this is the distinguish toggle on a top level comment
-        else if(e.hasOwnProperty('originalEvent')) {
+
+        if (e.hasOwnProperty('originalEvent')) {
             self.log('Top level comment distinguish has been clicked and it is the real deal!');
-            // Let's figure out if we want to sticky or unsticky
 
-            // Comment is already stickied and distinguished. The user clicks distinguish so we assume they want that state.
-            if (distinguished && stickied) {
+
+            // Comment is already distinguished or stickied. So we'll simply undistinguish
+            if (distinguished) {
+                // Click things first
                 if (firstDistinguishButton) firstDistinguishButton.click();
-            // Distinguished but not stickied, since the user clicked distinguish we assume distinguish off
-            } else if(distinguished && !stickied) {
-                if (thirdDistinguishButton) thirdDistinguishButton.click();
+
+                // Put back sticky button later
+                $this.find('.tb-sticky-toggle.').show();
+
+            // Not distinguished and we simply want to distinguish.
+            } else if(!distinguished) {
+                // Click first.
+                if (firstDistinguishButton) firstDistinguishButton.click();
+                // Remove sticky button, this follows the reddit flow. Also makes it easier to deal with this shit.
+                $this.find('.tb-sticky-toggle.').hide();
             // All that is left is neutral state, simply distinguish
-            } else {
-                if (firstDistinguishButton) firstDistinguishButton.click();
             }
-
         // Otherwise the event is missing the origionalEvent property, meaning it was a code induced click.
         // In this case we want to sticky (or unsticky)
         } else {
             self.log('Top level comment distinguish has been clicked by a robot!');
-            // If it isn't stickied but it is distinguish we assume people want to sticky it and not un-distinguish.
-            if (!stickied && distinguished) {
-                if (secondDistinguishButton) secondDistinguishButton.click();
-            // Stickied so we want to un-toggle it.
-            } else if (stickied && distinguished) {
-                if (thirdDistinguishButton) thirdDistinguishButton.click();
-            // All that is left is neutral state, simply distinguish
-            } else {
-                if (secondDistinguishButton) secondDistinguishButton.click();
-            }
+            // Really simple, only possible when nothing is distinguished or stickied.
+            if (secondDistinguishButton) secondDistinguishButton.click();
+            $this.find('.tb-sticky-toggle.').hide();
+
         }
 
         // Fire TBNewThings so sticky gets added back.

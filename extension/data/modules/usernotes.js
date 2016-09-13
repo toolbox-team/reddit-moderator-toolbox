@@ -594,7 +594,7 @@ self.usernotes = function usernotes() {
                         self.log("Removing note from:");
                         self.log(u.notes);
                         for(var n = 0; n < u.notes.length; n++) {
-                            var note = u.notes[n];
+                            note = u.notes[n];
                             self.log("  "+note.time);
                             if (note.time == noteId) {
                                 self.log("  Note found: "+noteId);

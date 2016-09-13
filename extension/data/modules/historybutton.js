@@ -83,7 +83,7 @@ self.init = function () {
         $body.on('click', '.user-history-button', function (event) {
             var $this = $(this);
 
-            if($body.find('.ThreadViewer').length > -1) {
+            if(TBUtils.isNewMMThread) {
                 if ($this.hasClass('modmail-sidebar')) {
                     var author = $('.InfoBar__username').text();
                 } else {
@@ -263,7 +263,7 @@ self.init = function () {
 self.showAuthorInformation = function (author) {
     var $contentBox = self.fetched[author].popup;
 
-    $.get(TBUtils.baseDomain + `/user/${author}/about.json`).success(function (d) {
+    $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).success(function (d) {
         var joinedDate = new Date(d.data.created_utc * 1000),
             redditorTime = TBUtils.niceDateDiff(joinedDate);
 

@@ -501,9 +501,9 @@ self.usernotes = function usernotes() {
         self.log("Save or delete pressed");
         var $popup = $(this).closest('.utagger-popup'),
             $unote = $popup.find('.utagger-user-note'),
-            subreddit = $unote.data('subreddit'),
-            user = $unote.data('user'),
-            noteId = $(e.target).data('note-id'),
+            subreddit = $unote.attr('data-subreddit'),
+            user = $unote.attr('data-user'),
+            noteId = $(e.target).attr('data-note-id'),
             noteText = $unote.val(),
             deleteNote = (e.target.className == 'utagger-remove-note'),
             type = $popup.find('.utagger-type input:checked').val(),

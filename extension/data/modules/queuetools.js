@@ -450,7 +450,7 @@ self.init = function () {
 
         //// Button actions ////
         // Select thing when clicked
-        var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON'];
+        var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON', 'IMG'];
         $body.on('click', '.thing .entry', function (e) {
             if (noAction.indexOf(e.target.nodeName) + 1) return;
 

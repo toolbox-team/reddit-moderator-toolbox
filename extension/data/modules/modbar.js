@@ -109,7 +109,10 @@ self.init = function() {
         unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
         modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
         notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0);
+        modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
+
+        modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
+        unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
 
     // Custom CSS for devmode/testing
     if (customCSS) {
@@ -134,6 +137,7 @@ self.init = function() {
         $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
+    var modQueueUrl = (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : '/r/' + modSubreddits + '/about/modqueue');
     var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
@@ -146,18 +150,21 @@ self.init = function() {
     <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
     <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
     <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
-    <a title="modqueue" href="/r/' + modSubreddits + '/about/modqueue" id="tb-modqueue"></a> \
-    <a href="/r/' + modSubreddits + '/about/modqueue" class="tb-toolbar" id="tb-queueCount"></a>\
+    <a title="modqueue" href="' + modQueueUrl + '" id="tb-modqueue"></a> \
+    <a href="' + modQueueUrl + '" class="tb-toolbar" id="tb-queueCount"></a>\
     </span>\
 </div>\
 ');
 
-    // Add unmoderated icon if it is enabled.
+
+
+   // Add unmoderated icon if it is enabled.
 
     if (unmoderatedOn) {
+        var unModQueueUrl = (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : '/r/' + unmoderatedSubreddits + '/about/unmoderated');
         modBar.find('#tb-toolbarcounters').append('\
-<a title="unmoderated" href="/r/' + unmoderatedSubreddits + '/about/unmoderated" id="tb-unmoderated"></a>\
-<a href="/r/' + unmoderatedSubreddits + '/about/unmoderated" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
+<a title="unmoderated" href="' + unModQueueUrl + '" id="tb-unmoderated"></a>\
+<a href="' + unModQueueUrl + '" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
 ');
 
     }

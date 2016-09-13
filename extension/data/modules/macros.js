@@ -226,7 +226,7 @@ self.init = function () {
             'min-width': editMinWidth + 'px'
         });
 
-        $body.on('click', '.macro-popup .macro-send-'+ info.id +'', function () {
+        $macroPopup.on('click', '.macro-send-'+ info.id +'', function () {
             var $currentMacroPopup = $(this).closest('.macro-popup'),
                 $selectElement = $body.find('#macro-dropdown-' + info.id),
                 editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
@@ -298,6 +298,7 @@ self.init = function () {
         var $currentMacroPopup = $(this).closest('.macro-popup'),
             infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
             $selectElement = $body.find('#macro-dropdown-' + infoId);
+
 
 
         $selectElement.val(MACROS);

@@ -11,6 +11,16 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
     line-height: 12px;
     font-size: 9px;
     padding: 0 2px;
+    border-width: 0 0 0 3px;
+}
+body.mod-toolbox.mod-toolbox-new-modmail .tb-popup a {
+    text-decoration: none;
+}
+
+body.mod-toolbox.mod-toolbox-new-modmail .tb-recents .tb-bracket-button {
+    border-width: 0 0 0 3px;
+    padding: 3px;
+    font-size: 1.2em;
 }
 
 /* Note styling */

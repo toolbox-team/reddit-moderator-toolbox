@@ -63,8 +63,31 @@ self.usernotes = function usernotes() {
     });
 
     function run() {
+
         // Clear existing state
         $('.ut-thing').removeClass('ut-thing');
+
+        // This can be done better, but this is for the new modmail user sidebar thing.
+        if ($body.find('.ThreadViewer').length > -1) {
+            var subreddit = $body.find('.ThreadTitle__community').text(),
+                author = $body.find('.InfoBar__username').text();
+
+
+            var $thing = $body.find('.ThreadViewer__infobar');
+            $thing.addClass('ut-thing');
+            $thing.attr('data-author', author);
+            $thing.attr('data-subreddit', subreddit);
+
+            if ($thing.find('.tb-attr').length === 0) {
+                $thing.find('.tb-recents').append('<span class="tb-attr InfoBar__recent"></span>');
+            }
+
+            var $tbAttrs = $thing.find('.tb-attr');
+            attachNoteTag($tbAttrs, subreddit, true);
+
+            foundSubreddit(subreddit);
+            processSub(subreddit);
+        }
 
         self.log("Running usernotes");
         var things = findThings();
@@ -97,7 +120,7 @@ self.usernotes = function usernotes() {
             $things = $('div.thing.message:not(.ut-thing)');
             $things.data('ut-type', TYPE_MODMAIL);
         }
-        else if (TBUtils.domain === 'mod') {
+        else if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > -1) {
             $things = $('.Thread__message:not(.ut-thing)');
             $things.data('ut-type', TYPE_NEW_MODMAIL);
         }

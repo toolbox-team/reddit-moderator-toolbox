@@ -281,6 +281,9 @@ function initwrapper() {
         };
     }
 
+
+
+
     TBUtils.sendEvent = function (tbuEvent){
         $.log('Sending event: ' + tbuEvent, false, SHORTNAME);
         window.dispatchEvent( new CustomEvent(tbuEvent) );
@@ -1957,12 +1960,25 @@ function initwrapper() {
         }
     });
 
+
+    // private function
+    // Prep new modmail for toolbox stuff.
+    function addTbModmailSidebar() {
+        var $body = $('body');
+        if (TBUtils.domain && $body.find('.ThreadViewer').length > -1) {
+            $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
+
+        }
+    }
+    addTbModmailSidebar();
+
     // Watch for page changes.
     if (chrome !== undefined) {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             if(request.historyState) {
                 setTimeout(function () {
                     var event = new CustomEvent("TBNewThings");
+                    addTbModmailSidebar();
                     window.dispatchEvent(event);
                 }, 1000);
                 sendResponse({received: 'History State New Page'})

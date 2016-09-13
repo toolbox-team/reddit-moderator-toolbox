@@ -320,7 +320,7 @@ self.usernotes = function usernotes() {
             }
 
             // Only happens if you delete the last note.
-            if (typeof u === 'undefined' || u.notes.length < 1) {
+            if (u === undefined || u.notes.length < 1) {
                 $usertag.css('color', '');
                 $usertag.empty();
                 $usertag.text('N');
@@ -653,7 +653,7 @@ self.usernotes = function usernotes() {
                     }
                 }
                 // New user
-                else if (typeof u === 'undefined' && !deleteNote) {
+                else if (u === undefined && !deleteNote) {
                     notes.users[user] = userNotes;
                     saveMsg = 'create new note on new user ' + user;
                 }
@@ -1256,7 +1256,7 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
         $.each(notes.users, function (name, user) {
             deflated.users[name] = {
                 "ns": user.notes.filter(function(note) {
-                    if(typeof note === 'undefined') {
+                    if(note === undefined) {
                         self.log("WARNING: undefined note removed");
                     }
                     return note !== undefined;
@@ -1283,7 +1283,7 @@ self.saveUserNotes = function (sub, notes, reason, callback) {
 
     // Compression utilities
     function deflateTime(version, time) {
-        if (typeof time === 'undefined') {
+        if (time === undefined) {
             // Yeah, you time deleters get no time!
             return 0;
         }

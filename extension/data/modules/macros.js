@@ -152,7 +152,7 @@ self.init = function () {
             kind = info.kind;
 
         // If it's undefined assume previous default behaviour and always distinguish.
-        if (typeof macro.distinguish === 'undefined') {
+        if (typeof macro.distinguish === undefined) {
             distinguish = true;
         }
 

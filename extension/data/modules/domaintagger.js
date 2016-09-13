@@ -70,7 +70,7 @@ self.init = function() {
 
             processThing($thing, addButton);
 
-            if (typeof subs[sub] === 'undefined') {
+            if (typeof subs[sub] === undefined) {
                 subs[sub] = [];
             }
             subs[sub].push(thing);

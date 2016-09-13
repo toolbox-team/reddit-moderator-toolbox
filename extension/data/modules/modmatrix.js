@@ -777,7 +777,7 @@ self.init = function () {
     function addComments(ratelimit, ratelimitReset) {
         commentLoadActive = true;
         var commentCount = 0;
-        if (typeof ratelimit === 'undefined') {
+        if (typeof ratelimit === undefined) {
             getRatelimit();
         } else {
             TB.ui.longLoadSpinner(true);

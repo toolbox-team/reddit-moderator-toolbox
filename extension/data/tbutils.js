@@ -140,7 +140,7 @@ function initwrapper() {
     TBUtils.browsers = TBStorage.browsers;
 
     // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
-    if (TBUtils.isModFakereddit || typeof TBUtils.post_site === 'undefined' || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
+    if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
         TBUtils.post_site = '';
     }
 
@@ -1286,7 +1286,7 @@ function initwrapper() {
             })
             .error(function (jqXHR, textStatus, e) {
                 $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, SHORTNAME);
-                if (typeof jqXHR.responseText === 'undefined') {
+                if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;
                 }
@@ -1491,7 +1491,7 @@ function initwrapper() {
     };
 
     TBUtils.stickyThread = function(id, callback, state) {
-        if (typeof state === 'undefined') {
+        if (state === undefined) {
             state = true;
         }
 

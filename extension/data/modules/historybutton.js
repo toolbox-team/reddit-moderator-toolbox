@@ -555,7 +555,7 @@ self.populateSubmissionHistory = function (after, author) {
         $.each(accountList, function(index, account) {
             account = user.accounts[account];
 
-            var percentage = Math.round(account.count / totalAccountCount * 100),
+            var percentage = Math.round(account.count / user.counters.submissions * 100),
                 bgcolor = 'fff';
 
             if (percentage >= 10 && account.count > 4){

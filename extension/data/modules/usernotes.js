@@ -114,19 +114,19 @@ self.usernotes = function usernotes() {
         if (showOnModPages && TBUtils.isEditUserPage) {
             self.log("Finding things on mod user page");
             $things = $('.content span.user:not(.ut-thing)');
-            $things.data('ut-type', TYPE_USER);
+            $things.attr('data-ut-type', TYPE_USER);
         }
         else if (TBUtils.isModmail) {
             $things = $('div.thing.message:not(.ut-thing)');
-            $things.data('ut-type', TYPE_MODMAIL);
+            $things.attr('data-ut-type', TYPE_MODMAIL);
         }
         else if (TBUtils.domain === 'mod' && TBUtils.isNewMMThread) {
             $things = $('.Thread__message:not(.ut-thing)');
-            $things.data('ut-type', TYPE_NEW_MODMAIL);
+            $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
         }
         else {
             $things = $('div.thing:not(.ut-thing)');
-            $things.data('ut-type', TYPE_THING);
+            $things.attr('data-ut-type', TYPE_THING);
         }
 
         $things.addClass('ut-thing');
@@ -139,14 +139,14 @@ self.usernotes = function usernotes() {
         self.startProfile("process-thing");
 
         var $thing = $(thing),
-            thingType = $thing.data('ut-type');
+            thingType = $thing.attr('data-ut-type');
         //self.log("Processing thing: " + thingType);
 
         // Link and comments
         if (thingType === TYPE_THING) {
-            var subreddit = $thing.data('subreddit');
+            var subreddit = $thing.attr('data-subreddit');
 
-            var user = $thing.data('author');
+            var user = $thing.attr('data-author');
             if (!user) {
                 user = $thing.find('.author').first().text();
                 if (user !== "[deleted]") {
@@ -165,7 +165,7 @@ self.usernotes = function usernotes() {
         // Modmail (ugh)
         else if (thingType === TYPE_MODMAIL) {
             //TODO: add tag on recipient; may have to reconsider how ut-thing is applied to modmail
-            var subreddit = $thing.data('subreddit');
+            var subreddit = $thing.attr('data-subreddit');
             var $sender = $thing.find('.sender').first();
 
             var $author = $sender.find('.author'),
@@ -308,7 +308,7 @@ self.usernotes = function usernotes() {
 
             // Get all tags related to the current subreddit
             var $thing = $(thing),
-                user = $thing.data('author'),
+                user = $thing.attr('data-author'),
                 u = getUser(notes.users, user);
 
             var $usertag;
@@ -373,8 +373,8 @@ self.usernotes = function usernotes() {
         var $target = $(e.target),
             $thing = $target.closest('.ut-thing');
 
-        var subreddit = $thing.data('subreddit'),
-            user = $thing.data('author'),
+        var subreddit = $thing.attr('data-subreddit'),
+            user = $thing.attr('data-author'),
             link = TBUtils.getThingInfo($thing).permalink,
             disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
 
@@ -543,7 +543,7 @@ self.usernotes = function usernotes() {
             link = '';
 
         if ($popup.find('.utagger-include-link input').is(':checked')) {
-            link = $unote.data('link');
+            link = $unote.attr('data-link');
         }
 
         //Check new note data states
@@ -744,13 +744,13 @@ self.usernotesManager = function () {
         var userCount = Object.keys(notes.users).length,
             noteCount = 0;
 
-        var $userContentTemplate = $('<div>').addClass('tb-un-user').data('user', "NONE").append(
+        var $userContentTemplate = $('<div>').addClass('tb-un-user').attr('data-user', "NONE").append(
             $('<div>').addClass('tb-un-user-header').append(
-                $('<a>').attr('href', 'javascript:;').addClass('tb-un-refresh').data('user', "NONE").append(
+                $('<a>').attr('href', 'javascript:;').addClass('tb-un-refresh').attr('data-user', "NONE").append(
                     $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconRefresh)
                 )
             ).append(
-                $('<a>').attr('href', 'javascript:;').addClass('tb-un-delete').data('user', "NONE").append(
+                $('<a>').attr('href', 'javascript:;').addClass('tb-un-delete').attr('data-user', "NONE").append(
                     $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
                 )
             ).append(
@@ -791,7 +791,7 @@ self.usernotesManager = function () {
 
 
                         var $note = $('<div>').addClass('tb-un-note-details').append(
-                            $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').data('user', user).data('note', key).append(
+                            $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').attr('data-user', user).attr('data-note', key).append(
                                 $('<img>').attr('src', 'data:image/png;base64,' + TB.ui.iconDelete)
                             )
                         ).append(

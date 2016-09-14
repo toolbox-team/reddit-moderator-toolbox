@@ -32,7 +32,7 @@ gulp.task('zip', function() {
 });
 
 gulp.task('xpi', function(cb) {
-    exec('jpm '+(typeof argv.post === undefined ? "xpi" : "post --post-url "+postUrl), {cwd: src_dir}, function(err, stdout, stderr) {
+    exec('jpm '+(argv.post === undefined ? "xpi" : "post --post-url "+postUrl), {cwd: src_dir}, function(err, stdout, stderr) {
         console.log(stdout);
         console.log(stderr);
 

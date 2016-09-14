@@ -67,7 +67,7 @@ function Manager() {
     };
 
     this.unlock = function (saveIndex, value) {
-        if (typeof value === undefined) {
+        if (value === undefined) {
             value = 1;
         }
         self.log('Unlocking achievement block: index=' + saveIndex + ', value=' + value);

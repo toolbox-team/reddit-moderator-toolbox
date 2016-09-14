@@ -1029,7 +1029,7 @@ self.init = function() {
                 reasons: []
             };
         }
-        else if (typeof config.removalReasons.reasons === undefined) {
+        else if (config.removalReasons.reasons === undefined) {
             config.removalReasons.reasons = [];
         }
 

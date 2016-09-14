@@ -390,7 +390,7 @@ self.init = function () {
 
     /// MMP compat
     function settingsShim(key, val) {
-        if (typeof val === undefined) {
+        if (val === undefined) {
             return TB.modules.ModMail.setting(key);
         } else {
             return TB.modules.ModMail.setting(key, val);

@@ -909,7 +909,7 @@ TB.Module = function Module(name) {
 
     this.log = function (message, skip) {
         if (!TBUtils.debugMode) return;
-        if (typeof skip === undefined) skip = false;
+        if (skip === undefined) skip = false;
         $.log(message, skip, this.shortname);
     };
 

@@ -104,6 +104,7 @@ function initwrapper() {
     TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
     TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
     TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
+    TBUtils.isNewModmail = location.host === 'mod.reddit.com';
     TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
     TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
     TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
@@ -1951,37 +1952,69 @@ function initwrapper() {
         }, 1000);
     });
 
-// select the target node
-    var target = document.querySelector('div.content');
-    console.log(target);
-// create an observer instance
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            console.log(mutation);
+    if(!TBUtils.isNewModmail) {
+        // NER, load more comments, and mod frame support.
+        var target = document.querySelector('div.content');
+
+        // create an observer instance
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+                if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") ||
+                    $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+
+                $.log('TBNewThings firing from: ' + $target.attr('class'), false, SHORTNAME);
+
+                // Wait a sec for stuff to load.
+                setTimeout(function () {
+                    var event = new CustomEvent("TBNewThings");
+                    window.dispatchEvent(event);
+                }, 1000);
+            });
         });
-    });
 
-// configuration of the observer:
-    var config = { attributes: true, childList: true, characterData: true };
+        // configuration of the observer:
+        // We specifically want all child elements but nothing else.
+        var config = {
+            attributes: false,
+            childList: true,
+            characterData: false,
+            subtree: true
+        };
 
-// pass in the target node, as well as the observer options
-    observer.observe(target, config);
+        // pass in the target node, as well as the observer options
+        observer.observe(target, config);
+    } else {
 
-// later, you can stop observing
+        var newMMtarget = document.querySelector('html');
 
+        // create an observer instance
+        var newMMobserver = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+                if ($target.hasClass('Thread__message')) {
+                    // Wait a sec for stuff to load.
+                    setTimeout(function () {
+                        var event = new CustomEvent("TBNewThings");
+                        window.dispatchEvent(event);
+                    }, 1000);
+                }
+            });
+        });
 
-    // New modmail REACT MADNES!!!!
-    $('html').on('DOMNodeInserted', function (e) {
-        //console.log(e);
-        var $target = $(e.target), $parentNode = $(e.target.parentNode);
-        if ($target.hasClass('Thread__message')) {
-            // Wait a sec for stuff to load.
-            setTimeout(function () {
-                var event = new CustomEvent("TBNewThings");
-                window.dispatchEvent(event);
-            }, 1000);
-        }
-    });
+        // configuration of the observer:
+        // We specifically want all child elements but nothing else.
+        var newMMconfig = {
+            attributes: false,
+            childList: true,
+            characterData: false,
+            subtree: true
+        };
+
+        // pass in the target node, as well as the observer options
+        newMMobserver.observe(newMMtarget, newMMconfig);
+
+    }
 
 
     // private function

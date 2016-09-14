@@ -117,7 +117,7 @@ self.init = function () {
 
                 popupContent =
                 `<div>
-                    <a href="/user/${author}" target="_blank">${author}</a>
+                    <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
                     <span class="karma" />
                     <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
                     <a class="account-report tb-general-button" href="javascript:;">website account history</a>
@@ -346,7 +346,7 @@ self.populateSubmissionHistory = function (after, author) {
 
     TB.ui.longLoadNonPersistent(true);
 
-    $.get(TBUtils.baseDomain + `/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
+    $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
         self.log('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
@@ -642,7 +642,7 @@ self.populateCommentHistory = function (after, author) {
     $contentBox.find('.comment-table').show();
     $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-    $.get(`/user/${author}/comments.json?limit=100&after=${after}`).error(function () {
+    $.get(`${TBUtils.baseDomain}/user/${author}/comments.json?limit=100&after=${after}`).error(function () {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
     }).done(function (d) {

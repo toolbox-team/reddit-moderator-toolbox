@@ -869,7 +869,7 @@ function initwrapper() {
             $thing = $($sender.closest('.thing')[0] || $sender),
             user = $entry.find('.author:first').text() || $thing.find('.author:first').text(),
             subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
-            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href'),
+            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href') || 'https://mod.reddit.com' + $thing.find('.m-link').attr('href'),
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
             body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text(),
@@ -1936,21 +1936,15 @@ function initwrapper() {
         return devs;
     }
 
+    // Prep new modmail for toolbox stuff.
+    function addTbModmailSidebar() {
+        var $body = $('body');
+        if (TBUtils.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
+            $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
 
-    // NER, load more comments, and mod frame support.
-    $('div.content').on('DOMNodeInserted', function (e) {
-        var $target = $(e.target), $parentNode = $(e.target.parentNode);
-        if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") ||
-            $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
-
-        $.log('TBNewThings firing from: ' + $target.attr('class'), false, SHORTNAME);
-
-        // Wait a sec for stuff to load.
-        setTimeout(function () {
-            var event = new CustomEvent("TBNewThings");
-            window.dispatchEvent(event);
-        }, 1000);
-    });
+        }
+    }
+    addTbModmailSidebar();
 
     if(!TBUtils.isNewModmail) {
         // NER, load more comments, and mod frame support.
@@ -1986,15 +1980,20 @@ function initwrapper() {
         observer.observe(target, config);
     } else {
 
-        var newMMtarget = document.querySelector('html');
+        var newMMtarget = document.querySelector('div.App__page');
 
         // create an observer instance
         var newMMobserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
-                if ($target.hasClass('Thread__message')) {
+                console.log($target);
+                if ($target.find('.ThreadViewer__infobar').length > 0) {
+                    addTbModmailSidebar();
+                }
+                if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
                     // Wait a sec for stuff to load.
                     setTimeout(function () {
+
                         var event = new CustomEvent("TBNewThings");
                         window.dispatchEvent(event);
                     }, 1000);
@@ -2017,31 +2016,6 @@ function initwrapper() {
     }
 
 
-    // private function
-    // Prep new modmail for toolbox stuff.
-    function addTbModmailSidebar() {
-        var $body = $('body');
-        if (TBUtils.domain && $body.find('.ThreadViewer').length > -1) {
-            $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
-
-        }
-    }
-    addTbModmailSidebar();
-
-    // Watch for page changes.
-    if (typeof chrome !== 'undefined') {
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-            if(request.historyState) {
-                setTimeout(function () {
-                    var event = new CustomEvent("TBNewThings");
-                    addTbModmailSidebar();
-                    window.dispatchEvent(event);
-                }, 1000);
-                sendResponse({received: 'History State New Page'})
-            }
-
-        });
-    }
 
 
     // NER support. todo: finish this.

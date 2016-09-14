@@ -17,8 +17,7 @@
         "http://*.reddit.com/",
         "tabs",
         "storage",
-        "unlimitedStorage",
-        "webNavigation"
+        "unlimitedStorage"
     ],
     "icons": {
         "16": "data/images/icon16.png",

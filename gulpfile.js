@@ -33,4 +33,4 @@ gulp.task('zip', function() {
 
 
 
-gulp.task(['zip']);
+gulp.task('default', ['zip']);

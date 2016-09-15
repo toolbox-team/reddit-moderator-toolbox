@@ -48,7 +48,7 @@ self.usernotes = function usernotes() {
         self.log("Got mod subs");
         self.log(TBUtils.mySubs);
         // In new modmail we only run on threads.
-        if(TBUtils.isNewMMThread || !TBUtils.isNewModmail) {
+        if($body.find('.ThreadViewer').length > 0 || !TBUtils.isNewModmail) {
             run();
         }
     });
@@ -71,7 +71,7 @@ self.usernotes = function usernotes() {
         $('.ut-thing').removeClass('ut-thing');
 
         // This can be done better, but this is for the new modmail user sidebar thing.
-        if (TBUtils.isNewMMThread) {
+        if ($body.find('.ThreadViewer').length > 0) {
             var subreddit = $body.find('.ThreadTitle__community').text(),
                 author = $body.find('.InfoBar__username').text();
 
@@ -123,7 +123,7 @@ self.usernotes = function usernotes() {
             $things = $('div.thing.message:not(.ut-thing)');
             $things.attr('data-ut-type', TYPE_MODMAIL);
         }
-        else if (TBUtils.domain === 'mod' && TBUtils.isNewMMThread) {
+        else if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
             $things = $('.Thread__message:not(.ut-thing)');
             $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
         }

@@ -551,6 +551,10 @@ self.modmailpro = function() {
     }
 
     function addThreadUI($threads) {
+        // We do a second check here.
+        // Due to this being modmail and stuff being slow the previous check is applied only after the parent function is already called for a second time.
+        // Doing a second check here for signs of processing makes sure we do not end up with a ton of clutter.
+        $threads = $threads.not(':has(.tb-collapse-link)');
         var $subArea = $threads.find('.correspondent:first');
         $subArea.find('> a[href^="/r/"]').addClass('subreddit-name');
         $subArea.prepend(collapseLink);

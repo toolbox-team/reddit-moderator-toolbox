@@ -38,9 +38,9 @@ self.run = function () {
     var UserButtonHTML = '<span class="history-button">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
 
 
-
-    if (TBUtils.isNewMMThread) {
-        var $body = $('body');
+    var $body = $('body');
+    if ($body.find('.ThreadViewer').length > 0) {
+        
         $body.find('.Thread__message').not('.tb-history').each(function () {
             $this = $(this);
             if ($this.find('.tb-attr').length === 0) {
@@ -83,7 +83,7 @@ self.init = function () {
         $body.on('click', '.user-history-button', function (event) {
             var $this = $(this);
 
-            if(TBUtils.isNewMMThread) {
+            if($body.find('.ThreadViewer').length > 0) {
                 if ($this.hasClass('modmail-sidebar')) {
                     var author = $('.InfoBar__username').text();
                 } else {

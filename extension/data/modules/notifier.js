@@ -837,7 +837,14 @@ self.init = function () {
     }
 
     setInterval(getmessages, checkInterval);
+
     getmessages();
+    // Because firefox is "special" we wait a tiny bit and try again.
+    setTimeout(function () {
+        getmessages();
+    }, 1000);
+
+
 };
 
 TB.register_module(self);

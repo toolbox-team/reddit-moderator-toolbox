@@ -624,7 +624,7 @@ function initwrapper() {
                 // Open the page
                 $.log('notification clicked', false, SHORTNAME);
                 if (typeof markreadid !== 'undefined') {
-                    $.post('/api/read_message', {
+                    $.post(TBUtils.baseDomain + '/api/read_message', {
                         id: markreadid,
                         uh: TBUtils.modhash,
                         api_type: 'json'
@@ -659,7 +659,7 @@ function initwrapper() {
                         // Open the page
                         $.log('notification clicked', false, SHORTNAME);
                         if (typeof markreadid !== 'undefined') {
-                            $.post('/api/read_message', {
+                            $.post(TBUtils.baseDomain + '/api/read_message', {
                                 id: markreadid,
                                 uh: TBUtils.modhash,
                                 api_type: 'json'

@@ -791,7 +791,7 @@ self.init = function () {
                     }
 
                     function updateModqueueCount(sr) {
-                        $.get('/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
+                        $.get(TBUtils.baseDomain + '/r/' + sr + '/about/' + page + '.json?limit=100').success(function (d) {
                             var items = d.data.children.length;
                             self.log('  subreddit: ' + sr + ' items: ' + items);
                             TB.storage.setCache('QueueTools', prefix + TBUtils.logged + '-' + sr, '[' + items + ',' + new Date().valueOf() + ']');

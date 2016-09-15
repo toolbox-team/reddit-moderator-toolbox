@@ -79,6 +79,13 @@ self.run = function () {
 
         return;
     }
+    if ($body.find('.ThreadViewer').length > 0) {
+        var modButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">' + self.buttonName + '</a></span></span>';
+
+        var $sidebar = $body.find('.ThreadViewer__infobar');
+
+        $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
+    }
 
     // Not a mod, don't bother.
     if (TB.utils.mySubs.length < 1) {
@@ -139,7 +146,13 @@ self.updateSavedSubs = function () {
 };
 
 self.init = function () {
-    self.buttonName = self.setting('showInUsernameArea') ? 'M' : 'mod';
+    var modbuttonStandard;
+    if (TBUtils.isNewModmail) {
+        self.buttonName = 'Mod Button';
+    } else {
+        self.buttonName = self.setting('showInUsernameArea') ? 'M' : 'mod';
+    }
+
     self.saveButton = 'Save';
     self.OTHER = 'other-sub';
 
@@ -167,13 +180,20 @@ self.init = function () {
         $(benbutton).text('loading...');
         self.log('displaying mod button popup');
 
-        var display = (self.savedSubs.length < 1) ? 'none' : '',
-            lastaction = self.setting('lastAction'),
-            info = TB.utils.getThingInfo(this, true),
-            subreddit = info.subreddit,
-            user = info.user,
-            thing_id = info.id;
-
+        if (TBUtils.isNewModmail) {
+            var display = (self.savedSubs.length < 1) ? 'none' : '',
+                lastaction = self.setting('lastAction'),
+                subreddit = $body.find('.ThreadTitle__community').text(),
+                user = $body.find('.InfoBar__username').text(),
+                thing_id = $(this).closest('.ThreadViewer__infobar').attr('data-reactid');
+        } else {
+            var display = (self.savedSubs.length < 1) ? 'none' : '',
+                lastaction = self.setting('lastAction'),
+                info = TB.utils.getThingInfo(this, true),
+                subreddit = info.subreddit,
+                user = info.user,
+                thing_id = info.id;
+        }
         //$.log('modbutton ' + subreddit, true);
 
         // no user?
@@ -274,7 +294,7 @@ self.init = function () {
 
             // Show if current user is banned, and why. - thanks /u/LowSociety
             // TODO: Display *when* they were banned, along with ban note. #194
-            $.get('/r/' + subreddit + '/about/banned/.json', {user: user}, function (data) {
+            $.get(TBUtils.baseDomain + '/r/' + subreddit + '/about/banned/.json', {user: user}, function (data) {
                 var banned = data.data.children;
                 for (var i = 0; i < banned.length; i++) {
                     if (banned[i].name.toLowerCase() == user.toLowerCase()) {
@@ -290,7 +310,7 @@ self.init = function () {
                         $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                        $.get('/r/' + subreddit + '/about/log/.json', {
+                        $.get(TBUtils.baseDomain + '/r/' + subreddit + '/about/log/.json', {
                             type: 'banuser',
                             limit: '1000'
                         }, function (data) {

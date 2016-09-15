@@ -218,7 +218,7 @@ self.init = function() {
 
         var confirmDelete = confirm('This will de-list "' + page + '", are you sure?');
         if (confirmDelete) {
-            $.post('/r/' + notewiki + '/wiki/settings/', {
+            $.post(TBUtils.baseDomain + '/r/' + notewiki + '/wiki/settings/', {
                 page: 'notes/' + page,
                 listed: false,
                 permlevel: 2,

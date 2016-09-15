@@ -40,7 +40,7 @@ self.run = function () {
 
     var $body = $('body');
     if ($body.find('.ThreadViewer').length > 0) {
-        
+
         $body.find('.Thread__message').not('.tb-history').each(function () {
             $this = $(this);
             if ($this.find('.tb-attr').length === 0) {
@@ -50,7 +50,7 @@ self.run = function () {
             $tbAttrs.append(UserButtonHTML);
         });
 
-        var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">History</a></span></span>';
+        var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
 
         var $sidebar = $body.find('.ThreadViewer__infobar');
 

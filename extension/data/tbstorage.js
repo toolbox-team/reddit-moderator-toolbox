@@ -127,8 +127,6 @@ function storagewrapper() {
 
 
     if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
-        //console.log('using browser storage');
-
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                     objectToSettings(sObject.tbsettings, function () {

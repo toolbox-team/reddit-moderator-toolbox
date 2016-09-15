@@ -28,10 +28,10 @@ Documentation: http://www.reddit.com/r/toolbox/w/docs
 
 Building is relatively easy through [nodejs](https://nodejs.org/) with gulp. 
 
-Install jpm and gulp globally.
+Install gulp globally.
 
 ```sh
-$ npm install --global jpm gulp
+$ npm install --global gulp
 ```
 
 Then navigate to the root of the toolbox folder and install the dependencies
@@ -48,13 +48,26 @@ $ gulp
 
 Or if you have followed these steps before and are on windows click the build.bat file.
 
-## Using the jpm post parameter for firefox development. 
+This will create a zip file which can be used in both Chrome as well as Firefox versions that support web extensions. 
 
-Simply run gulp with the following parameter attached
+# Development 
 
-```sh
-$ gulp --post
-```
+## Chrome 
+
+- Go to your extensions page. 
+- Enable developer mode. 
+- Click: Load unpacked extensions. 
+- Select the toolbox "extension directory". 
+
+Reload the extension when needed. 
+
+## Firefox (developer or nightly edition)
+
+- Go to about:debugging.
+- Click: Load Temporary Add-on.
+- Point to manifest.json.
+
+Reload the addon when needed. 
 
 ### Third party support.
 

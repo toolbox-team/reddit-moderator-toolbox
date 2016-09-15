@@ -1979,39 +1979,71 @@ function initwrapper() {
         // pass in the target node, as well as the observer options
         observer.observe(target, config);
     } else {
+        
+        // For new modmail we do things a bit different. 
+        // We only listen for dom changes after a user interaction. 
+        // Resulting in this event being fired less and less wasted requests. 
+		document.body.addEventListener('click', function(){
 
-        var newMMtarget = document.querySelector('div.App__page');
+				var newMMtarget = document.querySelector('body');
 
-        // create an observer instance
-        var newMMobserver = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-                var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
-                console.log($target);
-                if ($target.find('.ThreadViewer__infobar').length > 0) {
-                    addTbModmailSidebar();
-                }
-                if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
-                    // Wait a sec for stuff to load.
-                    setTimeout(function () {
+				// create an observer instance
+				var newMMobserver = new MutationObserver(function (mutations) {
 
-                        var event = new CustomEvent("TBNewThings");
-                        window.dispatchEvent(event);
-                    }, 1000);
-                }
-            });
-        });
+					var doAddTbModmailSidebar = false;
+					var doTBNewThings = false;
+					
+					mutations.forEach(function (mutation) {
+						var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
 
-        // configuration of the observer:
-        // We specifically want all child elements but nothing else.
-        var newMMconfig = {
-            attributes: false,
-            childList: true,
-            characterData: false,
-            subtree: true
-        };
+						if ($target.find('.ThreadViewer__infobar').length > 0) {
+							doAddTbModmailSidebar = true;
 
-        // pass in the target node, as well as the observer options
-        newMMobserver.observe(newMMtarget, newMMconfig);
+
+						}
+						if ($target.is('.Thread__message, .ThreadViewer, .Thread__messages')) {
+							doTBNewThings = true;
+
+						}
+					});
+					
+					if (doAddTbModmailSidebar) {
+							$.log('DOM: new modmail sidebar found.', false, SHORTNAME);
+						addTbModmailSidebar();
+					}
+					
+					if (doTBNewThings) {
+
+						$.log('DOM: processable elements found.', false, SHORTNAME);
+						
+						// Wait a sec for stuff to load.
+						setTimeout(function () {
+
+							var event = new CustomEvent("TBNewThings");
+							window.dispatchEvent(event);
+						}, 1000);
+					}
+				});
+
+				// configuration of the observer:
+				// We specifically want all child elements but nothing else.
+				var newMMconfig = {
+					attributes: false,
+					childList: true,
+					characterData: false,
+					subtree: true
+				};
+
+				// pass in the target node, as well as the observer options
+				newMMobserver.observe(newMMtarget, newMMconfig);
+				
+				// Wait a bit for dom changes to occur and then disconnect it again.
+				setTimeout(function () {
+					newMMobserver.disconnect();
+
+
+				}, 2000);
+		});
 
     }
 

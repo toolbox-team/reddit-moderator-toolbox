@@ -512,7 +512,7 @@ text-align: left;
     background-color: #9FBAD6;
 }
 
-.mod-toolbox .tb-window-content {
+.mod-toolbox .tb-window-content:not([class^="CodeMirror"]) {
     overflow: auto;
     left: 0;
     right: 0;
@@ -571,7 +571,7 @@ text-align: left;
     display: none;
 }
 
-.mod-toolbox .tb-window-content p {
+.mod-toolbox .tb-window-content p:not([class^="codemirror"]){
     padding-top: 6px !important;
     padding-bottom: 5px;
     padding-left: 10px;
@@ -1350,30 +1350,30 @@ body .thing.flaired {
 }
 
 .mod-toolbox .syntax-example {
-display: block;
-width: 98%;
-height: 300px;
+    display: block;
+    width: 98%;
+    height: 300px;
 }
 
 .ace_editor {
-   resize:both;
-   -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-   -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-   -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-   transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+    resize:both;
+    -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
+    transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
 }
 
 .ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar, .ace_search_field, .ace_search.right {
-   resize: none;
+    resize: none;
 }
 
-.mod-toolbox.mod-toolbox-ace .sheets .buttons .btn,
-.mod-toolbox.mod-toolbox-ace  #wiki_save_button{
+.mod-toolbox.mod-syntax .sheets .buttons .btn,
+.mod-toolbox.mod-syntax  #wiki_save_button{
     display: none;
 }
 
-.mod-toolbox.mod-toolbox-ace #tb-ace-buttons,
-.mod-toolbox.mod-toolbox-ace .sheets .buttons {
+.mod-toolbox.mod-syntax #tb-syntax-buttons,
+.mod-toolbox.mod-syntax .sheets .buttons {
     display: inline-block;
     margin-left: 5px;
 }

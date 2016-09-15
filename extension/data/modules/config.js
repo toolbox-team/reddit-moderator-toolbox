@@ -44,7 +44,6 @@ self.init = function() {
                     advanced: true,
                     content: '\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <div id="edit-wikidata-toolbox-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
@@ -56,7 +55,6 @@ self.init = function() {
                     content: '\
                 <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <div id="edit-wikidata-usernotes-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
@@ -76,7 +74,6 @@ self.init = function() {
                 </p>\
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>\
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <div id="edit-wikidata-automoderator-div" style="display: none; height: 500px;"></div>\
                 <br>\
                 <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
@@ -272,7 +269,7 @@ self.init = function() {
         subreddit = $(this).data('subreddit');
 
         TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
-            console.log(resp);
+
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
                 self.log('Failed: wiki config');
 
@@ -352,47 +349,67 @@ self.init = function() {
         }
         var $wikiContentArea = $body.find('.tb-window-tab.' + tabname),
             $textArea = $wikiContentArea.find('.edit-wikidata'),
-            $textAreaDiv = $wikiContentArea.find('#edit-wikidata-' + page + '-div'),
             $saveButton = $wikiContentArea.find('.save-wiki-data');
 
 
         if (TB.storage.getSetting('Syntax', 'enabled', true)) {
-            $body.addClass('mod-toolbox-ace');
-            $textArea.hide();
-            $textAreaDiv.show();
-
-            var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme'),
-                configEditor = ace.edit('edit-wikidata-' + page + '-div');
-
-            configEditor.getSession().setUseWrapMode(TB.storage.getSetting('Syntax', 'enableWordWrap'));
-            configEditor.setTheme('ace/theme/' + selectedTheme);
+            $body.addClass('mod-syntax');
+            var configEditor;
+            var defaultMode = 'default';
+            var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme');
+            var enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap');
 
             if (page === 'automoderator') {
-                configEditor.getSession().setMode('ace/mode/yaml');
+                defaultMode = "text/x-yaml";
             } else {
-                configEditor.getSession().setMode('ace/mode/json');
+                defaultMode = "application/json";
             }
 
-            $textArea.val('getting wiki data...');
-            configEditor.getSession().setValue('getting wiki data...');
 
-            configEditor.getSession().on('change', function () {
-                $textArea.val(configEditor.getSession().getValue());
+            $textArea.each(function(index, elem){
+
+                // Editor setup.
+                configEditor = CodeMirror.fromTextArea(elem, {
+                    mode: defaultMode,
+                    autoCloseBrackets: true,
+                    lineNumbers: true,
+                    theme: selectedTheme,
+                    extraKeys: {
+                        "Alt-F": "findPersistent",
+                        "F11": function(cm) {
+                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        },
+                        "Esc": function(cm) {
+                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        }
+                    },
+                    lineWrapping: enableWordWrap
+                });
+            });
+
+
+
+
+            $textArea.val('getting wiki data...');
+            configEditor.setValue('getting wiki data...');
+
+            configEditor.on('change', function () {
+                configEditor.save();
             });
 
 
             TBUtils.readFromWiki(subreddit, actualPage, false, function (resp) {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
-                    $($textArea).val('error getting wiki data.');
-                    configEditor.getSession().setValue('error getting wiki data.');
+                    $textArea.val('error getting wiki data.');
+                    configEditor.setValue('error getting wiki data.');
                     return;
                 }
 
                 if (resp === TBUtils.NO_WIKI_PAGE) {
-                    $($textArea).val('');
-                    configEditor.getSession().setValue('');
-                    $($saveButton).show();
-                    $($saveButton).attr('page', page);
+                    $textArea.val('');
+                    configEditor.setValue('');
+                    $saveButton.show();
+                    $saveButton.attr('page', page);
                     return;
                 }
 
@@ -400,7 +417,7 @@ self.init = function() {
 
                 // Found it, show it.
                 $textArea.val(resp);
-                configEditor.getSession().setValue(resp);
+                configEditor.setValue(resp);
                 $saveButton.show();
                 $saveButton.attr('page', page);
             });

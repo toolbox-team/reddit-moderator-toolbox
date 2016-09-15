@@ -624,7 +624,7 @@ TB = {
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', module.shortname + '_syntax_theme');
                             $setting.append($('\
-                    <pre class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\
+                    <textarea class="syntax-example" id="' + module.shortname + '_syntax_theme_css">\
 /* This is just some example code*/\n\
 body {\n\
 font-family: sans-serif, "Helvetica Neue", Arial;\n\
@@ -640,24 +640,47 @@ border-bottom: 1px solid #9A9A9A; \n\
 box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 }\n\
 /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
-                    </pre>'));
+                    </textarea>'));
                             execAfterInject.push(function () {
                                 // Syntax highlighter selection stuff
-                                $body.addClass('mod-toolbox-ace');
-                                var editorSettings = ace.edit(module.shortname + '_syntax_theme_css');
-                                editorSettings.setTheme("ace/theme/" + module.setting(setting));
-                                editorSettings.getSession().setUseWrapMode(TB.storage.getSetting('SyntaxHighlighter', 'enableWordWrap', true));
+                                $body.addClass('mod-syntax');
 
-                                if (TBUtils.browser == 'chrome') {
-                                    ace.config.set("workerPath", chrome.extension.getURL("/data/libs/"));
-                                }
-                                editorSettings.getSession().setMode("ace/mode/css");
+                                var enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
+                                $('#'+ module.shortname + '_syntax_theme_css').each(function(index, elem){
+
+                                    // Editor setup.
+                                    editorSettings = CodeMirror.fromTextArea(elem, {
+                                        mode: 'text/css',
+                                        autoCloseBrackets: true,
+                                        lineNumbers: true,
+                                        theme: module.setting(setting),
+                                        extraKeys: {
+                                            "Alt-F": "findPersistent",
+                                            "Ctrl-Space": 'autocomplete',
+                                            "F11": function(cm) {
+                                                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                                            },
+                                            "Esc": function(cm) {
+                                                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                                            }
+                                        },
+                                        lineWrapping: enableWordWrap
+                                    });
+                                });
+
+                                TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, function() {
+                                    setTimeout(function() {
+                                        editorSettings.refresh();
+                                    },5);
+                                });
+
+
 
                                 $('#' + module.shortname + '_syntax_theme').val(module.setting(setting));
                                 $body.on('change keydown', '#' + module.shortname + '_syntax_theme', function () {
                                     var thingy = $(this);
                                     setTimeout(function () {
-                                        editorSettings.setTheme("ace/theme/" + thingy.val());
+                                        editorSettings.setOption("theme", thingy.val());
                                     }, 0);
                                 });
                             });
@@ -747,7 +770,9 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
                             } else {
                                 $this.css('opacity', '1');
+
                                 $inputSetting.show(function() {
+
                                     $(this).select();
                                 });
                             }

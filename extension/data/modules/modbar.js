@@ -485,9 +485,13 @@ self.init = function() {
             $tb_help_mains = $('.tb-help-main');
 
         // achievement support
-        if (module == 'about'){
+        if (module === 'about'){
             TB.utils.sendEvent(TB.utils.events.TB_ABOUT_PAGE);
         }
+        if (module === 'syntax') {
+            TB.utils.sendEvent(TB.utils.events.TB_SYNTAX_SETTINGS);
+        }
+
 
         $('.tb-window-tabs a').removeClass('active');
         $this.addClass('active');

@@ -23,7 +23,6 @@ function initwrapper() {
     // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
     TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);
 
-    console.log(TBUtils.baseDomain);
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
         ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
@@ -262,7 +261,8 @@ function initwrapper() {
         TB_APPROVE_THING: "TB_APPROVE_THING",
         TB_FLY_SNOO: 'TB_FLY_SNOO',
         TB_KILL_SNOO: 'TB_KILL_SNOO',
-        TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND'
+        TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND',
+        TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS'
     };
 
     TBUtils.defaultUsernoteTypes = [
@@ -1979,10 +1979,10 @@ function initwrapper() {
         // pass in the target node, as well as the observer options
         observer.observe(target, config);
     } else {
-        
-        // For new modmail we do things a bit different. 
-        // We only listen for dom changes after a user interaction. 
-        // Resulting in this event being fired less and less wasted requests. 
+
+        // For new modmail we do things a bit different.
+        // We only listen for dom changes after a user interaction.
+        // Resulting in this event being fired less and less wasted requests.
 		document.body.addEventListener('click', function(){
 
 				var newMMtarget = document.querySelector('body');
@@ -1992,7 +1992,7 @@ function initwrapper() {
 
 					var doAddTbModmailSidebar = false;
 					var doTBNewThings = false;
-					
+
 					mutations.forEach(function (mutation) {
 						var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
 
@@ -2006,16 +2006,16 @@ function initwrapper() {
 
 						}
 					});
-					
+
 					if (doAddTbModmailSidebar) {
 							$.log('DOM: new modmail sidebar found.', false, SHORTNAME);
 						addTbModmailSidebar();
 					}
-					
+
 					if (doTBNewThings) {
 
 						$.log('DOM: processable elements found.', false, SHORTNAME);
-						
+
 						// Wait a sec for stuff to load.
 						setTimeout(function () {
 
@@ -2036,7 +2036,7 @@ function initwrapper() {
 
 				// pass in the target node, as well as the observer options
 				newMMobserver.observe(newMMtarget, newMMconfig);
-				
+
 				// Wait a bit for dom changes to occur and then disconnect it again.
 				setTimeout(function () {
 					newMMobserver.disconnect();

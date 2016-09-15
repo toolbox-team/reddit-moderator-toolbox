@@ -126,7 +126,7 @@ function storagewrapper() {
     }
 
 
-    if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
+    if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
         //console.log('using browser storage');
 
         chrome.storage.local.get('tbsettings', function (sObject) {
@@ -154,20 +154,6 @@ function storagewrapper() {
 
         // Ask for settings.
         safari.self.tab.dispatchMessage('tb-getsettings', null);
-    } else if (TBStorage.browser === FIREFOX) {
-        // wait for reply.
-        self.port.on('tb-settings-reply', function (tbsettings) {
-            if (tbsettings !== null) {
-                    objectToSettings(tbsettings, function () {
-                        SendInit();
-                    });
-            } else {
-                SendInit();
-            }
-        });
-
-        // Ask for settings.
-        self.port.emit('tb-getsettings');
     } else {
         SendInit();
     }
@@ -296,7 +282,7 @@ function storagewrapper() {
         // Don't re-store the settings after a save on the the refresh that follows.
         localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
-        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
             settingsToObject(function (sObject) {
                 var settingsObject = sObject;
 
@@ -342,26 +328,6 @@ function storagewrapper() {
                 safari.self.tab.dispatchMessage('tb-getsettings', null);
             });
 
-        } else if (TBStorage.browser === FIREFOX) {
-            settingsToObject(function (sObject) {
-                var settingsObject = sObject;
-
-                // save settings
-                self.port.emit('tb-setsettings', sObject);
-
-                // verify settings
-                self.port.on('tb-settings-reply', function (tbsettings) {
-                    if (tbsettings !== null && isEquivalent(tbsettings, settingsObject)) {
-                        callback(true);
-                    } else {
-                        $.log('Settings could not be verified', false, SHORTNAME);
-                        callback(false);
-                    }
-                });
-
-                // Ask for settings.
-                self.port.emit('tb-getsettings');
-            });
         }
     };
 
@@ -411,7 +377,7 @@ function storagewrapper() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
         if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
 
-        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE) {
+        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
             // chrome
             settingsToObject(function (sObject) {
                 chrome.storage.local.set({
@@ -421,11 +387,6 @@ function storagewrapper() {
         } else if (TBStorage.browser === SAFARI) {
             settingsToObject(function (sObject) {
                 safari.self.tab.dispatchMessage('tb-setsettings', sObject);
-            });
-        } else if (TBStorage.browser === FIREFOX) {
-            // firefox
-            settingsToObject(function (sObject) {
-                self.port.emit('tb-setsettings', sObject)
             });
         }
     }

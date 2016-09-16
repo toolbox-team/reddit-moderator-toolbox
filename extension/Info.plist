@@ -61,7 +61,6 @@
 				<string>data/modules/realtime.js</string>
 				<string>data/modules/nukecomments.js</string>
 				<string>data/modules/personalnotes.js</string>
-				<string>data/modules/modmaillite.js</string>
 				<string>data/modules/betterbuttons.js</string>
 				<string>data/modules/bagel.js</string>
 				<string>data/modules/flyingsnoo.js</string>
@@ -79,7 +78,6 @@
 				<string>data/styles/modmatrix.css</string>
 				<string>data/styles/removalreasons.css</string>
 				<string>data/styles/personalnotes.css</string>
-				<string>data/styles/modmaillite.css</string>
 				<string>data/styles/queuetools.css</string>
 				<string>data/styles/modmailpro.css</string>
 				<string>data/styles/achievements.css</string>

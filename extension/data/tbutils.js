@@ -234,6 +234,8 @@ function initwrapper() {
 
         // 3.4 version changes
 
+        // Ace swapped out for CodeMirror and they have
+        TBStorage.setSetting('syntax', 'selectedTheme', 'dracula');
         // RES now has this feature.
         localStorage.removeItem('Toolbox.Modbar.enableTopLink');
 

@@ -102,6 +102,7 @@ self.init = function() {
 
         if (addButton) {
             var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', "Color tag domains").attr('href', 'javascript:;').text('T');
+
             $thing.find('span.domain').after(tag);
         }
     }

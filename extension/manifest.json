@@ -10,6 +10,10 @@
         "gecko": {
             "id": "yes@jetpack",
             "strict_min_version": "45.*"
+        },
+        "fennec": {
+            "id": "yes@jetpack",
+            "strict_min_version": "45.*"
         }
     },
     "permissions": [

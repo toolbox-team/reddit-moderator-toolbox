@@ -3916,10 +3916,3 @@ THE SOFTWARE.
 .cm-s-zenburn .CodeMirror-activeline-background { background: #000000; }
 .cm-s-zenburn div.CodeMirror-selected { background: #545454; }
 .cm-s-zenburn .CodeMirror-focused div.CodeMirror-selected { background: #4f4f4f; }
-/*
-
-    Name:       3024 day
-    Author:     Jan T. Sott (http://github.com/idleberg)
-
-    CodeMirror template by Jan T. Sott (https://github.com/idleberg/base16-codemirror)
-    Original Base16 color scheme by Chris Kempson

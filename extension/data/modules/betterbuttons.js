@@ -174,8 +174,8 @@ self.initDistinguishToggle = function initDistinguishToggle() {
                 // Click things first
                 if (firstDistinguishButton) firstDistinguishButton.click();
 
-                // Put back sticky button later
-                $this.find('.tb-sticky-toggle.').show();
+                // Put back sticky button later.
+                $this.find('.tb-sticky-toggle').show();
 
             // Not distinguished and we simply want to distinguish.
             } else if(!distinguished) {

@@ -13,7 +13,7 @@ function syntax() {
     });
     self.register_setting('selectedTheme', {
         'type': 'syntaxTheme',
-        'default': 'monokai',
+        'default': 'dracula',
         'title': 'Syntax highlight theme selection'
     });
 

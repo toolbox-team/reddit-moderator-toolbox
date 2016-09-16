@@ -12,6 +12,10 @@
   color: black;
 }
 
+.CodeMirror-fullscreen {
+    z-index: 2147483646;
+    bottom: 25px;
+}
 /* PADDING */
 
 .CodeMirror-lines {

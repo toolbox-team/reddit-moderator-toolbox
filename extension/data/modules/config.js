@@ -356,7 +356,7 @@ self.init = function() {
             $body.addClass('mod-syntax');
             var configEditor;
             var defaultMode = 'default';
-            var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'monokai';
+            var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
             var enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap');
 
             if (page === 'automoderator') {

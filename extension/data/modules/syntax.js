@@ -11,7 +11,7 @@ function syntax() {
         'default': true,
         'title': 'Enable word wrap in editor'
     });
-    self.register_setting('selectedTheme', {
+    self.register_setting('selectedThemeNew', {
         'type': 'syntaxTheme',
         'default': 'monokai',
         'title': 'Syntax highlight theme selection'
@@ -73,7 +73,7 @@ function syntax() {
 
     self.init = function () {
         var $body = $('body'),
-            selectedTheme = this.setting('selectedTheme'),
+            selectedTheme = this.setting('selectedThemeNew'),
             enableWordWrap = this.setting('enableWordWrap'),
             editor, session, textarea;
 

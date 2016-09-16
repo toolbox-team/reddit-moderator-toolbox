@@ -597,7 +597,7 @@ self.init = function () {
         if (!user || !subreddit)
             return;
 
-        $.getJSON('/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
+        $.getJSON(TBUtils.baseDomain + '/r/' + subreddit + '/api/flairlist.json?name=' + user, function (resp) {
             if (!resp || !resp.users || resp.users.length < 1) return;
 
             $textinput.val(resp.users[0].flair_text);

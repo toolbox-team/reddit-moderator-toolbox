@@ -863,7 +863,7 @@ self.init = function () {
     var highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
     function getAutomodActionReason(sub) {
         self.log(sub);
-        $.getJSON('/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
+        $.getJSON(TBUtils.baseDomain + '/r/' + sub + '/about/log/.json?limit=100&mod=AutoModerator').done(function (json) {
             $.each(json.data.children, function (i, value) {
                 var actionReasonText = value.data.details,
                     targetFullName = value.data.target_fullname;

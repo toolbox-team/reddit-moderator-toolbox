@@ -286,7 +286,7 @@ self.init = function () {
             var jsonurl = $('.entry a.comments').attr('href');
 
             // Lets get the comments.
-            $.getJSON(jsonurl + '.json?limit=1500').done(function (data, status, jqxhr) {
+            $.getJSON(TBUtils.baseDomain + jsonurl + '.json?limit=1500').done(function (data, status, jqxhr) {
                 // put the json through our deconstructor.
                 data[1].isreply = false;
                 parseComments(data[1]);
@@ -581,7 +581,7 @@ self.init = function () {
                 TB.ui.longLoadSpinner(true, 'searching for comments by ' + usersearch, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
                 function searchComments(user, options, after) {
-                    $.getJSON('/user/' + user + '/comments.json', {
+                    $.getJSON(TBUtils.baseDomain + '/user/' + user + '/comments.json', {
                         "after": after,
                         "limit": 100
                     }).success(function (data, status, jqxhr) {

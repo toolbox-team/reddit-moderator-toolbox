@@ -214,7 +214,7 @@ self.renderMatrix = function () {
         var subredditNames = this.subredditName.split("+");
 
         for (var i = 0; i < subredditNames.length; i++) {
-            $.getJSON("/r/" + subredditNames[i] + "/about/moderators.json", function (moderatorData) {
+            $.getJSON(TBUtils.baseDomain + "/r/" + subredditNames[i] + "/about/moderators.json", function (moderatorData) {
                 for (var j = 0; j < moderatorData.data.children.length; j++) {
                     $("#modmatrixmodfilter-" + moderatorData.data.children[j].name).prop("checked", "checked");
                 }
@@ -417,7 +417,7 @@ self.getActions = function (callback) {
     if (this.dataCache[cacheKey] != null) {
         self.processData(this.dataCache[cacheKey], callback);
     } else {
-        $.getJSON(url, requestData, function (response) {
+        $.getJSON(TBUtils.baseDomain + url, requestData, function (response) {
             self.log("Got " + requestData.count + " to " + (requestData.count + requestData.limit));
             var data = response.data;
             self.processData(data, callback);
@@ -740,7 +740,7 @@ self.init = function () {
                 if (!$this.find('.description').attr('id')) {
                     $this.find('.description').attr('id', commentID);
 
-                    $.getJSON(removedUrl).done(function (data, status, jqxhr) {
+                    $.getJSON(TBUtils.baseDomain + removedUrl).done(function (data, status, jqxhr) {
 
                         $body.find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
                         $body.find('.activate-comment-load').attr('data-reset', ratelimitReset);
@@ -766,7 +766,7 @@ self.init = function () {
 
 
     function getRatelimit() {
-        $.getJSON('/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
+        $.getJSON(TBUtils.baseDomain + '/r/toolbox.json?limit=1').done(function (data, status, jqxhr) {
             var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
             var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
             addComments(ratelimitRemaining, ratelimitReset);

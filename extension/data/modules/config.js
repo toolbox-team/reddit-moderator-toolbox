@@ -1298,7 +1298,7 @@ self.init = function() {
     // When the import button is clicked on the domain tags thing.
     $body.on('click', '.domain_tags .import', function () {
 
-        $.getJSON('/r/' + $body.find('.domain_tags .importfrom').val() + '/wiki/toolbox.json', function (json) {
+        $.getJSON(TBUtils.baseDomain + '/r/' + $body.find('.domain_tags .importfrom').val() + '/wiki/toolbox.json', function (json) {
 
             if (json.data.content_md) {
                 var tags = JSON.parse(json.data.content_md).domainTags;

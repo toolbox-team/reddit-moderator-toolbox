@@ -261,7 +261,7 @@ self.init = function () {
         self.setting('lastSeenModmail', now);
         self.setting('modmailCount', 0);
 
-        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function (json) {
+        $.getJSON(TBUtils.baseDomain + '/r/' + modmailFilteredSubreddits + '/message/moderator/unread.json').done(function (json) {
             $.each(json.data.children, function (i, value) {
 
                 var unreadmessageid = value.data.name;
@@ -419,7 +419,7 @@ self.init = function () {
         // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
 
         function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
-            $.getJSON(unreadcontexturl).done(function (jsondata) {
+            $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(function (jsondata) {
                 var commenttitle = jsondata[0].data.children[0].data.title;
                 if (straightToInbox && messageunreadlink) {
                     TBUtils.notification('Reply from: ' + unreadauthor + ' in:  ' + unreadsubreddit + ': ' + commenttitle.substr(0, 20) + '\u2026', $(unreadbody_html).text(), '/message/unread/');
@@ -432,7 +432,7 @@ self.init = function () {
         }
 
         // getting unread messages
-        $.getJSON('/message/unread.json').done(function (json) {
+        $.getJSON(TBUtils.baseDomain + '/message/unread.json').done(function (json) {
             var count = json.data.children.length || 0;
             self.setting('unreadMessageCount', count);
             updateMessagesCount(count);
@@ -543,7 +543,7 @@ self.init = function () {
         //
         // wrapper around $.getJSON so it can be part of a loop
         function procesmqcomments(mqlinkid, mqreportauthor, mqidname) {
-            $.getJSON(mqlinkid).done(function (jsondata) {
+            $.getJSON(TBUtils.baseDomain + mqlinkid).done(function (jsondata) {
                 var infopermalink = jsondata.data.children[0].data.permalink,
                     infotitle = jsondata.data.children[0].data.title,
                     infosubreddit = jsondata.data.children[0].data.subreddit;
@@ -560,7 +560,7 @@ self.init = function () {
             modQueueURL = '/r/' + modSubreddits + '/about/modqueue';
         }
 
-        $.getJSON(modQueueURL + '.json?limit=100').done(function (json) {
+        $.getJSON(TBUtils.baseDomain + modQueueURL + '.json?limit=100').done(function (json) {
             var count = json.data.children.length || 0;
             updateModqueueCount(count);
             //$.log(modNotifications);
@@ -666,7 +666,7 @@ self.init = function () {
                 unModeratedURL = '/r/' + unmoderatedSubreddits + '/about/unmoderated';
             }
 
-            $.getJSON(unModeratedURL + '.json?limit=100').done(function (json) {
+            $.getJSON(TBUtils.baseDomain + unModeratedURL + '.json?limit=100').done(function (json) {
                 var count = json.data.children.length || 0;
 
 
@@ -730,7 +730,7 @@ self.init = function () {
         // Modmail
         //
         // getting unread modmail, will not show replies because... well the api sucks in that regard.
-        $.getJSON('/r/' + modmailFilteredSubreddits + '/message/moderator.json').done(function (json) {
+        $.getJSON(TBUtils.baseDomain + '/r/' + modmailFilteredSubreddits + '/message/moderator.json').done(function (json) {
 
             var count = json.data.children.length || 0;
             if (count === 0) {
@@ -840,9 +840,7 @@ self.init = function () {
 
     getmessages();
     // Because firefox is "special" we wait a tiny bit and try again.
-    setTimeout(function () {
-        getmessages();
-    }, 1000);
+
 
 
 };

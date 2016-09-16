@@ -213,7 +213,7 @@
 
 
     redditapi.getBanState = function (subreddit, user, callback) {
-        $.get("/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
+        $.get(TBUtils.baseDomain + "/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
             var banned = data.data.children;
 
             // If it's over or under exactly one item they are not banned or that is not their full name.

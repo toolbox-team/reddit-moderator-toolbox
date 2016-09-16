@@ -155,7 +155,7 @@ self.init = function() {
                 ';
 
                     // Lets get a list of notes!
-                    $.getJSON('/r/' + notewiki + '/wiki/pages.json')
+                    $.getJSON(TBUtils.baseDomain + '/r/' + notewiki + '/wiki/pages.json')
                         .success(function (json) {
                             notesArray = [];
                             var notesList,

@@ -30,13 +30,25 @@
 				<string>data/libs/jquery-2.2.4.js</string>
 				<string>data/libs/tbplugins.js</string>
 				<string>data/libs/snuownd.js</string>
-				<string>data/libs/ace.js</string>
+				<string>data/libs/codemirror/codemirror.js</string>
+				<string>data/libs/codemirror/addon/closebrackets.js</string>
+				<string>data/libs/codemirror/addon/css-hint.js</string>
+				<string>data/libs/codemirror/addon/dialog.js</string>
+				<string>data/libs/codemirror/addon/fullscreen.js</string>
+				<string>data/libs/codemirror/addon/jump-to-line.js</string>
+				<string>data/libs/codemirror/addon/matchesonscrollbar.js</string>
+				<string>data/libs/codemirror/addon/match-highlighter.js</string>
+				<string>data/libs/codemirror/addon/annotatescrollbar.js</string>
+				<string>data/libs/codemirror/addon/panel.js</string>
+				<string>data/libs/codemirror/addon/rulers.js</string>
+				<string>data/libs/codemirror/addon/search.js</string>
+				<string>data/libs/codemirror/addon/searchcursor.js</string>
+				<string>data/libs/codemirror/addon/show-hint.js</string>
+				<string>data/libs/codemirror/mode/css.js</string>
+				<string>data/libs/codemirror/mode/markdown.js</string>
+				<string>data/libs/codemirror/mode/yaml.js</string>
+				<string>data/libs/codemirror/mode/javascript.js</string>
 				<string>data/libs/pako.js</string>
-				<string>data/libs/worker-css.js</string>
-				<string>data/libs/mode-css.js</string>
-				<string>data/libs/mode-json.js</string>
-				<string>data/libs/mode-yaml.js</string>
-				<string>data/libs/ace-themes.js</string>
 				<string>data/libs/redditapi.js</string>
 				<string>data/libs/spectrum.js</string>
 				<string>data/tbstorage.js</string>
@@ -88,6 +100,12 @@
 				<string>data/styles/domaintagger.css</string>
 				<string>data/styles/usernotes.css</string>
 				<string>data/styles/config.css</string>
+				<string>data/styles/codemirror/codemirror.css</string>
+				<string>data/styles/codemirror/dialog.css</string>
+				<string>data/styles/codemirror/fullscreen.css</string>
+				<string>data/styles/codemirror/matchesonscrollbar.css</string>
+				<string>data/styles/codemirror/show-hint.css</string>
+				<string>data/styles/codemirror/themes.css</string>
 		</array>
 	</dict>
 	<key>Description</key>

@@ -378,13 +378,13 @@ self.modmailpro = function() {
         self.startProfile("thread-jquery");
 
         var $thread = $(thread),
-            newThread = $thread.hasClass('realtime-new'),
+            newMessageThread = $thread.hasClass('realtime-new'),
             lmcThread = $thread.hasClass('lmc-thread');
 
         $thread.addClass('mmp-processed');
 
         // Add back UI for new threads *before* any $thread.find()'s
-        if (newThread || lmcThread) {
+        if (newMessageThread || lmcThread) {
             addThreadUI($thread);
         }
 
@@ -504,7 +504,7 @@ self.modmailpro = function() {
         }
 
         // Deal with realtime threads.
-        if (newThread) {
+        if (newMessageThread) {
             self.log('New thread!');
             $thread.removeClass('realtime-new');
             $infoArea.css('background-color', 'yellow');

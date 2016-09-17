@@ -2,6 +2,7 @@
 *.plist
 *.zip
 *.xpi
+Info.plist
 
 /data/background
 /data/Icon.png

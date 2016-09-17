@@ -233,7 +233,7 @@ TB = {
                         </tr><tr>\
                             <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>\
                             <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
-                            <td>&nbsp;</td>\
+                            <td><a href="/user/geo1088">/u/geo1088</a></td>\
                           </tr>\
                     </table>\
                     <h3>Documentation by:</h3>\

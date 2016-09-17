@@ -11,6 +11,40 @@
     z-index: 2147483646;
     bottom: 25px;
 }
+
+.tb-syntax-keyboard i {
+    font-size: medium;
+}
+
+.mod-toolbox .CodeMirror.CodeMirror-wrap {
+    position: relative;
+}
+
+.mod-toolbox .tb-syntax-keyboard {
+    position: absolute;
+    width: 150px;
+    background-color: rgba(206, 227, 248, 0.55);
+    color: black;
+    right: 0;
+    top: 0;
+    z-index: 99999999999;
+    padding: 3px;
+    transition: width 0.3s;
+}
+
+.mod-toolbox .tb-syntax-keyboard:hover {
+    width: 500px;
+}
+
+.mod-toolbox .tb-syntax-keyboard ul {
+    display: none;
+}
+
+
+
+.tb-syntax-keyboard:hover ul {
+    display: block;
+}
 /* PADDING */
 
 .CodeMirror-lines {

@@ -35,7 +35,7 @@
                 "https://*.reddit.com/*"
             ],
             "css": [
-                "data/libs/spectrum.css",
+                "data/styles/spectrum.css",
                 "data/styles/toolbox.css",
                 "data/styles/comment.css",
                 "data/styles/modmatrix.css",

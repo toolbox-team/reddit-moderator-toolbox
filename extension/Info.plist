@@ -84,7 +84,7 @@
 		</dict>
 		<key>Stylesheets</key>
 		<array>
-				<string>data/libs/spectrum.css</string>
+				<string>data/styles/spectrum.css</string>
 				<string>data/styles/toolbox.css</string>
 				<string>data/styles/comment.css</string>
 				<string>data/styles/modmatrix.css</string>

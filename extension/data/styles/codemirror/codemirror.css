@@ -10,14 +10,11 @@
 .mod-toolbox .CodeMirror-fullscreen {
     z-index: 2147483646;
     bottom: 25px;
+
 }
 
 .tb-syntax-keyboard i {
     font-size: medium;
-}
-
-.mod-toolbox .CodeMirror.CodeMirror-wrap {
-    position: relative;
 }
 
 .mod-toolbox .tb-syntax-keyboard {

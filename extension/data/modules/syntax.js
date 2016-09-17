@@ -1,5 +1,5 @@
 function syntax() {
-// syntax highlighter with ACE, by creesch
+
 
     var self = new TB.Module('Syntax Highlighter');
     self.shortname = 'Syntax';
@@ -207,23 +207,13 @@ function syntax() {
             });
 
             // In order to make save button work we need to hijack and replace it.
-            $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-ace-button-save-wiki'));
+            $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
 
 
             // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
-            $body.delegate('.tb-ace-button-save-wiki', 'click', function() {
-                textarea.val(session.getValue());
+            $body.delegate('.tb-syntax-button-save-wiki', 'click', function() {
+                miscEditor.save();
                 $('#wiki_save_button').click();
-            });
-
-            $body.delegate('.tb-syntax-button-save', 'click', function() {
-                miscEditor.save();
-                $('.sheets .buttons .btn[name="save"]').click();
-            });
-
-            $body.delegate('.tb-syntax-button-preview', 'click', function() {
-                miscEditor.save();
-                $('.sheets .buttons .btn[name="preview"]').click();
             });
 
             // Actually dealing with the theme dropdown is done here.

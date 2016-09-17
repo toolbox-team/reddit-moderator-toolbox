@@ -48,7 +48,7 @@ self.addButton = function () {
     // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
     $('.menuarea').append('\
 <div class="spacer">\
-<span style="float:right;">&nbsp;<a class="reddit-moderationlog" href="#matrix" >toggle moderation log matrix</a>&nbsp;</span>\
+<a class="reddit-moderationlog tb-general-button" href="#matrix" >toggle moderation log matrix</a>&nbsp\
 </div>\
 ');
 
@@ -724,7 +724,7 @@ self.init = function () {
     var commentLoadActive = false,
         ratelimitRemaining = 200,
         ratelimitReset;
-    $('.content .menuarea').append('<div class="spacer"><span id="ratelimit-counter"></span><span style="float:right;">&nbsp;<a href="javascript:;" class="activate-comment-load" >Load text of removed comments.</a>  &nbsp; &nbsp;</span></div>');
+    $('.content .menuarea').append('<div class="spacer"><span id="ratelimit-counter"></span><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of removed comments.</a></div>');
 
 
     function getComments() {
@@ -740,7 +740,7 @@ self.init = function () {
                 if (!$this.find('.description').attr('id')) {
                     $this.find('.description').attr('id', commentID);
 
-                    $.getJSON(TBUtils.baseDomain + removedUrl).done(function (data, status, jqxhr) {
+                    $.getJSON(removedUrl).done(function (data, status, jqxhr) {
 
                         $body.find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
                         $body.find('.activate-comment-load').attr('data-reset', ratelimitReset);

@@ -1,18 +1,13 @@
-.CodeMirror-fullscreen {
-   z-index: 2147483647;
-}
-
-
 /* BASICS */
 
-.CodeMirror {
+.mod-toolbox .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
   height: 600px;
   color: black;
 }
 
-.CodeMirror-fullscreen {
+.mod-toolbox .CodeMirror-fullscreen {
     z-index: 2147483646;
     bottom: 25px;
 }

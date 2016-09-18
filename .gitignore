@@ -6,5 +6,6 @@
 /project.json
 *.zip
 *.xpi
+*.nex
 /node_modules
 extension/data/modules/trollatroll.js

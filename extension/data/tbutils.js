@@ -92,8 +92,8 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.4.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 340; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '3.4.1' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 341; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.releaseName = 'Modmailing Mallard';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;

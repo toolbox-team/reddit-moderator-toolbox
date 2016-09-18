@@ -417,7 +417,7 @@ self.getActions = function (callback) {
     if (this.dataCache[cacheKey] != null) {
         self.processData(this.dataCache[cacheKey], callback);
     } else {
-        $.getJSON(TBUtils.baseDomain + url, requestData, function (response) {
+        $.getJSON(url, requestData, function (response) {
             self.log("Got " + requestData.count + " to " + (requestData.count + requestData.limit));
             var data = response.data;
             self.processData(data, callback);

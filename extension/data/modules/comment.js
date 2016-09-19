@@ -725,23 +725,38 @@ self.init = function () {
 
     commentSearch();
 
-    // hide mod comments option.
-    if (TB.utils.isUserPage) {
-        var $modActions = $('.moderator, [data-subreddit="spam"]');
-        if ($modActions.length > 0) {
-            self.log('found mod comments');
-            $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod actions</a>');
+    var hidden = false;
+    function addHideModButton(){
 
-            $body.on('click', '.tb-hide-mod-comments', function () {
-                self.log('hiding mod actions');
-                $modActions.closest('.thing').hide();
-                $(this).hide();
-                window.addEventListener("TBNewThings", function () {
-                    $('.moderator, [data-subreddit="spam"]').closest('.thing').hide();
-                });
-            })
+        // hide mod comments option.
+        if (TB.utils.isUserPage) {
+            var $modActions = $('.moderator, [data-subreddit="spam"]');
+            if ($modActions.length > 0) {
+                self.log('found mod actions');
+
+                if ($('.tb-hide-mod-comments').length < 1) {
+                    $('.menuarea').append('&nbsp;&nbsp;<a href="javascript:;" name="hideModComments" class="tb-hide-mod-comments tb-general-button">hide mod actions</a>');
+
+                    $body.on('click', '.tb-hide-mod-comments', function () {
+                        self.log('hiding mod actions');
+                        hidden = true;
+                        $modActions.closest('.thing').hide();
+                        $(this).hide();
+                    })
+                }
+            }
         }
     }
+    addHideModButton();
+
+    // NER support.
+    window.addEventListener("TBNewThings", function () {
+        addHideModButton();
+        if (hidden){
+            self.log('hiding mod actions');
+            $('.moderator, [data-subreddit="spam"]').closest('.thing').hide();
+        }
+    });
 
     // hide old comments
     if (self.setting('showHideOld')) {

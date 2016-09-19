@@ -1956,7 +1956,7 @@ function initwrapper() {
         var observer = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
-                if (!($target.hasClass("sitetable") && ($target.hasClass("listing") || $target.hasClass("linklisting") ||
+                if (!($target.hasClass("sitetable") && ($target.hasClass("nestedlisting") || $target.hasClass("listing") || $target.hasClass("linklisting") ||
                     $target.hasClass("modactionlisting"))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
 
                 $.log('TBNewThings firing from: ' + $target.attr('class'), false, SHORTNAME);

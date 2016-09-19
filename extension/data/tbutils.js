@@ -18,7 +18,7 @@ function initwrapper() {
         $('body').addClass('mod-toolbox-new-modmail');
         TBUtils.modCheck = true;
     } else {
-        TBUtils.modCheck = $('body').hasClass('res') ? $('#sr-header-area a[href*="/r/mod"]').length > 0 : $('#sr-header-area a[href$="/r/mod"]').length > 0;
+        TBUtils.modCheck = $('#modmail, #new_modmail').length > 0;
     }
     // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
     TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);

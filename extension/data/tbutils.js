@@ -1205,10 +1205,16 @@ function initwrapper() {
             })
 
             .done(function () {
-                // Callback regardless of what happens next.  We wrote to the page.
-                callback(true);
+                setTimeout(function () {
+                    // Callback regardless of what happens next.  We wrote to the page.
+                    // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
+
+                    callback(true);
+                    
+                }, 750);
 
                 setTimeout(function () {
+
 
                     // Set page access to 'mod only'.
                     $.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {

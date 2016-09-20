@@ -147,17 +147,12 @@ self.usernotes = function usernotes() {
 
         // Link and comments
         if (thingType === TYPE_THING) {
-            var subreddit = $thing.attr('data-subreddit');
+            var thingInfo = TBUtils.getThingInfo($thing);
+            
+            var subreddit = thingInfo.subreddit,
+                user = thingInfo.user;
 
-            var user = $thing.attr('data-author');
-            if (!user) {
-                user = $thing.find('.author').first().text();
-                if (user !== "[deleted]") {
-                    $thing.attr('data-author', user);
-                }
-            }
-
-            var $userattrs = $thing.find('.userattrs').first();
+            var $userattrs = $thing.find(':not(.parent) .userattrs').first();
 
             if(TBUtils.modsSub(subreddit)) {
                 attachNoteTag($userattrs, subreddit, true);

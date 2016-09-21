@@ -382,6 +382,15 @@ self.init = function() {
 
 
             $textArea.each(function(index, elem){
+                // This makes sure codemirror behaves and uses spaces instead of tabs. 
+                function betterTab(cm) {
+                  if (cm.somethingSelected()) {
+                    cm.indentSelection("add");
+                  } else {
+                    cm.replaceSelection(cm.getOption("indentWithTabs")? "\t":
+                      Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
+                  }
+                }
 
                 // Editor setup.
                 configEditor = CodeMirror.fromTextArea(elem, {
@@ -398,9 +407,9 @@ self.init = function() {
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
-                        "Tab": function(cm) {
-                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-                            cm.replaceSelection(spaces);
+                        "Tab": betterTab, 
+                        "Shift-Tab": function (cm) {
+                            cm.indentSelection("subtract");
                         }
                     },
                     lineWrapping: enableWordWrap

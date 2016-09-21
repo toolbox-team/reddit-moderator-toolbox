@@ -76,6 +76,16 @@ function syntax() {
             selectedTheme = this.setting('selectedTheme'),
             enableWordWrap = this.setting('enableWordWrap'),
             editor, session, textarea;
+            
+            // This makes sure codemirror behaves and uses spaces instead of tabs. 
+            function betterTab(cm) {
+              if (cm.somethingSelected()) {
+                cm.indentSelection("add");
+              } else {
+                cm.replaceSelection(cm.getOption("indentWithTabs")? "\t":
+                  Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
+              }
+            }
 
             var keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
                                               <b>Keyboard shortcuts</b>
@@ -122,9 +132,9 @@ function syntax() {
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
-                        "Tab": function(cm) {
-                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-                            cm.replaceSelection(spaces);
+                        "Tab": betterTab, 
+                        "Shift-Tab": function (cm) {
+                            cm.indentSelection("subtract");
                         }
                     },
                     lineWrapping: enableWordWrap
@@ -205,9 +215,9 @@ function syntax() {
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
-                        "Tab": function(cm) {
-                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
-                            cm.replaceSelection(spaces);
+                        "Tab": betterTab, 
+                        "Shift-Tab": function (cm) {
+                            cm.indentSelection("subtract");
                         }
                     },
                     lineWrapping: enableWordWrap

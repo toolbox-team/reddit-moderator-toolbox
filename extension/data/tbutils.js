@@ -240,6 +240,12 @@ function initwrapper() {
         localStorage.removeItem('Toolbox.Modbar.enableTopLink');
 
         // End: version changes.
+		
+		// This is a super extra check to make sure the wiki page for settings export really is private. 
+		var settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
+		if (settingSubEnabled) {
+			TBUtils.setWikiPrivate('tbsettings', settingSubEnabled, false);
+		}
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
         //TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
@@ -1170,6 +1176,26 @@ function initwrapper() {
             }
         });
     };
+	
+	TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
+		$.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
+			page: page,
+			listed: true, //hrm, may need to make this a config setting.
+			permlevel: 2,
+			uh: TBUtils.modhash
+		})
+		// Super extra double-secret secure, just to be safe.
+			.error(function (err) {
+				// used if it is important for the user to know that a wiki page has not been set to private.
+				if (failAlert) {
+					alert('error setting wiki page to mod only access');
+					window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
+				} else {
+					$.log('error setting wiki page to mod only access');
+				}
+			});
+		
+	}
 
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {

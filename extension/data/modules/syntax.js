@@ -112,6 +112,7 @@ function syntax() {
                     autoCloseBrackets: true,
                     lineNumbers: true,
                     theme: selectedTheme,
+                    indentUnit: 4,
                     extraKeys: {
                         "Ctrl-Space": 'autocomplete',
                         "Ctrl-Alt-F": "findPersistent",
@@ -120,6 +121,10 @@ function syntax() {
                         },
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        },
+                        "Tab": function(cm) {
+                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                            cm.replaceSelection(spaces);
                         }
                     },
                     lineWrapping: enableWordWrap
@@ -191,6 +196,7 @@ function syntax() {
                     autoCloseBrackets: true,
                     lineNumbers: true,
                     theme: selectedTheme,
+                    indentUnit: 4,
                     extraKeys: {
                         "Ctrl-Alt-F": "findPersistent",
                         "F11": function(cm) {
@@ -198,6 +204,10 @@ function syntax() {
                         },
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        },
+                        "Tab": function(cm) {
+                            var spaces = Array(cm.getOption("indentUnit") + 1).join(" ");
+                            cm.replaceSelection(spaces);
                         }
                     },
                     lineWrapping: enableWordWrap

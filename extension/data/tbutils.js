@@ -115,6 +115,7 @@ function initwrapper() {
     TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
     TBUtils.isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
     TBUtils.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
+    TBUtils.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
     TBUtils.isUserPage = location.pathname.match(/\/(?:user)\/?/);
     TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
     TBUtils.isMultiPage = location.pathname.match(/^\/(?:user\/)?\w+\/m\/\w+/);
@@ -240,8 +241,8 @@ function initwrapper() {
         localStorage.removeItem('Toolbox.Modbar.enableTopLink');
 
         // End: version changes.
-		
-		// This is a super extra check to make sure the wiki page for settings export really is private. 
+
+		// This is a super extra check to make sure the wiki page for settings export really is private.
 		var settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
 		if (settingSubEnabled) {
 			TBUtils.setWikiPrivate('tbsettings', settingSubEnabled, false);
@@ -1176,7 +1177,7 @@ function initwrapper() {
             }
         });
     };
-	
+
 	TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
 		$.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
 			page: page,
@@ -1194,7 +1195,7 @@ function initwrapper() {
 					$.log('error setting wiki page to mod only access');
 				}
 			});
-		
+
 	}
 
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
@@ -1236,7 +1237,7 @@ function initwrapper() {
                     // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
 
                     callback(true);
-                    
+
                 }, 750);
 
                 setTimeout(function () {

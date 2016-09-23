@@ -128,7 +128,7 @@ self.init = function() {
 
     // This is here in case notifier is disabled which is where this normally is set.
 	// Atleast, I think.... - creesch
-    var modMailUrl = $('#modmail').attr('href');
+    var modMailUrl = $('#modmail').attr('href') || TBUtils.baseDomain + '/message/moderator/';
     if (parseInt(modmailCustomLimit) > 0) {
 
         modMailUrl += '?limit=' + modmailCustomLimit;
@@ -137,7 +137,7 @@ self.init = function() {
         $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
-    var modQueueUrl = (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : '/r/' + modSubreddits + '/about/modqueue');
+    var modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : '/r/' + modSubreddits + '/about/modqueue');
     var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
@@ -146,8 +146,8 @@ self.init = function() {
     <span>&nbsp;</span>\
     <span id="tb-toolbarshortcuts"></span>\
     <span id="tb-toolbarcounters">\
-    <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-    <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
+    <a title="no mail" href="' + TBUtils.baseDomain + '/message/inbox/" class="nohavemail" id="tb-mail"></a> \
+    <a href="' + TBUtils.baseDomain + '/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
     <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
     <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
     <a title="modqueue" href="' + modQueueUrl + '" id="tb-modqueue"></a> \
@@ -161,7 +161,7 @@ self.init = function() {
    // Add unmoderated icon if it is enabled.
 
     if (unmoderatedOn) {
-        var unModQueueUrl = (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : '/r/' + unmoderatedSubreddits + '/about/unmoderated');
+        var unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : '/r/' + unmoderatedSubreddits + '/about/unmoderated');
         modBar.find('#tb-toolbarcounters').append('\
 <a title="unmoderated" href="' + unModQueueUrl + '" id="tb-unmoderated"></a>\
 <a href="' + unModQueueUrl + '" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
@@ -226,11 +226,11 @@ self.init = function() {
             $(TBUtils.mySubsData).each(function () {
                 subList = subList + '\
 <tr style="border-left: solid 3px ' + TBUtils.stringToColor(this.subreddit + subredditColorSalt) + ' !important;" data-subreddit="' + this.subreddit + '">\
-    <td><a href="/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td>\
+    <td><a href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td>\
     <td class="tb-my-subreddits-subreddit">\
-        <a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
-        <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
-        <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a>\
+        <a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
+        <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
+        <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a>\
     </td>\
 </tr>\
 ';

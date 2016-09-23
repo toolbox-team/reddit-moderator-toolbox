@@ -213,8 +213,8 @@ self.init = function () {
         unmoderatedCount = self.setting('unmoderatedCount'),
         modmailCount = self.setting('modmailCount'),
 
-        messageunreadurl = '/message/inbox/',
-        modmailunreadurl = '/message/moderator/';
+        messageunreadurl = TBUtils.baseDomain + '/message/inbox/',
+        modmailunreadurl = TBUtils.baseDomain + '/message/moderator/';
 
     // Use custom modmail icons if applicable
     if(customModmailIcon) {
@@ -313,12 +313,12 @@ self.init = function () {
                 $mailCount.empty();
                 $mail.attr('class', 'nohavemail');
                 $mail.attr('title', 'no new mail!');
-                $mail.attr('href', '/message/inbox/');
+                $mail.attr('href', TBUtils.baseDomain + '/message/inbox/');
                 $mailcount.attr('href', messageunreadurl);
                 $tb_mail.attr('class', 'nohavemail');
                 $tb_mail.attr('title', 'no new mail!');
-                $tb_mail.attr('href', '/message/inbox/');
-                $('#tb-mailCount').attr('href', '/message/inbox/');
+                $tb_mail.attr('href', TBUtils.baseDomain + '/message/inbox/');
+                $('#tb-mailCount').attr('href', TBUtils.baseDomain + '/message/inbox/');
             } else {
                 $mail.attr('class', 'havemail');
                 $mail.attr('title', 'new mail!');

@@ -15,7 +15,6 @@
     "permissions": [
         "https://*.reddit.com/",
         "http://*.reddit.com/",
-		"https://mod.reddit.com/",
         "tabs",
         "storage",
         "unlimitedStorage"

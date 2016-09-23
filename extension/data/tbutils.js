@@ -219,6 +219,25 @@ function initwrapper() {
         TBUtils.tbDevs = getToolboxDevs();
     }
 
+    TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
+        $.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
+            page: page,
+            listed: true, //hrm, may need to make this a config setting.
+            permlevel: 2,
+            uh: TBUtils.modhash
+        })
+        // Super extra double-secret secure, just to be safe.
+            .error(function (err) {
+                // used if it is important for the user to know that a wiki page has not been set to private.
+                if (failAlert) {
+                    alert('error setting wiki page to mod only access');
+                    window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
+                } else {
+                    $.log('error setting wiki page to mod only access');
+                }
+            });
+
+    };
 
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
@@ -1178,25 +1197,7 @@ function initwrapper() {
         });
     };
 
-	TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
-		$.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
-			page: page,
-			listed: true, //hrm, may need to make this a config setting.
-			permlevel: 2,
-			uh: TBUtils.modhash
-		})
-		// Super extra double-secret secure, just to be safe.
-			.error(function (err) {
-				// used if it is important for the user to know that a wiki page has not been set to private.
-				if (failAlert) {
-					alert('error setting wiki page to mod only access');
-					window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
-				} else {
-					$.log('error setting wiki page to mod only access');
-				}
-			});
 
-	}
 
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {

@@ -1,3 +1,10 @@
+/* console stuff */
+.mod-toolbox .tb-debug-content .CodeMirror {
+    width: 800px;
+    height: 600px;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
+}
+
 .mod-toolbox  #tb-toolbar-mysubs:hover, .mod-toolbox  #tb-personal-notes-button:hover {
     background: #9FBAD6;
 

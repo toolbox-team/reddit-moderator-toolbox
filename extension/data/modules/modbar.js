@@ -309,13 +309,47 @@ self.init = function() {
     // Debug mode/console
     if (debugMode) {
         $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,' + TBui.iconConsole + '" /></a>');
+        var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
         var $consoleText = $('.tb-debug-console');
+        var debugEditor;
+        $('.tb-debug-console').each(function(index, elem){
+            // This makes sure codemirror behaves and uses spaces instead of tabs.
+            // Editor setup.
+            debugEditor = CodeMirror.fromTextArea(elem, {
+                mode: 'text/x-yaml',
+                autoCloseBrackets: true,
+                lineNumbers: true,
+                theme: selectedTheme,
+                indentUnit: 4,
+                readOnly: true,
+                viewportMargin: Infinity,
+                extraKeys: {
+                    "Ctrl-Alt-F": "findPersistent",
+                    "F11": function(cm) {
+                        cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                    },
+                    "Esc": function(cm) {
+                        if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                    }
+                },
+                lineWrapping: true
+            });
 
+
+        });
+
+
+        var logLength = 0;
+        var logVisibleLength = 0;
         setInterval(function () {
-
+            console.log(logLength);
             if (currentModule == DEFAULT_MODULE) {
-                $consoleText.val(TBUtils.log.join('\n'));
+                if (logLength < TBUtils.log.length) {
+                    debugEditor.setValue(TBUtils.log.join('\n'));
+                    logLength = TBUtils.log.length;
+                    logVisibleLength = logLength;
+                }
             }
 
             // filter log by module.
@@ -329,12 +363,17 @@ self.init = function() {
                         moduleLog.push(TB.utils.log[i]);
                     }
                 }
-
-                $consoleText.val(moduleLog.join('\n'));
+                if (logLength < TBUtils.log.length) {
+                    logLength = TBUtils.log.length;
+                    logVisibleLength = moduleLog.length;
+                    debugEditor.setValue(moduleLog.join('\n'));
+                }
             }
 
             if (lockscroll) {
-                $consoleText.scrollTop($consoleText[0].scrollHeight);
+                var bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, "local").bottom;
+                debugEditor.scrollTo(null, bottom);
+                // $consoleText.scrollTop($consoleText[0].scrollHeight);
             }
 
             // add new modules to dropdown.

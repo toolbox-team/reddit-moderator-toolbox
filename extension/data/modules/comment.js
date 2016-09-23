@@ -286,7 +286,7 @@ self.init = function () {
             var jsonurl = $('.entry a.comments').attr('href');
 
             // Lets get the comments.
-            $.getJSON(TBUtils.baseDomain + jsonurl + '.json?limit=1500').done(function (data, status, jqxhr) {
+            $.getJSON(jsonurl  + '.json?limit=1500').done(function (data, status, jqxhr) {
                 // put the json through our deconstructor.
                 data[1].isreply = false;
                 parseComments(data[1]);

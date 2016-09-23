@@ -233,12 +233,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.4 version changes
-
-        // Ace swapped out for CodeMirror and they have
-        TBStorage.setSetting('syntax', 'selectedTheme', 'dracula');
-        // RES now has this feature.
-        localStorage.removeItem('Toolbox.Modbar.enableTopLink');
+        // 3.5 version changes
 
         // End: version changes.
 

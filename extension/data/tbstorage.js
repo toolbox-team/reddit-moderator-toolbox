@@ -80,7 +80,7 @@
 
 function storagewrapper() {
 (function (TBStorage) {
-    if ((!$("form.logout input[name=uh]").val() && $('.Header__profile').length < 0) || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
+    if ((!$("form.logout input[name=uh]").val() && $('.Header__profile').length === 0) || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
 
 
     var SHORTNAME = 'TBStorage';

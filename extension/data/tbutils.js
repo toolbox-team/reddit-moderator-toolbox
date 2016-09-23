@@ -75,7 +75,8 @@ function initwrapper() {
             "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
             "Luu",
             "I go two and hope for the best.",
-            "oh dammit, I forgot to include url shit"],
+            "oh dammit, I forgot to include url shit",
+            "I think I just released a broken release"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",
@@ -252,12 +253,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.4 version changes
-
-        // Ace swapped out for CodeMirror and they have
-        TBStorage.setSetting('syntax', 'selectedTheme', 'dracula');
-        // RES now has this feature.
-        localStorage.removeItem('Toolbox.Modbar.enableTopLink');
+        // 3.5 version changes
 
         // End: version changes.
 

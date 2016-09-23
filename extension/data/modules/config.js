@@ -364,25 +364,25 @@ self.init = function() {
             } else {
                 defaultMode = "application/json";
             }
-            var keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
-                                              <b>Keyboard shortcuts</b>
-                                                  <ul>
-                                                    <li><i>F11:</i> Fullscreen</li>
-                                                    <li><i>Esc:</i> Close Fullscreen</li>
-                                                    <li><i>Ctrl-F / Cmd-F:</i> Start searching</li>
-                                                    <li><i>Ctrl-Alt-F / Cmd-Alt-F:</i> Persistent search (dialog doesn't autoclose) </li>   
-                                                    <li><i>Ctrl-G / Cmd-G:</i> Find next</li>
-                                                    <li><i>Shift-Ctrl-G / Shift-Cmd-G:</i>  Find previous</li>
-                                                    <li><i>Shift-Ctrl-F / Cmd-Option-F:</i> Replace</li>
-                                                    <li><i>Shift-Ctrl-R / Shift-Cmd-Option-F:</i>  Replace all</li>
-                                                    <li><i>Alt-G:</i> Jump to line </li>
-                                                    <li><i>Ctrl-Space / Cmd-Space:</i> autocomplete</li>
-                                                </ul>
-                                              </div>`;
+            var keyboardShortcutsHelper = '<div class="tb-syntax-keyboard">\
+                                              <b>Keyboard shortcuts</b>\
+                                                  <ul>\
+                                                    <li><i>F11:</i> Fullscreen</li>\
+                                                    <li><i>Esc:</i> Close Fullscreen</li>\
+                                                    <li><i>Ctrl-F / Cmd-F:</i> Start searching</li>\
+                                                    <li><i>Ctrl-Alt-F / Cmd-Alt-F:</i> Persistent search (dialog doesn\'t autoclose) </li>\
+                                                    <li><i>Ctrl-G / Cmd-G:</i> Find next</li>\
+                                                    <li><i>Shift-Ctrl-G / Shift-Cmd-G:</i>  Find previous</li>\
+                                                    <li><i>Shift-Ctrl-F / Cmd-Option-F:</i> Replace</li>\
+                                                    <li><i>Shift-Ctrl-R / Shift-Cmd-Option-F:</i>  Replace all</li>\
+                                                    <li><i>Alt-G:</i> Jump to line </li>\
+                                                    <li><i>Ctrl-Space / Cmd-Space:</i> autocomplete</li>\
+                                                </ul>\
+                                              </div>';
 
 
             $textArea.each(function(index, elem){
-                // This makes sure codemirror behaves and uses spaces instead of tabs. 
+                // This makes sure codemirror behaves and uses spaces instead of tabs.
                 function betterTab(cm) {
                   if (cm.somethingSelected()) {
                     cm.indentSelection("add");
@@ -407,7 +407,7 @@ self.init = function() {
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
-                        "Tab": betterTab, 
+                        "Tab": betterTab,
                         "Shift-Tab": function (cm) {
                             cm.indentSelection("subtract");
                         }

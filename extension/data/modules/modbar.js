@@ -140,18 +140,21 @@ self.init = function() {
     var modQueueUrl = (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : '/r/' + modSubreddits + '/about/modqueue');
     var modBar = $('\
 <div id="tb-bottombar" class="tb-toolbar">\
-    <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>&nbsp;&nbsp;\
+    <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>\
     <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGear + '" title="toolbox settings"/></a>\
-    <span><label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label><span>\
-    <span>&nbsp;</span>\
-    <span id="tb-toolbarshortcuts"></span>\
-    <span id="tb-toolbarcounters">\
-    <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a> \
-    <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-    <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
-    <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
-    <a title="modqueue" href="' + modQueueUrl + '" id="tb-modqueue"></a> \
-    <a href="' + modQueueUrl + '" class="tb-toolbar" id="tb-queueCount"></a>\
+    <label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label>\
+    <span id="tb-bottombar-contentleft">\
+        <span id="tb-toolbarshortcuts"></span>\
+    </span>\
+    <span id="tb-bottombar-contentright">\
+        <span id="tb-toolbarcounters">\
+            <a title="no mail" href="/message/inbox/" class="nohavemail" id="tb-mail"></a>\
+            <a href="/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
+            <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
+            <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
+            <a title="modqueue" href="' + modQueueUrl + '" id="tb-modqueue"></a>\
+            <a href="' + modQueueUrl + '" class="tb-toolbar" id="tb-queueCount"></a>\
+        </span>\
     </span>\
 </div>\
 ');
@@ -294,7 +297,7 @@ self.init = function() {
     }
 
     if (TBUtils.firstRun) {
-        $('.tb-first-run').show();
+        $('.tb-first-run').show().css('display', 'inline-block');
     }
 
     if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {

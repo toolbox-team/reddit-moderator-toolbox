@@ -175,15 +175,24 @@ body.mod-toolbox #tb-bottombar {
     text-align: left;
     margin-left: 0;
     margin-right: 0;
-    height: 20px;
+    height: 22px;
     background-color: rgba(206, 227, 248, 0.86);
     font-size:11px;
     color: #696969;
-    padding: 2px !important;
+    padding: 0 !important;
     border-top: solid 1px #B6C9DD;
     left: 0;
     right: 0;
     box-sizing: initial !important;
+}
+body.mod-toolbox #tb-bottombar span {
+    display: inline-block;
+    vertical-align: top;
+    height: 22px;
+    line-height: 22px;
+}
+body.mod-toolbox #tb-bottombar #tb-bottombar-contentright {
+    float: right;
 }
 
 .mod-toolbox #tb-bottombar-hidden {
@@ -194,14 +203,25 @@ body.mod-toolbox #tb-bottombar {
     margin-left: 0;
     margin-right: 0;
     width: auto;
-    height: 20px;
+    height: 22px;
     background-color: rgba(206, 227, 248, 0.86);
     font-size: 11px;
     color: #696969;
-    padding: 2px !important;
+    padding: 0 !important;
     border-top: solid 1px #B6C9DD;
     border-right: solid 1px #B6C9DD;
     left: 0;
+}
+
+/* Icons in the bottom bar */
+.mod-toolbox #tb-bottombar .tb-bottombar-hide,
+.mod-toolbox #tb-bottombar-hidden .tb-bottombar-unhide,
+.mod-toolbox #tb-bottombar .tb-toolbar-new-settings,
+.mod-toolbox #tb-toggle-console,
+.mod-toolbox #tb-reload-link {
+    display: inline-block;
+    height: 16px;
+    padding: 3px;
 }
 
 .mod-toolbox #tb-mail.nohavemail {
@@ -818,6 +838,9 @@ img.note-close {
 .tb-first-run {
     display: none;
     color: red;
+    vertical-align: top;
+    height: 22px;
+    line-height: 22px;
 }
 
 .mod-toolbox .tb-popup {
@@ -2189,9 +2212,3 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     margin-left:3px;
     content: "";
 }
-
-
-
-
-
-

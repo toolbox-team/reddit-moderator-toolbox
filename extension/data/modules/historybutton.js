@@ -599,7 +599,7 @@ self.populateSubmissionHistory = function (after, author) {
             if (spec.type === TYPE.PATH) {
                 spec.rx = new RegExp(spec.domain + '/' + (spec.path || '') + '([\\w-@]+)');
             } else if (spec.type === TYPE.SUBDOMAIN) {
-                spec.rx = /:\/\/([\w-]+)/;
+                spec.rx = new RegExp(':\/\/([\\w-]+)\.' + spec.domain);
             }
         }
 

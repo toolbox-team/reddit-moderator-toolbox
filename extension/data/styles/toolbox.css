@@ -897,6 +897,8 @@ img.note-close {
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
     padding: 0px 11px;
+    display: inline-block;
+    height: 26px;
 }
 
 .tb-popup-tabs {

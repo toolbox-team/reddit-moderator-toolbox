@@ -148,7 +148,7 @@ self.usernotes = function usernotes() {
         // Link and comments
         if (thingType === TYPE_THING) {
             var thingInfo = TBUtils.getThingInfo($thing);
-            
+
             var subreddit = thingInfo.subreddit,
                 user = thingInfo.user;
 
@@ -443,11 +443,25 @@ self.usernotes = function usernotes() {
                 self.log("    "+info.color);
                 $typeList.append($('<td>').append(
                     $('<label>').addClass('utagger-type type-'+info.key).append(
-                        $('<input>').attr('type', 'radio').attr('name', 'type-group-' + group).attr('value', info.key).addClass('type-input type-input-' + info.key)
+                        $('<input>').attr('type', 'checkbox').attr('name', 'type-group-' + group).attr('value', info.key).addClass('type-input type-input-' + info.key)
                     ).append(
                         $('<span>').text(info.text).css('color', info.color)
                     ))
                 );
+            });
+
+            // Radio buttons 2.0, now with deselection
+            $popup.find('.utagger-type').click(function(){
+                var $thisInput = $(this).find('input');
+                // Are we already checked?
+                if ($thisInput.prop('checked')) {
+                    // just uncheck this thing so everything is blank
+                    $thisInput.prop('checked', false);
+                } else {
+                    // Uncheck all the things, then check this thing
+                    $(this).closest('.utagger-types').find('input').prop('checked', false);
+                    $thisInput.prop('checked', true)
+                }
             });
 
             $popup.show();

@@ -1,6 +1,5 @@
 .mod-toolbox .tb-popup.personal-notes-popup {
     max-width: 95%;
-    box-shadow: inset 250px 0 #C7D6E6;
 }
 
 /* Box layout */
@@ -38,6 +37,10 @@
     padding: 5px;
     background: #C7D6E6;
     box-shadow: 0 -1px #FFF;
+}
+/* Hack to get background on the list */
+.mod-toolbox .tb-popup.personal-notes-popup .tb-popup-content {
+    box-shadow: inset 250px 0 #C7D6E6;
 }
 /* Actual list */
 .mod-toolbox #tb-personal-notes-ul li {

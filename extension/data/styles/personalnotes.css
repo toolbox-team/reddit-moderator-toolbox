@@ -1,25 +1,87 @@
 .mod-toolbox .tb-popup.personal-notes-popup {
-max-width: 95%;
+    max-width: 95%;
+    box-shadow: inset 250px 0 #C7D6E6;
 }
 
-.mod-toolbox .personal-notes-popup table {
-    min-height: 200px
-
-}
-
-.mod-toolbox #tb-personal-notes-listing {
-    width: 130px;
-    border-right: solid 1px gray;
-    vertical-align: top;
-    padding: 3px 3px 3px 0;
-}
-
-
-
+/* Box layout */
+.mod-toolbox #tb-personal-notes-listing,
 .mod-toolbox #tb-personal-notes-content {
+    display: inline-block;
+    overflow: hidden;
+    margin-top: -5px;
+    margin-bottom: -5px;
     vertical-align: top;
+}
+
+/* Note selection sidebar */
+.mod-toolbox #tb-personal-notes-listing {
+    width: 250px;
+    height: 100%;
+    margin-left: -5px;
+    padding-bottom: 70px;
+}
+.mod-toolbox .personal-notes-popup input {
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.mod-toolbox #tb-new-personal-note-div {
+    /*border-top: 1px solid #808080;*/
+    /*margin-top: 10px;*/
+    position: absolute;
+    bottom: 36px;
+    width: 240px;
+    height: 60px;
+    padding: 5px;
+    background: #C7D6E6;
+    box-shadow: 0 -1px #FFF;
+}
+/* Actual list */
+.mod-toolbox #tb-personal-notes-ul li {
+    background: #C7D6E6;
+    border-bottom: 1px solid #FFF;
+    padding: 5px 5px 5px 23px;
+    position: relative;
+}
+.mod-toolbox #tb-personal-notes-ul .tb-personal-notes-active {
+    background: #9FBAD6
+}
+.mod-toolbox #tb-personal-notes-ul .tb-personal-notes-active a {
+    color: #000;
+}
+.mod-toolbox .tb-personal-note-delete {
+    display: block;
+    position: absolute;
+    left: 5px;
+    height: 100%;
+    top: 0;
+}
+.mod-toolbox .tb-personal-note-delete img {
+    width: 13px;
+    opacity: 0.8;
+    margin-top: 7px;
+}
+
+.mod-toolbox .tb-personal-note-link {
+    font-size: 14px;
+}
+
+.mod-toolbox .personal-notes-popup {
+    left : 305px;
+    bottom : 31px;
+    display : block;
+    position : fixed;
+}
+
+
+/* Main edit view */
+.mod-toolbox #tb-personal-notes-content {
     min-width: 450px;
-    padding: 3px;
+    margin-right: -5px;
+    padding: 5px;
     position: relative;
 }
 
@@ -32,42 +94,8 @@ max-width: 95%;
     display: none;
 }
 
-.mod-toolbox .personal-notes-popup input {
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
-
-.mod-toolbox #tb-new-personal-note-div {
-    border-top: 1px solid #808080;
-    margin-top: 10px;
-}
-
+/* Save button in footer */
 .mod-toolbox #save-personal-note {
     display: none;
-    width: 100px;
-}
-
-.mod-toolbox .tb-personal-note-link.tb-personal-notes-active {
-    font-weight: bold;
-}
-
-.mod-toolbox .tb-personal-note-delete img {
-    width: 13px;
-    opacity: 0.8;
-    margin-bottom: -3px;
-}
-
-.mod-toolbox .tb-personal-note-link {
-    font-size: 14px;
-}
-
-.mod-toolbox .personal-notes-popup {
-    left : 305px;
-    bottom : 31px;
-    display : block;
-    position : fixed;
+    width: initial;
 }

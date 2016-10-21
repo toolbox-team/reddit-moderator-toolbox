@@ -143,9 +143,7 @@ self.init = function() {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                     var notesPopupContentTemplate = '\
-                <table>\
-                    <tr>\
-                        <td id="tb-personal-notes-listing">\
+                        <div id="tb-personal-notes-listing">\
                             <div id="tb-personal-notes-list">\
                                 {{notesList}}\
                             </div>\
@@ -157,14 +155,12 @@ self.init = function() {
                                 <input type="button" id="create-personal-note" class="tb-action-button" value="create note">\
                             </div>\
                             \
-                        </td>\
-                        <td id="tb-personal-notes-content">\
+                        </div>\
+                        <div id="tb-personal-notes-content">\
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
                             <textarea id="tb-personal-notes-editarea" rows="' + boxRows + '"' + (monospace ? ' style="font-family: monospace;"' : '') + '></textarea>\
-                        </td>\
-                    </tr>\
-                </table>\
-                ';
+                        </div>\
+                    ';
 
                     // Lets get a list of notes!
                     $.getJSON(TBUtils.baseDomain + '/r/' + notewiki + '/wiki/pages.json')
@@ -221,8 +217,10 @@ self.init = function() {
     $body.on('click', '.personal-notes-popup .tb-personal-note-link', function () {
         var $this = $(this),
             wikiPage = $this.data('wiki');
-        $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
-        $this.addClass('tb-personal-notes-active');
+        // $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
+        $body.find('#tb-personal-notes-ul').find('li').removeClass('tb-personal-notes-active');
+        // $this.addClass('tb-personal-notes-active');
+        $this.closest('li').addClass('tb-personal-notes-active');
 
         loadNoteWiki(wikiPage);
     });

@@ -208,7 +208,7 @@ self.init = function() {
             });
         } else {
             // The UI already exists, so let's destroy it.
-            $('personal-notes-popup').remove();
+            $('.personal-notes-popup').remove();
             $this.removeClass('tb-notes-activated');
         }
     });

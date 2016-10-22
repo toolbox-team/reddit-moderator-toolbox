@@ -509,6 +509,10 @@ text-align: left;
     padding: 10px !important;
 }
 
+.mod-toolbox .tb-personal-settings .tb-window-tabs a {
+    padding: 7px !important;
+}
+
 .mod-toolbox .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;

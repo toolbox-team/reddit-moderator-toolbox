@@ -26,6 +26,11 @@ self.register_setting('reasonAsSub', {
     'default': false,
     'hidden': true
 });
+self.register_setting('reasonSticky', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+})
 // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
 // May make this a user setting, one day.
 self.register_setting('customRemovalReason', {
@@ -346,6 +351,7 @@ self.init = function() {
 
             var reasonType = self.setting('reasonType');
             var reasonAsSub = self.setting('reasonAsSub');
+            var reasonSticky = self.setting('reasonSticky');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -388,7 +394,8 @@ self.init = function() {
                 <div id="buttons"> \
                     <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
                      (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
-                    <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label> / \
+                    <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label>\
+                    (<input class="reason-sticky" type="checkbox" id="type-stickied"' + (reasonSticky ? 'checked' : '') + '/><label for="type-stickied">sticky</label>) /\
                     <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
                     <span style="display:' + selectNoneDisplay + '"> / \
                         <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
@@ -531,6 +538,9 @@ self.init = function() {
     $body.on('click', '.reason-as-sub', function () {
         self.setting('reasonAsSub', $(this).prop('checked'));
     });
+    $body.on('click', '.reason-sticky', function () {
+        self.setting('reasonSticky', $(this).prop('checked'));
+    })
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
@@ -557,6 +567,7 @@ self.init = function() {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
             notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
+            notifySticky = popup.find('.reason-sticky').prop('checked'),
             checked = popup.find('.reason-check:checked'),
             status = popup.find('.status'),
             attrs = popup.find('attrs'),
@@ -758,8 +769,8 @@ self.init = function() {
                             status.text(REPLY_ERROR + ": " + response.json.errors[0][1]);
                         }
                         else {
-                            // Distinguish the new reply
-                            TBUtils.distinguishThing(response.json.data.things[0].data.id, false, function (successful, response) {
+                            // Distinguish the new reply, stickying if necessary
+                            TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, function (successful, response) {
                                 if (successful) {
                                     if (notifyByPM)
                                         sendPM();

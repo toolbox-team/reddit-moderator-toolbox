@@ -264,10 +264,13 @@ self.init = function() {
                         '',
                         'subreddits-you-mod-popup' // class
                     ).appendTo('body').css({
-                            'position': 'fixed',
-                            'bottom': '31px',
-                            'left': '20px'
-                        });
+                        'position': 'fixed',
+                        'bottom': '31px',
+                        'left': '20px'
+                    });
+                } else {
+                    $this.removeClass('tb-mysubs-activated');
+                    $('.subreddits-you-mod-popup').remove();
                 }
 
                 $body.find('#tb-livefilter-input').keyup(function () {

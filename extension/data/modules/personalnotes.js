@@ -100,9 +100,9 @@ self.init = function() {
 
 
                     if ($body.find('#tb-personal-notes-ul').length) {
-                        $body.find('#tb-personal-notes-ul').append('<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="' + page + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link tb-personal-notes-active" data-wiki="' + page + '">' + page + '</a> </li>');
+                        $body.find('#tb-personal-notes-ul').append('<li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="' + page + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="' + page + '">' + page + '</a> </li>');
                     } else {
-                        $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul><li><a href="javascript:void(0)" class="tb-personal-note-delete tb-personal-notes-active" data-wiki="' + page + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link tb-personal-notes-active" data-wiki="' + page + '">' + page + '</a> </li></ul>');
+                        $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul><li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="' + page + '"><img src="data:image/png;base64,' + TBui.iconDelete + '"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="' + page + '">' + page + '</a> </li></ul>');
                     }
 
                     loadNoteWiki(page);

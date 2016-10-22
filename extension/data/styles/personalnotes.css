@@ -5,10 +5,7 @@
 /* Box layout */
 .mod-toolbox #tb-personal-notes-listing,
 .mod-toolbox #tb-personal-notes-content {
-    display: inline-block;
     overflow: hidden;
-    margin-top: -5px;
-    margin-bottom: -5px;
     vertical-align: top;
 }
 
@@ -28,8 +25,6 @@
     margin-bottom: 2px;
 }
 .mod-toolbox #tb-new-personal-note-div {
-    /*border-top: 1px solid #808080;*/
-    /*margin-top: 10px;*/
     position: absolute;
     bottom: 36px;
     width: 240px;
@@ -41,6 +36,8 @@
 /* Hack to get background on the list */
 .mod-toolbox .tb-popup.personal-notes-popup .tb-popup-content {
     box-shadow: inset 250px 0 #C7D6E6;
+    padding: 0 !important;
+    height: 100%;
 }
 /* Actual list */
 .mod-toolbox #tb-personal-notes-ul li {

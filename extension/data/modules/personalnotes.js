@@ -143,7 +143,8 @@ self.init = function() {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                     var notesPopupContentTemplate = '\
-                        <div id="tb-personal-notes-listing">\
+                    <table><tr>\
+                        <td id="tb-personal-notes-listing">\
                             <div id="tb-personal-notes-list">\
                                 {{notesList}}\
                             </div>\
@@ -155,12 +156,12 @@ self.init = function() {
                                 <input type="button" id="create-personal-note" class="tb-action-button" value="create note">\
                             </div>\
                             \
-                        </div>\
-                        <div id="tb-personal-notes-content">\
+                        </td>\
+                        <td id="tb-personal-notes-content">\
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
                             <textarea id="tb-personal-notes-editarea" rows="' + boxRows + '"' + (monospace ? ' style="font-family: monospace;"' : '') + '></textarea>\
-                        </div>\
-                    ';
+                        </td>\
+                    </tr></table>';
 
                     // Lets get a list of notes!
                     $.getJSON(TBUtils.baseDomain + '/r/' + notewiki + '/wiki/pages.json')

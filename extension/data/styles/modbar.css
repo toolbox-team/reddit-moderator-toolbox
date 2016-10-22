@@ -1,5 +1,5 @@
 /* console stuff */
-.mod-toolbox .tb-debug-content .CodeMirror {
+.mod-toolbox .tb-debug-window .CodeMirror {
     width: 800px;
     height: 600px;
     font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;

@@ -184,12 +184,12 @@ self.init = function() {
 
         var $console = $('\
 <div class="tb-debug-window tb-popup">\
-    <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="tb-close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
-    <div class="tb-debug-content">\
+    <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
+    <div class="tb-popup-content">\
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
         <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />\
     </div>\
-    <div class="tb-debug-footer">\
+    <div class="tb-popup-footer">\
         <select class="module-select tb-action-button inline-button"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
         <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll</label>\
         <!--input class="tb-console-copy" type="button" value="copy text"-->\

@@ -1182,11 +1182,6 @@ body .thing.flaired {
     min-width: 700px;
     max-width: none;
     min-height: 286px;
-    padding: 0 !important;
-    background-color: #FFF;
-    border: solid 1px #A2BAD3;
-    box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
-    z-index: 10001;
 }
 
 .mod-toolbox .tb-debug-header {
@@ -1204,11 +1199,11 @@ body .thing.flaired {
     line-height: 20px;
 }
 
-.mod-toolbox .tb-debug-content {
-    overflow: auto;
+.mod-toolbox .tb-debug-window .tb-popup-content {
+    /*overflow: auto;
     left: 0;
     right: 0;
-    padding: 5px !important;
+    padding: 5px !important;*/
     box-sizing: content-box;
 }
 
@@ -1266,11 +1261,6 @@ body .thing.flaired {
     display: inline-block;
     right: 20px;
 }
-
-.mod-toolbox #tb-debug-hide {
-    padding: 0 5px 0 5px;
-}
-
 
 /* various reddit css fixes for mods */
 

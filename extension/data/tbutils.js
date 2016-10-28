@@ -235,6 +235,8 @@ function initwrapper() {
 
         // 3.5 version changes
 
+        TBStorage.setSetting('ModButton', 'showInUsernameArea', true)
+
         // End: version changes.
 
 		// This is a super extra check to make sure the wiki page for settings export really is private.

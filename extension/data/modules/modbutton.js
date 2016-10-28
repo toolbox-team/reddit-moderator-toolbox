@@ -31,7 +31,7 @@ self.register_setting('excludeGlobal', {
 });
 self.register_setting('showInUsernameArea', {
     'type': 'boolean',
-    'default': false,
+    'default': true,
     'title': 'Move mod button from bottom links to the username links'
 });
 

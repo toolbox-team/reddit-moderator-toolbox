@@ -977,7 +977,7 @@ function initwrapper() {
             body: '> ' + body.split('\n').join('\n> '),
             raw_body: body,
             uri_body: encodeURIComponent(body).replace(/\)/g, "\\)"),
-            approved_by: approved_by,
+            approved_by: approved_by[1],
             title: title,
             uri_title: encodeURIComponent(title).replace(/\)/g, "\\)"),
             kind: kind,
@@ -986,6 +986,9 @@ function initwrapper() {
             banned_by: banned_by,
             spam: spam,
             ham: ham,
+            rules: subreddit ? TBUtils.baseDomain + '/r/' + subreddit + '/about/rules' : '',
+            sidebar: subreddit ? TBUtils.baseDomain + '/r/' + subreddit + '/about/sidebar' : '',
+            wiki: subreddit ? TBUtils.baseDomain + '/r/' + subreddit + '/wiki/index' : '',
             mod: TBUtils.logged
         };
         //$.log(info, false, SHORTNAME);

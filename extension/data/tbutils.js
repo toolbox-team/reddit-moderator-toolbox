@@ -257,7 +257,8 @@ function initwrapper() {
         domainTags: '',
         removalReasons: '',
         modMacros: '',
-        usernoteColors: ''
+        usernoteColors: '',
+        banMacros: ''
     };
 
     TBUtils.events = {

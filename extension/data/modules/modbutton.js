@@ -288,6 +288,24 @@ self.init = function () {
             $popup.find('.tb-popup-tabs .send_message').remove();
         }
 
+        // get pre-definded ban message/note
+        if (subreddit) {
+            self.log('getting ban macros');
+            TBUtils.getConfig(subreddit, function (config) {
+                var macros = config.banMacros;
+                if (config && macros) {
+                    if (macros.banNote){
+                        self.log(macros.banNote);
+                        $popup.find('.ban-note').val(TB.utils.replaceTokens(info, macros.banNote));
+                    }
+                    if (macros.banMessage){
+                        self.log(macros.banMessage);
+                        $popup.find('.ban-message').val(TB.utils.replaceTokens(info, macros.banMessage));
+                    }
+                }
+            });
+        }
+
         // only works if we're a mod of the sub in question
         if (subreddit) {
             var user_fullname = ''; // type t2_xxx

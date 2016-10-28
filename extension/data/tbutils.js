@@ -220,26 +220,6 @@ function initwrapper() {
         TBUtils.tbDevs = getToolboxDevs();
     }
 
-    TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
-        $.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
-            page: page,
-            listed: true, //hrm, may need to make this a config setting.
-            permlevel: 2,
-            uh: TBUtils.modhash
-        })
-        // Super extra double-secret secure, just to be safe.
-            .error(function (err) {
-                // used if it is important for the user to know that a wiki page has not been set to private.
-                if (failAlert) {
-                    alert('error setting wiki page to mod only access');
-                    window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
-                } else {
-                    $.log('error setting wiki page to mod only access');
-                }
-            });
-
-    };
-
     // First run changes.
     if (TBUtils.shortVersion > lastVersion) {
 
@@ -260,7 +240,7 @@ function initwrapper() {
 		// This is a super extra check to make sure the wiki page for settings export really is private.
 		var settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
 		if (settingSubEnabled) {
-			TBUtils.setWikiPrivate('tbsettings', settingSubEnabled, false);
+			setWikiPrivate('tbsettings', settingSubEnabled, false);
 		}
 
         // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
@@ -1197,6 +1177,10 @@ function initwrapper() {
     };
 
 
+    TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
+        setWikiPrivate(subreddit, page, failAlert);
+    };
+
 
     TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {
@@ -1964,6 +1948,26 @@ function initwrapper() {
     };
 
     // private functions
+    function setWikiPrivate(subreddit, page, failAlert) {
+        $.post(TBUtils.baseDomain + '/r/' + subreddit + '/wiki/settings/', {
+            page: page,
+            listed: true, //hrm, may need to make this a config setting.
+            permlevel: 2,
+            uh: TBUtils.modhash
+        })
+        // Super extra double-secret secure, just to be safe.
+            .error(function (err) {
+                // used if it is important for the user to know that a wiki page has not been set to private.
+                if (failAlert) {
+                    alert('error setting wiki page to mod only access');
+                    window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
+                } else {
+                    $.log('error setting wiki page to mod only access');
+                }
+            });
+    }
+
+
     function getToolboxDevs() {
         //TODO: actually pull these from /r/toolbox/about/moderators.json
         var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'amici_ursi', 'noeatnosleep', 'Garethp', 'WorseThanHipster'];

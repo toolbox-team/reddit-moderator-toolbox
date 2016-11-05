@@ -24,17 +24,17 @@ self.register_setting('reasonType', {
 self.register_setting('reasonAsSub', {
     'type': 'boolean',
     'default': false,
-    'hidden': true
+    'title': 'Send removal reasons as a subreddit, these will appear in modmail.'
 });
 self.register_setting('reasonSticky', {
     'type': 'boolean',
     'default': false,
-    'hidden': true
+    'title': 'Leave removal reasons as a sticky comment.'
 });
 self.register_setting('actionLock', {
     'type': 'boolean',
     'default': false,
-    'hidden': true
+    'title': 'Lock threads after leaving a removal reason.'
 });
 // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
 // May make this a user setting, one day.

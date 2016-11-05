@@ -30,7 +30,12 @@ self.register_setting('reasonSticky', {
     'type': 'boolean',
     'default': false,
     'hidden': true
-})
+});
+self.register_setting('actionLock', {
+    'type': 'boolean',
+    'default': false,
+    'hidden': true
+});
 // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
 // May make this a user setting, one day.
 self.register_setting('customRemovalReason', {
@@ -58,6 +63,7 @@ self.init = function() {
         REPLY_ERROR = "error, failed to post reply",
         PM_ERROR = "error, failed to send PM",
         DISTINGUISH_ERROR = "error, failed to distinguish reply",
+        LOCK_ERROR = "error, failed to lock post",
         LOG_REASON_MISSING_ERROR = "error, public log reason missing",
         LOG_POST_ERROR = "error, failed to create log post";
 
@@ -352,6 +358,7 @@ self.init = function() {
             var reasonType = self.setting('reasonType');
             var reasonAsSub = self.setting('reasonAsSub');
             var reasonSticky = self.setting('reasonSticky');
+            var actionLock = self.setting('actionLock');
 
             // Set up markdown renderer
             SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -399,7 +406,9 @@ self.init = function() {
                     <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
                     <span style="display:' + selectNoneDisplay + '"> / \
                         <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
-                    </span> \
+                    </span>\
+                    <br />\
+                    <input class="action-lock" type="checkbox"' + (actionLock ? 'checked' : '') + '/><label for="action-lock">Lock thread</label> \
                 </div> \
                 <div id="log-reason" style="display:' + logDisplay + '"> \
                     <p>Log Reason(s): \
@@ -568,6 +577,7 @@ self.init = function() {
             notifyBy = popup.find('.reason-type:checked').val(),
             notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
             notifySticky = popup.find('.reason-sticky').prop('checked'),
+            actionLock = popup.find('.action-lock').prop('checked'),
             checked = popup.find('.reason-check:checked'),
             status = popup.find('.status'),
             attrs = popup.find('attrs'),
@@ -781,6 +791,17 @@ self.init = function() {
                                     status.text(DISTINGUISH_ERROR);
                                 }
                             });
+
+                            // Also lock the thread if requested
+                            if (actionLock) {
+                                self.log('Fullname of this link: '+data.fullname)
+                                TBUtils.lockThread(data.fullname, function (successful, response) {
+                                    if (successful)
+                                        removePopup(popup);
+                                    else
+                                        status.text(LOCK_ERROR)
+                                });
+                            }
                         }
                     }
                     else {

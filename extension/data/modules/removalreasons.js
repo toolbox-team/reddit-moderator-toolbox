@@ -402,13 +402,13 @@ self.init = function() {
                     <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
                      (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
                     <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label>\
-                    (<input class="reason-sticky" type="checkbox" id="type-stickied"' + (reasonSticky ? 'checked' : '') + '/><label for="type-stickied">sticky</label>) /\
+                    (<input class="reason-sticky" type="checkbox" id="type-stickied"' + (reasonSticky ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="type-stickied">sticky</label>) /\
                     <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
                     <span style="display:' + selectNoneDisplay + '"> / \
                         <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
                     </span>\
                     <br />\
-                    <input class="action-lock" type="checkbox"' + (actionLock ? 'checked' : '') + '/><label for="action-lock">Lock thread</label> \
+                    <input class="action-lock" type="checkbox"' + (actionLock ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="action-lock">Lock thread</label> \
                 </div> \
                 <div id="log-reason" style="display:' + logDisplay + '"> \
                     <p>Log Reason(s): \
@@ -576,8 +576,8 @@ self.init = function() {
         var popup = $(this).parents('.reason-popup'),
             notifyBy = popup.find('.reason-type:checked').val(),
             notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
-            notifySticky = popup.find('.reason-sticky').prop('checked'),
-            actionLock = popup.find('.action-lock').prop('checked'),
+            notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
+            actionLock = popup.find('.action-lock').prop('checked') && !popup.find('.action-lock').prop('disabled'),
             checked = popup.find('.reason-check:checked'),
             status = popup.find('.status'),
             attrs = popup.find('attrs'),

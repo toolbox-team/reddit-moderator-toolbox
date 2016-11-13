@@ -91,6 +91,7 @@
                 "data/modules/modbutton.js",
                 "data/modules/notifier.js",
                 "data/modules/modmailpro.js",
+                "data/modules/newmodmailpro.js",
                 "data/modules/domaintagger.js",
                 "data/modules/usernotes.js",
                 "data/modules/metricstab.js",

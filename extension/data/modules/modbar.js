@@ -349,7 +349,7 @@ self.init = function() {
         var logLength = 0;
         var logVisibleLength = 0;
         setInterval(function () {
-            console.log(logLength);
+
             if (currentModule == DEFAULT_MODULE) {
                 if (logLength < TBUtils.log.length) {
                     debugEditor.setValue(TBUtils.log.join('\n'));

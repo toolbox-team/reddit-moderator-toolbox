@@ -59,6 +59,7 @@
 				<string>data/modules/modbutton.js</string>
 				<string>data/modules/notifier.js</string>
 				<string>data/modules/modmailpro.js</string>
+				<string>data/modules/newmodmailpro.js</string>
 				<string>data/modules/domaintagger.js</string>
 				<string>data/modules/usernotes.js</string>
 				<string>data/modules/metricstab.js</string>

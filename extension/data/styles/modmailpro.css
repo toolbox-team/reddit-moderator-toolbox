@@ -5,16 +5,12 @@
 
 html.tb-nightmode,
 .tb-nightmode img,
-.tb-nightmode video {
-    -webkit-filter: invert(1)hue-rotate(190deg);
-    filter: invert(1)hue-rotate(180deg)
+.tb-nightmode video,
+.tb-nightmode .ThreadTitle__communityImage
+{
+    -webkit-filter: invert(1)hue-rotate(180deg);
+    filter: invert(90%)hue-rotate(180deg);
 }
-
-.tb-nightmode .ThreadTitle__communityImage {
-    -webkit-filter: invert(1)hue-rotate(190deg);
-    filter: invert(1)hue-rotate(180deg)
-}
-
 .tb-nightmode body {
     background: #000000
 }

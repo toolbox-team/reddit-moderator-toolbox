@@ -376,6 +376,8 @@ self.usernotes = function usernotes() {
             link = TBUtils.getThingInfo($thing).permalink,
             disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
 
+            // So Instead of butchering getThingInfo even more we do this as fallback in new modmail.
+
         var $typeList = $('<tr>').addClass('utagger-type-list'),
             $noteList = $('<tbody>').append(
                 $('<tr>').append(
@@ -498,7 +500,11 @@ self.usernotes = function usernotes() {
 
                         // Construct some elements separately
                         var $timeDiv = $('<div>');
+
                         if (note.link) {
+                            if (TBUtils.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
+                                note.link = 'https://www.reddit.com' + note.link
+                            }
                             $timeDiv.append($('<a>' + timeString + '</a>').attr('href', note.link));
                         }
                         else {
@@ -1330,10 +1336,12 @@ self._squashPermalink = function (permalink) {
 
     // Compatibility with Sweden
     var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+))?)?/,
-        MODMAIL_LINK_RE = /\/messages\/(\w+)/,
+        MODMAIL_LINK_RE = /\/messages\/(\w+)/;
 
-        linkMatches = permalink.match(COMMENTS_LINK_RE),
-        modMailMatches = permalink.match(MODMAIL_LINK_RE);
+
+    var linkMatches = permalink.match(COMMENTS_LINK_RE),
+        modMailMatches = permalink.match(MODMAIL_LINK_RE),
+        newModMailMatches = permalink.startsWith('https://mod.reddit.com');
 
     if (linkMatches) {
         var squashed = "l," + linkMatches[1];
@@ -1344,6 +1352,8 @@ self._squashPermalink = function (permalink) {
     }
     else if (modMailMatches) {
         return "m," + modMailMatches[1];
+    } else if (newModMailMatches) {
+        return permalink
     }
     else {
         return "";
@@ -1354,22 +1364,27 @@ self._unsquashPermalink = function (subreddit, permalink) {
     if (!permalink)
         return '';
 
-    var linkParams = permalink.split(/,/g);
-    var link = "/r/" + subreddit + "/";
+    if (permalink.startsWith('https://mod.reddit.com')) {
+        return permalink;
+    } else {
 
-    if (linkParams[0] == "l") {
-        link += "comments/" + linkParams[1] + "/";
-        if (linkParams.length > 2)
-            link += "-/" + linkParams[2] + "/";
-    }
-    else if (linkParams[0] == "m") {
-        link += "message/messages/" + linkParams [1];
-    }
-    else {
-        return "";
-    }
+        var linkParams = permalink.split(/,/g);
+        var link = "/r/" + subreddit + "/";
 
-    return link;
+        if (linkParams[0] == "l") {
+            link += "comments/" + linkParams[1] + "/";
+            if (linkParams.length > 2)
+                link += "-/" + linkParams[2] + "/";
+        }
+        else if (linkParams[0] == "m") {
+            link += "message/messages/" + linkParams [1];
+        }
+        else {
+            return "";
+        }
+
+        return link;
+    }
 };
 
 // Per-subreddit coloring

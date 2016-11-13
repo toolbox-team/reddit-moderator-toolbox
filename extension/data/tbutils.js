@@ -876,7 +876,7 @@ function initwrapper() {
             $thing = $($sender.closest('.thing')[0] || $sender),
             user = $entry.find('.author:first').text() || $thing.find('.author:first').text(),
             subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
-            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href') || 'https://mod.reddit.com' + $thing.find('.m-link').attr('href'),
+            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href') || ($thing.find('.m-link').attr('href') ? 'https://mod.reddit.com' + $thing.find('.m-link').attr('href') : window.location.href),
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
             body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text(),

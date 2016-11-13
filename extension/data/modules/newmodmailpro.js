@@ -63,9 +63,6 @@ function newmodmailpro() {
             case 'notifications':
                 $newModmailLinkElement.attr('href', newModmailBaseUrl + 'notifications');
 
-                break;
-            default:
-
         }
 
     }

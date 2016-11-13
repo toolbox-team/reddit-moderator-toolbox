@@ -19,13 +19,37 @@ function newmodmailpro() {
         'title': 'Open modmail in a new tab.'
     });
 
+    self.register_setting('modmailnightmode', {
+        'type': 'boolean',
+        'default': false,
+        'title': 'Open modmail in nightmode'
+    });
+
+    // All stuff we want to do when we are on new modmail
+    if (TBUtils.isNewModmail) {
+        // Add a class to body
+        var $body = $('body');
+
+        $body.addClass('tb-new-modmail');
+
+        // ready some variables.
+
+        var modMailNightmode = self.setting('modmailnightmode');
+
+        if (modMailNightmode) {
+            $('html').addClass('tb-nightmode');
+        }
+    }
+
     // Below all stuff we do when we are NOT on new modmail.
     if (!TBUtils.isNewModmail) {
+
+        // ready some variables.
         var modmailLink = self.setting('modmaillink'),
             openMailTab = self.setting('openmailtab');
 
 
-        // Let's mess around with the link to modmail
+        // Let's mess around with the link to modmail.
         var $newModmailLinkElement = $('#new_modmail'),
             newModmailBaseUrl = 'https://mod.reddit.com/mail/';
 

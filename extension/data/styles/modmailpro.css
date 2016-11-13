@@ -1,3 +1,44 @@
+/* START OF NEW MODMAIL CSS
+---------------------------
+*/
+
+
+html.tb-nightmode,
+.tb-nightmode img,
+.tb-nightmode video {
+    -webkit-filter: invert(1)hue-rotate(190deg);
+    filter: invert(1)hue-rotate(180deg)
+}
+
+.tb-nightmode .ThreadTitle__communityImage {
+    -webkit-filter: invert(1)hue-rotate(190deg);
+    filter: invert(1)hue-rotate(180deg)
+}
+
+.tb-nightmode body {
+    background: #000000
+}
+
+.mod-toolbox.tb-new-modmail .App__sidebarFooter {
+    margin-bottom: 20px;
+}
+
+.mod-toolbox.tb-new-modmail .tb-settings .tb-window-tabs {
+    display: inline-block;
+    width: 135px;
+    height: inherit;
+    border-bottom: 0px;
+}
+
+.mod-toolbox.tb-new-modmail .tb-settings a {
+    text-decoration: none;
+}
+
+
+/* END OF NEW MODMAIL CSS
+-------------------------
+*/
+
 /* Subject area */
 
 .tb-modmail-pro .message.message-parent.mmp-collapsed .subject {
@@ -141,7 +182,7 @@
 /* MMP remove res stuff if needed */
 /* I give up on this shit.  CSS is a fucking joke. */
 .tb-fade-recipient .recipient .RESUserTag,
-.tb-fade-recipient .recipient .voteWeight,
+.tb-fade-recipient .recipient .voteWeight
 {
     display: none !important;
 }

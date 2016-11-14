@@ -37,6 +37,10 @@ function newmodmailpro() {
         var modMailNightmode = self.setting('modmailnightmode');
 
         if (modMailNightmode) {
+            // Let's make sure RES nightmode doesn't mess things up.
+            $('html, body').removeClass('res-nightmode');
+
+            // Now enable toolbox nightmode
             $('html').addClass('tb-nightmode');
         }
     }

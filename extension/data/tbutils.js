@@ -95,7 +95,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.5.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 350; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Beta Buffoon';
+    TBUtils.releaseName = 'Testing Tapir';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;

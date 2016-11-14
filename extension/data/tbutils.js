@@ -76,7 +76,8 @@ function initwrapper() {
             "Luu",
             "I go two and hope for the best.",
             "oh dammit, I forgot to include url shit",
-            "I think I just released a broken release"],
+            "I think I just released a broken release",
+            "BECAUSE I AM THE LAW!!!"],
 
         RandomFeedbackText = ["Please hold, your call is important to us.",
             "Remember, toolbox loves you.",

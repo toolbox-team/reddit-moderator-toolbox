@@ -288,6 +288,13 @@ self.init = function () {
             self.manager.unlock(saveIndex);
         });
     });
+
+    // New modmail access
+    self.manager.register('mannomail', 'No one knows, send hate mail to /u/thatastronautguy', function (saveIndex) {
+        if (window.location.href.startsWith("https://mod.reddit.com/mail")) {
+            self.manager.unlock(saveIndex);
+        }
+    });
 };
 
 TB.register_module(self);

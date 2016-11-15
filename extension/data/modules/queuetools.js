@@ -96,7 +96,7 @@ self.register_setting('openContextInPopup', {
     'type': 'boolean',
     'default': true,
     'beta': true,
-    'title': 'Open context in an on page toolbox popup on queue pages and subreddit comment listing when clicking context.'
+    'title': 'Open context links in a toolbox popup. Allows for quickly viewing the context of something without leaving the queue page.'
 });
 
 // A better way to use another module's settings.

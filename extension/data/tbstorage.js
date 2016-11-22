@@ -93,7 +93,7 @@ function storagewrapper() {
 
     $.log('Domain: ' + TBStorage.domain, false, SHORTNAME);
 
-    localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www');
+    localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www' || TBStorage.domain === 'mod');
 
 
     var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';

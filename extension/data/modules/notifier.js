@@ -121,7 +121,7 @@ self.register_setting('checkInterval', {
 
 self.register_setting('wwwNotifications', {
     'type': 'boolean',
-    'default': false,
+    'default': true,
     'title': 'Only check for notifications on www.reddit.com (prevents duplicate notifications)'
 });
 

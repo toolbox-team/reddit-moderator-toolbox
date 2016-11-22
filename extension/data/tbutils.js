@@ -236,7 +236,7 @@ function initwrapper() {
 
         // 3.5 version changes
 
-        TBStorage.setSetting('ModButton', 'showInUsernameArea', true)
+        TBStorage.setSetting('Notifier', 'wwwNotifications', true)
 
         // End: version changes.
 

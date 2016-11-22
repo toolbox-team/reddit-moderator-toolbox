@@ -397,7 +397,7 @@ self.init = function () {
 
         // We still want counts updated, just no notifications shown.
         // That's why we do this here.
-        if (wwwNotifications && TB.utils.domain !== 'www') {
+        if (wwwNotifications && TB.utils.domain !== 'www') {  //It's intentional that we don't also check for mod.reddit, here.  That would still cause dup messages.
             self.log("non-www domain; don't show notifications");
             updateMessagesCount(unreadMessageCount);
             updateModqueueCount(modqueueCount);

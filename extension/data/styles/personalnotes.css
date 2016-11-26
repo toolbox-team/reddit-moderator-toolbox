@@ -2,18 +2,27 @@
     max-width: 95%;
 }
 
+/* Don't allow the popup to get bigger than the window */
+.mod-toolbox .tb-popup.personal-notes-popup .tb-popup-content {
+    max-height: calc(100vh - 95px); /* 95px = modbar + popup header + popup footer + padding */
+}
+
 /* Box layout */
 .mod-toolbox #tb-personal-notes-listing,
 .mod-toolbox #tb-personal-notes-content {
     overflow: hidden;
     vertical-align: top;
 }
+.mod-toolbox .tb-popup.personal-notes-popup table {
+    height: 100%;
+    position: relative; /* To help with absolute positioning of the sidebar */
+}
 
 /* Note selection sidebar */
 .mod-toolbox #tb-personal-notes-listing {
     height: 100%;
     margin-left: -5px;
-    padding-bottom: 70px;
+    min-width: 175px;
 }
 .mod-toolbox .personal-notes-popup input {
     width: 100%;
@@ -25,7 +34,7 @@
 }
 .mod-toolbox #tb-new-personal-note-div {
     position: absolute;
-    bottom: 36px;
+    bottom: 0;
     width: 165px;
     height: 60px;
     padding: 5px;
@@ -41,6 +50,10 @@
 /* Actual list */
 .mod-toolbox #tb-personal-notes-list {
     width: 175px;
+    position: absolute;
+    top: 0;
+    bottom: 70px;
+    overflow: auto;
 }
 .mod-toolbox #tb-personal-notes-ul li {
     background: #C7D6E6;

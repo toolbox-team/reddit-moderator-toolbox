@@ -9,10 +9,10 @@ self.register_setting('noteWiki', {
     'default': '',
     'title': 'Subreddit you want to use to store your personal notes.'
 });
-self.register_setting('boxRows', {
+self.register_setting('popupHeight', {
     'type': 'number',
-    'default': 15,
-    'title': 'Default height, in rows, for the text editor'
+    'default': 300,
+    'title': 'Default height, in pixels, for the text editor'
 });
 self.register_setting('monospace', {
     'type': 'boolean',
@@ -23,7 +23,7 @@ self.register_setting('monospace', {
 self.init = function() {
     var $body = $('body'),
         notewiki = self.setting('noteWiki').toLowerCase(),
-        boxRows = self.setting('boxRows'),
+        popupHeight = self.setting('popupHeight'),
         monospace = self.setting('monospace'),
         notesArray = [],
         notesPopupContent;
@@ -143,7 +143,7 @@ self.init = function() {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                     var notesPopupContentTemplate = '\
-                    <table><tr>\
+                    <table style="height:' + popupHeight + 'px;"><tr>\
                         <td id="tb-personal-notes-listing">\
                             <div id="tb-personal-notes-list">\
                                 {{notesList}}\
@@ -159,7 +159,7 @@ self.init = function() {
                         </td>\
                         <td id="tb-personal-notes-content">\
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
-                            <textarea id="tb-personal-notes-editarea" rows="' + boxRows + '"' + (monospace ? ' style="font-family: monospace;"' : '') + '></textarea>\
+                            <textarea id="tb-personal-notes-editarea"' + (monospace ? ' style="font-family: monospace;"' : '') + '></textarea>\
                         </td>\
                     </tr></table>';
 

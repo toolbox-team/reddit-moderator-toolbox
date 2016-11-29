@@ -15,7 +15,8 @@ html.tb-nightmode,
     background: #000000
 }
 
-.mod-toolbox.tb-new-modmail .App__sidebarFooter {
+.mod-toolbox.tb-new-modmail .App__sidebarFooter,
+.mod-toolbox.tb-new-modmail .App__sidebarMenu {
     margin-bottom: 20px;
 }
 

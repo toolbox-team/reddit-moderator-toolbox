@@ -181,7 +181,9 @@ self.register_setting('modqueuePushed', {
 
 self.init = function () {
 
-    var wwwNotifications = self.setting('wwwNotifications'),
+    var NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
+    
+        wwwNotifications = self.setting('wwwNotifications'),
         modNotifications = self.setting('modNotifications'),
         messageNotifications = self.setting('messageNotifications'),
         messageNotificationSound = self.setting('messageNotificationSound'),
@@ -277,7 +279,7 @@ self.init = function () {
     TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, function () {
         self.log('playing sound');
 
-        var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
+        var audio = new Audio(NOTIFICATION_SOUND);
         audio.play();
     });
 
@@ -481,7 +483,7 @@ self.init = function () {
 
                     function youveGotMail() {
                         if (messageNotificationSound) {
-                            var audio = new Audio("https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/master/images/mail.mp3");
+                            var audio = new Audio(NOTIFICATION_SOUND);
                             audio.play();
                         }
                     }

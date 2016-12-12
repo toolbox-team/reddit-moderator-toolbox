@@ -263,7 +263,7 @@ self.init = function () {
 self.showAuthorInformation = function (author) {
     var $contentBox = self.fetched[author].popup;
 
-    $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).success(function (d) {
+    $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).done(function (d) {
         var joinedDate = new Date(d.data.created_utc * 1000),
             redditorTime = TBUtils.niceDateDiff(joinedDate);
 
@@ -346,7 +346,7 @@ self.populateSubmissionHistory = function (after, author) {
 
     TB.ui.longLoadNonPersistent(true);
 
-    $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json?limit=100&after=${after}`).error(function () {
+    $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json?limit=100&after=${after}`).fail(function () {
         self.log('Shadowbanned?');
         $error.html('unable to load userdata</br>shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
@@ -642,7 +642,7 @@ self.populateCommentHistory = function (after, author) {
     $contentBox.find('.comment-table').show();
     $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-    $.get(`${TBUtils.baseDomain}/user/${author}/comments.json?limit=100&after=${after}`).error(function () {
+    $.get(`${TBUtils.baseDomain}/user/${author}/comments.json?limit=100&after=${after}`).fail(function () {
         $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
         TB.ui.longLoadNonPersistent(false);
     }).done(function (d) {

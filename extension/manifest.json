@@ -59,7 +59,8 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
-                "data/libs/jquery-2.2.4.js",
+                "data/libs/jquery-3.1.1.js",
+                "data/libs/jquery_migrate.js",
                 "data/libs/tbplugins.js",
                 "data/libs/snuownd.js",
                 "data/libs/codemirror/codemirror.js",

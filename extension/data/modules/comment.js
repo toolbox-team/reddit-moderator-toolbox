@@ -584,7 +584,7 @@ self.init = function () {
                     $.getJSON(TBUtils.baseDomain + '/user/' + user + '/comments.json', {
                         "after": after,
                         "limit": 100
-                    }).success(function (data, status, jqxhr) {
+                    }).done(function (data, status, jqxhr) {
 
                         $.each(data.data.children, function (i, value) {
 

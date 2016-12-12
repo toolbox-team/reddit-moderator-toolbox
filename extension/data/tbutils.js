@@ -1240,7 +1240,7 @@ function initwrapper() {
                     })
 
                         // Super extra double-secret secure, just to be safe.
-                        .error(function (err) {
+                        .fail(function (err) {
                             alert('error setting wiki page to mod only access');
                             window.location = 'https://www.reddit.com/r/' + subreddit + '/wiki/settings/' + page;
                         });
@@ -1275,7 +1275,7 @@ function initwrapper() {
                 return data;
             }
         })
-            .success(function (json) {
+            .done(function (json) {
                 var wikiData = json.data.content_md;
 
                 if (!wikiData) {
@@ -1308,7 +1308,7 @@ function initwrapper() {
                 callback(wikiData);
 
             })
-            .error(function (jqXHR, textStatus, e) {
+            .fail(function (jqXHR, textStatus, e) {
                 $.log('Wiki error (' + subreddit + '/' + page + '): ' + e, false, SHORTNAME);
                 if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
@@ -1333,11 +1333,11 @@ function initwrapper() {
             user: uname,
             rem: remeber
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
                     callback(false, error);
@@ -1368,11 +1368,11 @@ function initwrapper() {
             r: subreddit,
             uh: TBUtils.modhash
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1387,11 +1387,11 @@ function initwrapper() {
             css_class: cssClass,
             uh: TBUtils.modhash
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1408,11 +1408,11 @@ function initwrapper() {
             ban_message: banMessage,
             duration: banDuration
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1426,11 +1426,11 @@ function initwrapper() {
             name: user,
             r: subreddit
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1442,11 +1442,11 @@ function initwrapper() {
             sticky: sticky,
             uh: TBUtils.modhash
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1458,11 +1458,11 @@ function initwrapper() {
             id: id,
             uh: TBUtils.modhash
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1474,11 +1474,11 @@ function initwrapper() {
             id: id,
             spam: spam
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1489,11 +1489,11 @@ function initwrapper() {
             id: id,
             uh: TBUtils.modhash
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1504,11 +1504,11 @@ function initwrapper() {
             uh: TBUtils.modhash,
             id: id
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1524,11 +1524,11 @@ function initwrapper() {
                 state: state,
                 uh: TBUtils.modhash
             })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error);
             });
@@ -1545,10 +1545,10 @@ function initwrapper() {
             text: text,
             api_type: 'json'
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
                     $.log("Failed to post comment to on " + parent, false, SHORTNAME);
-                    $.log(response.json.errors, false, SHORTNAME);
+                    $.log(response.json.fails, false, SHORTNAME);
                     if (typeof callback !== "undefined")
                         callback(false, response.json.errors);
                     return;
@@ -1558,7 +1558,7 @@ function initwrapper() {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 $.log("Failed to post link to on" + parent, false, SHORTNAME);
                 $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
@@ -1577,7 +1577,7 @@ function initwrapper() {
             sendreplies: 'true', //this is the default on reddit.com, so it should be our default.
             api_type: 'json'
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
                     $.log("Failed to post link to /r/" + subreddit, false, SHORTNAME);
                     $.log(response.json.errors, false, SHORTNAME);
@@ -1590,7 +1590,7 @@ function initwrapper() {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 $.log("Failed to post link to /r/" + subreddit, false, SHORTNAME);
                 $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
@@ -1607,7 +1607,7 @@ function initwrapper() {
             uh: TBUtils.modhash,
             api_type: 'json'
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
                     $.log("Failed to send link to /u/" + user, false, SHORTNAME);
                     $.log(response.json.errors, false, SHORTNAME);
@@ -1620,7 +1620,7 @@ function initwrapper() {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 $.log("Failed to send link to /u/" + user, false, SHORTNAME);
                 $.log(error, false, SHORTNAME);
                 if (typeof callback !== "undefined")
@@ -1635,11 +1635,11 @@ function initwrapper() {
             subject: subject,
             text: message
         })
-            .success(function () {
+            .done(function () {
                 if (typeof callback !== "undefined")
                     callback(true);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error.responseText);
             });
@@ -1657,11 +1657,11 @@ function initwrapper() {
         $.get(TBUtils.baseDomain + '/user/' + user + '/about.json', {
             uh: TBUtils.modhash
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error.responseText);
             });
@@ -1671,11 +1671,11 @@ function initwrapper() {
         $.get(TBUtils.baseDomain + '/user/' + user + '.json?limit=1&sort=new', {
                 uh: TBUtils.modhash
             })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response.data.children[0].data.created_utc);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error.responseText);
             });
@@ -1685,11 +1685,11 @@ function initwrapper() {
         $.get(TBUtils.baseDomain + '/r/' + sub + '/about/rules.json', {
                 uh: TBUtils.modhash
             })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined")
                     callback(true, response);
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error.responseText);
             });
@@ -1700,7 +1700,7 @@ function initwrapper() {
         $.get(TBUtils.baseDomain + postURL + '.json?limit=1', {
             uh: TBUtils.modhash
         })
-            .success(function (response) {
+            .done(function (response) {
                 if (typeof callback !== "undefined") {
                     var data = response[0].data.children[0].data;
 
@@ -1712,7 +1712,7 @@ function initwrapper() {
                     });
                 }
             })
-            .error(function (error) {
+            .fail(function (error) {
                 if (typeof callback !== "undefined")
                     callback(false, error.responseText);
             });
@@ -1861,7 +1861,7 @@ function initwrapper() {
     TBUtils.getReasonsFromCSS = function (sub, callback) {
 
         // If not, build a new one, getting the XML from the stylesheet
-        $.get(TBUtils.baseDomain + '/r/' + sub + '/about/stylesheet.json').success(function (response) {
+        $.get(TBUtils.baseDomain + '/r/' + sub + '/about/stylesheet.json').done(function (response) {
             if (!response.data) {
                 callback(false);
                 return;
@@ -1911,7 +1911,7 @@ function initwrapper() {
             };
 
             callback(oldReasons);
-        }).error(function () {
+        }).fail(function () {
             callback(false);
         });
     };
@@ -1960,7 +1960,7 @@ function initwrapper() {
             uh: TBUtils.modhash
         })
         // Super extra double-secret secure, just to be safe.
-            .error(function (err) {
+            .fail(function (err) {
                 // used if it is important for the user to know that a wiki page has not been set to private.
                 if (failAlert) {
                     alert('error setting wiki page to mod only access');

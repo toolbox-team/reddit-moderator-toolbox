@@ -165,7 +165,7 @@ self.init = function() {
 
                     // Lets get a list of notes!
                     $.getJSON(TBUtils.baseDomain + '/r/' + notewiki + '/wiki/pages.json')
-                        .success(function (json) {
+                        .done(function (json) {
                             notesArray = [];
                             var notesList,
                                 count = json.data.length || 0;
@@ -200,7 +200,7 @@ self.init = function() {
                             });
                             createPersonalNotesPopup(notesPopupContent);
                         })
-                        .error(function (error) {
+                        .fail(function (error) {
                             TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
                             $this.removeClass('tb-notes-activated');
 
@@ -240,7 +240,7 @@ self.init = function() {
                 uh: TBUtils.modhash
             })
 
-                .error(function () {
+                .fail(function () {
                     TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
                 });
 

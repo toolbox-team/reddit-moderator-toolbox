@@ -46,7 +46,7 @@ self.init = function () {
             type: 'get',
             dataType: 'html',
             async: true,
-            success: function (data) {
+            done: function (data) {
                 self.log("  success!");
                 self.log("  " + pages_back + " pages back");
                 var response_page = $(data);
@@ -96,12 +96,12 @@ self.init = function () {
                     TB.ui.longLoadSpinner(false);
                 }
             },
-            error: function (data) {
+            fail: function (data) {
                 self.log("  failed");
                 self.log(data.status);
                 if (data.status == 504) {
                     // "504, post some more"
-                    this.success(data);
+                    this.done(data);
                 } else {
                     // Did we get logged out during the process, or some other error?
                     banlist_updating = false;

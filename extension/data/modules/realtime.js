@@ -36,7 +36,7 @@ self.init = function () {
             html = [];
 
         // Get new things, prepend to page on success
-        $.get(location.pathname + '.json-html?before=' + before).success(function (response) {
+        $.get(location.pathname + '.json-html?before=' + before).done(function (response) {
 
             // Compress the HTML of each returned thing
             for (i in response.data) html.push(compressHTML(response.data[i].data.content));

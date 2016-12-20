@@ -18,7 +18,7 @@ self.register_setting('rtsComment', {
 
 self.register_setting('alwaysComments', {
     'type': 'boolean',
-    'default': false,
+    'default': true,
     'advanced': true,
     'title': 'Load comment history immediately'
 });
@@ -105,7 +105,7 @@ self.init = function () {
             }
 
             var subreddits = {submissions: {}, comments: {}},
-                counters = {submissions: 0, comments: 0},
+                counters = {submissions: 0, comments: 0, commentsOP: 0},
                 accounts = {},
                 subredditList = [],
                 domainList = [],
@@ -115,77 +115,92 @@ self.init = function () {
                 domains = [],
                 domainslist = [],
 
-                popupContent =
-                `<div>
-                    <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
-                    <span class="karma" />
-                    <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
-                    <a class="account-report tb-general-button" href="javascript:;">website account history</a>
-                    <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
-                    <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a>
-                    <br/>
-                    <span class="redditorTime"></span>
-                    <br/>
-                    <b>Submission history:</b> <label class="submission-count"></label></div>
-                    <div class="table domain-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="url-td">domain submitted from</th>
-                                    <th class="url-count">count</th><th class="url-percentage">%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colspan="6" class="error">loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table subreddit-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="url-td">subreddit submitted to</th>
-                                    <th class="url-count">count</th>
-                                    <th class="url-percentage">%</th>
-                                    <th class="url-karma">karma</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="6" class="error">loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table comment-table" style="display: none">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="url-td">subreddit commented in</th>
-                                    <th class="url-count">count</th>
-                                    <th class="url-percentage">%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colspan="6" class="error">loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table account-table" style="display: none">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="url-td">account submitted from</th>
-                                    <th class="url-count">count</th>
-                                    <th class="url-percentage">%</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td colspan="6" class="error">loading...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>`;
+                popupContent = `
+    <div>
+        <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
+        <span class="karma" />
+        <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
+        <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
+        <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a>
+        <br/>
+        <span class="redditorTime"></span>
+        <br/>
+        <p class="tb-history-disclaimer">
+        <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
+        
+        </p>
+        <b>Available history:</b> <br>
+        <label class="submission-count"></label> submissions
+        <br>
+        <span class="tb-history-comment-stats" style="display:none">
+        <label class="comment-count"></label> comments, <label class="comment-count-OP"></label> in own posts (commented as OP).
+        </span>
+        </div>
+        <div class="history-table-wrapper">
+        <div class="table domain-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="url-td">domain submitted from</th>
+                        <th class="url-count">count</th><th class="url-percentage">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" class="error">loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table subreddit-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="url-td">subreddit submitted to</th>
+                        <th class="url-count">count</th>
+                        <th class="url-percentage">%</th>
+                        <th class="url-karma">karma</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="error">loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        <div class="history-table-wrapper">
+        <div class="table comment-table" style="display: none">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="url-td">subreddit commented in</th>
+                        <th class="url-count">count</th>
+                        <th class="url-percentage">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" class="error">loading...</td></tr>
+                </tbody>
+            </table>
+          
+        </div>
+        <div class="table account-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="url-td">account submitted from</th>
+                        <th class="url-count">count</th>
+                        <th class="url-percentage">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="6" class="error">loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+`;
 
             // We want to make sure windows fit on the screen.
             var leftPosition;
@@ -244,15 +259,15 @@ self.init = function () {
             $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
             $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
             $popup.on('click.comment-report', '.comment-report', function(){
+                $(this).hide();
                 $popup.off('click.comment-report');
                 self.populateCommentHistory('', author);
             });
-            $popup.on('click.account-report', '.account-report', function(){
-                $accounts.toggle();
-            });
 
-            if(self.setting('alwaysComments'))
+            if(self.setting('alwaysComments')) {
                 $popup.find('.comment-report').click();
+            }
+
         });
     }
 };
@@ -371,7 +386,7 @@ self.populateSubmissionHistory = function (after, author) {
         }
 
         var after = d.data.after,
-            commentBody = `Recent Submission history for ${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
+            commentBody = `Available submission history for ${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
 
         user.counters.submissions += d.data.children.length;
         //There's still more subsmissions to load, so we're going to run again
@@ -634,12 +649,14 @@ self.populateCommentHistory = function (after, author) {
 
     var user = self.fetched[author],
         $contentBox = user.popup,
+        $commentCount = $contentBox.find('.comment-count'),
+        $commentCountOp = $contentBox.find('.comment-count-OP'),
         $commentTable = $contentBox.find('.comment-table tbody');
 
-    $contentBox.width(1000);
     $commentTable.empty();
 
     $contentBox.find('.comment-table').show();
+    $contentBox.find('.tb-history-comment-stats').show();
     $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
     $.get(`${TBUtils.baseDomain}/user/${author}/comments.json?limit=100&after=${after}`).fail(function () {
@@ -656,6 +673,10 @@ self.populateCommentHistory = function (after, author) {
 
             user.subreddits.comments[data.subreddit].count++;
             user.counters.comments++;
+
+            if (data.link_author === data.author) {
+                user.counters.commentsOP++;
+            }
         });
 
         var after = d.data.after;
@@ -679,6 +700,12 @@ self.populateCommentHistory = function (after, author) {
                     <td>${value}</td><td>${count}</td><td>${percentage}</td>
                 </tr>`);
         });
+        var percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
+
+        $commentCount.html(user.counters.comments);
+        console.log(user.counters.comments);
+        $commentCountOp.html(`${user.counters.commentsOP} (${percentageOP}%)`);
+
         TB.ui.longLoadNonPersistent(false);
     });
 };

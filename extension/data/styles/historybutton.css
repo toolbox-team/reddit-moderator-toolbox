@@ -10,3 +10,89 @@ body.mod-toolbox.mod-toolbox-new-modmail .history-button {
     color: rgb(136, 136, 136);
 }
 
+.history-button-popup div.table.domain-table,
+.history-button-popup div.table.subreddit-table,
+.history-button-popup div.table.comment-table,
+.history-button-popup div.table.account-table {
+    display: inline-block;
+    width: 310px;
+}
+.history-button-popup div.tb-popup-content {
+    min-width: 650px;
+}
+
+.history-button-popup {
+    padding: 0 !important;
+}
+
+
+
+.history-button-popup td {
+    border: 1px dotted lightgray;
+    border-bottom: none;
+    word-wrap: break-word;
+}
+
+.history-button-popup th {
+    border: 1px solid lightgray;
+    border-top: none;
+    font-weight: bold;
+    word-wrap: break-word;
+}
+
+.history-button-popup td.count-td,.history-button-popup td.percentage-td {
+    min-width: 30px !important;
+}
+
+.history-button-popup td.url-td {
+    max-width: 186px !important;
+    word-wrap: break-word;
+}
+
+
+.history-button-popup th,.history-button-popup td {
+    padding: 5px !important;
+    border-right: none;
+}
+
+.history-button-popup table {
+    width: 100%;
+}
+
+.history-button .tb-button-active {
+    background-color: #b1d0ef;
+}
+
+.history-button-popup .table {
+    margin: 10px;
+    height: 200px;
+    max-width: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+}
+
+.history-button-popup .submission-markdown-text {
+    width: 97% !important;
+    min-height: 100px;
+}
+
+.history-button-popup .submission-markdown {
+    margin: 0 10px;
+}
+
+.history-button-popup .table .error {
+    text-align: center;
+}
+
+.mod-toolbox .tb-history-disclaimer {
+    margin: 5px;
+    max-width: 500px;
+    background: #e6e6e6;
+    padding: 5px;
+}
+
+.mod-toolbox .tb-history-disclaimer strong{
+    font-weight: bold;
+}

@@ -20,6 +20,88 @@ function initwrapper() {
     } else {
         TBUtils.modCheck = $('#modmail, #new_modmail').length > 0;
     }
+
+    // Let's get oauth information
+    // We fetch the data on page load but we don't access the variable directly.
+    // For that we use a promise so there always is data and we also can handle expired tokens.
+    // TODO: handle expired tokens
+
+    TBUtils.tokenVar = '';
+    chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
+        TBUtils.tokenVar = JSON.parse(response.oauthToken);
+    });
+
+    // Check the validity of a token based on the timestamp.
+    TBUtils.tokenValid = function (tokenExpireStamp) {
+        const tokenExpire = new Date(0);
+        let currentTime = new Date();
+        tokenExpire.setUTCMilliseconds(tokenExpireStamp);
+        return currentTime < tokenExpire;
+    };
+
+    // Token promise.
+    TBUtils.oauthToken = new Promise(function(resolve, reject) {
+        // We have a token, let's figure if it is still valid.
+        if(TBUtils.tokenVar) {
+            if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
+                // We have a token and it is still valid. Let's resolve.
+                resolve(TBUtils.tokenVar.accessToken);
+            } else {
+                // We have a token but it is expired.
+                // This makes it complicated. It could very well be that there is a new cookie with new information.
+                // It is also possible that it is really expired.
+                // Just to be extra sure let's fetch the cookie again.
+                chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
+
+                    TBUtils.tokenVar = JSON.parse(response.oauthToken);
+                    if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
+                        // We have a token and it is still valid. Let's resolve.
+                        resolve(TBUtils.tokenVar.accessToken);
+                    } else {
+                        // TODO: find out if we easily can renew the token ourselves.
+                        reject('Error: expired 1');
+                    }
+                });
+
+            }
+
+        // We don't have a token.
+        } else {
+            // We don't have a token (yet). Likely due to page load, let's wait a second and then try again.
+            setTimeout(function(){
+                if (TBUtils.tokenVar) {
+                    // We now have the token. Let's see if it is still valid.
+                    if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
+                        // We have a token and it is still valid. Let's resolve.
+                        resolve(TBUtils.tokenVar.accessToken);
+                    } else {
+
+                        // TODO: find out if we easily can renew the token ourselves.
+                        reject('Error: expired 2');
+                    }
+                } else {
+                    // Probably something wrong, let's attempt to fetch it anyway.
+                    chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
+
+                        TBUtils.tokenVar = JSON.parse(response.oauthToken);
+                        if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
+                            // We have a token and it is still valid. Let's resolve.
+                            resolve(TBUtils.tokenVar.accessToken);
+                        } else {
+                            // TODO: find out if we easily can renew the token ourselves.
+                            reject('Error: expired 3');
+                        }
+                    });
+                }
+
+            }, 3000);
+
+        }
+    });
+
+
+
+
     // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
     TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  'https://' + window.location.hostname);
 
@@ -1157,13 +1239,78 @@ function initwrapper() {
     TBUtils.reloadToolbox = function () {
         if (typeof chrome !== 'undefined') {
             TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-            chrome.extension.sendMessage({greeting: "tb-reload"}, function () {
+            chrome.runtime.sendMessage({action: "tb-reload"}, function () {
                 window.location.reload();
             });
         }
     };
 
-    // Reddit API stuff
+    //
+    // Reddit Oauth api stuff
+    //
+
+    // Generic promise based POST request. Can be used to construct all api calls involving post.
+    // Example usage:
+    //
+    // TBUtils.apiOauthPOST('api/mod/conversations', {
+    //     body: 'sending this with the new api through toolbox',
+    //     subject: 'api testing',
+    //     srName: 'toolbox'
+    // }).then(function(data) {
+    //     console.log(data)
+    // }).catch(function(error) {
+    //     console.log(error)
+    // });
+
+    TBUtils.apiOauthPOST = function apiOauthPost(endpoint, data) {
+        return new Promise(function(resolve, reject) {
+            // let's fetch the token we need first.
+            TBUtils.oauthToken.then(function(token) {
+                $.ajax({
+                    url: `https://oauth.reddit.com/${endpoint}`,
+                    type: 'POST',
+                    data: data,
+                    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
+                }).done(function(data) {
+                    resolve(data);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    reject(jqXHR.responseText);
+                });
+
+            }).catch(function(error) {
+                reject(error); // Error: "It broke"
+            });
+        });
+
+    };
+
+    // Generic promise based POST request. Can be used to construct all api calls involving post.
+    TBUtils.apiOauthGET = function apiOauthPost(endpoint, data) {
+        return new Promise(function(resolve, reject) {
+            // let's fetch the token we need first.
+            TBUtils.oauthToken.then(function(token) {
+                $.ajax({
+                    url: `https://oauth.reddit.com/${endpoint}`,
+                    type: 'GET',
+                    data: data,
+                    beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
+                }).done(function(data) {
+                    resolve(data);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    reject(jqXHR.responseText);
+                });
+
+            }).catch(function(error) {
+                reject(error); // Error: "It broke"
+            });
+        });
+
+    };
+
+
+    //
+    // Reddit 'legacy' API stuff. Still very much in use.
+    //
     TBUtils.getRatelimit = function getRatelimit(callback) {
         TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
             function (status, jqxhr) {

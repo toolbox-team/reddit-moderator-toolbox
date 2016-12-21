@@ -63,6 +63,7 @@ function initwrapper() {
                         const responseObject = JSON.parse(response.oauthToken);
                         if (!responseObject.ERROR) {
                             TBUtils.tokenVar = responseObject;
+                            resolve(TBUtils.tokenVar.accessToken);
                         } else {
                             $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
                             reject('ERROR:' + responseObject.ERROR);
@@ -86,6 +87,7 @@ function initwrapper() {
                             const responseObject = JSON.parse(response.oauthToken);
                             if (!responseObject.ERROR) {
                                 TBUtils.tokenVar = responseObject;
+                                resolve(TBUtils.tokenVar.accessToken);
                             } else {
                                 $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
                                 reject('Error:' + responseObject.ERROR);

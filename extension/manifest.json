@@ -26,7 +26,10 @@
         "128": "data/images/icon128.png"
     },
     "background": {
-        "scripts": ["data/background/chrome.js"],
+        "scripts": [
+            "data/libs/jquery-3.1.1.js",
+            "data/background/chrome.js"
+        ],
         "persistent": false
     },
     "content_scripts": [

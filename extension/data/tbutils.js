@@ -26,9 +26,16 @@ function initwrapper() {
     // For that we use a promise so there always is data and we also can handle expired tokens.
     // TODO: handle expired tokens
 
+
     TBUtils.tokenVar = '';
     chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
-        TBUtils.tokenVar = JSON.parse(response.oauthToken);
+        const responseObject = JSON.parse(response.oauthToken);
+        if (!responseObject.ERROR) {
+            TBUtils.tokenVar = responseObject;
+
+        } else {
+            $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
+        }
     });
 
     // Check the validity of a token based on the timestamp.
@@ -39,65 +46,58 @@ function initwrapper() {
         return currentTime < tokenExpire;
     };
 
+
+
     // Token promise.
-    TBUtils.oauthToken = new Promise(function(resolve, reject) {
-        // We have a token, let's figure if it is still valid.
-        if(TBUtils.tokenVar) {
-            if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
-                // We have a token and it is still valid. Let's resolve.
-                resolve(TBUtils.tokenVar.accessToken);
-            } else {
-                // We have a token but it is expired.
-                // This makes it complicated. It could very well be that there is a new cookie with new information.
-                // It is also possible that it is really expired.
-                // Just to be extra sure let's fetch the cookie again.
-                chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
-
-                    TBUtils.tokenVar = JSON.parse(response.oauthToken);
-                    if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
-                        // We have a token and it is still valid. Let's resolve.
-                        resolve(TBUtils.tokenVar.accessToken);
-                    } else {
-                        // TODO: find out if we easily can renew the token ourselves.
-                        reject('Error: expired 1');
-                    }
-                });
-
-            }
-
-        // We don't have a token.
-        } else {
-            // We don't have a token (yet). Likely due to page load, let's wait a second and then try again.
-            setTimeout(function(){
-                if (TBUtils.tokenVar) {
-                    // We now have the token. Let's see if it is still valid.
-                    if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
-                        // We have a token and it is still valid. Let's resolve.
-                        resolve(TBUtils.tokenVar.accessToken);
-                    } else {
-
-                        // TODO: find out if we easily can renew the token ourselves.
-                        reject('Error: expired 2');
-                    }
+    TBUtils.oauthToken = function oauthToken() {
+        return new Promise(function (resolve, reject) {
+            // We have a token, let's figure if it is still valid.
+            if (TBUtils.tokenVar) {
+                if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
+                    // We have a token and it is still valid. Let's resolve.
+                    resolve(TBUtils.tokenVar.accessToken);
                 } else {
-                    // Probably something wrong, let's attempt to fetch it anyway.
-                    chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
-
-                        TBUtils.tokenVar = JSON.parse(response.oauthToken);
-                        if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
-                            // We have a token and it is still valid. Let's resolve.
-                            resolve(TBUtils.tokenVar.accessToken);
+                    // We have a token but it is expired.
+                    // We send it to our background page which will attempt to generate a new one.
+                    chrome.runtime.sendMessage({action: 'oauthToken'}, function (response) {
+                        const responseObject = JSON.parse(response.oauthToken);
+                        if (!responseObject.ERROR) {
+                            TBUtils.tokenVar = responseObject;
                         } else {
-                            // TODO: find out if we easily can renew the token ourselves.
-                            reject('Error: expired 3');
+                            $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
+                            reject('ERROR:' + responseObject.ERROR);
                         }
                     });
+
                 }
 
-            }, 3000);
+                // We don't have a token.
+            } else {
+                // We don't have a token (yet). Likely due to page load, let's wait a second and then try again.
+                setTimeout(function () {
+                    if (TBUtils.tokenVar) {
+                        // We now have the token. Since it is freshly fetched we can assume it is still valid.
+                        // Let's resolve.
+                        resolve(TBUtils.tokenVar.accessToken);
 
-        }
-    });
+                    } else {
+                        // Probably something wrong, let's attempt to fetch it anyway.
+                        chrome.runtime.sendMessage({action: 'oauthToken'}, function (response) {
+                            const responseObject = JSON.parse(response.oauthToken);
+                            if (!responseObject.ERROR) {
+                                TBUtils.tokenVar = responseObject;
+                            } else {
+                                $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
+                                reject('Error:' + responseObject.ERROR);
+                            }
+                        });
+                    }
+
+                }, 3000);
+
+            }
+        });
+    }
 
 
 
@@ -1265,7 +1265,7 @@ function initwrapper() {
     TBUtils.apiOauthPOST = function apiOauthPost(endpoint, data) {
         return new Promise(function(resolve, reject) {
             // let's fetch the token we need first.
-            TBUtils.oauthToken.then(function(token) {
+            TBUtils.oauthToken().then(function(token) {
                 $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'POST',
@@ -1288,7 +1288,7 @@ function initwrapper() {
     TBUtils.apiOauthGET = function apiOauthPost(endpoint, data) {
         return new Promise(function(resolve, reject) {
             // let's fetch the token we need first.
-            TBUtils.oauthToken.then(function(token) {
+            TBUtils.oauthToken().then(function(token) {
                 $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'GET',

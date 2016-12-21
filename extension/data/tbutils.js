@@ -27,79 +27,23 @@ function initwrapper() {
     // TODO: handle expired tokens
 
 
-    TBUtils.tokenVar = '';
-    chrome.runtime.sendMessage({action: 'oauthToken'}, function(response) {
-        const responseObject = JSON.parse(response.oauthToken);
-        if (!responseObject.ERROR) {
-            TBUtils.tokenVar = responseObject;
-
-        } else {
-            $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
-        }
-    });
-
-    // Check the validity of a token based on the timestamp.
-    TBUtils.tokenValid = function (tokenExpireStamp) {
-        const tokenExpire = new Date(0);
-        let currentTime = new Date();
-        tokenExpire.setUTCMilliseconds(tokenExpireStamp);
-        return currentTime < tokenExpire;
-    };
-
-
-
     // Token promise.
     TBUtils.oauthToken = function oauthToken() {
         return new Promise(function (resolve, reject) {
-            // We have a token, let's figure if it is still valid.
-            if (TBUtils.tokenVar) {
-                if (TBUtils.tokenValid(TBUtils.tokenVar.expires)) {
-                    // We have a token and it is still valid. Let's resolve.
-                    resolve(TBUtils.tokenVar.accessToken);
-                } else {
-                    // We have a token but it is expired.
-                    // We send it to our background page which will attempt to generate a new one.
-                    chrome.runtime.sendMessage({action: 'oauthToken'}, function (response) {
-                        const responseObject = JSON.parse(response.oauthToken);
-                        if (!responseObject.ERROR) {
-                            TBUtils.tokenVar = responseObject;
-                            resolve(TBUtils.tokenVar.accessToken);
-                        } else {
-                            $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
-                            reject('ERROR:' + responseObject.ERROR);
-                        }
-                    });
+            chrome.runtime.sendMessage({action: 'oauthToken'}, resolve);
+        }).then(function(response) {
+            const responseObject = JSON.parse(response.oauthToken);
+            if (!responseObject.ERROR) {
 
-                }
-
-                // We don't have a token.
+                return responseObject.accessToken;
             } else {
-                // We don't have a token (yet). Likely due to page load, let's wait a second and then try again.
-                setTimeout(function () {
-                    if (TBUtils.tokenVar) {
-                        // We now have the token. Since it is freshly fetched we can assume it is still valid.
-                        // Let's resolve.
-                        resolve(TBUtils.tokenVar.accessToken);
-
-                    } else {
-                        // Probably something wrong, let's attempt to fetch it anyway.
-                        chrome.runtime.sendMessage({action: 'oauthToken'}, function (response) {
-                            const responseObject = JSON.parse(response.oauthToken);
-                            if (!responseObject.ERROR) {
-                                TBUtils.tokenVar = responseObject;
-                                resolve(TBUtils.tokenVar.accessToken);
-                            } else {
-                                $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
-                                reject('Error:' + responseObject.ERROR);
-                            }
-                        });
-                    }
-
-                }, 3000);
-
+                $.log('ERROR: ' + responseObject.ERROR, false, SHORTNAME);
+                throw new Error('ERROR:' + responseObject.ERROR);
             }
         });
-    }
+    };
+
+
 
 
 
@@ -1265,47 +1209,34 @@ function initwrapper() {
     // });
 
     TBUtils.apiOauthPOST = function apiOauthPost(endpoint, data) {
-        return new Promise(function(resolve, reject) {
             // let's fetch the token we need first.
-            TBUtils.oauthToken().then(function(token) {
-                $.ajax({
+            return TBUtils.oauthToken().then(function(token) {
+                return $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'POST',
                     data: data,
                     beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).done(function(data) {
-                    resolve(data);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    reject(jqXHR.responseText);
+                }).then(undefined, function(jqXHR) {
+                    throw jqXHR.responseText;
+                    // or `return Promise.reject(jqXHR.responseText);`
                 });
-
-            }).catch(function(error) {
-                reject(error); // Error: "It broke"
             });
-        });
-
     };
 
     // Generic promise based POST request. Can be used to construct all api calls involving post.
     TBUtils.apiOauthGET = function apiOauthPost(endpoint, data) {
-        return new Promise(function(resolve, reject) {
             // let's fetch the token we need first.
-            TBUtils.oauthToken().then(function(token) {
-                $.ajax({
+            return TBUtils.oauthToken().then(function(token) {
+                return $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'GET',
                     data: data,
                     beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).done(function(data) {
-                    resolve(data);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    reject(jqXHR.responseText);
+                }).then(undefined, function(jqXHR) {
+                    throw jqXHR.responseText;
+                    // or `return Promise.reject(jqXHR.responseText);`
                 });
-
-            }).catch(function(error) {
-                reject(error); // Error: "It broke"
             });
-        });
 
     };
 

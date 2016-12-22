@@ -142,6 +142,20 @@
     font-family: "Lucida Console", Monaco, monospace;
 }
 
+.mod-toolbox .reason-popup #buttons ul {
+    list-style-type: none;
+    margin: 5px;
+}
+
+.mod-toolbox .reason-popup #buttons ul li {
+     margin-top: 5px;
+ }
+
+.mod-toolbox .reason-popup #buttons ul li ul {
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+
 .reason-popup .reason-content {
     padding-left: 8px;
 }

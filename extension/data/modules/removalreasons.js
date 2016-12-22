@@ -399,16 +399,29 @@ self.init = function() {
                     </p> \
                 </div> \
                 <div id="buttons"> \
-                    <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">PM</label> \
-                     (<input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">as /r/' + data.subreddit + '</label>) /\
-                    <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">reply</label>\
-                    (<input class="reason-sticky" type="checkbox" id="type-stickied"' + (reasonSticky ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="type-stickied">sticky</label>) /\
-                    <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">both</label> \
-                    <span style="display:' + selectNoneDisplay + '"> / \
+                <ul>\
+                    <li>\
+                        <input class="reason-type" type="radio" id="type-reply-' + data.subreddit + '" value="reply" name="type-' + data.subreddit + '"' + (reasonType == 'reply' ? ' checked="1"' : '') + ' /><label for="type-reply-' + data.subreddit + '">Reply with a comment to the item that is removed.</label>\
+                        <ul>\
+                            <li>\
+                                <input class="reason-sticky" type="checkbox" id="type-stickied"' + (reasonSticky ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="type-stickied">Sticky the removal comment.</label> \
+                            </li>\
+                        </ul>\
+                    </li><li>\
+                        <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">Send as PM (personal message)</label> \
+                        <ul>\
+                            <li>\
+                                <input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">Send pm via modmail as /r/' + data.subreddit + ' <b>Note:</b> This will clutter up modmail.</label> \
+                            </li>\
+                        </ul>\
+                    </li><li>\
+                        <input class="reason-type" type="radio" id="type-both-' + data.subreddit + '" value="both"  name="type-' + data.subreddit + '"' + (reasonType == 'both' ? ' checked="1"' : '') + ' /><label for="type-both-' + data.subreddit + '">Send as both PM and reply.</label> \
+                    </li><li style="display:' + selectNoneDisplay + '"> / \
                         <input class="reason-type" type="radio" id="type-none-' + data.subreddit + '" value="none"  name="type-' + data.subreddit + '"' + (reasonType == 'none' ? ' checked="1"' : '') + ' /><label for="type-none-' + data.subreddit + '">none, will only log the removal.</label> \
-                    </span>\
-                    <br />\
-                    <input class="action-lock" type="checkbox"' + (actionLock ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="action-lock">Lock thread</label> \
+                    </li><li>\
+                        <input class="action-lock" type="checkbox"' + (actionLock ? 'checked' : '') + (data.kind === 'submission' ? '' : ' disabled') + '/><label for="action-lock">Lock the removed thread.</label> \
+                    </li>\
+                </ul>\
                 </div> \
                 <div id="log-reason" style="display:' + logDisplay + '"> \
                     <p>Log Reason(s): \

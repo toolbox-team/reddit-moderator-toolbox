@@ -60,6 +60,10 @@ body.mod-toolbox .tb-general-button img {
 
 /* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! */
 
+body.mod-toolbox .tb-action-button.action-hidden {
+    display: none;
+}
+
 body.mod-toolbox .tb-action-button {
     display: inline-block !important;
 	height: initial !important;
@@ -986,6 +990,10 @@ img.note-close {
 
 .mod-popup .remove-sub-link {
     text-decoration: none;
+}
+
+body.mod-toolbox .mod-popup .tb-action-button.global-button.action-hidden {
+    display: none !important;
 }
 
 body.mod-toolbox .mod-popup .tb-action-button.global-button {

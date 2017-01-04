@@ -562,7 +562,7 @@ self.init = function() {
     });
     $body.on('click', '.reason-sticky', function () {
         self.setting('reasonSticky', $(this).prop('checked'));
-    })
+    });
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
@@ -586,8 +586,8 @@ self.init = function() {
 
     // 'save' button clicked
     $body.on('click', '.reason-popup .save', function () {
-        var popup = $(this).parents('.reason-popup'),
-            notifyBy = popup.find('.reason-type:checked').val(),
+        var popup = $(this).parents('.reason-popup');
+        var notifyBy = popup.find('.reason-type:checked').val(),
             notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
             notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
             actionLock = popup.find('.action-lock').prop('checked') && !popup.find('.action-lock').prop('disabled'),

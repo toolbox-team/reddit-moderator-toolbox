@@ -391,9 +391,10 @@
             $selector_list = $selector.find('.selector');
 
         //Add values to select
-        $.each(choices, function () {
-            var value = this.toLowerCase().replace(/\s/g, '_');
-            $selector_list.append($('<option>').attr('value', value).text(this));
+
+        $.each(choices, function (i , keyValue) {
+            var value = keyValue.toLowerCase().replace(/\s/g, '_');
+            $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
 
         //Set selected value
@@ -438,12 +439,12 @@
             }
         });
 
-        $.each(available, function () {
-            $available_list.append($('<option>').attr('value', this).text(this));
+        $.each(available, function (i, value) {
+            $available_list.append($('<option>').attr('value', value).text(value));
         });
 
-        $.each(selected, function () {
-            $selected_list.append($('<option>').attr('value', this).text(this));
+        $.each(selected, function (i, value) {
+            $selected_list.append($('<option>').attr('value', value).text(value));
         });
 
         return $select_multiple;

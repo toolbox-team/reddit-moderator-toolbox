@@ -2,7 +2,8 @@
 ---------------------------
 */
 
-
+/* nightmode for regular browser
+*/
 html.tb-nightmode,
 .tb-nightmode img,
 .tb-nightmode video,
@@ -14,6 +15,161 @@ html.tb-nightmode,
 .tb-nightmode body {
     background: #000000
 }
+
+/* nightmode for firefox. Thanks to /u/tizorres
+*/
+.tb-nightmode-firefox .App__header {
+    border-bottom: 1px solid #353535;
+    background-color: #000;
+}
+.tb-nightmode-firefox .Sidebar__title {
+    color: #9E9E9E;
+    border-bottom: 1px solid #000;
+}
+.tb-nightmode-firefox .App__sidebar {
+    border-right: 1px solid #353535;
+    background-color: #000;
+}
+.tb-nightmode-firefox .Sidebar__communities {
+    border-top: 1px solid #353535;
+}
+.tb-nightmode-firefox .SidebarNav__top {
+    border-bottom: 1px solid #353535;
+}
+.tb-nightmode-firefox .SidebarCommunity__name.tb-nightmode-firefox .m-selected {
+    color: #00BCD4;
+}
+.tb-nightmode-firefox .SidebarCommunity__name {
+    color: #2196f3;
+}
+.tb-nightmode-firefox .App__sidebarFooter {
+    background-color: #000;
+    border-top: 1px solid #353535;
+}
+.tb-nightmode-firefox .App__sidebarFooterLink~.tb-nightmode-firefox .App__sidebarFooterLink {
+    border-left: 1px solid #353535;
+}
+.tb-nightmode-firefox .ThreadPreviewViewer__header {
+    background-color: #000;
+    border-bottom: 1px solid #353535;
+}
+.tb-nightmode-firefox .ThreadPreviewViewer__threads {
+    background-color: #191919;
+}
+.tb-nightmode-firefox .ThreadPreviewViewer__thread.tb-nightmode-firefox .m-read {
+    background-color: #323232;
+}
+.tb-nightmode-firefox .ThreadPreviewViewerHeader__select {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .ThreadPreviewViewerHeader__iconLabel {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .ThreadPreviewViewer__thread {
+    background-color: #4c4c4c;
+}
+.tb-nightmode-firefox .ThreadViewer__header {
+    background-color: #000;
+    border-bottom: 1px solid #353535;
+}
+.tb-nightmode-firefox .ThreadViewerHeader__back,
+.tb-nightmode-firefox .ThreadViewerHeader__back:visited,
+.tb-nightmode-firefox .ThreadViewerHeader__controlText,
+.tb-nightmode-firefox .ThreadViewerHeader__controlText:visited {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .Thread__title {
+    border-bottom: 1px solid #353535;
+    background: #000;
+}
+.tb-nightmode-firefox .ThreadTitle__community,
+.tb-nightmode-firefox .ThreadTitle__title {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .Thread__message~.tb-nightmode-firefox .Thread__message,
+.tb-nightmode-firefox .Thread__message~.tb-nightmode-firefox .Thread__modAction,
+.tb-nightmode-firefox .Thread__modAction~.tb-nightmode-firefox .Thread__message,
+.tb-nightmode-firefox .Thread__modAction~.tb-nightmode-firefox .Thread__modAction {
+    border-top: 1px solid #353535;
+    background: #191919;
+}
+.tb-nightmode-firefox .Thread__message {
+    background: #191919;
+}
+.tb-nightmode-firefox .ThreadViewer__replyContainer {
+    background: #000;
+    border-top: 1px solid #353535;
+}
+.tb-nightmode-firefox .FancySelect__value.tb-nightmode-firefox .m-nocolor,
+.tb-nightmode-firefox .FancySelect__value.tb-nightmode-firefox .m-nocolor .tb-nightmode-firefox .FancySelect__valueIcon,
+.tb-nightmode-firefox .FancySelect__value.tb-nightmode-firefox .m-nocolor .tb-nightmode-firefox .FancySelect__valueText {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .Textarea,
+textarea {
+    border: 1px solid #353535;
+    background: #191919!important;
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .ThreadViewer__infobarContainer {
+    background: #000;
+    border-left: 1px solid #353535;
+}
+.tb-nightmode-firefox .InfoBar__controlText {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .InfoBar__username,
+.tb-nightmode-firefox .InfoBar__username:visited {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .StyledHtml {
+    color: #cfd0ca;
+}
+.tb-nightmode-firefox .ThreadPreview__author,
+.tb-nightmode-firefox .ThreadPreview__author:visited,
+.tb-nightmode-firefox .Message__author,
+.tb-nightmode-firefox .Message__author:visited {
+    color: #9E9E9E;
+}
+.tb-nightmode-firefox .ThreadPreview__time,
+.tb-nightmode-firefox .ThreadPreview__time:visited,
+.tb-nightmode-firefox .ThreadPreview__replyCount {
+    color: #000;
+}
+.tb-nightmode-firefox .StyledHtml a {
+    color: #24a0ed;
+}
+.tb-nightmode-firefox .Thread__grouped {
+    background-color: #000;
+    border-top: 1px solid #353535;
+}
+.tb-nightmode-firefox .Thread__groupedDivider {
+    border-top: 1px solid #353535;
+}
+.tb-nightmode-firefox .Thread__groupedText {
+    background-color: #000;
+}
+.tb-nightmode-firefox .Thread__groupedTextActions,
+.tb-nightmode-firefox .Thread__groupedTextMessages {
+    color: #353535;
+}
+.tb-nightmode-firefox .StyledHtml blockquote,
+.tb-nightmode-firefox .StyledHtml code,
+.tb-nightmode-firefox .StyledHtml pre,
+.tb-nightmode-firefox .StyledHtml pre code {
+    background-color: #000;
+}
+.tb-nightmode-firefox .ThreadPreviewViewer__noMessages {
+    background-color: #000;
+    border-bottom: 1px solid #191919;
+}
+.tb-nightmode-firefox .ThreadViewer__threadContainer {
+    background: #000;
+}
+
+
+/* misc fixes.
+*/
 
 .mod-toolbox.tb-new-modmail .App__sidebarFooter,
 .mod-toolbox.tb-new-modmail .App__sidebarMenu {

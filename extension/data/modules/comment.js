@@ -534,7 +534,7 @@ self.init = function () {
 
                 // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
                 htmlCommentProfile = '\
-<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
+<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}"  data-author="{{author}}"data-subreddit="{{subreddit}}">\
 <p class="parent">\
     <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
     by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
@@ -556,9 +556,6 @@ self.init = function () {
     <ul class="flat-list buttons">\
         <li class="first">\
             <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-        </li>\
-        <li>\
-            <a href="javascript:;" class="global-mod-button">mod</a>\
         </li>\
         <li>\
             <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\

@@ -149,7 +149,7 @@ self.renderMatrix = function () {
 
     var modMatrixSettings = $("#mod-matrix-settings");
 
-    $('.reddit-moderationlog').unbind('click').click(function () {
+    $('.reddit-moderationlog').off('click').click(function () {
         self.getActions();
     });
 
@@ -157,7 +157,7 @@ self.renderMatrix = function () {
         self.sort($(this).index());
     });
 
-    modMatrixSettings.find("form").bind("submit", function (e) {
+    modMatrixSettings.find("form").on("submit", function (e) {
         e.preventDefault();
         self.submitForm(this);
 
@@ -305,7 +305,8 @@ self.renderMatrix = function () {
         this.createModeratorRow(moderator);
     }
 
-    $('.reddit-moderationlog').unbind('click').click(function (e) {
+    $('.reddit-moderationlog').off
+    ('click').click(function (e) {
         e.preventDefault();
         if (wrapper.is(":hidden")) {
             wrapper.show();
@@ -409,7 +410,7 @@ self.getActions = function (callback) {
 
     self.log("Retreiving " + requestData.count + " to " + (requestData.count + requestData.limit));
     $("#mod-matrix-statistics").text("loading entries " + requestData.count + " to " + (requestData.count + requestData.limit) + "...");
-    $("#mod-matrix-settings input[type=submit]").attr("disabled", "disabled");
+    $("#mod-matrix-settings input[type=submit]").prop("disabled", true);
 
     var url = this.subredditUrl + "about/log.json";
     var cacheKey = url + "?" + JSON.stringify(requestData);
@@ -604,7 +605,7 @@ self.processData = function (data, callback) {
     } else {
         $("#mod-matrix-statistics").html("no actions during requested period");
     }
-    $("#mod-matrix-settings input[type=submit]").removeAttr("disabled");
+    $("#mod-matrix-settings input[type=submit]").prop("disabled", false);
 
     // Invoke callback
     if (callback != null) {
@@ -728,11 +729,16 @@ self.init = function () {
 
 
     function getComments() {
+
+        // TODO: replace this entire section with a more api friendly call. The removed text is included in the json.
+        // So it is no longer needed to do a call for each comment.
+
         $('.modactionlisting table tr.modactions').each(function () {
             var $this = $(this);
             if ($this.find('.button a').hasClass("removecomment")) {
                 var removedUrl = $this.find('.description a').attr('href');
-                var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)$/);
+
+                var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)\/$/);
                 commentID = commentID[1];
                 removedUrl = removedUrl + '.json';
 
@@ -740,10 +746,16 @@ self.init = function () {
                 if (!$this.find('.description').attr('id')) {
                     $this.find('.description').attr('id', commentID);
 
+
                     $.getJSON(removedUrl).done(function (data, status, jqxhr) {
+
 
                         $body.find('.activate-comment-load').attr('data-remaining', ratelimitRemaining);
                         $body.find('.activate-comment-load').attr('data-reset', ratelimitReset);
+
+                        // We need to account for deleted comments.
+
+                        if(data[1].data.children[0]) {
 
                         var approved = data[1].data.children[0].data.approved_by;
                         var commentBody = data[1].data.children[0].data.body_html;
@@ -755,7 +767,12 @@ self.init = function () {
                             approved = '';
                         }
 
-                        $('#' + commentID).append('<div class="removed_comment_text">' + TBUtils.htmlDecode(commentBody) + approved + '</div>');
+
+
+
+                         $('#' + commentID).append('<div class="removed_comment_text">' + TBUtils.htmlDecode(commentBody) + approved + '</div>');
+                        }
+
                     });
 
                 }

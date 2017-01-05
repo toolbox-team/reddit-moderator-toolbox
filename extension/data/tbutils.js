@@ -23,8 +23,6 @@ function initwrapper() {
 
     // Let's get oauth information
     // We fetch the data on page load but we don't access the variable directly.
-    // For that we use a promise so there always is data and we also can handle expired tokens.
-    // TODO: handle expired tokens
 
 
     // Token promise.
@@ -263,8 +261,8 @@ function initwrapper() {
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
         // 3.5 version changes
-
-        TBStorage.setSetting('Notifier', 'wwwNotifications', true)
+        TBStorage.setSetting('HButton', 'alwaysComments', true);
+        TBStorage.setSetting('Notifier', 'wwwNotifications', true);
 
         // End: version changes.
 

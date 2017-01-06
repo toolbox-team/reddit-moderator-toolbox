@@ -106,7 +106,7 @@ html.tb-nightmode,
     color: #9E9E9E;
 }
 .tb-nightmode-firefox .Textarea,
-textarea {
+.tb-nightmode-firefox textarea {
     border: 1px solid #353535;
     background: #191919!important;
     color: #9E9E9E;

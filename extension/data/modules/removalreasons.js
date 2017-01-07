@@ -17,14 +17,16 @@ self.register_setting('alwaysShow', {
 
 // Storage settings.
 self.register_setting('reasonType', {
-    'type': 'string',
-    'default': '',
-    'hidden': true
+    'type': 'selector',
+    'values': ['Reply with a comment to the item that is removed', 'Send as PM (personal message)', 'Send as both PM and reply', 'None (This only works when a logsub has been set)'],
+    'default': 'reply',
+    'title': 'Method of sending removal reasons.'
 });
+
 self.register_setting('reasonAsSub', {
     'type': 'boolean',
     'default': false,
-    'title': 'Send removal reasons as a subreddit, these will appear in modmail.'
+    'title': 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.'
 });
 self.register_setting('reasonSticky', {
     'type': 'boolean',
@@ -355,7 +357,26 @@ self.init = function() {
                 headerDisplay = data.header ? '' : 'none',
                 footerDisplay = data.footer ? '' : 'none';
 
-            var reasonType = self.setting('reasonType');
+            var reasonType;
+            switch (self.setting('reasonType')) {
+                case 'reply_with_a_comment_to_the_item_that_is_removed':
+                    reasonType = 'reply';
+                    break;
+                case 'send_as_pm_(personal_message)':
+                    reasonType = 'pm';
+                    break;
+                case 'send_as_both_pm_and_reply':
+                    reasonType = 'both';
+                    break;
+                case 'none_(this_only_works_when_a_logsub_has_been_set)':
+                    reasonType = 'none';
+                    break;
+                default:
+                    reasonType = 'reply';
+                    break;
+
+            }
+
             var reasonAsSub = self.setting('reasonAsSub');
             var reasonSticky = self.setting('reasonSticky');
             var actionLock = self.setting('actionLock');
@@ -408,7 +429,7 @@ self.init = function() {
                             </li>\
                         </ul>\
                     </li><li>\
-                        <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="PM"	name="type-' + data.subreddit + '"' + (reasonType == 'PM' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">Send as PM (personal message)</label> \
+                        <input class="reason-type" type="radio" id="type-PM-' + data.subreddit + '" value="pm"	name="type-' + data.subreddit + '"' + (reasonType == 'pm' ? ' checked="1"' : '') + ' /><label for="type-PM-' + data.subreddit + '">Send as PM (personal message)</label> \
                         <ul>\
                             <li>\
                                 <input class="reason-as-sub" type="checkbox" id="type-as-sub"' + (reasonAsSub ? 'checked ' : '') + ' /><label for="type-as-sub">Send pm via modmail as /r/' + data.subreddit + ' <b>Note:</b> This will clutter up modmail.</label> \
@@ -552,17 +573,7 @@ self.init = function() {
         }
     });
 
-    // Toggle PM/reply/both notification method
-    $body.on('click', '.reason-type', function () {
-        self.setting('reasonType', this.value);
-    });
 
-    $body.on('click', '.reason-as-sub', function () {
-        self.setting('reasonAsSub', $(this).prop('checked'));
-    });
-    $body.on('click', '.reason-sticky', function () {
-        self.setting('reasonSticky', $(this).prop('checked'));
-    });
 
     // 'no reason' button clicked
     $body.on('click', '.reason-popup .no-reason', function () {
@@ -779,7 +790,7 @@ self.init = function() {
             if (typeof logLink !== 'undefined')
                 reason = reason.replace('{loglink}', logLink);
 
-            var notifyByPM = notifyBy == 'PM' || notifyBy == 'both',
+            var notifyByPM = notifyBy == 'pm' || notifyBy == 'both',
                 notifyByReply = notifyBy == 'reply' || notifyBy == 'both';
 
             // Reply to submission/comment

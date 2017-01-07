@@ -263,6 +263,7 @@ function initwrapper() {
         // 3.5 version changes
         TBStorage.setSetting('HButton', 'alwaysComments', true);
         TBStorage.setSetting('Notifier', 'wwwNotifications', true);
+        TBStorage.setSetting('RReasons', 'reasonType', 'reply_with_a_comment_to_the_item_that_is_removed');
 
         // End: version changes.
 

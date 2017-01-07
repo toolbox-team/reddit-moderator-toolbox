@@ -193,14 +193,14 @@ self.init = function() {
                     <td>\
                         Ban note:\
                     </td><td>\
-                        <input class="banNote" type="text" value="' + (configData.banMacros.banNote ? configData.banMacros.banNote : '') + '"/>\
+                        <input class="banNote" type="text" value="' + ((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : '') + '"/>\
                     </td>\
                     </tr>\
                     <tr>\
                     <td>\
                        Ban message:\
                     </td><td>\
-                       <textarea class="banMessage">' + (configData.banMacros.banMessage ? configData.banMacros.banMessage : '') + '</textarea>\
+                       <textarea class="banMessage">' + ((configData.banMacros && configData.banMacros.banMessage)  ? configData.banMacros.banMessage : '') + '</textarea>\
                     </td>\
                     </tr>\
                 </table>',

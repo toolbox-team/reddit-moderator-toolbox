@@ -722,6 +722,7 @@ text-align: left;
     box-sizing: initial;
     font-size: small;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .mod-toolbox .tb-sticky-header {

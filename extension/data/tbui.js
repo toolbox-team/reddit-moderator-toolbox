@@ -345,9 +345,11 @@
                     // hide others
                     $overlay.find('.tb-window-tabs a').removeClass('active');
                     $overlay.find('.tb-window-tab').hide();
+                    $overlay.find('.tb-window-footer').hide();
 
                     // show current
                     $overlay.find('.tb-window-tab.' + tab.id).show();
+                    $overlay.find('.tb-window-footer.' + tab.id).show();
                     $(this).addClass('active');
 
                     e.preventDefault();
@@ -360,14 +362,24 @@
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
                 if (!single_footer) {
-                    $tab.append($('<div class="tb-window-footer"></div>').append(tab.footer));
+
+                    $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer ' + tab.id + '"></div>').append(tab.footer));
+
+                    var $footer = $overlay.find('.tb-window-footer.' + tab.id);
+                    if (i == 0) {
+                        $footer.show();
+                    } else {
+                        $footer.hide();
+                    }
                 }
 
                 // default first tab is active = visible; hide others
                 if (i == 0) {
                     $button.addClass('active');
+
                     $tab.show();
                 } else {
+
                     $tab.hide();
                 }
 

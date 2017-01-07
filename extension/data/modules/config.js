@@ -184,7 +184,28 @@ self.init = function() {
                     tooltip: 'basic domain tags stuff.',
                     content: '<p>import tags from /r/:&nbsp;<input class="importfrom" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
                     footer: '<input class="import tb-action-button" type="button" value="import" />'
-                }
+                },
+                {
+                title: 'ban macro',
+                tooltip: 'pre-fill the mod button ban note and reason with tekst and tokens..',
+                content: '\
+                    <table>\
+                    <td>\
+                        Ban note:\
+                    </td><td>\
+                        <input class="banNote" type="text" value="' + (configData.banMacros.banNote ? configData.banMacros.banNote : '') + '"/>\
+                    </td>\
+                    </tr>\
+                    <tr>\
+                    <td>\
+                       Ban message:\
+                    </td><td>\
+                       <textarea class="banMessage">' + (configData.banMacros.banMessage ? configData.banMacros.banMessage : '') + '</textarea>\
+                    </td>\
+                    </tr>\
+                </table>',
+                footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">'
+            }
             ],
             [], // extra header buttons
             'tb-config', // class
@@ -382,7 +403,7 @@ self.init = function() {
 
 
             $textArea.each(function(index, elem){
-                // This makes sure codemirror behaves and uses spaces instead of tabs. 
+                // This makes sure codemirror behaves and uses spaces instead of tabs.
                 function betterTab(cm) {
                   if (cm.somethingSelected()) {
                     cm.indentSelection("add");
@@ -407,7 +428,7 @@ self.init = function() {
                         "Esc": function(cm) {
                             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
                         },
-                        "Tab": betterTab, 
+                        "Tab": betterTab,
                         "Shift-Tab": function (cm) {
                             cm.indentSelection("subtract");
                         }
@@ -1339,6 +1360,18 @@ self.init = function() {
                 }
             }
         });
+    });
+
+    $body.on('click', '.save-ban-macro', function () {
+
+        config.banMacros = {
+            banNote: $('.banNote').val(),
+            banMessage: $('.banMessage').val(),
+        };
+
+        postToWiki('toolbox', config, 'updated ban macro', true);
+        // Let people know that settings are saved.
+        TB.ui.textFeedback('Ban macro is saved.', TB.ui.FEEDBACK_POSITIVE);
     });
 }; // TBConfig.init()
 

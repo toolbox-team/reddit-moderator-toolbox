@@ -419,7 +419,7 @@ self.init = function() {
         $(shortcut).appendTo('#tb-toolbarshortcuts');
     });
 
-    $(footer).prepend(modbarhid);
+    $body.append(modbarhid);
 
     // Always default to hidden.
 
@@ -433,10 +433,12 @@ self.init = function() {
             $(modBar).hide();
             $(modbarhid).show();
             $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
+            $body.toggleClass('tb-modbar-shown', false) // New modmail uses this style to add space to the bottom of the page
         } else {
             $(modBar).show();
             $(modbarhid).hide();
             if (consoleShowing && debugMode) $body.find('.tb-debug-window').show();
+            $body.toggleClass('tb-modbar-shown', true)
         }
         self.setting('modbarHidden', hidden);
     }

@@ -26,6 +26,7 @@ self.register_setting('reasonType', {
 self.register_setting('reasonAsSub', {
     'type': 'boolean',
     'default': false,
+    'advanced': true,
     'title': 'Send removal reasons as a subreddit. <b>Note:</b> these will appear in modmail and potentially clutter it up.'
 });
 self.register_setting('reasonSticky', {

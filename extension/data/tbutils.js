@@ -68,7 +68,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
         invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -120,9 +120,9 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.5.0' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 350; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Testing Tapir';
+    TBUtils.toolboxVersion = '3.6.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 360; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'Idiotic Creesch';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;

@@ -63,6 +63,7 @@ self.initModSave = function initModSave() {
     self.log("Adding mod save buttons");
 
     //Watches for changes in the DOM
+    var shouldSticky = false
     var commentObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.addedNodes) {
@@ -71,9 +72,14 @@ self.initModSave = function initModSave() {
                     //Check if the added element is a comment
                     if ($item.is('div.comment')) {
                         self.log("Clicking distinguish button");
-                        //Distinguish the comment
+                        //Distinguish the comment, stickying if we need to
                         var things = $item.find('form[action="/post/distinguish"] > .option > a');
-                        things.first()[0].click();
+                        if (shouldSticky) {
+                            things.eq(1)[0].click()
+                            shouldSticky = false
+                        } else {
+                            things.first()[0].click();
+                        }
 
                         //Stop watching for changes
                         commentObserver.disconnect();
@@ -84,18 +90,18 @@ self.initModSave = function initModSave() {
         });
     });
 
-    //Add the mod save button next to each comment save button
+    // Add the mod save buttons next to each comment save button
     var $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
 
     var $saveButton = $usertextButtons.find('.save');
-        var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
-            $newButton = $('<button>').addClass('save-mod tb-action-button').text("mod save");
-        if ($tbUsertextButtons.length) {
-            $tbUsertextButtons.prepend($newButton);
-        }
-        else {
-            $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($newButton));
-        }
+    var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
+        $modSaveButton = $('<button>').addClass('save-mod tb-action-button').text("mod save"),
+        $stickySaveButton = $('<button>').addClass('save-sticky tb-action-button').text("mod save + sticky");
+    if ($tbUsertextButtons.length) {
+        $tbUsertextButtons.prepend($modSaveButton, $stickySaveButton);
+    } else {
+        $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($modSaveButton, $stickySaveButton));
+    }
 
 
     //Add actions to the mod save buttons
@@ -109,6 +115,17 @@ self.initModSave = function initModSave() {
         });
         $(this).closest('.usertext-buttons').find('button.save').click();
     });
+    $('body').on('click', 'button.save-sticky', function (e) {
+        self.log('Mod save + sticky clicked!');
+        commentObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            characterData: false
+        });
+        shouldSticky = true
+        $(this).closest('.usertext-buttons').find('button.save').click();
+    })
 };
 
 self.initDistinguishToggle = function initDistinguishToggle() {

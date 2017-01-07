@@ -145,11 +145,18 @@ body.mod-toolbox .tb-action-button:active {
 }
 
 
-.mod-toolbox button.save-mod.tb-action-button {
+.mod-toolbox button.save-mod.tb-action-button,
+.mod-toolbox button.save-sticky.tb-action-button {
     box-sizing: border-box !important;
     height: 26px !important;
 }
 
+/* Hack to make mod sticky + save button only show up where it's supposed to -
+   doing this via JS is hard because Reddit clones the reply field from the top-
+   level one, and the button should be visible on top-level comments but not on
+   replies to other comments. */
+button.save-sticky.tb-action-button { display: none !important }
+.commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
 
 
 body.mod-toolbox .tb-action-button:focus {

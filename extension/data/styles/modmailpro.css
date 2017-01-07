@@ -171,9 +171,8 @@ html.tb-nightmode,
 /* misc fixes.
 */
 
-.mod-toolbox.tb-new-modmail .App__sidebarFooter,
-.mod-toolbox.tb-new-modmail .App__sidebarMenu {
-    margin-bottom: 20px;
+.mod-toolbox.tb-new-modmail.tb-modbar-shown .App {
+    bottom: 20px;
 }
 
 .mod-toolbox.tb-new-modmail .tb-settings .tb-window-tabs {

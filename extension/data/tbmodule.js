@@ -249,8 +249,8 @@ TB = {
                         </tr>\
                     </table>\
                     <h3>Special thanks to:</h3>\
-                    <a href="/user/andytuba">/u/andytuba</a>\
-                    <br>for all his amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>\
+                    <a href="/user/andytuba">/u/andytuba</a> & <a href="/user/erikdesjardins">erikdesjardins</a>\
+                    <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>\
                     <h3>Credits:</h3>\
                     <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
                     <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
@@ -258,9 +258,9 @@ TB = {
                     <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
                     <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
-                    <a href="http://ace.c9.io/" target="_blank">Ace embeddable code editor</a><br>\
+                    <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>\
                     <h3>License:</h3>\
-                    <span>© 2013-2016 toolbox development team. </span>\
+                    <span>© 2013-2017 toolbox development team. </span>\
                     <p>Licensed under the Apache License, Version 2.0 (the "License");\
                         <br> you may not use this file except in compliance with the License.\
                         <br> You may obtain a copy of the License at </p>\

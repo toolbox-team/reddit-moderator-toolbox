@@ -351,7 +351,7 @@ self.initAddRemoveButtons = function initRemoveButtons() {
 };
 
 self.initStickyButtons = function initStickyButtons() {
-    var $things = $('.listing-page .content .thing.stickied');
+    var $things = $('.listing-page .content .thing.link.stickied');
     $things.each(function(i) {
         var $thing = $(this),
             $buttons = $thing.find('.flat-list');
@@ -390,22 +390,34 @@ self.fixLinks = function(){
 // Module init
 
 self.init = function() {
-    if (self.setting('enableModSave'))
-        self.initModSave();
-    if (self.setting('enableDistinguishToggle'))
-        self.initDistinguishToggle();
-    if (self.setting('removeRemoveConfirmation'))
-        self.initRemoveConfirmation();
-    if (self.setting('approveOnIgnore'))
-        self.initAutoApprove();
-    if (self.setting('ignoreOnApprove'))
-        self.initAutoIgnoreReports();
-    if (self.setting('spamRemoved') || self.setting('hamSpammed'))
-        self.initAddRemoveButtons();
-    if (self.setting('addStickyButton'))
-        self.initStickyButtons();
-    if (self.setting('fuckRedditMobile'))
+    // Mod check first before we do anything.
+    if(TBUtils.isMod) {
+        if (self.setting('enableModSave')) {
+            self.initModSave();
+        if (self.setting('enableDistinguishToggle')) {
+            self.initDistinguishToggle();
+        }
+        if (self.setting('removeRemoveConfirmation')) {
+            self.initRemoveConfirmation();
+        }
+        if (self.setting('approveOnIgnore')) {
+            self.initAutoApprove();
+        }
+        if (self.setting('ignoreOnApprove')) {
+            self.initAutoIgnoreReports();
+        }
+        if (self.setting('spamRemoved') || self.setting('hamSpammed')) {
+            self.initAddRemoveButtons();
+        }
+        if (self.setting('addStickyButton')) {
+            self.initStickyButtons();
+        }
+    }
+        
+    // Except for this one because reasons. 
+    if (self.setting('fuckRedditMobile')) {
         self.fixLinks();
+    }
 };
 
 TB.register_module(self);

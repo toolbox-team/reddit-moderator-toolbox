@@ -355,13 +355,17 @@ self.initStickyButtons = function initStickyButtons() {
     $things.each(function(i) {
         var $thing = $(this),
             $buttons = $thing.find('.flat-list');
-        $buttons.append($('<li>').addClass('sticky-button').append(
-            $('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')
-        ).append(
-            $('<span>').addClass('success').text("unstickied").hide()
-        ).append(
-            $('<span>').addClass('error').text("failed to sticky").hide()
-        ));
+        
+        // Make sure this is a post in a sub we mod by checking for the remove button.
+        if ($buttons.has('.remove-button')) {
+            $buttons.append($('<li>').addClass('sticky-button').append(
+                $('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')
+            ).append(
+                $('<span>').addClass('success').text("unstickied").hide()
+            ).append(
+                $('<span>').addClass('error').text("failed to sticky").hide()
+            ));
+        }
     });
 
     $('.thing .sticky-button a').click(function() {
@@ -391,30 +395,27 @@ self.fixLinks = function(){
 
 self.init = function() {
     // Mod check first before we do anything.
-    if(TBUtils.isMod) {
-        if (self.setting('enableModSave')) {
-            self.initModSave();
-        if (self.setting('enableDistinguishToggle')) {
-            self.initDistinguishToggle();
-        }
-        if (self.setting('removeRemoveConfirmation')) {
-            self.initRemoveConfirmation();
-        }
-        if (self.setting('approveOnIgnore')) {
-            self.initAutoApprove();
-        }
-        if (self.setting('ignoreOnApprove')) {
-            self.initAutoIgnoreReports();
-        }
-        if (self.setting('spamRemoved') || self.setting('hamSpammed')) {
-            self.initAddRemoveButtons();
-        }
-        if (self.setting('addStickyButton')) {
-            self.initStickyButtons();
-        }
+
+    if (self.setting('enableModSave')) {
+        self.initModSave();
+    if (self.setting('enableDistinguishToggle')) {
+        self.initDistinguishToggle();
     }
-        
-    // Except for this one because reasons. 
+    if (self.setting('removeRemoveConfirmation')) {
+        self.initRemoveConfirmation();
+    }
+    if (self.setting('approveOnIgnore')) {
+        self.initAutoApprove();
+    }
+    if (self.setting('ignoreOnApprove')) {
+        self.initAutoIgnoreReports();
+    }
+    if (self.setting('spamRemoved') || self.setting('hamSpammed')) {
+        self.initAddRemoveButtons();
+    }
+    if (self.setting('addStickyButton')) {
+        self.initStickyButtons();
+    }
     if (self.setting('fuckRedditMobile')) {
         self.fixLinks();
     }

@@ -345,11 +345,18 @@
                     // hide others
                     $overlay.find('.tb-window-tabs a').removeClass('active');
                     $overlay.find('.tb-window-tab').hide();
-                    $overlay.find('.tb-window-footer').hide();
+                    
 
                     // show current
                     $overlay.find('.tb-window-tab.' + tab.id).show();
-                    $overlay.find('.tb-window-footer.' + tab.id).show();
+                    
+                    // Only hide and show the footer if we have multiple options for it. 
+                    if (!single_footer) {
+                        $overlay.find('.tb-window-footer').hide();
+                        $overlay.find('.tb-window-footer.' + tab.id).show();
+                    }
+
+
                     $(this).addClass('active');
 
                     e.preventDefault();

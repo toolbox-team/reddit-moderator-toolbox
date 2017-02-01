@@ -407,7 +407,7 @@ self.init = function () {
                             }
                         }
                         // Always remove things like sponsored links (can't mod those)
-                        else if($thing.find('.parent a.author').text() === 'redditads') {
+                        else if($thing.find('.parent').text().endsWith('[promoted post]')) {
                             $thing.remove();
                         }
                     });

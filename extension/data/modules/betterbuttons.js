@@ -398,6 +398,7 @@ self.init = function() {
 
     if (self.setting('enableModSave')) {
         self.initModSave();
+    }
     if (self.setting('enableDistinguishToggle')) {
         self.initDistinguishToggle();
     }

@@ -316,12 +316,17 @@ self.usernotes = function usernotes() {
             else {
                 $usertag = $thing.find('.add-user-tag-' + subreddit);
             }
+            var isInNewModmailSidebar = $usertag.closest('.ThreadViewer__infobarContainer').length > 0;
 
             // Only happens if you delete the last note.
             if (u === undefined || u.notes.length < 1) {
                 $usertag.css('color', '');
                 $usertag.empty();
-                $usertag.text('N');
+                if (isInNewModmailSidebar) {
+                    $usertag.text('User notes');
+                } else {
+                    $usertag.text('N');
+                }
                 self.endProfile("set-notes-process");
                 return;
             }

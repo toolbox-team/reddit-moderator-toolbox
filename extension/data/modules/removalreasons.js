@@ -401,7 +401,7 @@ self.init = function() {
                 <p>Removing: <a class="mte-thread-link" href="' + data.url + '" target="_blank">' + TBUtils.htmlEncode(data.title) + '</a></p> \
                 <div class="styled-reason" id="header-reason" style="display:' + headerDisplay + '"> \
                     <p> \
-                        <input type="checkbox" id="include-header" checked> Include header. </input><br /> \
+                        <label><input type="checkbox" id="include-header" checked> Include header.</label><br /> \
                         <label id="reason-header">' + headerText + '</label> \
                     </p> \
                 </div> \
@@ -416,7 +416,7 @@ self.init = function() {
                 </table> \
                 <div class="styled-reason" id="footer-reason" style="display:' + footerDisplay + '"> \
                     <p>	\
-                        <input type="checkbox" id="include-footer" checked> Include footer. </input><br />\
+                        <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />\
                         <label id="reason-footer">' + footerText + '</label> \
                     </p> \
                 </div> \

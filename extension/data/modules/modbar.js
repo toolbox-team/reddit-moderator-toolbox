@@ -349,6 +349,8 @@ self.init = function() {
         var logLength = 0;
         var logVisibleLength = 0;
         setInterval(function () {
+            // If the console window is hidden, we don't need to handle this yet
+            if (!consoleShowing) return
 
             if (currentModule == DEFAULT_MODULE) {
                 if (logLength < TBUtils.log.length) {

@@ -72,7 +72,16 @@ self.run = function () {
 self.init = function () {
     var $body = $('body');
     if(TBUtils.modCheck){
-        self.run();
+
+
+
+        if (TBUtils.isNewModmail) {
+            setTimeout(function () {
+                self.run();
+            }, 500);
+        } else {
+            self.run();
+        }
 
 
         // NER support.

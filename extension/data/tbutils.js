@@ -2112,7 +2112,13 @@ function initwrapper() {
     }
 
     // Prep new modmail for toolbox stuff.
-    function addTbModmailSidebar() {
+    // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function addTbModmailSidebar() {
+        await sleep(500);
         var $body = $('body');
         if (TBUtils.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
             $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');

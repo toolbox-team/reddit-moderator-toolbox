@@ -48,9 +48,18 @@ self.usernotes = function usernotes() {
         self.log("Got mod subs");
         self.log(TBUtils.mySubs);
         // In new modmail we only run on threads.
-        if($body.find('.ThreadViewer').length > 0 || !TBUtils.isNewModmail) {
-            run();
+
+
+        if (TBUtils.isNewModmail) {
+            setTimeout(function () {
+                if($body.find('.ThreadViewer').length > 0) {
+                    run();
+                }
+            }, 500);
+        } else {
+            self.run();
         }
+
     });
 
     function getUser(users, name) {

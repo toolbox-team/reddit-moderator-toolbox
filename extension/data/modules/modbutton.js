@@ -166,7 +166,15 @@ self.init = function () {
 
     TB.utils.getModSubs(function () {
         // it's Go Time™!
-        self.run();
+
+        // Unless it is new modmail...
+        if (TBUtils.isNewModmail) {
+            setTimeout(function () {
+                self.run();
+            }, 500);
+        } else {
+            self.run();
+        }
     });
 
     // NER support.

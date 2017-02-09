@@ -202,13 +202,8 @@ self.init = function () {
     </div>
 `;
 
-            // We want to make sure windows fit on the screen.
-            var leftPosition;
-            if (document.documentElement.clientWidth - event.pageX < 400) {
-                leftPosition = event.pageX - 600;
-            } else {
-                leftPosition = event.pageX - 50;
-            }
+
+            var positions = TBui.drawPosition(event);
 
             var $popup = TB.ui.popup(
                 'History Button',
@@ -227,8 +222,8 @@ self.init = function () {
                 }
             ).appendTo('body')
                 .css({
-                    left: leftPosition,
-                    top: event.pageY - 10,
+                    left: positions.leftPosition,
+                    top: positions.topPosition,
                     display: 'block'
                 });
 
@@ -703,7 +698,6 @@ self.populateCommentHistory = function (after, author) {
         var percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
 
         $commentCount.html(user.counters.comments);
-        console.log(user.counters.comments);
         $commentCountOp.html(`${user.counters.commentsOP} (${percentageOP}%)`);
 
         TB.ui.longLoadNonPersistent(false);

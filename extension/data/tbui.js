@@ -288,6 +288,36 @@
         return $popup;
     };
 
+    TBui.drawPosition = function drawPosition(event) {
+        let positions = {
+                leftPosition: '',
+                topPosition : ''
+                };
+        if (document.documentElement.clientWidth - event.pageX < 400) {
+            positions.leftPosition = event.pageX - 600;
+        } else {
+            positions.leftPosition = event.pageX - 50;
+        }
+
+        if (document.documentElement.clientHeight - event.pageY < 200) {
+            positions.topPosition = event.pageY - 600;
+        } else {
+            positions.topPosition = event.pageY - 50;
+        }
+
+        // Making extra extra sure things will fit nicely on the page.
+
+        if (positions.topPosition < 0) {
+            positions.topPosition = 0;
+        }
+
+        if (positions.leftPosition < 0) {
+            positions.leftPosition = 0;
+        }
+
+        return positions;
+    };
+
 
     // Window Overlay HTML generator
     TBui.overlay = function overlay(title, tabs, buttons, css_class, single_footer) {
@@ -345,12 +375,12 @@
                     // hide others
                     $overlay.find('.tb-window-tabs a').removeClass('active');
                     $overlay.find('.tb-window-tab').hide();
-                    
+
 
                     // show current
                     $overlay.find('.tb-window-tab.' + tab.id).show();
-                    
-                    // Only hide and show the footer if we have multiple options for it. 
+
+                    // Only hide and show the footer if we have multiple options for it.
                     if (!single_footer) {
                         $overlay.find('.tb-window-footer').hide();
                         $overlay.find('.tb-window-footer.' + tab.id).show();

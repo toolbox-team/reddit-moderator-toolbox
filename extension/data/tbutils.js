@@ -903,7 +903,7 @@ function initwrapper() {
         var $body = $('body');
 
         var subreddit,
-            permalink ,
+            permalink,
             domain,
             id,
             body,
@@ -919,7 +919,7 @@ function initwrapper() {
             approved_by = [];
         // First we check if we are in new modmail thread and for now we take a very simple.
         // Everything we need info for is centered around threads.
-        if (TBUtils.isNewMMThread) {
+        if (TBUtils.isNewModmail) {
 
 
 
@@ -930,11 +930,10 @@ function initwrapper() {
 
             var idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
 
-                subreddit = $body.find('ThreadTitle__community').text();
-                permalink = ($threadBase.find('.m-link').attr('href') ? 'https://mod.reddit.com' + $threadBase.find('.m-link').attr('href') : 'https://mod.reddit.com/mail/perma/' + browserUrl.match(idRegex)[1]);
-
+                subreddit = $body.find('.ThreadTitle__community').text();
+                permalink = ($threadBase.find('.m-link').length ? 'https://mod.reddit.com' + $threadBase.find('.m-link').attr('href') : 'https://mod.reddit.com/mail/perma/' + browserUrl.match(idRegex)[1]);
                 id = browserUrl.match(idRegex)[1];
-                body = $threadBase.find('.StyledHtml').text() || '';
+                body = $threadBase.find('.Message__body .md').text() || '';
                 title = $body.find('.ThreadTitle__title').text();
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;

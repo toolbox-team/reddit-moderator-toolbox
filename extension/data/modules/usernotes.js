@@ -425,15 +425,12 @@ self.usernotes = function usernotes() {
                 '', // meta to inject in popup header; just a placeholder
                 'utagger-popup' // class
             );
-        var leftPosition;
-        if (document.documentElement.clientWidth - e.pageX < 400) {
-            leftPosition = e.pageX - 600;
-        } else {
-            leftPosition = e.pageX - 50;
-        }
+        // We want to make sure windows fit on the screen.
+        var positions = TBui.drawPosition(e);
+
         $popup.css({
-            left: leftPosition,
-            top: e.pageY - 10
+            left: positions.leftPosition,
+            top: positions.topPosition
         });
         $body.append($popup);
 

@@ -200,6 +200,10 @@ self.init = function () {
         }
 
         // generate the .mod-popup jQuery object
+
+        // We want to make sure windows fit on the screen.
+        var positions = TBui.drawPosition(event);
+
         $popup = TB.ui.popup(
             'Mod Actions  - /u/' + user,
             [
@@ -265,8 +269,8 @@ self.init = function () {
             'mod-popup' // class
         ).appendTo('body')
             .css({
-                left: event.pageX - 50,
-                top: event.pageY - 10,
+                left: positions.leftPosition,
+                top: positions.topPosition,
                 display: 'block'
             });
 

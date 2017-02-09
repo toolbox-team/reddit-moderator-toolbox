@@ -180,20 +180,15 @@ self.init = function () {
         $(benbutton).text('loading...');
         self.log('displaying mod button popup');
 
-        if (TBUtils.isNewModmail) {
+
             var display = (self.savedSubs.length < 1) ? 'none' : '',
-                lastaction = self.setting('lastAction'),
-                subreddit = $body.find('.ThreadTitle__community').text(),
-                user = $body.find('.InfoBar__username').text(),
-                thing_id = $(this).closest('.ThreadViewer__infobar').attr('data-reactid');
-        } else {
-            var display = (self.savedSubs.length < 1) ? 'none' : '',
-                lastaction = self.setting('lastAction'),
-                info = TB.utils.getThingInfo(this, true),
+                lastaction = self.setting('lastAction');
+
+            var info = TB.utils.getThingInfo(this, true),
                 subreddit = info.subreddit,
                 user = info.user,
                 thing_id = info.id;
-        }
+
         //$.log('modbutton ' + subreddit, true);
 
         // no user?

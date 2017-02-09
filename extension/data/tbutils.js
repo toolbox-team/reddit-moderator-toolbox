@@ -897,66 +897,118 @@ function initwrapper() {
     };
 
     TBUtils.getThingInfo = function (sender, modCheck) {
-        // If we were passed in a .thing, we may have to walk down the tree to
-        // find the associated .entry
-        var $sender = $(sender),
-            $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender),
-            $thing = $($sender.closest('.thing')[0] || $sender),
-            user = $entry.find('.author:first').text() || $thing.find('.author:first').text(),
-            subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text(),
-            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href') || ($thing.find('.m-link').attr('href') ? 'https://mod.reddit.com' + $thing.find('.m-link').attr('href') : window.location.href),
-            domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', ''),
-            id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val(),
-            body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text(),
 
-        // These need some fall backs, but only removal reasons use them for now.
-            title = $thing.find('a.title').length ? $thing.find('a.title').text() : '',
-            kind = $thing.hasClass('link') ? 'submission' : 'comment',
+        // declare what we will need.
+        var $sender = $(sender);
+        var $body = $('body');
+
+        var subreddit,
+            permalink ,
+            domain,
+            id,
+            body,
+            title,
+            kind,
+            postlink,
+            banned_by,
+            spam,
+            ham,
+            user,
+            removal,
+            approved_text,
+            approved_by = [];
+        // First we check if we are in new modmail thread and for now we take a very simple.
+        // Everything we need info for is centered around threads.
+        if (TBUtils.isNewMMThread) {
+
+
+
+            // Lack of a better name, can be a thread_message or infobar.
+            var $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
+            var browserUrl = window.location.href;
+
+
+            var idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
+
+                subreddit = $body.find('ThreadTitle__community').text();
+                permalink = ($threadBase.find('.m-link').attr('href') ? 'https://mod.reddit.com' + $threadBase.find('.m-link').attr('href') : 'https://mod.reddit.com/mail/perma/' + browserUrl.match(idRegex)[1]);
+
+                id = browserUrl.match(idRegex)[1];
+                body = $threadBase.find('.StyledHtml').text() || '';
+                title = $body.find('.ThreadTitle__title').text();
+                kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
+                spam = false;
+                ham = false;
+                user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+        } else {
+            // do our regular stuff to gather data.
+
+
+            // If we were passed in a .thing, we may have to walk down the tree to
+            // find the associated .entry
+
+
+            var $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
+            var $thing = $($sender.closest('.thing')[0] || $sender);
+
+            user = $entry.find('.author:first').text() || $thing.find('.author:first').text();
+            subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+            permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
+            domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
+            id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
+            body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text();
+
+            // These need some fall backs, but only removal reasons use them for now.
+            title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';
+            kind = $thing.hasClass('link') ? 'submission' : 'comment';
             postlink = $thing.find('a.title').attr('href');
 
-        // removed? spam or ham?
-        var removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [],
-            banned_by = removal[1] || '',
-            spam = removal[2] == 'spam' || removal[2] == 'confirm spam',
+            // removed? spam or ham?
+            removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
+
+            banned_by = removal[1] || '';
+            spam = removal[2] == 'spam' || removal[2] == 'confirm spam';
             ham = removal[2] == 'remove not spam';
 
-        if (TBUtils.isEditUserPage && !user) {
-            user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
-        }
-
-        // If we still don't have a sub, we're in mod mail, or PMs.
-        if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
-            // Change it to use the parent's title.
-            title = $sender.find('.subject-text:first').text();
-
-            subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
-
-            //This is a weird palce to go about this, and the conditions are strange,
-            //but if we're going to assume we're us, we better make damned well sure that is likely the case.
-            // if ($entry.find('.remove-button').text() === '') {
-            // The previous check would mistakenly catch removed modmail messages as the user's messages.
-            // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
-            // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
-
-            // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
-            user = $entry.find('.sender a.author').text();
-
-            // If there is only one use present and it says "to" it means that this is not the user sending the message.
-
-            if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
-                user = TBUtils.logged;
+            if (TBUtils.isEditUserPage && !user) {
+                user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
             }
 
-            if (user === '') {
-                user = TBUtils.logged;
+            // If we still don't have a sub, we're in mod mail, or PMs.
+            if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+                // Change it to use the parent's title.
+                title = $sender.find('.subject-text:first').text();
 
-                if (!subreddit || subreddit.indexOf('/r/') < 1) {
-                    // Find a better way, I double dog dare ya!
-                    subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text()
+                subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
+
+                //This is a weird palce to go about this, and the conditions are strange,
+                //but if we're going to assume we're us, we better make damned well sure that is likely the case.
+                // if ($entry.find('.remove-button').text() === '') {
+                // The previous check would mistakenly catch removed modmail messages as the user's messages.
+                // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
+                // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
+
+                // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
+                user = $entry.find('.sender a.author').text();
+
+                // If there is only one use present and it says "to" it means that this is not the user sending the message.
+
+                if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
+                    user = TBUtils.logged;
+                }
+
+                if (user === '') {
+                    user = TBUtils.logged;
+
+                    if (!subreddit || subreddit.indexOf('/r/') < 1) {
+                        // Find a better way, I double dog dare ya!
+                        subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text()
+                    }
                 }
             }
+            approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '',
+            approved_by = approved_text.match(/by\s(.+?)\s/) || '';
         }
-
         // A recent reddit change makes subreddit names sometimes start with "/r/".
         // Mod mail subreddit names additionally end with "/".
         // reddit pls, need consistency
@@ -971,8 +1023,7 @@ function initwrapper() {
             user = '';
         }
 
-        var approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '',
-            approved_by = approved_text.match(/by\s(.+?)\s/) || '';
+
 
         // If the permalink is relative, stick the current domain name in.
         if (permalink.slice(0,1) == "/")

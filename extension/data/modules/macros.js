@@ -136,6 +136,44 @@ self.init = function () {
         }
     });
 
+    // Add macro button in new modmail
+    function addNewMMMacro() {
+        var $thing = $body.find('.InfoBar'),
+            info = TB.utils.getThingInfo($thing, true);
+
+        // Don't add macro button twice.
+        if ($body.find('.tb-usertext-buttons').length) return;
+
+
+
+        // are we a mod?
+        if (!info.subreddit) return;
+        self.log(info.subreddit);
+
+        // if we don't have a config, get it.  If it fails, return.
+        getConfig(info.subreddit, function (success, config) {
+            // if we're a mod, add macros to top level reply button.
+            if (success && config.length > 0) {
+
+
+                    var macroButtonHtml = '<select class="tb-macro-select tb-action-button" data-subreddit="' + info.subreddit + '"><option value=' + MACROS + '>macros</option></select>';
+                    $body.find('.ThreadViewerReplyForm__replyOptions').before('<div class="tb-usertext-buttons tb-macro-newmm">'+ macroButtonHtml +'</div>');
+
+
+                populateSelect('.tb-macro-select', info.subreddit, config);
+            }
+        });
+    }
+    if(TBUtils.isNewMMThread) {
+        addNewMMMacro();
+    }
+    // NER support.
+    window.addEventListener('TBNewThings', function () {
+        if(TBUtils.isNewMMThread) {
+            addNewMMMacro();
+        }
+    });
+
     function editMacro(dropdown, info, macro, topLevel) {
         // get some placement variables
 
@@ -151,12 +189,15 @@ self.init = function () {
             actionList = 'The following actions will be performed:<br>- Your reply will be saved',
             kind = info.kind;
 
+        if (TBUtils.isNewModmail) {
+            $usertext = $body.find('.ThreadViewerReplyForm');
+        }
         // If it's undefined assume previous default behaviour and always distinguish.
         if (macro.distinguish === undefined) {
             distinguish = true;
         }
 
-        if (!TB.utils.isModmail) {
+        if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
             if (remove) {
                 actionList += '<br>- This ' + kind + ' will be removed';
             }
@@ -215,12 +256,16 @@ self.init = function () {
             'macro-' + info.id // id
         ).appendTo('body')
             .css({
+
                 'left': offsetLeft + 'px',
                 'top': offsetTop + 'px',
                 'min-height': minHeight + 'px',
                 display: 'block'
             });
 
+        if (TBUtils.isNewModmail) {
+            $macroPopup.css('max-width', '100%');
+        }
         $macroPopup.find('.macro-edit-area').css({
             'min-height': editMinHeight + 'px',
             'min-width': editMinWidth + 'px'
@@ -234,59 +279,89 @@ self.init = function () {
             if ($selectElement.val() !== MACROS) {
                 self.log("Replying with:");
                 self.log("  "+editedcomment);
-                TBUtils.postComment(info.id, editedcomment, function (successful, response) {
-                    if (!successful) {
-                        TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
-                    } else {
-                        TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
-                        $currentMacroPopup.remove();
-                        $selectElement.prop('disabled', false);
-                        if (topLevel) {
-                            $selectElement.val(MACROS);
+
+                // We split of new modmail from the rest of reddit because... well easier.
+                if (TBUtils.isNewModmail) {
+
+                    $('.Textarea.ThreadViewerReplyForm__replyText').val(editedcomment);
+                    $body.find('.ThreadViewerReplyForm__replyButton').click();
+
+                    self.log("Performing user actions");
+
+                    if (ban) {
+                        TBUtils.friendUser(info.author, 'banned', info.subreddit,
+                            'Banned from: ' + info.permalink,
+                            'For the following ' + kind + ': ' + info.permalink);
+                    }
+
+                    if (mute) {
+                        // So we don't do an api call for this.
+                        $body.find('.icon-mute').click();
+
+                    }
+
+                    // All done!
+
+                    $currentMacroPopup.remove();
+                    $selectElement.prop('disabled', false);
+
+                } else {
+
+                    TBUtils.postComment(info.id, editedcomment, function (successful, response) {
+                        if (!successful) {
+                            TB.ui.textFeedback('Failed to post reply', TB.ui.FEEDBACK_NEGATIVE);
                         } else {
-                            $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
+                            TB.ui.textFeedback('Reply posted', TB.ui.FEEDBACK_POSITIVE);
+                            $currentMacroPopup.remove();
+                            $selectElement.prop('disabled', false);
+                            if (topLevel) {
+                                $selectElement.val(MACROS);
+                            } else {
+                                $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
+                            }
+
+                            if (distinguish && !TB.utils.isModmail) {
+                                // Distinguish the new reply
+                                TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky, function (successful) {
+                                    if (!successful) {
+                                        $currentMacroPopup.remove();
+                                        TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
+                        self.log("Performing non-modmail actions");
+
+                        if (remove) {
+                            TB.utils.removeThing(info.id, false);
                         }
 
-                        if (distinguish && !TB.utils.isModmail) {
-                            // Distinguish the new reply
-                            TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky, function (successful) {
-                                if (!successful) {
-                                    $currentMacroPopup.remove();
-                                    TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
-                                }
-                            });
+                        if (approve) {
+                            TB.utils.approveThing(info.id);
+                        }
+
+                        if (lock) {
+                            TB.utils.lockThread(info.id);
                         }
                     }
-                });
 
-                if (!TB.utils.isModmail) {
-                    self.log("Performing non-modmail actions");
+                    self.log("Performing user actions");
 
-                    if (remove) {
-                        TB.utils.removeThing(info.id, false);
+                    if (ban) {
+                        TBUtils.friendUser(info.author, 'banned', info.subreddit,
+                            'Banned from: ' + info.permalink,
+                            'For the following ' + kind + ': ' + info.permalink);
                     }
 
-                    if (approve) {
-                        TB.utils.approveThing(info.id);
+                    if (mute) {
+                        self.log("  Muting \"" + info.author + "\" from /r/" + info.subreddit + " @ " + info.permalink);
+                        TBUtils.friendUser(info.author, 'muted', info.subreddit,
+                            'Muted from: ' + info.permalink);
                     }
 
-                    if (lock) {
-                        TB.utils.lockThread(info.id);
-                    }
-                }
-
-                self.log("Performing user actions");
-
-                if (ban) {
-                    TBUtils.friendUser(info.author, 'banned', info.subreddit,
-                    'Banned from: ' + info.permalink,
-                    'For the following '+ kind + ': ' + info.permalink);
-                }
-
-                if (mute) {
-                    self.log("  Muting \""+info.author+"\" from /r/"+info.subreddit+" @ "+info.permalink);
-                    TBUtils.friendUser(info.author, 'muted', info.subreddit,
-                        'Muted from: ' + info.permalink);
                 }
 
             }

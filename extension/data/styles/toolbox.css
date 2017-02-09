@@ -15,6 +15,10 @@
     height: 40px;
 }
 
+.tb-macro-newmm {
+    float: right;
+    margin-right: 10px;
+}
 /*
 general UI stuff
 */

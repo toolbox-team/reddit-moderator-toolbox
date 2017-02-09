@@ -57,7 +57,7 @@ self.usernotes = function usernotes() {
                 }
             }, 500);
         } else {
-            self.run();
+            run();
         }
 
     });

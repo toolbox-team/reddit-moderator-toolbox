@@ -164,14 +164,18 @@ self.init = function () {
             }
         });
     }
-    if(TBUtils.isNewMMThread) {
-        addNewMMMacro();
-    }
+    setTimeout(function () {
+        if(TBUtils.isNewMMThread) {
+            addNewMMMacro();
+        }
+    }, 500);
+
     // NER support.
     window.addEventListener('TBNewThings', function () {
         if(TBUtils.isNewMMThread) {
             addNewMMMacro();
         }
+
     });
 
     function editMacro(dropdown, info, macro, topLevel) {

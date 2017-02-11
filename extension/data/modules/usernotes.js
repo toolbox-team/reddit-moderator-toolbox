@@ -137,7 +137,7 @@ self.usernotes = function usernotes() {
             $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
         }
         else {
-            $things = $('div.thing:not(.ut-thing)');
+            $things = $('#siteTable div.thing:not(.ut-thing)');
             $things.attr('data-ut-type', TYPE_THING);
         }
 
@@ -156,6 +156,7 @@ self.usernotes = function usernotes() {
 
         // Link and comments
         if (thingType === TYPE_THING) {
+            console.log($thing);
             var thingInfo = TBUtils.getThingInfo($thing);
 
             var subreddit = thingInfo.subreddit,

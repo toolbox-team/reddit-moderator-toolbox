@@ -19,6 +19,12 @@ function newmodmailpro() {
         'title': 'Open modmail in a new tab.'
     });
 
+    self.register_setting('lastreplytypecheck', {
+        'type': 'boolean',
+        'default': true,
+        'title': 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. '
+    });
+
     self.register_setting('modmailnightmode', {
         'type': 'boolean',
         'default': false,
@@ -33,8 +39,39 @@ function newmodmailpro() {
         $body.addClass('tb-new-modmail');
 
         // ready some variables.
+        var modMailNightmode = self.setting('modmailnightmode'),
+            lastReplyTypeCheck = self.setting('lastreplytypecheck');
 
-        var modMailNightmode = self.setting('modmailnightmode');
+
+        if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
+            $body.on('click', '.ThreadViewerReplyForm__replyButton', function(event) {
+                let $lastReply = $body.find('.Thread__messages .Thread__message').last();
+
+                const replyTypeMyself = $body.find('.FancySelect__valueText').text() == 'Reply as myself';
+
+                // if it finds this the last mod that replied did so with "as subreddit".
+                if ($lastReply.find('.icon-profile-slash').length && replyTypeMyself) {
+                    if (confirm('The last mod that replied did so as the subreddit, are you sure you want to reply as yourself?')) {
+                        // Ok, do nothing and let the message be posted.
+                    } else {
+                        // Not ok, prevent the button from being clicked.
+                        event.preventDefault();
+                    }
+
+                }
+
+                // If it finds this class it means the last reply was a private mod note.
+                if ($lastReply.find('.Thread__messageIsMod').length && replyTypeMyself) {
+                    if (confirm('The last mod that replied did so with a private mod note, are you sure you want to reply as yourself?')) {
+                        // Ok, do nothing and let the message be posted.
+                    } else {
+                        // Not ok, prevent the button from being clicked.
+                        event.preventDefault();
+                    }
+                }
+
+            });
+        }
 
         if (modMailNightmode) {
             // Let's make sure RES nightmode doesn't mess things up.

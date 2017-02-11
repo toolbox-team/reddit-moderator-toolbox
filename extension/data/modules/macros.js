@@ -190,6 +190,8 @@ self.init = function () {
             distinguish = macro.distinguish,
             lock = macro.lockthread,
             sticky = macro.sticky,
+            archivemodmail = macro.archivemodmail,
+            highlightmodmail = macro.highlightmodmail,
             actionList = 'The following actions will be performed:<br>- Your reply will be saved',
             kind = info.kind;
 
@@ -230,6 +232,20 @@ self.init = function () {
         if (mute) {
             actionList += '<br>- This user will be muted';
         }
+
+        if (TB.utils.isNewModmail) {
+            if (archivemodmail) {
+                actionList += '<br>- This modmail thread will be archived.';
+            }
+
+            if (highlightmodmail) {
+                actionList += '<br>- This modmail thread will be highlighted.';
+            }
+
+        }
+
+
+
 
         // replace token.
         comment = TB.utils.replaceTokens(info, comment);
@@ -300,9 +316,18 @@ self.init = function () {
 
                     if (mute) {
                         // So we don't do an api call for this.
-                        $body.find('.icon-mute').click();
+                        $body.find('.ThreadViewer .icon-mute').click();
 
                     }
+
+                    if (archivemodmail) {
+                        $body.find('.ThreadViewer .icon-archived').click();
+                    }
+
+                    if (highlightmodmail) {
+                        $body.find('.ThreadViewer .icon-flair').click();
+                    }
+
 
                     // All done!
 

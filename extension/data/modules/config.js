@@ -170,7 +170,9 @@ self.init = function() {
                     <label><input type="checkbox" id="removeitem">remove item</label>\
                     <label><input type="checkbox" id="approveitem">approve item</label>\
                     <label><input type="checkbox" id="lockthread">lock post</label>\
-                    <label><input type="checkbox" id="sticky">sticky comment</label><br>\
+                    <label><input type="checkbox" id="sticky">sticky comment</label>\
+                    <label><input type="checkbox" id="archivemodmail">archive modmail</label>\
+                    <label><input type="checkbox" id="highlightmodmail">highlight modmail</label><br>\
                     <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
                 </span>\
@@ -681,7 +683,9 @@ self.init = function() {
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
                             <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
                             <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>\
-                            <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label><br>\
+                            <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>\
+                            <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>\
+                            <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>\
                             <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />\
                         </span>\
@@ -708,6 +712,11 @@ self.init = function() {
                 $('.' + i + '-approveitem').prop('checked', macro.approve);
                 $('.' + i + '-lockthread').prop('checked', macro.lockthread);
                 $('.' + i + '-sticky').prop('checked', macro.sticky);
+                $('.' + i + '-archivemodmail').prop('checked', macro.archivemodmail);
+                $('.' + i + '-highlightmodmail').prop('checked', macro.highlightmodmail);
+
+
+
             });
         }
     }
@@ -1179,6 +1188,8 @@ self.init = function() {
         $macroContent.find('#approveitem').prop("checked", macro.approve);
         $macroContent.find('#lockthread').prop("checked", macro.lockthread);
         $macroContent.find('#sticky').prop("checked", macro.sticky);
+        $macroContent.find('#archivemodmail').prop("checked", macro.archivemodmail);
+        $macroContent.find('#highlightmodmail').prop("checked", macro.highlightmodmail);
         $macroContent.find('input[name=edit-note]').val('');
 
         $macroContent.find('.mod-macro-label').show();
@@ -1199,6 +1210,8 @@ self.init = function() {
             approveitem = $macroContent.find('#approveitem').prop("checked"),
             lockthread = $macroContent.find('#lockthread').prop("checked"),
             sticky = $macroContent.find('#sticky').prop("checked"),
+            archivemodmail = $macroContent.find('#archivemodmail').prop("checked"),
+            highlightmodmail = $macroContent.find('#highlightmodmail').prop("checked"),
             editNote = $macroContent.find('input[name=edit-note]').val(),
             macro = config.modMacros[macroNum];
 
@@ -1223,6 +1236,8 @@ self.init = function() {
         macro.approve = approveitem;
         macro.lockthread = lockthread;
         macro.sticky = sticky;
+        macro.archivemodmail = archivemodmail;
+        macro.highlightmodmail = highlightmodmail;
 
         postToWiki('toolbox', config, editNote, true);
 
@@ -1284,7 +1299,10 @@ self.init = function() {
             approveitem = $body.find('#approveitem').prop("checked"),
             lockthread = $body.find('#lockthread').prop("checked"),
             sticky = $body.find('#sticky').prop("checked"),
+            archivemodmail = $body.find('#archivemodmail').prop("checked"),
+            highlightmodmail = $body.find('#highlightmodmail').prop("checked"),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
+
 
         if (macroTitle.length < 1) {
             TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
@@ -1305,6 +1323,9 @@ self.init = function() {
         macro.approve = approveitem;
         macro.lockthread = lockthread;
         macro.sticky = sticky;
+        macro.archivemodmail = archivemodmail;
+        macro.highlightmodmail = highlightmodmail;
+
 
         if (!config.modMacros) {
             config.modMacros = [];
@@ -1329,6 +1350,11 @@ self.init = function() {
         $body.find('#approveitem').prop("checked", false);
         $body.find('#lockthread').prop("checked", false);
         $body.find('#sticky').prop("checked", false);
+        $body.find('#archivemodmail').prop("checked", false);
+        $body.find('#highlightmodmail').prop("checked", false);
+
+
+
     });
 
     // cancel
@@ -1345,7 +1371,11 @@ self.init = function() {
         $body.find('#approveitem').prop("checked", false);
         $body.find('#lockthread').prop("checked", false);
         $body.find('#sticky').prop("checked", false);
+        $body.find('#archivemodmail').prop("checked", false);
+        $body.find('#highlightmodmail').prop("checked", false);
     });
+
+
 
     // When the import button is clicked on the domain tags thing.
     $body.on('click', '.domain_tags .import', function () {

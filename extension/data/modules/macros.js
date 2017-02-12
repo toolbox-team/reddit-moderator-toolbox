@@ -351,7 +351,7 @@ self.init = function () {
 
                             if (distinguish && !TB.utils.isModmail) {
                                 // Distinguish the new reply
-                                TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky, function (successful) {
+                                TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky && topLevel, function (successful) {
                                     if (!successful) {
                                         $currentMacroPopup.remove();
                                         TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);

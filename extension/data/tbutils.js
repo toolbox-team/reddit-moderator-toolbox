@@ -244,7 +244,7 @@ function initwrapper() {
     }
 
     if (toolboxDevs.length < 1) {
-        TBUtils.tbDevs = getToolboxDevs();
+        getToolboxDevs();
     }
 
     // First run changes.
@@ -253,7 +253,7 @@ function initwrapper() {
         // These need to happen for every version change
         TBUtils.firstRun = true; // for use by other modules.
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBUtils.shortVersion); //set last version to this version.
-        TBUtils.tbDevs = getToolboxDevs();  //always repopulate tb devs for each version change
+        getToolboxDevs();  //always repopulate tb devs for each version change
 
         //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
@@ -2104,11 +2104,33 @@ function initwrapper() {
     }
 
 
-    function getToolboxDevs() {
-        //TODO: actually pull these from /r/toolbox/about/moderators.json
-        var devs = ['agentlame', 'creesch', 'LowSociety ', 'TheEnigmaBlade', 'dakta', 'largenocream', 'psdtwk', 'amici_ursi', 'noeatnosleep', 'Garethp', 'WorseThanHipster', 'geo1088'];
-        TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
-        return devs;
+    TBUtils.test = function getToolboxDevs() {
+        $.get(TBUtils.baseDomain + '/r/toolbox/about/moderators.json').done(function (resp) {
+            var children = JSON.parse(resp).data.children,
+                devs = [];
+            for (let i of children) {
+                devs.push(children[i].name);
+            }
+            TBUtils.tbDevs = devs;
+            TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
+        }).fail(function () {
+            var devs = [
+                'agentlame',
+                'creesch',
+                'LowSociety ',
+                'TheEnigmaBlade',
+                'dakta',
+                'largenocream',
+                'psdtwk',
+                'amici_ursi',
+                'noeatnosleep',
+                'Garethp',
+                'WorseThanHipster',
+                'geo1088'
+            ];
+            TBUtils.tbDevs = devs;
+            TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
+        });
     }
 
     // Prep new modmail for toolbox stuff.

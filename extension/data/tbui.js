@@ -305,15 +305,6 @@
             positions.topPosition = event.pageY - 50;
         }
 
-        // Making extra extra sure things will fit nicely on the page.
-
-        if (positions.topPosition < 0) {
-            positions.topPosition = 0;
-        }
-
-        if (positions.leftPosition < 0) {
-            positions.leftPosition = 0;
-        }
 
         return positions;
     };

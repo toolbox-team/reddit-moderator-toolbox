@@ -937,6 +937,11 @@ img.note-close {
 .tb-popup-tabs a:hover,
 .tb-popup-tabs a.active {
     background-color: #9FBAD6;
+    border-right: 1px solid #9FBAD6;
+}
+.tb-popup-tabs a:not(:first-child):hover,
+.tb-popup-tabs a:not(:first-child).active {
+    box-shadow: -1px 0 #9FBAD6;
 }
 
 .tb-popup-content {

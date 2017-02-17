@@ -156,7 +156,6 @@ self.usernotes = function usernotes() {
 
         // Link and comments
         if (thingType === TYPE_THING) {
-            console.log($thing);
             var thingInfo = TBUtils.getThingInfo($thing);
 
             var subreddit = thingInfo.subreddit,

@@ -45,9 +45,10 @@ function newmodmailpro() {
 
         if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', function(event) {
-                let $lastReply = $body.find('.Thread__messages .Thread__message').last();
 
-                const replyTypeMyself = $body.find('.FancySelect__valueText').text() == 'Reply as myself';
+                // Get all mod replies and see if they are something we need to warn the user about.
+                let $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
+                const replyTypeMyself = $body.find('.FancySelect__valueText').text() === 'Reply as myself';
 
                 // if it finds this the last mod that replied did so with "as subreddit".
                 if ($lastReply.find('.icon-profile-slash').length && replyTypeMyself) {

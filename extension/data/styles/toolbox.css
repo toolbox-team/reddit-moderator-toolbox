@@ -1313,36 +1313,6 @@ body .thing.flaired {
     height: 500px;
     border: solid 1px #E4E4E4;
 }
-.mod-toolbox .ace_searchbtn, .mod-toolbox .ace_replacebtn  {
-
-    margin: 0;
-}
-
-.mod-toolbox .ace_search_field {
-    border: 0 !important;
-}
-
-.mod-toolbox .ace_print-margin {
-    display: none;
-}
-
-.mod-toolbox .syntax-example {
-    display: block;
-    width: 98%;
-    height: 300px;
-}
-
-.ace_editor {
-    resize:both;
-    -moz-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-    -webkit-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-    -o-transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-    transition:width 0.0000000000000000001s, height 0.0000000000000000001s;
-}
-
-.ace_gutter, .ace_layer, .ace_scroller, .ace_scrollbar, .ace_search_field, .ace_search.right {
-    resize: none;
-}
 
 .mod-toolbox.mod-syntax .sheets .buttons .btn,
 .mod-toolbox.mod-syntax  #wiki_save_button{

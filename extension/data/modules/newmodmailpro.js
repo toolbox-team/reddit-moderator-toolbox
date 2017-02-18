@@ -82,6 +82,7 @@ function newmodmailpro() {
             // Firefox can't do simple nightmode so we do it like this
             if(TBUtils.browser === 'firefox') {
                 $('html').addClass('tb-nightmode-firefox');
+                $('body').addClass('tb-nightmode-firefox');
             } else {
                 $('html').addClass('tb-nightmode');
             }

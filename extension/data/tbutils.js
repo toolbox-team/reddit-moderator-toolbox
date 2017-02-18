@@ -243,7 +243,7 @@ function initwrapper() {
         TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
     }
 
-    if (toolboxDevs.length < 1) {
+    if (!toolboxDevs || toolboxDevs.length < 1) {
         getToolboxDevs();
     }
 
@@ -323,6 +323,9 @@ function initwrapper() {
 
 
 
+    TBUtils.getToolboxDevs = function getToolboxDevs() {
+        getToolboxDevs();
+    };
 
     TBUtils.sendEvent = function (tbuEvent){
         $.log('Sending event: ' + tbuEvent, false, SHORTNAME);
@@ -2104,13 +2107,15 @@ function initwrapper() {
     }
 
 
-    TBUtils.test = function getToolboxDevs() {
-        $.get(TBUtils.baseDomain + '/r/toolbox/about/moderators.json').done(function (resp) {
-            var children = JSON.parse(resp).data.children,
+    function getToolboxDevs() {
+        $.getJSON(TBUtils.baseDomain + '/r/toolbox/about/moderators.json').done(function (resp) {
+
+            var children = resp.data.children,
                 devs = [];
-            for (let i of children) {
-                devs.push(children[i].name);
-            }
+
+            $.each(children, function (index, child) {
+                devs.push(child.name);
+            });
             TBUtils.tbDevs = devs;
             TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
         }).fail(function () {
@@ -2131,7 +2136,7 @@ function initwrapper() {
             TBUtils.tbDevs = devs;
             TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
         });
-    }
+    };
 
     // Prep new modmail for toolbox stuff.
     // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.

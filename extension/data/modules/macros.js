@@ -168,7 +168,7 @@ self.init = function () {
         if(TBUtils.isNewMMThread) {
             addNewMMMacro();
         }
-    }, 500);
+    }, 1000);
 
     // NER support.
     window.addEventListener('TBNewThings', function () {
@@ -333,6 +333,7 @@ self.init = function () {
 
                     $currentMacroPopup.remove();
                     $selectElement.prop('disabled', false);
+                    $selectElement.val(MACROS);
 
                 } else {
 

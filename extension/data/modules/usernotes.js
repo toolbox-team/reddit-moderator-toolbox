@@ -55,7 +55,7 @@ self.usernotes = function usernotes() {
                 if($body.find('.ThreadViewer').length > 0) {
                     run();
                 }
-            }, 500);
+            }, 750);
         } else {
             run();
         }

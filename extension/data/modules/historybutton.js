@@ -78,7 +78,7 @@ self.init = function () {
         if (TBUtils.isNewModmail) {
             setTimeout(function () {
                 self.run();
-            }, 500);
+            }, 750);
         } else {
             self.run();
         }

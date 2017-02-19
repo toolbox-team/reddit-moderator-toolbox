@@ -172,9 +172,9 @@ self.init = function () {
 
     // NER support.
     window.addEventListener('TBNewThings', function () {
-        if(TBUtils.isNewMMThread) {
-            addNewMMMacro();
-        }
+        setTimeout(function () {
+             addNewMMMacro();
+        }, 1000);
 
     });
 

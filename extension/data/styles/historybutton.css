@@ -65,8 +65,9 @@ body.mod-toolbox.mod-toolbox-new-modmail .history-button {
 
 .history-button-popup .table {
     margin: 10px;
-    height: 200px;
+    max-height: 200px;
     max-width: 300px;
+    vertical-align: top;
     overflow-x: hidden;
     overflow-y: auto;
     border-bottom: 1px solid lightgray;

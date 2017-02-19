@@ -103,11 +103,12 @@ self.init = function () {
                 var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
             }
 
+            var positions = TBui.drawPosition(event);
             //If we've already got this before, just move it to the mouse
             if(typeof self.fetched[author] != 'undefined'){
                 self.fetched[author].popup.css({
-                    left: event.pageX - 50,
-                    top: event.pageY - 10,
+                    left: positions.leftPosition,
+                    top: positions.topPosition,
                     display: 'block'
                 });
                 return;
@@ -210,9 +211,6 @@ self.init = function () {
         </div>
     </div>
 `;
-
-
-            var positions = TBui.drawPosition(event);
 
             var $popup = TB.ui.popup(
                 'History Button',

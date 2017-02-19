@@ -300,7 +300,13 @@
         }
 
         if (document.documentElement.clientHeight - event.pageY < 200 && location.host === 'mod.reddit.com') {
-            positions.topPosition = event.pageY - 600;
+            let topPosition = event.pageY - 600;
+
+            if (topPosition < 0) {
+                positions.topPosition = 5;
+            } else {
+                positions.topPosition = event.pageY - 600;
+            }
         } else {
             positions.topPosition = event.pageY - 50;
         }

@@ -299,7 +299,7 @@
             positions.leftPosition = event.pageX - 50;
         }
 
-        if (document.documentElement.clientHeight - event.pageY < 200) {
+        if (document.documentElement.clientHeight - event.pageY < 200 && location.host === 'mod.reddit.com') {
             positions.topPosition = event.pageY - 600;
         } else {
             positions.topPosition = event.pageY - 50;

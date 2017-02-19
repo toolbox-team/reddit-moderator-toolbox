@@ -233,8 +233,7 @@ self.init = function () {
         $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
             var $this = $(this);
             var auth = TB.utils.getThingInfo($this).author;
-            console.log($this);
-            console.log(auth);
+
             if (TB.utils.tbDevs.indexOf(auth) != -1) {
                 self.manager.unlock(saveIndex, 1);
             }

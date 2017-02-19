@@ -303,8 +303,15 @@ self.init = function () {
                 // We split of new modmail from the rest of reddit because... well easier.
                 if (TBUtils.isNewModmail) {
 
-                    $('.Textarea.ThreadViewerReplyForm__replyText').val(editedcomment);
-                    $body.find('.ThreadViewerReplyForm__replyButton').click();
+                    // Since we are doing things on the page that need to finish we probably should make that clear.
+                    TB.ui.longLoadSpinner(true);
+
+                    if ($('.ThreadViewer  .icon-mute').closest('.InfoBar__control').hasClass('m-on')) {
+                        TBui.textFeedback('Reply will not be posted because the user is muted.', TBui.FEEDBACK_NEUTRAL);
+                    } else {
+                        $body.find('.Textarea.ThreadViewerReplyForm__replyText ').val(editedcomment);
+                        $body.find('.ThreadViewerReplyForm__replyButton').click();
+                    }
 
                     self.log("Performing user actions");
 
@@ -316,24 +323,31 @@ self.init = function () {
 
                     if (mute) {
                         // So we don't do an api call for this.
-                        $body.find('.ThreadViewer .icon-mute').click();
+                        $body.find('.ThreadViewer .InfoBar__control:not(.m-on) .icon-mute').click();
 
-                    }
-
-                    if (archivemodmail) {
-                        $body.find('.ThreadViewer .icon-archived').click();
                     }
 
                     if (highlightmodmail) {
-                        $body.find('.ThreadViewer .icon-flair').click();
+                        $body.find('.ThreadViewer .ThreadViewerHeader__control:not(.m-selected) .icon-flair').click();
                     }
 
+                    if (archivemodmail) {
+                        // We wait a bit for the other actions to go through, then archive.
+                        setTimeout(function () {
+                            $body.find('.ThreadViewer .ThreadViewerHeader__control:not(.m-selected) .icon-archived').click();
+                        }, 1000);
 
-                    // All done!
+                    }
 
-                    $currentMacroPopup.remove();
-                    $selectElement.prop('disabled', false);
-                    $selectElement.val(MACROS);
+                    // All done! Wait a bit before removing all stuff.
+                    setTimeout(function () {
+                        $currentMacroPopup.remove();
+                        $selectElement.prop('disabled', false);
+                        $selectElement.val(MACROS);
+                        TB.ui.longLoadSpinner(false);
+                    }, 1500);
+
+
 
                 } else {
 

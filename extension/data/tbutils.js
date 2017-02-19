@@ -1028,7 +1028,8 @@ function initwrapper() {
 
 
         // If the permalink is relative, stick the current domain name in.
-        if (permalink.slice(0,1) == "/")
+        // Only do so if a permalink is found.
+        if (permalink && permalink.slice(0,1) == "/")
         {
             permalink = TBUtils.baseDomain + permalink
         }

@@ -68,7 +68,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
         invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -122,7 +122,7 @@ function initwrapper() {
     // Public variables
     TBUtils.toolboxVersion = '3.6.0' + ((betaRelease) ? ' (beta)' : '');
     TBUtils.shortVersion = 360; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Idiotic Creesch';
+    TBUtils.releaseName = 'Communicating Cat';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;
@@ -260,7 +260,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.5 version changes
+        // 3.6 version changes
         TBStorage.setSetting('HButton', 'alwaysComments', true);
         TBStorage.setSetting('Notifier', 'wwwNotifications', true);
         TBStorage.setSetting('RReasons', 'reasonType', 'reply_with_a_comment_to_the_item_that_is_removed');

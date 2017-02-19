@@ -137,7 +137,7 @@ self.usernotes = function usernotes() {
             $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
         }
         else {
-            $things = $('#siteTable div.thing:not(.ut-thing)');
+            $things = $('#siteTable div.thing:not(.ut-thing), .commentarea div.thing:not(.ut-thing)');
             $things.attr('data-ut-type', TYPE_THING);
         }
 

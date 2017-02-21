@@ -378,13 +378,18 @@ function initwrapper() {
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edge\/([0-9.]*?)$/);
                 debugObject.browser = 'Edge';
                 debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1]
+                debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             case UNKOWN_BROWSER:
-
+                debugObject.browser = 'Unknown';
+                debugObject.browserVersion = 'Unknown';
+                debugObject.platformInformation = browserUserAgent;
                 break;
             default:
             // This should really never happen, but just in case I left it in.
+                debugObject.browser = 'Error in browser detection';
+                debugObject.browserVersion = 'Unknown';
+                debugObject.platformInformation = browserUserAgent;
         }
 
         console.log(debugObject)

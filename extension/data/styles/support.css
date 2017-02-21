@@ -1,0 +1,7 @@
+body.mod-toolbox .tb-action-button.tb-insert-debug {
+    display: inline-block !important;
+    box-sizing: border-box !important;
+    height: 26px !important;
+    margin: 5px 5px 10px 0 !important;
+    cursor: pointer;
+}

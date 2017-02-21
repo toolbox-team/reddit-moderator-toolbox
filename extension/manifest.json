@@ -42,6 +42,7 @@
             "css": [
                 "data/styles/spectrum.css",
                 "data/styles/toolbox.css",
+                "data/styles/support.css",
                 "data/styles/comment.css",
                 "data/styles/modmatrix.css",
                 "data/styles/removalreasons.css",
@@ -93,6 +94,7 @@
                 "data/tbui.js",
                 "data/tbutils.js",
                 "data/tbmodule.js",
+                "data/modules/support.js",
                 "data/modules/modbar.js",
                 "data/modules/modbutton.js",
                 "data/modules/notifier.js",

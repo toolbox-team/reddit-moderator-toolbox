@@ -4,7 +4,7 @@ self.shortname = 'Modbar';
 
 self.settings['enabled']['default'] = true;
 
-// How about you don't disable modbar?  No other module should ever do this.
+// How about you don't disable modbar?  No other module should ever do this. Well except for the support module.
 self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
 self.register_setting('compactHide', {

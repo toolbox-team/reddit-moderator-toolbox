@@ -327,7 +327,8 @@ function initwrapper() {
         let debugObject = {
             toolboxVersion : TBUtils.toolboxVersion,
             browser: '',
-            browserVersion: ''
+            browserVersion: '',
+            platformInformation: ''
         };
 
         const browserUserAgent = navigator.userAgent;

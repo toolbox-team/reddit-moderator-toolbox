@@ -446,6 +446,7 @@ self.init = function () {
 
         self.setting('lastAction', actionName);
 
+
         // Check dem values.
         if (!api) return $status.text('error, no action selected');
 
@@ -473,20 +474,25 @@ self.init = function () {
             massAction(subreddits);
         }
         else {
-            var confirmban;
-            if (actionName === 'ban' || actionName === 'unban') {
-                confirmban = confirm('This will ' + actionName + ' /u/' + user + ' from every subreddit you moderate.   \nAre you sure?');
-            }
-            else {
-                confirmban = confirm('This will ' + actionName + ' /u/' + user + ' on every subreddit you moderate.   \nAre you sure?');
-            }
+            if (actionName === 'ban') {
+                $status.text("Yeah...not happening");
+            } else {
 
-            if (confirmban) {
-                var subs = TB.utils.mySubs;
-                excludeGlobal.forEach(function (val) {
-                    subs.splice(subs.indexOf(val), 1);
-                });
-                massAction(subs);
+                let confirmban;
+                if (actionName === 'unban') {
+                    confirmban = confirm('This will ' + actionName + ' /u/' + user + ' from every subreddit you moderate.   \nAre you sure?');
+                }
+                else {
+                    confirmban = confirm('This will ' + actionName + ' /u/' + user + ' on every subreddit you moderate.   \nAre you sure?');
+                }
+
+                if (confirmban) {
+                    const subs = TB.utils.mySubs;
+                    excludeGlobal.forEach(function (val) {
+                        subs.splice(subs.indexOf(val), 1);
+                    });
+                    massAction(subs);
+                }
 
             }
         }

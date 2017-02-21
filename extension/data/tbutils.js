@@ -68,7 +68,7 @@ function initwrapper() {
         newLogin = (cacheName != TBUtils.logged),
         getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
         getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-        betaRelease = false,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+        betaRelease = true,  /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
         gettingModSubs = false,
         getModSubsCallbacks = [],
         invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -120,9 +120,9 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.6.3' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 363; //don't forget to change this one!  This is used for the 'new version' notification.
-    TBUtils.releaseName = 'Communicating Cat';
+    TBUtils.toolboxVersion = '3.7.0' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 370; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.releaseName = 'Breaking Bug';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
     TBUtils.notesMinSchema = 4;
@@ -319,6 +319,75 @@ function initwrapper() {
                 return typeof args[number] != 'undefined' ? args[number] : match;
             });
         };
+    }
+
+    // Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
+
+    TBUtils.debugInformation = function debugInformation() {
+        let debugObject = {
+            toolboxVersion : TBUtils.toolboxVersion,
+            browser: '',
+            browserVersion: ''
+        };
+
+        const browserUserAgent = navigator.userAgent;
+        let browserMatchedInfo = [];
+        switch (TBUtils.browser) {
+            case CHROME:
+                // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
+                // This way we can also cut some support requests short.
+                if (navigator.userAgent.indexOf(' Vivaldi/') >= 0) { // Vivaldi
+                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
+                    debugObject.browser = 'Vivaldi';
+                    debugObject.browserVersion = browserMatchedInfo[2];
+                    debugObject.platformInformation = browserMatchedInfo[1];
+
+                } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0) { // Yandex
+                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
+                    debugObject.browser = 'Yandex';
+                    debugObject.browserVersion = browserMatchedInfo[2];
+                    debugObject.platformInformation = browserMatchedInfo[1];
+
+                } else {  // assume Chrome
+                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                    debugObject.browser = 'Chrome';
+                    debugObject.browserVersion = browserMatchedInfo[2];
+                    debugObject.platformInformation = browserMatchedInfo[1];
+                }
+                break;
+            case FIREFOX:
+                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
+                debugObject.browser = 'Firefox';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+                break;
+            case OPERA:
+                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
+                debugObject.browser = 'Opera';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+                break;
+            case SAFARI:
+                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Safari\/([0-9.]*?)$/);
+                debugObject.browser = 'Safari';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1];
+                break;
+            case EDGE:
+                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edge\/([0-9.]*?)$/);
+                debugObject.browser = 'Edge';
+                debugObject.browserVersion = browserMatchedInfo[2];
+                debugObject.platformInformation = browserMatchedInfo[1]
+                break;
+            case UNKOWN_BROWSER:
+
+                break;
+            default:
+            // This should really never happen, but just in case I left it in.
+        }
+
+        console.log(debugObject)
+        return debugObject;
     }
 
 

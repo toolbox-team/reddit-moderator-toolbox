@@ -98,6 +98,12 @@ self.register_setting('openContextInPopup', {
     'beta': true,
     'title': 'Open context links in a toolbox popup. Allows for quickly viewing the context of something without leaving the queue page.'
 });
+self.register_setting('groupCommentsOnModPage', {
+    'type': 'boolean',
+    'default': false,
+    'beta': 'true',
+    'title': 'Group comments by their parent submission when viewing mod listings.'
+});
 
 // A better way to use another module's settings.
 self.register_setting('subredditColorSalt', {
@@ -122,7 +128,8 @@ self.init = function () {
         queueCreature = self.setting('queueCreature'),
         showReportReasons = self.setting('showReportReasons'),
         highlightAutomodMatches = self.setting('highlightAutomodMatches'),
-        openContextInPopup = self.setting('openContextInPopup');
+        openContextInPopup = self.setting('openContextInPopup'),
+        groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
     // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
     var QUEUE_URL = '';
@@ -930,6 +937,57 @@ self.init = function () {
         }
 
         sortThings(listingOrder, sortAscending);
+
+        // After things are sorted in the proper order, we can group them by
+        // thread. this function is a bit of a mess
+        // TODO: fix that
+        function groupThings () {
+            var threadGroups = {},
+                threadIDs = []; // because who needs Object.keys() anyway
+
+            // Save a copy of each link/comment and record its parent thread ID
+            $('.sitetable .thing').each(function () {
+                var $thing = $(this),
+                    threadID;
+                if ($thing.hasClass('comment')) {
+                    // Find ID of the parent submission from title URL
+                    threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
+                } else {
+                    // I am the parent submission, so get my own ID
+                    // TBUtils.getThingInfo() is overkill here
+                    threadID = $thing.attr('data-fullname').replace('t3_', '');
+                }
+                // Only record thread IDs once each
+                if (threadIDs.indexOf(threadID) < 0) threadIDs.push(threadID);
+                // Store the element itself so we can move it around later
+                if (threadGroups[threadID] == null) threadGroups[threadID] = [];
+                threadGroups[threadID].push($thing);
+            });
+
+
+            // Create wrapper elements for each thread ID. Each wrapper will
+            // contain all the comments on a link, and maybe the link itself.
+            // TODO: Using wrappers is probably a bad call unless we want to
+            //       give groups custom CSS
+            $.each(threadIDs, function (index, id) {
+                // Each wrapper will contain all the things associated with
+                // a single submission, including the submission itself
+                var $wrapper = $('<div>').addClass('tb-comment-group').attr('data-id', id);
+                $('#siteTable').append($wrapper);
+                // Loop through each thing associated with the submission
+                $.each(threadGroups[id], function (index) {
+                    // Add the thing to this wrapper
+                    threadGroups[id][index].appendTo($wrapper);
+                })
+                // Visual separation
+                $wrapper.append($('<hr />'));
+            });
+        }
+
+        if (TBUtils.isModpage && groupCommentsOnModPage) {
+            groupThings();
+        }
+
     }
 
     // Add mod tools or mod tools toggle button if applicable

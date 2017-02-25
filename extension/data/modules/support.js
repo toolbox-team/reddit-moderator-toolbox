@@ -18,14 +18,24 @@ Info| &nbsp;
 *Toolbox version*|{{toolboxVersion}}
 *Browser name*|{{browserName}}
 *Browser version*|{{browserVersion}}
-*Platform information*|{{platformInfo}}`;
+*Platform information*|{{platformInfo}}
+*Beta Mode*|{{betaMode}}
+*Debug Mode*|{{debugMode}}
+*Compact Mode*|{{compactMode}}
+*Advanced Settings*|{{advancedSettings}}
+`;
+
 
     const debugInfo = TBUtils.debugInformation();
     const submissionAddition = TBUtils.template(debugTemplate, {
         'toolboxVersion': debugInfo.toolboxVersion,
         'browserName':  debugInfo.browser ,
         'browserVersion': debugInfo.browserVersion,
-        'platformInfo': debugInfo.platformInformation
+        'platformInfo': debugInfo.platformInformation,
+        'betaMode': debugInfo.betaMode,
+        'debugMode': debugInfo.debugMode,
+        'compactMode': debugInfo.compactMode,
+        'advancedSettings': debugInfo.advancedSettings
     });
 
     // If we are on the submit page we add debug information when a user makes a post.

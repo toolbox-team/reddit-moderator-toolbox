@@ -325,7 +325,11 @@ function initwrapper() {
             toolboxVersion : TBUtils.toolboxVersion,
             browser: '',
             browserVersion: '',
-            platformInformation: ''
+            platformInformation: '',
+            betaMode: TBUtils.betaMode,
+            debugMode: TBUtils.debugMode,
+            compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
+            advancedSettings: TBUtils.advancedMode
         };
 
         const browserUserAgent = navigator.userAgent;

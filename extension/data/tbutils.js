@@ -645,9 +645,11 @@ function initwrapper() {
     };
 
 
-    TBUtils.alert = function (message, callback) {
+    TBUtils.alert = function (message, callback, showClose) {
         var $noteDiv = $('<div id="tb-notification-alert"><span>' + message + '</span></div>');
-        $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconClose + '" class="note-close" title="Close" />');
+        if (showClose) {
+            $noteDiv.append('<img src="data:image/png;base64,' + TBui.iconClose + '" class="note-close" title="Close" />');
+        }
         $noteDiv.appendTo('body');
 
         $noteDiv.click(function (e) {
@@ -672,7 +674,7 @@ function initwrapper() {
                     seenNotes.push(note.id);
                     TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
                     if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
-                });
+                }, false);
             }
         }
 

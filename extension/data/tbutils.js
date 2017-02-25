@@ -260,10 +260,7 @@ function initwrapper() {
         // Start: version changes.
         /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
 
-        // 3.6 version changes
-        TBStorage.setSetting('HButton', 'alwaysComments', true);
-        TBStorage.setSetting('Notifier', 'wwwNotifications', true);
-        TBStorage.setSetting('RReasons', 'reasonType', 'reply_with_a_comment_to_the_item_that_is_removed');
+        // 3.7 version changes
 
         // End: version changes.
 

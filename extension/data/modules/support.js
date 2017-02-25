@@ -1,16 +1,15 @@
 function support() {
-    var self = new TB.Module('Support Module');
-    self.shortname = 'support';
+var self = new TB.Module('Support Module');
+self.shortname = 'support';
 
-    self.settings['enabled']['default'] = true;
+self.settings['enabled']['default'] = true;
 
 // How about you don't disable support?  No other module should ever do this. Well except for modbar.
-    self.settings['enabled']['hidden'] = true; // Don't disable it, either!
+self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
-
+self.init = function() {
     let $body = $('body');
     const debugTemplate = `
-    
 ---   
 ***Toolbox debug information***
 
@@ -30,7 +29,7 @@ Info| &nbsp;
     });
 
     // If we are on the submit page we add debug information when a user makes a post.
-    if(location.pathname.match(/\/r\/toolbox\/submit\/?/)) {
+    if(location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
 
         let $submissionTextArea = $('.usertext-edit.md-container textarea');
 
@@ -46,7 +45,7 @@ Info| &nbsp;
     }
 
     // If we are in the comment section we offer a button to insert the info.
-    if(location.pathname.match(/\/r\/toolbox\/comments\/?/)) {
+    if(location.pathname.match(/\/r\/toolbox\/comments\/?/) || location.pathname.match(/\/r\/tb_dev\/comments\/?/)) {
         let $usertextButtons = $body.find('.usertext-edit .usertext-buttons');
 
         let $saveButton = $usertextButtons.find('.save');
@@ -70,10 +69,9 @@ Info| &nbsp;
         });
 
     }
+};
 
-
-
-    TB.register_module(self);
+TB.register_module(self);
 }
 
 (function () {

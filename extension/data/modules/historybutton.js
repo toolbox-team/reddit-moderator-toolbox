@@ -137,7 +137,7 @@ self.init = function () {
         <br/>
         <p class="tb-history-disclaimer">
         <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
-        
+
         </p>
         <b>Available history:</b> <br>
         <label class="submission-count"></label> submissions
@@ -192,7 +192,7 @@ self.init = function () {
                     <tr><td colspan="6" class="error">loading...</td></tr>
                 </tbody>
             </table>
-          
+
         </div>
         <div class="table account-table">
             <table>
@@ -357,6 +357,10 @@ self.populateSubmissionHistory = function (after, author) {
             'artstation.com': {
                 path: 'artwork/',
                 provider: 'artstation',
+                type: TYPE.PATH
+            },
+            'twitter.com': {
+                provider: 'Twitter',
                 type: TYPE.PATH
             }
         };

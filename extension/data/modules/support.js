@@ -23,6 +23,7 @@ Info| &nbsp;
 *Debug Mode*|{{debugMode}}
 *Compact Mode*|{{compactMode}}
 *Advanced Settings*|{{advancedSettings}}
+*Cookies Enabled*|{{cookiesEnabled}}
 `;
 
 
@@ -35,7 +36,8 @@ Info| &nbsp;
         'betaMode': debugInfo.betaMode,
         'debugMode': debugInfo.debugMode,
         'compactMode': debugInfo.compactMode,
-        'advancedSettings': debugInfo.advancedSettings
+        'advancedSettings': debugInfo.advancedSettings,
+        'cookiesEnabled': debugInfo.cookiesEnabled
     });
 
     // If we are on the submit page we add debug information when a user makes a post.

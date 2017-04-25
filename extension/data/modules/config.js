@@ -1051,7 +1051,7 @@ self.init = function() {
 
 
         var $removalReasonLabel = $removalContent.find('.removal-reason-label');
-        $removalReasonLabel.html('<span><h3 class="removal-title">' + reasonTitle + '</h3>' + label + '</span>');
+        $removalReasonLabel.html('<span><h3 class="removal-title">' + TBUtils.htmlEncode(reasonTitle) + '</h3>' + label + '</span>');
 
 
         $removalReasonLabel.show();

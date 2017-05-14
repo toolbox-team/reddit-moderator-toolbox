@@ -101,7 +101,8 @@ self.register_setting('openContextInPopup', {
 self.register_setting('groupCommentsOnModPage', {
     'type': 'boolean',
     'default': false,
-    'beta': 'true',
+    'beta': true,
+    'advanced': true,
     'title': 'Group comments by their parent submission when viewing mod listings.'
 });
 

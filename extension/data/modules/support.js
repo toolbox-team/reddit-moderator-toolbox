@@ -10,6 +10,7 @@ self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 self.init = function() {
     let $body = $('body');
     const debugTemplate = `
+  
 ---   
 ***Toolbox debug information***
 

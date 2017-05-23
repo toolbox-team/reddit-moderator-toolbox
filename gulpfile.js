@@ -3,9 +3,14 @@ const zip = require('gulp-zip');
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-const src_dir = "extension";
-const dest_dir = "build";
-const dest_dir2 = "build\\source";
+const src_dir = 'extension';
+const dest_dir = 'build';
+const dest_dir2 = 'build\\source';
+const dest_dir3 = 'build\\toolbox\\edgeextension\\manifest\\';
+const package_dir = 'build/toolbox/edgeextension/package';
+const output_dir = 'build/output';
+const assets = 'edgeAssets';
+
 
 
 function execute(execCommand, callback) {
@@ -13,7 +18,7 @@ function execute(execCommand, callback) {
         console.log('stdout:', stdout);
         console.log('stderr:', stderr);
         console.log('err:', err);
-    
+
         let success = stderr ? false : true;
         callback(success);
     });
@@ -34,7 +39,7 @@ gulp.task('zip', function() {
     }
     return gulp.src([src_dir+'/**'].concat(ignores))
         .pipe(zip('chrome-moderator-toolbox.zip'))
-        .pipe(gulp.dest(dest_dir));
+        .pipe(gulp.dest(output_dir));
 });
 
 gulp.task('manifoldJS', function() {
@@ -49,29 +54,45 @@ gulp.task('manifoldJS', function() {
             ignores[i] = "!"+ignores[i];
         }
     }
-    
+
     gulp.src([src_dir+'/**'].concat(ignores))
         .pipe(gulp.dest(dest_dir2));
-    
 
-    // Hacky? Yes, very much but it seems to work   
-        
+
+    // Hacky? Yes, very much but it seems to work
+
     execute(`manifoldjs -l error -p edgeextension -f edgeextension -m ${dest_dir2}\\manifest.json -d ${dest_dir}`, function(result) {
         if(result) {
-            // TODO: Actually manipulate manifest xml
-            // TODO: Actually move logo files into place
-            execute(`manifoldjs -l debug -p edgeextension package ${dest_dir}\\toolbox\\edgeextension\\manifest\\ -d ${dest_dir}`, function(result) {
+            gulp.src([assets+'/**'])
+                .pipe(gulp.dest(dest_dir3+'\\Assets'));
+            let appxManifestXML = fs.readFileSync(`${dest_dir3}/appxmanifest.xml`).toString();
+
+            appxManifestXML = appxManifestXML.replace('INSERT-YOUR-PACKAGE-IDENTITY-NAME-HERE', '2471toolboxTeam.moderatortoolboxforreddit');
+            appxManifestXML = appxManifestXML.replace('CN=INSERT-YOUR-PACKAGE-IDENTITY-PUBLISHER-HERE', 'CN=8F6C891B-BA96-48EA-AFFE-227374B8192B');
+            appxManifestXML = appxManifestXML.replace('INSERT-YOUR-PACKAGE-PROPERTIES-PUBLISHERDISPLAYNAME-HERE', 'toolboxTeam');
+
+            fs.writeFileSync(`${dest_dir3}/appxmanifest.xml`, appxManifestXML, 'utf8', function(err) {
+                if (err) {
+                    throw err;
+                }
+                console.log('The file has been saved!');
+            });
+            execute(`manifoldjs -l debug -p edgeextension package ${dest_dir3} -d ${dest_dir}`, function(result) {
                 if(result) {
+
+                    gulp.src([package_dir+'/**'])
+                        .pipe(gulp.dest(output_dir));
+
                     console.log('edge package build');
                 } else {
                     console.log('problem executing second manifoldJS round');
                 }
-                
-            });                
+
+            });
         } else {
             console.log('problem executing first manifoldJS round');
         }
     });
 });
-  
+
 gulp.task('default', ['zip', 'manifoldJS']);

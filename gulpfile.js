@@ -70,6 +70,7 @@ gulp.task('manifoldJS', function() {
             appxManifestXML = appxManifestXML.replace('INSERT-YOUR-PACKAGE-IDENTITY-NAME-HERE', '2471toolboxTeam.moderatortoolboxforreddit');
             appxManifestXML = appxManifestXML.replace('CN=INSERT-YOUR-PACKAGE-IDENTITY-PUBLISHER-HERE', 'CN=8F6C891B-BA96-48EA-AFFE-227374B8192B');
             appxManifestXML = appxManifestXML.replace('INSERT-YOUR-PACKAGE-PROPERTIES-PUBLISHERDISPLAYNAME-HERE', 'toolboxTeam');
+            appxManifestXML = appxManifestXML.replace(/Version="\d\.(\d\.\d\.\d)" \/>/, 'Version="$1.0" />');
 
             fs.writeFileSync(`${dest_dir3}/appxmanifest.xml`, appxManifestXML, 'utf8', function(err) {
                 if (err) {

@@ -1,9 +1,7 @@
 .*
-*.plist
+**/*.plist
 *.zip
 *.xpi
-Info.plist
-
-/data/background
+/data/background/safari.html
 /data/Icon.png
 /manifest-*.json

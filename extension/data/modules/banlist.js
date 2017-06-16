@@ -39,14 +39,15 @@ self.init = function () {
 
         after = null;
         last_request = Date.now();
-
+        console.log('hello')
         $.ajax({
             url: document.location.href,
             data: parameters,
             type: 'get',
             dataType: 'html',
-            async: true,
-            done: function (data) {
+            async: true})
+           .done(function (data) {
+                console.log(data);
                 self.log("  success!");
                 self.log("  " + pages_back + " pages back");
                 var response_page = $(data);
@@ -95,8 +96,8 @@ self.init = function () {
                     banlist_last_update = Date.now();
                     TB.ui.longLoadSpinner(false);
                 }
-            },
-            fail: function (data) {
+            })
+            .fail(function (data) {
                 self.log("  failed");
                 self.log(data.status);
                 if (data.status == 504) {
@@ -108,7 +109,7 @@ self.init = function () {
                     TB.ui.longLoadSpinner(false);
                     $num_bans.html("Something went wrong while fetching the banlist. You should reload this page.");
                 }
-            }
+            
         });
 
     }
@@ -151,10 +152,13 @@ self.init = function () {
 
         $('.usertable').addClass('filtered');
 
+        //each tr
         $(".usertable tr").each(function () {
-            var t = $(this).text().toLowerCase(); //all row text
-            $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
-        });//each tr
+            var $this = $(this);
+            var t = $this.text().toLowerCase(); //all row text
+            var $append = $(`<td class='indexColumn'>${t}</td>`).hide();
+            $this.append($append);
+        });
 
 
         function _filter(value) {

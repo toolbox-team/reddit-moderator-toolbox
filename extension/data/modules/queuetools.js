@@ -180,15 +180,19 @@ self.init = function () {
 
 
     // Show context for comments in a popup rather than people having to open a tab.
-    if ((TBUtils.isModpage || TBUtils.isSubAllCommentsPage) && openContextInPopup) {
-        console.log('hello');
+    if ((TBUtils.isModpage || TBUtils.isSubAllCommentsPage || TBUtils.isUserPage) && openContextInPopup) {
+        self.log('openContextInPopup enabled.');
         $body.on('click', 'a.bylink[data-event-action="context"]', function(event){
+            self.log('Context button clicked.');
             // First prevent the link from being actually opened.
             event.preventDefault();
 
             var $this = $(this);
             // Grab the url.
             var contextUrl = $this.attr('href');
+            if (contextUrl.indexOf('.reddit.com') < 0) {
+                contextUrl = TBUtils.baseDomain + contextUrl; 
+            }
             // Grab the subreddit.
             var contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);
             var contextSubreddit = contextThingInfo.subreddit,
@@ -233,7 +237,7 @@ self.init = function () {
                     {
                         draggable: true
                     }
-                ).appendTo('body')
+                ).appendTo('#siteTable')
                     .css({
                         left: leftPosition,
                         top: event.pageY - 10,

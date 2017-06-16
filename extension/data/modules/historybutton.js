@@ -131,7 +131,7 @@ self.init = function () {
         <span class="karma" />
         <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
         <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
-        <a class="rts-report tb-general-button" href="javascript:;" data-commentbody="">report spammer</a>
+        <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
         <br/>
         <span class="redditorTime"></span>
         <br/>

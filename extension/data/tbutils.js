@@ -321,6 +321,8 @@ function initwrapper() {
     // Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
 
     TBUtils.debugInformation = function debugInformation() {
+        // Using console log so we are more likely to get this information if toolbox is failing.
+        console.log('debug information for browser');
         let debugObject = {
             toolboxVersion : TBUtils.toolboxVersion,
             browser: '',
@@ -339,30 +341,50 @@ function initwrapper() {
             case CHROME:
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
-                if (navigator.userAgent.indexOf(' Vivaldi/') >= 0) { // Vivaldi
-                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
+                const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
+                const yandexRegex = new RegExp(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
+                const chromeRegex = new RegExp(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
+                    browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
                     debugObject.browser = 'Vivaldi';
                     debugObject.browserVersion = browserMatchedInfo[2];
                     debugObject.platformInformation = browserMatchedInfo[1];
 
-                } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0) { // Yandex
-                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
+                } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
+                    browserMatchedInfo = browserUserAgent.match(yandexRegex);
                     debugObject.browser = 'Yandex';
                     debugObject.browserVersion = browserMatchedInfo[2];
                     debugObject.platformInformation = browserMatchedInfo[1];
 
-                } else {  // assume Chrome
-                    browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
+                } else if (chromeRegex.test(browserUserAgent)){  
+                    browserMatchedInfo = browserUserAgent.match(chromeRegex);
                     debugObject.browser = 'Chrome';
                     debugObject.browserVersion = browserMatchedInfo[2];
                     debugObject.platformInformation = browserMatchedInfo[1];
+                } else {
+                    debugObject.browser = 'Chrome derivative';
+                    debugObject.browserVersion = 'Unknown';
+                    debugObject.platformInformation = browserUserAgent;
                 }
                 break;
             case FIREFOX:
-                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
-                debugObject.browser = 'Firefox';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
+                const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
+                const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
+                if(firefoxRegex.test(browserUserAgent)) {
+                    browserMatchedInfo = browserUserAgent.match(firefoxRegex);
+                    debugObject.browser = 'Firefox';
+                    debugObject.browserVersion = browserMatchedInfo[2];
+                    debugObject.platformInformation = browserMatchedInfo[1];
+                } else if (firefoxDerivativeRegex.test(browserUserAgent)) {
+                    browserMatchedInfo = browserUserAgent.match(firefoxDerivativeRegex);
+                    debugObject.browser = 'Firefox derivative';
+                    debugObject.browserVersion = browserMatchedInfo[2];
+                    debugObject.platformInformation = browserMatchedInfo[1];
+                } else {
+                    debugObject.browser = 'Firefox derivative';
+                    debugObject.browserVersion = 'Unknown';
+                    debugObject.platformInformation = browserUserAgent;
+                }
                 break;
             case OPERA:
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
@@ -394,9 +416,9 @@ function initwrapper() {
                 debugObject.platformInformation = browserUserAgent;
         }
 
-        console.log(debugObject)
+        console.log(debugObject);
         return debugObject;
-    }
+    };
 
 
 

@@ -746,7 +746,7 @@ function initwrapper() {
             $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
             body = body.substring(0, 600);
             body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout});
+            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout, 'markreadid': markreadid});
 
         } else if (Notification.permission === 'granted') {
 
@@ -814,7 +814,7 @@ function initwrapper() {
             // They have the option enabled, but won't grant permissions, so fall back.
             body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
             body = body.substring(0, 600);
-            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout});
+            $.sticky('<p>' + body + '</p>', title, url, {'autoclose': timeout, 'markreadid': markreadid});
         }
     };
 

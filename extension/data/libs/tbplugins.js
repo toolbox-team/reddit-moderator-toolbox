@@ -277,13 +277,22 @@
             }
         });
         // Closing a sticky
-        $('.tb-sticky-close').click(function () {
+        $('.tb-sticky-close').click(function (event) {
+            event.stopPropagation();
             $('body').find('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
         });
         $('#' + uniqID + ':not(.tb-sticky-close)').click(function () {
             if(url) {
+                if (typeof settings.markreadid !== 'undefined') {
+                    $.post(TBUtils.baseDomain + '/api/read_message', {
+                        id: settings.markreadid,
+                        uh: TBUtils.modhash,
+                        api_type: 'json'
+                    });
+                }
                 $(this).dequeue().fadeOut(settings.speed);
                 window.open(url);
+
 
 
             }

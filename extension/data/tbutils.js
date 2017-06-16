@@ -120,8 +120,8 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.6.4' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 364; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '3.6.5' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 365; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.releaseName = 'Communicating Cat';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;
@@ -356,7 +356,7 @@ function initwrapper() {
                     debugObject.browserVersion = browserMatchedInfo[2];
                     debugObject.platformInformation = browserMatchedInfo[1];
 
-                } else if (chromeRegex.test(browserUserAgent)){  
+                } else if (chromeRegex.test(browserUserAgent)){
                     browserMatchedInfo = browserUserAgent.match(chromeRegex);
                     debugObject.browser = 'Chrome';
                     debugObject.browserVersion = browserMatchedInfo[2];
@@ -993,8 +993,8 @@ function initwrapper() {
                 return callback(true);
             } else {
                 return callback(false);
-            }           
-            
+            }
+
         });
     };
 
@@ -1054,9 +1054,9 @@ function initwrapper() {
                 subreddit = $body.find('.ThreadTitle__community').text();
                 permalink = ($threadBase.find('.m-link').length ? 'https://mod.reddit.com' + $threadBase.find('.m-link').attr('href') : 'https://mod.reddit.com/mail/perma/' + browserUrl.match(idRegex)[1]);
                 id = browserUrl.match(idRegex)[1];
-                
+
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
-                // Macros look at the sidebar and other modules don't need the body. 
+                // Macros look at the sidebar and other modules don't need the body.
                 // Todo: Figure out what body to present when activated from modmacro.
                 var $textBody = $threadBase.find('.Message__body .md').clone();
                 console.log($textBody);

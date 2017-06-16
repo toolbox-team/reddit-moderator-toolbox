@@ -1037,7 +1037,16 @@ function initwrapper() {
                 subreddit = $body.find('.ThreadTitle__community').text();
                 permalink = ($threadBase.find('.m-link').length ? 'https://mod.reddit.com' + $threadBase.find('.m-link').attr('href') : 'https://mod.reddit.com/mail/perma/' + browserUrl.match(idRegex)[1]);
                 id = browserUrl.match(idRegex)[1];
-                body = $threadBase.find('.Message__body .md').text() || '';
+                
+                // Funny story, there is currently no functionality in new modmail that can make use of the body.
+                // Macros look at the sidebar and other modules don't need the body. 
+                // Todo: Figure out what body to present when activated from modmacro.
+                var $textBody = $threadBase.find('.Message__body .md').clone();
+                console.log($textBody);
+                $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
+                body = $textBody.text() || '';
+                body = body.replace(/^\s+|\s+$/g, '');
+                $textBody.remove();
                 title = $body.find('.ThreadTitle__title').text();
                 kind = $threadBase.hasClass('.Thread__message') ? 'modmailmessage' : 'modmailthread';
                 spam = false;
@@ -1059,7 +1068,13 @@ function initwrapper() {
             permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
             domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
             id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
-            body = $entry.find('.usertext-body:first').text() || $thing.find('.usertext-body:first').text();
+            var $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
+            $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
+            body = $textBody.text() || '';
+            body = body.replace(/^\s+|\s+$/g, '');
+
+            $textBody.remove();
+
 
             // These need some fall backs, but only removal reasons use them for now.
             title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';

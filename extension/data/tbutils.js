@@ -981,6 +981,23 @@ function initwrapper() {
         }
     };
 
+    TBUtils.modSubCheck = function(callback) {
+        TBUtils.getModSubs(function () {
+            const subCount = TBUtils.mySubsData.length;
+            let subscriberCount = 0;
+            TBUtils.mySubsData.forEach(function(subreddit) {
+                subscriberCount += subreddit.subscribers;
+            });
+            subscriberCount -= subCount;
+            if (subscriberCount > 25) {
+                return callback(true);
+            } else {
+                return callback(false);
+            }           
+            
+        });
+    };
+
     TBUtils.modsSub = function (subreddit) {
         return $.inArray(subreddit, TBUtils.mySubs) > -1;
     };

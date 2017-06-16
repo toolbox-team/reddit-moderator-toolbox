@@ -18,6 +18,10 @@
     width: 20px;
 }
 
+.mod-toolbox.res-nightmode .tb-popup.context-button-popup {
+    background-color: #262626;
+}
+
 
 .mod-toolbox .tb-kitteh {
     display: block;

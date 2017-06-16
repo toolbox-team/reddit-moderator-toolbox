@@ -233,7 +233,7 @@ self.init = function () {
                         }
                     ],
                     '',
-                    'history-button-popup',
+                    'context-button-popup',
                     {
                         draggable: true
                     }

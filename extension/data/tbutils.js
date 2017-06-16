@@ -1635,14 +1635,25 @@ function initwrapper() {
     };
 
     TBUtils.friendUser = function (user, action, subreddit, banReason, banMessage, banDuration, callback) {
+        const trimmedBanMessage = banMessage.length > 999 ? banMessage.substring(0, 999) : banMessage;
+        const trimmedBanReason = banReason.length > 99 ? banReason.substring(0, 99) : banReason;
+        if (banDuration) {
+            if (banDuration > 999) {
+                banDuration = 999;
+            }
+            if (banDuration < 0) {
+                banDuration = 0;
+            }
+        }
+
         $.post(TBUtils.baseDomain + '/api/friend', {
             api_type: 'json',
             uh: TBUtils.modhash,
             type: action,
             name: user,
             r: subreddit,
-            note: banReason,
-            ban_message: banMessage,
+            note: trimmedBanReason,
+            ban_message: trimmedBanMessage,
             duration: banDuration
         })
             .done(function (response) {

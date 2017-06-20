@@ -71,207 +71,209 @@ self.run = function () {
  */
 self.init = function () {
     var $body = $('body');
-    if(TBUtils.modCheck){
+    TBUtils.modSubCheck(function(modSubCheck){
+        if(TBUtils.modCheck && modSubCheck){
 
 
 
-        if (TBUtils.isNewModmail) {
-            setTimeout(function () {
-                self.run();
-            }, 750);
-        } else {
-            self.run();
-        }
-
-
-        // NER support.
-        window.addEventListener("TBNewThings", function () {
-            self.run();
-        });
-
-        $body.on('click', '.user-history-button', function (event) {
-            var $this = $(this);
-
-            if($body.find('.ThreadViewer').length > 0) {
-                if ($this.hasClass('modmail-sidebar')) {
-                    var author = $('.InfoBar__username').text();
-                } else {
-                    var author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
-                }
-
+            if (TBUtils.isNewModmail) {
+                setTimeout(function () {
+                    self.run();
+                }, 750);
             } else {
-                var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+                self.run();
             }
 
-            var positions = TBui.drawPosition(event);
-            //If we've already got this before, just move it to the mouse
-            if(typeof self.fetched[author] != 'undefined'){
-                self.fetched[author].popup.css({
-                    left: positions.leftPosition,
-                    top: positions.topPosition,
-                    display: 'block'
-                });
-                return;
-            }
 
-            var subreddits = {submissions: {}, comments: {}},
-                counters = {submissions: 0, comments: 0, commentsOP: 0},
-                accounts = {},
-                subredditList = [],
-                domainList = [],
-                commentSubredditList = [],
+            // NER support.
+            window.addEventListener("TBNewThings", function () {
+                self.run();
+            });
 
-                gettingUserData = true,
-                domains = [],
-                domainslist = [],
+            $body.on('click', '.user-history-button', function (event) {
+                var $this = $(this);
 
-                popupContent = `
-    <div>
-        <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
-        <span class="karma" />
-        <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
-        <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
-        <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
-        <br/>
-        <span class="redditorTime"></span>
-        <br/>
-        <p class="tb-history-disclaimer">
-        <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
-
-        </p>
-        <b>Available history:</b> <br>
-        <label class="submission-count"></label> submissions
-        <br>
-        <span class="tb-history-comment-stats" style="display:none">
-        <label class="comment-count"></label> comments of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
-        </span>
-        </div>
-        <div class="history-table-wrapper">
-        <div class="table domain-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="url-td">domain submitted from</th>
-                        <th class="url-count">count</th><th class="url-percentage">%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="6" class="error">loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="table subreddit-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="url-td">subreddit submitted to</th>
-                        <th class="url-count">count</th>
-                        <th class="url-percentage">%</th>
-                        <th class="url-karma">karma</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td colspan="6" class="error">loading...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        </div>
-        <div class="history-table-wrapper">
-        <div class="table comment-table" style="display: none">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="url-td">subreddit commented in</th>
-                        <th class="url-count">count</th>
-                        <th class="url-percentage">%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="6" class="error">loading...</td></tr>
-                </tbody>
-            </table>
-
-        </div>
-        <div class="table account-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="url-td">account submitted from</th>
-                        <th class="url-count">count</th>
-                        <th class="url-percentage">%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="6" class="error">loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-        </div>
-    </div>
-`;
-
-            var $popup = TB.ui.popup(
-                'History Button',
-                [
-                    {
-                        title: 'Tab1',
-                        tooltip: 'Tooltip shown when hovering tab.',
-                        content: popupContent,
-                        footer: ''
+                if($body.find('.ThreadViewer').length > 0) {
+                    if ($this.hasClass('modmail-sidebar')) {
+                        var author = $('.InfoBar__username').text();
+                    } else {
+                        var author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
                     }
-                ],
-                '',
-                'history-button-popup',
-                {
-                    draggable: true
+
+                } else {
+                    var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
                 }
-            ).appendTo('body')
-                .css({
-                    left: positions.leftPosition,
-                    top: positions.topPosition,
-                    display: 'block'
+
+                var positions = TBui.drawPosition(event);
+                //If we've already got this before, just move it to the mouse
+                if(typeof self.fetched[author] != 'undefined'){
+                    self.fetched[author].popup.css({
+                        left: positions.leftPosition,
+                        top: positions.topPosition,
+                        display: 'block'
+                    });
+                    return;
+                }
+
+                var subreddits = {submissions: {}, comments: {}},
+                    counters = {submissions: 0, comments: 0, commentsOP: 0},
+                    accounts = {},
+                    subredditList = [],
+                    domainList = [],
+                    commentSubredditList = [],
+
+                    gettingUserData = true,
+                    domains = [],
+                    domainslist = [],
+
+                    popupContent = `
+        <div>
+            <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
+            <span class="karma" />
+            <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
+            <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>
+            <a class="rts-report tb-general-button" style="display: none" href="javascript:;" data-commentbody="">report spammer</a>
+            <br/>
+            <span class="redditorTime"></span>
+            <br/>
+            <p class="tb-history-disclaimer">
+            <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
+    
+            </p>
+            <b>Available history:</b> <br>
+            <label class="submission-count"></label> submissions
+            <br>
+            <span class="tb-history-comment-stats" style="display:none">
+            <label class="comment-count"></label> comments of those <label class="comment-count-OP"></label> are in their own posts (commented as OP).
+            </span>
+            </div>
+            <div class="history-table-wrapper">
+            <div class="table domain-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="url-td">domain submitted from</th>
+                            <th class="url-count">count</th><th class="url-percentage">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6" class="error">loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table subreddit-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="url-td">subreddit submitted to</th>
+                            <th class="url-count">count</th>
+                            <th class="url-percentage">%</th>
+                            <th class="url-karma">karma</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="error">loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <div class="history-table-wrapper">
+            <div class="table comment-table" style="display: none">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="url-td">subreddit commented in</th>
+                            <th class="url-count">count</th>
+                            <th class="url-percentage">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6" class="error">loading...</td></tr>
+                    </tbody>
+                </table>
+    
+            </div>
+            <div class="table account-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="url-td">account submitted from</th>
+                            <th class="url-count">count</th>
+                            <th class="url-percentage">%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6" class="error">loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+    `;
+
+                var $popup = TB.ui.popup(
+                    'History Button',
+                    [
+                        {
+                            title: 'Tab1',
+                            tooltip: 'Tooltip shown when hovering tab.',
+                            content: popupContent,
+                            footer: ''
+                        }
+                    ],
+                    '',
+                    'history-button-popup',
+                    {
+                        draggable: true
+                    }
+                ).appendTo('body')
+                    .css({
+                        left: positions.leftPosition,
+                        top: positions.topPosition,
+                        display: 'block'
+                    });
+
+                self.fetched[author] = {
+                    popup: $popup,
+                    subreddits : subreddits,
+                    counters : counters,
+                    accounts : accounts,
+                    subredditList : subredditList,
+                    domainList : domainList,
+                    commentSubredditList: commentSubredditList,
+                    author : author,
+                    gettingUserData : gettingUserData,
+                    domains : domains,
+                    domainslist : domainslist,
+                }
+
+                var $comments = $popup.find('.comment-table'),
+                    $accounts = $popup.find('.account-table');
+
+                $popup.on('click', '.close', function () {
+                    $popup.hide();
                 });
 
-            self.fetched[author] = {
-                popup: $popup,
-                subreddits : subreddits,
-                counters : counters,
-                accounts : accounts,
-                subredditList : subredditList,
-                domainList : domainList,
-                commentSubredditList: commentSubredditList,
-                author : author,
-                gettingUserData : gettingUserData,
-                domains : domains,
-                domainslist : domainslist,
-            }
+                self.showAuthorInformation(author);
+                self.populateSubmissionHistory('', author);
 
-            var $comments = $popup.find('.comment-table'),
-                $accounts = $popup.find('.account-table');
+                $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
+                $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
+                $popup.on('click.comment-report', '.comment-report', function(){
+                    $(this).hide();
+                    $popup.off('click.comment-report');
+                    self.populateCommentHistory('', author);
+                });
 
-            $popup.on('click', '.close', function () {
-                $popup.hide();
+                if(self.setting('alwaysComments')) {
+                    $popup.find('.comment-report').click();
+                }
+
             });
-
-            self.showAuthorInformation(author);
-            self.populateSubmissionHistory('', author);
-
-            $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
-            $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
-            $popup.on('click.comment-report', '.comment-report', function(){
-                $(this).hide();
-                $popup.off('click.comment-report');
-                self.populateCommentHistory('', author);
-            });
-
-            if(self.setting('alwaysComments')) {
-                $popup.find('.comment-report').click();
-            }
-
-        });
-    }
+        }
+    });
 };
 
 /**
@@ -780,10 +782,7 @@ TB.register_module(self);
 
 (function () {
     window.addEventListener("TBModuleLoaded", function () {
-        TBUtils.modSubCheck(function(result){
-            if(result) {
-                historybutton();
-            }            
-        });
+        historybutton();
+
     });
 })();

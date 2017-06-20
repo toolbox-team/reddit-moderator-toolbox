@@ -721,7 +721,7 @@ self.init = function () {
     }
     TBUtils.modSubCheck(function(result){
         if ($body.hasClass('profile-page')) {
-            if($body.find('#header-bottom-right .user a').text() === $body.find('#header-bottom-left .pagename').text()) {
+            if($body.find('#header-bottom-right .user>a).text() === $body.find('#header-bottom-left .pagename').text()) {
                 result = true;
             }
         }

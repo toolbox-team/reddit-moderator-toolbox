@@ -26,12 +26,14 @@ Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 # Building
 
+**Note that it is no longer needed to use the build process for development purposes, all supported browsers can run unpacked extensions directly from the `/extension` directory**
+
 Building is relatively easy through [nodejs](https://nodejs.org/) with gulp.
 
 Install gulp globally.
 
 ```sh
-$ npm install --global gulp
+$ npm install --global gulp manifoldjs
 ```
 
 Then navigate to the root of the toolbox folder and install the dependencies

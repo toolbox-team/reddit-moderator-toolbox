@@ -26,7 +26,7 @@ Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 # Building
 
-**Note that it is no longer needed to use the build process for development purposes, all supported browsers can run unpacked extensions directly from the `/extension` directory**
+**Note that it is no longer needed to use the build process for development purposes, all supported browsers can run the unpacked version of toolbox directly from the `/extension` directory**
 
 Building is relatively easy through [nodejs](https://nodejs.org/) with gulp.
 

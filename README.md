@@ -1,4 +1,4 @@
-[![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg](http://webchat.snoonet.org/#toolbox)
+[![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
 
 toolbox for reddit
 ========================

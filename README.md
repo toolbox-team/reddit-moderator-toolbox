@@ -1,6 +1,4 @@
-[![forthebadge](http://forthebadge.com/images/badges/fuck-it-ship-it.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/as-seen-on-tv.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/contains-cat-gifs.svg)](http://forthebadge.com)
-
-[![forthebadge](http://forthebadge.com/images/badges/kinda-sfw.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/compatibility-betamax.svg)](http://forthebadge.com) [![forthebadge](http://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
+[![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
 
 toolbox for reddit
 ========================
@@ -26,12 +24,14 @@ Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 # Building
 
+**Note that it is no longer needed to use the build process for development purposes, all supported browsers can run the unpacked version of toolbox directly from the `/extension` directory**
+
 Building is relatively easy through [nodejs](https://nodejs.org/) with gulp.
 
 Install gulp globally.
 
 ```sh
-$ npm install --global gulp
+$ npm install --global gulp manifoldjs
 ```
 
 Then navigate to the root of the toolbox folder and install the dependencies

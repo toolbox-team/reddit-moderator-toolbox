@@ -275,6 +275,11 @@ function storagewrapper() {
         setCache('Utils', 'moderatedSubsData', []);
     };
 
+    // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
+    $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', function() {
+        TBStorage.clearCache();
+    });
+
 
     TBStorage.verifiedSettingsSave = function (callback) {
         // Don't re-store the settings after a save on the the refresh that follows.

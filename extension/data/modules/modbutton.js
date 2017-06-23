@@ -302,6 +302,12 @@ self.init = function () {
 
         if (rememberLastAction) {
             $popup.find('select.mod-action').val(lastaction);
+            if (lastaction !== 'ban') {
+                $popup.find('.ban-note').hide();
+                $popup.find('textarea.ban-message').hide();
+                $popup.find('.ban-duration').hide();
+                $popup.find('.ban-span-include-time').hide();
+            }
         }
 
         // Remove options that only apply to subs we mod

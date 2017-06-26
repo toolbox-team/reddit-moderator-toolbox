@@ -184,6 +184,11 @@ self.init = function () {
         self.log('openContextInPopup enabled.');
         $body.on('click', 'a.bylink[data-event-action="context"]', function(event){
             self.log('Context button clicked.');
+            // If Ctrl or Cmd are held, the user's trying to open the link in a new tab; we should let them
+            if (event.ctrlKey || event.metaKey) {
+                return self.log('Ctrl or Cmd held, not doing anything.');
+            }
+
             // First prevent the link from being actually opened.
             event.preventDefault();
 
@@ -191,7 +196,7 @@ self.init = function () {
             // Grab the url.
             var contextUrl = $this.attr('href');
             if (contextUrl.indexOf('.reddit.com') < 0) {
-                contextUrl = TBUtils.baseDomain + contextUrl; 
+                contextUrl = TBUtils.baseDomain + contextUrl;
             }
             // Grab the subreddit.
             var contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);

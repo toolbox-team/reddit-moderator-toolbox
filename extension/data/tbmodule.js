@@ -166,7 +166,7 @@ TB = {
                 content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
                 display: ''
             }
-    ];
+        ];
 
         $.each(settings, function () {
             settingContent += TB.utils.template(settingTemplate, {
@@ -511,24 +511,35 @@ TB = {
                         if (options.hasOwnProperty("hidden") && options["hidden"] && !TB.utils.devMode) continue;
                         var name = module.shortname.toLowerCase();
 
-                        var $setting = '\
-        <p id="tb-toggle_modules-' + name + '">\
-            <label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '>' + options.title + '</label>\
-                    <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>\
-            <a data-setting="' + name + '" href="javascript:;" class="tb-module-setting-link tb-setting-link-' + name + '">\
-                <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
-            </a>&nbsp;\
-        </p>\
-        <div style="display: none;" class="tb-setting-input tb-setting-input-' + name + '">\
-            <input type="text" readonly="readonly" value="[' + name + '](#?tbsettings=toggle_modules&setting=' + name + ')"><br>\
-            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=' + name + '">\
-        </div>\
-        ';
+                        var $setting = $('\
+                            <p id="tb-toggle_modules-' + name + '">\
+                                <label><input type="checkbox" id="' + module.shortname + 'Enabled" ' + (module.setting(setting) ? ' checked="checked"' : '') + '>' + options.title + '</label>\
+                                        <a class="tb-help-toggle" href="javascript:;" data-module="' + module.shortname + '" title="Help">?</a>\
+                                <a data-setting="' + name + '" href="javascript:;" class="tb-module-setting-link tb-setting-link-' + name + '">\
+                                    <img src="data:image/png;base64,' + TB.ui.iconLink + '">\
+                                </a>&nbsp;\
+                            </p>\
+                            <div style="display: none;" class="tb-setting-input tb-setting-input-' + name + '">\
+                                <input type="text" readonly="readonly" value="[' + name + '](#?tbsettings=toggle_modules&setting=' + name + ')"><br>\
+                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=' + name + '">\
+                            </div>\
+                        ');
 
+                        // Add the setting in its place to keep ABC order
+                        var added = false;
+                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
+                            var $this = $(this);
+                            if ($this.text().localeCompare($setting.text()) > 0) {
+                                $this.before($setting);
+                                added = true;
+                                return false;
+                            }
+                        });
+                        if (!added) {
+                            $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
+                        }
 
-
-                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($setting);
-                        // don't need this on the module's tab, too
+                        // Don't add this to the module's own settings page
                         continue;
                     }
 
@@ -790,8 +801,30 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                         $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.')
                         $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>')
                     }
-                    $('.tb-settings .tb-window-tabs a:nth-last-child(1)').before($tab);
                     $('.tb-settings .tb-window-tabs-wrapper').append($settings);
+                    // Add each tab in its place in ABC order, with exceptions
+                    var added = false;
+                    $('.tb-settings .tb-window-tabs a').each(function () {
+                        var $this = $(this);
+                        // Keep general settings and module toggles at the top, and about tab at the bottom
+                        if ($tab.attr('data-module') === 'toolbox' || $tab.attr('data-module') === 'toggle_modules' || $this.attr('data-module') === 'about') {
+                            $this.before($tab);
+                            added = true;
+                            return false;
+                        }
+                        if ($this.attr('data-module') === 'toolbox' || $this.attr('data-module') === 'toggle_modules' || $tab.attr('data_module') === 'about') {
+                            return; // Can't insert here, so move to the next position and try again
+                        }
+                        // Compare everything else normally
+                        if ($this.text().localeCompare($tab.text()) > 0) {
+                            $this.before($tab);
+                            added = true;
+                            return false;
+                        }
+                    });
+                    if (!added) {
+                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($tab);
+                    }
 
                     // stuff to exec after inject:
                     for (var i = 0; i < execAfterInject.length; i++) {

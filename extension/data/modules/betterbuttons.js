@@ -350,7 +350,7 @@ self.initStickyButtons = function initStickyButtons() {
             $buttons = $thing.find('.flat-list');
 
         // Make sure this is a post in a sub we mod by checking for the remove button.
-        if ($buttons.has('.remove-button')) {
+        if ($buttons.has('.remove-button').length) {
             $buttons.append($('<li>').addClass('sticky-button').append(
                 $('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')
             ).append(

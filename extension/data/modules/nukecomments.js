@@ -149,11 +149,9 @@ self.processComment = function (comment, num) {
         // Add the class so we don't add buttons twice.
         $comment.addClass('nuke-processed');
 
-
-
         // Defer info gathering until button is clicked.
         // the report button is always visible, so we don't have to do anything special for the big mod action buttons
-        $comment.find('.userattrs:first')
+        $comment.find('.tagline:first > .userattrs')
             .after('&nbsp;<a href="javascript:;" title="Remove (nuke) comment chain." class="nuke-button tb-bracket-button">' + self.button + '</a>');
     }
 };

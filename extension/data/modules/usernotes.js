@@ -236,6 +236,10 @@ self.usernotes = function usernotes() {
     function attachNoteTag($element, subreddit, attachAfter) {
         var $tag = $('<span>').attr('title', "View and add notes about this user for /r/"+subreddit).addClass('usernote-button usernote-span-'+subreddit).append(
             $('<a>').addClass('tb-bracket-button add-user-tag-'+subreddit).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
+        // Full text if in sidebar
+        if ($element.closest('.ThreadViewer__infobarContainer').length) {
+            $tag.find('a').text('User Notes')
+        }
 
         if (attachAfter) {
             if ($element.nextAll('.usernote-button').length === 0) {
@@ -331,8 +335,9 @@ self.usernotes = function usernotes() {
             if (u === undefined || u.notes.length < 1) {
                 $usertag.css('color', '');
                 $usertag.empty();
+                // Since there's more room in the sidebar, display a more descriptive label
                 if (isInNewModmailSidebar) {
-                    $usertag.text('User notes');
+                    $usertag.text('User Notes');
                 } else {
                     $usertag.text('N');
                 }

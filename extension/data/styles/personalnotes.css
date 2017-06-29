@@ -97,7 +97,6 @@
 .mod-toolbox #tb-personal-notes-content {
     min-width: 450px;
     margin-right: -5px;
-    padding: 5px;
     position: relative;
 }
 
@@ -108,6 +107,7 @@
     min-height: 100%;
     min-width: 100%;
     display: none;
+    border: 0;
 }
 
 /* Save button in footer */

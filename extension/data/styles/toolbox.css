@@ -68,6 +68,10 @@ body.mod-toolbox .tb-action-button.action-hidden {
     display: none;
 }
 
+body.mod-toolbox .tb-action-button.tb-button-hidden {
+    display: none !important;
+}
+
 body.mod-toolbox .tb-action-button {
     display: inline-block !important;
 	height: initial !important;

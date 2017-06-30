@@ -2,6 +2,20 @@
 ---------------------------
 */
 
+.mod-toolbox div#tb-search-result {
+    position: fixed;
+    left: 283px;
+    right: 0;
+    background-color: #efefee;
+    overflow: auto;
+    bottom: 0;
+    padding-bottom: 50px;
+    top: 122px;
+    display:none;
+}
+
+
+
 /* nightmode for regular browser
 */
 html.tb-nightmode,

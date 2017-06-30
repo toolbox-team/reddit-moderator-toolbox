@@ -2334,7 +2334,22 @@ function initwrapper() {
         // For new modmail we do things a bit different.
         // We only listen for dom changes after a user interaction.
         // Resulting in this event being fired less and less wasted requests.
+
+        var locationHref = location.href;
 		document.body.addEventListener('click', function(){
+		        // First we are going to check if this click resulted in a page change.
+                setTimeout(function(){
+                    var samePage = locationHref === location.href;
+                    if (!samePage) {
+                        locationHref = location.href;
+                        var event = new CustomEvent('TBNewPage', {
+                            detail: {
+                                locationHref: locationHref
+                            }
+                        });
+                        window.dispatchEvent(event);
+                    }
+                }, 500);
 
 				var newMMtarget = document.querySelector('body');
 
@@ -2397,6 +2412,7 @@ function initwrapper() {
 		});
 
     }
+
 
 
 

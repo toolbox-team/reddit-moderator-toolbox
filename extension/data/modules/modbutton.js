@@ -281,33 +281,37 @@ self.init = function () {
                 top: positions.topPosition,
                 display: 'block'
             });
+        var $actionSelect = $popup.find('.mod-action');
 
+        // Set the action before setting up the initial interface
+        if (rememberLastAction) {
+            $actionSelect.val(lastaction);
+        }
+
+        // If we're not banning someone, we don't need these
+        if ($actionSelect.val() !== 'ban') {
+            $popup.find('.ban-note').hide();
+            $popup.find('textarea.ban-message').hide();
+            $popup.find('.ban-duration').hide();
+            $popup.find('.ban-span-include-time').hide();
+        }
+
+        // If we're doing global actions, add the button for that
+        // (there's a display none in the style attribute if this is disabled)
         if (showglobal) {
             var $globalButton = $popup.find('.global-button');
 
-            if ($popup.find('.mod-action').val() === 'ban') {
+            // unless we're doing a ban, because global bans are evil
+            if ($actionSelect.val() === 'ban') {
                 $globalButton.addClass('action-hidden');
             }
-
-            $popup.find('.mod-action').change(function () {
-                var value = this.value;
-
-                if (value === 'ban') {
+            $actionSelect.change(function () {
+                if (this.value === 'ban') {
                     $globalButton.addClass('action-hidden');
                 } else {
                     $globalButton.removeClass('action-hidden');
                 }
             });
-        }
-
-        if (rememberLastAction) {
-            $popup.find('select.mod-action').val(lastaction);
-            if (lastaction !== 'ban') {
-                $popup.find('.ban-note').hide();
-                $popup.find('textarea.ban-message').hide();
-                $popup.find('.ban-duration').hide();
-                $popup.find('.ban-span-include-time').hide();
-            }
         }
 
         // Remove options that only apply to subs we mod
@@ -407,7 +411,7 @@ self.init = function () {
         });
 
         // show/hide ban reason text feild.
-        $popup.find('.mod-action').change(function () {
+        $actionSelect.change(function () {
             var $banNote = $popup.find('.ban-note'),
                 $banMessage = $popup.find('textarea.ban-message'),
                 $banDuration = $popup.find('.ban-duration'),

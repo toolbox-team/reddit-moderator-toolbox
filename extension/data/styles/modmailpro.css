@@ -14,7 +14,10 @@
     display:none;
 }
 
-
+.mod-toolbox div#tb-search-header {
+    margin-left: 10px;
+    float: left;
+}
 
 /* nightmode for regular browser
 */

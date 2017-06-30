@@ -268,6 +268,8 @@ self.init = function() {
                         'bottom': '31px',
                         'left': '20px'
                     });
+                    // Focus the filter bar for convenience
+                    $('#tb-livefilter-input').focus()
                 } else {
                     $this.removeClass('tb-mysubs-activated');
                     $('.subreddits-you-mod-popup').remove();

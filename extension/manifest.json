@@ -5,6 +5,7 @@
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
     "version": "3.6.5",
+    "version_name": "3.6.5: \"Communicating Cat\"",
     "options_page": "data/background/options.html",
     "applications": {
         "gecko": {

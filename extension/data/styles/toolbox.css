@@ -1,434 +1,17 @@
-.mod-toolbox  {
-    overflow-x: hidden;
-}
-/* RES compatibility fix */
+/* 
+========================
 
-.res #BigEditor {
-    margin-bottom: 25px !important;
-}
+    TB UI: Overlays, pop-ups
 
-.mod-toolbox .tb-moderation-tools-icons {
-    margin-bottom: -3px;
-}
-
-.debuginfo {
-    height: 40px;
-}
-
-.tb-macro-newmm {
-    float: right;
-    margin-right: 10px;
-}
-/*
-general UI stuff
+======================== 
 */
 
-/* link colors (for those themes that change all the link colors */
-body.mod-toolbox .tb-page-overlay a,
-body.mod-toolbox .tb-popup a,
-body.mod-toolbox .tb-toolbar a
-{
-    color: #369;
-    box-sizing: initial !important;
-}
-
-body.mod-toolbox .tb-general-button,
-body.mod-toolbox li a.tb-general-button,
-body.mod-toolbox .tb-bracket-button {
-    background-color: #F7FAFD;
-    color: #696969;
-    font-size: 11px;
-    border-width: 1px 1px 1px 2px;
-    border-color: #B6C9DD;
-    border-style: solid;
-    padding: 1px 5px;
-    text-align: center;
-    font-weight: normal;
-    text-decoration: none;
-}
-
-body.mod-toolbox .tb-bracket-button {
-	padding: 0 1px;
-    font-size: 9px;
-}
-
-body.mod-toolbox .tb-general-button:hover,
-body.mod-toolbox li a.tb-general-button:hover {
-    background-color: #E2EEFA;
-    text-decoration: none;
-}
-
-body.mod-toolbox .tb-general-button img {
-	vertical-align: top;
-}
-
-/* This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! */
-
-body.mod-toolbox .tb-action-button.action-hidden {
-    display: none;
-}
-
-body.mod-toolbox .tb-action-button.tb-button-hidden {
-    display: none !important;
-}
-
-body.mod-toolbox .tb-action-button {
-    display: inline-block !important;
-	height: initial !important;
-    padding: 2px 6px 3px 6px !important;
-    font-family: verdana,arial,helvetica,sans-serif !important;
-    font-size: 13px !important;
-    text-shadow: none !important;
-    text-decoration: none !important;
-    text-align: left !important;
-    text-indent: 0 !important;
-    text-transform: none !important;
-    font-stretch: normal !important;
-    font-style: normal !important;
-    font-variant: normal !important;
-    font-weight: normal !important;
-    letter-spacing: normal !important;
-    background-color: #F7FAFD !important;
-    border-radius: 1px !important;
-    border-width: 1px 1px 2px 2px !important;
-    border-color: #72869A !important;
-    border-style: solid !important;
-    box-shadow: none !important;
-    box-sizing: border-box !important;
-    color: #17324E !important;
-    transition: all 0.15s ease-in-out !important;
-    outline: none !important;
-}
-
-body.mod-toolbox .tb-action-button:active {
-    border-width: 1px !important;
-    border-color: #9FBAD6 !important;
-    padding: 2px 6px 3px 6px !important;
-    box-shadow: none !important;
-    outline: none !important;
-}
-
-.mod-toolbox select.tb-action-button {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFBAMAAACOSmBbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAMFBMVEUAAAByhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhpoAAAAzyklRAAAADnRSTlMAg+bd3+d6pqKNlZOkqEeC9h4AAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAAJklEQVQI12OQU3YxfcbA/u7duwYGhnnvXjEwMHC/OwAkGfYyMAAApLAJ3r+t9WUAAAAASUVORK5CYII=');    background-repeat: no-repeat;
-    background-position: right 5px center;
-    -moz-appearance:none; /* Firefox */
-    -webkit-appearance:none; /* Safari and Chrome */
-    appearance:none;
-    padding: 1px 20px 2px 6px !important;
-}
-
-
-.mod-toolbox select.tb-action-button:active {
-    border-width: 1px 1px 2px 2px !important;
-    padding: 1px 20px 2px 6px !important;
-}
-
-
-.mod-toolbox select.tb-macro-select.tb-action-button,
-.mod-toolbox select.tb-top-macro-select.tb-action-button
-{
-    max-width: 90px;
-    box-sizing: border-box !important;
-    height: 26px !important;
-}
-
-/* inline action buttons */
-
-.mod-toolbox .tb-action-button.inline-button {
-    font-size: 11px !important;
-}
-.mod-toolbox select.tb-action-button.inline-button {
-    padding: 1px 15px 1px 5px !important;
-    font-size: 11px !important;
-}
-
-.mod-toolbox .tb-action-button.inline-button:active {
-    padding: 2px 6px 4px 7px !important;
-}
-
-.mod-toolbox select.tb-action-button.inline-button:active {
-    border-width: 1px 1px 2px 2px !important;
-    padding: 1px 15px 1px 5px !important;
-
-}
-
-
-.mod-toolbox button.save-mod.tb-action-button,
-.mod-toolbox button.save-sticky.tb-action-button {
-    box-sizing: border-box !important;
-    height: 26px !important;
-}
-
-/* Hack to make mod sticky + save button only show up where it's supposed to -
-   doing this via JS is hard because Reddit clones the reply field from the top-
-   level one, and the button should be visible on top-level comments but not on
-   replies to other comments. */
-button.save-sticky.tb-action-button { display: none !important }
-.commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
-
-
-body.mod-toolbox .tb-action-button:focus {
-    outline: none !important;
-}
-
-body.mod-toolbox .tb-action-button:hover {
-    background-color: #E2EEFA !important;
-    text-decoration: none !important;
-    outline: none !important;
-}
-
-/* END: action buttons */
-
-.mod-toolbox .tb-highlight {
-    background-color: #ffff16;
-}
-
-.mod-toolbox .tb-highlight-action-reason {
-    background-color: #ffd016;
-}
-
-body.mod-toolbox #tb-bottombar {
-    bottom: 0;
-    z-index: 2147483646 !important;
-    position: fixed;
-    text-align: left;
-    margin-left: 0;
-    margin-right: 0;
-    height: 22px;
-    background-color: rgba(206, 227, 248, 0.86);
-    font-size:11px;
-    color: #696969;
-    padding: 0 !important;
-    border-top: solid 1px #B6C9DD;
-    left: 0;
-    right: 0;
-    box-sizing: initial !important;
-}
-body.mod-toolbox #tb-bottombar span {
-    display: inline-block;
-    vertical-align: top;
-    height: 22px;
-    line-height: 22px;
-}
-body.mod-toolbox #tb-bottombar #tb-bottombar-contentright {
-    float: right;
-}
-
-.mod-toolbox #tb-bottombar-hidden {
-    bottom: 0;
-    z-index: 6000;
-    position: fixed;
-    text-align: left;
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    height: 22px;
-    background-color: rgba(206, 227, 248, 0.86);
-    font-size: 11px;
-    color: #696969;
-    padding: 0 !important;
-    border-top: solid 1px #B6C9DD;
-    border-right: solid 1px #B6C9DD;
-    left: 0;
-}
-
-/* Icons in the bottom bar */
-.mod-toolbox #tb-bottombar .tb-bottombar-hide,
-.mod-toolbox #tb-bottombar-hidden .tb-bottombar-unhide,
-.mod-toolbox #tb-bottombar .tb-toolbar-new-settings,
-.mod-toolbox #tb-toggle-console,
-.mod-toolbox #tb-reload-link {
-    display: inline-block;
-    height: 16px;
-    padding: 3px;
-}
-
-.mod-toolbox #tb-mail.nohavemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -16px -645px;
-    background-repeat: no-repeat;
-}
-
-.mod-toolbox #tb-mail.havemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: 0 -645px;
-    background-repeat: no-repeat;
-}
-
-.mod-toolbox #tb-mail {
-    top: 2px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 15px;
-    height: 10px;
-}
-
-.mod-toolbox #tb-modmail {
-	top: 2px;
-    display: inline-block;
-    height: 16px;
-    overflow: hidden;
-    position: relative;
-    text-indent: -9999px;
-    width: 16px;
-}
-
-.mod-toolbox #tb-modmail.havemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -85px -577px;
-    background-repeat: no-repeat;
-}
-
-.mod-toolbox #tb-modmail.nohavemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -577px;
-    background-repeat: no-repeat;
-}
-
-.mod-toolbox .articleFrame {
-    border: solid 1px #A2BAD3;
-    position: relative;
-    width: 70%;
-    margin-left: 60px;
-    resize: both;
-    display: none;
-}
-
-.mod-toolbox #tb-modqueue {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -595px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 16px;
-    height: 16px;
-}
-
-.mod-toolbox #tb-unmoderated {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -51px -612px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 3px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 17px;
-    height: 15px;
-}
-
-.mod-toolbox #tb-toolbarcounters,
-.mod-toolbox #tb-toggle-console {
-    float: right;
-    display: inline-block;
-    margin-right: 25px;
-    font-weight: bold;
-}
-
-.mod-toolbox #tb-reload-link {
-    float: right;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.mod-toolbox #tb-my-subreddits {
-    max-height: 65vh;
-    width: 265px;
-    padding: 0;
-    overflow: auto;
-    font-size: 11px;
-    color: #696969;
-    text-align: center;
-}
-
-.mod-toolbox .subreddits-you-mod-popup .tb-popup-footer {
-    height: 10px;
-}
-
-#tb-my-subreddit-list {
-text-align: left;
-}
-
-.mod-toolbox #tb-my-subreddits a {
-    font-size: 11px;
-}
-
-.mod-toolbox #tb-my-subreddits h1 {
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    font-size: medium;
-}
-
-.mod-toolbox #tb-my-subreddits table {
-    width: 100%;
-}
-
-.mod-toolbox #tb-my-subreddits table td {
-    padding: 3px;
-}
-
-.mod-toolbox #tb-my-subreddits tr:nth-child(even) {
-    background: rgba(162, 162, 162, 0.2);
-}
-
-.mod-toolbox #tb-my-subreddits tr:nth-child(even):hover, .mod-toolbox #tb-my-subreddits tr:hover {
-    background-color: rgba(80, 123, 167, 0.2);
-}
-
-.mod-toolbox #tb-my-subreddits .generic-modqueue, .mod-toolbox #tb-my-subreddits .generic-unmoderated, .mod-toolbox #tb-my-subreddits .generic-mail {
-    margin-right: 3px;
-}
-
-.mod-toolbox .generic-modqueue {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -595px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 16px;
-    height: 16px;
-}
-
-.mod-toolbox .generic-unmoderated {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -51px -612px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 17px;
-    height: 15px;
-}
-
-.mod-toolbox .generic-mail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -577px;
-    background-repeat: no-repeat;
-    display: inline-block;
-    height: 16px;
-    overflow: hidden;
-    position: relative;
-    text-indent: -9999px;
-    width: 16px;
-}
+/* 
+------------
+    Overlay windows.
+    TODO: Clean up css and remove duplicate code. 
+------------
+*/
 
 .mod-toolbox .tb-page-overlay {
     padding: 10px 15px !important;
@@ -684,78 +267,36 @@ text-align: left;
     height: 100px;
 }
 
-.mod-toolbox div.tb-sticky-queue {
-    position: fixed;
-    border: 0;
-    width: 300px;
-    z-index: 5000;
+/* Module settings stuff */
+
+.mod-toolbox  .tb-window-tabs a.tb-module-disabled {
+    background-color: #D6D9DD;
+    color: #808080;
 }
 
-.mod-toolbox div.tb-sticky-note {
-    padding: 10px;
-    z-index: 5000;
-}
-
-.mod-toolbox div.tb-sticky {
-    font-size: 11px;
-    cursor: pointer;
-    margin-bottom: 5px;
-    background-color: #FFFFFF;
-    box-shadow: 0 1px 3px 1px #D6D6D6;
-    color: #000;
-    display: none;
-    padding: 0px !important;
-    position: relative;
-    z-index: 5000;
-}
-
-.mod-toolbox .tb-sticky-button {
-    display: inline-block;
-    position: absolute;
-    right: 0 !important;
-    top: 0 !important;
-    background-color: #C7D6E6;
-    line-height: 26px;
-    border: 0;
-    margin-left: 1px;
-}
-
-.mod-toolbox .tb-sticky-button:hover {
-    background-color: #9FBAD6;
-}
-
-.mod-toolbox a.tb-sticky-close {
-    padding: 0px 11px;
-    color: rgb(51, 102, 153);
-    box-sizing: initial;
-    font-size: small;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.mod-toolbox .tb-sticky-header {
-    right: 0;
-    left: 0;
-    text-align: left;
-    position: relative;
-    height: 20px;
-    line-height: 20px;
+.mod-toolbox .tb-window-tab span.tb-module-disabled {
+    font-size: 14px;
     display: block;
-    background-color: #CEE3F8;
+    padding: 4px;
+    background-color: #F7F7F7;
+    color: #808080;
     font-weight: bold;
-    font-size: small;
-    border: 0;
-    padding: 3px;
-}
-.tb-popup-header .tb-sticky-title {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    text-align: center;
-    width: 100%;
-    padding: 0px 33px 0px 5px;
 }
 
+.mod-toolbox .tb-window-content a.tb-help-toggle {
+    font-weight: bold;
+}
+
+
+
+
+
+/* 
+------------
+    Pop-ups
+    TODO: Remove duplicate css and make sure all our popups use the same classes. This is currently NOT the case.
+------------
+*/
 
 .mod-toolbox .tb-popup .tb-popup-header .buttons {
     display: inline-block;
@@ -766,105 +307,6 @@ text-align: left;
     line-height: 26px;
     border: 0;
     margin-left: 1px;
-}
-
-
-
-img.note-close {
-    position: absolute;
-    top: 3px;
-    right: 3px;
-    height: 14px;
-    width: 14px;
-    cursor: pointer;
-    z-index: 9999;
-}
-
-.top-right {
-    right: 20px;
-    z-index: 5000;
-}
-
-.top-left {
-    left: 20px;
-    z-index: 5000;
-}
-
-.top-right, .top-left {
-    top: -2px;
-    z-index: 5000;
-}
-
-.bottom-right {
-    right: 20px;
-    z-index: 5000;
-}
-
-.bottom-left {
-    left: 20px;
-    z-index: 5000;
-}
-
-.bottom-right, .bottom-left {
-    bottom: 25px;
-    z-index: 5000;
-}
-
-.border-top-right, .border-top-left {
-    border-top: 0;
-}
-
-.border-bottom-right, .border-bottom-left {
-    border-bottom: 0;
-}
-
-.mod-toolbox #tb-notification-alert {
-    left: 5px;
-    bottom: 30px;
-    z-index: 10001;
-    position: fixed;
-    text-align: left;
-    width: 500px;
-    height: 70px;
-    background-color: rgba(206, 227, 248, 1);
-    font-size: 14px;
-    color: #000;
-    padding: 2px !important;
-    border: solid 2px #B83E3E;
-    top: auto;
-    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
-    cursor: pointer;
-}
-
-.mod-toolbox #tb-notification-alert span {
-    position: relative;
-    display: inline-block;
-    padding: 10px;
-}
-
-.mod-toolbox #tb-tooltip {
-    /* left: 5px;
-    bottom: 30px; */
-    z-index: 9999;
-    position: fixed;
-    text-align: left;
-    /* width: 500px;
-    height: 50px; */
-    background-color: rgba(206, 227, 248, 0.86);
-    font-size: 11px;
-    color: #000;
-    padding: 2px !important;
-    border: solid 1px #B6C9DD;
-    top: auto;
-    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
-}
-
-.tb-first-run {
-    display: none;
-    color: red;
-    vertical-align: top;
-    height: 22px;
-    line-height: 22px;
 }
 
 .mod-toolbox .tb-popup {
@@ -987,9 +429,6 @@ img.note-close {
     padding: 3px 0px 3px;
 }
 
-.tb-popup .status {
-}
-
 .tb-popup-error {
     color: red;
 }
@@ -1062,84 +501,13 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     width: 190px;
 }
 
-.mod-action {
-    max-width: 70px;
-}
-
-.mod-action-positive {
-    background-color: #E5F0E1;
-}
-
-.mod-action-negative {
-    background-color: #FA8072;
-}
-
-body .choice.dashed {
-    border-top: 1px dashed;
-}
-
-body .thing.approved {
-    background-color: paleGreen;
-}
-
-body .thing.removed {
-    background-color: lightgray;
-}
-
-body .thing.spammed {
-    background-color: Tomato;
-}
-
-body .thing.flaired {
-    background-color: PaleTurquoise;
-}
-
-.pretty-button.inoffensive {
-    background-position: 0px -105px;
-    background-image: url(http://a.thumbs.redditmedia.com/Ec85AWdAyumYZeFVgEaxwSr6Go8NZyCgGmtTVQsQqc8.png);
-    background-repeat: repeat;
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-    border-radius: 0;
-}
-
-.pretty-button.inoffensive.pressed {
-    background-position: 0 -82px!important;
-}
-
-.thing+input[type="checkbox"]:focus {
-    outline: blue solid 1px;
-}
-
-
-
-.rts-report,.rts-report-clicked, .markdown-report, .comment-report, .account-report {
-    font-weight: bold;
-    font-size: x-small;
-    padding: 0 5px 0 5px;
-    /*border-left: solid 1px #369;*/
-    float: right;
-    margin-left: 3px;
-}
-
-.toolbox-edit:hover {
-    text-decoration: underline;
-}
-
-.edit-wikidata {
-    width: 99%;
-    font: normal small verdana,arial,helvetica,sans-serif;
-    -webkit-appearance: textarea;
-    background-color: white;
-    border: 1px solid;
-    -webkit-rtl-ordering: logical;
-    -webkit-user-select: text;
-    -webkit-flex-direction: column;
-    cursor: auto;
-    padding: 2px !important;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
+/* 
+------------
+    Debug window
+    TODO: Determine if this belongs here or in modbar.css 
+    TODO: Determine what of this needs to be its own css and what can be converted to make use of overlay css.
+------------
+*/
 
 .mod-toolbox .tb-debug-window {
     position: fixed;
@@ -1166,10 +534,6 @@ body .thing.flaired {
 }
 
 .mod-toolbox .tb-debug-window .tb-popup-content {
-    /*overflow: auto;
-    left: 0;
-    right: 0;
-    padding: 5px !important;*/
     box-sizing: content-box;
 }
 
@@ -1228,185 +592,239 @@ body .thing.flaired {
     right: 20px;
 }
 
-/* various reddit css fixes for mods */
 
-.moderator-table tr:hover,
-.moderator-table tr:nth-child(even):hover,
-.banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover,
-.modactionlisting .generic-table tr:hover,
-.modactionlisting .generic-table tr:nth-child(even):hover,
-.wikirevisionlisting .generic-table tr:hover,
-.wikirevisionlisting .generic-table tr:nth-child(even):hover{
-    background-color: rgba(80, 123, 167, 0.2) !important;
+/* 
+========================
+
+    TB UI: Buttons
+ 
+======================== 
+*/
+
+/* 
+------------
+    General buttons, are used for blending in with reddit but still making it clear they are there for toolbox functionality.
+    Do NOT use in cases where you would normally use button elements. That is what the action button css is for. 
+------------
+*/
+body.mod-toolbox .tb-general-button,
+body.mod-toolbox li a.tb-general-button,
+body.mod-toolbox .tb-bracket-button {
+    background-color: #F7FAFD;
+    color: #696969;
+    font-size: 11px;
+    border-width: 1px 1px 1px 2px;
+    border-color: #B6C9DD;
+    border-style: solid;
+    padding: 1px 5px;
+    text-align: center;
+    font-weight: normal;
+    text-decoration: none;
 }
 
-.moderator-table tr:nth-child(even),
-.contributor-table tr:nth-child(even),
-.wikirevisionlisting .generic-table tr:nth-child(even),
-.modactionlisting .generic-table tr:nth-child(even) {
-    background: rgba(162, 162, 162, 0.2) !important;
-}
-
-/* css fix for banlist module */
-.moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
-    background: inherit;
-}
-
-.moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
-    background: rgba(162, 162, 162, 0.2) !important;
-}
-
-.moderator-table.filtered tr.visible.even:hover , .banned-table.filtered tr.visible.even:hover, .contributor-table.filtered tr.visible.even:hover {
-    background-color: rgba(80, 123, 167, 0.2)  !important;
-}
-
-/* tb-frame-module specific css. NOTE: if we need more windows like this in the future please yell at creesch to make a template for this specific use case */
-
-/* Font size fixes, probably more will be needed */
-.mod-toolbox .tb-frame-module .md {
-    font-size: inherit;
-    max-width: 95%;
-}
-
-.mod-toolbox .tb-frame-module .flat-list.buttons a {
+body.mod-toolbox .tb-bracket-button {
+	padding: 0 1px;
     font-size: 9px;
 }
 
-.mod-toolbox .tb-frame-module #siteTable {
-    font-size: 10px
-
+body.mod-toolbox .tb-general-button:hover,
+body.mod-toolbox li a.tb-general-button:hover {
+    background-color: #E2EEFA;
+    text-decoration: none;
 }
 
-/* Make the damn thing scrollable */
-.mod-toolbox .tb-frame-module .tb-window-footer {
-    position: absolute;
-    bottom: 0;
+body.mod-toolbox .tb-general-button img {
+	vertical-align: top;
 }
 
-.mod-toolbox .tb-frame-module .tb-window-content {
-    height: auto;
-    overflow: auto;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 31px;
-}
-
-.mod-toolbox .tb-page-overlay.tb-frame-module {
-    bottom: 0;
-    height: 100%;
-}
-
-.mod-toolbox .tb-frame-module .tb-window-wrapper {
-    position: absolute !important;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    margin-right: auto !important;
-}
-
-.mod-toolbox .tb-page-overlay.tb-frame-module {
-    padding: 0 !important;
-}
+/* 
+------------
+    Action buttons, are used where you normally would use actual button elements and where you need to be absolutely certain they always show in the same way.
+    This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! 
+------------
+*/
 
 
-/* For css syntax highlighting */
-#stylesheet_contents_div, #json_contents_div, #wiki_contents_div {
-    height: 500px;
-    border: solid 1px #E4E4E4;
-}
-
-.mod-toolbox.mod-syntax .sheets .buttons .btn,
-.mod-toolbox.mod-syntax  #wiki_save_button{
+body.mod-toolbox .tb-action-button.action-hidden {
     display: none;
 }
 
-.mod-toolbox.mod-syntax #tb-syntax-buttons,
-.mod-toolbox.mod-syntax .sheets .buttons {
-    display: inline-block;
-    margin-left: 5px;
+/* 
+Because they are so locked down you cannot easily show or hide these buttons. 
+Apply the "tb-button-hidden" class to be able to hide them anyway.
+*/
+body.mod-toolbox .tb-action-button.tb-button-hidden {
+    display: none !important;
+}
+
+body.mod-toolbox .tb-action-button {
+    display: inline-block !important;
+	height: initial !important;
+    padding: 2px 6px 3px 6px !important;
+    font-family: verdana,arial,helvetica,sans-serif !important;
+    font-size: 13px !important;
+    text-shadow: none !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    text-indent: 0 !important;
+    text-transform: none !important;
+    font-stretch: normal !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    font-weight: normal !important;
+    letter-spacing: normal !important;
+    background-color: #F7FAFD !important;
+    border-radius: 1px !important;
+    border-width: 1px 1px 2px 2px !important;
+    border-color: #72869A !important;
+    border-style: solid !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    color: #17324E !important;
+    transition: all 0.15s ease-in-out !important;
+    outline: none !important;
+}
+
+body.mod-toolbox .tb-action-button:active {
+    border-width: 1px !important;
+    border-color: #9FBAD6 !important;
+    padding: 2px 6px 3px 6px !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.mod-toolbox select.tb-action-button {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFBAMAAACOSmBbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAMFBMVEUAAAByhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhpoAAAAzyklRAAAADnRSTlMAg+bd3+d6pqKNlZOkqEeC9h4AAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAAJklEQVQI12OQU3YxfcbA/u7duwYGhnnvXjEwMHC/OwAkGfYyMAAApLAJ3r+t9WUAAAAASUVORK5CYII=');    background-repeat: no-repeat;
+    background-position: right 5px center;
+    -moz-appearance:none; /* Firefox */
+    -webkit-appearance:none; /* Safari and Chrome */
+    appearance:none;
+    padding: 1px 20px 2px 6px !important;
+}
+
+
+.mod-toolbox select.tb-action-button:active {
+    border-width: 1px 1px 2px 2px !important;
+    padding: 1px 20px 2px 6px !important;
+}
+
+/* inline action buttons */
+
+.mod-toolbox .tb-action-button.inline-button {
+    font-size: 11px !important;
+}
+.mod-toolbox select.tb-action-button.inline-button {
+    padding: 1px 15px 1px 5px !important;
+    font-size: 11px !important;
+}
+
+.mod-toolbox .tb-action-button.inline-button:active {
+    padding: 2px 6px 4px 7px !important;
+}
+
+.mod-toolbox select.tb-action-button.inline-button:active {
+    border-width: 1px 1px 2px 2px !important;
+    padding: 1px 15px 1px 5px !important;
+
+}
+
+.mod-toolbox button.save-mod.tb-action-button,
+.mod-toolbox button.save-sticky.tb-action-button {
+    box-sizing: border-box !important;
+    height: 26px !important;
+}
+
+/* Hack to make mod sticky + save button only show up where it's supposed to -
+   doing this via JS is hard because Reddit clones the reply field from the top-
+   level one, and the button should be visible on top-level comments but not on
+   replies to other comments. */
+button.save-sticky.tb-action-button { display: none !important }
+.commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
+
+
+body.mod-toolbox .tb-action-button:focus {
+    outline: none !important;
+}
+
+body.mod-toolbox .tb-action-button:hover {
+    background-color: #E2EEFA !important;
+    text-decoration: none !important;
+    outline: none !important;
 }
 
 
 
-/* toolbox loading */
-#tb-loading {
-    left:0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    z-index: 6000;
+/* 
+========================
+
+    TB UI: various
+
+======================== 
+*/
+
+/* link colors (for those themes that change all the link colors */
+body.mod-toolbox .tb-page-overlay a,
+body.mod-toolbox .tb-popup a,
+body.mod-toolbox .tb-toolbar a
+{
+    color: #369;
+    box-sizing: initial !important;
+}
+
+/* 
+------------
+    Feedback window
+------------
+*/
+
+#tb-feedback-window {
+    max-width: 400px;
     position: fixed;
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    height: 10px;
-    background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
+    z-index: 2147483647;
+    top: 50%;
+    left: 50%;
+    padding: 10px;
+    min-width: 150px;
+    text-align: center;
+    background-color: #CEE3F8;
+    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 }
 
-#tb-loading-non-persistent {
-    left:0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    z-index: 6000;
-    position: fixed;
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    height: 10px;
-    background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar_non_persistant.gif") center center fixed;
-}
-
-#tb-loading-stuff .tb-loading-content,
-#tb-loading-stuff-non-persistent .tb-loading-content{
-    background-color: rgb(255, 255, 255);
-    margin: 0px;
+#tb-feedback-window .tb-feedback-text {
+    background-color: #FFF;
+    margin: 0;
     display: block;
     padding: 5px;
     font-size: 12px;
 }
 
-#tb-loading-stuff .tb-loading-content img,
-#tb-loading-stuff-non-persistent .tb-loading-content img{
-    vertical-align: middle;
+#tb-feedback-window.positive {
+    background: #69d47d;
 }
 
-#tb-loading-stuff .tb-loading-content .tb-loading-text,
-#tb-loading-stuff-non-persistent .tb-loading-content .tb-loading-text{
-    display: inline-block;
-    vertical-align: middle;
+#tb-feedback-window.negative {
+    background: #ff7f4f;
 }
 
 
-#tb-loading-stuff,
-#tb-loading-stuff-non-persistent {
-    max-width: 500px;
-    position: fixed;
-    z-index: 2147483647;
-    bottom: 40px;
-    left: 50%;
-    padding: 10px;
-    min-width: 150px;
-    text-align: center;
-    background-color: rgb(206, 227, 248);
-    border: 1px solid rgb(182, 201, 221);
-    box-shadow: rgba(214, 214, 214, 0.470588) 0 1px 3px 1px;
+/* 
+------------
+    Highlighting plugin related css
+------------
+*/
+.mod-toolbox .tb-highlight {
+    background-color: #ffff16;
 }
 
-.tb-internal-overlay {
-    display: block;
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.82);
-    top: 24px;
-    bottom: 31px;
-    z-index: 9999999;
-    left: 0;
-    right: 0;
+.mod-toolbox .tb-highlight-action-reason {
+    background-color: #ffd016;
 }
 
+/* 
+------------
+    Toolbox rate limit countdown.
+------------
+*/
 span#ratelimit-counter {
     position: fixed;
     padding: 10px;
@@ -1429,11 +847,549 @@ span.rate-limit-explain {
     margin: auto;
 }
 
-/*------------------------
+/* 
+------------
+    Toolbox long load css
+------------
+*/
+
+/*
+    The persistent loadbar css, blue in color.
+*/
+#tb-loading {
+    left:0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    z-index: 6000;
+    position: fixed;
+    margin-left: 0;
+    margin-right: 0;
+    width: auto;
+    height: 10px;
+    background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
+}
+
+/*
+    The non-persistent loadbar css, red in color.
+*/
+#tb-loading-non-persistent {
+    left:0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    z-index: 6000;
+    position: fixed;
+    margin-left: 0;
+    margin-right: 0;
+    width: auto;
+    height: 10px;
+    background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar_non_persistant.gif") center center fixed;
+}
+
+/*
+    People kept missing the big animated bar, so we added additional stuff and animations. It is great!
+*/
+#tb-loading-stuff .tb-loading-content,
+#tb-loading-stuff-non-persistent .tb-loading-content{
+    background-color: rgb(255, 255, 255);
+    margin: 0px;
+    display: block;
+    padding: 5px;
+    font-size: 12px;
+}
+
+#tb-loading-stuff .tb-loading-content img,
+#tb-loading-stuff-non-persistent .tb-loading-content img{
+    vertical-align: middle;
+}
+
+#tb-loading-stuff .tb-loading-content .tb-loading-text,
+#tb-loading-stuff-non-persistent .tb-loading-content .tb-loading-text{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#tb-loading-stuff,
+#tb-loading-stuff-non-persistent {
+    max-width: 500px;
+    position: fixed;
+    z-index: 2147483647;
+    bottom: 40px;
+    left: 50%;
+    padding: 10px;
+    min-width: 150px;
+    text-align: center;
+    background-color: rgb(206, 227, 248);
+    border: 1px solid rgb(182, 201, 221);
+    box-shadow: rgba(214, 214, 214, 0.470588) 0 1px 3px 1px;
+}
+
+/* 
+========================
+
+    TB Modules: some modules have very little specific css, not enough to warrant their own css file.
+
+======================== 
+*/
+
+/*
+------------
+    ModButton
+------------
+*/
+
+.mod-action {
+    max-width: 70px;
+}
+
+.mod-action-positive {
+    background-color: #E5F0E1;
+}
+
+.mod-action-negative {
+    background-color: #FA8072;
+}
+
+/*
+------------
+    ModMacros
+------------
+*/
+.mod-toolbox .tb-macro-newmm {
+    float: right;
+    margin-right: 10px;
+}
+
+.mod-toolbox select.tb-macro-select.tb-action-button,
+.mod-toolbox select.tb-top-macro-select.tb-action-button
+{
+    max-width: 90px;
+    box-sizing: border-box !important;
+    height: 26px !important;
+}
+
+.macro-popup .tb-popup-content {
+    margin-bottom: 30px;
+}
+
+.macro-popup .tb-popup-footer {
+    position: absolute;
+    bottom: 0;
+}
+
+
+/* 
+------------
+    Syntax highlighter
+------------
+*/
+
+#stylesheet_contents_div, #json_contents_div, #wiki_contents_div {
+    height: 500px;
+    border: solid 1px #E4E4E4;
+}
+
+.mod-toolbox.mod-syntax .sheets .buttons .btn,
+.mod-toolbox.mod-syntax  #wiki_save_button{
+    display: none;
+}
+
+.mod-toolbox.mod-syntax #tb-syntax-buttons,
+.mod-toolbox.mod-syntax .sheets .buttons {
+    display: inline-block;
+    margin-left: 5px;
+}
+
+/*
+------------
+    Banlist
+------------
+/*
+
+/* css fix for banlist module 
+TODO: Find out what this is supposed to fix and put that in the comment instead. 
+*/
+.moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
+    background: inherit;
+}
+
+.moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
+    background: rgba(162, 162, 162, 0.2) !important;
+}
+
+.moderator-table.filtered tr.visible.even:hover , .banned-table.filtered tr.visible.even:hover, .contributor-table.filtered tr.visible.even:hover {
+    background-color: rgba(80, 123, 167, 0.2)  !important;
+}
+
+
+/*
+------------
+    comment.js 
+------------
+*/
+
+.mod-toolbox  .comment-nest-info {
+    font-size: 11px;
+    margin-top: -10px;
+    color: #888;
+}
+
+.mod-toolbox  #tb-search-suggest-list td {
+    cursor: pointer;
+}
+
+/* Comment search */
+#tb-search-suggest {
+    display: none;
+    max-height: 65%;
+    position: absolute;
+    width: 171px;
+    padding: 0;
+    overflow: auto;
+    background-color: rgba(226, 238, 250, 1);
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #B6C9DD;
+    text-align: left;
+    z-index: 501;
+}
+
+#tb-search-suggest table {
+    width: 100%;
+}
+
+#tb-search-suggest table td {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+
+}
+
+#tb-search-suggest tr {
+    background: rgba(247, 250, 253, 1);
+    border-bottom: solid 1px #CCD1D7;
+}
+
+#tb-search-suggest tr:hover {
+    background-color: rgba(174, 212, 250, 0.5);
+}
+
+
+/*
+------------
+    metrics tab
+------------
+*/
+
+/* metrics tab/dropdown stuff */
+#tb-metrics-expand-list {
+    display: none;
+    max-height: 65%;
+    position: absolute;
+    width: 171px;
+    padding: 0;
+    overflow: auto;
+    background-color: rgba(226, 238, 250, 1);
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #B6C9DD;
+    border-bottom: 0;
+    text-align: left;
+    z-index: 501;
+}
+#tb-metrics-expand-list li {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    background: rgb(247, 250, 253);
+    border-bottom: 1px solid rgb(204, 209, 215);
+}
+
+#tb-metrics-expand-list a:hover {
+    text-decoration: underline;
+}
+
+/*
+------------
+    config.js 
+------------
+*/
+
+.mod-toolbox span.tb-config-intro {
+    max-width: 59em;
+}
+
+.mod-toolbox .tb-window-tabs a {
+    cursor: pointer;
+}
+
+.mod-toolbox .tb-window-header .buttons {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.mod-toolbox .tb-window-header .buttons a {
+    display: inline-block;
+    background-color: #C7D6E6;
+    border-left: 0;
+    height: 36px;
+    line-height: 36px;
+    width: 36px;
+    font-size: small;
+    margin-left: 1px;
+    text-align: center;
+}
+
+.mod-toolbox .tb-page-overlay a.close:hover,
+.mod-toolbox .tb-page-overlay a.tb-help-main:hover {
+    background-color: #9FBAD6;
+}
+
+.mod-toolbox #tb-removal-reasons-list,
+.mod-toolbox #tb-mod-macros-list {
+    border-top: solid 2px gray;
+    margin-top: 5px;
+    width: 99%;
+}
+
+.mod-toolbox #tb-removal-reasons-list td,
+.mod-toolbox #tb-mod-macros-list td {
+    padding: 5px;
+    vertical-align: top;
+}
+.mod-toolbox .removal-reasons-buttons,
+.mod-toolbox .mod-macros-buttons {
+    width: 25px;
+}
+
+.mod-toolbox .removal-reason-edit,
+.mod-toolbox #tb-add-removal-reason-form,
+.mod-toolbox .mod-macro-edit,
+.mod-toolbox #tb-add-mod-macro-form
+{
+    display: none;
+}
+
+.mod-toolbox .edit_removal_reasons tr.removal-reason,
+.mod-toolbox .edit_mod_macros tr.mod-macro {
+    border-bottom: solid 5px #F0F0F0;
+}
+
+.mod-toolbox .edit_removal_reasons input[type="text"],
+.mod-toolbox .edit_mod_macros input[type="text"]{
+    max-width: 600px;
+}
+
+.mod-toolbox .edit_removal_reasons .edit-area,
+.mod-toolbox .edit_mod_macros .edit-area {
+    width: 600px;
+    height: 150px;
+    margin: 2px;
+}
+
+.mod-toolbox .removal_reasons_settings .edit-header,
+.mod-toolbox .removal_reasons_settings .edit-footer {
+    width: 600px;
+    height: 100px;
+    margin: 2px;
+}
+
+.mod-toolbox h3.macro-title,
+.mod-toolbox h3.removal-title {
+    font-size: 12px;
+    border-bottom: dotted 1px #D2D2D2;
+}
+
+.toolbox-edit:hover {
+    text-decoration: underline;
+}
+
+.edit-wikidata {
+    width: 99%;
+    font: normal small verdana,arial,helvetica,sans-serif;
+    -webkit-appearance: textarea;
+    background-color: white;
+    border: 1px solid;
+    -webkit-rtl-ordering: logical;
+    -webkit-user-select: text;
+    -webkit-flex-direction: column;
+    cursor: auto;
+    padding: 2px !important;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+
+#tb-config-help {
+    float: right;
+    margin-right: 10px;
+}
+
+.rr-advanced {
+    display: none;
+}
+
+
+/* 
+Icons in the sidebar
+*/
+
+.mod-toolbox .tb-moderation-tools-icons {
+    margin-bottom: -3px;
+}
+
+#moderation_tools .tb-moderation-tools-icons {
+    margin: 0 5px 0 1px;
+    vertical-align: bottom;
+}
+
+
+/* 
+========================
+
+    Various css things that do not belong anywhere specifically.
+
+======================== 
+*/
+
+
+/* Make some tables that reddit shows somewhat more userfriendly. */
+
+.moderator-table tr:hover,
+.moderator-table tr:nth-child(even):hover,
+.banned-table tr:hover, .banned-table tr:nth-child(even):hover,
+.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover,
+.modactionlisting .generic-table tr:hover,
+.modactionlisting .generic-table tr:nth-child(even):hover,
+.wikirevisionlisting .generic-table tr:hover,
+.wikirevisionlisting .generic-table tr:nth-child(even):hover{
+    background-color: rgba(80, 123, 167, 0.2) !important;
+}
+
+.moderator-table tr:nth-child(even),
+.contributor-table tr:nth-child(even),
+.wikirevisionlisting .generic-table tr:nth-child(even),
+.modactionlisting .generic-table tr:nth-child(even) {
+    background: rgba(162, 162, 162, 0.2) !important;
+}
+
+/* 
+------------
+Livedocs css in case someone disabled css on reddit 
+------------
+*/
+
+body[class*="wiki-page-livedocs"] * {
+    font-size: 14px !important;
+}
+
+body[class*="wiki-page-livedocs"] .md.wiki pre {
+    margin-right: 0 !important;
+}
+
+body[class*="wiki-page-livedocs"]  div#header,
+body[class*="wiki-page-livedocs"] div.side,
+body[class*="wiki-page-livedocs"] a[name=content],
+body[class*="wiki-page-livedocs"] .pageactions,
+body[class*="wiki-page-livedocs"] .footer-parent,
+body[class*="wiki-page-livedocs"] #tb-bottombar
+{
+    display: none !important;
+}
+
+body[class*="wiki-page-livedocs"]  .content {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+body[class*="wiki-page-livedocs"] .wiki-page-content,
+body[class*="wiki-page-livedocs"] h1.wikititle {
+    margin: 5px !important;
+}
+
+
+/* 
+------------
+    Unclear cases
+    TODO: Find out if the below css is still needed and put it at the proper place.
+------------
+*/
+
+.debuginfo {
+    height: 40px;
+}
+
+.mod-toolbox .articleFrame {
+    border: solid 1px #A2BAD3;
+    position: relative;
+    width: 70%;
+    margin-left: 60px;
+    resize: both;
+    display: none;
+}
+
+body .choice.dashed {
+    border-top: 1px dashed;
+}
+
+body .thing.approved {
+    background-color: paleGreen;
+}
+
+body .thing.removed {
+    background-color: lightgray;
+}
+
+body .thing.spammed {
+    background-color: Tomato;
+}
+
+body .thing.flaired {
+    background-color: PaleTurquoise;
+}
+
+.pretty-button.inoffensive {
+    background-position: 0px -105px;
+    background-image: url(http://a.thumbs.redditmedia.com/Ec85AWdAyumYZeFVgEaxwSr6Go8NZyCgGmtTVQsQqc8.png);
+    background-repeat: repeat;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.pretty-button.inoffensive.pressed {
+    background-position: 0 -82px!important;
+}
+
+.thing+input[type="checkbox"]:focus {
+    outline: blue solid 1px;
+}
+
+/*
+========================
+
+    RES specific css
+    
+======================== 
+*/
+
+.res #BigEditor {
+    margin-bottom: 25px !important;
+}
+
+/* 
+========================
 
 Night mod "fixes", it is dark alright
+TODO: Redo the below mess in a structured manner AFTER the reddit redesign.
 
---------------------------*/
+======================== 
+*/
 
 .mod-toolbox.res-nightmode #tb-my-subreddits {
     background-color: #6E7A86;
@@ -1726,14 +1682,8 @@ border-color: #808080;
     background-color: #FA8072;
 }
 
-.thing+input[type="checkbox"]:focus {
+.mod-toolbox.res-nightmode .thing+input[type="checkbox"]:focus {
     outline: blue solid 1px;
-}
-
-
-
-.edit-wikidata {
-    background-color: white;
 }
 
 .mod-toolbox.res-nightmode .tb-debug-window {
@@ -1814,308 +1764,4 @@ body.res-nightmode.mod-page a.pretty-button:focus {
 }
 .thing.threaded-modmail .child .thing {
     padding-left: 20px!important;
-}
-
-/* This should probably be somewhere else */
-
-#moderation_tools .tb-moderation-tools-icons {
-    margin: 0 5px 0 1px;
-    vertical-align: bottom;
-}
-
-/* metrics tab/dropdown stuff */
-#tb-metrics-expand-list {
-    display: none;
-    max-height: 65%;
-    position: absolute;
-    width: 171px;
-    padding: 0;
-    overflow: auto;
-    background-color: rgba(226, 238, 250, 1);
-    font-size: 11px;
-    color: #696969;
-    border: 1px solid #B6C9DD;
-    border-bottom: 0;
-    text-align: left;
-    z-index: 501;
-}
-#tb-metrics-expand-list li {
-    padding-top: 3px;
-    padding-right: 10px;
-    padding-bottom: 3px;
-    padding-left: 10px;
-    background: rgb(247, 250, 253);
-    border-bottom: 1px solid rgb(204, 209, 215);
-}
-
-#tb-metrics-expand-list a:hover {
-    text-decoration: underline;
-}
-
-
-/* Comment search */
-#tb-search-suggest {
-    display: none;
-    max-height: 65%;
-    position: absolute;
-    width: 171px;
-    padding: 0;
-    overflow: auto;
-    background-color: rgba(226, 238, 250, 1);
-    font-size: 11px;
-    color: #696969;
-    border: 1px solid #B6C9DD;
-    text-align: left;
-    z-index: 501;
-}
-
-#tb-search-suggest table {
-    width: 100%;
-}
-
-#tb-search-suggest table td {
-    padding-top: 3px;
-    padding-right: 10px;
-    padding-bottom: 3px;
-    padding-left: 10px;
-
-}
-
-#tb-search-suggest tr {
-    background: rgba(247, 250, 253, 1);
-    border-bottom: solid 1px #CCD1D7;
-}
-
-#tb-search-suggest tr:hover {
-    background-color: rgba(174, 212, 250, 0.5);
-}
-
-
-/* notifier temp fix TODO: proper grouping in tbobject */
-
-#tb-Notifier-messageNotifications, #tb-Notifier-modmailNotifications {
-    display: inline-block;
-    width: 250px;
-}
-
-#tb-Notifier-messageUnreadLink, #tb-Notifier-modmailUnreadLink {
-    display: inline-block;
-    width: 450px;
-}
-
-
-/* Feedback window */
-
-#tb-feedback-window {
-    max-width: 400px;
-    position: fixed;
-    z-index: 2147483647;
-    top: 50%;
-    left: 50%;
-    padding: 10px;
-    min-width: 150px;
-    text-align: center;
-    background-color: #CEE3F8;
-    box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
-}
-
-#tb-feedback-window .tb-feedback-text {
-    background-color: #FFF;
-    margin: 0;
-    display: block;
-    padding: 5px;
-    font-size: 12px;
-}
-
-#tb-feedback-window.positive {
-    background: #69d47d;
-}
-
-#tb-feedback-window.negative {
-    background: #ff7f4f;
-}
-
-/* config.js */
-
-.mod-toolbox span.tb-config-intro {
-    max-width: 59em;
-}
-
-.mod-toolbox .tb-window-tabs a {
-    cursor: pointer;
-}
-
-.mod-toolbox .tb-window-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.mod-toolbox .tb-window-header .buttons a {
-    display: inline-block;
-    background-color: #C7D6E6;
-    border-left: 0;
-    height: 36px;
-    line-height: 36px;
-    width: 36px;
-    font-size: small;
-    margin-left: 1px;
-    text-align: center;
-}
-
-.mod-toolbox .tb-page-overlay a.close:hover,
-.mod-toolbox .tb-page-overlay a.tb-help-main:hover {
-    background-color: #9FBAD6;
-}
-
-.mod-toolbox #tb-removal-reasons-list,
-.mod-toolbox #tb-mod-macros-list {
-    border-top: solid 2px gray;
-    margin-top: 5px;
-    width: 99%;
-}
-
-.mod-toolbox #tb-removal-reasons-list td,
-.mod-toolbox #tb-mod-macros-list td {
-    padding: 5px;
-    vertical-align: top;
-}
-.mod-toolbox .removal-reasons-buttons,
-.mod-toolbox .mod-macros-buttons {
-    width: 25px;
-}
-
-.mod-toolbox .removal-reason-edit,
-.mod-toolbox #tb-add-removal-reason-form,
-.mod-toolbox .mod-macro-edit,
-.mod-toolbox #tb-add-mod-macro-form
-{
-    display: none;
-}
-
-.mod-toolbox .edit_removal_reasons tr.removal-reason,
-.mod-toolbox .edit_mod_macros tr.mod-macro {
-    border-bottom: solid 5px #F0F0F0;
-}
-
-.mod-toolbox .edit_removal_reasons input[type="text"],
-.mod-toolbox .edit_mod_macros input[type="text"]{
-    max-width: 600px;
-}
-
-.mod-toolbox .edit_removal_reasons .edit-area,
-.mod-toolbox .edit_mod_macros .edit-area {
-    width: 600px;
-    height: 150px;
-    margin: 2px;
-}
-
-.mod-toolbox .removal_reasons_settings .edit-header,
-.mod-toolbox .removal_reasons_settings .edit-footer {
-    width: 600px;
-    height: 100px;
-    margin: 2px;
-}
-
-.mod-toolbox h3.macro-title,
-.mod-toolbox h3.removal-title {
-    font-size: 12px;
-    border-bottom: dotted 1px #D2D2D2;
-}
-
-/* comment.js */
-
-.mod-toolbox  .comment-nest-info {
-    font-size: 11px;
-    margin-top: -10px;
-    color: #888;
-}
-
-.mod-toolbox  #tb-search-suggest-list td {
-    cursor: pointer;
-}
-
-
-/* Module settings stuff */
-
-.mod-toolbox  .tb-window-tabs a.tb-module-disabled {
-    background-color: #D6D9DD;
-    color: #808080;
-}
-
-.mod-toolbox .tb-window-tab span.tb-module-disabled {
-    font-size: 14px;
-    display: block;
-    padding: 4px;
-    background-color: #F7F7F7;
-    color: #808080;
-    font-weight: bold;
-}
-
-.mod-toolbox .tb-window-content a.tb-help-toggle {
-    font-weight: bold;
-}
-
-/* macro.js */
-
-.macro-popup .tb-popup-content {
-    margin-bottom: 30px;
-}
-
-.macro-popup .tb-popup-footer {
-    position: absolute;
-    bottom: 0;
-}
-
-
-/* Livedocs css in case someone disabled css on reddit */
-
-body[class*="wiki-page-livedocs"] * {
-    font-size: 14px !important;
-}
-
-body[class*="wiki-page-livedocs"] .md.wiki pre {
-    margin-right: 0 !important;
-}
-
-body[class*="wiki-page-livedocs"]  div#header,
-body[class*="wiki-page-livedocs"] div.side,
-body[class*="wiki-page-livedocs"] a[name=content],
-body[class*="wiki-page-livedocs"] .pageactions,
-body[class*="wiki-page-livedocs"] .footer-parent,
-body[class*="wiki-page-livedocs"] #tb-bottombar
-{
-    display: none !important;
-}
-
-body[class*="wiki-page-livedocs"]  .content {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-
-body[class*="wiki-page-livedocs"] .wiki-page-content,
-body[class*="wiki-page-livedocs"] h1.wikititle {
-    margin: 5px !important;
-}
-
-
-/* Random stuff people decided to dump here? Pls... comment stuff */
-
-#tb-config-help {
-    float: right;
-    margin-right: 10px;
-}
-
-.rr-advanced {
-    display: none;
-}
-
-a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
-    height:16px;
-    width:16px;
-    display:inline-block;
-    background: transparent url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAoJJREFUeNqkU01oE1EQnk02iTFQE7QihUKRkKTF1iU9+FdQCoWYgAcPegkIeiiIWiHgwUvpQXs1Ggo99OYlFwUhWAhYhZJWUmhMxJbYYk1LFDcmJraSv911vjQbevPgg9kZ5vu+eW9n3hM0TaP/WSI+gUCADAYDmUwmEgSBUNRoNJ5jaKjNSyuKsqRjjUaDVFWlWCy2X0BfDJ5nd5r9KxZI0Wh0BuRgMHibcznGrrD/wD6hawwHxBdcLte12dnZGYfDcYOFhkJBpnL5F3Y0IAcMHHB1nYAj+Xw+xHeZ8FSWf1BPTw+trqY2JElyAkilUhsej8dZKhWpu/s4jY+P3+P0s/n5+f0TVCoVqlarL0Oh0KTZbCZZlmlgoN+pqgrBEO/u/iZg4IALTecX+BQX6/X69Xw+v8e7bYqiSMvLy+t+f2AGhhg5YOCAC43+7+T1eh+srCS1hYU32tJSQkun09rg4NA0TwLTIMTIAQMHXGigbU2hVqsZq9UaNZsKKYrKoxRZKDYwKizEyAEDB1xoOk3kzo6xP4PExMT9WyMjl/q2t7+npqYevkBucvLx1d7eE9Li4tutcPjJXEsoCO+z2WxcP0GcC3zmDt8ZHj7bVyyWyO32SLHYOwl4ufyTdna+ELCuriN2nlSEC2x1mshdRZGbkchcSJaLfCOtFI+//prLbRIMMXLAwAEXmk4T+ZLALo+Ojj1PJtc1t7s/bLfbHyUSGQ2GGDlg4IALTesd6Y8JY7JarX6bzTZtsVhOwq+tfdMymZx2MAcOuPrmrSYKaDHRUbZjbIcA8sM6xQ9sADFP4xNf54/t21tnk9kKrG3qBdCLw20T//GCFbY9tj+sVf8KMAACOoVxz9PPRwAAAABJRU5ErkJggg==") 0px 0px no-repeat;
-    margin-left:3px;
-    content: "";
 }

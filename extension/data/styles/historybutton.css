@@ -1,3 +1,12 @@
+.rts-report,.rts-report-clicked, .markdown-report, .comment-report, .account-report {
+    font-weight: bold;
+    font-size: x-small;
+    padding: 0 5px 0 5px;
+    /*border-left: solid 1px #369;*/
+    float: right;
+    margin-left: 3px;
+}
+
 td.url-td {
     background-color: #fff;
 }

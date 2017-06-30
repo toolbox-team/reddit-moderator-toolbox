@@ -120,8 +120,8 @@ function initwrapper() {
 
 
     // Public variables
-    TBUtils.toolboxVersion = '3.6.5' + ((betaRelease) ? ' (beta)' : '');
-    TBUtils.shortVersion = 365; //don't forget to change this one!  This is used for the 'new version' notification.
+    TBUtils.toolboxVersion = '3.6.6' + ((betaRelease) ? ' (beta)' : '');
+    TBUtils.shortVersion = 366; //don't forget to change this one!  This is used for the 'new version' notification.
     TBUtils.releaseName = 'Communicating Cat';
     TBUtils.configSchema = 1;
     TBUtils.notesSchema = 6;

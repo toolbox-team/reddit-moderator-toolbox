@@ -1,0 +1,13 @@
+# Build output
+/build/*
+
+#node_modules
+/node_modules/*
+
+# External libraries
+/extension/libs/*
+
+# IDE related 
+/.idea/*
+/.settings/*
+/.vscode/*

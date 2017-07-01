@@ -1,15 +1,15 @@
 function support() {
-var self = new TB.Module('Support Module');
-self.shortname = 'support';
+    var self = new TB.Module('Support Module');
+    self.shortname = 'support';
 
-self.settings['enabled']['default'] = true;
+    self.settings['enabled']['default'] = true;
 
-// How about you don't disable support?  No other module should ever do this. Well except for modbar.
-self.settings['enabled']['hidden'] = true; // Don't disable it, either!
+    // How about you don't disable support?  No other module should ever do this. Well except for modbar.
+    self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
-self.init = function() {
-    let $body = $('body');
-    const debugTemplate = `
+    self.init = function() {
+        let $body = $('body');
+        const debugTemplate = `
   
 ---   
 ***Toolbox debug information***
@@ -28,67 +28,67 @@ Info| &nbsp;
 `;
 
 
-    const debugInfo = TBUtils.debugInformation();
-    const submissionAddition = TBUtils.template(debugTemplate, {
-        'toolboxVersion': debugInfo.toolboxVersion,
-        'browserName':  debugInfo.browser ,
-        'browserVersion': debugInfo.browserVersion,
-        'platformInfo': debugInfo.platformInformation,
-        'betaMode': debugInfo.betaMode,
-        'debugMode': debugInfo.debugMode,
-        'compactMode': debugInfo.compactMode,
-        'advancedSettings': debugInfo.advancedSettings,
-        'cookiesEnabled': debugInfo.cookiesEnabled
-    });
+        const debugInfo = TBUtils.debugInformation();
+        const submissionAddition = TBUtils.template(debugTemplate, {
+            'toolboxVersion': debugInfo.toolboxVersion,
+            'browserName':  debugInfo.browser ,
+            'browserVersion': debugInfo.browserVersion,
+            'platformInfo': debugInfo.platformInformation,
+            'betaMode': debugInfo.betaMode,
+            'debugMode': debugInfo.debugMode,
+            'compactMode': debugInfo.compactMode,
+            'advancedSettings': debugInfo.advancedSettings,
+            'cookiesEnabled': debugInfo.cookiesEnabled
+        });
 
-    // If we are on the submit page we add debug information when a user makes a post.
-    if(location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
+        // If we are on the submit page we add debug information when a user makes a post.
+        if(location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
 
-        let $submissionTextArea = $('.usertext-edit.md-container textarea');
+            let $submissionTextArea = $('.usertext-edit.md-container textarea');
 
-        $body.on('click', '.submit.content .btn[name="submit"]', function(event) {
+            $body.on('click', '.submit.content .btn[name="submit"]', function(event) {
             // First we stop the action on the button for a bit.
             //event.preventDefault();
-            let submissionText = $submissionTextArea.val();
+                let submissionText = $submissionTextArea.val();
 
 
 
-            $submissionTextArea.val(submissionText + submissionAddition);
-        });
-    }
-
-    // If we are in the comment section we offer a button to insert the info.
-    if(location.pathname.match(/\/r\/toolbox\/comments\/?/) || location.pathname.match(/\/r\/tb_dev\/comments\/?/)) {
-        let $usertextButtons = $body.find('.usertext-edit .usertext-buttons');
-
-        let $saveButton = $usertextButtons.find('.save');
-        let $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
-
-        // This needs to be a div otherwise reddit thinks a save button is clicked.
-        let $debugInsertButton = $('<div>').addClass('tb-action-button tb-insert-debug').text('Insert debug info');
-        if ($tbUsertextButtons.length) {
-            $tbUsertextButtons.before($debugInsertButton);
-        } else {
-            $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($debugInsertButton));
+                $submissionTextArea.val(submissionText + submissionAddition);
+            });
         }
 
-        $('body').on('click', 'div.tb-insert-debug', function (e) {
-            self.log('Insert debug clicked!');
-            let $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
-            let currentComment = $commentTextArea.val();
+        // If we are in the comment section we offer a button to insert the info.
+        if(location.pathname.match(/\/r\/toolbox\/comments\/?/) || location.pathname.match(/\/r\/tb_dev\/comments\/?/)) {
+            let $usertextButtons = $body.find('.usertext-edit .usertext-buttons');
 
-            $commentTextArea.val(currentComment + submissionAddition);
+            let $saveButton = $usertextButtons.find('.save');
+            let $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
 
-        });
+            // This needs to be a div otherwise reddit thinks a save button is clicked.
+            let $debugInsertButton = $('<div>').addClass('tb-action-button tb-insert-debug').text('Insert debug info');
+            if ($tbUsertextButtons.length) {
+                $tbUsertextButtons.before($debugInsertButton);
+            } else {
+                $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($debugInsertButton));
+            }
 
-    }
-};
+            $('body').on('click', 'div.tb-insert-debug', function (e) {
+                self.log('Insert debug clicked!');
+                let $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
+                let currentComment = $commentTextArea.val();
 
-TB.register_module(self);
+                $commentTextArea.val(currentComment + submissionAddition);
+
+            });
+
+        }
+    };
+
+    TB.register_module(self);
 }
 
 (function () {
-    window.addEventListener("TBModuleLoaded", function () {
+    window.addEventListener('TBModuleLoaded', function () {
         support();
     });
 })();

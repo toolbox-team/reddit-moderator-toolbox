@@ -4,7 +4,7 @@
     //console.log('reddit api');
 
     //Private variables
-    var modhash = $("form.logout input[name=uh]").val(),
+    var modhash = $('form.logout input[name=uh]').val(),
         callStack = {};
 
     // concept stack object.
@@ -66,7 +66,7 @@
     // Reddit API stuff
     redditapi.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
         if (reason) {
-            reason = '"' + reason + '" via toolbox';
+            reason = `"${  reason  }" via toolbox`;
         } else {
             reason = 'updated via toolbox';
         }
@@ -77,7 +77,7 @@
             data = JSON.stringify(data);
         }
 
-        $.post('/r/' + subreddit + '/api/wiki/edit', {
+        $.post(`/r/${  subreddit  }/api/wiki/edit`, {
             content: data,
             page: page,
             // reason: 'updated via toolbox config',
@@ -105,14 +105,14 @@
                         })
                         .error(function () {
                             alert('error sending update PM to automoderator');
-                            window.location = '/message/compose/?to=AutoModerator&subject=' + subreddit + '&message=update';
+                            window.location = `/message/compose/?to=AutoModerator&subject=${  subreddit  }&message=update`;
                         });
                 }
 
                 setTimeout(function () {
 
                     // Set page access to 'mod only'.
-                    $.post('/r/' + subreddit + '/wiki/settings/', {
+                    $.post(`/r/${  subreddit  }/wiki/settings/`, {
                         page: page,
                         listed: true, //hrm, may need to make this a config setting.
                         permlevel: 2,
@@ -122,7 +122,7 @@
                         // Super extra double-secret secure, just to be safe.
                         .error(function (err) {
                             alert('error setting wiki page to mod only access');
-                            window.location = '/r/' + subreddit + '/wiki/settings/' + page;
+                            window.location = `/r/${  subreddit  }/wiki/settings/${  page}`;
                         });
 
                 }, 500);
@@ -133,10 +133,10 @@
     // reddit HTML encodes all of their JSON responses, we need to HTMLdecode
     // them before parsing.
     redditapi.unescapeJSON = function (val) {
-        if (typeof(val) == "string") {
+        if (typeof(val) == 'string') {
             val = val.replace(/&quot;/g, '"')
-                .replace(/&gt;/g, ">").replace(/&lt;/g, "<")
-                .replace(/&amp;/g, "&");
+                .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+                .replace(/&amp;/g, '&');
         }
         return val;
     };
@@ -144,8 +144,8 @@
 
     redditapi.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-        $.ajax('/r/' + subreddit + '/wiki/' + page + '.json', {
-            dataType: "json",
+        $.ajax(`/r/${  subreddit  }/wiki/${  page  }.json`, {
+            dataType: 'json',
             dataFilter: function (data, type) {
                 //TODO: right now a lot of functions implicitly rely on reddit
                 //returning escaped JSON to operate safely. add this back in once
@@ -202,18 +202,18 @@
             rem: remeber
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
 
 
     redditapi.getBanState = function (subreddit, user, callback) {
-        $.get(TBUtils.baseDomain + "/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
+        $.get(`${TBUtils.baseDomain  }/r/${  subreddit  }/about/banned/.json`, {user: user}, function (data) {
             var banned = data.data.children;
 
             // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -236,11 +236,11 @@
             uh: modhash
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -255,11 +255,11 @@
             uh: modhash
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -276,11 +276,11 @@
             duration: banDuration
         })
             .success(function (response) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true, response);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -294,11 +294,11 @@
             r: subreddit
         })
             .success(function (response) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true, response);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -309,11 +309,11 @@
             uh: modhash
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -325,11 +325,11 @@
             uh: modhash
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -341,11 +341,11 @@
             spam: spam
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -358,17 +358,17 @@
             api_type: 'json'
         })
             .success(function (response) {
-                if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    if (typeof callback !== "undefined")
+                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (typeof callback !== 'undefined')
                         callback(false, response.json.errors);
                     return;
                 }
 
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true, response);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -384,17 +384,17 @@
             api_type: 'json'
         })
             .success(function (response) {
-                if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    if (typeof callback !== "undefined")
+                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (typeof callback !== 'undefined')
                         callback(false, response.json.errors);
                     return;
                 }
 
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true, response);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -409,17 +409,17 @@
             api_type: 'json'
         })
             .success(function (response) {
-                if (response.json.hasOwnProperty("errors") && response.json.errors.length > 0) {
-                    if (typeof callback !== "undefined")
+                if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (typeof callback !== 'undefined')
                         callback(false, response.json.errors);
                     return;
                 }
 
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true, response);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error);
             });
     };
@@ -432,11 +432,11 @@
             text: message
         })
             .success(function () {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(true);
             })
             .error(function (error) {
-                if (typeof callback !== "undefined")
+                if (typeof callback !== 'undefined')
                     callback(false, error.responseText);
             });
     };

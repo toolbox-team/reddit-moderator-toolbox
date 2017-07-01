@@ -3,10 +3,10 @@
  * Copyright jQuery Foundation and other contributors
  */
 (function( jQuery, window ) {
-    "use strict";
+    'use strict';
 
 
-    jQuery.migrateVersion = "3.0.0";
+    jQuery.migrateVersion = '3.0.0';
 
 
     ( function() {
@@ -24,30 +24,30 @@
 
         // Need jQuery 3.0.0+ and no older Migrate loaded
         if ( !jQuery || rbadVersions.test( jQuery.fn.jquery ) ) {
-            log( "JQMIGRATE: jQuery 3.0.0+ REQUIRED" );
+            log( 'JQMIGRATE: jQuery 3.0.0+ REQUIRED' );
         }
         if ( jQuery.migrateWarnings ) {
-            log( "JQMIGRATE: Migrate plugin loaded multiple times" );
+            log( 'JQMIGRATE: Migrate plugin loaded multiple times' );
         }
 
         // Show a message on the console so devs know we're active
-        log( "JQMIGRATE: Migrate is installed" +
-            ( jQuery.migrateMute ? "" : " with logging active" ) +
-            ", version " + jQuery.migrateVersion );
+        log( `JQMIGRATE: Migrate is installed${ 
+            jQuery.migrateMute ? '' : ' with logging active' 
+        }, version ${  jQuery.migrateVersion}` );
 
     } )();
 
     var warnedAbout = {};
 
-// List of warnings already given; public read only
+    // List of warnings already given; public read only
     jQuery.migrateWarnings = [];
 
-// Set to false to disable traces that appear with warnings
+    // Set to false to disable traces that appear with warnings
     if ( jQuery.migrateTrace === undefined ) {
         jQuery.migrateTrace = true;
     }
 
-// Forget any warnings we've already given; public
+    // Forget any warnings we've already given; public
     jQuery.migrateReset = function() {
         warnedAbout = {};
         jQuery.migrateWarnings.length = 0;
@@ -59,7 +59,7 @@
             warnedAbout[ msg ] = true;
             jQuery.migrateWarnings.push( msg );
             if ( console && console.warn && !jQuery.migrateMute ) {
-                console.warn( "JQMIGRATE: " + msg );
+                console.warn( `JQMIGRATE: ${  msg}` );
                 if ( jQuery.migrateTrace && console.trace ) {
                     console.trace();
                 }
@@ -78,10 +78,10 @@
         } );
     }
 
-    if ( document.compatMode === "BackCompat" ) {
+    if ( document.compatMode === 'BackCompat' ) {
 
         // JQuery has never supported or tested Quirks Mode
-        migrateWarn( "jQuery is not compatible with Quirks Mode" );
+        migrateWarn( 'jQuery is not compatible with Quirks Mode' );
     }
 
 
@@ -94,7 +94,7 @@
     jQuery.fn.init = function( arg1 ) {
         var args = Array.prototype.slice.call( arguments );
 
-        if ( typeof arg1 === "string" && arg1 === "#" ) {
+        if ( typeof arg1 === 'string' && arg1 === '#' ) {
 
             // JQuery( "#" ) is a bogus ID selector, but it returned an empty set before jQuery 3.0
             migrateWarn( "jQuery( '#' ) is not a valid selector" );
@@ -110,7 +110,7 @@
 
         // Support: PhantomJS 1.x
         // String#match fails to match when used with a //g RegExp, only on some strings
-        if ( typeof selector === "string" && rattrHashTest.test( selector ) ) {
+        if ( typeof selector === 'string' && rattrHashTest.test( selector ) ) {
 
             // The nonstandard and undocumented unquoted-hash was removed in jQuery 1.12.0
             // First see if qS thinks it's a valid selector, if so avoid a false positive
@@ -120,17 +120,17 @@
 
                 // Didn't *look* valid to qSA, warn and try quoting what we think is the value
                 selector = selector.replace( rattrHashGlob, function( _, attr, op, value ) {
-                    return "[" + attr + op + "\"" + value + "\"]";
+                    return `[${  attr  }${op  }"${  value  }"]`;
                 } );
 
                 // If the regexp *may* have created an invalid selector, don't update it
                 // Note that there may be false alarms if selector uses jQuery extensions
                 try {
                     document.querySelector( selector );
-                    migrateWarn( "Attribute selector with '#' must be quoted: " + args[ 0 ] );
+                    migrateWarn( `Attribute selector with '#' must be quoted: ${  args[ 0 ]}` );
                     args[ 0 ] = selector;
                 } catch ( err2 ) {
-                    migrateWarn( "Attribute selector with '#' was not fixed: " + args[ 0 ] );
+                    migrateWarn( `Attribute selector with '#' was not fixed: ${  args[ 0 ]}` );
                 }
             }
         }
@@ -138,7 +138,7 @@
         return oldFind.apply( this, args );
     };
 
-// Copy properties attached to original jQuery.find method (e.g. .attr, .isXML)
+    // Copy properties attached to original jQuery.find method (e.g. .attr, .isXML)
     var findProp;
     for ( findProp in oldFind ) {
         if ( Object.prototype.hasOwnProperty.call( oldFind, findProp ) ) {
@@ -146,14 +146,14 @@
         }
     }
 
-// The number of elements contained in the matched element set
+    // The number of elements contained in the matched element set
     jQuery.fn.size = function() {
-        migrateWarn( "jQuery.fn.size() is deprecated; use the .length property" );
+        migrateWarn( 'jQuery.fn.size() is deprecated; use the .length property' );
         return this.length;
     };
 
     jQuery.parseJSON = function() {
-        migrateWarn( "jQuery.parseJSON is deprecated; use JSON.parse" );
+        migrateWarn( 'jQuery.parseJSON is deprecated; use JSON.parse' );
         return JSON.parse.apply( null, arguments );
     };
 
@@ -169,20 +169,20 @@
             oldValue = isNumeric2( val );
 
         if ( newValue !== oldValue ) {
-            migrateWarn( "jQuery.isNumeric() should not be called on constructed objects" );
+            migrateWarn( 'jQuery.isNumeric() should not be called on constructed objects' );
         }
 
         return oldValue;
     };
 
-    migrateWarnProp( jQuery, "unique", jQuery.uniqueSort,
-        "jQuery.unique is deprecated, use jQuery.uniqueSort" );
+    migrateWarnProp( jQuery, 'unique', jQuery.uniqueSort,
+        'jQuery.unique is deprecated, use jQuery.uniqueSort' );
 
-// Now jQuery.expr.pseudos is the standard incantation
-    migrateWarnProp( jQuery.expr, "filters", jQuery.expr.pseudos,
-        "jQuery.expr.filters is now jQuery.expr.pseudos" );
-    migrateWarnProp( jQuery.expr, ":", jQuery.expr.pseudos,
-        "jQuery.expr[\":\"] is now jQuery.expr.pseudos" );
+    // Now jQuery.expr.pseudos is the standard incantation
+    migrateWarnProp( jQuery.expr, 'filters', jQuery.expr.pseudos,
+        'jQuery.expr.filters is now jQuery.expr.pseudos' );
+    migrateWarnProp( jQuery.expr, ':', jQuery.expr.pseudos,
+        'jQuery.expr[":"] is now jQuery.expr.pseudos' );
 
 
     var oldAjax = jQuery.ajax;
@@ -192,12 +192,12 @@
 
         // Be sure we got a jQXHR (e.g., not sync)
         if ( jQXHR.promise ) {
-            migrateWarnProp( jQXHR, "success", jQXHR.done,
-                "jQXHR.success is deprecated and removed" );
-            migrateWarnProp( jQXHR, "error", jQXHR.fail,
-                "jQXHR.error is deprecated and removed" );
-            migrateWarnProp( jQXHR, "complete", jQXHR.always,
-                "jQXHR.complete is deprecated and removed" );
+            migrateWarnProp( jQXHR, 'success', jQXHR.done,
+                'jQXHR.success is deprecated and removed' );
+            migrateWarnProp( jQXHR, 'error', jQXHR.fail,
+                'jQXHR.error is deprecated and removed' );
+            migrateWarnProp( jQXHR, 'complete', jQXHR.always,
+                'jQXHR.complete is deprecated and removed' );
         }
 
         return jQXHR;
@@ -213,7 +213,7 @@
 
         jQuery.each( name.match( rmatchNonSpace ), function( i, attr ) {
             if ( jQuery.expr.match.bool.test( attr ) ) {
-                migrateWarn( "jQuery.fn.removeAttr no longer sets boolean properties: " + attr );
+                migrateWarn( `jQuery.fn.removeAttr no longer sets boolean properties: ${  attr}` );
                 self.prop( attr, false );
             }
         } );
@@ -224,18 +224,18 @@
     jQuery.fn.toggleClass = function( state ) {
 
         // Only deprecating no-args or single boolean arg
-        if ( state !== undefined && typeof state !== "boolean" ) {
+        if ( state !== undefined && typeof state !== 'boolean' ) {
             return oldToggleClass.apply( this, arguments );
         }
 
-        migrateWarn( "jQuery.fn.toggleClass( boolean ) is deprecated" );
+        migrateWarn( 'jQuery.fn.toggleClass( boolean ) is deprecated' );
 
         // Toggle entire class name of each element
         return this.each( function() {
-            var className = this.getAttribute && this.getAttribute( "class" ) || "";
+            var className = this.getAttribute && this.getAttribute( 'class' ) || '';
 
             if ( className ) {
-                jQuery.data( this, "__className__", className );
+                jQuery.data( this, '__className__', className );
             }
 
             // If the element has a class name or if we're passed `false`,
@@ -243,10 +243,10 @@
             // Otherwise bring back whatever was previously saved (if anything),
             // falling back to the empty string if nothing was stored.
             if ( this.setAttribute ) {
-                this.setAttribute( "class",
+                this.setAttribute( 'class',
                     className || state === false ?
-                        "" :
-                    jQuery.data( this, "__className__" ) || ""
+                        '' :
+                        jQuery.data( this, '__className__' ) || ''
                 );
             }
         } );
@@ -255,9 +255,9 @@
 
     var internalSwapCall = false;
 
-// If this version of jQuery has .swap(), don't false-alarm on internal uses
+    // If this version of jQuery has .swap(), don't false-alarm on internal uses
     if ( jQuery.swap ) {
-        jQuery.each( [ "height", "width", "reliableMarginRight" ], function( _, name ) {
+        jQuery.each( [ 'height', 'width', 'reliableMarginRight' ], function( _, name ) {
             var oldHook = jQuery.cssHooks[ name ] && jQuery.cssHooks[ name ].get;
 
             if ( oldHook ) {
@@ -278,7 +278,7 @@
             old = {};
 
         if ( !internalSwapCall ) {
-            migrateWarn( "jQuery.swap() is undocumented and deprecated" );
+            migrateWarn( 'jQuery.swap() is undocumented and deprecated' );
         }
 
         // Remember the old values, and insert the new ones
@@ -306,7 +306,7 @@
         if ( name && name !== jQuery.camelCase( name ) ) {
             curData = jQuery.hasData( elem ) && oldData.call( this, elem );
             if ( curData && name in curData ) {
-                migrateWarn( "jQuery.data() always sets/gets camelCased names: " + name );
+                migrateWarn( `jQuery.data() always sets/gets camelCased names: ${  name}` );
                 if ( arguments.length > 2 ) {
                     curData[ name ] = value;
                 }
@@ -322,9 +322,9 @@
     jQuery.Tween.prototype.run = function( percent ) {
         if ( jQuery.easing[ this.easing ].length > 1 ) {
             migrateWarn(
-                "easing function " +
-                "\"jQuery.easing." + this.easing.toString() +
-                "\" should use only first argument"
+                `${'easing function ' +
+                '"jQuery.easing.'}${  this.easing.toString() 
+                }" should use only first argument`
             );
 
             jQuery.easing[ this.easing ] = jQuery.easing[ this.easing ].bind(
@@ -349,7 +349,7 @@
             props = jQuery.event.props;
 
         if ( props.length ) {
-            migrateWarn( "jQuery.event.props are deprecated and removed: " + props.join() );
+            migrateWarn( `jQuery.event.props are deprecated and removed: ${  props.join()}` );
             while ( props.length ) {
                 jQuery.event.addProp( props.pop() );
             }
@@ -357,7 +357,7 @@
 
         if ( fixHook && !fixHook._migrated_ ) {
             fixHook._migrated_ = true;
-            migrateWarn( "jQuery.event.fixHooks are deprecated and removed: " + type );
+            migrateWarn( `jQuery.event.fixHooks are deprecated and removed: ${  type}` );
             if ( ( props = fixHook.props ) && props.length ) {
                 while ( props.length ) {
                     jQuery.event.addProp( props.pop() );
@@ -370,7 +370,7 @@
         return fixHook && fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
     };
 
-    jQuery.each( [ "load", "unload", "error" ], function( _, name ) {
+    jQuery.each( [ 'load', 'unload', 'error' ], function( _, name ) {
 
         jQuery.fn[ name ] = function() {
             var args = Array.prototype.slice.call( arguments, 0 );
@@ -379,11 +379,11 @@
             // technically this could also be the "Anything" arg of the event .load()
             // which just goes to show why this dumb signature has been deprecated!
             // jQuery custom builds that exclude the Ajax module justifiably die here.
-            if ( name === "load" && typeof args[ 0 ] === "string" ) {
+            if ( name === 'load' && typeof args[ 0 ] === 'string' ) {
                 return oldLoad.apply( this, args );
             }
 
-            migrateWarn( "jQuery.fn." + name + "() is deprecated" );
+            migrateWarn( `jQuery.fn.${  name  }() is deprecated` );
 
             args.splice( 0, 0, name );
             if ( arguments.length ) {
@@ -400,9 +400,9 @@
 
     } );
 
-// Trigger "ready" event only once, on document ready
+    // Trigger "ready" event only once, on document ready
     jQuery( function() {
-        jQuery( document ).triggerHandler( "ready" );
+        jQuery( document ).triggerHandler( 'ready' );
     } );
 
     jQuery.event.special.ready = {
@@ -416,22 +416,22 @@
     jQuery.fn.extend( {
 
         bind: function( types, data, fn ) {
-            migrateWarn( "jQuery.fn.bind() is deprecated" );
+            migrateWarn( 'jQuery.fn.bind() is deprecated' );
             return this.on( types, null, data, fn );
         },
         unbind: function( types, fn ) {
-            migrateWarn( "jQuery.fn.unbind() is deprecated" );
+            migrateWarn( 'jQuery.fn.unbind() is deprecated' );
             return this.off( types, null, fn );
         },
         delegate: function( selector, types, data, fn ) {
-            migrateWarn( "jQuery.fn.delegate() is deprecated" );
+            migrateWarn( 'jQuery.fn.delegate() is deprecated' );
             return this.on( types, selector, data, fn );
         },
         undelegate: function( selector, types, fn ) {
-            migrateWarn( "jQuery.fn.undelegate() is deprecated" );
+            migrateWarn( 'jQuery.fn.undelegate() is deprecated' );
             return arguments.length === 1 ?
-                this.off( selector, "**" ) :
-                this.off( types, selector || "**", fn );
+                this.off( selector, '**' ) :
+                this.off( types, selector || '**', fn );
         }
     } );
 
@@ -444,13 +444,13 @@
             origin = { top: 0, left: 0 };
 
         if ( !elem || !elem.nodeType ) {
-            migrateWarn( "jQuery.fn.offset() requires a valid DOM element" );
+            migrateWarn( 'jQuery.fn.offset() requires a valid DOM element' );
             return origin;
         }
 
         docElem = ( elem.ownerDocument || document ).documentElement;
         if ( !jQuery.contains( docElem, elem ) ) {
-            migrateWarn( "jQuery.fn.offset() requires an element connected to a document" );
+            migrateWarn( 'jQuery.fn.offset() requires an element connected to a document' );
             return origin;
         }
 
@@ -465,7 +465,7 @@
 
         if ( traditional === undefined && ajaxTraditional ) {
 
-            migrateWarn( "jQuery.param() no longer uses jQuery.ajaxSettings.traditional" );
+            migrateWarn( 'jQuery.param() no longer uses jQuery.ajaxSettings.traditional' );
             traditional = ajaxTraditional;
         }
 
@@ -475,7 +475,7 @@
     var oldSelf = jQuery.fn.andSelf || jQuery.fn.addBack;
 
     jQuery.fn.andSelf = function() {
-        migrateWarn( "jQuery.fn.andSelf() replaced by jQuery.fn.addBack()" );
+        migrateWarn( 'jQuery.fn.andSelf() replaced by jQuery.fn.addBack()' );
         return oldSelf.apply( this, arguments );
     };
 
@@ -484,12 +484,12 @@
         tuples = [
 
             // Action, add listener, callbacks, .then handlers, final state
-            [ "resolve", "done", jQuery.Callbacks( "once memory" ),
-                jQuery.Callbacks( "once memory" ), "resolved" ],
-            [ "reject", "fail", jQuery.Callbacks( "once memory" ),
-                jQuery.Callbacks( "once memory" ), "rejected" ],
-            [ "notify", "progress", jQuery.Callbacks( "memory" ),
-                jQuery.Callbacks( "memory" ) ]
+            [ 'resolve', 'done', jQuery.Callbacks( 'once memory' ),
+                jQuery.Callbacks( 'once memory' ), 'resolved' ],
+            [ 'reject', 'fail', jQuery.Callbacks( 'once memory' ),
+                jQuery.Callbacks( 'once memory' ), 'rejected' ],
+            [ 'notify', 'progress', jQuery.Callbacks( 'memory' ),
+                jQuery.Callbacks( 'memory' ) ]
         ];
 
     jQuery.Deferred = function( func ) {
@@ -499,7 +499,7 @@
         deferred.pipe = promise.pipe = function( /* fnDone, fnFail, fnProgress */ ) {
             var fns = arguments;
 
-            migrateWarn( "deferred.pipe() is deprecated" );
+            migrateWarn( 'deferred.pipe() is deprecated' );
 
             return jQuery.Deferred( function( newDefer ) {
                 jQuery.each( tuples, function( i, tuple ) {
@@ -516,7 +516,7 @@
                                 .fail( newDefer.reject )
                                 .progress( newDefer.notify );
                         } else {
-                            newDefer[ tuple[ 0 ] + "With" ](
+                            newDefer[ `${tuple[ 0 ]  }With` ](
                                 this === promise ? newDefer.promise() : this,
                                 fn ? [ returned ] : arguments
                             );

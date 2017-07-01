@@ -2,7 +2,7 @@ function newmodmailpro() {
     var self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
 
-////Default settings
+    ////Default settings
     self.settings['enabled']['default'] = false;
     self.config['betamode'] = false;
 
@@ -254,32 +254,32 @@ function newmodmailpro() {
 
         // let's replace urls.
         switch(modmailLink) {
-            case 'all_modmail':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'all');
+        case 'all_modmail':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }all`);
 
-                break;
-            case 'new':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'new');
+            break;
+        case 'new':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }new`);
 
-                break;
-            case 'in_progress':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'inprogress');
+            break;
+        case 'in_progress':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }inprogress`);
 
-                break;
-            case 'archived':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'archived');
+            break;
+        case 'archived':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }archived`);
 
-                break;
-            case 'highlighted':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'highlighted');
+            break;
+        case 'highlighted':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }highlighted`);
 
-                break;
-            case 'mod_discussions':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'mod');
+            break;
+        case 'mod_discussions':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }mod`);
 
-                break;
-            case 'notifications':
-                $newModmailLinkElement.attr('href', newModmailBaseUrl + 'notifications');
+            break;
+        case 'notifications':
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }notifications`);
 
         }
 
@@ -289,7 +289,7 @@ function newmodmailpro() {
 }
 
 (function () {
-    window.addEventListener("TBModuleLoaded", function () {
+    window.addEventListener('TBModuleLoaded', function () {
         newmodmailpro();
     });
 })();

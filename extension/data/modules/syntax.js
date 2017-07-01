@@ -19,7 +19,7 @@ function syntax() {
 
     self.settings['enabled']['default'] = true; // on by default
 
-// we reference this from tbobject for settings generation
+    // we reference this from tbobject for settings generation
     self.themeSelect = '\
 <select id="theme_selector">\
     <option value="3024-day">3024-day</option>\
@@ -78,16 +78,16 @@ function syntax() {
             editor, session, textarea;
             
             // This makes sure codemirror behaves and uses spaces instead of tabs. 
-            function betterTab(cm) {
-              if (cm.somethingSelected()) {
-                cm.indentSelection("add");
-              } else {
-                cm.replaceSelection(cm.getOption("indentWithTabs")? "\t":
-                  Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
-              }
+        function betterTab(cm) {
+            if (cm.somethingSelected()) {
+                cm.indentSelection('add');
+            } else {
+                cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
+                    Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
             }
+        }
 
-            var keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
+        var keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
                                               <b>Keyboard shortcuts</b>
                                                   <ul>
                                                     <li><i>F11:</i> Fullscreen</li>
@@ -124,17 +124,17 @@ function syntax() {
                     theme: selectedTheme,
                     indentUnit: 4,
                     extraKeys: {
-                        "Ctrl-Space": 'autocomplete',
-                        "Ctrl-Alt-F": "findPersistent",
-                        "F11": function(cm) {
-                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        'Ctrl-Space': 'autocomplete',
+                        'Ctrl-Alt-F': 'findPersistent',
+                        'F11': function(cm) {
+                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
-                        "Esc": function(cm) {
-                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        'Esc': function(cm) {
+                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
                         },
-                        "Tab": betterTab, 
-                        "Shift-Tab": function (cm) {
-                            cm.indentSelection("subtract");
+                        'Tab': betterTab, 
+                        'Shift-Tab': function (cm) {
+                            cm.indentSelection('subtract');
                         }
                     },
                     lineWrapping: enableWordWrap
@@ -168,7 +168,7 @@ function syntax() {
             $body.on('change keydown', '#theme_selector', function () {
                 var thingy = $(this);
                 setTimeout(function () {
-                    stylesheetEditor.setOption("theme", thingy.val());
+                    stylesheetEditor.setOption('theme', thingy.val());
                 }, 0);
             });
         }
@@ -181,10 +181,10 @@ function syntax() {
             var defaultMode = 'default';
 
             if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)) {
-                defaultMode = "text/x-yaml";
+                defaultMode = 'text/x-yaml';
             }
             if (location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
-                defaultMode = "application/json";
+                defaultMode = 'application/json';
             }
             // Class added to apply some specific css.
             $body.addClass('mod-syntax');
@@ -208,16 +208,16 @@ function syntax() {
                     theme: selectedTheme,
                     indentUnit: 4,
                     extraKeys: {
-                        "Ctrl-Alt-F": "findPersistent",
-                        "F11": function(cm) {
-                            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+                        'Ctrl-Alt-F': 'findPersistent',
+                        'F11': function(cm) {
+                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
-                        "Esc": function(cm) {
-                            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+                        'Esc': function(cm) {
+                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
                         },
-                        "Tab": betterTab, 
-                        "Shift-Tab": function (cm) {
-                            cm.indentSelection("subtract");
+                        'Tab': betterTab, 
+                        'Shift-Tab': function (cm) {
+                            cm.indentSelection('subtract');
                         }
                     },
                     lineWrapping: enableWordWrap
@@ -240,7 +240,7 @@ function syntax() {
             $body.on('change keydown', '#theme_selector', function () {
                 var thingy = $(this);
                 setTimeout(function () {
-                    miscEditor.setOption("theme", thingy.val());
+                    miscEditor.setOption('theme', thingy.val());
                 }, 0);
             });
 
@@ -251,7 +251,7 @@ function syntax() {
 }
 
 (function() {
-    window.addEventListener("TBModuleLoaded", function () {
+    window.addEventListener('TBModuleLoaded', function () {
         syntax();
     });
 })();

@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(
         console.log(request);
 
         // Request to reload the extension. Let's do so.
-        if( request.action === "tb-reload" )
+        if( request.action === 'tb-reload' )
         {
             console.log('reloading');
             chrome.runtime.reload();
@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener(
             return true;
 
         }
-});
+    });
 
 
 

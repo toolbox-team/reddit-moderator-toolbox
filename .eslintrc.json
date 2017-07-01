@@ -8,7 +8,9 @@
         "TB": true,
         "TBUtils": true,
         "TBui": true,
-        "CodeMirror": true 
+        "CodeMirror": true,
+        "TBStorage": true,
+        "chrome": true
     },
     "extends": "eslint:recommended",
     "rules": {

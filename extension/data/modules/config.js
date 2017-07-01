@@ -1229,8 +1229,8 @@ function tbconfig() {
                 var upReasonKey = $row.attr('data-reason');
                 var downReasonKey = $prev.attr('data-reason');
 
-                // Move them in the array.            
-                sortReasons.move(parseInt(upReasonKey), parseInt(downReasonKey));
+                // Move them in the array.      
+                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(upReasonKey), parseInt(downReasonKey));   
 
                 // Now move the elements on page.
                 $row.attr('data-reason', downReasonKey);
@@ -1253,7 +1253,7 @@ function tbconfig() {
                 var downReasonKey = $row.attr('data-reason');
 
                 // Move them in the array.
-                sortReasons.move(parseInt(downReasonKey), parseInt(upReasonKey));
+                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(downReasonKey), parseInt(upReasonKey));  
 
                 // Now move the elements on page.
                 $row.attr('data-reason', upReasonKey);

@@ -318,28 +318,7 @@ function initwrapper() {
             };
         }
 
-        // https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
-        if(!Array.prototype.move) {
-            Array.prototype.move = function (old_index, new_index) {
-                if ( this.length === 0 ) {
-                    return this;
-                }
-                while (old_index < 0) {
-                    old_index += this.length;
-                }
-                while (new_index < 0) {
-                    new_index += this.length;
-                }
-                if (new_index >= this.length) {
-                    var k = new_index - this.length;
-                    while ((k--) + 1) {
-                        this.push(undefined);
-                    }
-                }
-                this.splice(new_index, 0, this.splice(old_index, 1)[0]);
-                return this; // for testing purposes
-            };
-        }
+
         // Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
 
         TBUtils.debugInformation = function debugInformation() {
@@ -457,6 +436,27 @@ function initwrapper() {
             if (!callback) return;
 
             window.addEventListener(tbuEvent, callback);
+        };
+
+        // https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
+        TBUtils.moveArrayItem = function moveArrayItem(array, old_index, new_index) {
+            if ( array.length === 0 ) {
+                return array;
+            }
+            while (old_index < 0) {
+                old_index += array.length;
+            }
+            while (new_index < 0) {
+                new_index += array.length;
+            }
+            if (new_index >= array.length) {
+                var k = new_index - array.length;
+                while ((k--) + 1) {
+                    array.push(undefined);
+                }
+            }
+            array.splice(new_index, 0, array.splice(old_index, 1)[0]);
+            return array;
         };
 
         TBUtils.escapeHTML = function(html)

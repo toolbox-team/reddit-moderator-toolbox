@@ -394,7 +394,7 @@ self.populateSubmissionHistory = function (after, author) {
         }
 
         var after = d.data.after,
-            commentBody = `Available submission history for ${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
+            commentBody = `Available submission history for /u/${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
 
         user.counters.submissions += d.data.children.length;
         //There's still more subsmissions to load, so we're going to run again
@@ -472,9 +472,12 @@ self.populateSubmissionHistory = function (after, author) {
         //Get the total account od domain submissions
         var totalDomainCount = 0,
             totalDomainKarma = 0;
+            
         for (var domain in user.domains) {
+            if (user.domains.hasOwnProperty(domain)) {
             totalDomainCount += user.domains[domain].count;
             totalDomainKarma += user.domains[domain].karma;
+            }
         }
 
         //Are there more domains than are shown?
@@ -488,6 +491,7 @@ self.populateSubmissionHistory = function (after, author) {
                 match = domain.match(/^self.(\w+)$/),
                 percentage = Math.round(domainCount / totalDomainCount * 100),
                 bgcolor = '#fff';
+
 
             if (percentage >= 10  && domainCount > 4){
                 bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;

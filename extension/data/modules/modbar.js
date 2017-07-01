@@ -535,7 +535,7 @@ self.init = function() {
     // check for passed settings.
     function switchTab(module) {
 
-        var $this = $body.find(`[data-module="${module}]`),
+        var $this = $body.find(`[data-module="${module}"]`),
             $tb_help_mains = $('.tb-help-main');
 
         // achievement support

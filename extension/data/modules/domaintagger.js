@@ -219,26 +219,26 @@ self.init = function() {
                     $('<input>').prop('type', 'text').addClass('domain-color')
                 )
             ).append(
-                $('<p>').text("This will tag the domain as shown.")
+                $('<p>').text('This will tag the domain as shown.')
             ).append(
-                $('<p>').text("Ex: i.imgur.com is not imgur.com")
+                $('<p>').text('Ex: i.imgur.com is not imgur.com')
             );
 
             var popupSave = $('<div>').append(
-                $('<button>').addClass('save-domain tb-action-button').text("save")
+                $('<button>').addClass('save-domain tb-action-button').text('save')
             ).append(
-                $('<button>').addClass('clear-domain tb-action-button').text("clear")
+                $('<button>').addClass('clear-domain tb-action-button').text('clear')
             );
 
-            return TBui.popup("Domain Tagger - /r/" + subreddit, [{
-                id: "dtagger_popup_" + subreddit,
-                title: "",
-                tooltip: "",
-                help_text: "",
-                help_url: "",
+            return TBui.popup('Domain Tagger - /r/' + subreddit, [{
+                id: 'dtagger_popup_' + subreddit,
+                title: '',
+                tooltip: '',
+                help_text: '',
+                help_url: '',
                 content: popupContent,
                 footer: popupSave
-            }], null, "dtagger-popup");
+            }], null, 'dtagger-popup');
         }
 
         var $popup = createPopup().hide();
@@ -246,7 +246,10 @@ self.init = function() {
         // Init color selector
         var colors = [];
         for(var c in TBui.standardColors) {
-            colors.push(TBui.standardColors[c]);
+            if(TBui.standardColors.hasOwnProperty(c)) {
+                colors.push(TBui.standardColors[c]);
+            }
+            
         }
         var colorPalette = [];
         for(var i = 0; i < colors.length; i += 2) {

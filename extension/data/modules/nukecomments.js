@@ -111,12 +111,12 @@ function nukecomments() {
 
         var $removeButtons = $thread_root.find('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
         TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
-        self.log(`Nuking ${  $removeButtons.length  } comments`);
+        self.log(`Nuking ${$removeButtons.length} comments`);
 
         // we need a delay between every single click of >1sec
         // this should be re-written to use the API
         TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment(button, num) {
-            var msg = `removing comment ${  num + 1  }/${  $removeButtons.length}`;
+            var msg = `removing comment ${num + 1}/${$removeButtons.length}`;
             TB.ui.textFeedback(msg, 'neutral');
 
             if (ignoreMods) {
@@ -124,12 +124,12 @@ function nukecomments() {
                     $author = $entry.find('a.author');
 
                 if ($author.hasClass('moderator')) {
-                    self.log(`  ${  num + 1  }... ignored`);
+                    self.log(`  ${num + 1}... ignored`);
                     return;
                 }
             }
 
-            self.log(`  ${  num + 1  }... removed`);
+            self.log(`  ${num + 1}... removed`);
             button.click();
         }, function complete() {
             if (self.setting('hideAfterNuke')) {
@@ -152,7 +152,7 @@ function nukecomments() {
             // Defer info gathering until button is clicked.
             // the report button is always visible, so we don't have to do anything special for the big mod action buttons
             $comment.find('.tagline:first > .userattrs')
-                .after(`&nbsp;<a href="javascript:;" title="Remove (nuke) comment chain." class="nuke-button tb-bracket-button">${  self.button  }</a>`);
+                .after(`&nbsp;<a href="javascript:;" title="Remove (nuke) comment chain." class="nuke-button tb-bracket-button">${self.button}</a>`);
         }
     };
 

@@ -196,13 +196,13 @@ function modmailpro() {
         self.startProfile('common-element-gen');
         var separator = '<span class="tb-separator"></span>',
             spacer = '<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>',
-            $allLink = $(`<li><a class="alllink tb-general-button" href="javascript:;" data-view="${  ALL  }">all</a></li>`),
-            $priorityLink = $(`<li><a class="prioritylink tb-general-button" href="javascript:;" data-view="${  PRIORITY  }">priority</a></li>`),
-            $filteredLink = $(`<li><a class="filteredlink tb-general-button" href="javascript:;" data-view="${  FILTERED  }">filtered</a></li>`),
-            $repliedLink = $(`<li><a class="repliedlink tb-general-button" href="javascript:;" data-view="${  REPLIED  }">replied</a></li>`),
-            $unreadLink = $(`<li><a class="unreadlink tb-general-button" href="javascript:;" data-view="${  UNREAD  }">unread</a></li>`),
-            $unansweredLink = $(`<li><a class="unansweredlink tb-general-button" href="javascript:;" data-view="${  UNANSWERED  }">unanswered</a></li>`),
-            $botsLink = $(`<li><a class="botslink tb-general-button" href="javascript:;" data-view="${  BOTS  }">bots</a></li>`),
+            $allLink = $(`<li><a class="alllink tb-general-button" href="javascript:;" data-view="${ALL}">all</a></li>`),
+            $priorityLink = $(`<li><a class="prioritylink tb-general-button" href="javascript:;" data-view="${PRIORITY}">priority</a></li>`),
+            $filteredLink = $(`<li><a class="filteredlink tb-general-button" href="javascript:;" data-view="${FILTERED}">filtered</a></li>`),
+            $repliedLink = $(`<li><a class="repliedlink tb-general-button" href="javascript:;" data-view="${REPLIED}">replied</a></li>`),
+            $unreadLink = $(`<li><a class="unreadlink tb-general-button" href="javascript:;" data-view="${UNREAD}">unread</a></li>`),
+            $unansweredLink = $(`<li><a class="unansweredlink tb-general-button" href="javascript:;" data-view="${UNANSWERED}">unanswered</a></li>`),
+            $botsLink = $(`<li><a class="botslink tb-general-button" href="javascript:;" data-view="${BOTS}">bots</a></li>`),
             $collapseLink = $('<li><a class="collapse-all-link tb-general-button" href="javascript:;">collapse all</a></li>'),
             $unreadCount = $('<li><span class="unread-count"><b>0</b> - new messages</span></li>'),
             $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
@@ -276,9 +276,9 @@ function modmailpro() {
             var $unprocessedThreads = $('.message-parent:not(.mmp-processed)'),
                 $processSlowly = $unprocessedThreads.slice(0, 5),
                 $processFastly = $unprocessedThreads.slice(5);
-            self.log(`Unprocessed Threads = ${  $unprocessedThreads.length}`);
-            self.log(`\tProcessing slow = ${  $processSlowly.length}`);
-            self.log(`\tProcessing fast = ${  $processFastly.length}`);
+            self.log(`Unprocessed Threads = ${$unprocessedThreads.length}`);
+            self.log(`\tProcessing slow = ${$processSlowly.length}`);
+            self.log(`\tProcessing fast = ${$processFastly.length}`);
 
             addThreadUI($unprocessedThreads);
 
@@ -296,18 +296,18 @@ function modmailpro() {
             function processThreads(threads, chunkSize, processRate, completeAction, profileKey) {
                 TBUtils.forEachChunked(threads, chunkSize, processRate,
                     function (thread, count, array) {
-                        self.log(`Running thread batch: ${  count + 1  } of ${  array.length}`);
+                        self.log(`Running thread batch: ${count + 1} of ${array.length}`);
                         //self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
                         processThread(thread);
                     },
                     function complete() {
-                        self.endProfile(`batch-process-${  profileKey}`);
-                        self.log(`Batch ${  profileKey  } complete`);
+                        self.endProfile(`batch-process-${profileKey}`);
+                        self.log(`Batch ${profileKey} complete`);
 
                         completeAction();
                     },
                     function start() {
-                        self.startProfile(`batch-process-${  profileKey}`);
+                        self.startProfile(`batch-process-${profileKey}`);
                     });
             }
 
@@ -336,7 +336,7 @@ function modmailpro() {
 
                     setView(ALL);
                     $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                    $('.unread-count').html(`<b>${  newCount  }</b> - new mod mail thread${  newCount == 1 ? '' : 's'}`);
+                    $('.unread-count').html(`<b>${newCount}</b> - new mod mail thread${newCount == 1 ? '' : 's'}`);
                     $(entries).click();
                 }
                 // Otherwise setup the view
@@ -406,9 +406,9 @@ function modmailpro() {
 
             self.endProfile('thread-jquery');
 
-            self.log(`Processing thread: ${  title  } in: /r/${  subreddit}`);
-            self.log(`\tNum entries = ${  $entries.length}`);
-            self.log(`\tNum replies = ${  replyCount}`);
+            self.log(`Processing thread: ${title} in: /r/${subreddit}`);
+            self.log(`\tNum entries = ${$entries.length}`);
+            self.log(`\tNum replies = ${replyCount}`);
 
             // LMC threads are never collapsed.
             if (collapsed && !lmcThread) {
@@ -421,7 +421,7 @@ function modmailpro() {
             // Add MMP UI
             if (replyCount > 0) {
                 if ($thread.hasClass('moremessages')) {
-                    replyCount = `${replyCount.toString()  }+`;
+                    replyCount = `${replyCount.toString()}+`;
                     moreCommentThreads.push(threadID);
                 }
 
@@ -465,7 +465,7 @@ function modmailpro() {
                 var subredditName = $thread.find('.correspondent a[href*="moderator/inbox"]').text(),
                     colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
 
-                $thread.attr('style', `border-left: solid 3px ${  colorForSub  } !important`);
+                $thread.attr('style', `border-left: solid 3px ${colorForSub} !important`);
                 $thread.addClass('tb-subreddit-color');
                 $thread.find('.marker-dot').css('background-color', colorForSub);
 
@@ -581,7 +581,7 @@ function modmailpro() {
 
                 setTimeout(function () {
                     self.log('realtime go');
-                    var thread = $(`.message-parent[data-fullname='${  attrib  }']`);
+                    var thread = $(`.message-parent[data-fullname='${attrib}']`);
                     if (thread.length > 1) {
                         $sender.remove();
                     } else {
@@ -671,7 +671,7 @@ function modmailpro() {
 
                 self.endProfile('highlight-new-internal');
             }, function complete() {
-                $('.unread-count').html(`<b>${  newCount  }</b> - new message${  newCount == 1 ? '' : 's'}`);
+                $('.unread-count').html(`<b>${newCount}</b> - new message${newCount == 1 ? '' : 's'}`);
 
                 self.endProfile('highlight-new');
             }, function start() {
@@ -689,7 +689,7 @@ function modmailpro() {
             // Round time
             secs = Math.round(secs * 100) / 100;
 
-            TB.ui.textFeedback(`Mod mail loaded in: ${  secs  } seconds`, TB.ui.FEEDBACK_POSITIVE, 2000, TB.ui.DISPLAY_BOTTOM);
+            TB.ui.textFeedback(`Mod mail loaded in: ${secs} seconds`, TB.ui.FEEDBACK_POSITIVE, 2000, TB.ui.DISPLAY_BOTTOM);
 
             // Profiling results
             self.endProfile('initialize');
@@ -697,15 +697,15 @@ function modmailpro() {
             self.log('Profiling results: modmail');
             self.log('--------------------------');
             self.getProfiles().forEach(function (profile, key) {
-                self.log(`${key  }:`);
-                self.log(`\tTime  = ${  profile.time.toFixed(4)}`);
-                self.log(`\tCalls = ${  profile.calls}`);
+                self.log(`${key}:`);
+                self.log(`\tTime  = ${profile.time.toFixed(4)}`);
+                self.log(`\tCalls = ${profile.calls}`);
             });
             self.log('--------------------------');
         }
 
         function setView(newView) {
-            self.log(`Setting view to ${  newView  } from ${  inbox}`);
+            self.log(`Setting view to ${newView} from ${inbox}`);
             inbox = newView;
             updateView();
         }
@@ -985,7 +985,7 @@ function modmailpro() {
             TB.storage.setSetting('Notifier', 'lastSeenModmail', new Date().getTime());
             TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
-            self.log(`real time a gogo: ${  limit}`);
+            self.log(`real time a gogo: ${limit}`);
             TBUtils.addToSiteTable(updateURL + String(limit), function (resp) {
                 if (!resp) return;
                 var $things = $(resp).find('.message-parent').hide().addClass('realtime-new');
@@ -1002,8 +1002,8 @@ function modmailpro() {
         var COMPOSE = 'compose-message',
             SWITCH = 'switch-modmail',
             composeURL = '/message/compose?to=%2Fr%2F',
-            $composeSelect = $(`<li><select class="compose-mail tb-action-button inline-button"><option value="${  COMPOSE  }">compose mod mail</option></select></li>`),
-            $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${  SWITCH  }">switch mod mail</option></select></li>`),
+            $composeSelect = $(`<li><select class="compose-mail tb-action-button inline-button"><option value="${COMPOSE}">compose mod mail</option></select></li>`),
+            $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
             $mmpMenu = $('.mmp-menu');
 
         TBUtils.getModSubs(function () {
@@ -1036,7 +1036,7 @@ function modmailpro() {
             $('.switch-mail').change(function () {
                 var sub = $(this).val();
                 if (sub !== SWITCH) {
-                    window.open(`/r/${  sub  }/message/moderator/inbox`);
+                    window.open(`/r/${sub}/message/moderator/inbox`);
                     $(this).val(SWITCH);
                 }
             });

@@ -54,7 +54,7 @@ function modmacros() {
                     sub = $select.attr('data-subreddit');
 
                 self.log($select);
-                self.log(`${sub  } ${  subreddit}`);
+                self.log(`${sub} ${subreddit}`);
 
                 if (sub == subreddit) {
                     $(config).each(function (idx, item) {
@@ -81,12 +81,12 @@ function modmacros() {
 
                         var $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
                         var $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                            macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${ TB.utils.post_site }"><option value=${  MACROS  }>macros</option></select>`;
+                            macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
                         } else {
-                            $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${ macroButtonHtml }</div>`);
+                            $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                         }
 
 
@@ -122,12 +122,12 @@ function modmacros() {
                     if (success && config.length > 0) {
 
                         var $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
-                            macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${  info.subreddit  }"><option value=${  MACROS  }>macros</option></select>`;
+                            macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
 
                         if ($tbUsertextButtons.length) {
                             $tbUsertextButtons.append(macroButtonHtml);
                         } else {
-                            $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${ macroButtonHtml }</div>`);
+                            $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                         }
 
                         populateSelect('.tb-macro-select', info.subreddit, config);
@@ -156,8 +156,8 @@ function modmacros() {
                 if (success && config.length > 0) {
 
 
-                    var macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${  info.subreddit  }"><option value=${  MACROS  }>macros</option></select>`;
-                    $body.find('.ThreadViewerReplyForm__replyOptions').before(`<div class="tb-usertext-buttons tb-macro-newmm">${ macroButtonHtml }</div>`);
+                    var macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                    $body.find('.ThreadViewerReplyForm__replyOptions').before(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
 
                     populateSelect('.tb-macro-select', info.subreddit, config);
@@ -205,11 +205,11 @@ function modmacros() {
 
             if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
                 if (remove) {
-                    actionList += `<br>- This ${  kind  } will be removed`;
+                    actionList += `<br>- This ${kind} will be removed`;
                 }
 
                 if (approve) {
-                    actionList += `<br>- This ${  kind  } will be approved`;
+                    actionList += `<br>- This ${kind} will be approved`;
                 }
 
                 if (distinguish) {
@@ -260,26 +260,26 @@ function modmacros() {
             var title = dropdown.find('option:selected').text();
             self.log(title);
             var $macroPopup = TB.ui.popup(
-                `Mod Macro: ${  title}`,
+                `Mod Macro: ${title}`,
                 [
                     {
                         title: 'Mod Macro:',
-                        id: `macro${  info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
-                        tooltip: `Mod Macro:${  title}`,
-                        content: `<textarea class="macro-edit-area" data-response-id="${ info.id  }">${  comment  }</textarea><br>\
-                    <span>${ actionList }</span>`,
-                        footer: `<button class="macro-send-${ info.id } tb-action-button">Post Macro</button>`
+                        id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
+                        tooltip: `Mod Macro:${title}`,
+                        content: `<textarea class="macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>\
+                    <span>${actionList}</span>`,
+                        footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`
                     }
                 ],
                 '',
                 'macro-popup', // class
-                `macro-${  info.id}` // id
+                `macro-${info.id}` // id
             ).appendTo('body')
                 .css({
 
-                    'left': `${offsetLeft  }px`,
-                    'top': `${offsetTop  }px`,
-                    'min-height': `${minHeight  }px`,
+                    'left': `${offsetLeft}px`,
+                    'top': `${offsetTop}px`,
+                    'min-height': `${minHeight}px`,
                     display: 'block'
                 });
 
@@ -287,13 +287,13 @@ function modmacros() {
                 $macroPopup.css('max-width', '100%');
             }
             $macroPopup.find('.macro-edit-area').css({
-                'min-height': `${editMinHeight  }px`,
-                'min-width': `${editMinWidth  }px`
+                'min-height': `${editMinHeight}px`,
+                'min-width': `${editMinWidth}px`
             });
 
-            $macroPopup.on('click', `.macro-send-${ info.id }`, function () {
+            $macroPopup.on('click', `.macro-send-${info.id}`, function () {
                 var $currentMacroPopup = $(this).closest('.macro-popup'),
-                    $selectElement = $body.find(`#macro-dropdown-${  info.id}`),
+                    $selectElement = $body.find(`#macro-dropdown-${info.id}`),
                     editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
                 if ($selectElement.val() !== MACROS) {
@@ -317,8 +317,8 @@ function modmacros() {
 
                         if (ban) {
                             TBUtils.friendUser(info.author, 'banned', info.subreddit,
-                                `Banned from: ${  info.permalink}`,
-                                `For the following ${  kind  }: ${  info.permalink}`);
+                                `Banned from: ${info.permalink}`,
+                                `For the following ${kind}: ${info.permalink}`);
                         }
 
                         if (mute) {
@@ -396,14 +396,14 @@ function modmacros() {
 
                         if (ban) {
                             TBUtils.friendUser(info.author, 'banned', info.subreddit,
-                                `Banned from: ${  info.permalink}`,
-                                `For the following ${  kind  }: ${  info.permalink}`);
+                                `Banned from: ${info.permalink}`,
+                                `For the following ${kind}: ${info.permalink}`);
                         }
 
                         if (mute) {
-                            self.log(`  Muting "${  info.author  }" from /r/${  info.subreddit  } @ ${  info.permalink}`);
+                            self.log(`  Muting "${info.author}" from /r/${info.subreddit} @ ${info.permalink}`);
                             TBUtils.friendUser(info.author, 'muted', info.subreddit,
-                                `Muted from: ${  info.permalink}`);
+                                `Muted from: ${info.permalink}`);
                         }
 
                     }
@@ -416,7 +416,7 @@ function modmacros() {
 
             var $currentMacroPopup = $(this).closest('.macro-popup'),
                 infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
-                $selectElement = $body.find(`#macro-dropdown-${  infoId}`);
+                $selectElement = $body.find(`#macro-dropdown-${infoId}`);
 
 
 
@@ -453,7 +453,7 @@ function modmacros() {
                     var macro = config[index];
 
                     // add unique id to the dropdown
-                    $this.attr('id', `macro-dropdown-${  info.id}`);
+                    $this.attr('id', `macro-dropdown-${info.id}`);
                     editMacro($this, info, macro, topLevel);
                 }
             });

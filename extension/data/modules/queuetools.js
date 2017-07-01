@@ -62,7 +62,7 @@ function queuetools() {
     self.register_setting('botCheckmark', {
         'type': 'list',
         'default': ['AutoModerator'],
-        'title': `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${  TBui.iconBot  }">. Bot names should entered separated by a comma without spaces and are case sensitive.`
+        'title': `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should entered separated by a comma without spaces and are case sensitive.`
     });
 
     self.register_setting('queueCreature', {
@@ -167,7 +167,7 @@ function queuetools() {
             if ($.inArray(subredditName, TB.utils.mySubs) < 0) return;
 
             var colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
-            $this.attr('style', `border-left: solid 3px ${  colorForSub  } !important`);
+            $this.attr('style', `border-left: solid 3px ${colorForSub} !important`);
             $this.addClass('tb-subreddit-color');
         }
 
@@ -212,7 +212,7 @@ function queuetools() {
 
                     // Doing all this makes the urls absolute to the current page, we need to fix that so they point to the correct sub.
                     $pasteContent = $pasteContent.html(function(idx, oldHtml) {
-                        return oldHtml.replace(/\/r\/mod\//, `/r/${  contextSubreddit  }/`);
+                        return oldHtml.replace(/\/r\/mod\//, `/r/${contextSubreddit}/`);
                     });
 
                     // Prepare for the popup.
@@ -224,7 +224,7 @@ function queuetools() {
                     }
 
                     // Title is probably also nice.
-                    var contextTitle =  `Context for /u/${  contextUser  } in /r/${  contextSubreddit}`;
+                    var contextTitle =  `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
                     var $contextPopup = TB.ui.popup(
@@ -298,7 +298,7 @@ function queuetools() {
         // Ideally, this should be moved somewhere else to be common with the removal reasons module
         // Retreival of log subreddit information could also be separated
         function getRemovalReasons(subreddit, callback) {
-            self.log(`getting config: ${  subreddit}`);
+            self.log(`getting config: ${subreddit}`);
             var reasons = '';
 
             // See if we have the reasons in the cache.
@@ -379,7 +379,7 @@ function queuetools() {
 
 
                             reports.user_reports.forEach(function (report) {
-                                $reportReasons.append(`<li class="report-reason" title="spam">${ report[1]  }: ${  report[0]  }</li>`);
+                                $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
                             });
                             $reportReasons.show();
                         }
@@ -450,13 +450,13 @@ function queuetools() {
                 <a href="javascript:;" class="tb-general-button inoffensive select"> [select...]</a> \
             </div>\
             <div class="drop-choices lightdrop select-options"> \
-                ${  viewingreports ? '' : `<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>\
+                ${viewingreports ? '' : `<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>\
                 <a class="choice inoffensive" href="javascript:;" type="filtered">spam-filtered</a>\
-                ${  viewingspam ? '' : '<a class="choice inoffensive" href="javascript:;" type="reported">has-reports</a>'}`  }\
+                ${viewingspam ? '' : '<a class="choice inoffensive" href="javascript:;" type="reported">has-reports</a>'}`}\
                 <a class="choice dashed" href="javascript:;" type="spammed">[ spammed ]</a> \
                 <a class="choice" href="javascript:;" type="removed">[ removed ]</a> \
                 <a class="choice" href="javascript:;" type="approved">[ approved ]</a>\
-                ${  TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : ''  }\
+                ${TBUtils.post_site && false ? '<a class="choice" href="javascript:;" type="flaired">[ flaired ]</a>' : ''}\
                 <a class="choice" href="javascript:;" type="actioned">[ actioned ]</a>\
                 <a class="choice dashed" href="javascript:;" type="domain">domain...</a> \
                 <a class="choice" href="javascript:;" type="user">user...</a> \
@@ -470,20 +470,20 @@ function queuetools() {
             &nbsp; \
             <a href="javascript:;" class="tb-general-button inoffensive unhide-selected" accesskey="U">unhide&nbsp;all</a> \
             <a href="javascript:;" class="tb-general-button inoffensive hide-selected"   accesskey="H">hide&nbsp;selected</a> \
-            <a href="javascript:;" class="tb-general-button inoffensive toggle-reports"  >${ EXPAND_TITLE }</a> \
+            <a href="javascript:;" class="tb-general-button inoffensive toggle-reports"  >${EXPAND_TITLE}</a> \
             <a href="javascript:;" class="pretty-button action negative" accesskey="S" type="negative" tabindex="3">spam&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a> \
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a> \
-            ${  TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : ''  } \
+            ${TBUtils.post_site && false ? '<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>' : ''} \
         </span> \
-        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" value="${  reportsThreshold  }" /></a></span>\
+        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" value="${reportsThreshold}" /></a></span>\
         <span class="dropdown-title lightdrop" style="float:right"> sort: \
             <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop "> \
-                <span class="selected sortorder">${  listingOrder  }</span> \
+                <span class="selected sortorder">${listingOrder}</span> \
             </div> \
             <div class="drop-choices lightdrop sortorder-options"> \
                     <a class="choice" href="javascript:;">age</a> \
-                    ${  viewingspam ? '' : '<a class="choice" href="javascript:;">reports</a>'  } \
+                    ${viewingspam ? '' : '<a class="choice" href="javascript:;">reports</a>'} \
                     <a class="choice" href="javascript:;">score</a> \
             </div> \
         </span> \
@@ -525,7 +525,7 @@ function queuetools() {
                 rightPosition = $('.side').outerWidth() + 10;
 
             $modtoolsMenu.css({
-                'margin-right': `${rightPosition  }px`,
+                'margin-right': `${rightPosition}px`,
                 'margin-left': '5px',
                 'left': '0',
                 'margin-top': '0',
@@ -536,15 +536,15 @@ function queuetools() {
             $(window).scroll(function () {
                 if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-sub')) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 20  }px`
+                        'top': `${($(window).scrollTop()) - offsetTop + 20}px`
                     });
                 } else if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-header')) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 72  }px`
+                        'top': `${($(window).scrollTop()) - offsetTop + 72}px`
                     });
                 } else if ($(window).scrollTop() > offsetTop) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 5  }px`
+                        'top': `${($(window).scrollTop()) - offsetTop + 5}px`
                     });
                 } else {
                     $modtoolsMenu.css({
@@ -634,16 +634,16 @@ function queuetools() {
                             :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))';
                     break;
                 case 'domain':
-                    selector = `:has(.domain:contains(${  prompt('domain contains:', '').toLowerCase()  }))`;
+                    selector = `:has(.domain:contains(${prompt('domain contains:', '').toLowerCase()}))`;
                     break;
                 case 'user':
-                    selector = `:has(.author:contains(${  prompt('username contains:\n(case sensitive)', '')  }))`;
+                    selector = `:has(.author:contains(${prompt('username contains:\n(case sensitive)', '')}))`;
                     break;
                 case 'title':
-                    selector = `:has(a.title:contains(${  prompt('title contains:\n(case sensitive)', '')  }))`;
+                    selector = `:has(a.title:contains(${prompt('title contains:\n(case sensitive)', '')}))`;
                     break;
                 case 'subreddit':
-                    selector = `:has(a.subreddit:contains(${  prompt('subreddit contains:\n(case sensitive)', '')  }))`;
+                    selector = `:has(a.subreddit:contains(${prompt('subreddit contains:\n(case sensitive)', '')}))`;
                     break;
                 case 'comments':
                     selector = '.comment';
@@ -835,8 +835,8 @@ function queuetools() {
                 //add class to processed threads.
                 $(things).addClass('mte-processed');
 
-                $(things).prepend(`<input type="checkbox" tabindex="2" style="margin:5px;float:left;"${  allSelected ? ' checked' : ''  } />`).find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
-                    $(this).prepend(`<li><a class="context" href="${  $(this).find('.first .bylink').attr('href')  }?context=2">context</a></li>`);
+                $(things).prepend(`<input type="checkbox" tabindex="2" style="margin:5px;float:left;"${allSelected ? ' checked' : ''} />`).find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
+                    $(this).prepend(`<li><a class="context" href="${$(this).find('.first .bylink').attr('href')}?context=2">context</a></li>`);
                 });
                 if (expandosOpen)
                     $(things).find('.expando-button.collapsed').click();
@@ -855,7 +855,7 @@ function queuetools() {
 
             // sort sidebars
             if (TBUtils.isModFakereddit) {
-                $('.sidecontentbox').find('.title:contains(THESE SUBREDDITS)').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${  TB.ui.iconSort  }" />sort by items</a>`);
+                $('.sidecontentbox').find('.title:contains(THESE SUBREDDITS)').append(`&nbsp;<a href="javascript:;" class="tb-sort-subs"><img src="data:image/png;base64,${TB.ui.iconSort}" />sort by items</a>`);
             }
 
             $body.on('click', '.tb-sort-subs', function () {
@@ -884,23 +884,23 @@ function queuetools() {
                 TB.utils.forEachChunked($('.subscription-box a.title'), 20, 100, function (elem) {
                     var $elem = $(elem),
                         sr = $elem.text(),
-                        data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged  }-${  sr}`, '[0,0]'));
+                        data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
 
                     modSubs.push(sr);
-                    TB.ui.textFeedback(`Getting items for: ${  sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
+                    TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
                     // Update count and re-cache data if more than an hour old.
-                    $elem.parent().append(`<a href="/r/${  sr  }/about/${  page  }" count="${  data[0]  }" class="tb-subreddit-item-count">${  data[0]  }</a>`);
+                    $elem.parent().append(`<a href="/r/${sr}/about/${page}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
                     if (now > data[1]) {
                         updateModqueueCount(sr);
                     }
 
                     function updateModqueueCount(sr) {
-                        $.get(`${TBUtils.baseDomain  }/r/${  sr  }/about/${  page  }.json?limit=100`).done(function (d) {
+                        $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(function (d) {
                             var items = d.data.children.length;
-                            self.log(`  subreddit: ${  sr  } items: ${  items}`);
-                            TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged  }-${  sr}`, `[${  items  },${  new Date().valueOf()  }]`);
-                            $(`.subscription-box a[href$="/r/${  sr  }/about/${  page  }"]`).text(d.data.children.length).attr('count', d.data.children.length);
+                            self.log(`  subreddit: ${sr} items: ${items}`);
+                            TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                            $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
                         });
                     }
 
@@ -1019,17 +1019,17 @@ function queuetools() {
         var highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
         function getAutomodActionReason(sub) {
             self.log(sub);
-            $.getJSON(`${TBUtils.baseDomain  }/r/${  sub  }/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
                 $.each(json.data.children, function (i, value) {
                     var actionReasonText = value.data.details,
                         targetFullName = value.data.target_fullname;
 
-                    $body.find(`.thing[data-fullname="${  targetFullName  }"]>.entry`).after(`<div class="action-reason">\
-<b>Automod action:</b> ${  actionReasonText  }\
-<br><a href="https://www.reddit.com/message/compose?to=/r/${  sub  }&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
+                    $body.find(`.thing[data-fullname="${targetFullName}"]>.entry`).after(`<div class="action-reason">\
+<b>Automod action:</b> ${actionReasonText}\
+<br><a href="https://www.reddit.com/message/compose?to=/r/${sub}&subject=Automoderator second opinion&message=I would like a second opinion about something automod filtered \
 %0A%0A \
-Url: ${  value.data.target_permalink  } %0A %0A \
-Action reason: ${  value.data.details  }\
+Url: ${value.data.target_permalink} %0A %0A \
+Action reason: ${value.data.details}\
 " target="_blank">ask for a second opinion in modmail</a> </div>`);
 
                     if(highlightAutomodMatches) {
@@ -1043,11 +1043,11 @@ Action reason: ${  value.data.details  }\
                         // If the general one is enabled we switch it of for a second to first apply the match and then the general one again
 
                         if(highlightEnabled.length > 0) {
-                            $body.find(`.thing[data-fullname="${ targetFullName  }"] .md p`).removeHighlight();
-                            $body.find(`.thing[data-fullname="${ targetFullName  }"] .md p`).highlight(matchesArray, '', true);
-                            $body.find(`.thing[data-fullname="${ targetFullName  }"] .md p`).highlight(highlightEnabled);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).removeHighlight();
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(highlightEnabled);
                         } else {
-                            $body.find(`.thing[data-fullname="${ targetFullName  }"] .md p`).highlight(matchesArray, '', true);
+                            $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
                         }
 
                     }
@@ -1110,8 +1110,8 @@ Action reason: ${  value.data.details  }\
                 var subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
                 var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
 
-                self.log(`  subreddit: ${  subreddit}`);
-                self.log(`  removedby: ${  removedBy}`);
+                self.log(`  subreddit: ${subreddit}`);
+                self.log(`  removedby: ${removedBy}`);
 
                 if($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                     queueSubs.push(subreddit);
@@ -1141,13 +1141,13 @@ Action reason: ${  value.data.details  }\
 
                 switch (i) {
                 case 0:
-                    baseCss = `img.approval-checkmark[title*="approved by ${  val  }"], \n`;
+                    baseCss = `img.approval-checkmark[title*="approved by ${val}"], \n`;
                     break;
                 case checkmarkLength:
-                    baseCss += `img.approval-checkmark[title*="approved by ${  val  }"] \n`;
+                    baseCss += `img.approval-checkmark[title*="approved by ${val}"] \n`;
                     break;
                 default:
-                    baseCss += `img.approval-checkmark[title*="approved by ${  val  }"], \n`;
+                    baseCss += `img.approval-checkmark[title*="approved by ${val}"], \n`;
                 }
             });
 
@@ -1156,11 +1156,11 @@ Action reason: ${  value.data.details  }\
             display: inline-block; \n\
             padding-left: 16px; \n\
             padding-top: 5px; \n\
-            background-image: url("data:image/png;base64,${  TBui.iconBot  }"); \n\
+            background-image: url("data:image/png;base64,${TBui.iconBot}"); \n\
             background-repeat: no-repeat; \n\
         } \n`;
 
-            $('head').append(`<style>${  baseCss  }</style>`);
+            $('head').append(`<style>${baseCss}</style>`);
 
         }
 

@@ -22,7 +22,7 @@ function tbconfig() {
         function showConfig(subredditConfig, configData) {
 
             $overlay = TB.ui.overlay(
-                `toolbox Configuration - /r/${  subredditConfig}`,
+                `toolbox Configuration - /r/${subredditConfig}`,
                 [
                     {
                         title: 'Settings Home',
@@ -264,7 +264,7 @@ function tbconfig() {
         // Help click event.
         $body.on('click', '#tb-config-help', function () {
             var module = $(this).attr('data-module');
-            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${  module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
+            window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
 
         });
 
@@ -286,7 +286,7 @@ function tbconfig() {
             });
 
             var $toolbox = $('#moderation_tools').find('.content .icon-menu'),
-                configLink = `<li><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit"><img class="tb-moderation-tools-icons" src="data:image/png;base64,${  TBui.iconWrench  }"/>toolbox configuration</a></li>`;
+                configLink = `<li><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit"><img class="tb-moderation-tools-icons" src="data:image/png;base64,${TBui.iconWrench}"/>toolbox configuration</a></li>`;
             $toolbox.append(configLink);
         // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
         }
@@ -296,7 +296,7 @@ function tbconfig() {
                 var $this = $(this),
                     itemSubreddit = $this.find('a.title').text();
 
-                $this.find('a.title').after(`<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="${  itemSubreddit  }" title="toolbox configuration for /r/${  itemSubreddit  }"><img src="data:image/png;base64,${  TBui.iconWrench  }"/></a>`);
+                $this.find('a.title').after(`<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="${itemSubreddit}" title="toolbox configuration for /r/${itemSubreddit}"><img src="data:image/png;base64,${TBui.iconWrench}"/></a>`);
             });
         }
 
@@ -342,7 +342,7 @@ function tbconfig() {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
             TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
-                self.log(`save succ = ${  succ}`);
+                self.log(`save succ = ${succ}`);
                 if (!succ) {
 
 
@@ -389,7 +389,7 @@ function tbconfig() {
                 actualPage =  'config/automoderator';
                 break;
             }
-            var $wikiContentArea = $body.find(`.tb-window-tab.${  tabname}`),
+            var $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
                 $textArea = $wikiContentArea.find('.edit-wikidata'),
                 $saveButton = $wikiContentArea.find('.save-wiki-data');
 
@@ -615,7 +615,7 @@ function tbconfig() {
                         label = '<span style="color: #cecece">(no reason)</span>';
                     } else {
                         if (label.length > 200) {
-                            label = `${label.substring(0, 197)  }...`;
+                            label = `${label.substring(0, 197)}...`;
                         }
                         label = TBUtils.htmlEncode(label);
                     }
@@ -679,7 +679,7 @@ function tbconfig() {
                         label = '<span style="color: #cecece">(no reason)</span>';
                     } else {
                         if (label.length > 200) {
-                            label = `${label.substring(0, 197)  }...`;
+                            label = `${label.substring(0, 197)}...`;
                         }
                         label = TBUtils.htmlEncode(label);
                     }
@@ -716,7 +716,7 @@ function tbconfig() {
                         label = '<span style="color: #cecece">(no macro)</span>';
                     } else {
                         if (label.length > 200) {
-                            label = `${label.substring(0, 197)  }...`;
+                            label = `${label.substring(0, 197)}...`;
                         }
                         label = TBUtils.htmlEncode(label);
                     }
@@ -831,14 +831,14 @@ function tbconfig() {
                 break;
             }
 
-            var $wikiContentArea = $body.find(`.tb-window-tab.${  tabname}`),
+            var $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
                 textArea = $wikiContentArea.find('.edit-wikidata'),
                 text = $(textArea).val(),
                 editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val(),
                 updateAM = (page === 'automoderator');
 
             if (!editNote) {
-                editNote = `updated ${  page  } configuration`;
+                editNote = `updated ${page} configuration`;
             }
             // save the data, and blank the text area.
             // also, yes some of the pages are in JSON, but they aren't JSON objects,
@@ -1088,7 +1088,7 @@ function tbconfig() {
             // default note
                 editNote = 'update';
             }
-            editNote += `, reason #${  reasonsNum + 1}`;
+            editNote += `, reason #${reasonsNum + 1}`;
 
             config.removalReasons.reasons[reasonsNum].text = escape(reasonText);
             config.removalReasons.reasons[reasonsNum].flairText = reasonFlairText;
@@ -1102,7 +1102,7 @@ function tbconfig() {
                 label = '<span style="color: #cecece">(no reason)</span>';
             } else {
                 if (label.length > 200) {
-                    label = `${label.substring(0, 197)  }...`;
+                    label = `${label.substring(0, 197)}...`;
                 }
                 label = TBUtils.htmlEncode(label);
             }
@@ -1150,7 +1150,7 @@ function tbconfig() {
                 reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val(),
                 editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
 
-            editNote = `create new reason${  editNote ? `, ${  editNote}` : ''}`;
+            editNote = `create new reason${editNote ? `, ${editNote}` : ''}`;
 
             var reason = {
                 text: escape(reasonText)
@@ -1368,7 +1368,7 @@ function tbconfig() {
             // default note
                 editNote = 'update';
             }
-            editNote += `, macro #${  macroNum + 1}`;
+            editNote += `, macro #${macroNum + 1}`;
 
             macro.text = escape(macroText);
             macro.title = macroTitle;
@@ -1391,7 +1391,7 @@ function tbconfig() {
                 label = '<span style="color: #cecece">(no macro)</span>';
             } else {
                 if (label.length > 200) {
-                    label = `${label.substring(0, 197)  }...`;
+                    label = `${label.substring(0, 197)}...`;
                 }
                 label = TBUtils.htmlEncode(label);
             }
@@ -1452,7 +1452,7 @@ function tbconfig() {
                 return;
             }
 
-            editNote = `create new macro ${  editNote ? `, ${  editNote}` : ''}`;
+            editNote = `create new macro ${editNote ? `, ${editNote}` : ''}`;
 
             var macro = {
                 text: escape(macroText)
@@ -1523,7 +1523,7 @@ function tbconfig() {
         // When the import button is clicked on the domain tags thing.
         $body.on('click', '.domain_tags .import', function () {
 
-            $.getJSON(`${TBUtils.baseDomain  }/r/${  $body.find('.domain_tags .importfrom').val()  }/wiki/toolbox.json`, function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`, function (json) {
 
                 if (json.data.content_md) {
                     var tags = JSON.parse(json.data.content_md).domainTags;

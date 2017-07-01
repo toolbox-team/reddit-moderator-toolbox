@@ -49,9 +49,9 @@ function achievements() {
                     maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
-                if (TB.utils.devMode) self.log(`  name=${  title}`); // spoilers
-                self.log(`  maxValue=${  maxValue}`);
-                self.log(`  saveIndex=${  saveIndex}`);
+                if (TB.utils.devMode) self.log(`  name=${title}`); // spoilers
+                self.log(`  maxValue=${maxValue}`);
+                self.log(`  saveIndex=${saveIndex}`);
 
                 achievementsBlock.push({
                     title: title,
@@ -70,18 +70,18 @@ function achievements() {
             if (value === undefined) {
                 value = 1;
             }
-            self.log(`Unlocking achievement block: index=${  saveIndex  }, value=${  value}`);
+            self.log(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
 
             var old = saves[saveIndex];
-            self.log(`  Old value: ${  saves[saveIndex]}`);
+            self.log(`  Old value: ${saves[saveIndex]}`);
             saves[saveIndex] += value;
-            self.log(`  New value: ${  saves[saveIndex]}`);
+            self.log(`  New value: ${saves[saveIndex]}`);
 
             var achievementsBlock = achievements[saveIndex];
             for (var index = 0; index < achievementsBlock.length; index++) {
-                self.log(`  Checking achievement ${  index}`);
+                self.log(`  Checking achievement ${index}`);
                 var achievement = achievementsBlock[index];
-                self.log(`    Comparing to max value: ${  achievement.maxValue}`);
+                self.log(`    Comparing to max value: ${achievement.maxValue}`);
                 if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                     var title = achievement.title;
 
@@ -92,8 +92,8 @@ function achievements() {
                         title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
                     } catch(e) {}
 
-                    self.log(`    ${ title } Unlocked!`);
-                    TBUtils.notification('Mod achievement unlocked!', title, `${window.location  }#?tbsettings=${  self.shortname}`);
+                    self.log(`    ${title} Unlocked!`);
+                    TBUtils.notification('Mod achievement unlocked!', title, `${window.location}#?tbsettings=${self.shortname}`);
                 }
             }
 
@@ -191,7 +191,7 @@ function achievements() {
             var awesome = 7,
                 chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
-            self.log(`You rolled a: ${  chanceOfBeingAwesome}`);
+            self.log(`You rolled a: ${chanceOfBeingAwesome}`);
             if (awesome == chanceOfBeingAwesome) {
                 self.manager.unlock(saveIndex);
             }
@@ -204,7 +204,7 @@ function achievements() {
             var now = TBUtils.getTime(),
                 timeSince = now - lastSeen,
                 daysSince = TBUtils.millisecondsToDays(timeSince);
-            self.log(`daysSince: ${  daysSince}`);
+            self.log(`daysSince: ${daysSince}`);
 
             if (daysSince >= 7) {
             //self.log("you've got an award!");

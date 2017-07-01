@@ -48,7 +48,7 @@ function domaintagger() {
         // Main stuff
 
         function run(addButton) {
-            self.log(`run called with addButton=${  addButton}`);
+            self.log(`run called with addButton=${addButton}`);
             var $things = $('div.thing.link').not('.dt-processed'),
                 subs = {};
 
@@ -107,9 +107,9 @@ function domaintagger() {
         }
 
         function processSubreddit(sub, things) {
-            self.log(`  Processing subreddit: /r/${  sub}`);
+            self.log(`  Processing subreddit: /r/${sub}`);
             TBUtils.getConfig(sub, function (config) {
-                self.log(`    Config retrieved for /r/${  sub}`);
+                self.log(`    Config retrieved for /r/${sub}`);
                 if (config && config.domainTags && config.domainTags.length > 0) {
                     setTags(config.domainTags, things);
                 }
@@ -125,7 +125,7 @@ function domaintagger() {
                 switch (tagType) {
                 case 'domain_background':
                     var textColor = TBui.getBestTextColor(d.color);
-                    $domain.addClass(`tb-dt-bg-${  d.color}`);
+                    $domain.addClass(`tb-dt-bg-${d.color}`);
                     $domain.css({
                         'background-color': d.color,
                         'padding': '0 1px 1px',
@@ -136,7 +136,7 @@ function domaintagger() {
                     break;
                 case 'domain_border':
                     $domain.css({
-                        'border': `1px solid ${  d.color}`,
+                        'border': `1px solid ${d.color}`,
                         'padding': '0 1px',
                         'border-radius': '3px'
                     });
@@ -148,7 +148,7 @@ function domaintagger() {
                     break;
                 case 'post_border':
                     $entry.css({
-                        'border': `3px solid${  d.color}`
+                        'border': `3px solid${d.color}`
                     });
                     break;
                 case 'title_dot':
@@ -230,8 +230,8 @@ function domaintagger() {
                     $('<button>').addClass('clear-domain tb-action-button').text('clear')
                 );
 
-                return TBui.popup(`Domain Tagger - /r/${  subreddit}`, [{
-                    id: `dtagger_popup_${  subreddit}`,
+                return TBui.popup(`Domain Tagger - /r/${subreddit}`, [{
+                    id: `dtagger_popup_${subreddit}`,
                     title: '',
                     tooltip: '',
                     help_text: '',
@@ -324,7 +324,7 @@ function domaintagger() {
                                 config.domainTags[idx] = domainTag;
                                 updateType = 'update';
                             }
-                            postToWiki(subreddit, config, `${updateType  } tag "${  domainTag.name  }"`);
+                            postToWiki(subreddit, config, `${updateType} tag "${domainTag.name}"`);
 
                             return d;
                         }
@@ -332,12 +332,12 @@ function domaintagger() {
 
                     if (!results || results.length < 1) {
                         config.domainTags.push(domainTag);
-                        postToWiki(subreddit, config, `create tag "${  domainTag.name  }"`);
+                        postToWiki(subreddit, config, `create tag "${domainTag.name}"`);
                     }
                 } else {
                     config.domainTags = [];
                     config.domainTags.push(domainTag);
-                    postToWiki(subreddit, config, `create new domain tags object, create tag "${  domainTag.name  }"`);
+                    postToWiki(subreddit, config, `create new domain tags object, create tag "${domainTag.name}"`);
                 }
             });
         });
@@ -351,13 +351,13 @@ function domaintagger() {
         function getThingDomain($thing) {
             self.log('Getting thing domain');
             var domain = $thing.find('span.domain a').attr('href').toLowerCase();
-            self.log(`  Raw = ${  domain}`);
+            self.log(`  Raw = ${domain}`);
             var match = /\/domain\/(.+)\//.exec(domain);
             if (!match) {
                 match = /(\/r\/.+)\//.exec(domain);
             }
             domain = match[1];
-            self.log(`  Result = ${  domain}`);
+            self.log(`  Result = ${domain}`);
             return domain;
         }
     };

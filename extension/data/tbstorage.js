@@ -33,7 +33,7 @@
 
             // Wait a sec for stuff to clear.
             setTimeout(function () {
-                window.location.href = `//${  domain  }.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
+                window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
             }, 1000);
         }
 
@@ -91,7 +91,7 @@ function storagewrapper() {
         TBStorage.settings = JSON.parse(localStorage['Toolbox.Storage.settings'] || '[]');  //always use local storage.
         TBStorage.domain = window.location.hostname.split('.')[0];
 
-        $.log(`Domain: ${  TBStorage.domain}`, false, SHORTNAME);
+        $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
 
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www' || TBStorage.domain === 'mod');
 
@@ -347,7 +347,7 @@ function storagewrapper() {
         // First parse out any of the ones we never want to save.
             if (module === undefined || module === 'cache') return;
 
-            var keyName = `${module  }.${  setting}`;
+            var keyName = `${module}.${setting}`;
 
             if ($.inArray(keyName, TBStorage.settings) === -1) {
                 TBStorage.settings.push(keyName);
@@ -408,7 +408,7 @@ function storagewrapper() {
 
 
         function getSetting(module, setting, defaultVal) {
-            var storageKey = `Toolbox.${  module  }.${  setting}`;
+            var storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
@@ -420,7 +420,7 @@ function storagewrapper() {
                 try {
                     result = JSON.parse(storageString);
                 } catch (e) {
-                    $.log(`${storageKey  } is corrupted.  Sending default.`, false, SHORTNAME);
+                    $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
                     result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
                 }
 
@@ -437,7 +437,7 @@ function storagewrapper() {
 
 
         function setSetting(module, setting, value, syncSettings) {
-            var storageKey = `Toolbox.${  module  }.${  setting}`;
+            var storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             localStorage[storageKey] = JSON.stringify(value);
@@ -450,7 +450,7 @@ function storagewrapper() {
 
 
         function getCache(module, setting, defaultVal) {
-            var storageKey = `TBCache.${  module  }.${  setting}`;
+            var storageKey = `TBCache.${module}.${setting}`;
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
 
@@ -461,7 +461,7 @@ function storagewrapper() {
                 try {
                     result = JSON.parse(storageString);
                 } catch (e) {
-                    $.log(`${storageKey  } is corrupted.  Sending default.`, false, SHORTNAME);
+                    $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
                     result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
                 }
 
@@ -478,7 +478,7 @@ function storagewrapper() {
 
 
         function setCache(module, setting, value) {
-            var storageKey = `TBCache.${  module  }.${  setting}`;
+            var storageKey = `TBCache.${module}.${setting}`;
 
             localStorage[storageKey] = JSON.stringify(value);
 
@@ -496,7 +496,7 @@ function storagewrapper() {
             // If number of properties is different,
             // objects are not equivalent
             if (aProps.length != bProps.length) {
-                $.log(`length :${  aProps.length  } ${  bProps.length}`);
+                $.log(`length :${aProps.length} ${bProps.length}`);
                 return false;
             }
 
@@ -510,11 +510,11 @@ function storagewrapper() {
                 if (propA !== propB) {
                     if (typeof propA === 'object' && typeof propB === 'object') {
                         if (!isEquivalent(propA, propB)) {
-                            $.log(`prop :${  propA  } ${  propB}`);
+                            $.log(`prop :${propA} ${propB}`);
                             return false;
                         }
                     } else {
-                        $.log(`prop :${  propA  } ${  propB}`);
+                        $.log(`prop :${propA} ${propB}`);
                         return false;
                     }
                 }

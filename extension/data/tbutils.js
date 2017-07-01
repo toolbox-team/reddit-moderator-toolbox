@@ -35,8 +35,8 @@ function initwrapper() {
 
                     return responseObject.accessToken;
                 } else {
-                    $.log(`ERROR: ${  responseObject.ERROR}`, false, SHORTNAME);
-                    throw new Error(`ERROR:${  responseObject.ERROR}`);
+                    $.log(`ERROR: ${responseObject.ERROR}`, false, SHORTNAME);
+                    throw new Error(`ERROR:${responseObject.ERROR}`);
                 }
             });
         };
@@ -47,7 +47,7 @@ function initwrapper() {
 
 
         // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
-        TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  `https://${  window.location.hostname}`);
+        TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  `https://${window.location.hostname}`);
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
@@ -120,7 +120,7 @@ function initwrapper() {
 
 
         // Public variables
-        TBUtils.toolboxVersion = `3.6.6${  (betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.toolboxVersion = `3.6.6${(betaRelease) ? ' (beta)' : ''}`;
         TBUtils.shortVersion = 366; //don't forget to change this one!  This is used for the 'new version' notification.
         TBUtils.releaseName = 'Communicating Cat';
         TBUtils.configSchema = 1;
@@ -194,11 +194,11 @@ function initwrapper() {
         TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
         if (TBUtils.debugMode) {
-            var consoleText = `toolbox version: ${  TBUtils.toolboxVersion 
-            }, Browser: ${  TBUtils.browser 
-            }, Extension: ${  TBUtils.isExtension 
-            }, Beta features: ${  TBUtils.betaMode 
-            }\n\n"${  TBUtils.RandomQuote }"\n`;
+            var consoleText = `toolbox version: ${TBUtils.toolboxVersion 
+            }, Browser: ${TBUtils.browser 
+            }, Extension: ${TBUtils.isExtension 
+            }, Beta features: ${TBUtils.betaMode 
+            }\n\n"${TBUtils.RandomQuote}"\n`;
 
             TBUtils.log.push(consoleText);
         }
@@ -449,7 +449,7 @@ function initwrapper() {
         };
 
         TBUtils.sendEvent = function (tbuEvent){
-            $.log(`Sending event: ${  tbuEvent}`, false, SHORTNAME);
+            $.log(`Sending event: ${tbuEvent}`, false, SHORTNAME);
             window.dispatchEvent( new CustomEvent(tbuEvent) );
         };
 
@@ -524,12 +524,12 @@ function initwrapper() {
         TBUtils.timeConverterISO = function (UNIX_timestamp) {
             var a = new Date(UNIX_timestamp * 1000);
             var year = a.getFullYear();
-            var month = (`0${  a.getUTCMonth() + 1}`).slice(-2);
-            var date = (`0${  a.getUTCDate()}`).slice(-2);
-            var hour = (`0${  a.getUTCHours()}`).slice(-2);
-            var min = (`0${  a.getUTCMinutes()}`).slice(-2);
-            var sec = (`0${  a.getUTCSeconds()}`).slice(-2);
-            return `${year  }-${  month  }-${  date  }T${  hour  }:${  min  }:${  sec  }Z`;
+            var month = (`0${a.getUTCMonth() + 1}`).slice(-2);
+            var date = (`0${a.getUTCDate()}`).slice(-2);
+            var hour = (`0${a.getUTCHours()}`).slice(-2);
+            var min = (`0${a.getUTCMinutes()}`).slice(-2);
+            var sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
         };
 
         TBUtils.niceDateDiff = function(origdate, newdate) {
@@ -612,9 +612,9 @@ function initwrapper() {
             }
             if (y === 1) {
                 if (dyear === 1) {
-                    returnString += `${dyear  } year`;
+                    returnString += `${dyear} year`;
                 } else {
-                    returnString += `${dyear  } years`;
+                    returnString += `${dyear} years`;
                 }
             }
             if ((a1 === 1) && (a2 === 0)) {
@@ -625,9 +625,9 @@ function initwrapper() {
             }
             if (mm === 1) {
                 if (dmonth === 1) {
-                    returnString += `${dmonth  } month`;
+                    returnString += `${dmonth} month`;
                 } else {
-                    returnString += `${dmonth  } months`;
+                    returnString += `${dmonth} months`;
                 }
             }
             if (a2 === 1) {
@@ -635,9 +635,9 @@ function initwrapper() {
             }
             if (d === 1) {
                 if (dday === 1) {
-                    returnString += `${dday  } day`;
+                    returnString += `${dday} day`;
                 } else {
-                    returnString += `${dday  } days`;
+                    returnString += `${dday} days`;
                 }
             }
             if (returnString === '') {
@@ -650,12 +650,12 @@ function initwrapper() {
         TBUtils.timeConverterRead = function (UNIX_timestamp) {
             var a = new Date(UNIX_timestamp * 1000);
             var year = a.getFullYear();
-            var month = (`0${  a.getUTCMonth() + 1}`).slice(-2);
-            var date = (`0${  a.getUTCDate()}`).slice(-2);
-            var hour = (`0${  a.getUTCHours()}`).slice(-2);
-            var min = (`0${  a.getUTCMinutes()}`).slice(-2);
-            var sec = (`0${  a.getUTCSeconds()}`).slice(-2);
-            return `${date  }-${  month  }-${  year  } ${  hour  }:${  min  }:${  sec  } UTC`;
+            var month = (`0${a.getUTCMonth() + 1}`).slice(-2);
+            var date = (`0${a.getUTCDate()}`).slice(-2);
+            var hour = (`0${a.getUTCHours()}`).slice(-2);
+            var min = (`0${a.getUTCMinutes()}`).slice(-2);
+            var sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            return `${date}-${month}-${year} ${hour}:${min}:${sec} UTC`;
         };
 
         // convert titles to a format usable in urls
@@ -691,9 +691,9 @@ function initwrapper() {
 
 
         TBUtils.alert = function (message, callback, showClose) {
-            var $noteDiv = $(`<div id="tb-notification-alert"><span>${  message  }</span></div>`);
+            var $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
-                $noteDiv.append(`<img src="data:image/png;base64,${  TBui.iconClose  }" class="note-close" title="Close" />`);
+                $noteDiv.append(`<img src="data:image/png;base64,${TBui.iconClose}" class="note-close" title="Close" />`);
             }
             $noteDiv.appendTo('body');
 
@@ -768,14 +768,14 @@ function initwrapper() {
                 $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
                 body = body.substring(0, 600);
                 body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                $.sticky(`<p>${  body  }</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
 
             } else if (Notification.permission === 'granted') {
 
                 var notification = new Notification(title, {
                     dir: 'auto',
                     body: body,
-                    icon: `data:image/png;base64,${  TBui.logo64}`
+                    icon: `data:image/png;base64,${TBui.logo64}`
                 });
                 setTimeout(function () {
                     notification.close();
@@ -785,7 +785,7 @@ function initwrapper() {
                 // Open the page
                     $.log('notification clicked', false, SHORTNAME);
                     if (typeof markreadid !== 'undefined') {
-                        $.post(`${TBUtils.baseDomain  }/api/read_message`, {
+                        $.post(`${TBUtils.baseDomain}/api/read_message`, {
                             id: markreadid,
                             uh: TBUtils.modhash,
                             api_type: 'json'
@@ -810,7 +810,7 @@ function initwrapper() {
                         var notification = new Notification(title, {
                             dir: 'auto',
                             body: body,
-                            icon: `data:image/png;base64,${  TBui.logo64}`
+                            icon: `data:image/png;base64,${TBui.logo64}`
                         });
                         setTimeout(function () {
                             notification.close();
@@ -820,7 +820,7 @@ function initwrapper() {
                         // Open the page
                             $.log('notification clicked', false, SHORTNAME);
                             if (typeof markreadid !== 'undefined') {
-                                $.post(`${TBUtils.baseDomain  }/api/read_message`, {
+                                $.post(`${TBUtils.baseDomain}/api/read_message`, {
                                     id: markreadid,
                                     uh: TBUtils.modhash,
                                     api_type: 'json'
@@ -836,7 +836,7 @@ function initwrapper() {
             // They have the option enabled, but won't grant permissions, so fall back.
                 body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
                 body = body.substring(0, 600);
-                $.sticky(`<p>${  body  }</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
             }
         };
 
@@ -854,7 +854,7 @@ function initwrapper() {
                 var amount = Math.floor(diff / values[x]);
 
                 if (amount >= 1) {
-                    str += `${amount + x + (amount > 1 ? 's' : '')  } `;
+                    str += `${amount + x + (amount > 1 ? 's' : '')} `;
                     diff -= amount * values[x];
                 }
             }
@@ -979,7 +979,7 @@ function initwrapper() {
                 });
 
                 if (after) {
-                    var URL = `${modMineURL  }&after=${  after}`;
+                    var URL = `${modMineURL}&after=${after}`;
                     getSubs(URL);
                 } else {
                     TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
@@ -993,7 +993,7 @@ function initwrapper() {
                     // Go!
                     while (getModSubsCallbacks.length > 0) {
                     // call them in the order they were added
-                        $.log(`calling callback ${  getModSubsCallbacks[0].name}`, false, SHORTNAME);
+                        $.log(`calling callback ${getModSubsCallbacks[0].name}`, false, SHORTNAME);
                         getModSubsCallbacks[0]();
                         getModSubsCallbacks.splice(0, 1); // pop first element
                     }
@@ -1074,7 +1074,7 @@ function initwrapper() {
                 var idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
 
                 subreddit = $body.find('.ThreadTitle__community').text();
-                permalink = ($threadBase.find('.m-link').length ? `https://mod.reddit.com${  $threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${  browserUrl.match(idRegex)[1]}`);
+                permalink = ($threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`);
                 id = browserUrl.match(idRegex)[1];
 
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
@@ -1197,7 +1197,7 @@ function initwrapper() {
                 url: permalink,
                 domain: domain,
                 id: id,
-                body: `> ${  body.split('\n').join('\n> ')}`,
+                body: `> ${body.split('\n').join('\n> ')}`,
                 raw_body: body,
                 uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
                 approved_by: approved_by[1],
@@ -1209,9 +1209,9 @@ function initwrapper() {
                 banned_by: banned_by,
                 spam: spam,
                 ham: ham,
-                rules: subreddit ? `${TBUtils.baseDomain  }/r/${  subreddit  }/about/rules` : '',
-                sidebar: subreddit ? `${TBUtils.baseDomain  }/r/${  subreddit  }/about/sidebar` : '',
-                wiki: subreddit ? `${TBUtils.baseDomain  }/r/${  subreddit  }/wiki/index` : '',
+                rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
                 mod: TBUtils.logged
             };
             //$.log(info, false, SHORTNAME);
@@ -1221,7 +1221,7 @@ function initwrapper() {
         TBUtils.replaceTokens = function (info, content) {
             $.log(info, false, SHORTNAME);
             for (var i in info) {
-                var pattern = new RegExp(`{${  i  }}`, 'mig');
+                var pattern = new RegExp(`{${i}}`, 'mig');
                 content = content.replace(pattern, info[i]);
             }
 
@@ -1301,7 +1301,7 @@ function initwrapper() {
                         var $body = $('body'),
                             ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                             ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
-                        $.log(`ratelimitRemaining: ${  ratelimitRemaining  } ratelimitReset: ${  ratelimitReset / 60}`, false, SHORTNAME);
+                        $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                         if (!$body.find('#ratelimit-counter').length) {
                             $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
@@ -1325,9 +1325,9 @@ function initwrapper() {
                                 var minutes = Math.floor(count / 60);
                                 var seconds = count - minutes * 60;
 
-                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${  minutes  } minutes and ${  seconds  } seconds before resuming operations.</b>\
+                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>\
                     <br><br>\
-                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${  ratelimitRemaining  } requests</i>. We are currently trying to process <i>${  parseInt(chunkSize)  } items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
                     `);
                             }
 
@@ -1460,7 +1460,7 @@ function initwrapper() {
                 function (status, jqxhr) {
                     var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                         ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
-                    $.log(`ratelimitRemaining: ${  ratelimitRemaining  } ratelimitReset: ${  ratelimitReset / 60}`, false, SHORTNAME);
+                    $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                     if (typeof callback !== 'undefined') {
                         callback({
@@ -1479,7 +1479,7 @@ function initwrapper() {
 
         TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
             if (reason) {
-                reason = `"${  reason  }" via toolbox`;
+                reason = `"${reason}" via toolbox`;
             } else {
                 reason = 'updated via toolbox';
             }
@@ -1490,7 +1490,7 @@ function initwrapper() {
                 data = JSON.stringify(data);
             }
 
-            $.log(`Posting /r/${  subreddit  }/api/wiki/edit/${  page}`, false, SHORTNAME);
+            $.log(`Posting /r/${subreddit}/api/wiki/edit/${page}`, false, SHORTNAME);
 
 
             // If we update automoderator we want to replace any tabs with four spaces.
@@ -1498,7 +1498,7 @@ function initwrapper() {
                 data = data.replace(/\t/g, '    ');
             }
 
-            $.post(`${TBUtils.baseDomain  }/r/${  subreddit  }/api/wiki/edit`, {
+            $.post(`${TBUtils.baseDomain}/r/${subreddit}/api/wiki/edit`, {
                 content: data,
                 page: page,
                 reason: reason,
@@ -1523,7 +1523,7 @@ function initwrapper() {
 
 
                     // Set page access to 'mod only'.
-                        $.post(`${TBUtils.baseDomain  }/r/${  subreddit  }/wiki/settings/`, {
+                        $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
                             page: page,
                             listed: true, //hrm, may need to make this a config setting.
                             permlevel: 2,
@@ -1533,7 +1533,7 @@ function initwrapper() {
                         // Super extra double-secret secure, just to be safe.
                             .fail(function (err) {
                                 alert('error setting wiki page to mod only access');
-                                window.location = `https://www.reddit.com/r/${  subreddit  }/wiki/settings/${  page}`;
+                                window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
                             });
 
                     }, 500);
@@ -1555,7 +1555,7 @@ function initwrapper() {
 
         TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
-            $.ajax(`${TBUtils.baseDomain  }/r/${  subreddit  }/wiki/${  page  }.json`, {
+            $.ajax(`${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`, {
                 dataType: 'json',
                 dataFilter: function (data, type) {
                 //TODO: right now a lot of functions implicitly rely on reddit
@@ -1600,7 +1600,7 @@ function initwrapper() {
 
                 })
                 .fail(function (jqXHR, textStatus, e) {
-                    $.log(`Wiki error (${  subreddit  }/${  page  }): ${  e}`, false, SHORTNAME);
+                    $.log(`Wiki error (${subreddit}/${page}): ${e}`, false, SHORTNAME);
                     if (jqXHR.responseText === undefined) {
                         callback(TBUtils.WIKI_PAGE_UNKNOWN);
                         return;
@@ -1618,7 +1618,7 @@ function initwrapper() {
 
 
         TBUtils.redditLogin = function (uname, pass, remeber, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/login`, {
+            $.post(`${TBUtils.baseDomain}/api/login`, {
                 api_type: 'json',
                 passwd: pass,
                 user: uname,
@@ -1637,7 +1637,7 @@ function initwrapper() {
 
 
         TBUtils.getBanState = function (subreddit, user, callback) {
-            $.get(`${TBUtils.baseDomain  }/r/${  subreddit  }/about/banned/.json`, {user: user}, function (data) {
+            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
                 var banned = data.data.children;
 
                 // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -1651,7 +1651,7 @@ function initwrapper() {
 
 
         TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/flair`, {
+            $.post(`${TBUtils.baseDomain}/api/flair`, {
                 api_type: 'json',
                 link: postLink,
                 text: text,
@@ -1670,7 +1670,7 @@ function initwrapper() {
         };
 
         TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/flair`, {
+            $.post(`${TBUtils.baseDomain}/api/flair`, {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
@@ -1700,7 +1700,7 @@ function initwrapper() {
                 }
             }
 
-            $.post(`${TBUtils.baseDomain  }/api/friend`, {
+            $.post(`${TBUtils.baseDomain}/api/friend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -1721,7 +1721,7 @@ function initwrapper() {
         };
 
         TBUtils.unfriendUser = function (user, action, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/unfriend`, {
+            $.post(`${TBUtils.baseDomain}/api/unfriend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -1739,7 +1739,7 @@ function initwrapper() {
         };
 
         TBUtils.distinguishThing = function (id, sticky, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/distinguish/yes`, {
+            $.post(`${TBUtils.baseDomain}/api/distinguish/yes`, {
                 id: id,
                 sticky: sticky,
                 uh: TBUtils.modhash
@@ -1756,7 +1756,7 @@ function initwrapper() {
 
 
         TBUtils.approveThing = function (id, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/approve`, {
+            $.post(`${TBUtils.baseDomain}/api/approve`, {
                 id: id,
                 uh: TBUtils.modhash
             })
@@ -1771,7 +1771,7 @@ function initwrapper() {
         };
 
         TBUtils.removeThing = function (id, spam, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/remove`, {
+            $.post(`${TBUtils.baseDomain}/api/remove`, {
                 uh: TBUtils.modhash,
                 id: id,
                 spam: spam
@@ -1787,7 +1787,7 @@ function initwrapper() {
         };
 
         TBUtils.lockThread = function (id, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/lock`, {
+            $.post(`${TBUtils.baseDomain}/api/lock`, {
                 id: id,
                 uh: TBUtils.modhash
             })
@@ -1802,7 +1802,7 @@ function initwrapper() {
         };
 
         TBUtils.unlockThread = function (id, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/unlock`, {
+            $.post(`${TBUtils.baseDomain}/api/unlock`, {
                 uh: TBUtils.modhash,
                 id: id
             })
@@ -1821,7 +1821,7 @@ function initwrapper() {
                 state = true;
             }
 
-            $.post(`${TBUtils.baseDomain  }/api/set_subreddit_sticky`, {
+            $.post(`${TBUtils.baseDomain}/api/set_subreddit_sticky`, {
                 id: id,
                 state: state,
                 uh: TBUtils.modhash
@@ -1841,7 +1841,7 @@ function initwrapper() {
         };
 
         TBUtils.postComment = function (parent, text, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/comment`, {
+            $.post(`${TBUtils.baseDomain}/api/comment`, {
                 parent: parent,
                 uh: TBUtils.modhash,
                 text: text,
@@ -1849,19 +1849,19 @@ function initwrapper() {
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to post comment to on ${  parent}`, false, SHORTNAME);
+                        $.log(`Failed to post comment to on ${parent}`, false, SHORTNAME);
                         $.log(response.json.fails, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
                             callback(false, response.json.errors);
                         return;
                     }
 
-                    $.log(`Successfully posted comment on ${  parent}`, false, SHORTNAME);
+                    $.log(`Successfully posted comment on ${parent}`, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
                 .fail(function (error) {
-                    $.log(`Failed to post link to on${  parent}`, false, SHORTNAME);
+                    $.log(`Failed to post link to on${parent}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(false, error);
@@ -1869,7 +1869,7 @@ function initwrapper() {
         };
 
         TBUtils.postLink = function (link, title, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/submit`, {
+            $.post(`${TBUtils.baseDomain}/api/submit`, {
                 kind: 'link',
                 resubmit: 'true',
                 url: link,
@@ -1881,19 +1881,19 @@ function initwrapper() {
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to post link to /r/${  subreddit}`, false, SHORTNAME);
+                        $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
                             callback(false, response.json.errors);
                         return;
                     }
 
-                    $.log(`Successfully posted link to /r/${  subreddit}`, false, SHORTNAME);
+                    $.log(`Successfully posted link to /r/${subreddit}`, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
                 .fail(function (error) {
-                    $.log(`Failed to post link to /r/${  subreddit}`, false, SHORTNAME);
+                    $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(false, error);
@@ -1901,7 +1901,7 @@ function initwrapper() {
         };
 
         TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/compose`, {
+            $.post(`${TBUtils.baseDomain}/api/compose`, {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
                 text: message,
@@ -1911,19 +1911,19 @@ function initwrapper() {
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to send link to /u/${  user}`, false, SHORTNAME);
+                        $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
                             callback(false, response.json.errors);
                         return;
                     }
 
-                    $.log(`Successfully send link to /u/${  user}`, false, SHORTNAME);
+                    $.log(`Successfully send link to /u/${user}`, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
                 .fail(function (error) {
-                    $.log(`Failed to send link to /u/${  user}`, false, SHORTNAME);
+                    $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined')
                         callback(false, error);
@@ -1931,7 +1931,7 @@ function initwrapper() {
         };
 
         TBUtils.sendPM = function (to, subject, message, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/compose`, {
+            $.post(`${TBUtils.baseDomain}/api/compose`, {
                 to: to,
                 uh: TBUtils.modhash,
                 subject: subject,
@@ -1948,7 +1948,7 @@ function initwrapper() {
         };
 
         TBUtils.markMessageRead = function (id, callback) {
-            $.post(`${TBUtils.baseDomain  }/api/read_message`, {
+            $.post(`${TBUtils.baseDomain}/api/read_message`, {
                 api_type: 'json',
                 id: id,
                 uh: TBUtils.modhash
@@ -1956,7 +1956,7 @@ function initwrapper() {
         };
 
         TBUtils.aboutUser = function (user, callback) {
-            $.get(`${TBUtils.baseDomain  }/user/${  user  }/about.json`, {
+            $.get(`${TBUtils.baseDomain}/user/${user}/about.json`, {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
@@ -1970,7 +1970,7 @@ function initwrapper() {
         };
 
         TBUtils.getLastActive = function(user, callback){
-            $.get(`${TBUtils.baseDomain  }/user/${  user  }.json?limit=1&sort=new`, {
+            $.get(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
@@ -1984,7 +1984,7 @@ function initwrapper() {
         };
 
         TBUtils.getRules = function (sub, callback) {
-            $.get(`${TBUtils.baseDomain  }/r/${  sub  }/about/rules.json`, {
+            $.get(`${TBUtils.baseDomain}/r/${sub}/about/rules.json`, {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
@@ -1999,7 +1999,7 @@ function initwrapper() {
 
         TBUtils.getReportReasons = function (postURL, callback) {
             $.log('getting reports', false, SHORTNAME);
-            $.get(`${TBUtils.baseDomain + postURL  }.json?limit=1`, {
+            $.get(`${TBUtils.baseDomain + postURL}.json?limit=1`, {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
@@ -2048,8 +2048,8 @@ function initwrapper() {
                 }
 
                 if (TBUtils.domain != 'www') {
-                    TBui.textFeedback(`Cannot import from ${  TBUtils.domain  }.reddit.com.`);
-                    $.log(`Cannot import from ${  TBUtils.domain  }.reddit.com.`, false, SHORTNAME);
+                    TBui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`);
+                    $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;
                 }
 
@@ -2080,7 +2080,7 @@ function initwrapper() {
             for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
             // int/hash to hex
-            for (var i = 0, color = '#'; i < 3; color += (`00${  ((hash >> i++ * 8) & 0xFF).toString(16)}`).slice(-2));
+            for (var i = 0, color = '#'; i < 3; color += (`00${((hash >> i++ * 8) & 0xFF).toString(16)}`).slice(-2));
 
             return color;
         };
@@ -2163,7 +2163,7 @@ function initwrapper() {
         TBUtils.getReasonsFromCSS = function (sub, callback) {
 
         // If not, build a new one, getting the XML from the stylesheet
-            $.get(`${TBUtils.baseDomain  }/r/${  sub  }/about/stylesheet.json`).done(function (response) {
+            $.get(`${TBUtils.baseDomain}/r/${sub}/about/stylesheet.json`).done(function (response) {
                 if (!response.data) {
                     callback(false);
                     return;
@@ -2255,7 +2255,7 @@ function initwrapper() {
 
         // private functions
         function setWikiPrivate(subreddit, page, failAlert) {
-            $.post(`${TBUtils.baseDomain  }/r/${  subreddit  }/wiki/settings/`, {
+            $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
                 page: page,
                 listed: true, //hrm, may need to make this a config setting.
                 permlevel: 2,
@@ -2266,7 +2266,7 @@ function initwrapper() {
                 // used if it is important for the user to know that a wiki page has not been set to private.
                     if (failAlert) {
                         alert('error setting wiki page to mod only access');
-                        window.location = `https://www.reddit.com/r/${  subreddit  }/wiki/settings/${  page}`;
+                        window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
                     } else {
                         $.log('error setting wiki page to mod only access');
                     }
@@ -2275,7 +2275,7 @@ function initwrapper() {
 
 
         function getToolboxDevs() {
-            $.getJSON(`${TBUtils.baseDomain  }/r/toolbox/about/moderators.json`).done(function (resp) {
+            $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(function (resp) {
 
                 var children = resp.data.children,
                     devs = [];
@@ -2330,7 +2330,7 @@ function initwrapper() {
                     if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
                     $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
 
-                    $.log(`TBNewThings firing from: ${  $target.attr('class')}`, false, SHORTNAME);
+                    $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
 
                     // Wait a sec for stuff to load.
                     setTimeout(function () {
@@ -2473,7 +2473,7 @@ function initwrapper() {
                 // Custom FF nag for updates.
                 if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
-                        if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${  resp.ffVersion  }.xpi`);
+                        if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
                     });
                     return; //don't spam the user with notes until they have the current version.
                 }
@@ -2481,7 +2481,7 @@ function initwrapper() {
                 // Custom Safari nag for updates.
                 if (resp.safariVersion > TBUtils.shortVersion && TBUtils.browser == SAFARI && TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Safari!  Click here to update.', function (clicked) {
-                        if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${  resp.safariVersion  }.safariextz`);
+                        if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.safariVersion}.safariextz`);
                     });
                     return; //don't spam the user with notes until they have the current version.
                 }

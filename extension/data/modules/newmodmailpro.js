@@ -255,31 +255,31 @@ function newmodmailpro() {
         // let's replace urls.
         switch(modmailLink) {
         case 'all_modmail':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }all`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
 
             break;
         case 'new':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }new`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}new`);
 
             break;
         case 'in_progress':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }inprogress`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}inprogress`);
 
             break;
         case 'archived':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }archived`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}archived`);
 
             break;
         case 'highlighted':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }highlighted`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}highlighted`);
 
             break;
         case 'mod_discussions':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }mod`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}mod`);
 
             break;
         case 'notifications':
-            $newModmailLinkElement.attr('href', `${newModmailBaseUrl  }notifications`);
+            $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
 
         }
 

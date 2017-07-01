@@ -42,7 +42,7 @@ function tbmodule() {
 
                         // lock 'n load
                         if (module.setting('enabled')) {
-                            $.log(`Loading ${  module.name  } module`, false, 'TBinit');
+                            $.log(`Loading ${module.name} module`, false, 'TBinit');
                             module.init();
                         }
 
@@ -75,14 +75,14 @@ function tbmodule() {
                 lastExport = self.modules['Modbar'].setting('lastExport'),
                 showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
                 lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
-                lastExportLabel = (lastExport === 0) ? 'Never' : `${lastExportDays  } days ago`,
+                lastExportLabel = (lastExport === 0) ? 'Never' : `${lastExportDays} days ago`,
                 lastExportState = '';
 
             if (lastExportDays > 30 || lastExport === 0) {
                 lastExportState = 'sad';
 
                 if (showExportReminder && settingSub !== '' && lastExport !== 0) {
-                    TB.ui.textFeedback(`Last toolbox settings backup: ${  lastExportLabel}`, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
+                    TB.ui.textFeedback(`Last toolbox settings backup: ${lastExportLabel}`, TB.ui.FEEDBACK_NEGATIVE, 3000, TB.ui.DISPLAY_BOTTOM);
                 }
             } else if (lastExportDays < 15) {
                 lastExportState = 'happy';
@@ -97,7 +97,7 @@ function tbmodule() {
         <p id="tb-toolbox-{{settingName}}" style="{{display}}">\
             {{content}}&nbsp;\
             <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
-                <img src="data:image/png;base64,${  TB.ui.iconLink  }">\
+                <img src="data:image/png;base64,${TB.ui.iconLink}">\
             </a>&nbsp;\
         </p>\
         <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
@@ -111,49 +111,49 @@ function tbmodule() {
                     settingName: 'settingssub',
                     content: `\
                         Backup/restore toolbox settings to a wiki page:<br>\
-                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${  TBUtils.htmlEncode(unescape(settingSub))  }">\
+                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">\
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">\
                         <input class="tb-settings-import tb-action-button" type="button" value="restore">\
                         <b> Important:</b> This will reload the page without saving!\
-                        <label class="backup-warning ${  lastExportState  }">Last backup: <b>${  lastExportLabel  }</b></label>\
+                        <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>\
                         `,
                     display: ''
                 },
                 {
                     settingName: 'showexportreminder',
-                    content: `<label><input type="checkbox" id="showExportReminder" ${  (showExportReminder) ? 'checked' : ''  }> Show reminder after 30 days of no backup.</label>`,
+                    content: `<label><input type="checkbox" id="showExportReminder" ${(showExportReminder) ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
                     display: ''
                 },
                 {
                     settingName: 'debugmode',
-                    content: `<label><input type="checkbox" id="debugMode" ${  (debugMode) ? 'checked' : ''  }> Enable debug mode</label>`,
+                    content: `<label><input type="checkbox" id="debugMode" ${(debugMode) ? 'checked' : ''}> Enable debug mode</label>`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
                     settingName: 'browserconsole',
-                    content: `<label><input type="checkbox" id="browserConsole" ${  (browserConsole) ? 'checked' : ''  }> Use browser's console</label>`,
+                    content: `<label><input type="checkbox" id="browserConsole" ${(browserConsole) ? 'checked' : ''}> Use browser's console</label>`,
                     display: (debugMode) ? '' : dispalyNone
                 },
                 {
                     settingName: 'betamode',
-                    content: `<label><input type="checkbox" id="betaMode" ${  (betaMode) ? 'checked' : ''  }> Enable beta features</label>`,
+                    content: `<label><input type="checkbox" id="betaMode" ${(betaMode) ? 'checked' : ''}> Enable beta features</label>`,
                     display: ''
                 },
                 {
                     settingName: 'advancedmode',
-                    content: `<label><input type="checkbox" id="advancedMode" ${  (advancedMode) ? 'checked' : ''  }> Show advanced settings</label>`,
+                    content: `<label><input type="checkbox" id="advancedMode" ${(advancedMode) ? 'checked' : ''}> Show advanced settings</label>`,
                     display: ''
                 },
                 {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
-                        <input type="text" name="longLength" value="${  longLength  }">`,
+                        <input type="text" name="longLength" value="${longLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>\
-                      <input type="text" name="shortLength" value="${  shortLength  }">`,
+                      <input type="text" name="shortLength" value="${shortLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
@@ -180,7 +180,7 @@ function tbmodule() {
                 var $this = $(this),
                     tbSet = $this.attr('data-setting');
 
-                var $inputSetting = $(`.tb-setting-input-${  tbSet}`);
+                var $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
                 if($inputSetting.is(':visible')) {
                     $this.css('opacity', '0.5');
@@ -214,8 +214,8 @@ function tbmodule() {
                     help_page: 'about',
                     id: 'about',
                     content: `\
-                <h1 id="tb-random-about-quote">"${  TBUtils.RandomQuote  }"</h1>\
-                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v${  TBUtils.toolboxVersion  }: "${  TBUtils.releaseName  }"</a>\
+                <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>\
+                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>\
                     <h3> made and maintained by: </h3>\
                     <table class="tb-about-credits">\
                         <tr>\
@@ -267,8 +267,8 @@ function tbmodule() {
                     <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
                     <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>\
-                    <p ${  (debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" '  }>\
-                        <label><input type="checkbox" id="devMode" ${  (devMode) ? 'checked' : ''  }> DEVMODE: DON'T EVER ENABLE THIS!</label>\
+                    <p ${(debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" '}>\
+                        <label><input type="checkbox" id="devMode" ${(devMode) ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>\
                     </p>`
                 }
             ];
@@ -286,13 +286,13 @@ function tbmodule() {
                 // overlay main class
                 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
                 // optional, overriding single footer
-                `<input class="tb-save tb-action-button" type="button" value="save">${  TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
+                `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
 
             $settingsDialog.on('click', '.tb-help-main', function (e) {
                 var settingsDialog = e.delegateTarget;
                 var page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
-                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${  page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
             $settingsDialog.on('click', '.buttons .close', function (e) {
@@ -437,7 +437,7 @@ function tbmodule() {
 
             $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
                 var module = $(this).attr('data-module');
-                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${  module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+                window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
 
@@ -488,8 +488,8 @@ function tbmodule() {
 
                     var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
                         moduleIsEnabled = false,
-                        $tab = $(`<a href="javascript:;" class="tb-window-content-${  module.shortname.toLowerCase()  }" data-module="${  module.shortname.toLowerCase()  }">${  module.name  }</a>`),
-                        $settings = $(`<div class="tb-window-tab ${  module.shortname.toLowerCase()  }" style="display: none;"><div class="tb-window-content"></div></div>`);
+                        $tab = $(`<a href="javascript:;" class="tb-window-content-${module.shortname.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
+                        $settings = $(`<div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;"><div class="tb-window-content"></div></div>`);
 
                     $tab.data('module', module.shortname);
                     $tab.data('help_page', module.shortname);
@@ -512,16 +512,16 @@ function tbmodule() {
                             var name = module.shortname.toLowerCase();
 
                             var $setting = $(`\
-                            <p id="tb-toggle_modules-${  name  }">\
-                                <label><input type="checkbox" id="${  module.shortname  }Enabled" ${  module.setting(setting) ? ' checked="checked"' : ''  }>${  options.title  }</label>\
-                                        <a class="tb-help-toggle" href="javascript:;" data-module="${  module.shortname  }" title="Help">?</a>\
-                                <a data-setting="${  name  }" href="javascript:;" class="tb-module-setting-link tb-setting-link-${  name  }">\
-                                    <img src="data:image/png;base64,${  TB.ui.iconLink  }">\
+                            <p id="tb-toggle_modules-${name}">\
+                                <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>\
+                                        <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>\
+                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}">\
+                                    <img src="data:image/png;base64,${TB.ui.iconLink}">\
                                 </a>&nbsp;\
                             </p>\
-                            <div style="display: none;" class="tb-setting-input tb-setting-input-${  name  }">\
-                                <input type="text" readonly="readonly" value="[${  name  }](#?tbsettings=toggle_modules&setting=${  name  })"><br>\
-                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${  name  }">\
+                            <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">\
+                                <input type="text" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>\
+                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">\
                             </div>\
                         `);
 
@@ -577,9 +577,9 @@ function tbmodule() {
                         moduleHasSettingTab = true;
 
                         // blank slate
-                        var $setting = $(`<p ${  (displaySetting) ? '' : 'style="display:none;"'  }></p>`),
+                        var $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`),
                             execAfterInject = [],
-                            title = (options.title) ? options.title : `(${  setting  })`,
+                            title = (options.title) ? options.title : `(${setting})`,
                             noWrap = false;
 
                         // automagical handling of input types
@@ -590,52 +590,52 @@ function tbmodule() {
 
                             $setting.append(TB.ui.actionButton(title, options.class));
 
-                            $body.on('click', `.${  options.class}`, function () {
+                            $body.on('click', `.${options.class}`, function () {
                                 TB.utils.sendEvent(event);
                             });
 
                             break;
                         case 'boolean':
-                            $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(` ${  title}`));
+                            $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(` ${title}`));
                             break;
                         case 'number':
-                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${  title}`));
+                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${title}`));
                             break;
                         case 'array':
                         case 'JSON':
                             var json = JSON.stringify(module.setting(setting), null, 0);
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
                         case 'code':
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="25" cols="80">').val(module.setting(setting)));
                             break;
                         case 'subreddit':
                         case 'text':
                         case 'list':
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append($('<input type="text" />').val(module.setting(setting)));
                             break;
                         case 'sublist':
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
                             break;
                         case 'map':
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
                             break;
                         case 'selector':
                             var v = module.setting(setting);
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
                         case 'syntaxTheme':
-                            $setting.append(`${title  }:<br/>`);
+                            $setting.append(`${title}:<br/>`);
                             $setting.append(TB.modules.Syntax.themeSelect);
-                            $setting.find('select').attr('id', `${module.shortname  }_syntax_theme`);
+                            $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
                             $setting.append($(`\
-                    <textarea class="syntax-example" id="${  module.shortname  }_syntax_theme_css">\
+                    <textarea class="syntax-example" id="${module.shortname}_syntax_theme_css">\
 /* This is just some example code*/\n\
 body {\n\
 font-family: sans-serif, "Helvetica Neue", Arial;\n\
@@ -657,7 +657,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 $body.addClass('mod-syntax');
 
                                 var enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
-                                $(`#${ module.shortname  }_syntax_theme_css`).each(function(index, elem){
+                                $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem){
 
                                     // Editor setup.
                                     editorSettings = CodeMirror.fromTextArea(elem, {
@@ -687,8 +687,8 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
 
 
-                                $(`#${  module.shortname  }_syntax_theme`).val(module.setting(setting));
-                                $body.on('change keydown', `#${  module.shortname  }_syntax_theme`, function () {
+                                $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
+                                $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
                                     var thingy = $(this);
                                     setTimeout(function () {
                                         editorSettings.setOption('theme', thingy.val());
@@ -709,7 +709,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
 
                             $setting = $('<div>').attr('class', 'achievements');
                             $setting.append($('<h1>').text('Mod Achievements'));
-                            $setting.append($('<p>').text(`${unlocked  } of ${  total  } unlocked`));
+                            $setting.append($('<p>').text(`${unlocked} of ${total} unlocked`));
                             $setting.append('<br />');
 
                             var save = module.setting(setting);
@@ -731,7 +731,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                         aClass = 'unlocked';
                                     }
 
-                                    var $a = $('<div>').attr('class', `achievement ${  aClass}`);
+                                    var $a = $('<div>').attr('class', `achievement ${aClass}`);
                                     $a.append($('<p>').attr('class', 'title').html(aTitle));
                                     $a.append($('<p>').attr('class', 'description').text(aDescr));
                                     $list.append($a);
@@ -744,36 +744,36 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                             // what in the world would we do here? maybe raw JSON?
                             // yes, we do raw JSON
                             var json = JSON.stringify(module.setting(setting), null, 0);
-                            $setting.append(`${title  }:<br />`);
+                            $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                             break;
                         }
                         if(!noWrap) {
                             var moduleName = module.shortname.toLowerCase(),
                                 settingName = setting.toLowerCase(),
-                                linkClass = `tb-setting-link-${ settingName}`,
-                                inputClass = `tb-setting-input-${ settingName}`,
-                                redditLink = `[${ setting }](#?tbsettings=${ moduleName }&setting=${ settingName  })`,
-                                internetLink = `https://www.reddit.com/#?tbsettings=${ moduleName }&setting=${ settingName}`;
+                                linkClass = `tb-setting-link-${settingName}`,
+                                inputClass = `tb-setting-input-${settingName}`,
+                                redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
+                                internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
 
-                            $setting.append(`&nbsp;<a ${  (displaySetting) ? '' : 'style="display:none;"' 
-                            } data-setting="${ settingName }" href="javascript:;"" class="tb-setting-link ${ linkClass }"><img src="data:image/png;base64,${  TB.ui.iconLink  }" /></a>` +
-                            `&nbsp;<div style="display:none;" class="tb-setting-input ${ inputClass }">` +
-                            `<input  type="text" readonly="readonly" value="${ redditLink }"/><br>` +
-                            `<input  type="text" readonly="readonly" value="${ internetLink }"/></div>`);
+                            $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"' 
+                            } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass}"><img src="data:image/png;base64,${TB.ui.iconLink}" /></a>` +
+                            `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
+                            `<input  type="text" readonly="readonly" value="${redditLink}"/><br>` +
+                            `<input  type="text" readonly="readonly" value="${internetLink}"/></div>`);
 
                             $setting = $('<span>').attr('class', 'setting-item').append($setting);
-                            $setting.attr('id', `tb-${  moduleName  }-${  settingName}`);
+                            $setting.attr('id', `tb-${moduleName}-${settingName}`);
                             $setting.attr('data-module', module.shortname);
                             $setting.attr('data-setting', setting);
 
                             // TODO: somebody document this
-                            $body.on('click', `.${  linkClass}`, function () {
+                            $body.on('click', `.${linkClass}`, function () {
                                 var $this = $(this),
                                     tbSet = $this.attr('data-setting');
 
-                                var $inputSetting = $(`.tb-setting-input-${  tbSet}`);
+                                var $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
                                 if($inputSetting.is(':visible')) {
                                     $inputSetting.hide();
@@ -842,11 +842,11 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                     // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
                     $('.tb-settings').bindFirst('click', '.tb-save', function (event) {
                     // handle module enable/disable on Toggle Modules first
-                        var $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${  module.shortname  }Enabled`).prop('checked');
+                        var $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
                         module.setting('enabled', $moduleEnabled);
 
                         // handle the regular settings tab
-                        var $settings_page = $(`.tb-window-tab.${  module.shortname.toLowerCase()  } .tb-window-content`);
+                        var $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
 
                         $settings_page.find('span.setting-item').each(function () {
                             var $this = $(this),
@@ -902,7 +902,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 value = $this.find('.selector').val();
                                 break;
                             case 'syntaxTheme':
-                                value = $this.find(`#${  module.shortname  }_syntax_theme`).val();
+                                value = $this.find(`#${module.shortname}_syntax_theme`).val();
                                 break;
                             default:
                                 value = JSON.parse($this.find('textarea').val());
@@ -941,7 +941,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                 'default': false,
                 'betamode': false, // optional
                 'hidden': false, // optional
-                'title': `Enable ${  this.name}`
+                'title': `Enable ${this.name}`
             });
 
         // PUBLIC: settings interface
@@ -1021,9 +1021,9 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
             this.log('--------------------------');
             var loopthis = this;
             this.getProfiles().forEach(function (profile, key) {
-                loopthis.log(`${key  }:`);
-                loopthis.log(`\tTime  = ${  profile.time.toFixed(4)}`);
-                loopthis.log(`\tCalls = ${  profile.calls}`);
+                loopthis.log(`${key}:`);
+                loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
+                loopthis.log(`\tCalls = ${profile.calls}`);
             });
             this.log('--------------------------');
         };

@@ -60,10 +60,10 @@ function modbutton() {
                 // if that doesn't work either stick it to the right of the first button
                     $insertionPoint = $thing.find('.buttons > li:first');
                 }
-                $insertionPoint.after(`<li><a href="javascript:;" title="${ titleText }" class="global-mod-button">${  self.buttonName  }</a></li>`);
+                $insertionPoint.after(`<li><a href="javascript:;" title="${titleText}" class="global-mod-button">${self.buttonName}</a></li>`);
             } else {
                 $thing.find('.userattrs:first')
-                    .after(`&nbsp;<a href="javascript:;" title="${ titleText }" class="global-mod-button tb-bracket-button">${  self.buttonName  }</a>`);
+                    .after(`&nbsp;<a href="javascript:;" title="${titleText}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
             }
         }
     };
@@ -74,13 +74,13 @@ function modbutton() {
         if (TB.utils.isEditUserPage) {
 
             $('span.user:not(:first)').each(function () {
-                $(this).find('a:first').after(`<span> - <a href="javascript:;" title="${ titleText }" class="global-mod-button">${  self.buttonName  }</a></span>`);
+                $(this).find('a:first').after(`<span> - <a href="javascript:;" title="${titleText}" class="global-mod-button">${self.buttonName}</a></span>`);
             });
 
             return;
         }
         if ($body.find('.ThreadViewer').length > 0) {
-            var modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${  self.buttonName  }</a></span></span>`;
+            var modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
 
             var $sidebar = $body.find('.ThreadViewer__infobar');
 
@@ -130,14 +130,14 @@ function modbutton() {
                 if ($.inArray(subreddit, TB.utils.mySubs) != -1
                 && subreddit != currentSub
                 ) {
-                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${  this 
-                    }" id="action-${  this  }"><label for="action-${  this  }">&nbsp;&nbsp;/r/${  this  }</label></div>`);
+                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${this 
+                    }" id="action-${this}"><label for="action-${this}">&nbsp;&nbsp;/r/${this}</label></div>`);
                 }
             });
         });
 
         $.each(TB.utils.mySubs, function (i, subreddit) {
-            $popups.find(`select.${  self.OTHER}`)
+            $popups.find(`select.${self.OTHER}`)
                 .append($('<option>', {
                     value: subreddit
                 })
@@ -213,7 +213,7 @@ function modbutton() {
             var positions = TBui.drawPosition(event);
 
             $popup = TB.ui.popup(
-                `Mod Actions  - /u/${  user}`,
+                `Mod Actions  - /u/${user}`,
                 [
                     {
                         title: 'Role',
@@ -222,16 +222,16 @@ function modbutton() {
                         content: `${subreddit
                             ? `\
                 <div class="current-sub">\
-                    <input type="checkbox" class="action-sub" name="action-sub" value="${  subreddit  }" id="action-${  subreddit  }" checked>\
-                    <label for="action-${  subreddit  }">&nbsp;&nbsp;/r/${  subreddit  } (current)</label>\
+                    <input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}" checked>\
+                    <label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit} (current)</label>\
                 </div>`
                             : ''
                         }\
                 <div class="saved-subs">\
                 </div>\
                 <div class="other-subs">\
-                    <input type="checkbox" class="action-sub ${  self.OTHER  }-checkbox name="action-sub" value="${  self.OTHER  }">\
-                    <select class="${  self.OTHER  } tb-action-button inline-button" for="action-${  self.OTHER  }"><option value="${  self.OTHER  }">(select subreddit)</option></select>\
+                    <input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">\
+                    <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>\
                 </div>\
                 <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
                 <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>\
@@ -247,8 +247,8 @@ function modbutton() {
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
                 </select>\
-                <button class="save tb-action-button inline-button">${  self.saveButton  }</button>\
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${  showglobal ? '' : 'style="display:none!important;"'  }>Global Action</button>`
+                <button class="save tb-action-button inline-button">${self.saveButton}</button>\
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? '' : 'style="display:none!important;"'}>Global Action</button>`
                     },
                     {
                         title: 'User Flair',
@@ -273,7 +273,7 @@ function modbutton() {
                 <button class="message-send tb-action-button">Send Message</button>'
                     }
                 ],
-                `<label class="user">${  user  }</label><label class="subreddit">${  subreddit  }</label><label class="thing_id">${  thing_id  }</label>`,
+                `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
                 'mod-popup' // class
             ).appendTo('body')
                 .css({
@@ -347,7 +347,7 @@ function modbutton() {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
-                $.get(`${TBUtils.baseDomain  }/r/${  subreddit  }/about/banned/.json`, {user: user}, function (data) {
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
                     var banned = data.data.children;
                     for (var i = 0; i < banned.length; i++) {
                         if (banned[i].name.toLowerCase() == user.toLowerCase()) {
@@ -363,14 +363,14 @@ function modbutton() {
                             $popup.find('.tb-popup-title').css('color', 'red');
 
                             // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                            $.get(`${TBUtils.baseDomain  }/r/${  subreddit  }/about/log/.json`, {
+                            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
                                 type: 'banuser',
                                 limit: '1000'
                             }, function (data) {
                                 var logged = data.data.children;
                                 for (var i = 0; i < logged.length; i++) {
                                     if (logged[i].data.target_fullname == user_fullname) {
-                                        $popup.find('.current-sub .already-banned a').attr('href', `/u/${  logged[i].data.mod}`).text(logged[i].data.mod);
+                                        $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(logged[i].data.mod);
                                         break;
                                     }
                                 }
@@ -406,8 +406,8 @@ function modbutton() {
             self.updateSavedSubs();
 
             // custom sub changed.
-            $popup.find(`select.${  self.OTHER}`).change(function () {
-                $popup.find(`.${  self.OTHER  }-checkbox`).prop('checked', ($(this).val() !== self.OTHER));
+            $popup.find(`select.${self.OTHER}`).change(function () {
+                $popup.find(`.${self.OTHER}-checkbox`).prop('checked', ($(this).val() !== self.OTHER));
             });
 
             // show/hide ban reason text feild.
@@ -469,7 +469,7 @@ function modbutton() {
                         subreddits.push(subname);
                     }
                     else {
-                        subname = $(`.${  self.OTHER  } option:selected`).val();
+                        subname = $(`.${self.OTHER} option:selected`).val();
                         if (subname !== self.OTHER) {
                             subreddits.push(subname);
 
@@ -490,10 +490,10 @@ function modbutton() {
 
                     let confirmban;
                     if (actionName === 'unban') {
-                        confirmban = confirm(`This will ${  actionName  } /u/${  user  } from every subreddit you moderate.   \nAre you sure?`);
+                        confirmban = confirm(`This will ${actionName} /u/${user} from every subreddit you moderate.   \nAre you sure?`);
                     }
                     else {
-                        confirmban = confirm(`This will ${  actionName  } /u/${  user  } on every subreddit you moderate.   \nAre you sure?`);
+                        confirmban = confirm(`This will ${actionName} /u/${user} on every subreddit you moderate.   \nAre you sure?`);
                     }
 
                     if (confirmban) {
@@ -520,10 +520,10 @@ function modbutton() {
 
             function completeCheck(failedSubs) {
                 var failed = failedSubs.length;
-                self.log(`${failed  } subs failed`);
+                self.log(`${failed} subs failed`);
                 if (failed > 0) {
-                    self.log(`${failed  } subs failed`);
-                    var retry = confirm(`Action complete, however ${  failed  } failed.  Would you like to retry these?`);
+                    self.log(`${failed} subs failed`);
+                    var retry = confirm(`Action complete, however ${failed} failed.  Would you like to retry these?`);
                     if (retry) {
                         self.log('retrying');
                         massAction(failedSubs);
@@ -546,9 +546,9 @@ function modbutton() {
                 TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
                 TBUtils.forEachChunkedRateLimit(subs, 20, function (subreddit) {
-                    TB.ui.textFeedback(`${actionName  }ning /u/${  user  } from /r/${  subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                    self.log(`banning from: ${  subreddit}`);
+                    self.log(`banning from: ${subreddit}`);
                     if (settingState) {
                         TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
                             if (success) {
@@ -624,7 +624,7 @@ function modbutton() {
 
             TBUtils.sendMessage(user, subject, message, subreddit, function (successful, response) {
                 if (!successful) {
-                    $callbackSpan.text(`an error occurred: ${  response[0][1]}`);
+                    $callbackSpan.text(`an error occurred: ${response[0][1]}`);
                     TB.ui.longLoadSpinner(false);
                 }
                 else {
@@ -656,7 +656,7 @@ function modbutton() {
             if (!user || !subreddit)
                 return;
 
-            $.getJSON(`${TBUtils.baseDomain  }/r/${  subreddit  }/api/flairlist.json?name=${  user}`, function (resp) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, function (resp) {
                 if (!resp || !resp.users || resp.users.length < 1) return;
 
                 $textinput.val(resp.users[0].flair_text);

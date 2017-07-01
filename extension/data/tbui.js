@@ -194,11 +194,11 @@
     TBui.DISPLAY_CURSOR = 'cursor';
 
     TBui.button = function button(text, classes) {
-        return `<a href="javascript:;" class="tb-general-button ${ classes }">${ text }</a>`;
+        return `<a href="javascript:;" class="tb-general-button ${classes}">${text}</a>`;
     };
 
     TBui.actionButton = function button(text, classes) {
-        return `<a href="javascript:;" class="tb-action-button ${ classes }">${ text }</a>`;
+        return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
 
     // Popup HTML generator
@@ -213,7 +213,7 @@
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        var $popup = $('<div>').addClass(`tb-popup${  css_class ? ` ${  css_class}` : ''}`);
+        var $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
         if (meta) {
             $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
@@ -253,7 +253,7 @@
                     $popup.find('.tb-popup-tab').hide();
 
                     // show current
-                    $popup.find(`.tb-popup-tab.${  tab.id}`).show();
+                    $popup.find(`.tb-popup-tab.${tab.id}`).show();
                     $(this).addClass('active');
 
                     e.preventDefault();
@@ -267,7 +267,7 @@
                 $button.appendTo($tabs);
 
 
-                var $tab = $('<div>').addClass(`tb-popup-tab ${  tab.id}`);
+                var $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
                 $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
                 $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
 
@@ -324,11 +324,11 @@
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         var $overlay = $(`\
-<div class="tb-page-overlay ${  css_class ? ` ${  css_class}` : ''  }">\
+<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">\
 <div class="tb-window-wrapper">\
     <div class="tb-window-header">\
-        <div class="tb-window-title">${  title  }</div>\
-        <div class="buttons">${  buttons  }<a class="close" href="javascript:;">✕</a></div>\
+        <div class="tb-window-title">${title}</div>\
+        <div class="buttons">${buttons}<a class="close" href="javascript:;">✕</a></div>\
     </div>\
 </div>`);
 
@@ -356,7 +356,7 @@
                     tab.id = tab.id.replace(/\s/g, '_');
                 }
 
-                var $button = $(`<a${  tab.tooltip ? ` title="${  tab.tooltip  }"` : ''  } ${  tab.id ? ` data-module="${  tab.id  }"` : ''  } class="${  tab.id  }" >${  tab.title  } </a>`);
+                var $button = $(`<a${tab.tooltip ? ` title="${tab.tooltip}"` : ''} ${tab.id ? ` data-module="${tab.id}"` : ''} class="${tab.id}" >${tab.title} </a>`);
 
                 $button.data('help_page', tab.help_page);
 
@@ -375,12 +375,12 @@
 
 
                     // show current
-                    $overlay.find(`.tb-window-tab.${  tab.id}`).show();
+                    $overlay.find(`.tb-window-tab.${tab.id}`).show();
 
                     // Only hide and show the footer if we have multiple options for it.
                     if (!single_footer) {
                         $overlay.find('.tb-window-footer').hide();
-                        $overlay.find(`.tb-window-footer.${  tab.id}`).show();
+                        $overlay.find(`.tb-window-footer.${tab.id}`).show();
                     }
 
 
@@ -391,15 +391,15 @@
 
                 $button.appendTo($overlay.find('.tb-window-tabs'));
 
-                var $tab = $(`<div class="tb-window-tab ${  tab.id  }"></div>`);
+                var $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
                 // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
                 if (!single_footer) {
 
-                    $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${  tab.id  }"></div>`).append(tab.footer));
+                    $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
-                    var $footer = $overlay.find(`.tb-window-footer.${  tab.id}`);
+                    var $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
                     if (i == 0) {
                         $footer.show();
                     } else {
@@ -503,20 +503,20 @@
         var $mapInput = $(`<div>\
             <table class="tb-map-input-table">\
                 <thead><tr>\
-                    <td>${  keyLabel  }</td>\
-                    <td>${  valueLabel  }</td>\
+                    <td>${keyLabel}</td>\
+                    <td>${valueLabel}</td>\
                     <td class="tb-map-input-td-remove">remove</td>\
                 </tr></thead>\
                 <tbody></tbody>\
             </table>\
-            <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,${  TBui.iconAdd  }" /></a></div>`);
+            <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconAdd}" /></a></div>`);
 
         var emptyRow = `\
             <tr class="tb-map-input-tr">\
                 <td><input type="text" name="key"></td>\
                 <td><input type="text" name="value"></td>\
                 <td class="tb-map-input-td-remove">\
-                    <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,${  TBui.iconDelete  }" /></a>\
+                    <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>\
                 </td>\
             </tr>`;
 
@@ -537,10 +537,10 @@
             $.each(items, function (key, value) {
                 $item = $(`\
                 <tr class="tb-map-input-tr">\
-                    <td><input type="text" value="${  TBUtils.htmlEncode(unescape(key))  }" name="key"></td>\
-                    <td><input type="text" value="${  TBUtils.htmlEncode(unescape(value))  }" name="value"></td>\
+                    <td><input type="text" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>\
+                    <td><input type="text" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>\
                     <td class="tb-map-input-td-remove">\
-                        <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,${  TBui.iconDelete  }" /></a>\
+                        <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>\
                     </td>\
                 </tr>`);
                 $item.appendTo($mapInput.find('.tb-map-input-table tbody'));
@@ -561,7 +561,7 @@
             $body.find('#tb-feedback-window').remove();
 
             // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-            var feedbackElement = `<div id="tb-feedback-window" class="${  feedbackKind  }"><span class="tb-feedback-text">${  feedbackText  }</span></div>`;
+            var feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
 
             // Add the element to the page.
             $body.append(feedbackElement);
@@ -575,8 +575,8 @@
                     feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
 
                 $feedbackWindow.css({
-                    'margin-left': `-${  feedbackLeftMargin  }px`,
-                    'margin-top': `-${  feedbackTopMargin  }px`
+                    'margin-left': `-${feedbackLeftMargin}px`,
+                    'margin-top': `-${feedbackTopMargin}px`
                 });
                 break;
             case TBui.DISPLAY_BOTTOM:
@@ -620,10 +620,10 @@
                 </style>`);
                 var $body = $('body');
                 if (location.host === 'mod.reddit.com') {
-                    $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${  TBUtils.RandomFeedback  }</span></span></div>`);
+                    $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                     $body.append('<div id="tb-loading"></div>');
                 } else {
-                    $('.footer-parent').append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${  TBUtils.RandomFeedback  }</span></span></div>`);
+                    $('.footer-parent').append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                     $('.footer-parent').append('<div id="tb-loading"></div>');
                 }
                 var $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
@@ -631,8 +631,8 @@
                     randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
 
                 $randomFeedbackWindow.css({
-                    'margin-left': `-${  randomFeedbackLeftMargin  }px`,
-                    'margin-top': `-${  randomFeedbackTopMargin  }px`
+                    'margin-left': `-${randomFeedbackLeftMargin}px`,
+                    'margin-top': `-${randomFeedbackTopMargin}px`
                 });
 
                 TBui.longLoadArray.push('load');

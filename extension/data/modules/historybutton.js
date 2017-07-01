@@ -378,7 +378,7 @@ function historybutton() {
             if ($.isEmptyObject(d.data.children)) {
 
                 if (user.counters.submissions > 0) {
-                    $submissionCount.html(`${user.counters.submissions  }+`);
+                    $submissionCount.html(`${user.counters.submissions}+`);
                 }
                 else {
                     $submissionCount.html(user.counters.submissions);
@@ -624,9 +624,9 @@ function historybutton() {
         // cache the dynamic rx's
             if (!spec.rx) {
                 if (spec.type === TYPE.PATH) {
-                    spec.rx = new RegExp(`${spec.domain  }/${  spec.path || ''  }([\\w-@]+)`);
+                    spec.rx = new RegExp(`${spec.domain}/${spec.path || ''}([\\w-@]+)`);
                 } else if (spec.type === TYPE.SUBDOMAIN) {
-                    spec.rx = new RegExp(`:\/\/([\\w-]+)\.${  spec.domain}`);
+                    spec.rx = new RegExp(`:\/\/([\\w-]+)\.${spec.domain}`);
                 }
             }
 
@@ -635,13 +635,13 @@ function historybutton() {
                 scheme, author_url, provider_url;
 
             if (author) {
-                scheme = `${url.split('://')[0]  }://`;
-                provider_url = `${scheme + spec.domain  }/`;
+                scheme = `${url.split('://')[0]}://`;
+                provider_url = `${scheme + spec.domain}/`;
 
                 if (spec.type === TYPE.PATH) {
                     author_url = provider_url + (spec.path || '') + author;
                 } else if (spec.type === TYPE.SUBDOMAIN) {
-                    author_url = `${scheme + author  }.${  spec.domain}`;
+                    author_url = `${scheme + author}.${spec.domain}`;
                 }
 
                 return {
@@ -736,19 +736,19 @@ function historybutton() {
         rtsNativeLink.className = '.rts-report-clicked';
 
         //Submit to RTS
-        var link = `https://www.reddit.com/user/${  author}`,
-            title = `Overview for ${  author}`;
+        var link = `https://www.reddit.com/user/${author}`,
+            title = `Overview for ${author}`;
 
         TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {
             if (!successful) {
-                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${  submission[0][1]  }</span>`);
+                $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred: ${submission[0][1]}</span>`);
             //$rtsLink.hide();
             } else {
                 if (submission.json.errors.length) {
-                    $rtsLink.after(`<span class="error" style="font-size:x-small">${  submission.json.errors[0][1]  }</error>`);
+                    $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
                     //$rtsLink.hide();
                     if (submission.json.errors[0][0] == 'ALREADY_SUB') {
-                        rtsNativeLink.href = `/r/${  self.SPAM_REPORT_SUB  }/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${  author  }&restrict_sr=on&feature=legacy_search`;
+                        rtsNativeLink.href = `/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`;
                     }
                     return;
                 }
@@ -764,11 +764,11 @@ function historybutton() {
 
                 TBUtils.postComment(submission.json.data.name, commentBody, function (successful, comment) {
                     if (!successful) {
-                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${  comment[0][1]  }</span>`);
+                        $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">an error occurred. ${comment[0][1]}</span>`);
                     //$rtsLink.hide();
                     } else {
                         if (comment.json.errors.length) {
-                            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${  comment.json.errors[1]  }</error>`);
+                            $rtsLink.after(`<span class="error" style="font-size:x-small; cursor: default;">${comment.json.errors[1]}</error>`);
                             //$rtsLink.hide();
                             return;
                         }

@@ -72,7 +72,7 @@ function metricstab() {
         for (var i in links) {
             var url = links[i];
             url = url.replace(/\{subSection\}/g, page.subSection);
-            $metricsDropDown.append(`<li><a href="${  url  }" target="_blank">${  i  }</a></li>`);
+            $metricsDropDown.append(`<li><a href="${url}" target="_blank">${i}</a></li>`);
         }
 
         $listItem.on('click', function () {
@@ -82,8 +82,8 @@ function metricstab() {
                 offsetTop = (offset.top + 20);
 
             $body.find('#tb-metrics-expand-list').css({
-                'left': `${offsetLeft  }px`,
-                'top': `${offsetTop  }px`
+                'left': `${offsetLeft}px`,
+                'top': `${offsetTop}px`
             });
             $tbMetricsList.toggle();
         });

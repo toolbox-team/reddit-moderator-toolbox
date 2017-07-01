@@ -97,14 +97,14 @@ function modmatrix() {
 
         var header = $('#mod-matrix thead');
         header.find('.sorting-icon').remove();
-        $(header.find('th').get(index)).append(`<img src="data:image/png;base64,${  direction == -1 ? self.upSortingIcon : self.downSortingIcon  }" alt="" class="sorting-icon" />`);
+        $(header.find('th').get(index)).append(`<img src="data:image/png;base64,${direction == -1 ? self.upSortingIcon : self.downSortingIcon}" alt="" class="sorting-icon" />`);
     };
 
     self.renderMatrix = function () {
         var siteTable = $('#siteTable');
 
         $('.drop-choices.lightdrop a').each(function () {
-            $(this).attr('href', `${$(this).attr('href')  }#matrix`);
+            $(this).attr('href', `${$(this).attr('href')}#matrix`);
         });
 
         this.resetData();
@@ -126,8 +126,8 @@ function modmatrix() {
         footer.append('<td>Total</td>');
 
         for (var subredditAction in this.subredditActions) {
-            header.append(`<th class="action-cell action-${  subredditAction  }"><a class="modactions ${  subredditAction  }" title="${  this.subredditActions[subredditAction].title  }"></a></th>`);
-            footer.append(`<td class="action-cell action-${  subredditAction  }"><a target="_blank" title="Total ${  this.subredditActions[subredditAction].title  }" href="${  this.subredditUrl  }about/log?type=${  subredditAction  }" class="action-number">0</span></td>`);
+            header.append(`<th class="action-cell action-${subredditAction}"><a class="modactions ${subredditAction}" title="${this.subredditActions[subredditAction].title}"></a></th>`);
+            footer.append(`<td class="action-cell action-${subredditAction}"><a target="_blank" title="Total ${this.subredditActions[subredditAction].title}" href="${this.subredditUrl}about/log?type=${subredditAction}" class="action-number">0</span></td>`);
         }
         header.append('<th>Total</th>');
         header.append('<th class="action-percentage">%</th>');
@@ -180,7 +180,7 @@ function modmatrix() {
         var modFilterCell = $('<div></div>').wrap('<td></td>').hide().attr('id', 'modfilter');
         modFilterCell.append('<div><input type="checkbox" value="" id="modmatrixmodfilter-all" checked="checked" /><label for="modmatrixmodfilter-all">All</label></div>');
         for (var moderator in this.subredditModerators) {
-            modFilterCell.append(`<div style="padding-left: 10px;"><input class=\"mod-filter\" type="checkbox" value="${  moderator  }" id="modmatrixmodfilter-${  moderator  }" /><label for="modmatrixmodfilter-${  moderator  }">${  moderator  }</label></div>`);
+            modFilterCell.append(`<div style="padding-left: 10px;"><input class=\"mod-filter\" type="checkbox" value="${moderator}" id="modmatrixmodfilter-${moderator}" /><label for="modmatrixmodfilter-${moderator}">${moderator}</label></div>`);
         }
         modMatrixSettings.find('table').append(modFilterRow);
         var addButton = $('<a></a>').text('show moderator filter').insertBefore(modFilterCell);
@@ -214,9 +214,9 @@ function modmatrix() {
             var subredditNames = this.subredditName.split('+');
 
             for (var i = 0; i < subredditNames.length; i++) {
-                $.getJSON(`${TBUtils.baseDomain  }/r/${  subredditNames[i]  }/about/moderators.json`, function (moderatorData) {
+                $.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`, function (moderatorData) {
                     for (var j = 0; j < moderatorData.data.children.length; j++) {
-                        $(`#modmatrixmodfilter-${  moderatorData.data.children[j].name}`).prop('checked', 'checked');
+                        $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
                     }
                     if ($('#mod-matrix-settings .mod-filter:not(:checked)').length > 0) {
                         $('#modmatrixmodfilter-all').removeAttr('checked');
@@ -246,7 +246,7 @@ function modmatrix() {
         });
         for (var i = 0; i < actions.length; i++) {
             var action = actions[i];
-            actionFilterCell.append(`<div style="padding-left: 10px;"><input class=\"action-filter\" type="checkbox" value="${  action.className  }" id="modmatrixactionfilter-${  action.className  }" checked="checked" /><label for="modmatrixmodfilter-${  action.className  }">${  action.title  }</label></div>`);
+            actionFilterCell.append(`<div style="padding-left: 10px;"><input class=\"action-filter\" type="checkbox" value="${action.className}" id="modmatrixactionfilter-${action.className}" checked="checked" /><label for="modmatrixmodfilter-${action.className}">${action.title}</label></div>`);
         }
         modMatrixSettings.find('table').append(actionFilterRow);
         var addButton = $('<a></a>').text('show action filter').insertBefore(actionFilterCell);
@@ -276,7 +276,7 @@ function modmatrix() {
         });
 
         // Automatic refresh the table when action filter is changed. Same thing with mod filter, as long as there are fewer than 20 mods
-        modMatrixSettings.find(`.action-filter${  modMatrixSettings.find('.mod-filter').length < 20 ? ', .mod-filter' : ''}`).change(function () {
+        modMatrixSettings.find(`.action-filter${modMatrixSettings.find('.mod-filter').length < 20 ? ', .mod-filter' : ''}`).change(function () {
             self.refreshTable();
         });
 
@@ -379,17 +379,17 @@ function modmatrix() {
 
     self.createModeratorRow = function (moderator) {
         var body = $('#mod-matrix tbody');
-        if (body.find(`tr.moderator-${  moderator}`).length > 0)
+        if (body.find(`tr.moderator-${moderator}`).length > 0)
             return;
-        var row = $('<tr></tr>').addClass(`moderator-${  moderator}`).addClass('mod-row');
+        var row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
 
-        row.append(`<td><a href="/user/${  moderator  }" target="_blank" title="${  moderator  }">${  moderator  }</a></td>`);
+        row.append(`<td><a href="/user/${moderator}" target="_blank" title="${moderator}">${moderator}</a></td>`);
         for (var subredditAction in this.subredditActions) {
-            var td = $(`<td class="action-cell action-${  subredditAction  }"><a title="${  this.subredditActions[subredditAction].title  } actions by ${  moderator  }" target="_blank" class="action-number" href="${  this.subredditUrl  }about/log?type=${  subredditAction  }&mod=${  moderator  }">0</a></td>`);
+            var td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
             row.append(td);
         }
-        row.append(`<td class="action-total"><a class="action-number" target="_blank" title="total actions by ${  moderator  }"  href="${  this.subredditUrl  }about/log?mod=${  moderator  }">0</a></td>`);
-        row.append(`<td class="action-percentage"><span class="action-number" title="percentage of actions by ${  moderator  }">0</span><span>%</span></td>`);
+        row.append(`<td class="action-total"><a class="action-number" target="_blank" title="total actions by ${moderator}"  href="${this.subredditUrl}about/log?mod=${moderator}">0</a></td>`);
+        row.append(`<td class="action-percentage"><span class="action-number" title="percentage of actions by ${moderator}">0</span><span>%</span></td>`);
 
         body.append(row);
     };
@@ -408,24 +408,24 @@ function modmatrix() {
 
         if (this.after != null) requestData.after = this.after;
 
-        self.log(`Retreiving ${  requestData.count  } to ${  requestData.count + requestData.limit}`);
-        $('#mod-matrix-statistics').text(`loading entries ${  requestData.count  } to ${  requestData.count + requestData.limit  }...`);
+        self.log(`Retreiving ${requestData.count} to ${requestData.count + requestData.limit}`);
+        $('#mod-matrix-statistics').text(`loading entries ${requestData.count} to ${requestData.count + requestData.limit}...`);
         $('#mod-matrix-settings input[type=submit]').prop('disabled', true);
 
-        var url = `${this.subredditUrl  }about/log.json`;
-        var cacheKey = `${url  }?${  JSON.stringify(requestData)}`;
+        var url = `${this.subredditUrl}about/log.json`;
+        var cacheKey = `${url}?${JSON.stringify(requestData)}`;
 
         if (this.dataCache[cacheKey] != null) {
             self.processData(this.dataCache[cacheKey], callback);
         } else {
             $.getJSON(url, requestData, function (response) {
-                self.log(`Got ${  requestData.count  } to ${  requestData.count + requestData.limit}`);
+                self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
                 var data = response.data;
                 self.processData(data, callback);
                 self.dataCache[cacheKey] = data;
             })
                 .fail(function (jqxhr, textStatus, error) {
-                    self.log(`Mod log request ${  requestData.count  }to ${  requestData.count + requestData.limit  } failed (${  jqxhr.status  }), ${  textStatus  }: ${  error}`);
+                    self.log(`Mod log request ${requestData.count}to ${requestData.count + requestData.limit} failed (${jqxhr.status}), ${textStatus}: ${error}`);
                     if (jqxhr.status == 504) {
                         self.log('Retrying mod log request...');
                         self.getActions(callback);
@@ -473,11 +473,11 @@ function modmatrix() {
         // Mod numbers
         for (var mod in this.subredditModerators) {
             var moderator = self.subredditModerators[mod];
-            var modRow = matrix.find(`.moderator-${  mod  }`);
+            var modRow = matrix.find(`.moderator-${mod}`);
             var total = 0;
             for (var action in moderator) {
                 var value = parseInt(moderator[action]);
-                var cell = modRow.find(`.action-${  action  } .action-number`).text(value);
+                var cell = modRow.find(`.action-${action} .action-number`).text(value);
                 total += value;
             }
             modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) == -1);
@@ -488,13 +488,13 @@ function modmatrix() {
         // Action totals
         for (var action in this.subredditActions) {
         //var total = actionTotals[action] || 0;
-            matrix.find(`.action-${  action  }`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) == -1);
+            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) == -1);
             var total = 0;
-            matrix.find(`tbody .action-${  action  } .action-number:visible`).each(function () {
+            matrix.find(`tbody .action-${action} .action-number:visible`).each(function () {
                 total += parseInt($(this).text());
             });
 
-            matrix.find(`tfoot .action-${  action  } .action-number`).text(total);
+            matrix.find(`tfoot .action-${action} .action-number`).text(total);
         }
 
 
@@ -597,9 +597,9 @@ function modmatrix() {
         if (finished && self.firstEntry != null && self.lastEntry != null) {
             var lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
             var firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
-            $('#mod-matrix-statistics').html(`showing <strong>${  self.total  } actions</strong> between <strong title="${  lastEntryDate  }">${  lastEntryDate.toDateString().toLowerCase()  }</strong> and <strong title="${  firstEntryDate  }">${  firstEntryDate.toDateString().toLowerCase()  }</strong> ${  errored ? "(<span style='color:red'>error occured</span>)" : ''  } | <a id="exporttocsv">export table to CSV</a>`);
+            $('#mod-matrix-statistics').html(`showing <strong>${self.total} actions</strong> between <strong title="${lastEntryDate}">${lastEntryDate.toDateString().toLowerCase()}</strong> and <strong title="${firstEntryDate}">${firstEntryDate.toDateString().toLowerCase()}</strong> ${errored ? "(<span style='color:red'>error occured</span>)" : ''} | <a id="exporttocsv">export table to CSV</a>`);
             $('#exporttocsv').click(self.exportToCSV).attr({
-                'download': `${self.subredditName  }-modlog.csv`,
+                'download': `${self.subredditName}-modlog.csv`,
                 target: '_blank'
             });
         } else {
@@ -630,19 +630,19 @@ function modmatrix() {
 
             var row = '';
             $(this).find('td').each(function () {
-                row += `${$(this).text()  },`;
+                row += `${$(this).text()},`;
             });
             if (row.charAt(row.length - 1) == ',')
                 row = row.substring(0, row.length - 1);
-            body += `\r\n${  row}`;
+            body += `\r\n${row}`;
         });
 
         var footer = '\r\n';
         table.find('tfoot td').each(function () {
-            footer += `${$(this).text()  },`;
+            footer += `${$(this).text()},`;
         });
         var string = header + body + footer;
-        this.href = `data:text/csv;charset=utf-8,${  escape(string || 'sep=, \r\n')}`;
+        this.href = `data:text/csv;charset=utf-8,${escape(string || 'sep=, \r\n')}`;
     };
 
     self.getSubredditUrl = function () {
@@ -704,7 +704,7 @@ function modmatrix() {
         if (url == null)
             url = location.search;
         name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-        var regex = new RegExp(`[\\?&]${  name  }=([^&#]*)`),
+        var regex = new RegExp(`[\\?&]${name}=([^&#]*)`),
             results = regex.exec(url);
         return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
@@ -740,7 +740,7 @@ function modmatrix() {
 
                     var commentID = removedUrl.match(/.*reddit\.com\/r\/.*\/(.*?)\/$/);
                     commentID = commentID[1];
-                    removedUrl = `${removedUrl  }.json`;
+                    removedUrl = `${removedUrl}.json`;
 
 
                     if (!$this.find('.description').attr('id')) {
@@ -762,7 +762,7 @@ function modmatrix() {
                                 var commentID = data[1].data.children[0].data.id;
 
                                 if (approved !== null) {
-                                    approved = `<br><b>Already approved by ${  approved  }</b>`;
+                                    approved = `<br><b>Already approved by ${approved}</b>`;
                                 } else {
                                     approved = '';
                                 }
@@ -770,7 +770,7 @@ function modmatrix() {
 
 
 
-                                $(`#${  commentID}`).append(`<div class="removed_comment_text">${  TBUtils.htmlDecode(commentBody)  }${approved  }</div>`);
+                                $(`#${commentID}`).append(`<div class="removed_comment_text">${TBUtils.htmlDecode(commentBody)}${approved}</div>`);
                             }
 
                         });
@@ -783,7 +783,7 @@ function modmatrix() {
 
 
         function getRatelimit() {
-            $.getJSON(`${TBUtils.baseDomain  }/r/toolbox.json?limit=1`).done(function (data, status, jqxhr) {
+            $.getJSON(`${TBUtils.baseDomain}/r/toolbox.json?limit=1`).done(function (data, status, jqxhr) {
                 var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining');
                 var ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                 addComments(ratelimitRemaining, ratelimitReset);
@@ -807,7 +807,7 @@ function modmatrix() {
                         if (!$this.find('.description').attr('id')) {
                             commentCount = commentCount + 1;
                         }
-                        self.log(`commentcount: ${  commentCount  } ratelimit: ${  ratelimit}`);
+                        self.log(`commentcount: ${commentCount} ratelimit: ${ratelimit}`);
                     // lets add a little buffer just to be sure
                     }
                 });
@@ -831,9 +831,9 @@ function modmatrix() {
                         var minutes = Math.floor(count / 60);
                         var seconds = count - minutes * 60;
 
-                        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${  minutes  } minutes and ${  seconds  } seconds </b>\
+                        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds </b>\
             <br><br>\
-            <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${  ratelimit  } requests</i>. We are currently trying to load <i>${  parseInt(commentCount - 10)  } comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+            <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimit} requests</i>. We are currently trying to load <i>${parseInt(commentCount - 10)} comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
             `);
                     }
 

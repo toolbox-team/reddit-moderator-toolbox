@@ -215,8 +215,8 @@ function notifiermod() {
             unmoderatedCount = self.setting('unmoderatedCount'),
             modmailCount = self.setting('modmailCount'),
 
-            messageunreadurl = `${TBUtils.baseDomain  }/message/inbox/`,
-            modmailunreadurl = `${TBUtils.baseDomain  }/message/moderator/`;
+            messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
+            modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`;
 
         // Use custom modmail icons if applicable
         if(customModmailIcon) {
@@ -231,7 +231,7 @@ function notifiermod() {
         if (modmailSubredditsFromPro) {
             modmailFilteredSubreddits = 'mod';
             if (TB.storage.getSetting('ModMail', 'filteredsubs', []).length > 0) {
-                modmailFilteredSubreddits += `-${  TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-')}`;
+                modmailFilteredSubreddits += `-${TB.storage.getSetting('ModMail', 'filteredsubs', []).join('-')}`;
             }
         }
 
@@ -247,7 +247,7 @@ function notifiermod() {
         }
 
         if (modmailCustomLimit > 0) {
-            modmailunreadurl += `?limit=${  modmailCustomLimit}`;
+            modmailunreadurl += `?limit=${modmailCustomLimit}`;
         }
 
         //
@@ -263,7 +263,7 @@ function notifiermod() {
             self.setting('lastSeenModmail', now);
             self.setting('modmailCount', 0);
 
-            $.getJSON(`${TBUtils.baseDomain  }/r/${  modmailFilteredSubreddits  }/message/moderator/unread.json`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).done(function (json) {
                 $.each(json.data.children, function (i, value) {
 
                     var unreadmessageid = value.data.name;
@@ -315,12 +315,12 @@ function notifiermod() {
                     $mailCount.empty();
                     $mail.attr('class', 'nohavemail');
                     $mail.attr('title', 'no new mail!');
-                    $mail.attr('href', `${TBUtils.baseDomain  }/message/inbox/`);
+                    $mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
                     $mailcount.attr('href', messageunreadurl);
                     $tb_mail.attr('class', 'nohavemail');
                     $tb_mail.attr('title', 'no new mail!');
-                    $tb_mail.attr('href', `${TBUtils.baseDomain  }/message/inbox/`);
-                    $('#tb-mailCount').attr('href', `${TBUtils.baseDomain  }/message/inbox/`);
+                    $tb_mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+                    $('#tb-mailCount').attr('href', `${TBUtils.baseDomain}/message/inbox/`);
                 } else {
                     $mail.attr('class', 'havemail');
                     $mail.attr('title', 'new mail!');
@@ -331,19 +331,19 @@ function notifiermod() {
                     $tb_mail.attr('href', messageunreadurl);
                     $tb_mailCount.attr('href', messageunreadurl);
                 }
-                $tb_mailCount.text(`[${  count  }]`);
+                $tb_mailCount.text(`[${count}]`);
 
                 if (count > 0) {
-                    $('#mailCount').text(`[${  count  }]`);
+                    $('#mailCount').text(`[${count}]`);
                 }
             }
 
             function updateModqueueCount(count) {
-                $('#tb-queueCount').text(`[${  count  }]`);
+                $('#tb-queueCount').text(`[${count}]`);
             }
 
             function updateUnmodCount(count) {
-                $('#tb-unmoderatedcount').text(`[${  count  }]`);
+                $('#tb-unmoderatedcount').text(`[${count}]`);
             }
 
             // Ok this mess needs more commenting because otherwise we'll keep mixing things up.
@@ -355,9 +355,9 @@ function notifiermod() {
 
                 // Determine if we need to point to a filtered inbox.
                 if (modmailFilteredSubreddits !== 'mod') {
-                    var modmailHrefAttr = `/r/${  modmailFilteredSubreddits  }/message/moderator/`;
+                    var modmailHrefAttr = `/r/${modmailFilteredSubreddits}/message/moderator/`;
 				    if (modmailCustomLimit > 0) {
-                        modmailHrefAttr = `${modmailHrefAttr  }?limit=${  modmailCustomLimit}`;
+                        modmailHrefAttr = `${modmailHrefAttr}?limit=${modmailCustomLimit}`;
                     }
 
                     $tb_modmail.attr('href', modmailHrefAttr);
@@ -385,7 +385,7 @@ function notifiermod() {
                     $tb_modmail.attr('title', 'new mail!');
 
                 }
-                $('#tb-modmailcount').text(`[${  count  }]`);
+                $('#tb-modmailcount').text(`[${count}]`);
             }
 
             if (!newLoad && (now - lastchecked) < checkInterval) {
@@ -424,17 +424,17 @@ function notifiermod() {
                 $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(function (jsondata) {
                     var commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
-                        TBUtils.notification(`Reply from: ${  unreadauthor  } in:  ${  unreadsubreddit  }: ${  commenttitle.substr(0, 20)  }\u2026`, $(unreadbody_html).text(), '/message/unread/');
+                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                     } else if (straightToInbox) {
-                        TBUtils.notification(`Reply from: ${  unreadauthor  } in:  ${  unreadsubreddit  }: ${  commenttitle.substr(0, 20)  }\u2026`, $(unreadbody_html).text(), '/message/inbox/');
+                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/inbox/');
                     } else {
-                        TBUtils.notification(`Reply from: ${  unreadauthor  } in:  ${  unreadsubreddit  }: ${  commenttitle.substr(0, 20)  }\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
+                        TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), unreadcontext, unreadcommentid);
                     }
                 });
             }
 
             // getting unread messages
-            $.getJSON(`${TBUtils.baseDomain  }/message/unread.json`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/message/unread.json`).done(function (json) {
                 var count = json.data.children.length || 0;
                 self.setting('unreadMessageCount', count);
                 updateMessagesCount(count);
@@ -454,9 +454,9 @@ function notifiermod() {
                                     author = value.data.author;
 
                                 if (!notificationbody) {
-                                    notificationbody = `reply from: ${  author  }. in: ${  subreddit  }\n`;
+                                    notificationbody = `reply from: ${author}. in: ${subreddit}\n`;
                                 } else {
-                                    notificationbody = `${notificationbody  }reply from: ${  author  }. in: ${  subreddit  }\n`;
+                                    notificationbody = `${notificationbody}reply from: ${author}. in: ${subreddit}\n`;
                                 }
                                 messagecount++;
                                 pushedunread.push(value.data.name);
@@ -472,9 +472,9 @@ function notifiermod() {
 	                        }
 
                                 if (!notificationbody) {
-                                    notificationbody = `pm from: ${  author  } - ${  subject  }\n`;
+                                    notificationbody = `pm from: ${author} - ${subject}\n`;
                                 } else {
-                                    notificationbody = `${notificationbody  }pm from: ${  author  } - ${  subject  }\n`;
+                                    notificationbody = `${notificationbody}pm from: ${author} - ${subject}\n`;
                                 }
                                 messagecount++;
                                 pushedunread.push(value.data.name);
@@ -495,7 +495,7 @@ function notifiermod() {
                             youveGotMail();
 
                         } else if (messagecount > 1) {
-                            TBUtils.notification(`${messagecount.toString()  } new messages!`, notificationbody, messageunreadurl);
+                            TBUtils.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
                             youveGotMail();
                         }
 
@@ -509,7 +509,7 @@ function notifiermod() {
                                     author = value.data.author,
                                     subreddit = value.data.subreddit,
                                     commentid = value.data.name,
-                                    contexturl = `${context.slice(0, -10)  }.json`;
+                                    contexturl = `${context.slice(0, -10)}.json`;
 
                                 getcommentitle(subreddit, contexturl, context, author, body_html, commentid);
                                 pushedunread.push(value.data.name);
@@ -527,7 +527,7 @@ function notifiermod() {
 		                        author = value.data.subreddit;
 	                        }
 
-                                TBUtils.notification(`New message: ${  subject}`, `${$(body_html).text()  }\u2026 \n \n from: ${  author}`, `/message/messages/${  id}`);
+                                TBUtils.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
                                 pushedunread.push(value.data.name);
                             }
                         });
@@ -550,7 +550,7 @@ function notifiermod() {
                         infotitle = jsondata.data.children[0].data.title,
                         infosubreddit = jsondata.data.children[0].data.subreddit;
                     infopermalink = infopermalink + mqidname.substring(3);
-                    TBUtils.notification(`Modqueue - /r/${  infosubreddit  } - comment: `, `${mqreportauthor  }'s comment in: ${  infotitle}`, `${infopermalink  }?context=3`);
+                    TBUtils.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
                 });
             }
 
@@ -559,10 +559,10 @@ function notifiermod() {
             if (modSubredditsFMod) {
                 modQueueURL = '/me/f/mod/about/modqueue';
             } else {
-                modQueueURL = `/r/${  modSubreddits  }/about/modqueue`;
+                modQueueURL = `/r/${modSubreddits}/about/modqueue`;
             }
 
-            $.getJSON(`${TBUtils.baseDomain + modQueueURL  }.json?limit=100`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(function (json) {
                 var count = json.data.children.length || 0;
                 updateModqueueCount(count);
                 //$.log(modNotifications);
@@ -584,9 +584,9 @@ function notifiermod() {
                                     author = value.data.author;
 
                                 if (!notificationbody) {
-                                    notificationbody = `post from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody = `post from: ${author}, in: ${subreddit}\n`;
                                 } else if (queuecount <= 6) {
-                                    notificationbody += `post from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody += `post from: ${author}, in: ${subreddit}\n`;
                                 } else if (queuecount > 6) {
                                     xmoreModqueue++;
                                 }
@@ -598,9 +598,9 @@ function notifiermod() {
                                     author = value.data.author;
 
                                 if (!notificationbody) {
-                                    notificationbody = `comment from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody = `comment from: ${author}, in: ${subreddit}\n`;
                                 } else if (queuecount <= 6) {
-                                    notificationbody = `${notificationbody  }comment from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody = `${notificationbody}comment from: ${author}, in: ${subreddit}\n`;
                                 } else if (queuecount > 6) {
                                     xmoreModqueue++;
                                 }
@@ -610,7 +610,7 @@ function notifiermod() {
                         });
 
                         if (xmoreModqueue > 0) {
-                            notificationbody = `${notificationbody  }\n and: ${  xmoreModqueue.toString()  } more items \n`;
+                            notificationbody = `${notificationbody}\n and: ${xmoreModqueue.toString()} more items \n`;
                         }
                         //$.log(queuecount);
                         //$.log(notificationbody);
@@ -618,7 +618,7 @@ function notifiermod() {
                             TBUtils.notification('One new modqueue item!', notificationbody, modQueueURL);
 
                         } else if (queuecount > 1) {
-                            TBUtils.notification(`${queuecount.toString()  } new modqueue items!`, notificationbody, modQueueURL);
+                            TBUtils.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                         }
 
                     } else {
@@ -631,12 +631,12 @@ function notifiermod() {
                                     mqauthor = value.data.author,
                                     mqsubreddit = value.data.subreddit;
 
-                                TBUtils.notification(`Modqueue: /r/${  mqsubreddit  } - post`, `${mqtitle  } By: ${  mqauthor}`, mqpermalink);
+                                TBUtils.notification(`Modqueue: /r/${mqsubreddit} - post`, `${mqtitle} By: ${mqauthor}`, mqpermalink);
                                 pusheditems.push(value.data.name);
                             } else if ($.inArray(value.data.name, pusheditems) == -1) {
                                 var reportauthor = value.data.author,
                                     idname = value.data.name,
-                                    linkid = `/api/info.json?id=${  value.data.link_id}`;
+                                    linkid = `/api/info.json?id=${value.data.link_id}`;
 
                                 //since we want to add some adition details to this we call the previous declared function
                                 procesmqcomments(linkid, reportauthor, idname);
@@ -665,10 +665,10 @@ function notifiermod() {
                 if (unmoderatedSubredditsFMod) {
                     unModeratedURL = '/me/f/mod/about/unmoderated';
                 } else {
-                    unModeratedURL = `/r/${  unmoderatedSubreddits  }/about/unmoderated`;
+                    unModeratedURL = `/r/${unmoderatedSubreddits}/about/unmoderated`;
                 }
 
-                $.getJSON(`${TBUtils.baseDomain + unModeratedURL  }.json?limit=100`).done(function (json) {
+                $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(function (json) {
                     var count = json.data.children.length || 0;
 
 
@@ -684,9 +684,9 @@ function notifiermod() {
                                         author = value.data.author;
 
                                     if (!notificationbody) {
-                                        notificationbody = `post from: ${  author  }, in: ${  subreddit  }\n`;
+                                        notificationbody = `post from: ${author}, in: ${subreddit}\n`;
                                     } else if (queuecount <= 6) {
-                                        notificationbody += `post from: ${  author  }, in: ${  subreddit  }\n`;
+                                        notificationbody += `post from: ${author}, in: ${subreddit}\n`;
                                     } else if (queuecount > 6) {
                                         xmoreUnmod++;
                                     }
@@ -696,13 +696,13 @@ function notifiermod() {
                             });
 
                             if (xmoreUnmod > 0) {
-                                notificationbody = `${notificationbody  }\n and: ${  xmoreUnmod.toString()  } more items\n`;
+                                notificationbody = `${notificationbody}\n and: ${xmoreUnmod.toString()} more items\n`;
                             }
 
                             if (queuecount === 1) {
                                 TBUtils.notification('One new unmoderated item!', notificationbody, unModeratedURL);
                             } else {
-                                TBUtils.notification(`${queuecount.toString()  } new unmoderated items!`, notificationbody, unModeratedURL);
+                                TBUtils.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                             }
                         } else {
                             $.each(json.data.children, function (i, value) {
@@ -712,7 +712,7 @@ function notifiermod() {
                                         uqauthor = value.data.author,
                                         uqsubreddit = value.data.subreddit;
 
-                                    TBUtils.notification(`Unmoderated: /r/${  uqsubreddit  } - post`, `${uqtitle  } By: ${  uqauthor}`, uqpermalink);
+                                    TBUtils.notification(`Unmoderated: /r/${uqsubreddit} - post`, `${uqtitle} By: ${uqauthor}`, uqpermalink);
                                 }
                             });
                         }
@@ -732,7 +732,7 @@ function notifiermod() {
             // Modmail
             //
             // getting unread modmail, will not show replies because... well the api sucks in that regard.
-            $.getJSON(`${TBUtils.baseDomain  }/r/${  modmailFilteredSubreddits  }/message/moderator.json`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator.json`).done(function (json) {
 
                 var count = json.data.children.length || 0;
                 if (count === 0) {
@@ -786,9 +786,9 @@ function notifiermod() {
                                 if (messagecount > newCount) return false;
 
                                 if (!notificationbody) {
-                                    notificationbody = `from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody = `from: ${author}, in: ${subreddit}\n`;
                                 } else if (messagecount <= 6) {
-                                    notificationbody = `${notificationbody  }from: ${  author  }, in: ${  subreddit  }\n`;
+                                    notificationbody = `${notificationbody}from: ${author}, in: ${subreddit}\n`;
                                 } else if (messagecount > 6) {
                                     xmoreModMail++;
                                 }
@@ -800,9 +800,9 @@ function notifiermod() {
 
                         } else if (newCount > 1) {
                             if (xmoreModMail > 0) {
-                                notificationbody = `${notificationbody  }\n and: ${  xmoreModMail.toString()  } more \n`;
+                                notificationbody = `${notificationbody}\n and: ${xmoreModMail.toString()} more \n`;
                             }
-                            TBUtils.notification(`${newCount.toString()  } new modmail!`, notificationbody, modmailunreadurl);
+                            TBUtils.notification(`${newCount.toString()} new modmail!`, notificationbody, modmailunreadurl);
                         }
                     } else {
                         $.each(json.data.children, function (i, value) {
@@ -825,7 +825,7 @@ function notifiermod() {
                                     modmailsubreddit = value.data.subreddit,
                                     modmailpermalink = value.data.id;
 
-                                TBUtils.notification(`Modmail: /r/${  modmailsubreddit  } : ${  modmailsubject}`, $(modmailbody).text(), `/message/messages/${  modmailpermalink}`);
+                                TBUtils.notification(`Modmail: /r/${modmailsubreddit} : ${modmailsubject}`, $(modmailbody).text(), `/message/messages/${modmailpermalink}`);
                             }
                         });
 

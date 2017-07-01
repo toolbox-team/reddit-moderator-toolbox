@@ -23,12 +23,12 @@ function flyingsnoo() {
             TB.utils.sendEvent(TB.utils.events.TB_FLY_SNOO);
 
             var floater = $('<div></div>').css({
-                height: `${height  }px`,
-                width: `${width  }px`,
+                height: `${height}px`,
+                width: `${width}px`,
                 background: 'url(//c.thumbs.redditmedia.com/7U0yjjycFy9MC5ht.png)',
                 position: 'absolute',
-                top: `${$(this).offset().top  }px`,
-                left: `${($(window).width() * 0.49) - (width / 2)  }px`,
+                top: `${$(this).offset().top}px`,
+                left: `${($(window).width() * 0.49) - (width / 2)}px`,
                 zIndex: 999
             }).appendTo('body');
 
@@ -52,8 +52,8 @@ function flyingsnoo() {
                     newLeft = Math.min(documentWidth - width, Math.max(0, oldLeft + wind));
 
                     floater.css({
-                        top: `${newTop  }px`,
-                        left: `${newLeft  }px`
+                        top: `${newTop}px`,
+                        left: `${newLeft}px`
                     });
 
                     iterations++;
@@ -80,8 +80,8 @@ function flyingsnoo() {
                     oldLeft = (e.pageX - offsetX);
                     oldTop = (e.pageY - offsetY);
                     floater.css({
-                        'left': `${oldLeft  }px`,
-                        'top': `${oldTop  }px`
+                        'left': `${oldLeft}px`,
+                        'top': `${oldTop}px`
                     });
                 };
 
@@ -104,14 +104,14 @@ function flyingsnoo() {
                 interval = window.setInterval(function () {
                     var newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.05));
                     floater.css({
-                        'top': `${newTop  }px`
+                        'top': `${newTop}px`
                     });
                     oldTop = newTop;
                     if (oldTop + height >= documentHeight) {
                         window.clearInterval(interval);
                         interval = null;
                         floater.css({
-                            'top': `${documentHeight - height  }px`
+                            'top': `${documentHeight - height}px`
                         });
                         floater.css('background', 'url(//d.thumbs.redditmedia.com/tIFOjQQ5pPahJKP-.png)');
 

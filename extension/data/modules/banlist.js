@@ -14,7 +14,7 @@ function banlist() {
     // from http://stackoverflow.com/a/15780907/362042
     // TODO: move to tbutils
     self.getURLParameter = function getURLParameter(url, name) {
-        return (new RegExp(`${name  }=` + `(.+?)(&|$)`).exec(url) || [, null])[1];
+        return (new RegExp(`${name}=` + `(.+?)(&|$)`).exec(url) || [, null])[1];
     };
 
     self.init = function () {
@@ -33,7 +33,7 @@ function banlist() {
             after = typeof after !== 'undefined' ? after : '';
             pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
 
-            self.log(`_get_next_ban_page(${  after  })`);
+            self.log(`_get_next_ban_page(${after})`);
 
             var parameters = {'limit': 1000, 'after': after};
 
@@ -49,7 +49,7 @@ function banlist() {
                 .done(function (data) {
                     console.log(data);
                     self.log('  success!');
-                    self.log(`  ${  pages_back  } pages back`);
+                    self.log(`  ${pages_back} pages back`);
                     var response_page = $(data);
                     // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                     // var $new_banlist = $('.usertable', response_page);
@@ -63,7 +63,7 @@ function banlist() {
 
                             var t = $(this).find('.user a').text().toLowerCase(); // username
                             if ($(this).find('input[name="note"]').length > 0) {
-                                t += ` ${  $(this).find('input[name="note"]').val().toLowerCase()}`; // ban note text, if available
+                                t += ` ${$(this).find('input[name="note"]').val().toLowerCase()}`; // ban note text, if available
                             }
                             $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
                             $(this).addClass('visible');
@@ -115,7 +115,7 @@ function banlist() {
         }
 
         function filter_banlist(banlist, value, ignore_last) {
-            self.log(`filter(${  value  })`);
+            self.log(`filter(${value})`);
             var last_value = typeof last_value !== 'undefined' ? last_value : '';
             ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
@@ -127,13 +127,13 @@ function banlist() {
                 self.log('subset');
                 // is this query a subset of the last query?
                 // filter *out* non-matching
-                $(`tr.visible .indexColumn:not(:contains('${  value  }'))`, banlist).parent().hide().removeClass('visible');
+                $(`tr.visible .indexColumn:not(:contains('${value}'))`, banlist).parent().hide().removeClass('visible');
             } else {
                 self.log('full search');
                 $('tr', banlist).hide().removeClass('visible');
                 // combine and use a single selector for increased performance
                 // credit: http://kobikobi.wordpress.com/2008/09/15/using-jquery-to-filter-table-rows/
-                $(`tr .indexColumn:contains('${  value  }')`, banlist).parent().show().addClass('visible');
+                $(`tr .indexColumn:contains('${value}')`, banlist).parent().show().addClass('visible');
             }
             $('tr', banlist).removeClass('even');
             $('tr.visible:even', banlist).addClass('even');

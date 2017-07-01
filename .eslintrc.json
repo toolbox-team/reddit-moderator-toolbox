@@ -15,6 +15,10 @@
     "extends": "eslint:recommended",
     "rules": {
         "prefer-template": "warn",
+        "template-curly-spacing": [
+            "error", 
+            "never"
+        ],
         "indent": [
             "warn",
             4

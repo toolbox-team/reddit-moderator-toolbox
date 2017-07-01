@@ -36,7 +36,7 @@ function realtime() {
                 html = [];
 
             // Get new things, prepend to page on success
-            $.get(`${location.pathname  }.json-html?before=${  before}`).done(function (response) {
+            $.get(`${location.pathname}.json-html?before=${before}`).done(function (response) {
 
             // Compress the HTML of each returned thing
                 for (i in response.data) html.push(compressHTML(response.data[i].data.content));
@@ -92,11 +92,11 @@ function realtime() {
                 siteTableMargin = $body.find('.side').outerWidth() + 10,
                 $sitetable = $('#siteTable').css({
                     'top': 0,
-                    'margin-right': `${siteTableMargin  }px`
+                    'margin-right': `${siteTableMargin}px`
                 }),
                 initialPosition = $sitetable.css('position');
 
-            self.log(`realtime checked: ${  $checkbox.is(':checked')}`);
+            self.log(`realtime checked: ${$checkbox.is(':checked')}`);
 
             clearTimeout(timeout);
             if ($checkbox.is(':checked')) getNewThings();

@@ -116,7 +116,7 @@ function modbar() {
 
         // Custom CSS for devmode/testing
         if (customCSS) {
-            $('head').append(`<style type="text/css">${  customCSS  }</style>`);
+            $('head').append(`<style type="text/css">${customCSS}</style>`);
         }
 
         //
@@ -128,7 +128,7 @@ function modbar() {
 
         // This is here in case notifier is disabled which is where this normally is set.
         // Atleast, I think.... - creesch
-        var modMailUrl = $('#modmail').attr('href') || `${TBUtils.baseDomain  }/message/moderator/`;
+        var modMailUrl = $('#modmail').attr('href') || `${TBUtils.baseDomain}/message/moderator/`;
         if (parseInt(modmailCustomLimit) > 0) {
 
             modMailUrl += `?limit=${modmailCustomLimit}`;
@@ -307,7 +307,7 @@ function modbar() {
         }
 
         if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link"><img title="reload toolbox" src="data:image/png;base64,${  TBui.iconRefresh  }" /></a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link"><img title="reload toolbox" src="data:image/png;base64,${TBui.iconRefresh}" /></a>`);
 
             $body.on('click', '#tb-reload-link', function () {
                 self.log('reloading chrome');
@@ -317,7 +317,7 @@ function modbar() {
 
         // Debug mode/console
         if (debugMode) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,${  TBui.iconConsole  }" /></a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,${TBui.iconConsole}" /></a>`);
             var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             var $consoleText = $('.tb-debug-console');
@@ -367,7 +367,7 @@ function modbar() {
 
                 // filter log by module.
                 else {
-                    var search = `[${  currentModule  }]`,
+                    var search = `[${currentModule}]`,
                         moduleLog = [];
 
                     // hack-y substring search for arrays.
@@ -519,7 +519,7 @@ function modbar() {
             // change modules
             $('.module-select').change(function () {
                 currentModule = $(this).val();
-                self.log(`selected module: ${  currentModule}`);
+                self.log(`selected module: ${currentModule}`);
             });
         }
 
@@ -556,7 +556,7 @@ function modbar() {
                 $tb_help_mains.data('module', $this.data('module'));
             }
             $('.tb-window-wrapper .tb-window-tab').hide();
-            $(`.tb-window-wrapper .tb-window-tab.${  module}`).show();
+            $(`.tb-window-wrapper .tb-window-tab.${module}`).show();
         }
 
         function checkHash() {
@@ -573,7 +573,7 @@ function modbar() {
 
                     if (setting) {
                         setting = setting.toLowerCase();
-                        var id = `#tb-${  module  }-${  setting}`,
+                        var id = `#tb-${module}-${setting}`,
                             highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
 
                         // this next line is to deal with legacy settings

@@ -87,14 +87,14 @@ function comments() {
                 if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
                     $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
                     if (removedCounter == 1) {
-                        $tbToggle.html(`<img src="data:image/png;base64,${  TBui.iconCommentsRemove  }" />[1]`);
+                        $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]`);
                     } else if (removedCounter > 1) {
-                        $tbToggle.html(`<img src="data:image/png;base64,${  TBui.iconCommentsRemove  }" />[${  removedCounter.toString()  }]`);
+                        $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]`);
                     }
                 } else if (removedCounter == 1) {
-                    $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,${  TBui.iconCommentsRemove  }" />[1]</a>`);
+                    $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]</a>`);
                 } else if (removedCounter > 1) {
-                    $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,${  TBui.iconCommentsRemove  }" />[${  removedCounter.toString()  }]</a>`);
+                    $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]</a>`);
                 }
 
                 if (hideRemoved) {
@@ -278,7 +278,7 @@ function comments() {
                 var fullId = $thing.data('fullname') || $thing.attr('id').match(/thing_(t3_[a-z0-9]+)/i)[1]; // full id
                 var smallId = fullId.substring(3); // small id constructed from fullId
 
-                var siteTable = `#siteTable_${  fullId}`; // sitetable id which we will be clearing.
+                var siteTable = `#siteTable_${fullId}`; // sitetable id which we will be clearing.
                 $(siteTable).empty(); // clear the site table.
                 TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
@@ -286,7 +286,7 @@ function comments() {
                 var jsonurl = $('.entry a.comments').attr('href');
 
                 // Lets get the comments.
-                $.getJSON(`${jsonurl   }.json?limit=1500`).done(function (data, status, jqxhr) {
+                $.getJSON(`${jsonurl}.json?limit=1500`).done(function (data, status, jqxhr) {
                 // put the json through our deconstructor.
                     data[1].isreply = false;
                     parseComments(data[1]);
@@ -328,20 +328,20 @@ function comments() {
                         }
 
                         if (hasreplies) {
-                            commentNestInfo = `${commentNestInfo  }with replies.`;
+                            commentNestInfo = `${commentNestInfo}with replies.`;
                         } else {
-                            commentNestInfo = `${commentNestInfo  }without replies.`;
+                            commentNestInfo = `${commentNestInfo}without replies.`;
                         }
 
 
                         // figure out if we need to add author and mod stuff.
                         var authorClass = 'author';
                         if (distinguished === 'moderator') {
-                            authorClass = `${authorClass  } moderator`;
+                            authorClass = `${authorClass} moderator`;
                         }
 
                         if (linkAuthor === author) {
-                            authorClass = `${authorClass  } submitter`;
+                            authorClass = `${authorClass} submitter`;
                         }
                         createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
 
@@ -352,8 +352,8 @@ function comments() {
 
                         if (bannedBy) {
 
-                            bannedBy = `<li><b>[ removed by ${  bannedBy  } ]</b></li>`;
-                            thingClasses = `${thingClasses  } spam`;
+                            bannedBy = `<li><b>[ removed by ${bannedBy} ]</b></li>`;
+                            thingClasses = `${thingClasses} spam`;
                         } else {
                             bannedBy = '';
                         }
@@ -407,15 +407,15 @@ function comments() {
                         </div>');
                         var FilterRightPosition = $('.side').outerWidth() + 5;
                         $filterHTML.css({
-                            'margin-right': `${FilterRightPosition  }px`
+                            'margin-right': `${FilterRightPosition}px`
                         });
 
                         $(siteTable).before($filterHTML);
-                        $('#tb-flatview-search-count').text($body.find(`${siteTable  } .thing.comment:visible`).length);
+                        $('#tb-flatview-search-count').text($body.find(`${siteTable} .thing.comment:visible`).length);
                     } else {
                         $body.find('#tb-flatview-search-name').val('');
                         $body.find('#tb-flatview-search-content').val('');
-                        $('#tb-flatview-search-count').text($body.find(`${siteTable  } .thing.comment:visible`).length);
+                        $('#tb-flatview-search-count').text($body.find(`${siteTable} .thing.comment:visible`).length);
                     }
 
                     $body.find('.tb-flatview-search-input').keyup(function () {
@@ -426,7 +426,7 @@ function comments() {
                         self.log(FlatViewSearchName);
                         self.log(FlatViewSearchContent);
 
-                        $body.find(`${siteTable  } .thing.comment`).each(function () {
+                        $body.find(`${siteTable} .thing.comment`).each(function () {
                             var $this = $(this);
 
                             var flatUserName = $this.find('.tagline a.author').text();
@@ -440,7 +440,7 @@ function comments() {
 
 
                             }
-                            $('#tb-flatview-search-count').text($body.find(`${siteTable  } .thing.comment:visible`).length);
+                            $('#tb-flatview-search-count').text($body.find(`${siteTable} .thing.comment:visible`).length);
                         });
                     });
 
@@ -472,7 +472,7 @@ function comments() {
 
                     $(TBUtils.mySubs).each(function () {
                         $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`\
-        <tr data-subreddit="${  this  }"><td>${  this  }</td></td></tr>`);
+        <tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
                     });
                 }
 
@@ -486,8 +486,8 @@ function comments() {
                     var offsetTop = (offset.top + 20);
 
                     $body.find('#tb-search-suggest').css({
-                        'left': `${offsetLeft  }px`,
-                        'top': `${offsetTop  }px`
+                        'left': `${offsetLeft}px`,
+                        'top': `${offsetTop}px`
                     });
 
                     if (!$body.find('#tb-search-suggest').is(':visible')) {
@@ -575,10 +575,10 @@ function comments() {
                     var hasHits = false;
                     $('.sitetable.linklisting').empty();
                     $body.find('#progressIndicator').remove();
-                    TB.ui.longLoadSpinner(true, `searching for comments by ${  usersearch}`, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
+                    TB.ui.longLoadSpinner(true, `searching for comments by ${usersearch}`, 'neutral'); // We are doing stuff, fire up the spinner that isn't a spinner!
 
                     function searchComments(user, options, after) {
-                        $.getJSON(`${TBUtils.baseDomain  }/user/${  user  }/comments.json`, {
+                        $.getJSON(`${TBUtils.baseDomain}/user/${user}/comments.json`, {
                             'after': after,
                             'limit': 100
                         }).done(function (data, status, jqxhr) {
@@ -606,7 +606,7 @@ function comments() {
                                     _htmlCommentProfile = htmlCommentProfile;
 
                                 for (var option in options) {
-                                    if (!value.data[option] || !options[option].test(`${  value.data[option]}`)) {
+                                    if (!value.data[option] || !options[option].test(`${value.data[option]}`)) {
                                         hit = false;
                                         break;
                                     }
@@ -616,21 +616,21 @@ function comments() {
                                 // figure out if we need to add author and mod stuff.
                                     var authorClass = 'author',
                                         createdTimeAgo = TBUtils.timeConverterISO(createdUTC),
-                                        threadPermalink = `/r/${  subreddit  }/comments/${  linkId.substring(3)  }/${  TBUtils.title_to_url(submissionTitle)  }/`,
+                                        threadPermalink = `/r/${subreddit}/comments/${linkId.substring(3)}/${TBUtils.title_to_url(submissionTitle)}/`,
                                         permaLinkComment = threadPermalink + commentID,
                                         thingClasses = name,
                                         modButtons = '';
 
                                     if (distinguished === 'moderator') {
-                                        authorClass = `${authorClass  } moderator`;
+                                        authorClass = `${authorClass} moderator`;
                                     }
                                     if (linkAuthor === author) {
-                                        authorClass = `${authorClass  } submitter`;
+                                        authorClass = `${authorClass} submitter`;
                                     }
 
                                     if (bannedBy) {
-                                        bannedBy = `<li><b>[ removed by ${  bannedBy  } ]</b></li>`;
-                                        thingClasses = `${thingClasses  } spam`;
+                                        bannedBy = `<li><b>[ removed by ${bannedBy} ]</b></li>`;
+                                        thingClasses = `${thingClasses} spam`;
                                     } else {
                                         bannedBy = '';
                                     }
@@ -709,7 +709,7 @@ function comments() {
 
                     var searchOptions = {};
                     if (subredditsearch) {
-                        searchOptions.subreddit = new RegExp(`^${  regExpEscape(subredditsearch)  }$`, 'i');
+                        searchOptions.subreddit = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');
                     }
                     if (contentsearch) {
                         searchOptions.body = new RegExp(regExpEscape(contentsearch), 'gi');

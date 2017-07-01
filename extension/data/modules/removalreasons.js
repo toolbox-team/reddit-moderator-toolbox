@@ -97,7 +97,7 @@ function removalreasons() {
                 return;
             }
 
-            self.log(`getting rules: ${  subreddit}`);
+            self.log(`getting rules: ${subreddit}`);
             var rules = '';
 
             // See if we have the rules in the cache.
@@ -148,7 +148,7 @@ function removalreasons() {
                 return;
             }
 
-            self.log(`getting config: ${  subreddit}`);
+            self.log(`getting config: ${subreddit}`);
             var reasons = '';
 
             // See if we have the reasons in the cache.
@@ -272,7 +272,7 @@ function removalreasons() {
 
             // Set attributes and open reason box if one already exists for this subreddit
             self.log('Opening popup');
-            var $popup = $(`#reason-popup-${  data.subreddit}`);
+            var $popup = $(`#reason-popup-${data.subreddit}`);
             // If the popup already exists, open it
             if ($popup.length) {
             // Click yes on the removal
@@ -393,16 +393,16 @@ function removalreasons() {
 
                 // Make box & add reason radio buttons
                 var popup = $(`\
-    <div class="reason-popup" id="reason-popup-${  data.subreddit  }"> \
+    <div class="reason-popup" id="reason-popup-${data.subreddit}"> \
         <attrs /> \
         <div class="reason-popup-content"> \
-            <div class="reason-popup-header">Removal reasons for /r/${  data.subreddit  }:</div> \
+            <div class="reason-popup-header">Removal reasons for /r/${data.subreddit}:</div> \
             <div class="reason-popup-innercontent"> \
-                <p>Removing: <a class="mte-thread-link" href="${  data.url  }" target="_blank">${  TBUtils.htmlEncode(data.title)  }</a></p> \
-                <div class="styled-reason" id="header-reason" style="display:${  headerDisplay  }"> \
+                <p>Removing: <a class="mte-thread-link" href="${data.url}" target="_blank">${TBUtils.htmlEncode(data.title)}</a></p> \
+                <div class="styled-reason" id="header-reason" style="display:${headerDisplay}"> \
                     <p> \
                         <label><input type="checkbox" id="include-header" checked> Include header.</label><br /> \
-                        <label id="reason-header">${  headerText  }</label> \
+                        <label id="reason-header">${headerText}</label> \
                     </p> \
                 </div> \
                 <table id="removal-reasons-table"> \
@@ -414,43 +414,43 @@ function removalreasons() {
                     </tr></thead> \
                     <tbody id="reason-table" /> \
                 </table> \
-                <div class="styled-reason" id="footer-reason" style="display:${  footerDisplay  }"> \
+                <div class="styled-reason" id="footer-reason" style="display:${footerDisplay}"> \
                     <p>	\
                         <label><input type="checkbox" id="include-footer" checked> Include footer.</label><br />\
-                        <label id="reason-footer">${  footerText  }</label> \
+                        <label id="reason-footer">${footerText}</label> \
                     </p> \
                 </div> \
                 <div id="buttons"> \
                 <ul>\
                     <li>\
-                        <input class="reason-type" type="radio" id="type-reply-${  data.subreddit  }" value="reply" name="type-${  data.subreddit  }"${  reasonType == 'reply' ? ' checked="1"' : ''  } /><label for="type-reply-${  data.subreddit  }">Reply with a comment to the item that is removed.</label>\
+                        <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType == 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>\
                         <ul>\
                             <li>\
-                                <input class="reason-sticky" type="checkbox" id="type-stickied"${  reasonSticky ? 'checked' : ''  }${data.kind === 'submission' ? '' : ' disabled'  }/><label for="type-stickied">Sticky the removal comment.</label> \
+                                <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label> \
                             </li>\
                         </ul>\
                     </li><li>\
-                        <input class="reason-type" type="radio" id="type-PM-${  data.subreddit  }" value="pm"	name="type-${  data.subreddit  }"${  reasonType == 'pm' ? ' checked="1"' : ''  } /><label for="type-PM-${  data.subreddit  }">Send as PM (personal message)</label> \
+                        <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm"	name="type-${data.subreddit}"${reasonType == 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label> \
                         <ul>\
                             <li>\
-                                <input class="reason-as-sub" type="checkbox" id="type-as-sub"${  reasonAsSub ? 'checked ' : ''  } /><label for="type-as-sub">Send pm via modmail as /r/${  data.subreddit  } <b>Note:</b> This will clutter up modmail.</label> \
+                                <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label> \
                             </li>\
                         </ul>\
                     </li><li>\
-                        <input class="reason-type" type="radio" id="type-both-${  data.subreddit  }" value="both"  name="type-${  data.subreddit  }"${  reasonType == 'both' ? ' checked="1"' : ''  } /><label for="type-both-${  data.subreddit  }">Send as both PM and reply.</label> \
-                    </li><li style="display:${  selectNoneDisplay  }"> / \
-                        <input class="reason-type" type="radio" id="type-none-${  data.subreddit  }" value="none"  name="type-${  data.subreddit  }"${  reasonType == 'none' ? ' checked="1"' : ''  } /><label for="type-none-${  data.subreddit  }">none, will only log the removal.</label> \
+                        <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType == 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label> \
+                    </li><li style="display:${selectNoneDisplay}"> / \
+                        <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType == 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label> \
                     </li><li>\
-                        <input class="action-lock" type="checkbox"${  actionLock ? 'checked' : ''  }${data.kind === 'submission' ? '' : ' disabled'  }/><label for="action-lock">Lock the removed thread.</label> \
+                        <input class="action-lock" type="checkbox"${actionLock ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="action-lock">Lock the removed thread.</label> \
                     </li>\
                 </ul>\
                 </div> \
-                <div id="log-reason" style="display:${  logDisplay  }"> \
+                <div id="log-reason" style="display:${logDisplay}"> \
                     <p>Log Reason(s): \
-                        <input id="log-reason-input" type="text" name="logReason" value="${  data.logReason  }" /> \
+                        <input id="log-reason-input" type="text" name="logReason" value="${data.logReason}" /> \
                     </p> \
                     <p> \
-                        (Used for posting a log to /r/${  data.logSub  }. Will only be used when "send" is clicked.) </label> \
+                        (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label> \
                     </p> \
                 </div> \
             </div> \
@@ -468,21 +468,21 @@ function removalreasons() {
 
                 // Render reasons and add to popup
                 $(data.reasons).each(function (index) {
-                    var reasonMarkdown = `${this.text  }\n\n`;
+                    var reasonMarkdown = `${this.text}\n\n`;
                     var reasonHtml = parser.render(reasonMarkdown);
 
                     var tr = $(`\
         <tr class="selectable-reason"> \
             <td class="removal-toggle"> \
-                <input type="checkbox" class="reason-check" name="reason-${  data.subreddit  }" id="reason-${  data.subreddit  }-${  index  }" /> \
-                <div class="reason-num">${  index + 1  }</div> \
+                <input type="checkbox" class="reason-check" name="reason-${data.subreddit}" id="reason-${data.subreddit}-${index}" /> \
+                <div class="reason-num">${index + 1}</div> \
             </td> \
             <td class="reason"> \
-                <div class="removal-reason-title">${  this.title ? this.title : ''  }</div>\
-                <div class="styled-reason reason-content ${  data.subreddit  }-${  index  }">${  reasonHtml  }<br /></div> \
+                <div class="removal-reason-title">${this.title ? this.title : ''}</div>\
+                <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div> \
             </td> \
-            <td class="flair-text"><span class="flair-text-span">${  this.flairText ? this.flairText : ''  }</span></td> \
-            <td class="flair-css"><span class="flair-css-span">${  this.flairCSS ? this.flairCSS : ''  }</span></td> \
+            <td class="flair-text"><span class="flair-text-span">${this.flairText ? this.flairText : ''}</span></td> \
+            <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td> \
         </tr>`);
 
                     tr.data({
@@ -506,7 +506,7 @@ function removalreasons() {
 
                 // Pre-fill reason input elements which have IDs.
                 popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
-                    this.id = `reason-input-${  data.subreddit  }-${  this.id}`;
+                    this.id = `reason-input-${data.subreddit}-${this.id}`;
                     this.value = TB.storage.getCache('RReasons', this.id, this.value);
                 });
             }
@@ -660,9 +660,9 @@ function removalreasons() {
                 //Get flair data
                 var temp;
                 if (temp = $(this).data('flairText'))
-                    flairText += ` ${  temp}`;
+                    flairText += ` ${temp}`;
                 if (temp = $(this).data('flairCSS'))
-                    flairCSS += ` ${  temp}`;
+                    flairCSS += ` ${temp}`;
             });
 
             // Generate reason text
@@ -671,7 +671,7 @@ function removalreasons() {
             //// Add response body
             var customIndex = 0;
             markdownReasons.forEach(function (markdownReason) {
-                $(`<div>${  markdownReason  }</div>`).contents().each(function () {
+                $(`<div>${markdownReason}</div>`).contents().each(function () {
                 // If an element, check for conversions
                     if (this.nodeType == Node.ELEMENT_NODE) {
                         switch (this.tagName.toLowerCase()) {
@@ -700,12 +700,12 @@ function removalreasons() {
 
             //// Add header if selected
             if (popup.find('#include-header').is(':checked')) {
-                reason = `${header  }\n\n${  reason}`;
+                reason = `${header}\n\n${reason}`;
             }
 
             //// Add footer if selected
             if (popup.find('#include-footer').is(':checked')) {
-                reason += `\n\n${  footer}`;
+                reason += `\n\n${footer}`;
             }
 
             //// Convert attribs back to data.
@@ -801,7 +801,7 @@ function removalreasons() {
                         if (successful) {
                         // Check if reddit actually returned an error
                             if (response.json.errors.length > 0) {
-                                status.text(`${REPLY_ERROR  }: ${  response.json.errors[0][1]}`);
+                                status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
                             }
                             else {
                             // Distinguish the new reply, stickying if necessary
@@ -840,10 +840,10 @@ function removalreasons() {
 
                 // Send PM the user
                 function sendPM() {
-                    var text = `${reason  }\n\n---\n[[Link to your ${  data.kind  }](${  data.url  })]`;
+                    var text = `${reason}\n\n---\n[[Link to your ${data.kind}](${data.url})]`;
 
                     if (notifyAsSub) {
-                        self.log(`Sending removal message by PM as ${  data.subreddit}`);
+                        self.log(`Sending removal message by PM as ${data.subreddit}`);
                         TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
                             if (successful) {
                                 removePopup(popup);

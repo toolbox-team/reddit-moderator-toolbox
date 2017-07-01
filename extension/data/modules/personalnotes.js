@@ -58,7 +58,7 @@ function personalnotes() {
             $editArea.val('loading stuff...');
             $editArea.show();
 
-            TBUtils.readFromWiki(notewiki, `notes/${  wikiPage}`, false, function (resp) {
+            TBUtils.readFromWiki(notewiki, `notes/${wikiPage}`, false, function (resp) {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                     $editArea.val('error getting wiki data.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
@@ -86,8 +86,8 @@ function personalnotes() {
         function saveNoteWiki(page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(`notes/${  page}`, subreddit, data, reason, false, false, function done(succ, err) {
-                self.log(`save succ = ${  succ}`);
+            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, function done(succ, err) {
+                self.log(`save succ = ${succ}`);
                 if (!succ) {
                     self.log(err.responseText);
                     TB.ui.textFeedback(err.responseText, TB.ui.FEEDBACK_NEGATIVE);
@@ -100,9 +100,9 @@ function personalnotes() {
 
 
                         if ($body.find('#tb-personal-notes-ul').length) {
-                            $body.find('#tb-personal-notes-ul').append(`<li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${  page  }"><img src="data:image/png;base64,${  TBui.iconDelete  }"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${  page  }">${  page  }</a> </li>`);
+                            $body.find('#tb-personal-notes-ul').append(`<li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${page}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${page}">${page}</a> </li>`);
                         } else {
-                            $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul><li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${  page  }"><img src="data:image/png;base64,${  TBui.iconDelete  }"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${  page  }">${  page  }</a> </li></ul>`);
+                            $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul><li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${page}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${page}">${page}</a> </li></ul>`);
                         }
 
                         loadNoteWiki(page);
@@ -137,13 +137,13 @@ function personalnotes() {
 
                     // You can only use subreddits you mod, simply because of privacy we set all notes to only visible for mods.
                     } else if ($.inArray(notewiki, mySubsLowerCase) === -1) {
-                        notesPopupContent = `<span class="error">You are not a mod of /r/${  notewiki  }.</span>`;
+                        notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                         var notesPopupContentTemplate = `\
-                    <table style="height:${  popupHeight  }px;"><tr>\
+                    <table style="height:${popupHeight}px;"><tr>\
                         <td id="tb-personal-notes-listing">\
                             <div id="tb-personal-notes-list">\
                                 {{notesList}}\
@@ -159,12 +159,12 @@ function personalnotes() {
                         </td>\
                         <td id="tb-personal-notes-content">\
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
-                            <textarea id="tb-personal-notes-editarea"${  monospace ? ' style="font-family: monospace;"' : ''  }></textarea>\
+                            <textarea id="tb-personal-notes-editarea"${monospace ? ' style="font-family: monospace;"' : ''}></textarea>\
                         </td>\
                     </tr></table>`;
 
                         // Lets get a list of notes!
-                        $.getJSON(`${TBUtils.baseDomain  }/r/${  notewiki  }/wiki/pages.json`)
+                        $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
                             .done(function (json) {
                                 notesArray = [];
                                 var notesList,
@@ -182,7 +182,7 @@ function personalnotes() {
                                             value = value.replace('notes/', '');
                                             notecount++;
                                             notesArray.push(value);
-                                            noteListConstruction += `<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${  value  }"><img src="data:image/png;base64,${  TBui.iconDelete  }"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${  value  }">${  value  }</a> </li> \n`;
+                                            noteListConstruction += `<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${value}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${value}">${value}</a> </li> \n`;
                                         }
                                     });
 
@@ -231,10 +231,10 @@ function personalnotes() {
             var $this = $(this),
                 page = $this.data('wiki');
 
-            var confirmDelete = confirm(`This will de-list "${  page  }", are you sure?`);
+            var confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
-                $.post(`${TBUtils.baseDomain  }/r/${  notewiki  }/wiki/settings/`, {
-                    page: `notes/${  page}`,
+                $.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
+                    page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
                     uh: TBUtils.modhash

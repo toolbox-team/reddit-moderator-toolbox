@@ -5,7 +5,7 @@ build/*
 node_modules/*
 
 # External libraries
-/extension/libs/*
+/extension/data/libs/*
 
 # IDE related 
 .idea/*

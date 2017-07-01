@@ -76,3 +76,19 @@
     vertical-align: top;
     width: calc(100% - 135px);
 }
+
+/* removal reasons sorting */
+
+tr.removal-reason:first-of-type a.tb-sort-up {
+    visibility: hidden;
+}
+
+tr.removal-reason:last-of-type a.tb-sort-down {
+    visibility: hidden;
+}
+
+.mod-toolbox .sort_removal_reasons ul {
+    padding: 0 40px;
+    list-style-type: disc;
+    margin: 5px 0;
+}

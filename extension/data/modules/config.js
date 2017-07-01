@@ -14,6 +14,7 @@ self.init = function() {
     // Set up some base variables
     var $body = $('body'),
         config = TBUtils.config,
+        sortReasons = [],
         unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
 
     // With the following function we will create the UI when we need it.
@@ -156,6 +157,22 @@ self.init = function() {
                     footer: ''
                 },
                 {
+                    title: 'sort removal reasons',
+                    tooltip: 'sort your removal reasons here.',
+                    content: `
+                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a>
+                <div class="error">
+                    <ul>
+                        <li>When you hit save it will overwrite any unsaved changes in the "edit removal reasons" tab.</li>
+                        <li>Navigating away from this tab will reset the reasons in their original order.</li>
+                    </ul>
+                </div>
+                <table id="tb-removal-sort-list">
+                </table>
+                `,
+                    footer: '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">'
+                },
+                {
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
                     content: `
@@ -215,6 +232,8 @@ self.init = function() {
         ).appendTo('body');
         $body.css('overflow', 'hidden');
 
+        // TODO: This should not be called here, tabs should only be filled when actively used. Something something performance. 
+        // Also while it is nifty dom building it isn't inline with how we do it in other parts of toolbox and could easily be just a single string. This seems like overkill.
         function genUsernoteTypesContent() {
             return $('<div>').attr('id', 'tb-config-usernote-types').append(
                 $('<table>').append(
@@ -329,7 +348,7 @@ self.init = function() {
 
                 self.log(err);
                 if (page === 'config/automoderator') {
-                    $error = $body.find('.edit_automoderator_config .error');
+                    var $error = $body.find('.edit_automoderator_config .error');
                     $error.show();
 
                     var saveError = err.responseJSON.special_errors[0];
@@ -584,7 +603,7 @@ self.init = function() {
         return $list;
     }
 
-    // With this function we'll fetch the removal reasons!
+    // With this function we'll fetch the removal reasons for editing
     function removalReasonsContent() {
 
         if (config.removalReasons && config.removalReasons.reasons.length > 0) {
@@ -592,7 +611,7 @@ self.init = function() {
             var i = 0;
             $(config.removalReasons.reasons).each(function () {
                 var label = unescape(this.text);
-                if (label == '') {
+                if (label === '') {
                     label = '<span style="color: #cecece">(no reason)</span>';
                 } else {
                     if (label.length > 200) {
@@ -647,6 +666,46 @@ self.init = function() {
 
     }
 
+    // With this function we'll fetch the removal reasons for editing
+    function removalReasonsEditContent() {
+
+        if (config.removalReasons && config.removalReasons.reasons.length > 0) {
+            // Copy the reasons to a new array without reference to the old one. 
+            sortReasons = JSON.parse(JSON.stringify(config.removalReasons.reasons));
+
+            var i = 0;
+            config.removalReasons.reasons.forEach(function (reason, index) {
+                var label = unescape(reason.text);
+                if (label === '') {
+                    label = '<span style="color: #cecece">(no reason)</span>';
+                } else {
+                    if (label.length > 200) {
+                        label = label.substring(0, 197) + '...';
+                    }
+                    label = TBUtils.htmlEncode(label);
+                }
+
+                var removalReasonTitle = reason.title || '';
+
+                var removalReasonTemplateHTML = `
+                <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
+                    <td class="removal-reasons-sort-buttons">
+                        <a href="javascript:;" class="tb-sort-up"><img src="data:image/png;base64,${TBui.topIcon}"></a> 
+                        <a href="javascript:;" class="tb-sort-down"><img src="data:image/png;base64,${TBui.bottomIcon}"></a>
+                    </td>
+                    <td class="removal-reasons-content">
+                        <span class="removal-reason-label">${removalReasonTitle}</span>
+                    </td>
+                </tr>`;
+
+                var $removalReasonsList = $body.find('.sort_removal_reasons #tb-removal-sort-list');
+
+                $removalReasonsList.append(removalReasonTemplateHTML);
+            });
+
+        }
+
+    }
     // Mod macros are also nice to have!
 
     function modMacrosContent() {
@@ -1136,6 +1195,91 @@ self.init = function() {
         $body.find('#tb-add-removal-reason-form input[name=flair-text]').val('');
         $body.find('#tb-add-removal-reason-form input[name=flair-css]').val('');
         $body.find('#tb-add-removal-reason-form input[name=edit-note]').val('');
+    });
+
+    // Removal reasons sorting tab
+    $body.on('click', '.tb-window-tabs .sort_removal_reasons', function () {
+        var $this = $(this);
+        $body.find('#tb-removal-sort-list').empty();
+        // determine if we want to pull a new config, we only do this if the toolbox config wiki has been edited.
+        if ($body.hasClass('toolbox-wiki-edited')) {
+            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
+                    self.log('Failed: wiki config');
+                    return;
+                }
+
+                config = resp;
+                removalReasonsEditContent();
+            });
+        } else {
+            removalReasonsEditContent();
+        }
+
+
+        $this.addClass('content-populated');
+        
+    });
+
+   $body.on('click', '.tb-sort-up', function () {
+        var $row = $(this).closest("tr"),
+            $prev = $row.prev();
+
+        if ($prev && $prev.length > 0) {
+            // Get the keys for the reasons that will be moved.
+            var upReasonKey = $row.attr('data-reason');
+            var downReasonKey = $prev.attr('data-reason');
+
+            // Move them in the array.            
+            sortReasons.move(parseInt(upReasonKey), parseInt(downReasonKey));
+
+            // Now move the elements on page.
+            $row.attr('data-reason', downReasonKey);
+            $prev.attr('data-reason', upReasonKey);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertBefore($prev);
+                $row.fadeIn(300);
+            });
+        }
+    });
+
+    $body.on('click', '.tb-sort-down ', function () {
+        var $row = $(this).closest("tr"),
+            $next = $row.next();
+
+        if ($next && $next.length > 0) {
+            // Get the keys for the reasons that will be moved.
+            var upReasonKey = $next.attr('data-reason');
+            var downReasonKey = $row.attr('data-reason');
+
+            // Move them in the array.
+            sortReasons.move(parseInt(downReasonKey), parseInt(upReasonKey));
+
+            // Now move the elements on page.
+            $row.attr('data-reason', upReasonKey);
+            $next.attr('data-reason', downReasonKey);
+            $row.fadeOut(100, function () {
+                $row.detach();
+                $row.insertAfter($next);
+                $row.fadeIn(300);
+            });
+        }
+    });
+
+    // Save the new order of removal reasons.
+    $body.on('click', '.save-removal-sorting', function () {
+        // Overwrite the removal reasons 
+        config.removalReasons.reasons = JSON.parse(JSON.stringify(sortReasons));
+        var editNote = 'Sorting removal reasons from toolbox config.';
+        postToWiki('toolbox', config, editNote, true);            
+
+        // For now we just remove all contents of the edit tab. 
+        // TODO: Think of a nicer method that allows the contents of that tab to be restored when the order is changed. 
+        // The tricky part with that is that we only want to do that when the new order is saved, not before that happens. 
+        $body.find('#tb-removal-reasons-list').empty();
+        $body.find('.tb-window-tabs .edit_removal_reasons').removeClass('content-populated');
+
     });
 
     // Mod macros tab is clicked.

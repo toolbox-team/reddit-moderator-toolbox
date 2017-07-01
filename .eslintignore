@@ -1,13 +1,13 @@
 # Build output
-/build/*
+build/*
 
 #node_modules
-/node_modules/*
+node_modules/*
 
 # External libraries
 /extension/libs/*
 
 # IDE related 
-/.idea/*
-/.settings/*
-/.vscode/*
+.idea/*
+.settings/*
+.vscode/*

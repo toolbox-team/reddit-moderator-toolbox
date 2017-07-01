@@ -131,72 +131,73 @@ self.init = function() {
     var modMailUrl = $('#modmail').attr('href') || TBUtils.baseDomain + '/message/moderator/';
     if (parseInt(modmailCustomLimit) > 0) {
 
-        modMailUrl += '?limit=' + modmailCustomLimit;
+        modMailUrl += `?limit=${modmailCustomLimit}`;
         $('#modmail').attr('href', modMailUrl);
         $('#tb-modmail').attr('href', modMailUrl);
         $('#tb-modmailcount').attr('href', modMailUrl);
     }
 
-    var modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : '/r/' + modSubreddits + '/about/modqueue');
-    var modBar = $('\
-<div id="tb-bottombar" class="tb-toolbar">\
-    <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconHide + '" /></a>\
-    <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,' + TBui.iconGear + '" title="toolbox settings"/></a>\
-    <label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label>\
-    <span id="tb-bottombar-contentleft">\
-        <span id="tb-toolbarshortcuts"></span>\
-    </span>\
-    <span id="tb-bottombar-contentright">\
-        <span id="tb-toolbarcounters">\
-            <a title="no mail" href="' + TBUtils.baseDomain + '/message/inbox/" class="nohavemail" id="tb-mail"></a>\
-            <a href="' + TBUtils.baseDomain + '/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>\
-            <a title="modmail" href="' + modMailUrl + '" id="tb-modmail" class="nohavemail"></a>\
-            <a href="' + modMailUrl + '" class="tb-toolbar" id="tb-modmailcount"></a>\
-            <a title="modqueue" href="' + modQueueUrl + '" id="tb-modqueue"></a>\
-            <a href="' + modQueueUrl + '" class="tb-toolbar" id="tb-queueCount"></a>\
-        </span>\
-    </span>\
-</div>\
-');
+    var modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+    var modBar = $(`
+<div id="tb-bottombar" class="tb-toolbar">
+    <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconHide}" /></a>
+    <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconGear}" title="toolbox settings"/></a>
+    <label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label>
+    <span id="tb-bottombar-contentleft">
+        <span id="tb-toolbarshortcuts"></span>
+    </span>
+    <span id="tb-bottombar-contentright">
+        <span id="tb-toolbarcounters">
+            <a title="no mail" href="${TBUtils.baseDomain}/message/inbox/" class="nohavemail" id="tb-mail"></a>
+            <a href="${TBUtils.baseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
+            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail"></a>
+            <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
+            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue"></a>
+            <a href="${modQueueUrl}" class="tb-toolbar" id="tb-queueCount"></a>
+        </span>
+    </span>
+</div>
+`);
 
 
 
    // Add unmoderated icon if it is enabled.
 
     if (unmoderatedOn) {
-        var unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : '/r/' + unmoderatedSubreddits + '/about/unmoderated');
-        modBar.find('#tb-toolbarcounters').append('\
-<a title="unmoderated" href="' + unModQueueUrl + '" id="tb-unmoderated"></a>\
-<a href="' + unModQueueUrl + '" class="tb-toolbar" id="tb-unmoderatedcount"></a>\
-');
+        var unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+        modBar.find('#tb-toolbarcounters').append(`
+<a title="unmoderated" href="${unModQueueUrl}" id="tb-unmoderated"></a>
+<a href="${unModQueueUrl}" class="tb-toolbar" id="tb-unmoderatedcount"></a>
+`);
 
     }
 
 
-    var modbarhid = $('\
-<div id="tb-bottombar-hidden" class="tb-toolbar">\
-    <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,' + ((compactHide) ? TBui.iconGripper : TBui.iconShow) + '" /></a>\
-</div>\
-');
+
+    var modbarhid = $(`
+<div id="tb-bottombar-hidden" class="tb-toolbar">
+    <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,${compactHide ? TBui.iconGripper : TBui.iconShow}" /></a>
+</div>
+`);
 
 
     if (debugMode) {
 
-        var $console = $('\
-<div class="tb-debug-window tb-popup">\
-    <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>\
-    <div class="tb-popup-content">\
-        <textarea class="tb-debug-console" rows="20" cols="20"></textarea>\
-        <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />\
-    </div>\
-    <div class="tb-popup-footer">\
-        <select class="module-select tb-action-button inline-button"><option value="' + DEFAULT_MODULE + '">all modules</option></select>\
-        <label><input type="checkbox" id="tb-console-lockscroll" ' + ((lockscroll) ? "checked" : "") + '> lock scroll</label>\
-        <!--input class="tb-console-copy" type="button" value="copy text"-->\
-        <input class="tb-console-clear tb-action-button inline-button" type="button" value="clear console">\
-    </div>\
-</div>\
-');
+        var $console = $(`
+<div class="tb-debug-window tb-popup">
+    <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>
+    <div class="tb-popup-content">
+        <textarea class="tb-debug-console" rows="20" cols="20"></textarea>
+        <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />
+    </div>
+    <div class="tb-popup-footer">
+        <select class="module-select tb-action-button inline-button"><option value="${DEFAULT_MODULE}">all modules</option></select>
+        <label><input type="checkbox" id="tb-console-lockscroll" ${lockscroll ? "checked" : ""}> lock scroll</label>
+        <!--input class="tb-console-copy" type="button" value="copy text"-->
+        <input class="tb-console-clear tb-action-button inline-button" type="button" value="clear console">
+    </div>
+</div>
+`);
 
         $console.appendTo('body').hide();
 
@@ -213,30 +214,30 @@ self.init = function() {
         var subList = '',
             livefilterCount,
             subredditColorSalt = self.setting('subredditColorSalt'),
-            mySubsTemplate = '\
-<div id="tb-my-subreddits">\
-    <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> \
-    <span class="tb-livefilter-count">{{livefilterCount}}</span>\
-    <br>\
-    <table id="tb-my-subreddit-list">{{subList}}</table>\
-</div>\
-';
+            mySubsTemplate = `
+<div id="tb-my-subreddits">
+    <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> 
+    <span class="tb-livefilter-count">{{livefilterCount}}</span>
+    <br>
+    <table id="tb-my-subreddit-list">{{subList}}</table>
+</div>
+`;
 
         TBUtils.getModSubs(function () {
             self.log('got mod subs');
             self.log(TBUtils.mySubs.length);
             self.log(TBUtils.mySubsData.length);
             $(TBUtils.mySubsData).each(function () {
-                subList = subList + '\
-<tr style="border-left: solid 3px ' + TBUtils.stringToColor(this.subreddit + subredditColorSalt) + ' !important;" data-subreddit="' + this.subreddit + '">\
-    <td><a href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '" target="_blank">/r/' + this.subreddit + '</a></td>\
-    <td class="tb-my-subreddits-subreddit">\
-        <a title="/r/' + this.subreddit + ' modmail!" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/message/moderator" class="generic-mail"></a>\
-        <a title="/r/' + this.subreddit + ' modqueue" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/about/modqueue" class="generic-modqueue"></a>\
-        <a title="/r/' + this.subreddit + ' unmoderated" target="_blank" href="' + TBUtils.baseDomain + '/r/' + this.subreddit + '/about/unmoderated" class="generic-unmoderated"></a>\
-    </td>\
-</tr>\
-';
+                subList = `${subList}
+<tr style="border-left: solid 3px ${TBUtils.stringToColor(this.subreddit + subredditColorSalt)} !important;" data-subreddit="${this.subreddit}">
+    <td><a href="${TBUtils.baseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
+    <td class="tb-my-subreddits-subreddit">
+        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="generic-mail"></a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/modqueue" class="generic-modqueue"></a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/unmoderated" class="generic-unmoderated"></a>
+    </td>
+</tr>
+`;
             });
             livefilterCount = TBUtils.mySubs.length;
 
@@ -352,7 +353,9 @@ self.init = function() {
         var logVisibleLength = 0;
         setInterval(function () {
             // If the console window is hidden, we don't need to handle this yet
-            if (!consoleShowing) return
+            if (!consoleShowing) {
+                return;
+            }
 
             if (currentModule == DEFAULT_MODULE) {
                 if (logLength < TBUtils.log.length) {
@@ -368,7 +371,7 @@ self.init = function() {
                     moduleLog = [];
 
                 // hack-y substring search for arrays.
-                for (i = 0; i < TB.utils.log.length; i++) {
+                for (let i = 0; i < TB.utils.log.length; i++) {
                     if (TB.utils.log[i].indexOf(search) > -1) {
                         moduleLog.push(TB.utils.log[i]);
                     }
@@ -418,7 +421,7 @@ self.init = function() {
 
     // Append shortcuts
     $.each(shortcuts, function (index, value) {
-        var shortcut = $('<span>- <a class="tb-no-gustavobc" href="' + TBUtils.htmlEncode(unescape(value)) + '">' + TBUtils.htmlEncode(unescape(index)) + '</a> </span>');
+        var shortcut = $(`<span>- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
 
         $(shortcut).appendTo('#tb-toolbarshortcuts');
     });
@@ -457,7 +460,7 @@ self.init = function() {
     // Show counts on hover
     $(modbarhid).hover(function modbarHover(e) {
         if (!notifierEnabled || compactHide) return;
-        var hoverString = 'New Messages: ' + unreadMessageCount + '<br>Mod Queue: ' + modqueueCount + '<br>Unmoderated Queue: ' + unmoderatedCount + '<br>New Mod Mail: ' + modmailCount;
+        var hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>New Mod Mail: ${modmailCount}`;
 
         $.tooltip(hoverString, e);
     });
@@ -532,7 +535,7 @@ self.init = function() {
     // check for passed settings.
     function switchTab(module) {
 
-        var $this = $body.find("[data-module='" + module + "']"),
+        var $this = $body.find(`[data-module="${module}]`),
             $tb_help_mains = $('.tb-help-main');
 
         // achievement support
@@ -571,13 +574,13 @@ self.init = function() {
                 if (setting) {
                     setting = setting.toLowerCase();
                     var id = '#tb-' + module + '-' + setting,
-                        highlightedCSS = id + ' p {background-color: '+ TB.ui.standardColors.softyellow +'; display: block !important;}';
+                        highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
 
                     // this next line is to deal with legacy settings
-                    highlightedCSS += id + '{background-color: '+ TB.ui.standardColors.softyellow +'; display: block !important;}';
-                    highlightedCSS += '.tb-setting-link-' + setting + ' {display: inline !important;}';
+                    highlightedCSS += `${id}{background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
+                    highlightedCSS += `.tb-setting-link-${setting} {display: inline !important;}`;
 
-                    $('head').append('<style type="text/css">' + highlightedCSS + '</style>');
+                    $('head').append(`<style type="text/css">${highlightedCSS}</style>`);
                 }
 
                 // Wait a sec for stuff to load.

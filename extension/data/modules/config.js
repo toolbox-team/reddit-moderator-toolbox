@@ -26,37 +26,37 @@ self.init = function() {
                 {
                     title: 'Settings Home',
                     tooltip: 'Pointers and handy links.',
-                    content: '\
-                <span class="tb-config-intro">\
-                Through this window you can edit the settings for /r/' + subredditConfig + '. </br>\
-                </br>Settings you change here will apply to the entire subreddit and by extension other moderators.\
-                </br>\
-                </br><a href="/r/' + subredditConfig + '/w/pages/" class="tb-general-button">All Wiki Pages</a>\
-                </br><a ' + ((unManager) ? 'style="display:none;"' : '') + ' href="/r/' + subredditConfig + '/about/usernotes/" class="tb-general-button">Manage Usernotes</a>\
-                \
-                </span>\
-                ',
+                    content: `
+                <span class="tb-config-intro">
+                Through this window you can edit the settings for /r/${subredditConfig}. </br>
+                </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
+                </br>
+                </br><a href="/r/${subredditConfig}/w/pages/" class="tb-general-button">All Wiki Pages</a>
+                </br><a ${((unManager) ? `style="display:none;"` : ``)} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
+                
+                </span>
+                `,
                     footer: ''
                 },
                 {
                     title: 'edit toolbox config',
                     tooltip: 'Edit raw JSON for subreddit config.',
                     advanced: true,
-                    content: '\
-                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <br>\
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
+                    content: `
+                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
+                <br>
+                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
                     title: 'edit user notes',
                     tooltip: 'Edit raw JSON for subreddit usernotes.',
                     advanced: true,
-                    content: '\
-                <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>\
-                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <br>\
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
+                    content: `
+                <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>
+                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
+                <br>
+                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
@@ -68,117 +68,117 @@ self.init = function() {
                 {
                     title: 'edit automoderator config',
                     tooltip: 'Edit the automoderator config.',
-                    content: '\
-                <p>\
-                    <a href="/wiki/automoderator/full-documentation" target="_blank">Full automoderator documentation</a>\
-                </p>\
-                <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>\
-                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>\
-                <br>\
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />',
+                    content: `
+                <p>
+                    <a href="/wiki/automoderator/full-documentation" target="_blank">Full automoderator documentation</a>
+                </p>
+                <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
+                <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
+                <br>
+                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                     footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
                 },
                 {
                     title: 'removal reasons settings',
                     tooltip: 'Configure the basic behavior for removal reasons here.',
-                    content: '\
-                <table>\
-                    <td>Header:</td>\
-                    <td><textarea class="edit-header" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : '')) + '</textarea></td>\
-                    </tr><tr>\
-                    <td>Footer:</td>\
-                    <td><textarea class="edit-footer" >' + TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : '')) + '</textarea></td>\
-                    </tr>\
-                    <tr class="advanced-enable" ' + ((TB.utils.advancedMode) ? '' : 'style="display:none;"') + '>\
-                    <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                        get reason from /r/:\
-                    </td><td>\
-                        <input class="getfrom" type="text" value="' + (configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '') + '"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                        logsub /r/:\
-                    </td><td>\
-                        <input class="logsub" type="text" value="' + (configData.removalReasons.logsub ? configData.removalReasons.logsub : '') + '"/>\
-                    </td>\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                       pmsubject:\
-                    </td><td>\
-                       <input class="pmsubject" type="text" value="' + (configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '') + '"/>\
-                    </td>\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                        logtitle:\
-                    </td><td>\
-                        <input class="logtitle" type="text" value="' + (configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '') + '"/>\
-                    </td>\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                        bantitle:\
-                    </td><td>\
-                        <input class="bantitle" type="text" value="' + (configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '') + '"/>\
-                    </td>\
-                    </tr>\
-                    <tr class="rr-advanced">\
-                    <td>\
-                        logreason:\
-                    </td><td>\
-                        <input class="logreason" type="text" value="' + (configData.removalReasons.logreason ? configData.removalReasons.logreason : '') + '"/>\
-                    </td>\
-                    </tr><tr>\
-                </table>',
+                    content: `
+                <table>
+                    <td>Header:</td>
+                    <td><textarea class="edit-header" >${TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ``))}</textarea></td>
+                    </tr><tr>
+                    <td>Footer:</td>
+                    <td><textarea class="edit-footer" >${TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ``))}</textarea></td>
+                    </tr>
+                    <tr class="advanced-enable" ${((TB.utils.advancedMode) ? `` : `style="display:none;"`)}>
+                    <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                        get reason from /r/:
+                    </td><td>
+                        <input class="getfrom" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ``)}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                        logsub /r/:
+                    </td><td>
+                        <input class="logsub" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : ``)}"/>
+                    </td>
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                       pmsubject:
+                    </td><td>
+                       <input class="pmsubject" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ``)}"/>
+                    </td>
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                        logtitle:
+                    </td><td>
+                        <input class="logtitle" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ``)}"/>
+                    </td>
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                        bantitle:
+                    </td><td>
+                        <input class="bantitle" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ``)}"/>
+                    </td>
+                    </tr>
+                    <tr class="rr-advanced">
+                    <td>
+                        logreason:
+                    </td><td>
+                        <input class="logreason" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : ``)}"/>
+                    </td>
+                    </tr><tr>
+                </table>`,
                     footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">'
                 },
                 {
                     title: 'edit removal reasons',
                     tooltip: 'Edit and add your removal reasons here.',
-                    content: '\
-                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new removal reason</a>\
-                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>\
-                <span id="tb-add-removal-reason-form">\
-                    <textarea class="edit-area" placeholder="reason comment text (optional if you\'re using flair only)"></textarea><br/>\
-                    <input type="text" name="removal-title" placeholder="removal reason title" /><br/>\
-                    <input type="text" name="flair-text" placeholder="flair text" /><br/>\
-                    <input type="text" name="flair-css" placeholder="flair css class" /><br/>\
-                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                    <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />\
-                </span>\
-                <table id="tb-removal-reasons-list">\
-                </table>\
-                ',
+                    content: `
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><img src="data:image/png;base64,${TBui.iconAdd}"> Add new removal reason</a>
+                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
+                <span id="tb-add-removal-reason-form">
+                    <textarea class="edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
+                    <input type="text" name="removal-title" placeholder="removal reason title" /><br/>
+                    <input type="text" name="flair-text" placeholder="flair text" /><br/>
+                    <input type="text" name="flair-css" placeholder="flair css class" /><br/>
+                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                    <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />
+                </span>
+                <table id="tb-removal-reasons-list">
+                </table>
+                `,
                     footer: ''
                 },
                 {
                     title: 'edit mod macros',
                     tooltip: 'Edit and add your mod macros here.',
-                    content: '\
-                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><img src="data:image/png;base64,' + TBui.iconAdd + '"> Add new mod macro</a>\
-                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>\
-                <span id="tb-add-mod-macro-form">\
-                    <textarea class="edit-area"></textarea><br/>\
-                    <input type="text" class="macro-title" name="macro-title" placeholder="macro title" /><br>\
-                    <label><input type="checkbox" id="distinguish" checked>distinguish</label>\
-                    <label><input type="checkbox" id="banuser">ban user</label>\
-                    <label><input type="checkbox" id="muteuser">mute user</label>\
-                    <label><input type="checkbox" id="removeitem">remove item</label>\
-                    <label><input type="checkbox" id="approveitem">approve item</label>\
-                    <label><input type="checkbox" id="lockthread">lock post</label>\
-                    <label><input type="checkbox" id="sticky">sticky comment</label>\
-                    <label><input type="checkbox" id="archivemodmail">archive modmail</label>\
-                    <label><input type="checkbox" id="highlightmodmail">highlight modmail</label><br>\
-                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                    <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">\
-                </span>\
-                <table id="tb-mod-macros-list">\
-                </table>\
-                ',
+                    content: `
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><img src="data:image/png;base64,${TBui.iconAdd}"> Add new mod macro</a>
+                <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
+                <span id="tb-add-mod-macro-form">
+                    <textarea class="edit-area"></textarea><br/>
+                    <input type="text" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <label><input type="checkbox" id="distinguish" checked>distinguish</label>
+                    <label><input type="checkbox" id="banuser">ban user</label>
+                    <label><input type="checkbox" id="muteuser">mute user</label>
+                    <label><input type="checkbox" id="removeitem">remove item</label>
+                    <label><input type="checkbox" id="approveitem">approve item</label>
+                    <label><input type="checkbox" id="lockthread">lock post</label>
+                    <label><input type="checkbox" id="sticky">sticky comment</label>
+                    <label><input type="checkbox" id="archivemodmail">archive modmail</label>
+                    <label><input type="checkbox" id="highlightmodmail">highlight modmail</label><br>
+                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                    <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">
+                </span>
+                <table id="tb-mod-macros-list">
+                </table>
+                `,
                     footer: ''
                 },
                 {
@@ -190,22 +190,22 @@ self.init = function() {
                 {
                 title: 'ban macro',
                 tooltip: 'pre-fill the mod button ban note and reason with tekst and tokens..',
-                content: '\
-                    <table>\
-                    <td>\
-                        Ban note:\
-                    </td><td>\
-                        <input class="banNote" type="text" value="' + ((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : '') + '"/>\
-                    </td>\
-                    </tr>\
-                    <tr>\
-                    <td>\
-                       Ban message:\
-                    </td><td>\
-                       <textarea class="banMessage">' + ((configData.banMacros && configData.banMacros.banMessage)  ? configData.banMacros.banMessage : '') + '</textarea>\
-                    </td>\
-                    </tr>\
-                </table>',
+                content: `
+                    <table>
+                    <td>
+                        Ban note:
+                    </td><td>
+                        <input class="banNote" type="text" value="${((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : ``)}"/>
+                    </td>
+                    </tr>
+                    <tr>
+                    <td>
+                       Ban message:
+                    </td><td>
+                       <textarea class="banMessage">${((configData.banMacros && configData.banMacros.banMessage)  ? configData.banMacros.banMessage : ``)}</textarea>
+                    </td>
+                    </tr>
+                </table>`,
                 footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">'
             }
             ],
@@ -606,24 +606,24 @@ self.init = function() {
                     removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
                     removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
 
-                var removalReasonTemplate = '\
-                <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">\
-                    <td class="removal-reasons-buttons">\
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>\
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>\
-                    </td>\
-                    <td class="removal-reasons-content" data-reason="{{i}}">\
-                        <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>\
-                        <span class="removal-reason-edit">\
-                            <textarea class="edit-area">{{removalReasonText}}</textarea><br/>\
-                            <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>\
-                            <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>\
-                            <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />\
-                        </span>\
-                    </td>\
-                </tr>';
+                var removalReasonTemplate = `
+                <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
+                    <td class="removal-reasons-buttons">
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>
+                    </td>
+                    <td class="removal-reasons-content" data-reason="{{i}}">
+                        <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
+                        <span class="removal-reason-edit">
+                            <textarea class="edit-area">{{removalReasonText}}</textarea><br/>
+                            <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
+                            <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
+                            <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
+                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                            <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />
+                        </span>
+                    </td>
+                </tr>`;
 
                 var removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
                     'i': i,
@@ -666,31 +666,31 @@ self.init = function() {
                     modMacroText = unescape(macro.text) || '',
                     modMacroTitle = macro.title || '';
 
-                var modMacroTemplate = '\
-                <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">\
-                    <td class="mod-macros-buttons">\
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiMacroEdit}}"></a> <br>\
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiMacroRemove}}"></a>\
-                    </td>\
-                    <td class="mod-macros-content" data-macro="{{i}}">\
-                        <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>\
-                        <span class="mod-macro-edit">\
-                            <textarea class="edit-area">{{modMacroText}}</textarea><br/>\
-                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>\
-                            <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>\
-                            <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>\
-                            <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>\
-                            <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>\
-                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>\
-                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>\
-                            <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>\
-                            <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>\
-                            <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>\
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>\
-                            <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />\
-                        </span>\
-                    </td>\
-                </tr>';
+                var modMacroTemplate = `
+                <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">
+                    <td class="mod-macros-buttons">
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiMacroEdit}}"></a> <br>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiMacroRemove}}"></a>
+                    </td>
+                    <td class="mod-macros-content" data-macro="{{i}}">
+                        <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
+                        <span class="mod-macro-edit">
+                            <textarea class="edit-area">{{modMacroText}}</textarea><br/>
+                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>
+                            <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>
+                            <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>
+                            <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
+                            <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
+                            <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
+                            <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>
+                            <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
+                            <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
+                            <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
+                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                            <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />
+                        </span>
+                    </td>
+                </tr>`;
 
                 var modMacroTemplateHTML = TBUtils.template(modMacroTemplate, {
                     'i': i,
@@ -705,15 +705,15 @@ self.init = function() {
                 var $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');
                 $removalReasonsList.append(modMacroTemplateHTML);
 
-                $('.' + i + '-distinguish').prop('checked', macro.distinguish);
-                $('.' + i + '-banuser').prop('checked', macro.ban);
-                $('.' + i + '-muteuser').prop('checked', macro.mute);
-                $('.' + i + '-removeitem').prop('checked', macro.remove);
-                $('.' + i + '-approveitem').prop('checked', macro.approve);
-                $('.' + i + '-lockthread').prop('checked', macro.lockthread);
-                $('.' + i + '-sticky').prop('checked', macro.sticky);
-                $('.' + i + '-archivemodmail').prop('checked', macro.archivemodmail);
-                $('.' + i + '-highlightmodmail').prop('checked', macro.highlightmodmail);
+                $(`.${i}-distinguish`).prop('checked', macro.distinguish);
+                $(`.${i}-banuser`).prop('checked', macro.ban);
+                $(`.${i}-muteuser`).prop('checked', macro.mute);
+                $(`.${i}-removeitem`).prop('checked', macro.remove);
+                $(`.${i}-approveitem`).prop('checked', macro.approve);
+                $(`.${i}-lockthread`).prop('checked', macro.lockthread);
+                $(`.${i}-sticky`).prop('checked', macro.sticky);
+                $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
+                $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
 
 
 
@@ -913,23 +913,23 @@ self.init = function() {
                     $text.addClass('error');
                 }
                 if (!key) {
-                    $key.addClass('error')
+                    $key.addClass('error');
                 }
-                $error.text("Cannot have empty fields.");
+                $error.text('Cannot have empty fields.');
                 error = true;
             }
 
             // Invalid key characters
             if (!key || !key.match(/^[\w-]+$/)) {
                 $key.addClass('error');
-                $error.text("Keys can only contain a-z, 0-9, -, and _.");
+                $error.text('Keys can only contain a-z, 0-9, -, and _.');
                 error = true;
             }
 
             // Duplicate keys
             if (seenKeys.indexOf(key) > -1) {
                 $key.addClass('error');
-                $error.text("Keys must be unique.");
+                $error.text('Keys must be unique.');
                 error = true;
             }
             else {
@@ -949,7 +949,7 @@ self.init = function() {
                 key = $row.find('.key').val(),
                 text = $row.find('.name').val(),
                 color = $row.find('.color').val();
-            self.log("  key="+key+", text=\""+text+"\", color="+color);
+            self.log(`  key=${key}, text="${text}", color=${color}`);
 
             config.usernoteColors.push({
                 key: key,
@@ -1040,7 +1040,7 @@ self.init = function() {
         postToWiki('toolbox', config, editNote, true);
 
         var label = unescape(reasonText);
-        if (label == '') {
+        if (label === '') {
             label = '<span style="color: #cecece">(no reason)</span>';
         } else {
             if (label.length > 200) {
@@ -1051,7 +1051,7 @@ self.init = function() {
 
 
         var $removalReasonLabel = $removalContent.find('.removal-reason-label');
-        $removalReasonLabel.html('<span><h3 class="removal-title">' + TBUtils.htmlEncode(reasonTitle) + '</h3>' + label + '</span>');
+        $removalReasonLabel.html(`<span><h3 class="removal-title">${TBUtils.htmlEncode(reasonTitle)}</h3>${label}</span>`);
 
 
         $removalReasonLabel.show();
@@ -1072,7 +1072,7 @@ self.init = function() {
             } else {
                 return;
             }
-            postToWiki('toolbox', config, 'delete reason #' + (reasonsNum + 1), true);
+            postToWiki('toolbox', config, `delete reason #${reasonsNum + 1}`, true);
 
             $this.closest('.removal-reason').remove();
         }
@@ -1181,15 +1181,15 @@ self.init = function() {
 
         $macroContent.find('.edit-area').val(unescape(macro.text) || '<span style="color: #cecece">(no macro)</span>');
         $macroContent.find('input[name=macro-title]').val(macro.title || '');
-        $macroContent.find('#distinguish').prop("checked", macro.distinguish);
-        $macroContent.find('#banuser').prop("checked", macro.ban);
-        $macroContent.find('#muteuser').prop("checked", macro.mute);
-        $macroContent.find('#removeitem').prop("checked", macro.remove);
-        $macroContent.find('#approveitem').prop("checked", macro.approve);
-        $macroContent.find('#lockthread').prop("checked", macro.lockthread);
-        $macroContent.find('#sticky').prop("checked", macro.sticky);
-        $macroContent.find('#archivemodmail').prop("checked", macro.archivemodmail);
-        $macroContent.find('#highlightmodmail').prop("checked", macro.highlightmodmail);
+        $macroContent.find('#distinguish').prop('checked', macro.distinguish);
+        $macroContent.find('#banuser').prop('checked', macro.ban);
+        $macroContent.find('#muteuser').prop('checked', macro.mute);
+        $macroContent.find('#removeitem').prop('checked', macro.remove);
+        $macroContent.find('#approveitem').prop('checked', macro.approve);
+        $macroContent.find('#lockthread').prop('checked', macro.lockthread);
+        $macroContent.find('#sticky').prop('checked', macro.sticky);
+        $macroContent.find('#archivemodmail').prop('checked', macro.archivemodmail);
+        $macroContent.find('#highlightmodmail').prop('checked', macro.highlightmodmail);
         $macroContent.find('input[name=edit-note]').val('');
 
         $macroContent.find('.mod-macro-label').show();
@@ -1203,15 +1203,15 @@ self.init = function() {
             macroNum = $macroContent.attr('data-macro'),
             macroText = $macroContent.find('.edit-area').val(),
             macroTitle = $macroContent.find('input[name=macro-title]').val(),
-            distinguish = $macroContent.find('#distinguish').prop("checked"),
-            banuser = $macroContent.find('#banuser').prop("checked"),
-            muteuser = $macroContent.find('#muteuser').prop("checked"),
-            removeitem = $macroContent.find('#removeitem').prop("checked"),
-            approveitem = $macroContent.find('#approveitem').prop("checked"),
-            lockthread = $macroContent.find('#lockthread').prop("checked"),
-            sticky = $macroContent.find('#sticky').prop("checked"),
-            archivemodmail = $macroContent.find('#archivemodmail').prop("checked"),
-            highlightmodmail = $macroContent.find('#highlightmodmail').prop("checked"),
+            distinguish = $macroContent.find('#distinguish').prop('checked'),
+            banuser = $macroContent.find('#banuser').prop('checked'),
+            muteuser = $macroContent.find('#muteuser').prop('checked'),
+            removeitem = $macroContent.find('#removeitem').prop('checked'),
+            approveitem = $macroContent.find('#approveitem').prop('checked'),
+            lockthread = $macroContent.find('#lockthread').prop('checked'),
+            sticky = $macroContent.find('#sticky').prop('checked'),
+            archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
+            highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
             editNote = $macroContent.find('input[name=edit-note]').val(),
             macro = config.modMacros[macroNum];
 
@@ -1254,7 +1254,7 @@ self.init = function() {
         }
 
         var $modMacroLabel = $macroContent.find('.mod-macro-label');
-        $modMacroLabel.html('<span><h3 class="macro-title">' + macroTitle + '</h3>' + label + '</span>');
+        $modMacroLabel.html(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`);
 
         $modMacroLabel.show();
         $macroContent.find('.mod-macro-edit').hide();
@@ -1273,7 +1273,7 @@ self.init = function() {
             } else {
                 return;
             }
-            postToWiki('toolbox', config, 'delete macro #' + (macroNum + 1), true);
+            postToWiki('toolbox', config, `delete macro #${macroNum + 1}`, true);
 
 
             $this.closest('.mod-macro').remove();
@@ -1292,15 +1292,15 @@ self.init = function() {
     $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function () {
         var macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
             macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
-            distinguish = $body.find('#distinguish').prop("checked"),
-            banuser = $body.find('#banuser').prop("checked"),
-            muteuser = $body.find('#muteuser').prop("checked"),
-            removeitem = $body.find('#removeitem').prop("checked"),
-            approveitem = $body.find('#approveitem').prop("checked"),
-            lockthread = $body.find('#lockthread').prop("checked"),
-            sticky = $body.find('#sticky').prop("checked"),
-            archivemodmail = $body.find('#archivemodmail').prop("checked"),
-            highlightmodmail = $body.find('#highlightmodmail').prop("checked"),
+            distinguish = $body.find('#distinguish').prop('checked'),
+            banuser = $body.find('#banuser').prop('checked'),
+            muteuser = $body.find('#muteuser').prop('checked'),
+            removeitem = $body.find('#removeitem').prop('checked'),
+            approveitem = $body.find('#approveitem').prop('checked'),
+            lockthread = $body.find('#lockthread').prop('checked'),
+            sticky = $body.find('#sticky').prop('checked'),
+            archivemodmail = $body.find('#archivemodmail').prop('checked'),
+            highlightmodmail = $body.find('#highlightmodmail').prop('checked'),
             editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
 
@@ -1343,15 +1343,15 @@ self.init = function() {
         $body.find('#tb-add-mod-macro-form .edit-area').val('');
         $body.find('#tb-add-mod-macro-form input[name=macro-title]').val('');
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
-        $body.find('#distinguish').prop("checked", false);
-        $body.find('#banuser').prop("checked", false);
-        $body.find('#muteuser').prop("checked", false);
-        $body.find('#removeitem').prop("checked", false);
-        $body.find('#approveitem').prop("checked", false);
-        $body.find('#lockthread').prop("checked", false);
-        $body.find('#sticky').prop("checked", false);
-        $body.find('#archivemodmail').prop("checked", false);
-        $body.find('#highlightmodmail').prop("checked", false);
+        $body.find('#distinguish').prop('checked', false);
+        $body.find('#banuser').prop('checked', false);
+        $body.find('#muteuser').prop('checked', false);
+        $body.find('#removeitem').prop('checked', false);
+        $body.find('#approveitem').prop('checked', false);
+        $body.find('#lockthread').prop('checked', false);
+        $body.find('#sticky').prop('checked', false);
+        $body.find('#archivemodmail').prop('checked', false);
+        $body.find('#highlightmodmail').prop('checked', false);
 
 
 
@@ -1364,15 +1364,15 @@ self.init = function() {
         $body.find('#tb-add-mod-macro-form .edit-area').val('');
         $body.find('#tb-add-mod-macro-form input[name=macro-title]').val('');
         $body.find('#tb-add-mod-macro-form input[name=edit-note]').val('');
-        $body.find('#distinguish').prop("checked", false);
-        $body.find('#banuser').prop("checked", false);
-        $body.find('#muteuser').prop("checked", false);
-        $body.find('#removeitem').prop("checked", false);
-        $body.find('#approveitem').prop("checked", false);
-        $body.find('#lockthread').prop("checked", false);
-        $body.find('#sticky').prop("checked", false);
-        $body.find('#archivemodmail').prop("checked", false);
-        $body.find('#highlightmodmail').prop("checked", false);
+        $body.find('#distinguish').prop('checked', false);
+        $body.find('#banuser').prop('checked', false);
+        $body.find('#muteuser').prop('checked', false);
+        $body.find('#removeitem').prop('checked', false);
+        $body.find('#approveitem').prop('checked', false);
+        $body.find('#lockthread').prop('checked', false);
+        $body.find('#sticky').prop('checked', false);
+        $body.find('#archivemodmail').prop('checked', false);
+        $body.find('#highlightmodmail').prop('checked', false);
     });
 
 

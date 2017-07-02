@@ -1442,7 +1442,6 @@ function initwrapper() {
                         jqXHR: jqXHR
                     };
                 }, function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
                     throw {
                         jqXHR: jqXHR,
                         textStatus: textStatus,
@@ -1469,7 +1468,6 @@ function initwrapper() {
                         jqXHR: jqXHR
                     };
                 }, function(jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
                     throw {
                         jqXHR: jqXHR,
                         textStatus: textStatus,

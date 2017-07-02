@@ -12,3 +12,6 @@ exclude_paths:
 - build/**/*
 - extension/data/libs/**/*
 - gulpfile.js
+ratings:
+   paths:
+   - extension/**/*

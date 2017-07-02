@@ -20,8 +20,8 @@ function tbconfig() {
         // With the following function we will create the UI when we need it.
         // Create the window overlay.
         function showConfig(subredditConfig, configData) {
-
-            $overlay = TB.ui.overlay(
+            
+            TB.ui.overlay(
                 `toolbox Configuration - /r/${subredditConfig}`,
                 [
                     {

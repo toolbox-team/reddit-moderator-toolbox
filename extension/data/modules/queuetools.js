@@ -293,61 +293,6 @@ function queuetools() {
         });
 
 
-        // Ideally, this should be moved somewhere else to be common with the removal reasons module
-        // Retreival of log subreddit information could also be separated
-        function getRemovalReasons(subreddit, callback) {
-            self.log(`getting config: ${subreddit}`);
-            var reasons = '';
-
-            // See if we have the reasons in the cache.
-            if (TBUtils.configCache[subreddit] !== undefined) {
-                reasons = TBUtils.configCache[subreddit].removalReasons;
-
-                // If we need to get them from another sub, recurse.
-                if (reasons && reasons.getfrom) {
-                    getRemovalReasons(reasons.getfrom, callback); //this may not work.
-                    return;
-                }
-            }
-
-            // If we have removal reasons, send them back.
-            if (reasons) {
-                self.log('returning: cache');
-                callback(reasons);
-                return;
-            }
-
-            // OK, they are not cached.  Try the wiki.
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
-                    self.log('failed: wiki config');
-                    callback(false);
-                    return;
-                }
-
-                // We have a valid config, cache it.
-                TBUtils.configCache[subreddit] = resp;
-                reasons = resp.removalReasons;
-
-                // Again, check if there is a fallback sub, and recurse.
-                if (reasons && reasons.getfrom) {
-                    self.log('trying: get from, no cache');
-                    getRemovalReasons(reasons.getfrom, callback); //this may not work.
-                    return;
-                }
-
-                // Last try, or return false.
-                if (reasons) {
-                    self.log('returning: no cache');
-                    callback(reasons);
-                    return;
-                }
-
-                self.log('falied: all');
-                callback(false);
-            });
-        }
-
         if (showReportReasons && TBUtils.isCommentsPage) {
             var $ignoreReports = $('[data-event-action="unignorereports"]:first');
             if ($ignoreReports.length > 0) {

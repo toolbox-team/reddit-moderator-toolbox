@@ -21,6 +21,7 @@
         "no-inner-declarations": "warn",
         "prefer-template": "warn",
         "no-useless-escape": "warn",
+        "no-constant-condition": "warn",
         "template-curly-spacing": [
             "error", 
             "never"

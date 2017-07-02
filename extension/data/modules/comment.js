@@ -447,7 +447,13 @@ function comments() {
                 });
             });
         }
+        
+        function populateSearchSuggestion() {
 
+            $(TBUtils.mySubs).each(function () {
+                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+            });
+        }
         function commentSearch() {
         // Find comments made by the user in specific subreddits.
             if ($body.hasClass('profile-page') && TBUtils.modCheck) {
@@ -460,12 +466,7 @@ function comments() {
 
                 $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
-                function populateSearchSuggestion() {
 
-                    $(TBUtils.mySubs).each(function () {
-                        $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
-                    });
-                }
 
                 TBUtils.getModSubs(function () {
                     populateSearchSuggestion();

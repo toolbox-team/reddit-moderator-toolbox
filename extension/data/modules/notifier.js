@@ -288,9 +288,7 @@ function notifiermod() {
             self.log('getting messages');
 
             // get some of the variables again, since we need to determine if there are new messages to display and counters to update.
-            var lastchecked = self.setting('lastChecked'),
-                author = '',
-                body_html = '';
+            var lastchecked = self.setting('lastChecked');
 
             // Update now.
             now = TB.utils.getTime();
@@ -350,13 +348,13 @@ function notifiermod() {
             function updateModMailCount(count) {
             // $modmail is native to reddit $tb_modmail in the modbar.
                 var $modmail = $('#modmail'),
-                    $tb_modmail = $('#tb-modmail');
-                $tbModmailCount = $('#tb-modmailcount');
+                    $tb_modmail = $('#tb-modmail'),
+                    $tbModmailCount = $('#tb-modmailcount');
 
                 // Determine if we need to point to a filtered inbox.
                 if (modmailFilteredSubreddits !== 'mod') {
                     var modmailHrefAttr = `/r/${modmailFilteredSubreddits}/message/moderator/`;
-				    if (modmailCustomLimit > 0) {
+                    if (modmailCustomLimit > 0) {
                         modmailHrefAttr = `${modmailHrefAttr}?limit=${modmailCustomLimit}`;
                     }
 
@@ -449,9 +447,12 @@ function notifiermod() {
                     if (consolidatedMessages) {
                         var notificationbody, messagecount = 0;
                         $.each(json.data.children, function (i, value) {
+                            var subreddit,
+                                subject,
+                                author;
                             if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
-                                var subreddit = value.data.subreddit,
-                                    author = value.data.author;
+                                subreddit = value.data.subreddit,
+                                author = value.data.author;
 
                                 if (!notificationbody) {
                                     notificationbody = `reply from: ${author}. in: ${subreddit}\n`;
@@ -462,14 +463,14 @@ function notifiermod() {
                                 pushedunread.push(value.data.name);
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                             } else if ($.inArray(value.data.name, pushedunread) == -1) {
-                                var subject = value.data.subject,
-                                    author = value.data.author;
+                                subject = value.data.subject,
+                                author = value.data.author;
 
-	                        //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
-	                        //from a subreddit
-	                        if(!author && value.data.subreddit != null) {
-		                        author = value.data.subreddit;
-	                        }
+                                //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
+                                //from a subreddit
+                                if(!author && value.data.subreddit != null) {
+                                    author = value.data.subreddit;
+                                }
 
                                 if (!notificationbody) {
                                     notificationbody = `pm from: ${author} - ${subject}\n`;
@@ -501,31 +502,40 @@ function notifiermod() {
 
                     } else {
                         $.each(json.data.children, function (i, value) {
+                            var context,
+                                body_html,
+                                author,
+                                subreddit,
+                                commentid,
+                                contexturl,
+                                subject,
+                                id;
+
 
                             if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
 
-                                var context = value.data.context,
-                                    body_html = TBUtils.htmlDecode(value.data.body_html),
-                                    author = value.data.author,
-                                    subreddit = value.data.subreddit,
-                                    commentid = value.data.name,
-                                    contexturl = `${context.slice(0, -10)}.json`;
+                                context = value.data.context,
+                                body_html = TBUtils.htmlDecode(value.data.body_html),
+                                author = value.data.author,
+                                subreddit = value.data.subreddit,
+                                commentid = value.data.name,
+                                contexturl = `${context.slice(0, -10)}.json`;
 
                                 getcommentitle(subreddit, contexturl, context, author, body_html, commentid);
                                 pushedunread.push(value.data.name);
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                             } else if ($.inArray(value.data.name, pushedunread) == -1) {
-                                var author = value.data.author,
-                                    body_html = TBUtils.htmlDecode(value.data.body_html),
-                                    subject = value.data.subject,
-                                    id = value.data.id;
+                                author = value.data.author,
+                                body_html = TBUtils.htmlDecode(value.data.body_html),
+                                subject = value.data.subject,
+                                id = value.data.id;
 
-	                        //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
-	                        //from a subreddit
-	                        if(!author && value.data.subreddit != null) {
-		                        author = value.data.subreddit;
-	                        }
+                                //When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
+                                //from a subreddit
+                                if(!author && value.data.subreddit != null) {
+                                    author = value.data.subreddit;
+                                }
 
                                 TBUtils.notification(`New message: ${subject}`, `${$(body_html).text()}\u2026 \n \n from: ${author}`, `/message/messages/${id}`);
                                 pushedunread.push(value.data.name);
@@ -577,11 +587,12 @@ function notifiermod() {
                     //$.log('here we go!');
                         var notificationbody, queuecount = 0, xmoreModqueue = 0;
                         $.each(json.data.children, function (i, value) {
-
+                            var subreddit,
+                                author;
 
                             if ($.inArray(value.data.name, pusheditems) == -1 && value.kind == 't3') {
-                                var subreddit = value.data.subreddit,
-                                    author = value.data.author;
+                                subreddit = value.data.subreddit,
+                                author = value.data.author;
 
                                 if (!notificationbody) {
                                     notificationbody = `post from: ${author}, in: ${subreddit}\n`;
@@ -594,8 +605,8 @@ function notifiermod() {
                                 queuecount++;
                                 pusheditems.push(value.data.name);
                             } else if ($.inArray(value.data.name, pusheditems) == -1) {
-                                var subreddit = value.data.subreddit,
-                                    author = value.data.author;
+                                subreddit = value.data.subreddit,
+                                author = value.data.author;
 
                                 if (!notificationbody) {
                                     notificationbody = `comment from: ${author}, in: ${subreddit}\n`;
@@ -743,8 +754,6 @@ function notifiermod() {
 
                 var lastSeen = self.setting('lastSeenModmail'),
                     newIdx = '',
-                    title = '',
-                    text = '',
                     newCount = 0;
 
                 for (var i = 0; i < json.data.children.length; i++) {

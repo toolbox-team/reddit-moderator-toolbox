@@ -85,7 +85,7 @@ function comments() {
                 self.log(removedCounter);
 
                 if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
-                    $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
+                    var $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
                     if (removedCounter == 1) {
                         $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]`);
                     } else if (removedCounter > 1) {
@@ -168,7 +168,7 @@ function comments() {
 
             // Let's support selfpost expandos
             $body.on('click', '.expando-button.selftext', function () {
-                delayedHighlight = setTimeout(run, 1000);
+                setTimeout(run, 1000);
             });
 
             // NER support.
@@ -184,43 +184,43 @@ function comments() {
             $body.on('click', '.tb-loadFlat', function () {
 
             // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
-                htmlComment = '\
-<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">\
-<div class="entry mod-button" subreddit="{{subreddit}}">\
-<p class="tagline">\
-    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-    <span class="userattrs">\
-    </span>\
-    <span class="score">{{score}} points</span>\
-    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-</p>\
-<form class="usertext">\
-    <div class="usertext-body">\
-    {{bodyHtml}}\
-    </div>\
-</form>\
-<ul class="flat-list buttons">\
-    <li class="first">\
-        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-    </li>\
-    <li>\
-        <a href="javascript:;" class="global-mod-button">mod</a>\
-    </li>\
-    <li>\
-        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-    </li> \
-    <li>\
-        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-    </li> \
-    {{bannedBy}}\
-    {{modButtons}}\
-    <li>\
-        <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>\
-</ul>\
-</div>\
-<div class="child"></div>\
-<div class="comment-nest-info">{{commentNestInfo}}</div>\
-</div>';
+                var htmlComment = `
+<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">
+<div class="entry mod-button" subreddit="{{subreddit}}">
+<p class="tagline">
+    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>
+    <span class="userattrs">
+    </span>
+    <span class="score">{{score}} points</span>
+    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>
+</p>
+<form class="usertext">
+    <div class="usertext-body">
+    {{bodyHtml}}
+    </div>
+</form>
+<ul class="flat-list buttons">
+    <li class="first">
+        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>
+    </li>
+    <li>
+        <a href="javascript:;" class="global-mod-button">mod</a>
+    </li>
+    <li>
+        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>
+    </li> 
+    <li>
+        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>
+    </li> 
+    {{bannedBy}}
+    {{modButtons}}
+    <li>
+        <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>
+</ul>
+</div>
+<div class="child"></div>
+<div class="comment-nest-info">{{commentNestInfo}}</div>
+</div>`;
 
                 // remove modtools since we don't want mass actions out of context comments.
                 $body.find('.tabmenu li .modtools-on').closest('li').remove();
@@ -247,7 +247,6 @@ function comments() {
                             parseComments(object.data.children[i]);
                         }
 
-                        firstFlatRun = false;
                         break;
 
                     case 't1':
@@ -276,7 +275,6 @@ function comments() {
                 var htmlCommentView = ''; // This will contain the new html we will add to the page.
                 var $thing = $('.thing.link');
                 var fullId = $thing.data('fullname') || $thing.attr('id').match(/thing_(t3_[a-z0-9]+)/i)[1]; // full id
-                var smallId = fullId.substring(3); // small id constructed from fullId
 
                 var siteTable = `#siteTable_${fullId}`; // sitetable id which we will be clearing.
                 $(siteTable).empty(); // clear the site table.
@@ -286,7 +284,7 @@ function comments() {
                 var jsonurl = $('.entry a.comments').attr('href');
 
                 // Lets get the comments.
-                $.getJSON(`${jsonurl}.json?limit=1500`).done(function (data, status, jqxhr) {
+                $.getJSON(`${jsonurl}.json?limit=1500`).done(function (data) {
                 // put the json through our deconstructor.
                     data[1].isreply = false;
                     parseComments(data[1]);
@@ -299,25 +297,17 @@ function comments() {
                     $.each(idListing, function (index, value) {
 
                     // All variables we will need to construct a fresh new comment.
-                        var approvedBy = flatListing[value].approved_by,
-                            author = flatListing[value].author,
-                            authorFlairCssClass = flatListing[value].author_flair_css_class,
-                            authorFlairText = flatListing[value].author_flair_text,
+                        var author = flatListing[value].author,
                             bannedBy = flatListing[value].banned_by,
                             bodyHtml = flatListing[value].body_html,
                             createdUTC = flatListing[value].created_utc,
                             distinguished = flatListing[value].distinguished,
                             commentID = flatListing[value].id,
-                            linkId = flatListing[value].link_id,
                             name = flatListing[value].name,
-                            numReports = flatListing[value].num_reports,
-                            parentId = flatListing[value].parent_id,
                             score = flatListing[value].score,
-                            scoreHidden = flatListing[value].score_hidden,
                             subreddit = flatListing[value].subreddit,
                             hasreplies = flatListing[value].hasreplies,
                             istop = flatListing[value].istop;
-
 
                         var commentNestInfo = '';
 
@@ -343,9 +333,9 @@ function comments() {
                         if (linkAuthor === author) {
                             authorClass = `${authorClass} submitter`;
                         }
-                        createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
+                        var createdTimeAgo = TBUtils.timeConverterISO(createdUTC);
 
-                        permaLinkComment = threadPermalink + commentID;
+                        var permaLinkComment = threadPermalink + commentID;
 
 
                         var thingClasses = name;
@@ -360,19 +350,19 @@ function comments() {
 
                         var modButtons = '';
                         if ($body.hasClass('moderator')) {
-                            modButtons = '\
-    <li>\
-        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-    </li>\
-    <li>\
-        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-    </li>\
-    ';
+                            modButtons = `
+    <li>
+        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>
+    </li>
+    <li>
+        <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>
+    </li>
+    `;
                         }
 
                         // Constructing the comment.
 
-                        htmlConstructedComment = TBUtils.template(htmlComment, {
+                        var htmlConstructedComment = TBUtils.template(htmlComment, {
                             'thingClasses': thingClasses,
                             'name': name,
                             'subreddit': subreddit,
@@ -400,11 +390,11 @@ function comments() {
 
                     // Add filter options to the page
                     if (!$body.find('#tb-flatview-search').length) {
-                        var $filterHTML = $('<div id="tb-flatview-search">\
-                            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  \
-                            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   \
-                            <span id="tb-flatview-search-count"></span>\
-                        </div>');
+                        var $filterHTML = $(`<div id="tb-flatview-search">
+                            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  
+                            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   
+                            <span id="tb-flatview-search-count"></span>
+                        </div>`);
                         var FilterRightPosition = $('.side').outerWidth() + 5;
                         $filterHTML.css({
                             'margin-right': `${FilterRightPosition}px`
@@ -522,7 +512,7 @@ function comments() {
                 });
 
 
-                $body.on('submit', '#tb-searchuser', function (event) {
+                $body.on('submit', '#tb-searchuser', function () {
 
                     var subredditsearch = $body.find('#subredditsearch').val(),
                         usersearch = $('#header-bottom-left .pagename').text(),
@@ -533,43 +523,43 @@ function comments() {
 
 
                     // Template for comment construction in the userprofile. Note: we do not include things like vote arrows since this is for mod related stuff. Also because voting from a profile doesn't work anyway.
-                    htmlCommentProfile = '\
-<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}"  data-author="{{author}}"data-subreddit="{{subreddit}}">\
-<p class="parent">\
-    <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>\
-    by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>\
-    in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>\
-</p>\
-<div class="entry mod-button" subreddit="{{subreddit}}">\
-    <p class="tagline">\
-        <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>\
-        <span class="userattrs">\
-        </span>\
-        <span class="score">{{score}} points</span>\
-        <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>\
-    </p>\
-    <form class="usertext">\
-        <div class="usertext-body">\
-        {{bodyHtml}}\
-        </div>\
-    </form>\
-    <ul class="flat-list buttons">\
-        <li class="first">\
-            <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>\
-        </li>\
-        <li>\
-            <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>\
-        </li> \
-        <li>\
-            <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>\
-        </li> \
-        {{bannedBy}}\
-        {{modButtons}}\
-    </ul>\
-</div>\
-<div class="child"></div>\
-</div>\
-<div class="clearleft"></div>';
+                    var htmlCommentProfile = `
+<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}"  data-author="{{author}}"data-subreddit="{{subreddit}}">
+<p class="parent">
+    <a href="{{linkUrl}}" class="title" rel="nofollow">{{submissionTitle}}</a>
+    by  <a href="https://www.reddit.com/user/{{linkAuthor}}" class="author ">{{linkAuthor}}</a>
+    in  <a href="https://www.reddit.com/r/{{subreddit}}/" class="subreddit hover">{{subreddit}}</a><br>
+</p>
+<div class="entry mod-button" subreddit="{{subreddit}}">
+    <p class="tagline">
+        <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>
+        <span class="userattrs">
+        </span>
+        <span class="score">{{score}} points</span>
+        <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>
+    </p>
+    <form class="usertext">
+        <div class="usertext-body">
+        {{bodyHtml}}
+        </div>
+    </form>
+    <ul class="flat-list buttons">
+        <li class="first">
+            <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>
+        </li>
+        <li>
+            <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>
+        </li> 
+        <li>
+            <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>
+        </li> 
+        {{bannedBy}}
+        {{modButtons}}
+    </ul>
+</div>
+<div class="child"></div>
+</div>
+<div class="clearleft"></div>`;
 
                     var htmlProfileCommentViewBuffer = '';
                     var hasHits = false;
@@ -581,16 +571,13 @@ function comments() {
                         $.getJSON(`${TBUtils.baseDomain}/user/${user}/comments.json`, {
                             'after': after,
                             'limit': 100
-                        }).done(function (data, status, jqxhr) {
+                        }).done(function (data) {
 
                             $.each(data.data.children, function (i, value) {
 
                                 var author = value.data.author,
-                                    authorFlairCssClass = value.data.author_flair_css_class,
-                                    authorFlairText = value.data.author_flair_text,
                                     bannedBy = value.data.banned_by,
                                     bodyHtml = value.data.body_html,
-                                    body = value.data.body,
                                     createdUTC = value.data.created_utc,
                                     distinguished = value.data.distinguished,
                                     commentID = value.data.id,
@@ -637,14 +624,14 @@ function comments() {
 
                                     // need to check if you are a mod of the returned sub
                                     if ($.inArray(subreddit, TBUtils.mySubs) !== -1) {
-                                        modButtons = '\
-        <li>\
-            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-        </li>\
-        <li>\
-            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>\
-        </li>\
-        ';
+                                        modButtons = `
+        <li>
+            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="spammed"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">spam</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>
+        </li>
+        <li>
+            <form class="toggle remove-button " action="#" method="get"><input type="hidden" name="executed" value="removed"><input type="hidden" name="spam" value="False"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">remove</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;remove&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form>
+        </li>
+        `;
                                     }
 
                                     // Don't render href if author is [deleted]
@@ -653,7 +640,7 @@ function comments() {
                                     }
 
                                     // Constructing the comment.
-                                    htmlConstructedComment = TBUtils.template(_htmlCommentProfile, {
+                                    var htmlConstructedComment = TBUtils.template(_htmlCommentProfile, {
                                         'linkAuthor': linkAuthor,
                                         'submissionTitle': submissionTitle,
                                         'thingClasses': thingClasses,

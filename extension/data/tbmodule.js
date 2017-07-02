@@ -59,9 +59,7 @@ function tbmodule() {
             //
             // preload some generic variables
             //
-            var shortcuts = self.modules['Modbar'].setting('shortcuts'),
-
-                debugMode = TBUtils.debugMode,
+            var debugMode = TBUtils.debugMode,
                 betaMode = TBUtils.betaMode,
                 devMode = TBUtils.devMode,
                 advancedMode = TBUtils.advancedMode,
@@ -499,6 +497,7 @@ function tbmodule() {
                     for (var j = 0; j < module.settingsList.length; j++) {
                         var setting = module.settingsList[j],
                             options = module.settings[setting];
+                        var $setting;
 
                         // "enabled" will eventually be special, but for now it just shows up like any other setting
                         // if (setting == "enabled") {
@@ -511,7 +510,7 @@ function tbmodule() {
                             if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) continue;
                             var name = module.shortname.toLowerCase();
 
-                            var $setting = $(`\
+                            $setting = $(`\
                             <p id="tb-toggle_modules-${name}">\
                                 <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>\
                                         <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>\
@@ -577,8 +576,8 @@ function tbmodule() {
                         moduleHasSettingTab = true;
 
                         // blank slate
-                        var $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`),
-                            execAfterInject = [],
+                        $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`);
+                        var execAfterInject = [],
                             title = (options.title) ? options.title : `(${setting})`,
                             noWrap = false;
 
@@ -660,7 +659,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
                                 $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem){
 
                                     // Editor setup.
-                                    editorSettings = CodeMirror.fromTextArea(elem, {
+                                    var editorSettings = CodeMirror.fromTextArea(elem, {
                                         mode: 'text/css',
                                         autoCloseBrackets: true,
                                         lineNumbers: true,

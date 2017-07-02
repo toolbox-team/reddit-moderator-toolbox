@@ -149,6 +149,10 @@ function usernotes() {
 
         function processThing(thing) {
             self.startProfile('process-thing');
+            var subreddit,
+                user,
+                author,
+                $userattrs;
 
             var $thing = $(thing),
                 thingType = $thing.attr('data-ut-type');
@@ -158,10 +162,10 @@ function usernotes() {
             if (thingType === TYPE_THING) {
                 var thingInfo = TBUtils.getThingInfo($thing);
 
-                var subreddit = thingInfo.subreddit,
-                    user = thingInfo.user;
+                subreddit = thingInfo.subreddit,
+                user = thingInfo.user;
 
-                var $userattrs = $thing.find(':not(.parent) .userattrs').first();
+                $userattrs = $thing.find(':not(.parent) .userattrs').first();
 
                 if(TBUtils.modsSub(subreddit)) {
                     attachNoteTag($userattrs, subreddit, true);
@@ -172,14 +176,15 @@ function usernotes() {
             // Modmail (ugh)
             else if (thingType === TYPE_MODMAIL) {
             //TODO: add tag on recipient; may have to reconsider how ut-thing is applied to modmail
-                var subreddit = $thing.attr('data-subreddit');
+                subreddit = $thing.attr('data-subreddit');
                 var $sender = $thing.find('.sender').first();
 
-                var $author = $sender.find('.author'),
-                    author = $author.text();
+                var $author = $sender.find('.author');
+                author = $author.text();
+
                 $thing.attr('data-author', author);
 
-                var $userattrs = $sender.find('.userattrs');
+                $userattrs = $sender.find('.userattrs');
                 attachNoteTag($userattrs, subreddit, true);
                 /*else {
                 // moar mod mail fuckery.  Cocksucking motherfucking hell.
@@ -194,8 +199,8 @@ function usernotes() {
             }
             // NEW Modmail! (yay)
             else if (thingType === TYPE_NEW_MODMAIL) {
-                var subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text(),
-                    author = $thing.find('.Message__author').text().substring(2);
+                subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text(),
+                author = $thing.find('.Message__author').text().substring(2);
 
                 $thing.attr('data-author', author);
                 $thing.attr('data-subreddit', subreddit);
@@ -211,11 +216,11 @@ function usernotes() {
             }
             // Users on mod pages
             else if (thingType === TYPE_USER) {
-                var subreddit = TBUtils.post_site;
+                subreddit = TBUtils.post_site;
                 $thing.attr('data-subreddit', subreddit);
 
-                var $user = $thing.find('a:first'),
-                    user = $user.text();
+                var $user = $thing.find('a:first');
+                user = $user.text();
                 if (user) {
                     $thing.attr('data-author', user);
                 }

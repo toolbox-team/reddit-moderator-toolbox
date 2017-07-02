@@ -143,7 +143,7 @@ function nukecomments() {
 
 
     // Add nuke button to all comments
-    self.processComment = function (comment, num) {
+    self.processComment = function (comment) {
         var $comment = $(comment);
         if (!$comment.hasClass('nuke-processed')) {
         // Add the class so we don't add buttons twice.

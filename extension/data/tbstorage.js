@@ -337,7 +337,7 @@ function storagewrapper() {
 
         function SendInit() {
             setTimeout(function () {
-                event = new CustomEvent('TBStorageLoaded');
+                var event = new CustomEvent('TBStorageLoaded');
                 window.dispatchEvent(event);
             }, 10);
         }
@@ -412,7 +412,7 @@ function storagewrapper() {
             registerSetting(module, setting);
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-
+            var result;
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;
             } else {
@@ -453,7 +453,7 @@ function storagewrapper() {
             var storageKey = `TBCache.${module}.${setting}`;
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-
+            var result;            
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;
             } else {

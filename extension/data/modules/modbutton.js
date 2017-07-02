@@ -146,7 +146,7 @@ function modbutton() {
     };
 
     self.init = function () {
-        var modbuttonStandard;
+
         if (TBUtils.isNewModmail) {
             self.buttonName = 'Mod Button';
         } else {
@@ -189,8 +189,7 @@ function modbutton() {
             self.log('displaying mod button popup');
 
 
-            var display = (self.savedSubs.length < 1) ? 'none' : '',
-                lastaction = self.setting('lastAction');
+            var lastaction = self.setting('lastAction');
 
             var info = TB.utils.getThingInfo(this, true),
                 subreddit = info.subreddit,
@@ -212,7 +211,7 @@ function modbutton() {
             // We want to make sure windows fit on the screen.
             var positions = TBui.drawPosition(event);
 
-            $popup = TB.ui.popup(
+            var $popup = TB.ui.popup(
                 `Mod Actions  - /u/${user}`,
                 [
                     {
@@ -220,57 +219,57 @@ function modbutton() {
                         id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
                         tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
                         content: `${subreddit
-                            ? `\
-                <div class="current-sub">\
-                    <input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}" checked>\
-                    <label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit} (current)</label>\
+                            ? `
+                <div class="current-sub">
+                    <input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}" checked>
+                    <label for="action-${subreddit}">&nbsp;&nbsp;/r/${subreddit} (current)</label>
                 </div>`
                             : ''
-                        }\
-                <div class="saved-subs">\
-                </div>\
-                <div class="other-subs">\
-                    <input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">\
-                    <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>\
-                </div>\
-                <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>\
-                <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>\
-                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)">\
+                        }
+                <div class="saved-subs">
+                </div>
+                <div class="other-subs">
+                    <input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">
+                    <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>
+                </div>
+                <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>
+                <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>
+                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)">
                 </div>`,
-                        footer: `\
-                <span class="status error left"></span>\
-                <select class="mod-action tb-action-button inline-button">\
-                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> \
-                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> \
-                    <option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter</option> \
-                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >remove submitter</option> \
-                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> \
-                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> \
-                </select>\
-                <button class="save tb-action-button inline-button">${self.saveButton}</button>\
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? '' : 'style="display:none!important;"'}>Global Action</button>`
+                        footer: `
+                <span class="status error left"></span>
+                <select class="mod-action tb-action-button inline-button">
+                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> 
+                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> 
+                    <option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter</option> 
+                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >remove submitter</option> 
+                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> 
+                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> 
+                </select>
+                <button class="save tb-action-button inline-button">${self.saveButton}</button>
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`
                     },
                     {
                         title: 'User Flair',
                         tooltip: 'Edit User Flair.',
-                        content: '\
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>\
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>',
-                        footer: '\
-                <span class="status error left"></span>\
-                <button class="flair-save tb-action-button">Save Flair</button>'
+                        content: `
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>`,
+                        footer: `
+                <span class="status error left"></span>
+                <button class="flair-save tb-action-button">Save Flair</button>`
                     },
                     {
                         title: 'Send Message',
                         tooltip: 'Send a message from the subreddit.',
-                        content: '\
-                    <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>\
-                    <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>\
-                    <span id="subreddit-message-callback"></span>\
-                    ',
-                        footer: '\
-                <span class="status error left"></span>\
-                <button class="message-send tb-action-button">Send Message</button>'
+                        content: `
+                    <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>
+                    <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>
+                    <span id="subreddit-message-callback"></span>
+                    `,
+                        footer: `
+                <span class="status error left"></span>
+                <button class="message-send tb-action-button">Send Message</button>`
                     }
                 ],
                 `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
@@ -558,7 +557,7 @@ function modbutton() {
 
                                     self.log('no ban message allowed, falling back to no message.');
                                     banMessage = '';
-                                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success) {
                                         if (!success) {
                                             self.log('missed one');
                                             failedSubs.push(subreddit);
@@ -647,7 +646,6 @@ function modbutton() {
         // Flair ALL THE THINGS
         $body.on('click', '.tb-popup-tabs .user_flair', function () {
             var $popup = $(this).parents('.mod-popup'),
-                $status = $popup.find('.status'),
                 user = $popup.find('.user').text(),
                 subreddit = $popup.find('.subreddit').text(),
                 $textinput = $popup.find('.flair-text'),
@@ -681,9 +679,9 @@ function modbutton() {
                     TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
                 }
                 else {
-                    self.log(err.responseText);
-                    TBui.textFeedback(err.responseText, TBui.FEEDBACK_NEGATIVE);
-                    $status.text(err.responseText);
+                    self.log(error.responseText);
+                    TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
+                    $status.text(error.responseText);
                 }
             });
         });

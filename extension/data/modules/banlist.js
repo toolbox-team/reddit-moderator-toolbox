@@ -24,7 +24,6 @@ function banlist() {
             banlist_last_update = 0,
             last_request = 0,
             time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
-            pages_back = 0,
             $num_bans = $('<span id="ban_count"></span>');
 
         function _get_next_ban_page(after, pages_back) {
@@ -77,7 +76,7 @@ function banlist() {
                         return;
                     }
 
-                    after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
+                    var after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                     self.log(after_url);
                     after = self.getURLParameter(after_url, 'after');
                     self.log(after);
@@ -87,7 +86,7 @@ function banlist() {
                             pages_back++;
                             _get_next_ban_page(after, pages_back);
                         } else {
-                            sleep = last_request + 2000 - Date.now();
+                            var sleep = last_request + 2000 - Date.now();
                             setTimeout(_get_next_ban_page, sleep, after, pages_back);
                         }
                     } else {
@@ -172,7 +171,6 @@ function banlist() {
                     self.log('Updating now');
                     // clean up
                     $('.usertable table tbody').empty();
-                    pages_back = 0;
                     _get_next_ban_page();
                 }
 

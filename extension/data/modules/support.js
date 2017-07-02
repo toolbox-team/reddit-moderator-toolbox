@@ -46,7 +46,7 @@ Info| &nbsp;
 
             let $submissionTextArea = $('.usertext-edit.md-container textarea');
 
-            $body.on('click', '.submit.content .btn[name="submit"]', function(event) {
+            $body.on('click', '.submit.content .btn[name="submit"]', function() {
             // First we stop the action on the button for a bit.
             //event.preventDefault();
                 let submissionText = $submissionTextArea.val();
@@ -72,7 +72,7 @@ Info| &nbsp;
                 $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($debugInsertButton));
             }
 
-            $('body').on('click', 'div.tb-insert-debug', function (e) {
+            $('body').on('click', 'div.tb-insert-debug', function () {
                 self.log('Insert debug clicked!');
                 let $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
                 let currentComment = $commentTextArea.val();

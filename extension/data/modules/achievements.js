@@ -90,9 +90,11 @@ function achievements() {
                     // to support another prop.  If someone want to do that, go for it.
                     try {
                         title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
-                    } catch(e) {}
+                    } catch(e) {
+                        self.log(`error: ${e}`);
+                    }
 
-                    self.log(`    ${title} Unlocked!`);
+                    self.log(`${title} Unlocked!`);
                     TBUtils.notification('Mod achievement unlocked!', title, `${window.location}#?tbsettings=${self.shortname}`);
                 }
             }
@@ -118,7 +120,7 @@ function achievements() {
         // Utilities
 
         this.decodeSave = function (save) {
-            var vals = atob(self.setting('save')).split(';');
+            var vals = atob(save).split(';');
             // Because '2' + 1 = 21
             if (vals && vals.length > 0) {
                 for (var i = 0; i < vals.length; i++) {

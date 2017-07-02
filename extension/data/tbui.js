@@ -203,11 +203,11 @@
 
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class, opts) {
-	    var defaults = {
-		    draggable: true
-	    };
+        var defaults = {
+            draggable: true
+        };
 
-	    var options = $.extend(defaults, opts);
+        var options = $.extend(defaults, opts);
 
         meta = (typeof meta !== 'undefined') ? meta : null;
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
@@ -282,8 +282,8 @@
             }
         }
 
-	    if(options.draggable)
-	        $popup.drag($popup.find('.tb-popup-title'));
+        if(options.draggable)
+            $popup.drag($popup.find('.tb-popup-title'));
 
         return $popup;
     };
@@ -535,7 +535,7 @@
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
             $.each(items, function (key, value) {
-                $item = $(`\
+                var $item = $(`\
                 <tr class="tb-map-input-tr">\
                     <td><input type="text" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>\
                     <td><input type="text" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>\
@@ -589,8 +589,8 @@
                 break;
             case TBui.DISPLAY_CURSOR:
                 $(document).mousemove(function (e) {
-                    posX = e.pageX;
-                    posY = e.pageY;
+                    var posX = e.pageX,
+                        posY = e.pageY;
 
                     $feedbackWindow.css({
                         left: posX - $feedbackWindow.width() + 155,

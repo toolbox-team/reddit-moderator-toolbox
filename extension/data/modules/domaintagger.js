@@ -96,7 +96,6 @@ function domaintagger() {
 
         function processThing($thing, addButton) {
             if (!$thing.hasClass('dt-processed')) {
-                var subreddit = $thing.attr('data-subreddit');
                 $thing.addClass('dt-processed');
                 if (addButton) {
                     var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', 'Color tag domains').attr('href', 'javascript:;').text('T');

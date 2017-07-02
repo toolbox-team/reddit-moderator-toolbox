@@ -39,7 +39,7 @@ function realtime() {
             $.get(`${location.pathname}.json-html?before=${before}`).done(function (response) {
 
             // Compress the HTML of each returned thing
-                for (i in response.data) html.push(compressHTML(response.data[i].data.content));
+                for (var i in response.data) html.push(compressHTML(response.data[i].data.content));
                 if (!html.length) return;
 
                 insertHTML(html);
@@ -57,7 +57,7 @@ function realtime() {
 
         // Insert new things into sitetable.
         function insertHTML(html) {
-
+            var $sitetable = $('#siteTable');
             var height = $sitetable.css('top').slice(0, -2),
                 things = $(html.join(''))
                     .find('.child').remove().end()
@@ -74,7 +74,7 @@ function realtime() {
             $('#siteTable>div.thing:gt(99),#siteTable>.clearleft:gt(99),#siteTable tr.modactions:gt(200)').remove();
 
             // Run flowwit callbacks on new things.
-            if (window.flowwit) for (i in window.flowwit) window.flowwit[i](things.filter('.thing'));
+            if (window.flowwit) for (var i in window.flowwit) window.flowwit[i](things.filter('.thing'));
 
             // Run callbacks for new things
             $(document).trigger('new_things_inserted');

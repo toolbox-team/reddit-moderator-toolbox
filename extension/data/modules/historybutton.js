@@ -42,7 +42,7 @@ function historybutton() {
         if ($body.find('.ThreadViewer').length > 0) {
 
             $body.find('.Thread__message').not('.tb-history').each(function () {
-                $this = $(this);
+                var $this = $(this);
                 if ($this.find('.tb-attr').length === 0) {
                     $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
                 }
@@ -92,16 +92,17 @@ function historybutton() {
 
                 $body.on('click', '.user-history-button', function (event) {
                     var $this = $(this);
-
+                    var author;
                     if($body.find('.ThreadViewer').length > 0) {
+                        
                         if ($this.hasClass('modmail-sidebar')) {
-                            var author = $('.InfoBar__username').text();
+                            author = $('.InfoBar__username').text();
                         } else {
-                            var author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
+                            author = $(this).closest('.Message__header').find('.Message__author').text().substring(2);
                         }
 
                     } else {
-                        var author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+                        author = TBUtils.getThingInfo($(this).closest('.entry')).user;
                     }
 
                     var positions = TBui.drawPosition(event);
@@ -248,9 +249,6 @@ function historybutton() {
                         domains : domains,
                         domainslist : domainslist,
                     };
-
-                    var $comments = $popup.find('.comment-table'),
-                        $accounts = $popup.find('.account-table');
 
                     $popup.on('click', '.close', function () {
                         $popup.hide();
@@ -470,13 +468,11 @@ function historybutton() {
             $domainTable.empty();
 
             //Get the total account od domain submissions
-            var totalDomainCount = 0,
-                totalDomainKarma = 0;
+            var totalDomainCount = 0;
             
             for (var domain in user.domains) {
                 if (user.domains.hasOwnProperty(domain)) {
                     totalDomainCount += user.domains[domain].count;
-                    totalDomainKarma += user.domains[domain].karma;
                 }
             }
 
@@ -532,14 +528,14 @@ function historybutton() {
                 totalSubredditCount += user.subreddits.submissions[subreddit].count;
             }
 
-            var moreSubreddits = 0;
+
             //Append a list of subreddits submitted to the subreddit table and to the comment body for reports
             $.each(user.subredditList, function (index, value) {
                 var subreddit = value,
                     subredditCount = user.subreddits.submissions[subreddit].count,
                     subredditKarma = user.subreddits.submissions[subreddit].karma,
                     url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`;
-                percentage = Math.round(subredditCount / totalSubredditCount * 100);
+                var percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 $subredditTable.append(
                     `<tr>
@@ -550,7 +546,7 @@ function historybutton() {
                 </tr>`);
 
                 if (index < 20) commentBody += `\n[${subreddit}](${url})|${subredditCount}|${percentage}%`;
-                moreSubreddits = index;
+
             });
 
             //If there were more than 20 subreddits, we only put the first 20 in the report, and say that there are more
@@ -565,11 +561,10 @@ function historybutton() {
         //Get the total account of account submissions
             $accountTable.empty();
 
-            var totalAccountCount = 0,
-                accountList = [];
+            var accountList = [];
 
             for (var account in user.accounts) {
-                totalAccountCount += user.accounts[account].count;
+
                 accountList.push(account);
             }
 

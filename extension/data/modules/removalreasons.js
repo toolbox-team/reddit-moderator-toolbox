@@ -636,7 +636,6 @@ function removalreasons() {
             // Check if reason checked
             var noneSelected = $('body').find('.reason-type:checked').val();
             if (!checked.length && noneSelected !== 'none') {
-                var table = popup.find('#reason-table');
                 popup.find('#reason-table').addClass('error-highlight');
                 return status.text(NO_REASON_ERROR);
             }
@@ -659,9 +658,9 @@ function removalreasons() {
 
                 //Get flair data
                 var temp;
-                if (temp = $(this).data('flairText'))
+                if (temp === $(this).data('flairText'))
                     flairText += ` ${temp}`;
-                if (temp = $(this).data('flairCSS'))
+                if (temp === $(this).data('flairCSS'))
                     flairCSS += ` ${temp}`;
             });
 
@@ -724,7 +723,7 @@ function removalreasons() {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText != '' || flairCSS != '') && data.kind != 'comment') {
-                TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, function (successful, response) {
+                TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, function (successful) {
                     if (!successful)
                         status.text(FLAIR_ERROR);
                 });
@@ -805,7 +804,7 @@ function removalreasons() {
                             }
                             else {
                             // Distinguish the new reply, stickying if necessary
-                                TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, function (successful, response) {
+                                TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, function (successful) {
                                     if (successful) {
                                         if (notifyByPM)
                                             sendPM();
@@ -820,7 +819,7 @@ function removalreasons() {
                                 // Also lock the thread if requested
                                 if (actionLock) {
                                     self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBUtils.lockThread(data.fullname, function (successful, response) {
+                                    TBUtils.lockThread(data.fullname, function (successful) {
                                         if (successful)
                                             removePopup(popup);
                                         else
@@ -844,7 +843,7 @@ function removalreasons() {
 
                     if (notifyAsSub) {
                         self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful, response) {
+                        TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful) {
                             if (successful) {
                                 removePopup(popup);
                             }
@@ -855,7 +854,7 @@ function removalreasons() {
                     }
                     else {
                         self.log('Sending removal message by PM as current user');
-                        TBUtils.sendPM(data.author, subject, text, function (successful, response) {
+                        TBUtils.sendPM(data.author, subject, text, function (successful) {
                             if (successful) {
                                 removePopup(popup);
                             }

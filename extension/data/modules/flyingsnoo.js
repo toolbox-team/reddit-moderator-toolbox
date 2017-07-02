@@ -14,7 +14,6 @@ function flyingsnoo() {
         if (!TB.utils.isUserPage) return;
 
         $('.profile-page .footer-parent').click(function () {
-            var background = $(this).css('background');
 
             var width = 87,
                 height = 145;
@@ -49,7 +48,7 @@ function flyingsnoo() {
                         wind = ((Math.random() * 200) - 100) * 0.02;
                     }
 
-                    newLeft = Math.min(documentWidth - width, Math.max(0, oldLeft + wind));
+                    var newLeft = Math.min(documentWidth - width, Math.max(0, oldLeft + wind));
 
                     floater.css({
                         top: `${newTop}px`,

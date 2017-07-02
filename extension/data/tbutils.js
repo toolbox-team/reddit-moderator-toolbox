@@ -27,7 +27,7 @@ function initwrapper() {
 
         // Token promise.
         TBUtils.oauthToken = function oauthToken() {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve) {
                 chrome.runtime.sendMessage({action: 'oauthToken'}, resolve);
             }).then(function(response) {
                 const responseObject = JSON.parse(response.oauthToken);
@@ -339,7 +339,7 @@ function initwrapper() {
             const browserUserAgent = navigator.userAgent;
             let browserMatchedInfo = [];
             switch (TBUtils.browser) {
-            case CHROME:
+            case CHROME: {
                 // Let's first make sure we are actually dealing with chrome and not some other chrome fork that also supports extension.
                 // This way we can also cut some support requests short.
                 const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
@@ -368,7 +368,8 @@ function initwrapper() {
                     debugObject.platformInformation = browserUserAgent;
                 }
                 break;
-            case FIREFOX:
+            }
+            case FIREFOX: {
                 const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
                 const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
                 if(firefoxRegex.test(browserUserAgent)) {
@@ -387,34 +388,40 @@ function initwrapper() {
                     debugObject.platformInformation = browserUserAgent;
                 }
                 break;
-            case OPERA:
+            }
+            case OPERA: {
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*OPR\/([0-9.]*?)$/);
                 debugObject.browser = 'Opera';
                 debugObject.browserVersion = browserMatchedInfo[2];
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
-            case SAFARI:
+            }
+            case SAFARI: {
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Safari\/([0-9.]*?)$/);
                 debugObject.browser = 'Safari';
                 debugObject.browserVersion = browserMatchedInfo[2];
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
-            case EDGE:
+            }
+            case EDGE: {
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edge\/([0-9.]*?)$/);
                 debugObject.browser = 'Edge';
                 debugObject.browserVersion = browserMatchedInfo[2];
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
-            case UNKOWN_BROWSER:
+            }
+            case UNKOWN_BROWSER: {
                 debugObject.browser = 'Unknown';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
                 break;
-            default:
+            }
+            default: {
             // This should really never happen, but just in case I left it in.
                 debugObject.browser = 'Error in browser detection';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
+            }
             }
 
             console.log(debugObject);
@@ -1059,7 +1066,8 @@ function initwrapper() {
                 user,
                 removal,
                 approved_text,
-                approved_by = [];
+                approved_by = [],
+                $textBody;
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
             if (TBUtils.isNewModmail) {
@@ -1080,7 +1088,7 @@ function initwrapper() {
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
                 // Macros look at the sidebar and other modules don't need the body.
                 // Todo: Figure out what body to present when activated from modmacro.
-                var $textBody = $threadBase.find('.Message__body .md').clone();
+                $textBody = $threadBase.find('.Message__body .md').clone();
                 console.log($textBody);
                 $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
                 body = $textBody.text() || '';
@@ -1107,7 +1115,7 @@ function initwrapper() {
                 permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
                 domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
                 id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
-                var $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
+                $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
                 $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
                 body = $textBody.text() || '';
                 body = body.replace(/^\s+|\s+$/g, '');
@@ -1325,9 +1333,9 @@ function initwrapper() {
                                 var minutes = Math.floor(count / 60);
                                 var seconds = count - minutes * 60;
 
-                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>\
-                    <br><br>\
-                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
+                    <br><br>
+                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
                     `);
                             }
 
@@ -1348,34 +1356,34 @@ function initwrapper() {
 
         TBUtils.forEachChunkedDynamic = function(array, process, options){
             if(typeof process !== 'function') return;
-            var arr = Array.from(array);
-            start,
-            stop,
-            fr,
-            started = false,
-            opt = Object.assign({
-                size: 25, //starting size
-                framerate: 30, //target framerate
-                nerf: 0.9, //Be careful with this one
-            }, options),
-            size = opt.size,
-            nerf = opt.nerf,
-            framerate = opt.framerate,
+            var arr = Array.from(array),
+                start,
+                stop,
+                fr,
+                started = false,
+                opt = Object.assign({
+                    size: 25, //starting size
+                    framerate: 30, //target framerate
+                    nerf: 0.9, //Be careful with this one
+                }, options),
+                size = opt.size,
+                nerf = opt.nerf,
+                framerate = opt.framerate,
 
-            now = function(){ return window.performance.now(); },
+                now = function(){ return window.performance.now(); },
 
-            again = (typeof window.requestAnimationFrame == 'function')?
-                function(callback){ window.requestAnimationFrame(callback); }:
-                function(callback){ setTimeout(callback, 1000/opt.framerate); },
+                again = (typeof window.requestAnimationFrame == 'function')?
+                    function(callback){ window.requestAnimationFrame(callback); }:
+                    function(callback){ setTimeout(callback, 1000/opt.framerate); },
 
-            optimize = function(){
-                stop = now();
-                fr = 1000/(stop - start);
-                size = Math.ceil(size*(1 + (fr/framerate - 1)*nerf));
-                return (start = stop);
-            };
+                optimize = function(){
+                    stop = now();
+                    fr = 1000/(stop - start);
+                    size = Math.ceil(size*(1 + (fr/framerate - 1)*nerf));
+                    return (start = stop);
+                };
 
-            return new Promise(function(resolve, reject){
+            return new Promise(function(resolve){
                 var doChunk = function(){
                     if (started){
                         optimize();
@@ -1531,7 +1539,7 @@ function initwrapper() {
                         })
 
                         // Super extra double-secret secure, just to be safe.
-                            .fail(function (err) {
+                            .fail(function () {
                                 alert('error setting wiki page to mod only access');
                                 window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
                             });
@@ -1557,7 +1565,7 @@ function initwrapper() {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
             $.ajax(`${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`, {
                 dataType: 'json',
-                dataFilter: function (data, type) {
+                dataFilter: function (data) {
                 //TODO: right now a lot of functions implicitly rely on reddit
                 //returning escaped JSON to operate safely. add this back in once
                 //everything's been audited.
@@ -1952,6 +1960,9 @@ function initwrapper() {
                 api_type: 'json',
                 id: id,
                 uh: TBUtils.modhash
+            }).done(function () {
+                if (typeof callback !== 'undefined')
+                    callback(true);
             });
         };
 
@@ -2080,7 +2091,7 @@ function initwrapper() {
             for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
             // int/hash to hex
-            for (var i = 0, color = '#'; i < 3; color += (`00${((hash >> i++ * 8) & 0xFF).toString(16)}`).slice(-2));
+            for (var index = 0, color = '#'; index < 3; color += (`00${((hash >> index++ * 8) & 0xFF).toString(16)}`).slice(-2));
 
             return color;
         };
@@ -2262,7 +2273,7 @@ function initwrapper() {
                 uh: TBUtils.modhash
             })
             // Super extra double-secret secure, just to be safe.
-                .fail(function (err) {
+                .fail(function () {
                 // used if it is important for the user to know that a wiki page has not been set to private.
                     if (failAlert) {
                         alert('error setting wiki page to mod only access');
@@ -2359,7 +2370,7 @@ function initwrapper() {
 
             var locationHref = location.href;
             document.body.addEventListener('click', function(){
-		        // First we are going to check if this click resulted in a page change.
+                // First we are going to check if this click resulted in a page change.
                 setTimeout(function(){
                     var samePage = locationHref === location.href;
                     if (!samePage) {
@@ -2382,7 +2393,7 @@ function initwrapper() {
                     var doTBNewThings = false;
 
                     mutations.forEach(function (mutation) {
-                        var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+                        var $target = $(mutation.target);
 
                         if ($target.find('.ThreadViewer__infobar').length > 0) {
                             doAddTbModmailSidebar = true;

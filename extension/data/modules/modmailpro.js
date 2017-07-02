@@ -475,7 +475,7 @@ function modmailpro() {
             // Don't parse all entries if we don't need to.
             if (fadeRecipient) {
                 TBUtils.forEachChunked($entries, 5, entryProcessRate,
-                    function (entry, idx, array) {
+                    function (entry) {
                         self.startProfile('fade-recipient-internal');
 
                         // Fade the recipient of a modmail so it is much more clear WHO send it.
@@ -767,10 +767,6 @@ function modmailpro() {
             }
         }
 
-        function collapse() {
-            $(this).parents('.thing:first').find('> .child').hide();
-        }
-
         function setReplied(threads) {
             if (threads === undefined) {
                 threads = $('.message-parent');
@@ -838,7 +834,7 @@ function modmailpro() {
             });
         }
 
-        function collapseall(threads) {
+        function collapseall() {
             self.log('collapsing all');
             collapsed = true;
             var $link = $('.collapse-all-link');

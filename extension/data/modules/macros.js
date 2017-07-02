@@ -412,7 +412,7 @@ function modmacros() {
             });
         }
 
-        $body.on('click', '.macro-popup .close', function (e) {
+        $body.on('click', '.macro-popup .close', function () {
 
             var $currentMacroPopup = $(this).closest('.macro-popup'),
                 infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
@@ -425,7 +425,7 @@ function modmacros() {
             $selectElement.prop('disabled', false);
         });
 
-        $body.on('change', '.tb-top-macro-select, .tb-macro-select', function (e) {
+        $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
 
             var $this = $(this),
                 sub = $this.closest('select').attr('data-subreddit'),

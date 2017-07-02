@@ -75,7 +75,6 @@ function modbar() {
         if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
         var $body = $('body'),
-            footer = $('.footer-parent'),
             moduleCount = 0,
             DEFAULT_MODULE = 'DEFAULT_MODULE',
             currentModule = DEFAULT_MODULE;
@@ -93,14 +92,6 @@ function modbar() {
             customCSS = self.setting('customCSS'),
 
             debugMode = TBUtils.debugMode,
-            betaMode = TBUtils.betaMode,
-            devMode = TBUtils.devMode,
-            advancedMode = TBUtils.advancedMode,
-
-            settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-            browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
-            shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
-            longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
             modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
             unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
@@ -320,7 +311,6 @@ function modbar() {
             $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,${TBui.iconConsole}" /></a>`);
             var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
-            var $consoleText = $('.tb-debug-console');
             var debugEditor;
             $('.tb-debug-console').each(function(index, elem){
             // This makes sure codemirror behaves and uses spaces instead of tabs.

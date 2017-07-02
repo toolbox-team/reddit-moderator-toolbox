@@ -142,25 +142,25 @@ function personalnotes() {
                     } else {
 
                     // build a template, we only need to insert one variable but this is cleaner and more feature proof.
-                        var notesPopupContentTemplate = `\
-                    <table style="height:${popupHeight}px;"><tr>\
-                        <td id="tb-personal-notes-listing">\
-                            <div id="tb-personal-notes-list">\
-                                {{notesList}}\
-                            </div>\
-                            <div id="tb-new-personal-note-div">\
-                                <label for="tb-new-personal-note">\
-                                    Create note:\
-                                </label> \
-                                <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>\
-                                <input type="button" id="create-personal-note" class="tb-action-button" value="create note">\
-                            </div>\
-                            \
-                        </td>\
-                        <td id="tb-personal-notes-content">\
-                            <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>\
-                            <textarea id="tb-personal-notes-editarea"${monospace ? ' style="font-family: monospace;"' : ''}></textarea>\
-                        </td>\
+                        var notesPopupContentTemplate = `
+                    <table style="height:${popupHeight}px;"><tr>
+                        <td id="tb-personal-notes-listing">
+                            <div id="tb-personal-notes-list">
+                                {{notesList}}
+                            </div>
+                            <div id="tb-new-personal-note-div">
+                                <label for="tb-new-personal-note">
+                                    Create note:
+                                </label> 
+                                <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>
+                                <input type="button" id="create-personal-note" class="tb-action-button" value="create note">
+                            </div>
+                            
+                        </td>
+                        <td id="tb-personal-notes-content">
+                            <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>
+                            <textarea id="tb-personal-notes-editarea"${monospace ? ` style="font-family: monospace;"` : ``}></textarea>
+                        </td>
                     </tr></table>`;
 
                         // Lets get a list of notes!
@@ -200,7 +200,7 @@ function personalnotes() {
                                 });
                                 createPersonalNotesPopup(notesPopupContent);
                             })
-                            .fail(function (error) {
+                            .fail(function () {
                                 TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
                                 $this.removeClass('tb-notes-activated');
 

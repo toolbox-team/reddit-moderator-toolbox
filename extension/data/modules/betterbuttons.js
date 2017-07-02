@@ -98,7 +98,7 @@ function betterbuttons() {
 
 
         //Add actions to the mod save buttons
-        $('body').on('click', 'button.save-mod', function (e) {
+        $('body').on('click', 'button.save-mod', function () {
             self.log('Mod save clicked!');
             commentObserver.observe(document.body, {
                 childList: true,
@@ -108,7 +108,7 @@ function betterbuttons() {
             });
             $(this).closest('.usertext-buttons').find('button.save').click();
         });
-        $('body').on('click', 'button.save-sticky', function (e) {
+        $('body').on('click', 'button.save-sticky', function () {
             self.log('Mod save + sticky clicked!');
             commentObserver.observe(document.body, {
                 childList: true,
@@ -128,7 +128,7 @@ function betterbuttons() {
 
         function addSticky() {
             $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
-                $this = $(this);
+                var $this = $(this);
                 var $parentPost = $this.closest('.thing');
                 var distinguished = getDistinguishState($parentPost);
 
@@ -154,19 +154,12 @@ function betterbuttons() {
             return author.hasClass('moderator');
         }
 
-        //Get a comment's sticky state
-        function getStickyState(post) {
-            var stickied = $(post).find('.stickied-tagline');
-            return stickied.length;
-        }
-
         //Toggle the distinguished state
         function distinguishClicked(e) {
             var $this = $(this);
             var $parentPost = $this.closest('.thing');
             var distinguished = getDistinguishState($parentPost);
-            var stickied = getStickyState($parentPost);
-
+ 
             // Lets ready the buttons we want to click later on.
             var firstDistinguishButton = $this.find('.option > a')[0],
                 secondDistinguishButton = $this.find('.option > a')[1];
@@ -345,7 +338,7 @@ function betterbuttons() {
 
     self.initStickyButtons = function initStickyButtons() {
         var $things = $('.listing-page .content .thing.link.stickied');
-        $things.each(function(i) {
+        $things.each(function() {
             var $thing = $(this),
                 $buttons = $thing.find('.flat-list');
 
@@ -370,7 +363,7 @@ function betterbuttons() {
                 if (success) {
                     $button.siblings('.success').show();
                 }
-                else {
+                else if(error) {
                     $button.siblings('.error').show();
                 }
             });

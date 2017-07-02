@@ -74,8 +74,7 @@ function syntax() {
     self.init = function () {
         var $body = $('body'),
             selectedTheme = this.setting('selectedTheme'),
-            enableWordWrap = this.setting('enableWordWrap'),
-            editor, session, textarea;
+            enableWordWrap = this.setting('enableWordWrap');
             
             // This makes sure codemirror behaves and uses spaces instead of tabs. 
         function betterTab(cm) {

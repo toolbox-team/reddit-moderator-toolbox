@@ -208,10 +208,10 @@ function modmailpro() {
             $mmpMenu = $('<ul class="flat-list hover mmp-menu"></ul>');
 
         var infoArea =
-        '<span class="info-area correspondent">\
-            <span class="tb-message-count" title="Number of replies to the message."></span>\
-            <span class="tb-replied-tag"></span>\
-        </span>';
+        `<span class="info-area correspondent">
+            <span class="tb-message-count" title="Number of replies to the message."></span>
+            <span class="tb-replied-tag"></span>
+        </span>`;
 
         var collapseLink = '<a href="javascript:;" class="tb-collapse-link">−</a>';
 

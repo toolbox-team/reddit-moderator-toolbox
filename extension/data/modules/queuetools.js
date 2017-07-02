@@ -353,10 +353,10 @@ function queuetools() {
             if ($ignoreReports.length > 0) {
                 var $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
                     showing = false,
-                    reportHTML = '\
-                            <ul class="report-reasons rounded" style="display: none">\
-                                <li class="report-reason-title">user reports:</li>\
-                            </ul>';
+                    reportHTML = `
+                            <ul class="report-reasons rounded" style="display: none">
+                                <li class="report-reason-title">user reports:</li>
+                            </ul>`;
 
                 $('#siteTable').find('.flat-list:first').append(reportHTML);
 
@@ -628,8 +628,8 @@ function queuetools() {
                     selector = '.flaired';
                     break;
                 case 'actioned':
-                    selector = '.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),\
-                            :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))';
+                    selector = `.flaired,.approved,.removed,.spammed,:has(.approval-checkmark,.pretty-button.pressed),
+                            :has(.remove-button:contains(spammed)),:has(.remove-button:contains(removed)),:has(.approve-button:contains(approved))`;
                     break;
                 case 'domain':
                     selector = `:has(.domain:contains(${prompt('domain contains:', '').toLowerCase()}))`;
@@ -1151,13 +1151,13 @@ Action reason: ${value.data.details}
                 }
             });
 
-            baseCss += `\
-        { \n\
-            display: inline-block; \n\
-            padding-left: 16px; \n\
-            padding-top: 5px; \n\
-            background-image: url("data:image/png;base64,${TBui.iconBot}"); \n\
-            background-repeat: no-repeat; \n\
+            baseCss += `
+        { \n
+            display: inline-block; \n
+            padding-left: 16px; \n
+            padding-top: 5px; \n
+            background-image: url("data:image/png;base64,${TBui.iconBot}"); \n
+            background-repeat: no-repeat; \n
         } \n`;
 
             $('head').append(`<style>${baseCss}</style>`);

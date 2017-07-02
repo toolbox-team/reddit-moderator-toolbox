@@ -46,11 +46,11 @@ function modmatrix() {
 
     // The reason for the <span> is in case the user has both report matrix AND report gen: http://i.imgur.com/Izbm6Rh.png,
     // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
-        $('.menuarea').append('\
-<div class="spacer">\
-<a class="reddit-moderationlog tb-general-button" href="#matrix" >toggle moderation log matrix</a>&nbsp\
-</div>\
-');
+        $('.menuarea').append(`
+<div class="spacer">
+<a class="reddit-moderationlog tb-general-button" href="#matrix" >toggle moderation log matrix</a>&nbsp
+</div>
+`);
 
         $('.reddit-moderationlog').click(function (e) {
             e.preventDefault();
@@ -143,9 +143,9 @@ function modmatrix() {
 
         wrapper.append('<div id="mod-matrix-statistics"></div>');
 
-        wrapper.append('<div id="mod-matrix-settings"><form action="" method="GET">\
-<table><tr><td>between:</td><td><input type="date" name="from" /> and <input type="date" name="to" /></td></table>\
-</form></div>');
+        wrapper.append(`<div id="mod-matrix-settings"><form action="" method="GET">
+<table><tr><td>between:</td><td><input type="date" name="from" /> and <input type="date" name="to" /></td></table>
+</form></div>`);
 
         var modMatrixSettings = $('#mod-matrix-settings');
 
@@ -817,9 +817,9 @@ function modmatrix() {
                         var minutes = Math.floor(count / 60);
                         var seconds = count - minutes * 60;
 
-                        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds </b>\
-            <br><br>\
-            <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimit} requests</i>. We are currently trying to load <i>${parseInt(commentCount - 10)} comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>\
+                        $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds </b>
+            <br><br>
+            <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimit} requests</i>. We are currently trying to load <i>${parseInt(commentCount - 10)} comments</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
             `);
                     }
 

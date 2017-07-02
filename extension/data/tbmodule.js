@@ -91,29 +91,29 @@ function tbmodule() {
             var dispalyNone = 'display: none;',
                 settingContent = '';
 
-            var settingTemplate = `\
-        <p id="tb-toolbox-{{settingName}}" style="{{display}}">\
-            {{content}}&nbsp;\
-            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">\
-                <img src="data:image/png;base64,${TB.ui.iconLink}">\
-            </a>&nbsp;\
-        </p>\
-        <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">\
-            <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>\
-            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">\
-        </div>\
+            var settingTemplate = `
+        <p id="tb-toolbox-{{settingName}}" style="{{display}}">
+            {{content}}&nbsp;
+            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">
+                <img src="data:image/png;base64,${TB.ui.iconLink}">
+            </a>&nbsp;
+        </p>
+        <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">
+            <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>
+            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">
+        </div>
         `;
 
             var settings = [
                 {
                     settingName: 'settingssub',
-                    content: `\
-                        Backup/restore toolbox settings to a wiki page:<br>\
-                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">\
-                        <input class="tb-settings-export tb-action-button" type="button" value="backup">\
-                        <input class="tb-settings-import tb-action-button" type="button" value="restore">\
-                        <b> Important:</b> This will reload the page without saving!\
-                        <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>\
+                    content: `
+                        Backup/restore toolbox settings to a wiki page:<br>
+                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">
+                        <input class="tb-settings-export tb-action-button" type="button" value="backup">
+                        <input class="tb-settings-import tb-action-button" type="button" value="restore">
+                        <b> Important:</b> This will reload the page without saving!
+                        <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
                         `,
                     display: ''
                 },
@@ -144,13 +144,13 @@ function tbmodule() {
                 },
                 {
                     settingName: 'longlength',
-                    content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>\
+                    content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
                         <input type="text" name="longLength" value="${longLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
                     settingName: 'shortlength',
-                    content: `Cache subreddit user notes time (in minutes):<br>\
+                    content: `Cache subreddit user notes time (in minutes):<br>
                       <input type="text" name="shortLength" value="${shortLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
@@ -211,62 +211,62 @@ function tbmodule() {
                     tooltip: '',
                     help_page: 'about',
                     id: 'about',
-                    content: `\
-                <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>\
-                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>\
-                    <h3> made and maintained by: </h3>\
-                    <table class="tb-about-credits">\
-                        <tr>\
-                            <td><a href="/user/creesch/">/u/creesch</a></td>\
-                            <td><a href="/user/agentlame">/u/agentlame</a></td>\
-                            <td><a href="/user/LowSociety">/u/LowSociety</a></td>\
-                        </tr><tr>\
-                            <td><a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>\
-                            <td><a href="/user/dakta">/u/dakta</a></td>\
-                            <td><a href="/user/largenocream">/u/largenocream</a></td>\
-                        </tr><tr>\
-                            <td><a href="/user/noeatnosleep">/u/noeatnosleep</a></td>\
-                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
-                            <td><a href="/user/garethp">/u/garethp</a></td>\
-                        </tr><tr>\
-                            <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>\
-                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
-                            <td><a href="/user/geo1088">/u/geo1088</a></td>\
-                          </tr>\
-                    </table>\
-                    <h3>Documentation by:</h3>\
-                    <table class="tb-about-credits">\
-                        <tr>\
-                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>\
-                            <td><a href="/user/gorillagnomes">/u/gorillagnomes</a></td>\
-                            <td><a href="/user/x_minus_one">/u/x_minus_one</a></td>\
-                        </tr><tr>\
-                            <td><a href="/user/Gustavobc">/u/Gustavobc</a></td>\
-                            <td><a href="/user/hermithome">/u/hermithome</a></td>\
-                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>\
-                        </tr>\
-                    </table>\
-                    <h3>Special thanks to:</h3>\
-                    <a href="/user/andytuba">/u/andytuba</a> & <a href="/user/erikdesjardins">erikdesjardins</a>\
-                    <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>\
-                    <h3>Credits:</h3>\
-                    <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>\
-                    <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>\
-                    <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>\
-                    <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>\
-                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>\
-                    <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>\
-                    <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>\
-                    <h3>License:</h3>\
-                    <span>© 2013-2017 toolbox development team. </span>\
-                    <p>Licensed under the Apache License, Version 2.0 (the "License");\
-                        <br> you may not use this file except in compliance with the License.\
-                        <br> You may obtain a copy of the License at </p>\
-                    <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>\
-                    <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\
-                        <br> See the License for the specific language governing permissions and limitations under the License.</p>\
-                    <p ${(debugMode && !TB.utils.devModeLock) ? ' ' : 'style="display:none;" '}>\
-                        <label><input type="checkbox" id="devMode" ${(devMode) ? 'checked' : ''}> DEVMODE: DON'T EVER ENABLE THIS!</label>\
+                    content: `
+                <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>
+                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>
+                    <h3> made and maintained by: </h3>
+                    <table class="tb-about-credits">
+                        <tr>
+                            <td><a href="/user/creesch/">/u/creesch</a></td>
+                            <td><a href="/user/agentlame">/u/agentlame</a></td>
+                            <td><a href="/user/LowSociety">/u/LowSociety</a></td>
+                        </tr><tr>
+                            <td><a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>
+                            <td><a href="/user/dakta">/u/dakta</a></td>
+                            <td><a href="/user/largenocream">/u/largenocream</a></td>
+                        </tr><tr>
+                            <td><a href="/user/noeatnosleep">/u/noeatnosleep</a></td>
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>
+                            <td><a href="/user/garethp">/u/garethp</a></td>
+                        </tr><tr>
+                            <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>
+                            <td><a href="/user/geo1088">/u/geo1088</a></td>
+                          </tr>
+                    </table>
+                    <h3>Documentation by:</h3>
+                    <table class="tb-about-credits">
+                        <tr>
+                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>
+                            <td><a href="/user/gorillagnomes">/u/gorillagnomes</a></td>
+                            <td><a href="/user/x_minus_one">/u/x_minus_one</a></td>
+                        </tr><tr>
+                            <td><a href="/user/Gustavobc">/u/Gustavobc</a></td>
+                            <td><a href="/user/hermithome">/u/hermithome</a></td>
+                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>
+                        </tr>
+                    </table>
+                    <h3>Special thanks to:</h3>
+                    <a href="/user/andytuba">/u/andytuba</a> & <a href="/user/erikdesjardins">erikdesjardins</a>
+                    <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>
+                    <h3>Credits:</h3>
+                    <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>
+                    <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>
+                    <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>
+                    <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>
+                    <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
+                    <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
+                    <h3>License:</h3>
+                    <span>© 2013-2017 toolbox development team. </span>
+                    <p>Licensed under the Apache License, Version 2.0 (the "License");
+                        <br> you may not use this file except in compliance with the License.
+                        <br> You may obtain a copy of the License at </p>
+                    <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+                    <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                        <br> See the License for the specific language governing permissions and limitations under the License.</p>
+                    <p ${(debugMode && !TB.utils.devModeLock) ? ` ` : `style="display:none;" `}>
+                        <label><input type="checkbox" id="devMode" ${(devMode) ? `checked` : ``}> DEVMODE: DON'T EVER ENABLE THIS!</label>
                     </p>`
                 }
             ];
@@ -402,12 +402,12 @@ function tbmodule() {
                         {
                             title: '',
                             tooltip: '',
-                            content: '\
-                <span class="tb-settings-display">\
-                <textarea class="edit-settings" rows="20" cols="20"></textarea>\
-                </br>\
-                </span>\
-                ',
+                            content: `
+                <span class="tb-settings-display">
+                <textarea class="edit-settings" rows="20" cols="20"></textarea>
+                </br>
+                </span>
+                `,
                             footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">'
                         }
                     ],
@@ -510,18 +510,18 @@ function tbmodule() {
                             if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) continue;
                             var name = module.shortname.toLowerCase();
 
-                            $setting = $(`\
-                            <p id="tb-toggle_modules-${name}">\
-                                <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>\
-                                        <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>\
-                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}">\
-                                    <img src="data:image/png;base64,${TB.ui.iconLink}">\
-                                </a>&nbsp;\
-                            </p>\
-                            <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">\
-                                <input type="text" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>\
-                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">\
-                            </div>\
+                            $setting = $(`
+                            <p id="tb-toggle_modules-${name}">
+                                <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ` checked="checked"` : ``}>${options.title}</label>
+                                        <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
+                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}">
+                                    <img src="data:image/png;base64,${TB.ui.iconLink}">
+                                </a>&nbsp;
+                            </p>
+                            <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
+                                <input type="text" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
+                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
+                            </div>
                         `);
 
                             // Add the setting in its place to keep ABC order
@@ -633,23 +633,23 @@ function tbmodule() {
                             $setting.append(`${title}:<br/>`);
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
-                            $setting.append($(`\
-                    <textarea class="syntax-example" id="${module.shortname}_syntax_theme_css">\
-/* This is just some example code*/\n\
-body {\n\
-font-family: sans-serif, "Helvetica Neue", Arial;\n\
-font-weight: normal;\n\
-}\n\
-\n\
-.md h3, .commentarea h3 {\n\
-font-size: 1em;\n\
-}\n\
-\n\
-#header {\n\
-border-bottom: 1px solid #9A9A9A; \n\
-box-shadow: 0px 1px 3px 1px #B3C2D1;\n\
-}\n\
-/* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n\
+                            $setting.append($(`
+                    <textarea class="syntax-example" id="${module.shortname}_syntax_theme_css">
+/* This is just some example code*/\n
+body {\n
+font-family: sans-serif, "Helvetica Neue", Arial;\n
+font-weight: normal;\n
+}\n
+\n
+.md h3, .commentarea h3 {\n
+font-size: 1em;\n
+}\n
+\n
+#header {\n
+border-bottom: 1px solid #9A9A9A; \n
+box-shadow: 0px 1px 3px 1px #B3C2D1;\n
+}\n
+/* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n
                     </textarea>`));
                             execAfterInject.push(function () {
                                 // Syntax highlighter selection stuff

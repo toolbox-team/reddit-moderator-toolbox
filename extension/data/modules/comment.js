@@ -453,16 +453,17 @@ function comments() {
             if ($body.hasClass('profile-page') && TBUtils.modCheck) {
 
             // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-                $('.menuarea').append('<form id="tb-searchuser" style="display: inline-block">search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content (optional)">\
-<input type="submit" value=" search " class="tb-action-button"></form>');
+                $('.menuarea').append(`<form id="tb-searchuser" style="display: inline-block">
+                        search comments: <input id="subredditsearch" type="text" placeholder="subreddit"> <input id="contentsearch" type="text" placeholder="content (optional)">
+                        <input type="submit" value=" search " class="tb-action-button">
+                    </form>`);
 
                 $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
 
                 function populateSearchSuggestion() {
 
                     $(TBUtils.mySubs).each(function () {
-                        $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`\
-        <tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+                        $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
                     });
                 }
 

@@ -10,12 +10,17 @@
         "TBui": true,
         "CodeMirror": true,
         "TBStorage": true,
-        "chrome": true
+        "redditapi": true,
+        "chrome": true,
+        "SnuOwnd": true,
+        "pako": true
     },
     "extends": "eslint:recommended",
     "rules": {
         "no-console": 0,
+        "no-inner-declarations": "warn",
         "prefer-template": "warn",
+        "no-useless-escape": "warn",
         "template-curly-spacing": [
             "error", 
             "never"

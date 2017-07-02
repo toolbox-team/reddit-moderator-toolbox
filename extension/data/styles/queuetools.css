@@ -67,6 +67,17 @@
     overflow: hidden;
 }
 
+.mod-toolbox .tb-piggy {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://b.thumbs.redditmedia.com/FMheFSik2oy58sq7qWASounTkW2H0u0F0gtGorsu3cc.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
 .mod-toolbox .tb-begifs:after {
     content: "baby elephant is pleased!";
 }

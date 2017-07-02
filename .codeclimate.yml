@@ -1,0 +1,13 @@
+engines:
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+  duplication:
+    enabled: false
+  fixme:
+    enabled: true
+exclude_paths:
+- node_modules/**/*
+- build/**/*
+- extension/data/libs/**/*

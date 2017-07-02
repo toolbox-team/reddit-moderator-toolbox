@@ -1,6 +1,9 @@
 # Build output
 build/*
 
+# gulp
+gulpfile.js
+
 #node_modules
 node_modules/*
 

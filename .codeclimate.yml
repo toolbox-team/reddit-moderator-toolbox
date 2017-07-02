@@ -11,3 +11,4 @@ exclude_paths:
 - node_modules/**/*
 - build/**/*
 - extension/data/libs/**/*
+- gulpfile.js

@@ -194,10 +194,10 @@ function initwrapper() {
         TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
         if (TBUtils.debugMode) {
-            var consoleText = `toolbox version: ${TBUtils.toolboxVersion 
-            }, Browser: ${TBUtils.browser 
-            }, Extension: ${TBUtils.isExtension 
-            }, Beta features: ${TBUtils.betaMode 
+            var consoleText = `toolbox version: ${TBUtils.toolboxVersion
+            }, Browser: ${TBUtils.browser
+            }, Extension: ${TBUtils.isExtension
+            }, Beta features: ${TBUtils.betaMode
             }\n\n"${TBUtils.RandomQuote}"\n`;
 
             TBUtils.log.push(consoleText);
@@ -1435,9 +1435,20 @@ function initwrapper() {
                     type: 'POST',
                     data: data,
                     beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).then(undefined, function(jqXHR) {
-                    throw jqXHR.responseText;
-                    // or `return Promise.reject(jqXHR.responseText);`
+                }).then(function(data, textStatus, jqXHR) {
+                    return {
+                        data: data,
+                        textStatus: textStatus,
+                        jqXHR: jqXHR
+                    };
+                }, function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    throw {
+                        jqXHR: jqXHR,
+                        textStatus: textStatus,
+                        errorThrown: errorThrown
+                    };
+
                 });
             });
         };
@@ -1451,9 +1462,20 @@ function initwrapper() {
                     type: 'GET',
                     data: data,
                     beforeSend: function(xhr){xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).then(undefined, function(jqXHR) {
-                    throw jqXHR.responseText;
-                    // or `return Promise.reject(jqXHR.responseText);`
+                }).then(function(data, textStatus, jqXHR) {
+                    return {
+                        data: data,
+                        textStatus: textStatus,
+                        jqXHR: jqXHR
+                    };
+                }, function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                    throw {
+                        jqXHR: jqXHR,
+                        textStatus: textStatus,
+                        errorThrown: errorThrown
+                    };
+
                 });
             });
 

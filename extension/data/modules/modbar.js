@@ -99,11 +99,48 @@ function modbar() {
             modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
             unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
             modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
+            newModmailCount = TB.storage.getSetting('Notifier', 'newModmailCount', 0),
             notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
             modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
 
             modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
             unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
+
+        // Ready some details for new modmail linking
+        let modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
+            openMailTab = TB.storage.getSetting('NewModMail', 'openmailtab', false),
+            newModmailBaseUrl = 'https://mod.reddit.com/mail/',
+            newModmailUrl;
+
+        switch(modmailLink) {
+        case 'all_modmail':
+            newModmailUrl = `${newModmailBaseUrl}all`;
+
+            break;
+        case 'new':
+            newModmailUrl = `${newModmailBaseUrl}new`;
+
+            break;
+        case 'in_progress':
+            newModmailUrl = `${newModmailBaseUrl}inprogress`;
+
+            break;
+        case 'archived':
+            newModmailUrl = `${newModmailBaseUrl}archived`;
+
+            break;
+        case 'highlighted':
+            newModmailUrl = `${newModmailBaseUrl}highlighted`;
+
+            break;
+        case 'mod_discussions':
+            newModmailUrl = `${newModmailBaseUrl}mod`;
+
+            break;
+        case 'notifications':
+            newModmailUrl = `${newModmailBaseUrl}notifications`;
+
+        }
 
         // Custom CSS for devmode/testing
         if (customCSS) {
@@ -143,12 +180,47 @@ function modbar() {
             <a href="${TBUtils.baseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail"></a>
             <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
-            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue"></a>
+            <a href="${newModmailUrl}" class="nohavemail access-required" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}></a>
+            <a href="${newModmailUrl}" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}></a>
+            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" ></a>
             <a href="${modQueueUrl}" class="tb-toolbar" id="tb-queueCount"></a>
         </span>
     </span>
+    <div id="tb-new-modmail-tooltip">
+        <table>
+            <tr id="tb-new-modmail-new">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>New</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
+            <tr id="tb-new-modmail-inprogress">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>In Progress</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
+            <tr id="tb-new-modmail-highlighted">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Highlighted</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
+            <tr id="tb-new-modmail-mod">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Mod Discussions</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
+            <tr id="tb-new-modmail-notifications">
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Notifications</a></td>
+                <td class="tb-new-mm-count"></td>
+            </tr>
+    </div>
 </div>
 `);
+        let hoverTimeout;
+        modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function() {
+            clearTimeout(hoverTimeout);
+            modBar.find('#tb-new-modmail-tooltip').show();
+        }, function() {
+            hoverTimeout = setTimeout(function(){
+                modBar.find('#tb-new-modmail-tooltip').hide(100);
+            }, 1000);
+        });
+
 
 
 
@@ -207,7 +279,7 @@ function modbar() {
                 subredditColorSalt = self.setting('subredditColorSalt'),
                 mySubsTemplate = `
 <div id="tb-my-subreddits">
-    <input id="tb-livefilter-input" type="text" placeholder="live search" value=""> 
+    <input id="tb-livefilter-input" type="text" placeholder="live search" value="">
     <span class="tb-livefilter-count">{{livefilterCount}}</span>
     <br>
     <table id="tb-my-subreddit-list">{{subList}}</table>
@@ -450,7 +522,7 @@ function modbar() {
         // Show counts on hover
         $(modbarhid).hover(function modbarHover(e) {
             if (!notifierEnabled || compactHide) return;
-            var hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>New Mod Mail: ${modmailCount}`;
+            var hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>Mod Mail: ${modmailCount}<br>New Mod Mail ${newModmailCount}`;
 
             $.tooltip(hoverString, e);
         });

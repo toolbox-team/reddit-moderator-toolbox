@@ -152,6 +152,18 @@ function notifiermod() {
         'default': 0,
         'hidden': true
     });
+    self.register_setting('newModmailCount', {
+        'type': 'number',
+        'default': 0,
+        'hidden': true
+    });
+
+    self.register_setting('newModmailCategoryCount', {
+        'type': 'JSON',
+        'default': {highlighted: 0, notifications: 0, archived: 0, new: 0, inprogress: 0, mod: 0},
+        'hidden': true
+    });
+
     self.register_setting('lastChecked', {
         'type': 'number',
         'default': -1,
@@ -182,7 +194,7 @@ function notifiermod() {
     self.init = function () {
 
         var NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
-    
+
             wwwNotifications = self.setting('wwwNotifications'),
             modNotifications = self.setting('modNotifications'),
             messageNotifications = self.setting('messageNotifications'),
@@ -214,9 +226,13 @@ function notifiermod() {
             modqueueCount = self.setting('modqueueCount'),
             unmoderatedCount = self.setting('unmoderatedCount'),
             modmailCount = self.setting('modmailCount'),
+            newModmailCount = self.setting('newModmailCount'),
+            newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
             messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
             modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`;
+
+            console.log(newModmailCategoryCount);
 
         // Use custom modmail icons if applicable
         if(customModmailIcon) {
@@ -226,6 +242,7 @@ function notifiermod() {
             $modmail.addClass('custom');
             $tb_modmail.addClass('custom');
         }
+
 
         // use filter subs from MMP, if appropriate
         if (modmailSubredditsFromPro) {
@@ -298,7 +315,8 @@ function notifiermod() {
             modqueueCount = self.setting('modqueueCount');
             unmoderatedCount = self.setting('unmoderatedCount');
             modmailCount = self.setting('modmailCount');
-
+            newModmailCount = self.setting('newModmailCount');
+            newModmailCategoryCount = self.setting('newModmailCategoryCount');
             //
             // Update methods
             //
@@ -386,11 +404,51 @@ function notifiermod() {
                 $('#tb-modmailcount').text(`[${count}]`);
             }
 
+            // Here we update the count for new modmail. Is somewhat simpler than old modmail.
+            function updateNewModMailCount(count, data) {
+            // $modmail is native to reddit $tb_modmail in the modbar.
+                let $newmodmail = $('#new_modmail'),
+                    $tbNewModmail = $('#tb-new_modmail'),
+                    $tbNewModmailCount = $('#tb-new-modmailcount'),
+                    $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
+
+                if (count < 1) {
+
+                // We are doing it like this to preserve other classes
+                    $newmodmail.removeClass('havemail');
+                    $tbNewModmail.removeClass('havemail');
+                    $newmodmail.addClass('nohavemail');
+                    $tbNewModmail.addClass('nohavemail');
+
+                    $newmodmail.attr('title', 'no new mod mail!');
+
+                } else {
+                // We are doing it like this to preserve other classes
+                    $newmodmail.removeClass('nohavemail');
+                    $newmodmail.addClass('havemail');
+                    $newmodmail.attr('title', 'new mod mail!');
+
+                    // We are doing it like this to preserve other classes
+                    $tbNewModmail.removeClass('nohavemail');
+                    $tbNewModmail.addClass('havemail');
+
+
+                }
+                $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
+                $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
+                $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
+                $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
+                $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
+
+                $tbNewModmailCount.text(`[${count}]`);
+            }
+
             if (!newLoad && (now - lastchecked) < checkInterval) {
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
                 updateUnmodCount(unmoderatedCount);
                 updateModMailCount(modmailCount);
+                updateNewModMailCount(newModmailCount, newModmailCategoryCount);
                 return;
             }
 
@@ -403,6 +461,7 @@ function notifiermod() {
                 updateModqueueCount(modqueueCount);
                 updateUnmodCount(unmoderatedCount);
                 updateModMailCount(modmailCount);
+                updateNewModMailCount(newModmailCount, newModmailCategoryCount);
                 return;
             }
 
@@ -845,6 +904,21 @@ function notifiermod() {
                 updateModMailCount(newCount);
 
             });
+
+            //
+            // New modmail
+            //
+            TBUtils.apiOauthGET('api/mod/conversations/unread/count').then(function(response) {
+                let data = response.data;
+                let modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
+                self.setting('newModmailCount', modmailFreshCount);
+                self.setting('newModmailCategoryCount', data);
+                updateNewModMailCount(modmailFreshCount, data);
+
+            }).catch(function(error) {
+                self.log(error.jqXHR.responseText);
+            });
+
         }
 
         setInterval(getmessages, checkInterval);

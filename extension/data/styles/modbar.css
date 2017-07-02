@@ -78,7 +78,8 @@ body.mod-toolbox #tb-bottombar #tb-bottombar-contentright {
     height: 10px;
 }
 
-.mod-toolbox #tb-modmail {
+.mod-toolbox #tb-modmail,
+.mod-toolbox #tb-new_modmail {
 	top: 2px;
     display: inline-block;
     height: 16px;
@@ -98,6 +99,52 @@ body.mod-toolbox #tb-bottombar #tb-bottombar-contentright {
     background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -577px;
     background-repeat: no-repeat;
+}
+
+.mod-toolbox #tb-new_modmail.havemail {
+    background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png");
+    background-position: -102px -1435px;
+    background-repeat: no-repeat;
+}
+
+
+.mod-toolbox #tb-new_modmail.nohavemail {
+    background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png");
+    background-position: -126px -1323px;
+    background-repeat: no-repeat;
+}
+
+.mod-toolbox #tb-new_modmail {
+    width: 13px;
+}
+
+
+.mod-toolbox #tb-new-modmail-tooltip {
+    display:none;
+    z-index: 9999;
+    position: fixed;
+    height: initial;
+    width: initial;
+    right: 55px;
+    margin-bottom: 15px;
+    bottom: 15px;
+    background-color: #FFF;
+    box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
+    border: solid 10px rgb(206, 227, 248);
+    padding: 5px;
+}
+
+
+.mod-toolbox #tb-new-modmail-tooltip tr:nth-child(2n) {
+    background: rgba(162, 162, 162, 0.2);
+}
+
+.mod-toolbox #tb-new-modmail-tooltip td {
+    padding: 3px;
+}
+
+.mod-toolbox #tb-new-modmail-tooltip td.tb-new-mm-count {
+    font-weight: bold;
 }
 
 .mod-toolbox #tb-modqueue {
@@ -270,6 +317,7 @@ text-align: left;
     top: auto;
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
+
 
 .tb-first-run {
     display: none;

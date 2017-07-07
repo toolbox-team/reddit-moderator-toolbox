@@ -125,7 +125,7 @@ function modmatrix() {
         var footer = $('<tr class="totals"></tr>').wrap('<tfoot></tfoot>');
         footer.append('<td>Total</td>');
 
-        for (var subredditAction in this.subredditActions) {
+        for (let subredditAction in this.subredditActions) {
             header.append(`<th class="action-cell action-${subredditAction}"><a class="modactions ${subredditAction}" title="${this.subredditActions[subredditAction].title}"></a></th>`);
             footer.append(`<td class="action-cell action-${subredditAction}"><a target="_blank" title="Total ${this.subredditActions[subredditAction].title}" href="${this.subredditUrl}about/log?type=${subredditAction}" class="action-number">0</span></td>`);
         }
@@ -179,7 +179,7 @@ function modmatrix() {
         var modFilterRow = $('<tr><td>moderators:</td></tr>');
         var modFilterCell = $('<div></div>').wrap('<td></td>').hide().attr('id', 'modfilter');
         modFilterCell.append('<div><input type="checkbox" value="" id="modmatrixmodfilter-all" checked="checked" /><label for="modmatrixmodfilter-all">All</label></div>');
-        for (var moderator in this.subredditModerators) {
+        for (let moderator in this.subredditModerators) {
             modFilterCell.append(`<div style="padding-left: 10px;"><input class="mod-filter" type="checkbox" value="${moderator}" id="modmatrixmodfilter-${moderator}" /><label for="modmatrixmodfilter-${moderator}">${moderator}</label></div>`);
         }
         modMatrixSettings.find('table').append(modFilterRow);
@@ -213,9 +213,9 @@ function modmatrix() {
         if (this.subredditName && this.subredditName != 'mod' && !TBUtils.isModLogPage) {
             var subredditNames = this.subredditName.split('+');
 
-            for (var i = 0; i < subredditNames.length; i++) {
+            for (let i = 0; i < subredditNames.length; i++) {
                 $.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`, function (moderatorData) {
-                    for (var j = 0; j < moderatorData.data.children.length; j++) {
+                    for (let j = 0; j < moderatorData.data.children.length; j++) {
                         $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
                     }
                     if ($('#mod-matrix-settings .mod-filter:not(:checked)').length > 0) {
@@ -244,12 +244,12 @@ function modmatrix() {
                 return 1;
             }
         });
-        for (var index = 0; i < actions.length; index++) {
-            var action = actions[index];
+        for (let i = 0; i < actions.length; i++) {
+            var action = actions[i];
             actionFilterCell.append(`<div style="padding-left: 10px;"><input class="action-filter" type="checkbox" value="${action.className}" id="modmatrixactionfilter-${action.className}" checked="checked" /><label for="modmatrixmodfilter-${action.className}">${action.title}</label></div>`);
         }
         modMatrixSettings.find('table').append(actionFilterRow);
-        addButton = $('<a></a>').text('show action filter').insertBefore(actionFilterCell);
+        var addButton2 = $('<a></a>').text('show action filter').insertBefore(actionFilterCell);
         actionFilterCell.parent().appendTo(actionFilterRow);
         $('#modmatrixactionfilter-all').change(function () {
             if (this.checked) {
@@ -265,7 +265,7 @@ function modmatrix() {
                 $('#modmatrixactionfilter-all').prop('checked', 'checked');
             }
         });
-        addButton.click(function () {
+        addButton2.click(function () {
             if (actionFilterCell.is(':hidden')) {
                 actionFilterCell.show();
                 $(this).text('hide action filter');
@@ -301,8 +301,8 @@ function modmatrix() {
 
         $('#mod-matrix-settings form').append('<input type="submit" value="generate" />');
 
-        for (var moderatorRow in this.subredditModerators) {
-            this.createModeratorRow(moderatorRow);
+        for (let moderator in this.subredditModerators) {
+            this.createModeratorRow(moderator);
         }
 
         $('.reddit-moderationlog').off('click').click(function (e) {
@@ -381,7 +381,7 @@ function modmatrix() {
         var row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
 
         row.append(`<td><a href="/user/${moderator}" target="_blank" title="${moderator}">${moderator}</a></td>`);
-        for (var subredditAction in this.subredditActions) {
+        for (let subredditAction in this.subredditActions) {
             var td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
             row.append(td);
         }
@@ -467,13 +467,13 @@ function modmatrix() {
         //modLogMatrix.filterModeratorActions();
 
         // Mod numbers
-        for (var mod in this.subredditModerators) {
+        for (let mod in this.subredditModerators) {
             var moderator = self.subredditModerators[mod];
             var modRow = matrix.find(`.moderator-${mod}`);
-            var total = 0;
-            for (var action in moderator) {
+            for (let action in moderator) {
                 var value = parseInt(moderator[action]);
-                total += value;
+                modRow.find(`.action-${action} .action-number`).text(value);
+
             }
             modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) == -1);
         //matrix.find(".moderator-" + mod + " .action-total").text(total);
@@ -481,14 +481,15 @@ function modmatrix() {
         //modLogMatrix.filterModeratorActions();
 
         // Action totals
-        for (var subAction in this.subredditActions) {
+        for (let action in this.subredditActions) {
         //var total = actionTotals[action] || 0;
-            matrix.find(`.action-${subAction}`).toggleClass('filtered', hasActionFilter && $.inArray(subAction, self.actionFilter) == -1);
-            matrix.find(`tbody .action-${subAction} .action-number:visible`).each(function () {
+            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) == -1);
+            let total = 0;
+            matrix.find(`tbody .action-${action} .action-number:visible`).each(function () {
                 total += parseInt($(this).text());
             });
 
-            matrix.find(`tfoot .action-${subAction} .action-number`).text(total);
+            matrix.find(`tfoot .action-${action} .action-number`).text(total);
         }
 
 
@@ -526,7 +527,7 @@ function modmatrix() {
             errored = finished;
 
         if (!finished) {
-            for (var i = 0; i < data.children.length; i++) {
+            for (let i = 0; i < data.children.length; i++) {
                 var item = data.children[i].data;
 
                 var action = item.action;
@@ -573,6 +574,7 @@ function modmatrix() {
             // matrix.find(".totals .action-" + action + "").text(modLogMatrix.subredditActions[action].total);
             // matrix.find(".totals .action-total").text(modLogMatrix.total);
             }
+
 
             // Are we finished, or should we keep going?
             if (data.after == self.after || data.after == null || finished == true) {

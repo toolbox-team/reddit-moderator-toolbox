@@ -453,7 +453,7 @@ function storagewrapper() {
             var storageKey = `TBCache.${module}.${setting}`;
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-            var result;            
+            var result;
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;
             } else {

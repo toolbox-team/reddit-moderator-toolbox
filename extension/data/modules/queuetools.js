@@ -422,7 +422,7 @@ function queuetools() {
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a>
             ${TBUtils.post_site && false ? `<a href="javascript:;" class="pretty-button flair-selected inoffensive" accesskey="F" tabindex="6">flair&nbsp;selected</a>` : ``}
         </span>
-        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" value="${reportsThreshold}" /></a></span>
+        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" value="${reportsThreshold}" /></a></span>
         <span class="dropdown-title lightdrop" style="float:right"> sort:
             <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop ">
                 <span class="selected sortorder">${listingOrder}</span>

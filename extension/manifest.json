@@ -126,8 +126,6 @@
         }
     ],
     "web_accessible_resources": [
-        "data/libs/jquery-2.2.4.js",
-        "data/libs/snuownd.js",
-        "data/libs/worker-css.js"
+        "data/libs/snuownd.js"
     ]
 }

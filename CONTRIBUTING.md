@@ -31,7 +31,21 @@ You can find the documentation for all this on the following locations
 - [Toolbox module documentation](https://github.com/creesch/reddit-moderator-toolbox/wiki/Toolbox-module-notes) details how the general toolbox module structure works. 
 
 
+## Project structure
 
+- `/`: root directory containing scripting for building toolbox and configuration for development related things (linting, git configuration files). 
+- `edgeAssets/`: Assets used specifically during the Edge build process. 
+- `extension/`: root directory of the extension itself. Contains the manifests. From here the unpacked extension can be loaded for development. 
+- `extension/data/`: Directory containing the functional code of toolbox. All files starting with `tb` are toolbox core scripts.
+- `extension/data/tbmodule.js`: Modules are loaded into toolbox through this.
+- `extension/data/tbstorage.js`: Everything storage related. 
+- `extension/data/tbui.js`: Handles creating UI elements, [wiki page](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBui-function-class).
+- `extension/data/tbutils.js`: TBUtils is one of the core blocks on which toolbox is build. It contains most of functions used to interact with reddit. [Wiki page](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBUtils-function-calls).
+- `extension/data/background/`: Contains extension background scripts
+- `extension/data/images/`: Images used by toolbox.
+- `extension/data/libs/`: Contains javascript libraries used by toolbox
+- `extension/data/modules/`: Contains the individual toolbox modules. 
+- `extension/data/styles/`: Contains all CSS
 
 
 ## Loading toolbox into your browser

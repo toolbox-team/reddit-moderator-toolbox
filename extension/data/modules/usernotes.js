@@ -76,9 +76,6 @@ function usernotes() {
 
         function run() {
 
-        // Clear existing state
-            $('.ut-thing').removeClass('ut-thing');
-
             // This can be done better, but this is for the new modmail user sidebar thing.
             if ($body.find('.ThreadViewer').length > 0) {
                 var subreddit = $body.find('.ThreadTitle__community').text(),

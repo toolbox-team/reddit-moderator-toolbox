@@ -248,7 +248,7 @@ function domaintagger() {
                 if(TBui.standardColors.hasOwnProperty(c)) {
                     colors.push(TBui.standardColors[c]);
                 }
-            
+
             }
             var colorPalette = [];
             for(var i = 0; i < colors.length; i += 2) {

@@ -172,10 +172,11 @@ function modmacros() {
 
         // NER support.
         window.addEventListener('TBNewThings', function () {
-            setTimeout(function () {
-                addNewMMMacro();
-            }, 1000);
-
+            if(TBUtils.isNewModmail) {
+                setTimeout(function () {
+                    addNewMMMacro();
+                }, 1000);
+            }
         });
 
         function editMacro(dropdown, info, macro, topLevel) {

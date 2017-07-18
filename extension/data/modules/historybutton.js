@@ -94,7 +94,7 @@ function historybutton() {
                     var $this = $(this);
                     var author;
                     if($body.find('.ThreadViewer').length > 0) {
-                        
+
                         if ($this.hasClass('modmail-sidebar')) {
                             author = $('.InfoBar__username').text();
                         } else {
@@ -139,7 +139,7 @@ function historybutton() {
             <br/>
             <p class="tb-history-disclaimer">
             <strong>Disclaimer: </strong> The information shown below is an <i>indication</i> not a complete picture, it lacks the context you would get from having a look at a person's profile.
-    
+
             </p>
             <b>Available history:</b> <br>
             <label class="submission-count"></label> submissions
@@ -194,7 +194,7 @@ function historybutton() {
                         <tr><td colspan="6" class="error">loading...</td></tr>
                     </tbody>
                 </table>
-    
+
             </div>
             <div class="table account-table">
                 <table>
@@ -469,7 +469,7 @@ function historybutton() {
 
             //Get the total account od domain submissions
             var totalDomainCount = 0;
-            
+
             for (var domain in user.domains) {
                 if (user.domains.hasOwnProperty(domain)) {
                     totalDomainCount += user.domains[domain].count;

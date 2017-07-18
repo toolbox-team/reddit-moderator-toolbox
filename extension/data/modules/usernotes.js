@@ -70,8 +70,18 @@ function usernotes() {
         }
 
         // NER support.
+        let newThingRunning = false;
         window.addEventListener('TBNewThings', function () {
-            run();
+            // It is entirely possible that TBNewThings is fired multiple times.
+            // That is why we use a timeout here to prevent run() from being triggered multiple times.
+            if(!newThingRunning) {
+                newThingRunning = true;
+                setTimeout(function(){
+                    newThingRunning = false;
+                    run();
+                }, 500);
+            }
+
         });
 
         function run() {

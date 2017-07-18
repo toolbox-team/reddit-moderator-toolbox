@@ -50,6 +50,7 @@ function betterbuttons() {
 
     // Bread and buttons
     var $body = $('body');
+    let newThingRunning = false;
 
     self.initModSave = function initModSave() {
         if (TB.utils.isModmail) return;
@@ -159,7 +160,7 @@ function betterbuttons() {
             var $this = $(this);
             var $parentPost = $this.closest('.thing');
             var distinguished = getDistinguishState($parentPost);
- 
+
             // Lets ready the buttons we want to click later on.
             var firstDistinguishButton = $this.find('.option > a')[0],
                 secondDistinguishButton = $this.find('.option > a')[1];
@@ -199,10 +200,17 @@ function betterbuttons() {
             }
 
             // Fire TBNewThings so sticky gets added back.
-            setTimeout(function () {
-                var event = new CustomEvent('TBNewThings');
-                window.dispatchEvent(event);
-            }, 1000);
+            // It is entirely possible that TBNewThings is fired multiple times.
+            // That is why we only set a new timeout if there isn't one set already.
+            if(!newThingRunning) {
+                newThingRunning = true;
+                // Wait a sec for stuff to load.
+                setTimeout(function () {
+                    newThingRunning = false;
+                    var event = new CustomEvent('TBNewThings');
+                    window.dispatchEvent(event);
+                }, 1000);
+            }
 
         }
 

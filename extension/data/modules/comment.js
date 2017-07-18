@@ -45,6 +45,7 @@ function comments() {
 
     self.init = function () {
         var $body = $('body');
+        let newThingRunning = false;
 
         // Perform comment actions on pages where you are mod and which are not modmail.
         if (TBUtils.isMod && !TBUtils.isModmail) {
@@ -57,6 +58,7 @@ function comments() {
                 approveComments = self.setting('approveComments'),
                 spamRemoved = self.setting('spamRemoved'),
                 hamSpammed = self.setting('hamSpammed');
+
 
             $body.on('click', '#tb-toggle-removed', function () {
                 var $comment_spam = $('.tb-comment-spam');
@@ -208,10 +210,10 @@ function comments() {
     </li>
     <li>
         <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>
-    </li> 
+    </li>
     <li>
         <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>
-    </li> 
+    </li>
     {{bannedBy}}
     {{modButtons}}
     <li>
@@ -391,8 +393,8 @@ function comments() {
                     // Add filter options to the page
                     if (!$body.find('#tb-flatview-search').length) {
                         var $filterHTML = $(`<div id="tb-flatview-search">
-                            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">  
-                            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">   
+                            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">
+                            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">
                             <span id="tb-flatview-search-count"></span>
                         </div>`);
                         var FilterRightPosition = $('.side').outerWidth() + 5;
@@ -440,14 +442,21 @@ function comments() {
                     $('time.timeago').timeago();
 
                     // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
-                    setTimeout(function () {
-                        var event = new CustomEvent('TBNewThings');
-                        window.dispatchEvent(event);
-                    }, 1000);
+                    // It is entirely possible that TBNewThings is fired multiple times.
+                    // That is why we only set a new timeout if there isn't one set already.
+                    if(!newThingRunning) {
+                        newThingRunning = true;
+                        // Wait a sec for stuff to load.
+                        setTimeout(function () {
+                            newThingRunning = false;
+                            var event = new CustomEvent('TBNewThings');
+                            window.dispatchEvent(event);
+                        }, 1000);
+                    }
                 });
             });
         }
-        
+
         function populateSearchSuggestion() {
 
             $(TBUtils.mySubs).each(function () {
@@ -551,10 +560,10 @@ function comments() {
         </li>
         <li>
             <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>
-        </li> 
+        </li>
         <li>
             <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>
-        </li> 
+        </li>
         {{bannedBy}}
         {{modButtons}}
     </ul>
@@ -681,10 +690,17 @@ function comments() {
                                 TB.ui.longLoadSpinner(false);
 
                                 // Fire the same even as with NER support, this will allow the history and note buttons to do their thing.
-                                setTimeout(function () {
-                                    var event = new CustomEvent('TBNewThings');
-                                    window.dispatchEvent(event);
-                                }, 1000);
+                                // It is entirely possible that TBNewThings is fired multiple times.
+                                // That is why we only set a new timeout if there isn't one set already.
+                                if(!newThingRunning) {
+                                    newThingRunning = true;
+                                    // Wait a sec for stuff to load.
+                                    setTimeout(function () {
+                                        newThingRunning = false;
+                                        var event = new CustomEvent('TBNewThings');
+                                        window.dispatchEvent(event);
+                                    }, 1000);
+                                }
 
                             } else {
                                 searchComments(user, options, data.data.after);
@@ -714,7 +730,7 @@ function comments() {
                     result = true;
                 }
             }
-            if(result) {            
+            if(result) {
                 commentSearch();
             }
         });

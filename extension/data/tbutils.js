@@ -2351,7 +2351,8 @@ function initwrapper() {
         addTbModmailSidebar();
 
         if(!TBUtils.isNewModmail) {
-        // NER, load more comments, and mod frame support.
+            let newThingRunning = false;
+            // NER, load more comments, and mod frame support.
             var target = document.querySelector('div.content');
 
             // create an observer instance
@@ -2362,12 +2363,17 @@ function initwrapper() {
                     $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
 
                     $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
-
-                    // Wait a sec for stuff to load.
-                    setTimeout(function () {
-                        var event = new CustomEvent('TBNewThings');
-                        window.dispatchEvent(event);
-                    }, 1000);
+                    // It is entirely possible that TBNewThings is fired multiple times.
+                    // That is why we only set a new timeout if there isn't one set already.
+                    if(!newThingRunning) {
+                        newThingRunning = true;
+                        // Wait a sec for stuff to load.
+                        setTimeout(function () {
+                            newThingRunning = false;
+                            var event = new CustomEvent('TBNewThings');
+                            window.dispatchEvent(event);
+                        }, 1000);
+                    }
                 });
             });
 
@@ -2387,12 +2393,12 @@ function initwrapper() {
         // For new modmail we do things a bit different.
         // We only listen for dom changes after a user interaction.
         // Resulting in this event being fired less and less wasted requests.
-
-            var locationHref = location.href;
+            let newThingRunning = false;
+            let locationHref = location.href;
             document.body.addEventListener('click', function(){
                 // First we are going to check if this click resulted in a page change.
                 setTimeout(function(){
-                    var samePage = locationHref === location.href;
+                    let samePage = locationHref === location.href;
                     if (!samePage) {
                         locationHref = location.href;
                         var event = new CustomEvent('TBNewPage', {
@@ -2435,12 +2441,17 @@ function initwrapper() {
 
                         $.log('DOM: processable elements found.', false, SHORTNAME);
 
-                        // Wait a sec for stuff to load.
-                        setTimeout(function () {
-
-                            var event = new CustomEvent('TBNewThings');
-                            window.dispatchEvent(event);
-                        }, 1000);
+                        // It is entirely possible that TBNewThings is fired multiple times.
+                        // That is why we only set a new timeout if there isn't one set already.
+                        if(!newThingRunning) {
+                            newThingRunning = true;
+                            // Wait a sec for stuff to load.
+                            setTimeout(function () {
+                                newThingRunning = false;
+                                var event = new CustomEvent('TBNewThings');
+                                window.dispatchEvent(event);
+                            }, 1000);
+                        }
                     }
                 });
 

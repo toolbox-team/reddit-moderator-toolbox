@@ -130,7 +130,7 @@ function modbutton() {
                 if ($.inArray(subreddit, TB.utils.mySubs) != -1
                 && subreddit != currentSub
                 ) {
-                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${this 
+                    $savedSubsList.append(`<div><input type="checkbox" class="action-sub" name="action-sub" value="${this
                     }" id="action-${this}"><label for="action-${this}">&nbsp;&nbsp;/r/${this}</label></div>`);
                 }
             });
@@ -239,12 +239,12 @@ function modbutton() {
                         footer: `
                 <span class="status error left"></span>
                 <select class="mod-action tb-action-button inline-button">
-                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option> 
-                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option> 
-                    <option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter</option> 
-                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >remove submitter</option> 
-                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option> 
-                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option> 
+                    <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option>
+                    <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option>
+                    <option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter</option>
+                    <option class="mod-action-negative" data-action="contributor" data-api="unfriend" >remove submitter</option>
+                    <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option>
+                    <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
                 <button class="save tb-action-button inline-button">${self.saveButton}</button>
                 <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`

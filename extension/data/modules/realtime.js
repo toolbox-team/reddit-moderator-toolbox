@@ -11,8 +11,9 @@ function realtime() {
     self.config['betamode'] = true;
 
     self.init = function () {
+        let newThingRunning = false;
 
-    // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
+        // Don't run if the page we're viewing is paginated or a threaded comments page... or page restrictions.
         if (location.search.match(/before|after/) || $('body.comments-page').length || !(TBUtils.isModpage || TBUtils.isCommentsPage || TBUtils.isNewPage || TBUtils.isUserPage)) return;
 
         // Add checkbox;
@@ -80,10 +81,17 @@ function realtime() {
             $(document).trigger('new_things_inserted');
 
             // Run callbacks for toolbox
-            setTimeout(function () {
-                var event = new CustomEvent('TBNewThings');
-                window.dispatchEvent(event);
-            }, 1000);
+            // It is entirely possible that TBNewThings is fired multiple times.
+            // That is why we only set a new timeout if there isn't one set already.
+            if(!newThingRunning) {
+                newThingRunning = true;
+                // Wait a sec for stuff to load.
+                setTimeout(function () {
+                    newThingRunning = false;
+                    var event = new CustomEvent('TBNewThings');
+                    window.dispatchEvent(event);
+                }, 1000);
+            }
         }
 
         // Toggle realtime view on/off

@@ -36,8 +36,7 @@ chrome.runtime.onMessage.addListener(
         console.log(request);
 
         // Request to reload the extension. Let's do so.
-        if( request.action === 'tb-reload' )
-        {
+        if( request.action === 'tb-reload' ) {
             console.log('reloading');
             chrome.runtime.reload();
             console.log('reloaded');
@@ -55,6 +54,17 @@ chrome.runtime.onMessage.addListener(
             // http://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
             return true;
 
+        }
+        if( request.action === 'tb-clearCache' ) {
+            console.log('clearing cache');
+            sendResponse({tabID: sender.tab.id});
+            chrome.tabs.query({}, function(tabs) {
+                const message = {action: 'clearCache'};
+                for (var i=0; i<tabs.length; ++i) {
+                    chrome.tabs.sendMessage(tabs[i].id, message);
+                }
+            });
+            return true;
         }
     });
 

@@ -232,8 +232,6 @@ function notifiermod() {
             messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
             modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`;
 
-            console.log(newModmailCategoryCount);
-
         // Use custom modmail icons if applicable
         if(customModmailIcon) {
             var $modmail = $('#modmail'),

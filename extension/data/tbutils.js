@@ -25,6 +25,9 @@ function initwrapper() {
         // We fetch the data on page load but we don't access the variable directly.
 
 
+
+
+
         // Token promise.
         TBUtils.oauthToken = function oauthToken() {
             return new Promise(function (resolve) {
@@ -72,6 +75,7 @@ function initwrapper() {
             gettingModSubs = false,
             getModSubsCallbacks = [],
             invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
+            tabID = 0,
 
             randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
                 "Simple solution, don't use nightmode....",
@@ -2176,7 +2180,7 @@ function initwrapper() {
 
         // Cache manipulation
 
-        TBUtils.clearCache = function () {
+        TBUtils.clearCache = function (calledFromBackground) {
             $.log('TBUtils.clearCache()', false, SHORTNAME);
 
             TBUtils.noteCache = {};
@@ -2189,6 +2193,13 @@ function initwrapper() {
             TBUtils.mySubsData = [];
 
             TBStorage.clearCache();
+
+            if(!calledFromBackground) {
+                chrome.runtime.sendMessage({action: 'tb-clearCache'}, function(response) {
+                    tabID = response.tabID;
+                });
+            }
+
         };
 
         TBUtils.getReasonsFromCSS = function (sub, callback) {
@@ -2283,6 +2294,25 @@ function initwrapper() {
                 });
             }
         };
+
+        // Listen to background page communication and act based on that.
+        chrome.runtime.onMessage.addListener(function(message) {
+            switch (message.action) {
+            case 'clearCache': {
+                if (!tabID) {
+                    TBUtils.clearCache(true);
+                }
+
+                break;
+            }
+            default: {
+                const event = new CustomEvent(message.action);
+                window.dispatchEvent(event);
+            }
+
+
+            }
+        });
 
         // private functions
         function setWikiPrivate(subreddit, page, failAlert) {

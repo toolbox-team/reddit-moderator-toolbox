@@ -230,7 +230,8 @@ function notifiermod() {
             newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
             messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
-            modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`;
+            modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`,
+            tabID = 0;
 
         // Use custom modmail icons if applicable
         if(customModmailIcon) {
@@ -298,6 +299,153 @@ function notifiermod() {
             audio.play();
         });
 
+        function updateMessagesCount(count) {
+            var $mail = $('#mail'),
+                $mailCount = $('#mailCount'),
+                $mailcount = $('#mailcount'),
+                $tb_mail = $('#tb-mail'),
+                $tb_mailCount = $('#tb-mailCount');
+            if (count < 1) {
+                $mailCount.empty();
+                $mail.attr('class', 'nohavemail');
+                $mail.attr('title', 'no new mail!');
+                $mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+                $mailcount.attr('href', messageunreadurl);
+                $tb_mail.attr('class', 'nohavemail');
+                $tb_mail.attr('title', 'no new mail!');
+                $tb_mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+                $('#tb-mailCount').attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+            } else {
+                $mail.attr('class', 'havemail');
+                $mail.attr('title', 'new mail!');
+                $mail.attr('href', messageunreadurl);
+                $mailcount.attr('href', messageunreadurl);
+                $tb_mail.attr('class', 'havemail');
+                $tb_mail.attr('title', 'new mail!');
+                $tb_mail.attr('href', messageunreadurl);
+                $tb_mailCount.attr('href', messageunreadurl);
+            }
+            $tb_mailCount.text(`[${count}]`);
+
+            if (count > 0) {
+                $('#mailCount').text(`[${count}]`);
+            }
+        }
+
+        function updateModqueueCount(count) {
+            $('#tb-queueCount').text(`[${count}]`);
+        }
+
+        function updateUnmodCount(count) {
+            $('#tb-unmoderatedcount').text(`[${count}]`);
+        }
+
+        // Ok this mess needs more commenting because otherwise we'll keep mixing things up.
+        function updateModMailCount(count) {
+        // $modmail is native to reddit $tb_modmail in the modbar.
+            var $modmail = $('#modmail'),
+                $tb_modmail = $('#tb-modmail'),
+                $tbModmailCount = $('#tb-modmailcount');
+
+            // Determine if we need to point to a filtered inbox.
+            if (modmailFilteredSubreddits !== 'mod') {
+                var modmailHrefAttr = `/r/${modmailFilteredSubreddits}/message/moderator/`;
+                if (modmailCustomLimit > 0) {
+                    modmailHrefAttr = `${modmailHrefAttr}?limit=${modmailCustomLimit}`;
+                }
+
+                $tb_modmail.attr('href', modmailHrefAttr);
+                $modmail.attr('href', modmailHrefAttr);
+                $tbModmailCount.attr('href', modmailHrefAttr);
+            }
+
+            if (count < 1) {
+
+            // We are doing it like this to preserve other classes
+                $tb_modmail.removeClass('havemail');
+                $tb_modmail.addClass('nohavemail');
+                $tb_modmail.attr('title', 'no new mail!');
+            } else {
+            // We are doing it like this to preserve other classes
+                $modmail.removeClass('nohavemail');
+                $modmail.addClass('havemail');
+
+                $modmail.attr('title', 'new mail!');
+                $modmail.attr('href', modmailunreadurl);
+
+                // We are doing it like this to preserve other classes
+                $tb_modmail.removeClass('nohavemail');
+                $tb_modmail.addClass('havemail');
+                $tb_modmail.attr('title', 'new mail!');
+
+            }
+            $('#tb-modmailcount').text(`[${count}]`);
+        }
+
+        // Here we update the count for new modmail. Is somewhat simpler than old modmail.
+        function updateNewModMailCount(count, data) {
+
+            // $modmail is native to reddit $tb_modmail in the modbar.
+            let $newmodmail = $('#new_modmail'),
+                $tbNewModmail = $('#tb-new_modmail'),
+                $tbNewModmailCount = $('#tb-new-modmailcount'),
+                $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
+
+            if (count < 1) {
+
+            // We are doing it like this to preserve other classes
+                $newmodmail.removeClass('havemail');
+                $tbNewModmail.removeClass('havemail');
+                $newmodmail.addClass('nohavemail');
+                $tbNewModmail.addClass('nohavemail');
+
+                $newmodmail.attr('title', 'no new mod mail!');
+
+            } else {
+            // We are doing it like this to preserve other classes
+                $newmodmail.removeClass('nohavemail');
+                $newmodmail.addClass('havemail');
+                $newmodmail.attr('title', 'new mod mail!');
+
+                // We are doing it like this to preserve other classes
+                $tbNewModmail.removeClass('nohavemail');
+                $tbNewModmail.addClass('havemail');
+
+
+            }
+            $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
+            $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
+            $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
+            $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
+            $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
+
+            $tbNewModmailCount.text(`[${count}]`);
+        }
+
+        function updateAllTabs() {
+            self.log('updating all counters accross tabs');
+            chrome.runtime.sendMessage({
+                action: 'tb-global',
+                globalEvent: TBUtils.TB_UPDATE_COUNTERS,
+                payload: {
+                    unreadMessageCount : self.setting('unreadMessageCount'),
+                    modqueueCount : self.setting('modqueueCount'),
+                    unmoderatedCount : self.setting('unmoderatedCount'),
+                    modmailCount : self.setting('modmailCount'),
+                    newModmailCount : self.setting('newModmailCount'),
+                    newModmailCategoryCount : self.setting('newModmailCategoryCount')
+                }
+            });
+        }
+
+        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, function(event){
+            self.log('updating counters from background');
+            updateMessagesCount(event.detail.unreadMessageCount);
+            updateModqueueCount(event.detail.modqueueCount);
+            updateUnmodCount(event.detail.unmoderatedCount);
+            updateModMailCount(event.detail.modmailCount);
+            updateNewModMailCount(event.detail.newModmailCount, event.detail.newModmailCategoryCount);
+        });
 
         function getmessages() {
             self.log('getting messages');
@@ -319,127 +467,7 @@ function notifiermod() {
             // Update methods
             //
 
-            function updateMessagesCount(count) {
-                var $mail = $('#mail'),
-                    $mailCount = $('#mailCount'),
-                    $mailcount = $('#mailcount'),
-                    $tb_mail = $('#tb-mail'),
-                    $tb_mailCount = $('#tb-mailCount');
-                if (count < 1) {
-                    $mailCount.empty();
-                    $mail.attr('class', 'nohavemail');
-                    $mail.attr('title', 'no new mail!');
-                    $mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
-                    $mailcount.attr('href', messageunreadurl);
-                    $tb_mail.attr('class', 'nohavemail');
-                    $tb_mail.attr('title', 'no new mail!');
-                    $tb_mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
-                    $('#tb-mailCount').attr('href', `${TBUtils.baseDomain}/message/inbox/`);
-                } else {
-                    $mail.attr('class', 'havemail');
-                    $mail.attr('title', 'new mail!');
-                    $mail.attr('href', messageunreadurl);
-                    $mailcount.attr('href', messageunreadurl);
-                    $tb_mail.attr('class', 'havemail');
-                    $tb_mail.attr('title', 'new mail!');
-                    $tb_mail.attr('href', messageunreadurl);
-                    $tb_mailCount.attr('href', messageunreadurl);
-                }
-                $tb_mailCount.text(`[${count}]`);
 
-                if (count > 0) {
-                    $('#mailCount').text(`[${count}]`);
-                }
-            }
-
-            function updateModqueueCount(count) {
-                $('#tb-queueCount').text(`[${count}]`);
-            }
-
-            function updateUnmodCount(count) {
-                $('#tb-unmoderatedcount').text(`[${count}]`);
-            }
-
-            // Ok this mess needs more commenting because otherwise we'll keep mixing things up.
-            function updateModMailCount(count) {
-            // $modmail is native to reddit $tb_modmail in the modbar.
-                var $modmail = $('#modmail'),
-                    $tb_modmail = $('#tb-modmail'),
-                    $tbModmailCount = $('#tb-modmailcount');
-
-                // Determine if we need to point to a filtered inbox.
-                if (modmailFilteredSubreddits !== 'mod') {
-                    var modmailHrefAttr = `/r/${modmailFilteredSubreddits}/message/moderator/`;
-                    if (modmailCustomLimit > 0) {
-                        modmailHrefAttr = `${modmailHrefAttr}?limit=${modmailCustomLimit}`;
-                    }
-
-                    $tb_modmail.attr('href', modmailHrefAttr);
-                    $modmail.attr('href', modmailHrefAttr);
-                    $tbModmailCount.attr('href', modmailHrefAttr);
-                }
-
-                if (count < 1) {
-
-                // We are doing it like this to preserve other classes
-                    $tb_modmail.removeClass('havemail');
-                    $tb_modmail.addClass('nohavemail');
-                    $tb_modmail.attr('title', 'no new mail!');
-                } else {
-                // We are doing it like this to preserve other classes
-                    $modmail.removeClass('nohavemail');
-                    $modmail.addClass('havemail');
-
-                    $modmail.attr('title', 'new mail!');
-                    $modmail.attr('href', modmailunreadurl);
-
-                    // We are doing it like this to preserve other classes
-                    $tb_modmail.removeClass('nohavemail');
-                    $tb_modmail.addClass('havemail');
-                    $tb_modmail.attr('title', 'new mail!');
-
-                }
-                $('#tb-modmailcount').text(`[${count}]`);
-            }
-
-            // Here we update the count for new modmail. Is somewhat simpler than old modmail.
-            function updateNewModMailCount(count, data) {
-            // $modmail is native to reddit $tb_modmail in the modbar.
-                let $newmodmail = $('#new_modmail'),
-                    $tbNewModmail = $('#tb-new_modmail'),
-                    $tbNewModmailCount = $('#tb-new-modmailcount'),
-                    $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
-
-                if (count < 1) {
-
-                // We are doing it like this to preserve other classes
-                    $newmodmail.removeClass('havemail');
-                    $tbNewModmail.removeClass('havemail');
-                    $newmodmail.addClass('nohavemail');
-                    $tbNewModmail.addClass('nohavemail');
-
-                    $newmodmail.attr('title', 'no new mod mail!');
-
-                } else {
-                // We are doing it like this to preserve other classes
-                    $newmodmail.removeClass('nohavemail');
-                    $newmodmail.addClass('havemail');
-                    $newmodmail.attr('title', 'new mod mail!');
-
-                    // We are doing it like this to preserve other classes
-                    $tbNewModmail.removeClass('nohavemail');
-                    $tbNewModmail.addClass('havemail');
-
-
-                }
-                $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
-                $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
-                $tbNewModmailTooltip.find('#tb-new-modmail-highlighted .tb-new-mm-count').text(data.highlighted);
-                $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
-                $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
-
-                $tbNewModmailCount.text(`[${count}]`);
-            }
 
             if (!newLoad && (now - lastchecked) < checkInterval) {
                 updateMessagesCount(unreadMessageCount);
@@ -464,6 +492,10 @@ function notifiermod() {
             }
 
             newLoad = false;
+
+            // We'll use this to determine if we are done with all counters and want to send a message to the background page telling all other tabs to update.
+            let updateCounters = unmoderatedOn ? 5 : 4;
+
 
             //$.log('updating totals');
             // We're checking now.
@@ -493,6 +525,13 @@ function notifiermod() {
                 var count = json.data.children.length || 0;
                 self.setting('unreadMessageCount', count);
                 updateMessagesCount(count);
+
+                // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                updateCounters--;
+                if (updateCounters === 0) {
+                    updateAllTabs();
+                }
+
                 if (count === 0) return;
                 // Are we allowed to show a popup?
                 if (messageNotifications && count > unreadMessageCount) {
@@ -632,6 +671,12 @@ function notifiermod() {
             $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(function (json) {
                 var count = json.data.children.length || 0;
                 updateModqueueCount(count);
+
+                // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                updateCounters--;
+                if (updateCounters === 0) {
+                    updateAllTabs();
+                }
                 //$.log(modNotifications);
                 if (modNotifications && count > modqueueCount) {
                 // Ok let's have a look and see if there are actually new items to display
@@ -792,6 +837,12 @@ function notifiermod() {
 
                     if (unmoderatedOn) {
                         updateUnmodCount(count);
+
+                        // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                        updateCounters--;
+                        if (updateCounters === 0) {
+                            updateAllTabs();
+                        }
                     }
                 });
             }
@@ -806,6 +857,12 @@ function notifiermod() {
                 if (count === 0) {
                     self.setting('modmailCount', count);
                     updateModMailCount(count);
+
+                    // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                    updateCounters--;
+                    if (updateCounters === 0) {
+                        updateAllTabs();
+                    }
                     return;
                 }
 
@@ -901,6 +958,12 @@ function notifiermod() {
                 self.setting('modmailCount', newCount);
                 updateModMailCount(newCount);
 
+                // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                updateCounters--;
+                if (updateCounters === 0) {
+                    updateAllTabs();
+                }
+
             });
 
             //
@@ -913,6 +976,11 @@ function notifiermod() {
                 self.setting('newModmailCategoryCount', data);
                 updateNewModMailCount(modmailFreshCount, data);
 
+                // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
+                updateCounters--;
+                if (updateCounters === 0) {
+                    updateAllTabs();
+                }
             }).catch(function(error) {
                 self.log(error.jqXHR.responseText);
             });

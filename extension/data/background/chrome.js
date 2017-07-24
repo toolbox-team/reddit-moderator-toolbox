@@ -55,13 +55,21 @@ chrome.runtime.onMessage.addListener(
             return true;
 
         }
-        if( request.action === 'tb-clearCache' ) {
-            console.log('clearing cache');
-            sendResponse({tabID: sender.tab.id});
+        if(request.action === 'tb-global' ) {
+            console.log('global event');
+
+
+            const message = {
+                action: request.globalEvent,
+                payload: request.payload
+            };
+
             chrome.tabs.query({}, function(tabs) {
-                const message = {action: 'clearCache'};
-                for (var i=0; i<tabs.length; ++i) {
-                    chrome.tabs.sendMessage(tabs[i].id, message);
+                for (let i=0; i<tabs.length; ++i) {
+                    if(sender.tab.id !== tabs[i].id) {
+                        chrome.tabs.sendMessage(tabs[i].id, message);
+                    }
+
                 }
             });
             return true;

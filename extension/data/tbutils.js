@@ -298,7 +298,8 @@ function initwrapper() {
             TB_FLY_SNOO: 'TB_FLY_SNOO',
             TB_KILL_SNOO: 'TB_KILL_SNOO',
             TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND',
-            TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS'
+            TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS',
+            TB_UPDATE_COUNTERS: 'TB_UPDATE_COUNTERS'
         };
 
         TBUtils.defaultUsernoteTypes = [
@@ -2195,8 +2196,9 @@ function initwrapper() {
             TBStorage.clearCache();
 
             if(!calledFromBackground) {
-                chrome.runtime.sendMessage({action: 'tb-clearCache'}, function(response) {
-                    tabID = response.tabID;
+                chrome.runtime.sendMessage({
+                    action: 'tb-global',
+                    globalEvent: 'clearCache'
                 });
             }
 
@@ -2299,14 +2301,11 @@ function initwrapper() {
         chrome.runtime.onMessage.addListener(function(message) {
             switch (message.action) {
             case 'clearCache': {
-                if (!tabID) {
-                    TBUtils.clearCache(true);
-                }
-
+                TBUtils.clearCache(true);
                 break;
             }
             default: {
-                const event = new CustomEvent(message.action);
+                const event = new CustomEvent(message.action, {detail: message.payload });
                 window.dispatchEvent(event);
             }
 

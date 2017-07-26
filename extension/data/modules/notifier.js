@@ -231,7 +231,9 @@ function notifiermod() {
 
             messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
             modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`,
-            tabID = 0;
+            tabID = 0,
+            $body = $('body'),
+            activeNewMMcheck = false;
 
         // Use custom modmail icons if applicable
         if(customModmailIcon) {
@@ -421,6 +423,8 @@ function notifiermod() {
 
             $tbNewModmailCount.text(`[${count}]`);
         }
+        
+
 
         function updateAllTabs() {
             self.log('updating all counters accross tabs');
@@ -437,6 +441,45 @@ function notifiermod() {
                 }
             });
         }
+        
+        function newModMailCheck() {
+            if(!activeNewMMcheck) {
+                activeNewMMcheck = true;
+                setTimeout(function () {
+                    TBUtils.apiOauthGET('api/mod/conversations/unread/count').then(function(response) {
+                        let data = response.data;
+                        let modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
+                        self.setting('newModmailCount', modmailFreshCount);
+                        self.setting('newModmailCategoryCount', data);
+                        
+                        updateNewModMailCount(modmailFreshCount, data);
+                        updateAllTabs();
+                        activeNewMMcheck = false
+          
+                    }).catch(function(error) {
+                        self.log(error.jqXHR.responseText);
+                        activeNewMMcheck = false
+                    });
+                }, 500);
+            }
+        }
+        
+        // New Modmail actions. 
+        // Whenever something is clicked that potentially changes the modmail count 
+        if(TBUtils.isNewModmail) {
+            
+            // Since this is a non ww domain counts will never be checked through the regular getMessages() function. 
+            // So we do a check here. 
+            newModMailCheck();
+            
+            $body.on('click', '.ThreadPreviewViewer__thread:not(.m-read), .ThreadPreviewViewerHeader__button, .ThreadPreview__headerLeft .ThreadPreview__control, .ThreadViewerHeader__right', function() {
+                self.log('Checking modmail count based on click on specific element.');
+                newModMailCheck();
+
+                
+            });
+        }
+
 
         window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, function(event){
             self.log('updating counters from background');

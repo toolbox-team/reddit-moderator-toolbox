@@ -231,7 +231,6 @@ function notifiermod() {
 
             messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
             modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`,
-            tabID = 0,
             $body = $('body'),
             activeNewMMcheck = false;
 
@@ -384,6 +383,13 @@ function notifiermod() {
             $('#tb-modmailcount').text(`[${count}]`);
         }
 
+        function updateNewModmailSidebar($sidebarItem, count) {
+            if(count > 0) {
+                $sidebarItem.append(`<div class="SidebarNav__count">${count}</div>`);
+            } else {
+                $sidebarItem.find('.SidebarNav__count').remove();
+            }
+        }
         // Here we update the count for new modmail. Is somewhat simpler than old modmail.
         function updateNewModMailCount(count, data) {
 
@@ -421,9 +427,24 @@ function notifiermod() {
             $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
             $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
 
+            if(TBUtils.isNewModmail) {
+                const $newSidebar = $body.find('.SidebarNav .m-new'),
+                    $inProgressSidebar = $body.find('.SidebarNav .m-inprogress'),
+                    $highlightedSidebar = $body.find('.SidebarNav .m-highlighted'),
+                    $modSidebar = $body.find('.SidebarNav .m-mod'),
+                    $notificationSidebar = $body.find('.SidebarNav .m-notifications');
+
+                updateNewModmailSidebar($newSidebar, data.new);
+                updateNewModmailSidebar($inProgressSidebar, data.inprogress);
+                updateNewModmailSidebar($highlightedSidebar, data.highlighted);
+                updateNewModmailSidebar($modSidebar, data.mod);
+                updateNewModmailSidebar($notificationSidebar, data.notifications);
+
+            }
+
             $tbNewModmailCount.text(`[${count}]`);
         }
-        
+
 
 
         function updateAllTabs() {
@@ -441,7 +462,7 @@ function notifiermod() {
                 }
             });
         }
-        
+
         function newModMailCheck() {
             if(!activeNewMMcheck) {
                 activeNewMMcheck = true;
@@ -451,32 +472,32 @@ function notifiermod() {
                         let modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
                         self.setting('newModmailCount', modmailFreshCount);
                         self.setting('newModmailCategoryCount', data);
-                        
+
                         updateNewModMailCount(modmailFreshCount, data);
                         updateAllTabs();
-                        activeNewMMcheck = false
-          
+                        activeNewMMcheck = false;
+
                     }).catch(function(error) {
                         self.log(error.jqXHR.responseText);
-                        activeNewMMcheck = false
+                        activeNewMMcheck = false;
                     });
                 }, 500);
             }
         }
-        
-        // New Modmail actions. 
-        // Whenever something is clicked that potentially changes the modmail count 
+
+        // New Modmail actions.
+        // Whenever something is clicked that potentially changes the modmail count
         if(TBUtils.isNewModmail) {
-            
-            // Since this is a non ww domain counts will never be checked through the regular getMessages() function. 
-            // So we do a check here. 
+
+            // Since this is a non ww domain counts will never be checked through the regular getMessages() function.
+            // So we do a check here.
             newModMailCheck();
-            
+
             $body.on('click', '.ThreadPreviewViewer__thread:not(.m-read), .ThreadPreviewViewerHeader__button, .ThreadPreview__headerLeft .ThreadPreview__control, .ThreadViewerHeader__right', function() {
                 self.log('Checking modmail count based on click on specific element.');
                 newModMailCheck();
 
-                
+
             });
         }
 

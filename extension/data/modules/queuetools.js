@@ -31,9 +31,9 @@ function queuetools() {
     self.register_setting('reportsOrder', {
         'type': 'selector',
         'advanced': true,
-        'values': ['age', 'score', 'reports'],
+        'values': ['age', 'edited', 'removed', 'score', 'reports'],
         'default': 'age',
-        'title': 'Sort by.'
+        'title': 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.'
     });
 
     self.register_setting('reportsThreshold', {
@@ -348,7 +348,7 @@ function queuetools() {
                 COLLAPSE_TITLE = 'collapse reports';
 
             if (viewingspam && listingOrder == 'reports') {
-                listingOrder = 'age';
+                listingOrder = 'removed';
             }
 
             // Get rid of promoted links & thing rankings
@@ -429,6 +429,8 @@ function queuetools() {
             </div>
             <div class="drop-choices lightdrop sortorder-options">
                     <a class="choice" href="javascript:;">age</a>
+                    <a class="choice" href="javascript:;">edited</a>
+                    <a class="choice" href="javascript:;">removed</a>
                     ${viewingspam ? `` : `<a class="choice" href="javascript:;">reports</a>`}
                     <a class="choice" href="javascript:;">score</a>
             </div>
@@ -875,18 +877,55 @@ function queuetools() {
                 var things = $('#siteTable .thing').sort(function (a, b) {
                     (asc) ? (A = a, B = b) : (A = b, B = a);
 
+                    var $A = $(A),
+                        $B = $(B);
                     switch (order) {
                     case 'age':
-                        var timeA = new Date($(A).find('time:first').attr('datetime')).getTime(),
-                            timeB = new Date($(B).find('time:first').attr('datetime')).getTime();
+                        var timeA = new Date($A.find('time.live-timestamp:first').attr('datetime')).getTime(),
+                            timeB = new Date($B.find('time.live-timestamp:first').attr('datetime')).getTime();
                         return timeA - timeB;
+
+                    case 'edited':
+                        var $aEditElement = $A.find('time.edited-timestamp:first').length ? $A.find('time.edited-timestamp:first') : $A.find('time.live-timestamp:first'),
+                            $bEditElement = $B.find('time.edited-timestamp:first').length ? $B.find('time.edited-timestamp:first') : $B.find('time.live-timestamp:first');
+                        var timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
+                            timeEditB = new Date($bEditElement.attr('datetime')).getTime();
+                        return timeEditA - timeEditB;
+
+                    case 'removed':
+                        var $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
+                            $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
+
+
+
+                        var timeRemoveA,
+                            timeRemoveB;
+
+                        if($aRemoveElement.hasClass('live-timestamp')) {
+                            timeRemoveA = $aRemoveElement.attr('datetime');
+                        } else {
+                            timeRemoveA = $aRemoveElement.attr('title');
+                            timeRemoveA = timeRemoveA.replace('removed at ', '');
+                        }
+
+                        if($bRemoveElement.hasClass('live-timestamp')) {
+                            timeRemoveB = $bRemoveElement.attr('datetime');
+                        } else {
+                            timeRemoveB = $bRemoveElement.attr('title');
+                            timeRemoveB = timeRemoveB.replace('removed at ', '');
+                        }
+
+                        var timeStampRemoveA = new Date(timeRemoveA).getTime(),
+                            timeStampRemoveB = new Date(timeRemoveB).getTime();
+
+                        return timeStampRemoveA - timeStampRemoveB;
                     case 'score':
-                        var scoreA = $(A).find('.score:visible').text().match(numberRX),
-                            scoreB = $(B).find('.score:visible').text().match(numberRX);
+                        var scoreA = $A.find('.score:visible').text().match(numberRX),
+                            scoreB = $B.find('.score:visible').text().match(numberRX);
                         return scoreA - scoreB;
                     case 'reports':
-                        var reportsA = $(A).find('.reported-stamp').text().match(numberRX),
-                            reportsB = $(B).find('.reported-stamp').text().match(numberRX);
+                        var reportsA = $A.find('.reported-stamp').text().match(numberRX),
+                            reportsB = $B.find('.reported-stamp').text().match(numberRX);
                         return reportsA - reportsB;
                     }
                 });

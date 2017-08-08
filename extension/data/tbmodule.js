@@ -217,37 +217,37 @@ function tbmodule() {
                     <h3> made and maintained by: </h3>
                     <table class="tb-about-credits">
                         <tr>
-                            <td><a href="/user/creesch/">/u/creesch</a></td>
-                            <td><a href="/user/agentlame">/u/agentlame</a></td>
-                            <td><a href="/user/LowSociety">/u/LowSociety</a></td>
+                            <td><a href="https://www.reddit.com/user/creesch/">/u/creesch</a></td>
+                            <td><a href="https://www.reddit.com/user/agentlame">/u/agentlame</a></td>
+                            <td><a href="https://www.reddit.com/user/LowSociety">/u/LowSociety</a></td>
                         </tr><tr>
-                            <td><a href="/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>
-                            <td><a href="/user/dakta">/u/dakta</a></td>
-                            <td><a href="/user/largenocream">/u/largenocream</a></td>
+                            <td><a href="https://www.reddit.com/user/TheEnigmaBlade">/u/TheEnigmaBlade</a></td>
+                            <td><a href="https://www.reddit.com/user/dakta">/u/dakta</a></td>
+                            <td><a href="https://www.reddit.com/user/largenocream">/u/largenocream</a></td>
                         </tr><tr>
-                            <td><a href="/user/noeatnosleep">/u/noeatnosleep</a></td>
-                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>
-                            <td><a href="/user/garethp">/u/garethp</a></td>
+                            <td><a href="https://www.reddit.com/user/noeatnosleep">/u/noeatnosleep</a></td>
+                            <td><a href="https://www.reddit.com/user/psdtwk">/u/psdtwk</a></td>
+                            <td><a href="https://www.reddit.com/user/garethp">/u/garethp</a></td>
                         </tr><tr>
-                            <td><a href="/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
-                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>
-                            <td><a href="/user/geo1088">/u/geo1088</a></td>
+                            <td><a href="https://www.reddit.com/user/WorseThanHipster" title="Literally">/u/WorseThanHipster</a></td>
+                            <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
+                            <td><a href="https://www.reddit.com/user/geo1088">/u/geo1088</a></td>
                           </tr>
                     </table>
                     <h3>Documentation by:</h3>
                     <table class="tb-about-credits">
                         <tr>
-                            <td><a href="/user/psdtwk">/u/psdtwk</a></td>
-                            <td><a href="/user/gorillagnomes">/u/gorillagnomes</a></td>
-                            <td><a href="/user/x_minus_one">/u/x_minus_one</a></td>
+                            <td><a href="https://www.reddit.com/user/psdtwk">/u/psdtwk</a></td>
+                            <td><a href="https://www.reddit.com/user/gorillagnomes">/u/gorillagnomes</a></td>
+                            <td><a href="https://www.reddit.com/user/x_minus_one">/u/x_minus_one</a></td>
                         </tr><tr>
-                            <td><a href="/user/Gustavobc">/u/Gustavobc</a></td>
-                            <td><a href="/user/hermithome">/u/hermithome</a></td>
-                            <td><a href="/user/amici_ursi">/u/amici_ursi</a></td>
+                            <td><a href="https://www.reddit.com/user/Gustavobc">/u/Gustavobc</a></td>
+                            <td><a href="https://www.reddit.com/user/hermithome">/u/hermithome</a></td>
+                            <td><a href="https://www.reddit.com/user/amici_ursi">/u/amici_ursi</a></td>
                         </tr>
                     </table>
                     <h3>Special thanks to:</h3>
-                    <a href="/user/andytuba">/u/andytuba</a> & <a href="/user/erikdesjardins">erikdesjardins</a>
+                    <a href="https://www.reddit.com/user/andytuba">/u/andytuba</a> & <a href="https://www.reddit.com/user/erikdesjardins">/u/erikdesjardins</a>
                     <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>
                     <h3>Credits:</h3>
                     <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>
@@ -756,7 +756,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                                 internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
 
-                            $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"' 
+                            $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
                             } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass}"><img src="data:image/png;base64,${TB.ui.iconLink}" /></a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
                             `<input  type="text" readonly="readonly" value="${redditLink}"/><br>` +

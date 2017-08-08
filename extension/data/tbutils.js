@@ -1638,8 +1638,13 @@ function initwrapper() {
                         callback(TBUtils.WIKI_PAGE_UNKNOWN);
                         return;
                     }
+                    let reason;
+                    if (jqXHR.responseText.startsWith('<!doctype html>')) {
+                        reason = 'WIKI_PAGE_UNKNOWN';
+                    } else {
+                        reason = JSON.parse(jqXHR.responseText).reason || '';
+                    }
 
-                    var reason = JSON.parse(jqXHR.responseText).reason || '';
                     if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
                         callback(TBUtils.NO_WIKI_PAGE);
                     } else {

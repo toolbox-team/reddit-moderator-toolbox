@@ -896,8 +896,6 @@ function queuetools() {
                         var $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
                             $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
 
-
-
                         var timeRemoveA,
                             timeRemoveB;
 

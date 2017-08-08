@@ -427,21 +427,6 @@ function notifiermod() {
             $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
             $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
 
-            if(TBUtils.isNewModmail) {
-                const $newSidebar = $body.find('.SidebarNav .m-new'),
-                    $inProgressSidebar = $body.find('.SidebarNav .m-inprogress'),
-                    $highlightedSidebar = $body.find('.SidebarNav .m-highlighted'),
-                    $modSidebar = $body.find('.SidebarNav .m-mod'),
-                    $notificationSidebar = $body.find('.SidebarNav .m-notifications');
-
-                updateNewModmailSidebar($newSidebar, data.new);
-                updateNewModmailSidebar($inProgressSidebar, data.inprogress);
-                updateNewModmailSidebar($highlightedSidebar, data.highlighted);
-                updateNewModmailSidebar($modSidebar, data.mod);
-                updateNewModmailSidebar($notificationSidebar, data.notifications);
-
-            }
-
             $tbNewModmailCount.text(`[${count}]`);
         }
 

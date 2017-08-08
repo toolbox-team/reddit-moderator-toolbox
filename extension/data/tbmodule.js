@@ -654,20 +654,20 @@ function tbmodule() {
                             $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
                             $setting.append($(`
                     <textarea class="syntax-example" id="${module.shortname}_syntax_theme_css">
-/* This is just some example code*/\n
-body {\n
-font-family: sans-serif, "Helvetica Neue", Arial;\n
-font-weight: normal;\n
-}\n
-\n
-.md h3, .commentarea h3 {\n
-font-size: 1em;\n
-}\n
-\n
-#header {\n
-border-bottom: 1px solid #9A9A9A; \n
-box-shadow: 0px 1px 3px 1px #B3C2D1;\n
-}\n
+/* This is just some example code*/
+body {
+    font-family: sans-serif, "Helvetica Neue", Arial;
+    font-weight: normal;
+}
+
+.md h3, .commentarea h3 {
+    font-size: 1em;
+}
+
+#header {
+    border-bottom: 1px solid #9A9A9A;
+    box-shadow: 0px 1px 3px 1px #B3C2D1;
+}
 /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n
                     </textarea>`));
                             execAfterInject.push(function () {

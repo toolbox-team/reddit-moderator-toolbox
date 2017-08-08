@@ -493,6 +493,7 @@ function tbmodule() {
                     $tab.data('help_page', module.shortname);
 
                     let $body = $('body');
+                    let execAfterInject = [];
 
                     for (let j = 0; j < module.settingsList.length; j++) {
                         let setting = module.settingsList[j],
@@ -577,13 +578,13 @@ function tbmodule() {
 
                         // blank slate
                         $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`);
-                        let execAfterInject = [],
-                            title = (options.title) ? options.title : `(${setting})`,
+                        let title = (options.title) ? options.title : `(${setting})`,
                             noWrap = false;
 
                         // automagical handling of input types
                         switch (options.type) {
                         case 'action':
+                        {
                             if (!options.event || !options.class) break;
                             let event = options.event;
 
@@ -594,42 +595,60 @@ function tbmodule() {
                             });
 
                             break;
+                        }
                         case 'boolean':
+                        {
                             $setting.append($('<label>').append($('<input type="checkbox" />').prop('checked', module.setting(setting))).append(` ${title}`));
                             break;
+                        }
                         case 'number':
+                        {
                             $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${title}`));
                             break;
+                        }
                         case 'array':
                         case 'JSON':
+                        {
                             let json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
+                        }
                         case 'code':
+                        {
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="25" cols="80">').val(module.setting(setting)));
                             break;
+                        }
                         case 'subreddit':
                         case 'text':
                         case 'list':
+                        {
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<input type="text" />').val(module.setting(setting)));
                             break;
+                        }
                         case 'sublist':
+                        {
                             $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.selectMultiple.apply(TB.ui, [TB.utils.mySubs, module.setting(setting)]));
                             break;
+                        }
                         case 'map':
+                        {
                             $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
                             break;
+                        }
                         case 'selector':
+                        {
                             let v = module.setting(setting);
                             $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
+                        }
                         case 'syntaxTheme':
+                        {
                             $setting.append(`${title}:<br/>`);
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
@@ -654,12 +673,12 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                             execAfterInject.push(function () {
                                 // Syntax highlighter selection stuff
                                 $body.addClass('mod-syntax');
-
+                                let editorSettings;
                                 let enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
                                 $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem){
 
                                     // Editor setup.
-                                    let editorSettings = CodeMirror.fromTextArea(elem, {
+                                    editorSettings = CodeMirror.fromTextArea(elem, {
                                         mode: 'text/css',
                                         autoCloseBrackets: true,
                                         lineNumbers: true,
@@ -695,7 +714,9 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                                 });
                             });
                             break;
+                        }
                         case 'achievement_save':
+                        {
                             noWrap = true;
 
                             $.log('----------', false, 'TBModule');
@@ -739,13 +760,16 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                             $setting.append($list);
 
                             break;
+                        }
                         default:
+                        {
                             // what in the world would we do here? maybe raw JSON?
                             // yes, we do raw JSON
                             let json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                             break;
+                        }
                         }
                         if(!noWrap) {
                             let moduleName = module.shortname.toLowerCase(),

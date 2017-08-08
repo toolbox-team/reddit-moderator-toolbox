@@ -21,8 +21,8 @@ function tbmodule() {
 
                     $.log('TBModule has TBStorage, loading modules', false, 'TBinit');
                     // call every module's init() method on page load
-                    for (var i = 0; i < TB.moduleList.length; i++) {
-                        var module = TB.modules[TB.moduleList[i]];
+                    for (let i = 0; i < TB.moduleList.length; i++) {
+                        let module = TB.modules[TB.moduleList[i]];
 
                         // Don't do anything with beta modules unless beta mode is enabled
                         // Need TB.setting() call for non-module settings
@@ -53,13 +53,13 @@ function tbmodule() {
         },
 
         showSettings: function showSettings() {
-            var self = this,
+            let self = this,
                 $body = $('body');
 
             //
             // preload some generic variables
             //
-            var debugMode = TBUtils.debugMode,
+            let debugMode = TBUtils.debugMode,
                 betaMode = TBUtils.betaMode,
                 devMode = TBUtils.devMode,
                 advancedMode = TBUtils.advancedMode,
@@ -88,10 +88,10 @@ function tbmodule() {
 
 
             /// Template for 'general settings'.
-            var dispalyNone = 'display: none;',
+            let dispalyNone = 'display: none;',
                 settingContent = '';
 
-            var settingTemplate = `
+            let settingTemplate = `
         <p id="tb-toolbox-{{settingName}}" style="{{display}}">
             {{content}}&nbsp;
             <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">
@@ -104,7 +104,7 @@ function tbmodule() {
         </div>
         `;
 
-            var settings = [
+            let settings = [
                 {
                     settingName: 'settingssub',
                     content: `
@@ -175,10 +175,10 @@ function tbmodule() {
             });
 
             $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
-                var $this = $(this),
+                let $this = $(this),
                     tbSet = $this.attr('data-setting');
 
-                var $inputSetting = $(`.tb-setting-input-${tbSet}`);
+                let $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
                 if($inputSetting.is(':visible')) {
                     $this.css('opacity', '0.5');
@@ -192,7 +192,7 @@ function tbmodule() {
                 }
             });
 
-            var settingsTabs = [
+            let settingsTabs = [
                 {
                     title: 'General Settings',
                     tooltip: 'Edit toolbox general settings',
@@ -274,7 +274,7 @@ function tbmodule() {
             // This was a clever idea, but for now it's easier to inject them
             // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
-            var $settingsDialog = TB.ui.overlay(
+            let $settingsDialog = TB.ui.overlay(
             // title
                 'toolbox Settings',
                 // tabs
@@ -288,8 +288,8 @@ function tbmodule() {
             );
 
             $settingsDialog.on('click', '.tb-help-main', function (e) {
-                var settingsDialog = e.delegateTarget;
-                var page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
+                let settingsDialog = e.delegateTarget;
+                let page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
                 window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
@@ -305,18 +305,18 @@ function tbmodule() {
             // So, we had '.buttons' for our selector, and clicked on '.close' (a descendant of '.buttons'), then:
             //  - "this" would be '.buttons' and
             //  - "element.target" would be '.buttons .close'
-                var settingsDialog = e.delegateTarget;
+                let settingsDialog = e.delegateTarget;
 
                 $(settingsDialog).remove();
                 $('body').css('overflow', 'auto');
             });
 
             $settingsDialog.on('click', '.tb-save, .tb-save-reload', function (e) {
-                var settingsDialog = e.delegateTarget,
+                let settingsDialog = e.delegateTarget,
                     reload = $(e.target).hasClass('tb-save-reload');
 
                 //save export sub
-                var sub = $('input[name=settingssub]').val();
+                let sub = $('input[name=settingssub]').val();
                 if (sub) {
                 // Just to be safe.
                     sub = TB.utils.cleanSubredditName(sub);
@@ -360,7 +360,7 @@ function tbmodule() {
             });
 
             $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
-                var sub = $('input[name=settingssub]').val();
+                let sub = $('input[name=settingssub]').val();
                 if (!sub) {
                     TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
                     self.log('no setting sub');
@@ -396,7 +396,7 @@ function tbmodule() {
             });
 
             $settingsDialog.on('click', '#showRawSettings', function () {
-                var $viewSettings = TB.ui.overlay(
+                let $viewSettings = TB.ui.overlay(
                     'toolbox raw setting display',
                     [
                         {
@@ -416,7 +416,7 @@ function tbmodule() {
                 ).appendTo('body');
                 $body.css('overflow', 'hidden');
 
-                var $editSettings = $('.edit-settings');
+                let $editSettings = $('.edit-settings');
 
                 TB.storage.getSettingsObject(function (sObject) {
                     $editSettings.val(JSON.stringify(sObject, null, 2));
@@ -434,7 +434,7 @@ function tbmodule() {
             });
 
             $settingsDialog.on('click', '.tb-old-settings .tb-help-toggle, .toggle_modules .tb-help-toggle', function () {
-                var module = $(this).attr('data-module');
+                let module = $(this).attr('data-module');
                 window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
@@ -448,15 +448,15 @@ function tbmodule() {
         },
 
         injectSettings: function injectSettings() {
-            for (var i = 0; i < this.moduleList.length; i++) {
-                var idx = i,
+            for (let i = 0; i < this.moduleList.length; i++) {
+                let idx = i,
                     self = this;
 
                 (function () {
                 // wrap each iteration in a self-executing anonymous function, to preserve scope for bindFirst()
-                // otherwise, we get the bindFirst callback having `var module` refer to the last time it was set
+                // otherwise, we get the bindFirst callback having `let module` refer to the last time it was set
                 // becausde we're in for loop not a special scope, d'oh.
-                    var module = self.modules[self.moduleList[idx]];
+                    let module = self.modules[self.moduleList[idx]];
 
                     // Don't do anything with beta modules unless beta mode is enabled
                     // Need TB.setting() call for non-module settings
@@ -484,7 +484,7 @@ function tbmodule() {
                     // build and inject our settings tab
                     //
 
-                    var moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
+                    let moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
                         moduleIsEnabled = false,
                         $tab = $(`<a href="javascript:;" class="tb-window-content-${module.shortname.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
                         $settings = $(`<div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;"><div class="tb-window-content"></div></div>`);
@@ -492,12 +492,12 @@ function tbmodule() {
                     $tab.data('module', module.shortname);
                     $tab.data('help_page', module.shortname);
 
-                    var $body = $('body');
+                    let $body = $('body');
 
-                    for (var j = 0; j < module.settingsList.length; j++) {
-                        var setting = module.settingsList[j],
+                    for (let j = 0; j < module.settingsList.length; j++) {
+                        let setting = module.settingsList[j],
                             options = module.settings[setting];
-                        var $setting;
+                        let $setting;
 
                         // "enabled" will eventually be special, but for now it just shows up like any other setting
                         // if (setting == "enabled") {
@@ -508,7 +508,7 @@ function tbmodule() {
                         if (setting == 'enabled') {
                             moduleIsEnabled = (module.setting(setting) ? true : false);
                             if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) continue;
-                            var name = module.shortname.toLowerCase();
+                            let name = module.shortname.toLowerCase();
 
                             $setting = $(`
                             <p id="tb-toggle_modules-${name}">
@@ -525,9 +525,9 @@ function tbmodule() {
                         `);
 
                             // Add the setting in its place to keep ABC order
-                            var added = false;
+                            let added = false;
                             $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content p').each(function () {
-                                var $this = $(this);
+                                let $this = $(this);
                                 if ($this.text().localeCompare($setting.text()) > 0) {
                                     $this.before($setting);
                                     added = true;
@@ -566,7 +566,7 @@ function tbmodule() {
                         }
 
                         // hide advanced settings, but do it via CSS so it can be overridden.
-                        var displaySetting = true;
+                        let displaySetting = true;
                         if (options.hasOwnProperty('advanced')
                         && options['advanced'] && !TB.utils.advancedMode
                         ) {
@@ -577,7 +577,7 @@ function tbmodule() {
 
                         // blank slate
                         $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`);
-                        var execAfterInject = [],
+                        let execAfterInject = [],
                             title = (options.title) ? options.title : `(${setting})`,
                             noWrap = false;
 
@@ -585,7 +585,7 @@ function tbmodule() {
                         switch (options.type) {
                         case 'action':
                             if (!options.event || !options.class) break;
-                            var event = options.event;
+                            let event = options.event;
 
                             $setting.append(TB.ui.actionButton(title, options.class));
 
@@ -602,7 +602,7 @@ function tbmodule() {
                             break;
                         case 'array':
                         case 'JSON':
-                            var json = JSON.stringify(module.setting(setting), null, 0);
+                            let json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
@@ -625,7 +625,7 @@ function tbmodule() {
                             $setting.append(TB.ui.mapInput(options.labels, module.setting(setting)));
                             break;
                         case 'selector':
-                            var v = module.setting(setting);
+                            let v = module.setting(setting);
                             $setting.append(`${title}:<br />`);
                             $setting.append(TB.ui.selectSingular.apply(TB.ui, [options.values, v === undefined || v == null || v == '' ? options.default : v]));
                             break;
@@ -655,11 +655,11 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                                 // Syntax highlighter selection stuff
                                 $body.addClass('mod-syntax');
 
-                                var enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
+                                let enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
                                 $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem){
 
                                     // Editor setup.
-                                    var editorSettings = CodeMirror.fromTextArea(elem, {
+                                    let editorSettings = CodeMirror.fromTextArea(elem, {
                                         mode: 'text/css',
                                         autoCloseBrackets: true,
                                         lineNumbers: true,
@@ -688,7 +688,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
 
                                 $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
                                 $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
-                                    var thingy = $(this);
+                                    let thingy = $(this);
                                     setTimeout(function () {
                                         editorSettings.setOption('theme', thingy.val());
                                     }, 0);
@@ -700,7 +700,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
 
                             $.log('----------', false, 'TBModule');
                             $.log('GENERATING ACHIEVEMENT PAGE', false, 'TBModule');
-                            var total = module.manager.getAchievementTotal(),
+                            let total = module.manager.getAchievementTotal(),
                                 unlocked = module.manager.getUnlockedCount();
 
                             $.log(`  total=${total}`, false, 'TBModule');
@@ -711,26 +711,26 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                             $setting.append($('<p>').text(`${unlocked} of ${total} unlocked`));
                             $setting.append('<br />');
 
-                            var save = module.setting(setting);
+                            let save = module.setting(setting);
                             save = module.manager.decodeSave(save);
 
-                            var $list = $('<div>').attr('class', 'achievements-list');
-                            for(var saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
+                            let $list = $('<div>').attr('class', 'achievements-list');
+                            for(let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
                                 $.log(`  saveIndex: ${saveIndex}`, false, 'TBModule');
-                                for (var index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
+                                for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
                                     $.log(`  index: ${index}`, false, 'TBModule');
-                                    var aTitle = '???',
+                                    let aTitle = '???',
                                         aDescr = '??????',
                                         aClass = '';
 
                                     if (module.manager.isUnlocked(saveIndex, index, save) || TB.utils.devMode) {
-                                        var a = module.manager.getAchievement(saveIndex, index);
+                                        let a = module.manager.getAchievement(saveIndex, index);
                                         aTitle = a.title;
                                         aDescr = a.descr;
                                         aClass = 'unlocked';
                                     }
 
-                                    var $a = $('<div>').attr('class', `achievement ${aClass}`);
+                                    let $a = $('<div>').attr('class', `achievement ${aClass}`);
                                     $a.append($('<p>').attr('class', 'title').html(aTitle));
                                     $a.append($('<p>').attr('class', 'description').text(aDescr));
                                     $list.append($a);
@@ -742,13 +742,13 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                         default:
                             // what in the world would we do here? maybe raw JSON?
                             // yes, we do raw JSON
-                            var json = JSON.stringify(module.setting(setting), null, 0);
+                            let json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(`${title}:<br />`);
                             $setting.append($('<textarea rows="1">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                             break;
                         }
                         if(!noWrap) {
-                            var moduleName = module.shortname.toLowerCase(),
+                            let moduleName = module.shortname.toLowerCase(),
                                 settingName = setting.toLowerCase(),
                                 linkClass = `tb-setting-link-${settingName}`,
                                 inputClass = `tb-setting-input-${settingName}`,
@@ -769,10 +769,10 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
 
                             // TODO: somebody document this
                             $body.on('click', `.${linkClass}`, function () {
-                                var $this = $(this),
+                                let $this = $(this),
                                     tbSet = $this.attr('data-setting');
 
-                                var $inputSetting = $(`.tb-setting-input-${tbSet}`);
+                                let $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
                                 if($inputSetting.is(':visible')) {
                                     $inputSetting.hide();
@@ -802,9 +802,9 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                         }
                         $('.tb-settings .tb-window-tabs-wrapper').append($settings);
                         // Add each tab in its place in ABC order, with exceptions
-                        var added = false;
+                        let added = false;
                         $('.tb-settings .tb-window-tabs a').each(function () {
-                            var $this = $(this);
+                            let $this = $(this);
                             // Keep general settings and module toggles at the top, and about tab at the bottom
                             if ($tab.attr('data-module') === 'toolbox' || $tab.attr('data-module') === 'toggle_modules' || $this.attr('data-module') === 'about') {
                                 $this.before($tab);
@@ -826,7 +826,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                         }
 
                         // stuff to exec after inject:
-                        for (var i = 0; i < execAfterInject.length; i++) {
+                        for (let i = 0; i < execAfterInject.length; i++) {
                             execAfterInject[i]();
                         }
                     } else {
@@ -841,14 +841,14 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                     // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
                     $('.tb-settings').bindFirst('click', '.tb-save', function (event) {
                     // handle module enable/disable on Toggle Modules first
-                        var $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
+                        let $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
                         module.setting('enabled', $moduleEnabled);
 
                         // handle the regular settings tab
-                        var $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
+                        let $settings_page = $(`.tb-window-tab.${module.shortname.toLowerCase()} .tb-window-content`);
 
                         $settings_page.find('span.setting-item').each(function () {
-                            var $this = $(this),
+                            let $this = $(this),
                                 value = '';
 
                             // automagically parse input types
@@ -889,7 +889,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                             case 'map':
                                 value = {};
                                 $.each($this.find('.tb-map-input-table tbody tr'), function () {
-                                    var key = escape($(this).find('input[name=key]').val()).trim(),
+                                    let key = escape($(this).find('input[name=key]').val()).trim(),
                                         val = escape($(this).find('input[name=value]').val()).trim();
 
                                     if (key !== '' || val !== '') {
@@ -972,7 +972,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
 
         // Profiling
 
-        var profile = new Map(),
+        let profile = new Map(),
             startTimes = new Map();
 
         this.startProfile = function (key) {
@@ -1000,7 +1000,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
                 return;
 
             // Get spent time
-            var diff = performance.now() - startTimes.get(key);
+            let diff = performance.now() - startTimes.get(key);
             startTimes.delete(key);
 
             // Must have been started, so the object exists
@@ -1018,7 +1018,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
         this.printProfiles = function() {
             this.log(`Profiling results: ${this.name}`);
             this.log('--------------------------');
-            var loopthis = this;
+            let loopthis = this;
             this.getProfiles().forEach(function (profile, key) {
                 loopthis.log(`${key}:`);
                 loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
@@ -1050,7 +1050,7 @@ box-shadow: 0px 1px 3px 1px #B3C2D1;\n
         $.log('TBModule has TBUtils', false, 'TBinit');
         tbmodule();
 
-        var event = new CustomEvent('TBModuleLoaded');
+        let event = new CustomEvent('TBModuleLoaded');
         window.dispatchEvent(event);
     });
 })();

@@ -483,9 +483,9 @@ function modbar() {
 
         // Append shortcuts
         $.each(shortcuts, function (index, value) {
-            var shortcut = $(`<span>- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
-
-            $(shortcut).appendTo('#tb-toolbarshortcuts');
+            // TODO: Separators here should probably use CSS rather than having nested elements and stuff
+            var $shortcut = $(`<span>&nbsp;- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
+            $shortcut.appendTo('#tb-toolbarshortcuts');
         });
 
         $body.append(modbarhid);

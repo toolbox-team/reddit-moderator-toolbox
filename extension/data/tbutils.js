@@ -1655,25 +1655,6 @@ function initwrapper() {
         };
 
 
-        TBUtils.redditLogin = function (uname, pass, remeber, callback) {
-            $.post(`${TBUtils.baseDomain}/api/login`, {
-                api_type: 'json',
-                passwd: pass,
-                user: uname,
-                rem: remeber
-            })
-                .done(function () {
-                    if (typeof callback !== 'undefined')
-                        callback(true);
-                })
-                .fail(function (error) {
-                    $.log(error, false, SHORTNAME);
-                    if (typeof callback !== 'undefined')
-                        callback(false, error);
-                });
-        };
-
-
         TBUtils.getBanState = function (subreddit, user, callback) {
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
                 var banned = data.data.children;

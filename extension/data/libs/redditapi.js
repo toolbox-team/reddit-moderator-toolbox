@@ -194,24 +194,6 @@
     };
 
 
-    redditapi.redditLogin = function (uname, pass, remeber, callback) {
-        $.post('/api/login', {
-            api_type: 'json',
-            passwd: pass,
-            user: uname,
-            rem: remeber
-        })
-            .success(function () {
-                if (typeof callback !== "undefined")
-                    callback(true);
-            })
-            .error(function (error) {
-                if (typeof callback !== "undefined")
-                    callback(false, error);
-            });
-    };
-
-
     redditapi.getBanState = function (subreddit, user, callback) {
         $.get(TBUtils.baseDomain + "/r/" + subreddit + "/about/banned/.json", {user: user}, function (data) {
             var banned = data.data.children;

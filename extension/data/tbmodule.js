@@ -3,7 +3,7 @@ function tbmodule() {
         utils: TBUtils,
         ui: TBui,
         storage: TBStorage,
-        api: redditapi, // don't call this.  But it does work in concept. IE: $.log(TB.api.WIKI_PAGE_UNKNOWN) will print the string 'WIKI_PAGE_UNKNOWN'.
+        // api: redditapi, // don't call this.  But it does work in concept. IE: $.log(TB.api.WIKI_PAGE_UNKNOWN) will print the string 'WIKI_PAGE_UNKNOWN'.
 
         modules: {},
         moduleList: [],

@@ -89,7 +89,6 @@
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
                 "data/libs/pako.js",
-                "data/libs/redditapi.js",
                 "data/libs/spectrum.js",
                 "data/tbstorage.js",
                 "data/tbui.js",

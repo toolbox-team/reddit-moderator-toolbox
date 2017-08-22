@@ -3,19 +3,25 @@ function initwrapper() {
 
     // We need these before we can do anything.
         TBUtils.modhash = $('form.logout input[name=uh]').val();
-        TBUtils.logged = (TBUtils.modhash !== undefined || $('.App__header .Header__user').length > -1) ? $('span.user a:first').html() || $('.App__header .Header__user').html() : '';
+
+        // set logged to true for the alpha as we do not have a proper method yet to determine if someone is logged in. 
+        // TODO: make sure to change this as soon as we have a proper method to check on this. 
+        TBUtils.logged = true;
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
         // Probably a better way to this but... ah well.
         // We don't need it right away, just when using POST
-        if(!TBUtils.modhash && window.location.hostname === 'mod.reddit.com') {
+        // TODO: make this work properly in the context of alpha redesign
+        if(!TBUtils.modhash && (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com')) {
             $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
                 TBUtils.modhash = result.data.modhash;
 
             });
-
-            $('body').addClass('mod-toolbox-new-modmail');
+            if(window.location.hostname === 'mod.reddit.com') {
+                $('body').addClass('mod-toolbox-new-modmail');
+            }
+            
             TBUtils.modCheck = true;
         } else {
             TBUtils.modCheck = $('#modmail, #new_modmail').length > 0;
@@ -50,7 +56,7 @@ function initwrapper() {
 
 
         // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
-        TBUtils.baseDomain = (window.location.hostname === 'mod.reddit.com' ? 'https://www.reddit.com' :  `https://${window.location.hostname}`);
+        TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') ? 'https://www.reddit.com' :  `https://${window.location.hostname}`);
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
@@ -2402,7 +2408,7 @@ function initwrapper() {
             };
 
             // pass in the target node, as well as the observer options
-            observer.observe(target, config);
+            //observer.observe(target, config);
         } else {
 
         // For new modmail we do things a bit different.

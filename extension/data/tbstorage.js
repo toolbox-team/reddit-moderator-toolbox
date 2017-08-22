@@ -1,5 +1,5 @@
 // This is here because we load even before TBUtils.
-
+var domain = window.location.hostname.split('.')[0];
 //Reset toolbox settings support
 (function () {
 
@@ -9,8 +9,8 @@
         return;
     }
 
-    var domain = window.location.hostname.split('.')[0],
-        r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
+    
+    var r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r == true) {
         function clearLocal() {
 
@@ -80,7 +80,8 @@
 
 function storagewrapper() {
     (function (TBStorage) {
-        if ((!$('form.logout input[name=uh]').val() && $('.Header__profile').length === 0) || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
+        // Check if we are logged in and for now if the domain is the alpha test domain
+        if (domain !== 'alpha' || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
 
 
         var SHORTNAME = 'TBStorage';
@@ -93,7 +94,7 @@ function storagewrapper() {
 
         $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
 
-        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'www' || TBStorage.domain === 'mod');
+        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'alpha' || TBStorage.domain === 'mod');
 
 
         var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';

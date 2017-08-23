@@ -9,7 +9,7 @@ var domain = window.location.hostname.split('.')[0];
         return;
     }
 
-    
+
     var r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r == true) {
         function clearLocal() {
@@ -338,7 +338,7 @@ function storagewrapper() {
 
         function SendInit() {
             setTimeout(function () {
-                var event = new CustomEvent('TBStorageLoaded');
+                var event = new CustomEvent('TBStorageLoaded2');
                 window.dispatchEvent(event);
             }, 10);
         }

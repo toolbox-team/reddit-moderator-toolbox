@@ -303,7 +303,7 @@ function achievements() {
 }
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         achievements();
     });
 })();

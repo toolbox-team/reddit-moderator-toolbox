@@ -1552,7 +1552,7 @@ function tbconfig() {
 } // tbconfig() wrapper
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         tbconfig();
     });
 })();

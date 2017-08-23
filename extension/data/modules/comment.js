@@ -810,7 +810,7 @@ function comments() {
 }
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         comments();
     });
 })();

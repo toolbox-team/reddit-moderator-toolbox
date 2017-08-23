@@ -7,14 +7,14 @@ function devtools() {
     self.setting('betamode', false);
     self.setting('devmode', true);
 
-    
+
 
     // Module init
     self.init = function() {
 
-        // Function that handles 
+        // Function that handles
         function modifyDiv(e) {
-            console.log(e);  
+            console.log(e);
             const $target = $(e.target);
             $target.append(`
             <span class="tb-bracket-button tb-show-api-info">
@@ -33,7 +33,7 @@ function devtools() {
 }
 
 (function () {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         devtools();
     });
 })();

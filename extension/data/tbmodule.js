@@ -1076,11 +1076,11 @@ body {
 }
 
 (function() {
-    window.addEventListener('TBUtilsLoaded', function () {
+    window.addEventListener('TBUtilsLoaded2', function () {
         $.log('TBModule has TBUtils', false, 'TBinit');
         tbmodule();
 
-        let event = new CustomEvent('TBModuleLoaded');
+        let event = new CustomEvent('TBModuleLoaded2');
         window.dispatchEvent(event);
     });
 })();

@@ -410,7 +410,7 @@ function betterbuttons() {
 }
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         betterbuttons();
     });
 })();

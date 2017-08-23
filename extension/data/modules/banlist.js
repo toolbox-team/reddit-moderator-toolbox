@@ -214,7 +214,7 @@ function banlist() {
 }
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         banlist();
     });
 })();

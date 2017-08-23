@@ -4,8 +4,8 @@ function initwrapper() {
     // We need these before we can do anything.
         TBUtils.modhash = $('form.logout input[name=uh]').val();
 
-        // set logged to true for the alpha as we do not have a proper method yet to determine if someone is logged in. 
-        // TODO: make sure to change this as soon as we have a proper method to check on this. 
+        // set logged to true for the alpha as we do not have a proper method yet to determine if someone is logged in.
+        // TODO: make sure to change this as soon as we have a proper method to check on this.
         TBUtils.logged = true;
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
@@ -21,7 +21,7 @@ function initwrapper() {
             if(window.location.hostname === 'mod.reddit.com') {
                 $('body').addClass('mod-toolbox-new-modmail');
             }
-            
+
             TBUtils.modCheck = true;
         } else {
             TBUtils.modCheck = $('#modmail, #new_modmail').length > 0;
@@ -2597,10 +2597,10 @@ function initwrapper() {
 
 (function () {
     // wait for storage
-    window.addEventListener('TBStorageLoaded', function () {
+    window.addEventListener('TBStorageLoaded2', function () {
         initwrapper();
 
-        var event = new CustomEvent('TBUtilsLoaded');
+        var event = new CustomEvent('TBUtilsLoaded2');
         window.dispatchEvent(event);
     });
 })();

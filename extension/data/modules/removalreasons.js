@@ -877,7 +877,7 @@ function removalreasons() {
 } // end removalreasons()
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         removalreasons();
     });
 })();

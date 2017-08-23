@@ -1155,7 +1155,7 @@ Action reason: ${value.data.details}
 }// queuetools() wrapper
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         queuetools();
     });
 })();

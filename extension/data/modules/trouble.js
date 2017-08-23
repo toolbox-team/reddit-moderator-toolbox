@@ -220,7 +220,7 @@ function trouble() {
 }
 
 (function() {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         trouble(); //run
     });
 })();

@@ -691,7 +691,7 @@ function modbutton() {
 }
 
 (function () {
-    window.addEventListener('TBModuleLoaded', function () {
+    window.addEventListener('TBModuleLoaded2', function () {
         modbutton();
     });
 })();

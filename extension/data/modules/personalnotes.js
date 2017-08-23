@@ -21,10 +21,10 @@ function personalnotes() {
     });
 
     self.init = function() {
-        let $body = $('body'),
-            notewiki = self.setting('noteWiki').toLowerCase(),
+        const notewiki = self.setting('noteWiki').toLowerCase(),
             popupHeight = self.setting('popupHeight'),
-            monospace = self.setting('monospace'),
+            monospace = self.setting('monospace');
+        let $body = $('body'),
             notesArray = [],
             notesPopupContent;
 
@@ -141,7 +141,7 @@ function personalnotes() {
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
 
-                    // build a template, we only need to insert one letiable but this is cleaner and more feature proof.
+                    // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                         let notesPopupContentTemplate = `
                     <table style="height:${popupHeight}px;"><tr>
                         <td id="tb-personal-notes-listing">
@@ -228,10 +228,10 @@ function personalnotes() {
 
         // When clicking the delete button
         $body.on('click', '.tb-personal-note-delete', function () {
-            let $this = $(this),
-                page = $this.data('wiki');
+            let $this = $(this);
+            const page = $this.data('wiki');
 
-            let confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
+            const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
                 $.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
                     page: `notes/${page}`,
@@ -268,8 +268,8 @@ function personalnotes() {
         // when clicking 'save note'
 
         $body.on('click', '.personal-notes-popup #save-personal-note', function () {
-            let $this = $(this),
-                page = $this.attr('data-note'),
+            let $this = $(this);
+            const page = $this.attr('data-note'),
                 data = $body.find('#tb-personal-notes-editarea').val(),
                 reason = 'Saving personal toolbox note';
             saveNoteWiki(page, notewiki, data, reason, false);

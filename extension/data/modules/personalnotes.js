@@ -1,5 +1,5 @@
 function personalnotes() {
-    var self = new TB.Module('Personal Notes');
+    let self = new TB.Module('Personal Notes');
     self.shortname = 'PNotes';
 
     self.settings['enabled']['default'] = false;
@@ -21,7 +21,7 @@ function personalnotes() {
     });
 
     self.init = function() {
-        var $body = $('body'),
+        let $body = $('body'),
             notewiki = self.setting('noteWiki').toLowerCase(),
             popupHeight = self.setting('popupHeight'),
             monospace = self.setting('monospace'),
@@ -54,7 +54,7 @@ function personalnotes() {
         function loadNoteWiki(wikiPage) {
             $body.find('#tb-personal-notes-landing').remove();
 
-            var $editArea = $body.find('#tb-personal-notes-editarea');
+            let $editArea = $body.find('#tb-personal-notes-editarea');
             $editArea.val('loading stuff...');
             $editArea.show();
 
@@ -75,7 +75,7 @@ function personalnotes() {
 
                 // Found it, show it.
                 $editArea.val(resp);
-                var $saveButton = $body.find('#save-personal-note');
+                let $saveButton = $body.find('#save-personal-note');
 
                 $saveButton.attr('data-note', wikiPage);
                 $saveButton.show();
@@ -116,7 +116,7 @@ function personalnotes() {
 
         // Since we have a button we can click on it!
         $body.on('click', '#tb-personal-notes-button', function () {
-            var $this = $(this);
+            let $this = $(this);
 
             // Making sure the ui is only created once.
             if (!$this.hasClass('tb-notes-activated')) {
@@ -125,7 +125,7 @@ function personalnotes() {
                 TBUtils.getModSubs(function () {
 
                 // We can't expect people to get the capitalizing right.
-                    var mySubsLowerCase = [];
+                    let mySubsLowerCase = [];
                     $(TBUtils.mySubs).each(function () {
                         mySubsLowerCase.push(this.toLowerCase());
                     });
@@ -141,8 +141,8 @@ function personalnotes() {
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
 
-                    // build a template, we only need to insert one variable but this is cleaner and more feature proof.
-                        var notesPopupContentTemplate = `
+                    // build a template, we only need to insert one letiable but this is cleaner and more feature proof.
+                        let notesPopupContentTemplate = `
                     <table style="height:${popupHeight}px;"><tr>
                         <td id="tb-personal-notes-listing">
                             <div id="tb-personal-notes-list">
@@ -167,13 +167,13 @@ function personalnotes() {
                         $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
                             .done(function (json) {
                                 notesArray = [];
-                                var notesList,
+                                let notesList,
                                     count = json.data.length || 0;
 
                                 if (count === 0) {
                                     notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';
                                 } else {
-                                    var notecount = 0,
+                                    let notecount = 0,
                                         noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
 
@@ -216,7 +216,7 @@ function personalnotes() {
 
         // When clicking a wiki page.
         $body.on('click', '.personal-notes-popup .tb-personal-note-link', function () {
-            var $this = $(this),
+            let $this = $(this),
                 wikiPage = $this.data('wiki');
             // $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
             $body.find('#tb-personal-notes-ul').find('li').removeClass('tb-personal-notes-active');
@@ -228,10 +228,10 @@ function personalnotes() {
 
         // When clicking the delete button
         $body.on('click', '.tb-personal-note-delete', function () {
-            var $this = $(this),
+            let $this = $(this),
                 page = $this.data('wiki');
 
-            var confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
+            let confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
                 $.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
                     page: `notes/${page}`,
@@ -249,7 +249,7 @@ function personalnotes() {
         });
         // When clicking 'create note'
         $body.on('click', '.personal-notes-popup #create-personal-note', function () {
-            var newNotename = $(this).siblings('#tb-new-personal-note').val();
+            let newNotename = $(this).siblings('#tb-new-personal-note').val();
 
             newNotename = newNotename.trim();
             newNotename = TBUtils.title_to_url(newNotename);
@@ -268,7 +268,7 @@ function personalnotes() {
         // when clicking 'save note'
 
         $body.on('click', '.personal-notes-popup #save-personal-note', function () {
-            var $this = $(this),
+            let $this = $(this),
                 page = $this.attr('data-note'),
                 data = $body.find('#tb-personal-notes-editarea').val(),
                 reason = 'Saving personal toolbox note';

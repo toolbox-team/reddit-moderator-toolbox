@@ -94,12 +94,14 @@
                 "data/tbstorage.js",
                 "data/tbui.js",
                 "data/tbutils.js",
+                "data/tblistener.js",
                 "data/tbmodule.js",
                 "data/modules/devtools.js",
                 "data/modules/support.js",
                 "data/modules/modbar.js",
                 "data/modules/modbutton.js",
                 "data/modules/notifier.js",
+                "data/modules/usernotes.js",
                 "data/modules/personalnotes.js",
                 "data/tbmoduleinit.js"
             ]

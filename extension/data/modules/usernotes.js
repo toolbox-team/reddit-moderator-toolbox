@@ -111,6 +111,16 @@ function usernotes() {
             self.log('Running usernotes');
             var things = findThings();
 
+            TB.listener.on('author', function(e) {
+                // HACKY: The frontend api doesn't *currently* show what subreddit the username is in, so right now
+                // this will only attach if we're in a subreddit.
+                const url = document.location.pathname.match(/^\/r\/([a-z0-9_]+)/i);
+                if (url) {
+                    const subreddit = url[1];
+                    attachNoteTag($(e.target), subreddit, e.detail.data.author);
+                }
+            });
+
             var done = false;
             TBUtils.forEachChunked(things, 30, 100, processThing, function () {
                 self.log('Done processing things');
@@ -245,24 +255,18 @@ function usernotes() {
             self.endProfile('process-thing');
         }
 
-        function attachNoteTag($element, subreddit, attachAfter) {
-            var $tag = $('<span>').attr('title', `View and add notes about this user for /r/${subreddit}`).addClass(`usernote-button usernote-span-${subreddit}`).append(
-                $('<a>').addClass(`tb-bracket-button add-user-tag-${subreddit}`).attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
-            // Full text if in sidebar
-            if ($element.closest('.ThreadViewer__infobarContainer').length) {
-                $tag.find('a').text('User Notes');
-            }
+        function attachNoteTag($element, subreddit, author) {
+            var $tag = $('<span>')
+                            .attr('title', `View and add notes about this user for /r/${subreddit}`)
+                            .addClass(`usernote-button usernote-span-${subreddit}`)
+                            .append(
+                                $('<a>')
+                                    .addClass(`tb-bracket-button add-user-tag-${subreddit}`)
+                                    .attr('data-author', author)
+                                    .attr('data-subreddit', subreddit)
+                                    .attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
 
-            if (attachAfter) {
-                if ($element.nextAll('.usernote-button').length === 0) {
-                    $element.after($tag);
-                }
-            }
-            else {
-                if ($element.find('.usernote-button').length === 0) {
-                    $element.append($tag);
-                }
-            }
+            $element.append($tag);
         }
 
         function foundSubreddit(subreddit) {
@@ -402,8 +406,8 @@ function usernotes() {
             var $target = $(e.target),
                 $thing = $target.closest('.ut-thing');
 
-            var subreddit = $thing.attr('data-subreddit'),
-                user = $thing.attr('data-author'),
+            var subreddit = $target.attr('data-subreddit'),
+                user = $target.attr('data-author'),
                 link = TBUtils.getThingInfo($thing).permalink,
                 disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
 

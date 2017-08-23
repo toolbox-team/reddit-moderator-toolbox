@@ -25,9 +25,8 @@ function devtools() {
                 $target.find('.tb-api-info').toggle();
             });
         }
-        document.addEventListener('reddit', modifyDiv, true); 
-        const event = new Event('reddit.ready');
-        document.dispatchEvent(event);
+
+        TB.listener.debugFunc = modifyDiv;
     };
 
     TB.register_module(self);

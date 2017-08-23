@@ -49,6 +49,9 @@ function tbmodule() {
 
                     }
 
+                    // Start the event listener once everything else is initialized
+                    TB.listener.start();
+
                 }, 50);
             }
         },

@@ -256,6 +256,7 @@ function usernotes() {
         }
 
         function attachNoteTag($element, subreddit, author) {
+            // TODO: redo this with template literals
             var $tag = $('<span>')
                             .attr('title', `View and add notes about this user for /r/${subreddit}`)
                             .addClass(`usernote-button usernote-span-${subreddit}`)

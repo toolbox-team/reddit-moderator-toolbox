@@ -27,8 +27,10 @@
      * @private
      */
     function runTasks(tasks) {
-        console.log('run tasks');
-        let task; while (task = tasks.shift()) task();
+        let task;
+        while ((task = tasks.shift())) {
+            task();
+        }
     }
 
     /**
@@ -70,7 +72,7 @@
 
         /**
          * Starts the TBListener instance by registering an event listener for `reddit` events
-         * 
+         *
          * A `TBListenerLoaded` event is fired when everything is ready.
          */
         start() {
@@ -114,7 +116,7 @@
         /**
          * Callback for a `reddit` event.
          * The callback's `this` is event.target
-         * 
+         *
          * @callback TBListener~listenerCallback
          * @param {CustomEvent} event
          * @param {string} responseMessage
@@ -123,7 +125,7 @@
 
         /**
          * The function that gets registered as a global event listener for `reddit` events.
-         * 
+         *
          * @param {CustomEvent}
          * @private
          */

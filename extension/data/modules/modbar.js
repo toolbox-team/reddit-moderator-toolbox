@@ -1,5 +1,5 @@
 function modbar() {
-    var self = new TB.Module('Modbar');
+    const self = new TB.Module('Modbar');
     self.shortname = 'Modbar';
 
     self.settings['enabled']['default'] = true;
@@ -74,7 +74,7 @@ function modbar() {
     self.init = function() {
         if (!TBUtils.logged || TBUtils.isToolbarPage) return;
 
-        var $body = $('body'),
+        let $body = $('body'),
             moduleCount = 0,
             DEFAULT_MODULE = 'DEFAULT_MODULE',
             currentModule = DEFAULT_MODULE;
@@ -82,7 +82,7 @@ function modbar() {
         //
         // preload some generic variables
         //
-        var shortcuts = self.setting('shortcuts'),
+        let shortcuts = self.setting('shortcuts'),
             modbarHidden = self.setting('modbarHidden'),
             compactHide = self.setting('compactHide'),
             unmoderatedOn = self.setting('unmoderatedOn'),
@@ -156,7 +156,7 @@ function modbar() {
 
         // This is here in case notifier is disabled which is where this normally is set.
         // Atleast, I think.... - creesch
-        var modMailUrl = $('#modmail').attr('href') || `${TBUtils.baseDomain}/message/moderator/`;
+        let modMailUrl = $('#modmail').attr('href') || `${TBUtils.baseDomain}/message/moderator/`;
         if (parseInt(modmailCustomLimit) > 0) {
 
             modMailUrl += `?limit=${modmailCustomLimit}`;
@@ -165,8 +165,8 @@ function modbar() {
             $('#tb-modmailcount').attr('href', modMailUrl);
         }
 
-        var modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
-        var modBar = $(`
+        const modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+        let modBar = $(`
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconHide}" /></a>
     <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconGear}" title="toolbox settings"/></a>
@@ -227,7 +227,7 @@ function modbar() {
         // Add unmoderated icon if it is enabled.
 
         if (unmoderatedOn) {
-            var unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+            const unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" id="tb-unmoderated"></a>
 <a href="${unModQueueUrl}" class="tb-toolbar" id="tb-unmoderatedcount"></a>
@@ -237,16 +237,16 @@ function modbar() {
 
 
 
-        var modbarhid = $(`
+        let modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar">
     <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,${compactHide ? TBui.iconGripper : TBui.iconShow}" /></a>
 </div>
 `);
 
-
+        let $console;
         if (debugMode) {
 
-            var $console = $(`
+            $console = $(`
 <div class="tb-debug-window tb-popup">
     <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>
     <div class="tb-popup-content">
@@ -274,7 +274,7 @@ function modbar() {
 
         // moderated subreddits button.
         if (enableModSubs) {
-            var subList = '',
+            let subList = '',
                 livefilterCount,
                 subredditColorSalt = self.setting('subredditColorSalt'),
                 mySubsTemplate = `
@@ -304,14 +304,14 @@ function modbar() {
                 });
                 livefilterCount = TBUtils.mySubs.length;
 
-                var modSubsPopupContent = TBUtils.template(mySubsTemplate, {
+                const modSubsPopupContent = TBUtils.template(mySubsTemplate, {
                     'livefilterCount': livefilterCount,
                     'subList': subList
                 });
 
 
                 $body.on('click', '#tb-toolbar-mysubs', function () {
-                    var $this = $(this);
+                    let $this = $(this);
                     if (!$this.hasClass('tb-mysubs-activated')) {
                         $this.addClass('tb-mysubs-activated');
                         TB.ui.popup(
@@ -340,9 +340,9 @@ function modbar() {
                     }
 
                     $body.find('#tb-livefilter-input').keyup(function () {
-                        var LiveSearchValue = $(this).val();
+                        let LiveSearchValue = $(this).val();
                         $body.find('#tb-my-subreddits table tr').each(function () {
-                            var $this = $(this),
+                            let $this = $(this),
                                 subredditName = $this.attr('data-subreddit');
 
                             if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
@@ -381,9 +381,9 @@ function modbar() {
         // Debug mode/console
         if (debugMode) {
             $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,${TBui.iconConsole}" /></a>`);
-            var selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
+            let selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
-            var debugEditor;
+            let debugEditor;
             $('.tb-debug-console').each(function(index, elem){
             // This makes sure codemirror behaves and uses spaces instead of tabs.
             // Editor setup.
@@ -411,8 +411,8 @@ function modbar() {
             });
 
 
-            var logLength = 0;
-            var logVisibleLength = 0;
+            let logLength = 0;
+            let logVisibleLength = 0;
             setInterval(function () {
             // If the console window is hidden, we don't need to handle this yet
                 if (!consoleShowing) {
@@ -429,7 +429,7 @@ function modbar() {
 
                 // filter log by module.
                 else {
-                    var search = `[${currentModule}]`,
+                    let search = `[${currentModule}]`,
                         moduleLog = [];
 
                     // hack-y substring search for arrays.
@@ -446,7 +446,7 @@ function modbar() {
                 }
 
                 if (lockscroll) {
-                    var bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, 'local').bottom;
+                    let bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, 'local').bottom;
                     debugEditor.scrollTo(null, bottom);
                 // $consoleText.scrollTop($consoleText[0].scrollHeight);
                 }
@@ -455,7 +455,7 @@ function modbar() {
                 if (TB.utils.logModules.length > moduleCount){
                     moduleCount = TB.utils.logModules.length;
 
-                    var $moduleSelect = $('.module-select');
+                    let $moduleSelect = $('.module-select');
 
                     // clear old list
                     $('.module-select option').remove();
@@ -484,7 +484,7 @@ function modbar() {
         // Append shortcuts
         $.each(shortcuts, function (index, value) {
             // TODO: Separators here should probably use CSS rather than having nested elements and stuff
-            var $shortcut = $(`<span>&nbsp;- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
+            let $shortcut = $(`<span>&nbsp;- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
             $shortcut.appendTo('#tb-toolbarshortcuts');
         });
 
@@ -522,7 +522,7 @@ function modbar() {
         // Show counts on hover
         $(modbarhid).hover(function modbarHover(e) {
             if (!notifierEnabled || compactHide) return;
-            var hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>Mod Mail: ${modmailCount}<br>New Mod Mail ${newModmailCount}`;
+            const hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>Mod Mail: ${modmailCount}<br>New Mod Mail ${newModmailCount}`;
 
             $.tooltip(hoverString, e);
         });
@@ -597,7 +597,7 @@ function modbar() {
         // check for passed settings.
         function switchTab(module) {
 
-            var $this = $body.find(`[data-module="${module}"]`),
+            let $this = $body.find(`[data-module="${module}"]`),
                 $tb_help_mains = $('.tb-help-main');
 
             // achievement support
@@ -623,7 +623,7 @@ function modbar() {
 
         function checkHash() {
             if (window.location.hash) {
-                var module = TB.utils.getHashParameter('tbsettings'),
+                let module = TB.utils.getHashParameter('tbsettings'),
                     setting = TB.utils.getHashParameter('setting');
 
                 self.log(setting);
@@ -635,7 +635,7 @@ function modbar() {
 
                     if (setting) {
                         setting = setting.toLowerCase();
-                        var id = `#tb-${module}-${setting}`,
+                        let id = `#tb-${module}-${setting}`,
                             highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
 
                         // this next line is to deal with legacy settings
@@ -659,7 +659,7 @@ function modbar() {
 
         // change tabs
         $body.on('click', '.tb-window-tabs a:not(.active)', function () {
-            var tab = $(this).attr('data-module');
+            let tab = $(this).attr('data-module');
             switchTab(tab);
         });
     };

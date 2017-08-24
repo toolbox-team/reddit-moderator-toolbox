@@ -1,5 +1,5 @@
 function support() {
-    var self = new TB.Module('Support Module');
+    const self = new TB.Module('Support Module');
     self.shortname = 'support';
 
     self.settings['enabled']['default'] = true;
@@ -10,8 +10,8 @@ function support() {
     self.init = function() {
         let $body = $('body');
         const debugTemplate = `
-  
----   
+
+---
 ***Toolbox debug information***
 
 Info| &nbsp;

@@ -1,5 +1,5 @@
 // This is here because we load even before TBUtils.
-var domain = window.location.hostname.split('.')[0];
+const domain = window.location.hostname.split('.')[0];
 //Reset toolbox settings support
 (function () {
 
@@ -9,34 +9,35 @@ var domain = window.location.hostname.split('.')[0];
         return;
     }
 
+    // Clear all toolbox related localstorage items.
+    // After that direct users to a page confirming settings have been reset.
+    function clearLocal() {
 
-    var r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
+        // Settings.
+        Object.keys(localStorage)
+            .forEach(function (key) {
+                if (/^(Toolbox.)/.test(key)) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+        // Cache.
+        Object.keys(localStorage)
+            .forEach(function (key) {
+                if (/^(TBCache.)/.test(key)) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+
+        // Wait a sec for stuff to clear.
+        setTimeout(function () {
+            window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
+        }, 1000);
+    }
+
+    const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r == true) {
-        function clearLocal() {
-
-            // Settings.
-            Object.keys(localStorage)
-                .forEach(function (key) {
-                    if (/^(Toolbox.)/.test(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
-
-            // Cache.
-            Object.keys(localStorage)
-                .forEach(function (key) {
-                    if (/^(TBCache.)/.test(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
-
-
-            // Wait a sec for stuff to clear.
-            setTimeout(function () {
-                window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
-            }, 1000);
-        }
-
         // Chrome
         if (typeof (chrome) !== 'undefined') {
             chrome.storage.local.remove('tbsettings', function () {
@@ -72,7 +73,7 @@ function storagewrapper() {
         if (domain !== 'alpha' || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
 
 
-        var SHORTNAME = 'TBStorage';
+        const SHORTNAME = 'TBStorage';
 
         // Type safe keys.
         TBStorage.SAFE_STORE_KEY = 'Toolbox.Storage.safeToStore';
@@ -85,7 +86,7 @@ function storagewrapper() {
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'alpha' || TBStorage.domain === 'mod');
 
 
-        var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
         TBStorage.browsers = {
             CHROME: CHROME,
             FIREFOX: FIREFOX,
@@ -257,7 +258,7 @@ function storagewrapper() {
 
             if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
                 settingsToObject(function (sObject) {
-                    var settingsObject = sObject;
+                    let settingsObject = sObject;
 
                     // save settings
                     chrome.storage.local.set({
@@ -284,7 +285,7 @@ function storagewrapper() {
 
         function SendInit() {
             setTimeout(function () {
-                var event = new CustomEvent('TBStorageLoaded2');
+                const event = new CustomEvent('TBStorageLoaded2');
                 window.dispatchEvent(event);
             }, 10);
         }
@@ -294,7 +295,7 @@ function storagewrapper() {
         // First parse out any of the ones we never want to save.
             if (module === undefined || module === 'cache') return;
 
-            var keyName = `${module}.${setting}`;
+            const keyName = `${module}.${setting}`;
 
             if ($.inArray(keyName, TBStorage.settings) === -1) {
                 TBStorage.settings.push(keyName);
@@ -306,13 +307,13 @@ function storagewrapper() {
 
 
         function settingsToObject(callback) {
-            var settingsObject = {};
+            let settingsObject = {};
             Object.keys(localStorage)
                 .forEach(function (fullKey) {
                     if (/^(Toolbox.)/.test(fullKey)) {
                         if (fullKey === TBStorage.SAFE_STORE_KEY) return;
-                        var key = fullKey.split('.'),
-                            setting = getSetting(key[1], key[2], null);
+                        const key = fullKey.split('.');
+                        const setting = getSetting(key[1], key[2], null);
                         //console.log(fullKey);
                         if (setting !== undefined) {
                             settingsObject[fullKey] = setting;
@@ -341,7 +342,7 @@ function storagewrapper() {
         function objectToSettings(object, callback) {
         //console.log(object);
             $.each(object, function (fullKey, value) {
-                var key = fullKey.split('.');
+                const key = fullKey.split('.');
                 //console.log(key[1] + '.' + key[2] + ': ' + value, true);
                 setSetting(key[1], key[2], value, false);
             });
@@ -351,15 +352,15 @@ function storagewrapper() {
 
 
         function getSetting(module, setting, defaultVal) {
-            var storageKey = `Toolbox.${module}.${setting}`;
+            const storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-            var result;
+            let result;
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;
             } else {
-                var storageString = localStorage[storageKey];
+                const storageString = localStorage[storageKey];
                 try {
                     result = JSON.parse(storageString);
                 } catch (e) {
@@ -380,7 +381,7 @@ function storagewrapper() {
 
 
         function setSetting(module, setting, value, syncSettings) {
-            var storageKey = `Toolbox.${module}.${setting}`;
+            const storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             localStorage[storageKey] = JSON.stringify(value);
@@ -393,14 +394,14 @@ function storagewrapper() {
 
 
         function getCache(module, setting, defaultVal) {
-            var storageKey = `TBCache.${module}.${setting}`;
+            const storageKey = `TBCache.${module}.${setting}`;
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
-            var result;
+            let result;
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;
             } else {
-                var storageString = localStorage[storageKey];
+                const storageString = localStorage[storageKey];
                 try {
                     result = JSON.parse(storageString);
                 } catch (e) {
@@ -421,7 +422,7 @@ function storagewrapper() {
 
 
         function setCache(module, setting, value) {
-            var storageKey = `TBCache.${module}.${setting}`;
+            const storageKey = `TBCache.${module}.${setting}`;
 
             localStorage[storageKey] = JSON.stringify(value);
 
@@ -433,7 +434,7 @@ function storagewrapper() {
         // added recursive object checks - al
         function isEquivalent(a, b) {
         // Create arrays of property names
-            var aProps = Object.getOwnPropertyNames(a),
+            const aProps = Object.getOwnPropertyNames(a),
                 bProps = Object.getOwnPropertyNames(b);
 
             // If number of properties is different,
@@ -443,9 +444,9 @@ function storagewrapper() {
                 return false;
             }
 
-            for (var i = 0; i < aProps.length; i++) {
-                var propName = aProps[i],
-                    propA = a[propName],
+            for (let i = 0; i < aProps.length; i++) {
+                const propName = aProps[i];
+                const propA = a[propName],
                     propB = b[propName];
 
                 // If values of same property are not equal,

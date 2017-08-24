@@ -6,7 +6,7 @@ root = true
 
 
 [*]
-# We use spaces, deal with it. 
+# We use spaces, deal with it.
 indent_style = space
 indent_size = 4
 
@@ -18,7 +18,4 @@ insert_final_newline = true
 [*.md]
 trim_trailing_whitespace = false
 
-# Just in case it causes issues with safari
-[*.plist]
-indent_style = tab
 

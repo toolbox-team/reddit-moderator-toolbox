@@ -46,19 +46,7 @@ var domain = window.location.hostname.split('.')[0];
                 }, 1000);
             });
 
-            // Safari
-        } else if (typeof (safari) !== 'undefined') {
-            safari.self.addEventListener('message', function (event) {
-                if (event.name == 'tb-clearsettings') {
-                    // Wait a sec for stuff to clear.
-                    setTimeout(function () {
-                        clearLocal();
-                    }, 1000);
-                }
-            }, false);
-
-            safari.self.tab.dispatchMessage('tb-clearsettings', null);
-            // Firefox
+        // Firefox
         } else if ((typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style)) {
             self.port.on('tb-clearsettings-reply', function () {
                 // Wait a sec for stuff to clear.
@@ -97,12 +85,11 @@ function storagewrapper() {
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'alpha' || TBStorage.domain === 'mod');
 
 
-        var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        var CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
         TBStorage.browsers = {
             CHROME: CHROME,
             FIREFOX: FIREFOX,
             OPERA: OPERA,
-            SAFARI: SAFARI,
             EDGE: EDGE,
             UNKOWN_BROWSER: UNKOWN_BROWSER
         };
@@ -122,8 +109,6 @@ function storagewrapper() {
             if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
                 TBStorage.browser = OPERA;
             }
-        } else if (typeof (safari) !== 'undefined') {
-            TBStorage.browser = SAFARI;
         }
 
 
@@ -137,22 +122,6 @@ function storagewrapper() {
                     SendInit();
                 }
             });
-        } else if (TBStorage.browser === SAFARI) {
-        // wait for reply.
-            safari.self.addEventListener('message', function (event) {
-                var tbsettings = event.message;
-                if (event.name === 'tb-getsettings' && tbsettings !== undefined) {
-                    objectToSettings(tbsettings, function () {
-                        SendInit();
-                    });
-                }
-                else {
-                    SendInit();
-                }
-            }, false);
-
-            // Ask for settings.
-            safari.self.tab.dispatchMessage('tb-getsettings', null);
         } else {
             SendInit();
         }
@@ -309,29 +278,6 @@ function storagewrapper() {
 
                 });
 
-            } else if (TBStorage.browser === SAFARI) {
-                settingsToObject(function (sObject) {
-                    var settingsObject = sObject;
-
-                    // save settings
-                    safari.self.tab.dispatchMessage('tb-setsettings', sObject);
-
-                    // verify settings
-                    safari.self.addEventListener('message', function (event) {
-                        var tbsettings = event.message;
-                        if (event.name === 'tb-getsettings' && tbsettings !== undefined
-                        && isEquivalent(tbsettings, settingsObject)) {
-                            callback(true);
-                        } else {
-                            $.log('Settings could not be verified', false, SHORTNAME);
-                            callback(false);
-                        }
-                    }, false);
-
-                    // Ask for settings.
-                    safari.self.tab.dispatchMessage('tb-getsettings', null);
-                });
-
             }
         };
 
@@ -387,10 +333,6 @@ function storagewrapper() {
                     chrome.storage.local.set({
                         'tbsettings': sObject
                     });
-                });
-            } else if (TBStorage.browser === SAFARI) {
-                settingsToObject(function (sObject) {
-                    safari.self.tab.dispatchMessage('tb-setsettings', sObject);
                 });
             }
         }

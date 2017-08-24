@@ -58,7 +58,7 @@ function initwrapper() {
         // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
         TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') ? 'https://www.reddit.com' :  `https://${window.location.hostname}`);
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', SAFARI = 'safari', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
         //Private variables
@@ -407,13 +407,6 @@ function initwrapper() {
                 debugObject.platformInformation = browserMatchedInfo[1];
                 break;
             }
-            case SAFARI: {
-                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Safari\/([0-9.]*?)$/);
-                debugObject.browser = 'Safari';
-                debugObject.browserVersion = browserMatchedInfo[2];
-                debugObject.platformInformation = browserMatchedInfo[1];
-                break;
-            }
             case EDGE: {
                 browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edge\/([0-9.]*?)$/);
                 debugObject.browser = 'Edge';
@@ -751,9 +744,6 @@ function initwrapper() {
                 break;
             case 'opera':
                 if (TBUtils.browser == OPERA && TBUtils.isExtension) show();
-                break;
-            case 'safari':
-                if (TBUtils.browser == SAFARI && TBUtils.isExtension) show();
                 break;
             case 'edge':
                 if (TBUtils.browser == EDGE && TBUtils.isExtension) show();
@@ -2537,14 +2527,6 @@ function initwrapper() {
                 if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
                         if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
-                    });
-                    return; //don't spam the user with notes until they have the current version.
-                }
-
-                // Custom Safari nag for updates.
-                if (resp.safariVersion > TBUtils.shortVersion && TBUtils.browser == SAFARI && TBUtils.isExtension) {
-                    TBUtils.alert('There is a new version of toolbox for Safari!  Click here to update.', function (clicked) {
-                        if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.safariVersion}.safariextz`);
                     });
                     return; //don't spam the user with notes until they have the current version.
                 }

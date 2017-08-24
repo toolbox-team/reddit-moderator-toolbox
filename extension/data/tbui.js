@@ -158,9 +158,6 @@
     //     case TBUtils.browsers.FIREFOX:
     //         TBui.iconNuke = self.data.nukeIcon;
     //         break;
-    //     case TBUtils.browsers.SAFARI:
-    //         TBui.iconNuke = safari.extension.baseURI + 'images/nuke.png')
-    //         break;
     //     case TBUtils.browsers.UNKOWN_BROWSER:
     //     default:
     //         TBui.iconNuke = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAB8UlEQVR42lXP20uTYQCA8ed9v81tzLkmeMCPnDHNC+0geMCV1Fx2I5lgybxK0xCMNdQIHDMiLBJv6rKMA

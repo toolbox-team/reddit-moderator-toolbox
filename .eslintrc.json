@@ -6,6 +6,7 @@
     },
     "globals": {
         "TB": true,
+        "TBListener": true,
         "TBUtils": true,
         "TBui": true,
         "CodeMirror": true,
@@ -23,7 +24,7 @@
         "no-useless-escape": "warn",
         "no-constant-condition": "warn",
         "template-curly-spacing": [
-            "error", 
+            "error",
             "never"
         ],
         "indent": [

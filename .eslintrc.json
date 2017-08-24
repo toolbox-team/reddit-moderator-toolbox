@@ -14,7 +14,8 @@
         "redditapi": true,
         "chrome": true,
         "SnuOwnd": true,
-        "pako": true
+        "pako": true,
+        "tinycolor": true
     },
     "extends": "eslint:recommended",
     "rules": {

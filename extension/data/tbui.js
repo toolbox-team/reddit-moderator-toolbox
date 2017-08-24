@@ -200,17 +200,17 @@
 
     // Popup HTML generator
     TBui.popup = function popup(title, tabs, meta, css_class, opts) {
-        var defaults = {
+        const defaults = {
             draggable: true
         };
 
-        var options = $.extend(defaults, opts);
+        const options = $.extend(defaults, opts);
 
         meta = (typeof meta !== 'undefined') ? meta : null;
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        var $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
+        let $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
         if (meta) {
             $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
@@ -227,23 +227,23 @@
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
         }
         else if (tabs.length > 1) {
-            var $tabs = $('<div>').addClass('tb-popup-tabs');
+            let $tabs = $('<div>').addClass('tb-popup-tabs');
             $popup.append($tabs);
 
-            for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
+            for (let i = 0; i < tabs.length; i++) {
+                let tab = tabs[i];
                 if (tab.id === 'undefined' || !tab.id) {
                     tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
                 }
 
                 // Create tab button
-                var $button = $('<a>').addClass(tab.id).text(tab.title);
+                let $button = $('<a>').addClass(tab.id).text(tab.title);
                 if (tab.tooltip) {
                     $button.attr('title', tab.tooltip);
                 }
 
                 $button.click({tab: tab}, function (e) {
-                    var tab = e.data.tab;
+                    let tab = e.data.tab;
 
                     // hide others
                     $tabs.find('a').removeClass('active');
@@ -264,7 +264,7 @@
                 $button.appendTo($tabs);
 
 
-                var $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
+                let $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
                 $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
                 $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
 
@@ -320,7 +320,7 @@
         single_footer = (typeof single_footer !== 'undefined') ? single_footer : false;
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
-        var $overlay = $(`
+        let $overlay = $(`
 <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ``}">
 <div class="tb-window-wrapper">
     <div class="tb-window-header">
@@ -340,8 +340,8 @@
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
 
-            for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
+            for (let i = 0; i < tabs.length; i++) {
+                let tab = tabs[i];
 
                 tab.disabled = (typeof tab.disabled === 'boolean') ? tab.disabled : false;
                 tab.help_page = (typeof tab.help_page !== 'undefined') ? tab.help_page : '';
@@ -353,7 +353,7 @@
                     tab.id = tab.id.replace(/\s/g, '_');
                 }
 
-                var $button = $(`<a${tab.tooltip ? ` title="${tab.tooltip}"` : ''} ${tab.id ? ` data-module="${tab.id}"` : ''} class="${tab.id}" >${tab.title} </a>`);
+                let $button = $(`<a${tab.tooltip ? ` title="${tab.tooltip}"` : ''} ${tab.id ? ` data-module="${tab.id}"` : ''} class="${tab.id}" >${tab.title} </a>`);
 
                 $button.data('help_page', tab.help_page);
 
@@ -364,7 +364,7 @@
 
                 // click handler for tabs
                 $button.click({tab: tab}, function (e) {
-                    var tab = e.data.tab;
+                    let tab = e.data.tab;
 
                     // hide others
                     $overlay.find('.tb-window-tabs a').removeClass('active');
@@ -388,7 +388,7 @@
 
                 $button.appendTo($overlay.find('.tb-window-tabs'));
 
-                var $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
+                let $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
                 // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
@@ -396,7 +396,7 @@
 
                     $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
-                    var $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
+                    let $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
                     if (i == 0) {
                         $footer.show();
                     } else {
@@ -427,7 +427,7 @@
     };
 
     TBui.selectSingular = function selectSingular(choices, selected) {
-        var $selector = $(`
+        let $selector = $(`
         <div class="select-single">
             <select class="selector tb-action-button"></select>
         </div>`),
@@ -436,7 +436,7 @@
         //Add values to select
 
         $.each(choices, function (i , keyValue) {
-            var value = keyValue.toLowerCase().replace(/\s/g, '_');
+            const value = keyValue.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
 
@@ -450,7 +450,7 @@
         available = (available instanceof Array) ? available : [];
         selected = (selected instanceof Array) ? selected : [];
 
-        var $select_multiple = $(`
+        let $select_multiple = $(`
         <div class="select-multiple">
             <select class="selected-list left tb-action-button"></select>&nbsp;<button class="remove-item right tb-action-button">remove</button>&nbsp;
             <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;
@@ -460,16 +460,16 @@
             $available_list = $select_multiple.find('.available-list');
 
         $select_multiple.on('click', '.remove-item', function (e) {
-            var $select_multiple = $(e.delegateTarget);
+            let $select_multiple = $(e.delegateTarget);
             $select_multiple.find('.selected-list option:selected').remove();
         });
 
         $select_multiple.on('click', '.add-item', function (e) {
-            var $select_multiple = $(e.delegateTarget);
-            var $add_item = $select_multiple.find('.available-list option:selected');
+            let $select_multiple = $(e.delegateTarget);
+            let $add_item = $select_multiple.find('.available-list option:selected');
 
             // Don't add the sub twice.
-            var exists = false;
+            let exists = false;
             $selected_list.find('option').each(function () {
                 if (this.value === $add_item.val()) {
                     exists = true;
@@ -494,10 +494,10 @@
     };
 
     TBui.mapInput = function (labels, items) {
-        var keyLabel = labels[0],
+        let keyLabel = labels[0],
             valueLabel = labels[1];
 
-        var $mapInput = $(`<div>
+        let $mapInput = $(`<div>
             <table class="tb-map-input-table">
                 <thead><tr>
                     <td>${keyLabel}</td>
@@ -508,7 +508,7 @@
             </table>
             <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconAdd}" /></a></div>`);
 
-        var emptyRow = `
+        let emptyRow = `
             <tr class="tb-map-input-tr">
                 <td><input type="text" name="key"></td>
                 <td><input type="text" name="value"></td>
@@ -532,7 +532,7 @@
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
             $.each(items, function (key, value) {
-                var $item = $(`
+                let $item = $(`
                 <tr class="tb-map-input-tr">
                     <td><input type="text" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
                     <td><input type="text" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
@@ -552,41 +552,44 @@
 
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
-            var $body = $('body');
+            let $body = $('body');
 
             // If there is still a previous feedback element on the page we remove it.
             $body.find('#tb-feedback-window').remove();
 
             // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-            var feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
+            let feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
 
             // Add the element to the page.
             $body.append(feedbackElement);
 
             //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-            var $feedbackWindow = $body.find('#tb-feedback-window');
+            let $feedbackWindow = $body.find('#tb-feedback-window');
 
             switch (displayLocation) {
-            case TBui.DISPLAY_CENTER:
-                var feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
+            case TBui.DISPLAY_CENTER:{
+                const feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
                     feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
 
                 $feedbackWindow.css({
                     'margin-left': `-${feedbackLeftMargin}px`,
                     'margin-top': `-${feedbackTopMargin}px`
                 });
+            }
                 break;
-            case TBui.DISPLAY_BOTTOM:
+            case TBui.DISPLAY_BOTTOM:{
                 $feedbackWindow.css({
                     'left': '5px',
                     'bottom': '40px',
                     'top': 'auto',
                     'position': 'fixed'
                 });
+            }
                 break;
-            case TBui.DISPLAY_CURSOR:
+            case TBui.DISPLAY_CURSOR: {
+
                 $(document).mousemove(function (e) {
-                    var posX = e.pageX,
+                    const posX = e.pageX,
                         posY = e.pageY;
 
                     $feedbackWindow.css({
@@ -595,6 +598,7 @@
                         'position': 'fixed'
                     });
                 });
+            }
                 break;
             }
 
@@ -615,7 +619,7 @@
                     bottom: 10px !important
                 }
                 </style>`);
-                var $body = $('body');
+                let $body = $('body');
                 if (location.host === 'mod.reddit.com') {
                     $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                     $body.append('<div id="tb-loading"></div>');
@@ -623,8 +627,8 @@
                     $('.footer-parent').append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                     $('.footer-parent').append('<div id="tb-loading"></div>');
                 }
-                var $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
-                var randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
+                let $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
+                let randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
                     randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
 
                 $randomFeedbackWindow.css({
@@ -701,7 +705,7 @@
     };
 
     TBui.beforeunload = function () {
-        if (longLoadArray.length > 0) {
+        if (TBui.longLoadArray.length > 0) {
             return 'toolbox is still busy!';
         }
     };
@@ -710,7 +714,7 @@
 
     TBui.getBestTextColor = function (bgColor) {
         if(!TBui.getBestTextColor.cache[bgColor]) {
-            var textColors = ['black', 'white'];
+            const textColors = ['black', 'white'];
             TBui.getBestTextColor.cache[bgColor] = tinycolor.mostReadable(bgColor, textColors).toHexString();
         }
         return TBui.getBestTextColor.cache[bgColor];

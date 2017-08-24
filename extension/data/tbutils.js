@@ -511,7 +511,7 @@ function initwrapper() {
 
         //
         TBUtils.minutesToMilliseconds = function (mins) {
-            const  oneMin = 60000,
+            let  oneMin = 60000,
                 milliseconds = mins * 60 * 1000;
 
             // Never return less than one min.

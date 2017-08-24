@@ -2065,7 +2065,7 @@ function initwrapper() {
                     return;
                 }
 
-                if (TBUtils.domain != 'www') {
+                if (TBUtils.domain !== 'alpha') {
                     TBui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`);
                     $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;

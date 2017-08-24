@@ -62,7 +62,7 @@ function initwrapper() {
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
         //Private variables
-        var modMineURL = '/subreddits/mine/moderator.json?limit=100',
+        let modMineURL = '/subreddits/mine/moderator.json?limit=100',
             now = new Date().getTime(),
 
             shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
@@ -81,7 +81,6 @@ function initwrapper() {
             gettingModSubs = false,
             getModSubsCallbacks = [],
             invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
-            tabID = 0,
 
             randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
                 "Simple solution, don't use nightmode....",
@@ -185,7 +184,7 @@ function initwrapper() {
 
 
         // Do settings echo before anything else.  If it fails, exit toolbox.
-        var ret = TBStorage.setSetting(SETTINGS_NAME, 'echoTest', ECHO);
+        const ret = TBStorage.setSetting(SETTINGS_NAME, 'echoTest', ECHO);
         if (ret !== ECHO) {
             alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
             return;
@@ -204,7 +203,7 @@ function initwrapper() {
         TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
         if (TBUtils.debugMode) {
-            var consoleText = `toolbox version: ${TBUtils.toolboxVersion
+            const consoleText = `toolbox version: ${TBUtils.toolboxVersion
             }, Browser: ${TBUtils.browser
             }, Extension: ${TBUtils.isExtension
             }, Beta features: ${TBUtils.betaMode
@@ -229,19 +228,19 @@ function initwrapper() {
             TBStorage.setCache(SETTINGS_NAME, 'lastGetShort', now);
         }
 
-        var pushedunread = TBStorage.getSetting('Notifier', 'unreadPushed', []);
+        const  pushedunread = TBStorage.getSetting('Notifier', 'unreadPushed', []);
         if (pushedunread.length > 250) {
             pushedunread.splice(150, (pushedunread.length - 150));
             TBStorage.setSetting('Notifier', 'unreadPushed', pushedunread);
         }
 
-        var pusheditems = TBStorage.getSetting('Notifier', 'modqueuePushed', []);
+        const  pusheditems = TBStorage.getSetting('Notifier', 'modqueuePushed', []);
         if (pusheditems.length > 250) {
             pusheditems.splice(150, (pusheditems.length - 150));
             TBStorage.setSetting('Notifier', 'modqueuePushed', pusheditems);
         }
 
-        var repliedModmail = TBStorage.getSetting('ModMail', 'replied', []);
+        const  repliedModmail = TBStorage.getSetting('ModMail', 'replied', []);
         if (repliedModmail.length > 250) {
             pusheditems.splice(150, (repliedModmail.length - 150));
             TBStorage.setSetting('ModMail', 'replied', repliedModmail);
@@ -275,7 +274,7 @@ function initwrapper() {
             // End: version changes.
 
             // This is a super extra check to make sure the wiki page for settings export really is private.
-            var settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
+            const  settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
             if (settingSubEnabled) {
                 setWikiPrivate('tbsettings', settingSubEnabled, false);
             }
@@ -322,7 +321,7 @@ function initwrapper() {
 
         if (!String.prototype.format) {
             String.prototype.format = function() {
-                var args = arguments;
+                const  args = arguments;
                 return this.replace(/{(\d+)}/g, function(match, number) {
                     return typeof args[number] != 'undefined' ? args[number] : match;
                 });
@@ -461,7 +460,7 @@ function initwrapper() {
                 new_index += array.length;
             }
             if (new_index >= array.length) {
-                var k = new_index - array.length;
+                let k = new_index - array.length;
                 while ((k--) + 1) {
                     array.push(undefined);
                 }
@@ -472,7 +471,7 @@ function initwrapper() {
 
         TBUtils.escapeHTML = function(html)
         {
-            var entityMap = {
+            const  entityMap = {
                 '&': '&amp;',
                 '<': '&lt;',
                 '>': '&gt;',
@@ -488,7 +487,7 @@ function initwrapper() {
 
         TBUtils.unescapeHTML = function(html)
         {
-            var entityMap = {
+            const  entityMap = {
                 '&amp;': '&',
                 '&lt;': '<',
                 '&gt;': '>',
@@ -512,7 +511,7 @@ function initwrapper() {
 
         //
         TBUtils.minutesToMilliseconds = function (mins) {
-            var oneMin = 60000,
+            const  oneMin = 60000,
                 milliseconds = mins * 60 * 1000;
 
             // Never return less than one min.
@@ -533,13 +532,13 @@ function initwrapper() {
 
         // convert unix epoch timestamps to ISO format
         TBUtils.timeConverterISO = function (UNIX_timestamp) {
-            var a = new Date(UNIX_timestamp * 1000);
-            var year = a.getFullYear();
-            var month = (`0${a.getUTCMonth() + 1}`).slice(-2);
-            var date = (`0${a.getUTCDate()}`).slice(-2);
-            var hour = (`0${a.getUTCHours()}`).slice(-2);
-            var min = (`0${a.getUTCMinutes()}`).slice(-2);
-            var sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            const  a = new Date(UNIX_timestamp * 1000);
+            const  year = a.getFullYear();
+            const  month = (`0${a.getUTCMonth() + 1}`).slice(-2);
+            const  date = (`0${a.getUTCDate()}`).slice(-2);
+            const  hour = (`0${a.getUTCHours()}`).slice(-2);
+            const  min = (`0${a.getUTCMinutes()}`).slice(-2);
+            const  sec = (`0${a.getUTCSeconds()}`).slice(-2);
             return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
         };
 
@@ -550,39 +549,39 @@ function initwrapper() {
                 newdate = new Date();
             }
 
-            var amonth = origdate.getUTCMonth() + 1;
-            var aday = origdate.getUTCDate();
-            var ayear = origdate.getUTCFullYear();
+            const  amonth = origdate.getUTCMonth() + 1;
+            const  aday = origdate.getUTCDate();
+            const  ayear = origdate.getUTCFullYear();
 
-            var tyear = newdate.getUTCFullYear();
-            var tmonth = newdate.getUTCMonth() + 1;
-            var tday = newdate.getUTCDate();
+            const  tyear = newdate.getUTCFullYear();
+            const  tmonth = newdate.getUTCMonth() + 1;
+            const  tday = newdate.getUTCDate();
 
-            var y = 1;
-            var mm = 1;
-            var d = 1;
-            var a2 = 0;
-            var a1 = 0;
-            var f = 28;
+            let  y = 1;
+            let  mm = 1;
+            let  d = 1;
+            let  a2 = 0;
+            let  a1 = 0;
+            let  f = 28;
 
             if (((tyear % 4 === 0) && (tyear % 100 !== 0)) || (tyear % 400 === 0)) {
                 f = 29;
             }
 
-            var m = [31, f, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            const  m = [31, f, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-            var dyear = tyear - ayear;
+            let  dyear = tyear - ayear;
 
-            var dmonth = tmonth - amonth;
+            let  dmonth = tmonth - amonth;
             if (dmonth < 0 && dyear > 0) {
                 dmonth = dmonth + 12;
                 dyear--;
             }
 
-            var dday = tday - aday;
+            let dday = tday - aday;
             if (dday < 0) {
                 if (dmonth > 0) {
-                    var ma = amonth + tmonth;
+                    let ma = amonth + tmonth;
 
                     if (ma >= 12) {
                         ma = ma - 12;
@@ -601,7 +600,7 @@ function initwrapper() {
                 }
             }
 
-            var returnString = '';
+            let returnString = '';
 
             if (dyear === 0) {
                 y = 0;
@@ -659,20 +658,20 @@ function initwrapper() {
 
         // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
         TBUtils.timeConverterRead = function (UNIX_timestamp) {
-            var a = new Date(UNIX_timestamp * 1000);
-            var year = a.getFullYear();
-            var month = (`0${a.getUTCMonth() + 1}`).slice(-2);
-            var date = (`0${a.getUTCDate()}`).slice(-2);
-            var hour = (`0${a.getUTCHours()}`).slice(-2);
-            var min = (`0${a.getUTCMinutes()}`).slice(-2);
-            var sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            const  a = new Date(UNIX_timestamp * 1000);
+            const  year = a.getFullYear();
+            const  month = (`0${a.getUTCMonth() + 1}`).slice(-2);
+            const  date = (`0${a.getUTCDate()}`).slice(-2);
+            const  hour = (`0${a.getUTCHours()}`).slice(-2);
+            const  min = (`0${a.getUTCMinutes()}`).slice(-2);
+            const  sec = (`0${a.getUTCSeconds()}`).slice(-2);
             return `${date}-${month}-${year} ${hour}:${min}:${sec} UTC`;
         };
 
         // convert titles to a format usable in urls
         // from r2.lib.utils import title_to_url
         TBUtils.title_to_url = function (title) {
-            var max_length = 50;
+            const  max_length = 50;
 
             title = title.replace(/\s+/g, '_');     //remove whitespace
             title = title.replace(/\W+/g, '');      //remove non-printables
@@ -702,7 +701,7 @@ function initwrapper() {
 
 
         TBUtils.alert = function (message, callback, showClose) {
-            var $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
+            let $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
                 $noteDiv.append(`<img src="data:image/png;base64,${TBui.iconClose}" class="note-close" title="Close" />`);
             }
@@ -761,9 +760,9 @@ function initwrapper() {
 
 
         TBUtils.notification = function (title, body, url, markreadid) {
-            var timeout = 10000;
+            const timeout = 10000;
 
-            var toolboxnotificationenabled = true;
+            const toolboxnotificationenabled = true;
 
             // check if notifications are enabled. When they are not we simply abort the function.
             if (toolboxnotificationenabled === false) {
@@ -780,7 +779,7 @@ function initwrapper() {
 
             } else if (Notification.permission === 'granted') {
 
-                var notification = new Notification(title, {
+                const notification = new Notification(title, {
                     dir: 'auto',
                     body: body,
                     icon: `data:image/png;base64,${TBui.logo64}`
@@ -815,7 +814,7 @@ function initwrapper() {
 
                     // If the user is okay, let's create a notification
                     if (permission === 'granted') {
-                        var notification = new Notification(title, {
+                        const notification = new Notification(title, {
                             dir: 'auto',
                             body: body,
                             icon: `data:image/png;base64,${TBui.logo64}`
@@ -850,16 +849,16 @@ function initwrapper() {
 
 
         TBUtils.humaniseDays = function (diff) {
-            var str = '';
-            var values = {
+            let str = '';
+            let values = {
                 ' year': 365,
                 ' month': 30,
                 ' week': 7,
                 ' day': 1
             };
 
-            for (var x in values) {
-                var amount = Math.floor(diff / values[x]);
+            for (let x in values) {
+                const amount = Math.floor(diff / values[x]);
 
                 if (amount >= 1) {
                     str += `${amount + x + (amount > 1 ? 's' : '')} `;
@@ -870,7 +869,7 @@ function initwrapper() {
         };
 
         TBUtils.stringFormat = function(format) {
-            var args = Array.prototype.slice.call(arguments, 1);
+            const args = Array.prototype.slice.call(arguments, 1);
             return format.replace(/{(\d+)}/g, function(match, number) {
                 return typeof args[number] != 'undefined' ? args[number] : match;
             });
@@ -960,12 +959,12 @@ function initwrapper() {
             // Callback because reddits/mod/mine is paginated.
             function getSubsResult(subs, after) {
                 $(subs).each(function () {
-                    var sub = this.data.display_name.trim();
+                    const sub = this.data.display_name.trim();
                     if ($.inArray(sub, TBUtils.mySubs) === -1) {
                         TBUtils.mySubs.push(sub);
                     }
 
-                    var isinthere = false;
+                    let isinthere = false;
                     $(TBUtils.mySubsData).each(function () {
                         if (this.subreddit === sub) {
                             isinthere = true;
@@ -973,7 +972,7 @@ function initwrapper() {
                     });
 
                     if (!isinthere) {
-                        var subredditData = {
+                        const subredditData = {
                             'subreddit': sub,
                             'subscribers': this.data.subscribers,
                             'over18': this.data.over18,
@@ -987,7 +986,7 @@ function initwrapper() {
                 });
 
                 if (after) {
-                    var URL = `${modMineURL}&after=${after}`;
+                    const URL = `${modMineURL}&after=${after}`;
                     getSubs(URL);
                 } else {
                     TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
@@ -1034,11 +1033,11 @@ function initwrapper() {
 
         TBUtils.getHashParameter = function(ParameterKey)
         {
-            var hash = window.location.hash.substring(1);
-            var params = hash.split('&');
-            for (var i = 0; i < params.length; i++)
+            let hash = window.location.hash.substring(1);
+            let params = hash.split('&');
+            for (let i = 0; i < params.length; i++)
             {
-                var keyval = params[i].split('='),
+                let keyval = params[i].split('='),
                     key = keyval[0].replace('?','');
                 if (key == ParameterKey)
                 {
@@ -1050,10 +1049,10 @@ function initwrapper() {
         TBUtils.getThingInfo = function (sender, modCheck) {
 
         // declare what we will need.
-            var $sender = $(sender);
-            var $body = $('body');
+            let $sender = $(sender);
+            let $body = $('body');
 
-            var subreddit,
+            let subreddit,
                 permalink,
                 domain,
                 id,
@@ -1076,11 +1075,11 @@ function initwrapper() {
 
 
             // Lack of a better name, can be a thread_message or infobar.
-                var $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
-                var browserUrl = window.location.href;
+                let $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
+                let browserUrl = window.location.href;
 
 
-                var idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
+                const idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
 
                 subreddit = $body.find('.ThreadTitle__community').text();
                 permalink = ($threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`);
@@ -1108,8 +1107,8 @@ function initwrapper() {
             // find the associated .entry
 
 
-                var $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
-                var $thing = $($sender.closest('.thing')[0] || $sender);
+                let $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
+                let $thing = $($sender.closest('.thing')[0] || $sender);
 
                 user = $entry.find('.author:first').text() || $thing.find('.author:first').text();
                 subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
@@ -1198,7 +1197,7 @@ function initwrapper() {
                 permalink = TBUtils.baseDomain + permalink;
             }
 
-            var info = {
+            let info = {
                 subreddit: subreddit,
                 user: user,
                 author: user,
@@ -1229,8 +1228,8 @@ function initwrapper() {
 
         TBUtils.replaceTokens = function (info, content) {
             $.log(info, false, SHORTNAME);
-            for (var i in info) {
-                var pattern = new RegExp(`{${i}}`, 'mig');
+            for (let i in info) {
+                const pattern = new RegExp(`{${i}}`, 'mig');
                 content = content.replace(pattern, info[i]);
             }
 
@@ -1244,16 +1243,15 @@ function initwrapper() {
             if (chunkSize === null || chunkSize < 1) finish();
             if (delay === null || delay < 0) finish();
             if (call === null) finish();
-            var counter = 0;
-            //var length = array.length;
+            let counter = 0;
 
             function doChunk() {
                 if (counter == 0 && start) {
                     start();
                 }
 
-                for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
-                    var ret = call(array[counter], counter, array);
+                for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+                    const ret = call(array[counter], counter, array);
                     if (ret === false) return window.setTimeout(finish, delay);
                 }
                 if (counter < array.length) {
@@ -1277,7 +1275,7 @@ function initwrapper() {
             if (chunkSize === null || chunkSize < 1) finish();
             if (call === null) finish();
 
-            var length = array.length,
+            let length = array.length,
                 counter = 0,
                 delay = 100,
                 limit = (length > chunkSize) ? 20 : 0;
@@ -1292,8 +1290,8 @@ function initwrapper() {
                     start();
                 }
 
-                for (var end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
-                    var ret = call(array[counter], counter, array);
+                for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+                    const ret = call(array[counter], counter, array);
                     if (ret === false) return window.setTimeout(finish, delay);
                 }
                 if (counter < array.length) {
@@ -1307,7 +1305,7 @@ function initwrapper() {
             //return doChunk();
                 TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
                     function (status, jqxhr) {
-                        var $body = $('body'),
+                        let $body = $('body'),
                             ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                             ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                         $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
@@ -1318,7 +1316,7 @@ function initwrapper() {
 
                         if (chunkSize + limit > parseInt(ratelimitRemaining)) {
                             $body.find('#ratelimit-counter').show();
-                            var count = parseInt(ratelimitReset),
+                            let count = parseInt(ratelimitReset),
                                 counter = 0;
 
                             function timer() {
@@ -1331,8 +1329,8 @@ function initwrapper() {
                                     return;
                                 }
 
-                                var minutes = Math.floor(count / 60);
-                                var seconds = count - minutes * 60;
+                                const minutes = Math.floor(count / 60);
+                                const seconds = count - minutes * 60;
 
                                 $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
                     <br><br>
@@ -1357,7 +1355,7 @@ function initwrapper() {
 
         TBUtils.forEachChunkedDynamic = function(array, process, options){
             if(typeof process !== 'function') return;
-            var arr = Array.from(array),
+            let arr = Array.from(array),
                 start,
                 stop,
                 fr,
@@ -1385,7 +1383,7 @@ function initwrapper() {
                 };
 
             return new Promise(function(resolve){
-                var doChunk = function(){
+                let doChunk = function(){
                     if (started){
                         optimize();
                     } else {
@@ -1487,7 +1485,7 @@ function initwrapper() {
         TBUtils.getRatelimit = function getRatelimit(callback) {
             TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
                 function (status, jqxhr) {
-                    var ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
+                    const ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
                         ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                     $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
@@ -1596,7 +1594,7 @@ function initwrapper() {
                 }
             })
                 .done(function (json) {
-                    var wikiData = json.data.content_md;
+                    const wikiData = json.data.content_md;
 
                     if (!wikiData) {
                         callback(TBUtils.NO_WIKI_PAGE);
@@ -1604,7 +1602,7 @@ function initwrapper() {
                     }
 
                     if (isJSON) {
-                        var parsedWikiData;
+                        let parsedWikiData;
                         try {
                             parsedWikiData = JSON.parse(wikiData);
                         }
@@ -1653,7 +1651,7 @@ function initwrapper() {
 
         TBUtils.getBanState = function (subreddit, user, callback) {
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
-                var banned = data.data.children;
+                const banned = data.data.children;
 
                 // If it's over or under exactly one item they are not banned or that is not their full name.
                 if (banned.length !== 1) {
@@ -2022,7 +2020,7 @@ function initwrapper() {
             })
                 .done(function (response) {
                     if (typeof callback !== 'undefined') {
-                        var data = response[0].data.children[0].data;
+                        const data = response[0].data.children[0].data;
 
                         if (!data) return callback(false);
 
@@ -2041,11 +2039,11 @@ function initwrapper() {
 
         // Import export methods
         TBUtils.exportSettings = function (subreddit, callback) {
-            var settingsObject = {};
+            let settingsObject = {};
             $(TBStorage.settings).each(function () {
                 if (this == 'Storage.settings') return; // don't backup the setting registry.
 
-                var key = this.split('.'),
+                let key = this.split('.'),
                     setting = TBStorage.getSetting(key[0], key[1], null);
 
                 if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
@@ -2078,7 +2076,7 @@ function initwrapper() {
                 }
 
                 $.each(resp, function (fullKey, value) {
-                    var key = fullKey.split('.');
+                    let key = fullKey.split('.');
 
                     TBStorage.setSetting(key[0], key[1], value);
                 });
@@ -2094,11 +2092,13 @@ function initwrapper() {
         };
 
         TBUtils.stringToColor = function (str) {
-        // str to hash
-            for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
+            // str to hash
+            let hash,
+                color;
+            for (let i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
             // int/hash to hex
-            for (var index = 0, color = '#'; index < 3; color += (`00${((hash >> index++ * 8) & 0xFF).toString(16)}`).slice(-2));
+            for (let index = 0, color = '#'; index < 3; color += (`00${((hash >> index++ * 8) & 0xFF).toString(16)}`).slice(-2));
 
             return color;
         };
@@ -2117,7 +2117,7 @@ function initwrapper() {
                 if (!resp) callback(null);
 
                 resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
-                var $sitetable = $(resp).find('#siteTable');
+                let $sitetable = $(resp).find('#siteTable');
                 $sitetable.find('.nextprev').remove();
 
                 if ($sitetable) {
@@ -2146,14 +2146,14 @@ function initwrapper() {
         // Expand base64
             stringThing = atob(stringThing);
             // zlib time!
-            var inflate = new pako.Inflate({to:'string'});
+            let inflate = new pako.Inflate({to:'string'});
             inflate.push(stringThing);
             return inflate.result;
         };
 
         TBUtils.zlibDeflate = function (objThing) {
         // zlib time!
-            var deflate = new pako.Deflate({to:'string'});
+            let deflate = new pako.Deflate({to:'string'});
             deflate.push(objThing, true);
             objThing = deflate.result;
             // Collapse to base64
@@ -2196,7 +2196,7 @@ function initwrapper() {
                 }
 
                 // See if this subreddit is configured for leaving reasons using <removalreasons2>
-                var match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
+                let match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
                     .replace(/&lt;/g, '<')
                     .replace(/&gt;/g, '>')
                     .match(/<removereasons2>.+<\/removereasons2>/i);
@@ -2216,17 +2216,17 @@ function initwrapper() {
                 }
 
                 // Create valid XML from parsed string and convert it to a JSON object.
-                var XML = $(match[0]);
-                var reasons = [];
+                let XML = $(match[0]);
+                let reasons = [];
 
                 XML.find('reason').each(function () {
-                    var reason = {
+                    let reason = {
                         text: escape(this.innerHTML)
                     };
                     reasons.push(reason);
                 });
 
-                var oldReasons = {
+                let oldReasons = {
                     pmsubject: XML.find('pmsubject').text() || '',
                     logreason: XML.find('logreason').text() || '',
                     header: escape(XML.find('header').text() || ''),
@@ -2319,7 +2319,7 @@ function initwrapper() {
         function getToolboxDevs() {
             $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(function (resp) {
 
-                var children = resp.data.children,
+                let children = resp.data.children,
                     devs = [];
 
                 $.each(children, function (index, child) {
@@ -2328,7 +2328,7 @@ function initwrapper() {
                 TBUtils.tbDevs = devs;
                 TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
             }).fail(function () {
-                var devs = [
+                const devs = [
                     'agentlame',
                     'creesch',
                     'LowSociety ',
@@ -2353,7 +2353,7 @@ function initwrapper() {
 
         function addTbModmailSidebar() {
             setTimeout(function () {
-                var $body = $('body');
+                let $body = $('body');
                 if (TBUtils.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
                     $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
                 }
@@ -2364,12 +2364,12 @@ function initwrapper() {
         if(!TBUtils.isNewModmail) {
             let newThingRunning = false;
             // NER, load more comments, and mod frame support.
-            var target = document.querySelector('div.content');
+            let target = document.querySelector('div.content');
 
             // create an observer instance
-            var observer = new MutationObserver(function (mutations) {
+            let observer = new MutationObserver(function (mutations) {
                 mutations.forEach(function (mutation) {
-                    var $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+                    let $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
                     if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
                     $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
 
@@ -2381,7 +2381,7 @@ function initwrapper() {
                         // Wait a sec for stuff to load.
                         setTimeout(function () {
                             newThingRunning = false;
-                            var event = new CustomEvent('TBNewThings');
+                            const event = new CustomEvent('TBNewThings');
                             window.dispatchEvent(event);
                         }, 1000);
                     }
@@ -2390,7 +2390,7 @@ function initwrapper() {
 
             // configuration of the observer:
             // We specifically want all child elements but nothing else.
-            var config = {
+            let config = {
                 attributes: false,
                 childList: true,
                 characterData: false,
@@ -2412,7 +2412,7 @@ function initwrapper() {
                     let samePage = locationHref === location.href;
                     if (!samePage) {
                         locationHref = location.href;
-                        var event = new CustomEvent('TBNewPage', {
+                        let event = new CustomEvent('TBNewPage', {
                             detail: {
                                 locationHref: locationHref
                             }
@@ -2421,16 +2421,16 @@ function initwrapper() {
                     }
                 }, 500);
 
-                var newMMtarget = document.querySelector('body');
+                let newMMtarget = document.querySelector('body');
 
                 // create an observer instance
-                var newMMobserver = new MutationObserver(function (mutations) {
+                let newMMobserver = new MutationObserver(function (mutations) {
 
-                    var doAddTbModmailSidebar = false;
-                    var doTBNewThings = false;
+                    let doAddTbModmailSidebar = false;
+                    let doTBNewThings = false;
 
                     mutations.forEach(function (mutation) {
-                        var $target = $(mutation.target);
+                        let $target = $(mutation.target);
 
                         if ($target.find('.ThreadViewer__infobar').length > 0) {
                             doAddTbModmailSidebar = true;
@@ -2459,7 +2459,7 @@ function initwrapper() {
                             // Wait a sec for stuff to load.
                             setTimeout(function () {
                                 newThingRunning = false;
-                                var event = new CustomEvent('TBNewThings');
+                                const event = new CustomEvent('TBNewThings');
                                 window.dispatchEvent(event);
                             }, 1000);
                         }
@@ -2468,7 +2468,7 @@ function initwrapper() {
 
                 // configuration of the observer:
                 // We specifically want all child elements but nothing else.
-                var newMMconfig = {
+                const newMMconfig = {
                     attributes: false,
                     childList: true,
                     characterData: false,
@@ -2582,7 +2582,7 @@ function initwrapper() {
     window.addEventListener('TBStorageLoaded2', function () {
         initwrapper();
 
-        var event = new CustomEvent('TBUtilsLoaded2');
+        const event = new CustomEvent('TBUtilsLoaded2');
         window.dispatchEvent(event);
     });
 })();

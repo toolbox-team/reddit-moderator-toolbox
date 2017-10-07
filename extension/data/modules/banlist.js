@@ -108,7 +108,7 @@ function banlist() {
                         TB.ui.longLoadSpinner(false);
                         $num_bans.html('Something went wrong while fetching the banlist. You should reload this page.');
                     }
-            
+
                 });
 
         }

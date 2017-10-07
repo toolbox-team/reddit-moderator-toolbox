@@ -151,11 +151,11 @@ function personalnotes() {
                             <div id="tb-new-personal-note-div">
                                 <label for="tb-new-personal-note">
                                     Create note:
-                                </label> 
+                                </label>
                                 <input type="text" name="tb-new-personal-note" id="tb-new-personal-note" placeholder="note name"><br>
                                 <input type="button" id="create-personal-note" class="tb-action-button" value="create note">
                             </div>
-                            
+
                         </td>
                         <td id="tb-personal-notes-content">
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>

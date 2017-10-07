@@ -20,7 +20,7 @@ function tbconfig() {
         // With the following function we will create the UI when we need it.
         // Create the window overlay.
         function showConfig(subredditConfig, configData) {
-            
+
             TB.ui.overlay(
                 `toolbox Configuration - /r/${subredditConfig}`,
                 [
@@ -34,7 +34,7 @@ function tbconfig() {
                 </br>
                 </br><a href="/r/${subredditConfig}/w/pages/" class="tb-general-button">All Wiki Pages</a>
                 </br><a ${((unManager) ? `style="display:none;"` : ``)} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
-                
+
                 </span>
                 `,
                         footer: ''
@@ -232,7 +232,7 @@ function tbconfig() {
             ).appendTo('body');
             $body.css('overflow', 'hidden');
 
-            // TODO: This should not be called here, tabs should only be filled when actively used. Something something performance. 
+            // TODO: This should not be called here, tabs should only be filled when actively used. Something something performance.
             // Also while it is nifty dom building it isn't inline with how we do it in other parts of toolbox and could easily be just a single string. This seems like overkill.
             function genUsernoteTypesContent() {
                 return $('<div>').attr('id', 'tb-config-usernote-types').append(
@@ -412,7 +412,7 @@ function tbconfig() {
                                                     <li><i>F11:</i> Fullscreen</li>
                                                     <li><i>Esc:</i> Close Fullscreen</li>
                                                     <li><i>Ctrl-F / Cmd-F:</i> Start searching</li>
-                                                    <li><i>Ctrl-Alt-F / Cmd-Alt-F:</i> Persistent search (dialog doesn't autoclose) </li>   
+                                                    <li><i>Ctrl-Alt-F / Cmd-Alt-F:</i> Persistent search (dialog doesn't autoclose) </li>
                                                     <li><i>Ctrl-G / Cmd-G:</i> Find next</li>
                                                     <li><i>Shift-Ctrl-G / Shift-Cmd-G:</i>  Find previous</li>
                                                     <li><i>Shift-Ctrl-F / Cmd-Option-F:</i> Replace</li>
@@ -670,7 +670,7 @@ function tbconfig() {
         function removalReasonsEditContent() {
 
             if (config.removalReasons && config.removalReasons.reasons.length > 0) {
-            // Copy the reasons to a new array without reference to the old one. 
+            // Copy the reasons to a new array without reference to the old one.
                 sortReasons = JSON.parse(JSON.stringify(config.removalReasons.reasons));
 
                 config.removalReasons.reasons.forEach(function (reason, index) {
@@ -689,7 +689,7 @@ function tbconfig() {
                     var removalReasonTemplateHTML = `
                 <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
                     <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-sort-up"><img src="data:image/png;base64,${TBui.topIcon}"></a> 
+                        <a href="javascript:;" class="tb-sort-up"><img src="data:image/png;base64,${TBui.topIcon}"></a>
                         <a href="javascript:;" class="tb-sort-down"><img src="data:image/png;base64,${TBui.bottomIcon}"></a>
                     </td>
                     <td class="removal-reasons-content">
@@ -1217,7 +1217,7 @@ function tbconfig() {
 
 
             $this.addClass('content-populated');
-        
+
         });
 
         $body.on('click', '.tb-sort-up', function () {
@@ -1229,8 +1229,8 @@ function tbconfig() {
                 var upReasonKey = $row.attr('data-reason');
                 var downReasonKey = $prev.attr('data-reason');
 
-                // Move them in the array.      
-                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(upReasonKey), parseInt(downReasonKey));   
+                // Move them in the array.
+                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(upReasonKey), parseInt(downReasonKey));
 
                 // Now move the elements on page.
                 $row.attr('data-reason', downReasonKey);
@@ -1253,7 +1253,7 @@ function tbconfig() {
                 var downReasonKey = $row.attr('data-reason');
 
                 // Move them in the array.
-                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(downReasonKey), parseInt(upReasonKey));  
+                sortReasons = TBUtils.moveArrayItem(sortReasons, parseInt(downReasonKey), parseInt(upReasonKey));
 
                 // Now move the elements on page.
                 $row.attr('data-reason', upReasonKey);
@@ -1268,14 +1268,14 @@ function tbconfig() {
 
         // Save the new order of removal reasons.
         $body.on('click', '.save-removal-sorting', function () {
-        // Overwrite the removal reasons 
+        // Overwrite the removal reasons
             config.removalReasons.reasons = JSON.parse(JSON.stringify(sortReasons));
             var editNote = 'Sorting removal reasons from toolbox config.';
-            postToWiki('toolbox', config, editNote, true);            
+            postToWiki('toolbox', config, editNote, true);
 
-            // For now we just remove all contents of the edit tab. 
-            // TODO: Think of a nicer method that allows the contents of that tab to be restored when the order is changed. 
-            // The tricky part with that is that we only want to do that when the new order is saved, not before that happens. 
+            // For now we just remove all contents of the edit tab.
+            // TODO: Think of a nicer method that allows the contents of that tab to be restored when the order is changed.
+            // The tricky part with that is that we only want to do that when the new order is saved, not before that happens.
             $body.find('#tb-removal-reasons-list').empty();
             $body.find('.tb-window-tabs .edit_removal_reasons').removeClass('content-populated');
 

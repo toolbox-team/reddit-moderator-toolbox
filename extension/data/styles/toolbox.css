@@ -1,15 +1,15 @@
-/* 
+/*
 ========================
 
     TB UI: Overlays, pop-ups
 
-======================== 
+========================
 */
 
-/* 
+/*
 ------------
     Overlay windows.
-    TODO: Clean up css and remove duplicate code. 
+    TODO: Clean up css and remove duplicate code.
 ------------
 */
 
@@ -291,7 +291,7 @@
 
 
 
-/* 
+/*
 ------------
     Pop-ups
     TODO: Remove duplicate css and make sure all our popups use the same classes. This is currently NOT the case.
@@ -501,10 +501,10 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     width: 190px;
 }
 
-/* 
+/*
 ------------
     Debug window
-    TODO: Determine if this belongs here or in modbar.css 
+    TODO: Determine if this belongs here or in modbar.css
     TODO: Determine what of this needs to be its own css and what can be converted to make use of overlay css.
 ------------
 */
@@ -593,18 +593,18 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
 }
 
 
-/* 
+/*
 ========================
 
     TB UI: Buttons
- 
-======================== 
+
+========================
 */
 
-/* 
+/*
 ------------
     General buttons, are used for blending in with reddit but still making it clear they are there for toolbox functionality.
-    Do NOT use in cases where you would normally use button elements. That is what the action button css is for. 
+    Do NOT use in cases where you would normally use button elements. That is what the action button css is for.
 ------------
 */
 body.mod-toolbox .tb-general-button,
@@ -623,7 +623,7 @@ body.mod-toolbox .tb-bracket-button {
 }
 
 body.mod-toolbox .tb-bracket-button {
-	padding: 0 1px;
+    padding: 0 1px;
     font-size: 9px;
 }
 
@@ -634,13 +634,13 @@ body.mod-toolbox li a.tb-general-button:hover {
 }
 
 body.mod-toolbox .tb-general-button img {
-	vertical-align: top;
+    vertical-align: top;
 }
 
-/* 
+/*
 ------------
     Action buttons, are used where you normally would use actual button elements and where you need to be absolutely certain they always show in the same way.
-    This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you! 
+    This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you!
 ------------
 */
 
@@ -649,8 +649,8 @@ body.mod-toolbox .tb-action-button.action-hidden {
     display: none;
 }
 
-/* 
-Because they are so locked down you cannot easily show or hide these buttons. 
+/*
+Because they are so locked down you cannot easily show or hide these buttons.
 Apply the "tb-button-hidden" class to be able to hide them anyway.
 */
 body.mod-toolbox .tb-action-button.tb-button-hidden {
@@ -659,7 +659,7 @@ body.mod-toolbox .tb-action-button.tb-button-hidden {
 
 body.mod-toolbox .tb-action-button {
     display: inline-block !important;
-	height: initial !important;
+    height: initial !important;
     padding: 2px 6px 3px 6px !important;
     font-family: verdana,arial,helvetica,sans-serif !important;
     font-size: 13px !important;
@@ -754,12 +754,12 @@ body.mod-toolbox .tb-action-button:hover {
 
 
 
-/* 
+/*
 ========================
 
     TB UI: various
 
-======================== 
+========================
 */
 
 /* link colors (for those themes that change all the link colors */
@@ -771,7 +771,7 @@ body.mod-toolbox .tb-toolbar a
     box-sizing: initial !important;
 }
 
-/* 
+/*
 ------------
     Feedback window
 ------------
@@ -807,7 +807,7 @@ body.mod-toolbox .tb-toolbar a
 }
 
 
-/* 
+/*
 ------------
     Highlighting plugin related css
 ------------
@@ -820,7 +820,7 @@ body.mod-toolbox .tb-toolbar a
     background-color: #ffd016;
 }
 
-/* 
+/*
 ------------
     Toolbox rate limit countdown.
 ------------
@@ -847,7 +847,7 @@ span.rate-limit-explain {
     margin: auto;
 }
 
-/* 
+/*
 ------------
     Toolbox long load css
 ------------
@@ -925,12 +925,12 @@ span.rate-limit-explain {
     box-shadow: rgba(214, 214, 214, 0.470588) 0 1px 3px 1px;
 }
 
-/* 
+/*
 ========================
 
     TB Modules: some modules have very little specific css, not enough to warrant their own css file.
 
-======================== 
+========================
 */
 
 /*
@@ -979,7 +979,7 @@ span.rate-limit-explain {
 }
 
 
-/* 
+/*
 ------------
     Syntax highlighter
 ------------
@@ -1007,8 +1007,8 @@ span.rate-limit-explain {
 ------------
 /*
 
-/* css fix for banlist module 
-TODO: Find out what this is supposed to fix and put that in the comment instead. 
+/* css fix for banlist module
+TODO: Find out what this is supposed to fix and put that in the comment instead.
 */
 .moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
     background: inherit;
@@ -1025,7 +1025,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 
 /*
 ------------
-    comment.js 
+    comment.js
 ------------
 */
 
@@ -1114,7 +1114,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 
 /*
 ------------
-    config.js 
+    config.js
 ------------
 */
 
@@ -1234,7 +1234,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 
-/* 
+/*
 Icons in the sidebar
 */
 
@@ -1248,12 +1248,12 @@ Icons in the sidebar
 }
 
 
-/* 
+/*
 ========================
 
     Various css things that do not belong anywhere specifically.
 
-======================== 
+========================
 */
 
 
@@ -1277,9 +1277,9 @@ Icons in the sidebar
     background: rgba(162, 162, 162, 0.2) !important;
 }
 
-/* 
+/*
 ------------
-Livedocs css in case someone disabled css on reddit 
+Livedocs css in case someone disabled css on reddit
 ------------
 */
 
@@ -1313,7 +1313,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 }
 
 
-/* 
+/*
 ------------
     Unclear cases
     TODO: Find out if the below css is still needed and put it at the proper place.
@@ -1374,21 +1374,21 @@ body .thing.flaired {
 ========================
 
     RES specific css
-    
-======================== 
+
+========================
 */
 
 .res #BigEditor {
     margin-bottom: 25px !important;
 }
 
-/* 
+/*
 ========================
 
 Night mod "fixes", it is dark alright
 TODO: Redo the below mess in a structured manner AFTER the reddit redesign.
 
-======================== 
+========================
 */
 
 .mod-toolbox.res-nightmode #tb-my-subreddits {

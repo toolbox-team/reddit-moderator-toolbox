@@ -80,7 +80,7 @@ body.mod-toolbox #tb-bottombar #tb-bottombar-contentright {
 
 .mod-toolbox #tb-modmail,
 .mod-toolbox #tb-new_modmail {
-	top: 2px;
+    top: 2px;
     display: inline-block;
     height: 16px;
     overflow: hidden;

@@ -113,6 +113,18 @@ function usernotes() {
             // This is only used in newmodmail until that also gets the event based api.
             if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
                 var things = findThings();
+                var done = false;
+                TBUtils.forEachChunked(things, 30, 100, processThing, function () {
+                    self.log('Done processing things');
+                    TBUtils.forEachChunked(subs, 10, 200, processSub, function () {
+                        if(done)
+                            self.printProfiles();
+                    });
+                },
+                function () {
+                    self.log('Done processing things');
+                    done = true;
+                });
             }
 
 
@@ -140,18 +152,7 @@ function usernotes() {
 
             });
 
-            var done = false;
-            TBUtils.forEachChunked(things, 30, 100, processThing, function () {
-                self.log('Done processing things');
-                TBUtils.forEachChunked(subs, 10, 200, processSub, function () {
-                    if(done)
-                        self.printProfiles();
-                });
-            },
-            function () {
-                self.log('Done processing things');
-                done = true;
-            });
+
         }
 
         function findThings() {

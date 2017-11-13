@@ -353,7 +353,6 @@ function usernotes() {
                 var $thing = $(thing),
                     user = $thing.attr('data-author'),
                     u = getUser(notes.users, user);
-                console.log($thing);
 
                 var $usertag;
                 if (TBUtils.isEditUserPage) {
@@ -384,7 +383,6 @@ function usernotes() {
                     note = noteData.note,
                     date = new Date(noteData.time);
 
-                console.log(noteData);
                 // Add title before note concat.
                 $usertag.attr('title', `${note} (${date.toLocaleString()})`);
 
@@ -426,7 +424,7 @@ function usernotes() {
             let $target = $(e.target);
             let $thing = $target.closest('.ut-thing');
             let $button = $thing.find('#add-user-tag');
-            console.log('target: ', $target);
+
             var subreddit = $button.attr('data-subreddit'),
                 user = $button.attr('data-author'),
                 link = TBUtils.getThingInfo($thing).permalink,

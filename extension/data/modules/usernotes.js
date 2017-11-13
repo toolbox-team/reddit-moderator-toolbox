@@ -111,14 +111,29 @@ function usernotes() {
             self.log('Running usernotes');
             var things = findThings();
 
+
+
             TB.listener.on('author', function(e) {
-                // HACKY: The frontend api doesn't *currently* show what subreddit the username is in, so right now
-                // this will only attach if we're in a subreddit.
-                const url = document.location.pathname.match(/^\/r\/([a-z0-9_]+)/i);
-                if (url) {
-                    const subreddit = url[1];
-                    attachNoteTag($(e.target), subreddit, e.detail.data.author);
+                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const author = e.detail.data.author;
+                $target.addClass('ut-thing');
+                $target.attr('data-subreddit', subreddit);
+                $target.attr('data-author', author);
+
+                if(TBUtils.modsSub(subreddit)) {
+                    attachNoteTag($target, subreddit, author);
+                    foundSubreddit(subreddit);
+                    processSub(subreddit);
+                } else if(!TBUtils.mySubs) {
+                    TBUtils.getModSubs(function () {
+                        attachNoteTag($target, subreddit, author);
+                        foundSubreddit(subreddit);
+                        processSub(subreddit);
+                    });
                 }
+
             });
 
             var done = false;
@@ -338,13 +353,16 @@ function usernotes() {
                 var $thing = $(thing),
                     user = $thing.attr('data-author'),
                     u = getUser(notes.users, user);
+                console.log($thing);
 
                 var $usertag;
                 if (TBUtils.isEditUserPage) {
                     $usertag = $thing.parent().find(`.add-user-tag-${subreddit}`);
+
                 }
                 else {
                     $usertag = $thing.find(`.add-user-tag-${subreddit}`);
+
                 }
                 var isInNewModmailSidebar = $usertag.closest('.ThreadViewer__infobarContainer').length > 0;
 
@@ -366,6 +384,7 @@ function usernotes() {
                     note = noteData.note,
                     date = new Date(noteData.time);
 
+                console.log(noteData);
                 // Add title before note concat.
                 $usertag.attr('title', `${note} (${date.toLocaleString()})`);
 
@@ -404,11 +423,12 @@ function usernotes() {
 
         // Click to open dialog
         $body.on('click', '#add-user-tag', function (e) {
-            var $target = $(e.target),
-                $thing = $target.closest('.ut-thing');
-
-            var subreddit = $target.attr('data-subreddit'),
-                user = $target.attr('data-author'),
+            let $target = $(e.target);
+            let $thing = $target.closest('.ut-thing');
+            let $button = $thing.find('#add-user-tag');
+            console.log('target: ', $target);
+            var subreddit = $button.attr('data-subreddit'),
+                user = $button.attr('data-author'),
                 link = TBUtils.getThingInfo($thing).permalink,
                 disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
 
@@ -666,6 +686,7 @@ function usernotes() {
                     }
 
                     var u = getUser(notes.users, user);
+
                     // User already has notes
                     if (u !== undefined) {
                         self.log('User exists');

@@ -2411,8 +2411,6 @@ function initwrapper() {
 
         // Prep new modmail for toolbox stuff.
         // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
-
-
         function addTbModmailSidebar() {
             setTimeout(function () {
                 let $body = $('body');
@@ -2423,66 +2421,129 @@ function initwrapper() {
         }
         addTbModmailSidebar();
 
-        if(!TBUtils.isNewModmail) {
-            let newThingRunning = false;
-            // NER, load more comments, and mod frame support.
-            let target = document.querySelector('div.content');
+        // Watch for locationHref changes and sent an event with details
+        let locationHref;
 
-            // create an observer instance
-            let observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                    let $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
-                    if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
-                    $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+        // new modmail regex matches.
+        const newMMlistingReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?$/;
+        const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
+        const newMMcreate = /^\/mail\/create\/?$/;
 
-                    $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
-                    // It is entirely possible that TBNewThings is fired multiple times.
-                    // That is why we only set a new timeout if there isn't one set already.
-                    if(!newThingRunning) {
-                        newThingRunning = true;
-                        // Wait a sec for stuff to load.
-                        setTimeout(function () {
-                            newThingRunning = false;
-                            const event = new CustomEvent('TBNewThings');
-                            window.dispatchEvent(event);
-                        }, 1000);
+        // reddit regex matches.
+        const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
+        const subredditFrontpageReg = /^\/r\/([^/]*?)\/(hot|new|rising|controversial)?\/?$/;
+        const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
+        const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
+        const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+
+        // This function after being first called will watch for pushstate changes.
+        // Once a change is detected it will abstract all the context information from url, update TBUtils variables and emit all information in an event.
+        // NOTE: this function is a work in progress, page types are added once needed. Currently supported pages where context are provided are:
+        // NewModmail: listings, conversations, create
+        // reddit frontpage: sorting
+        // subreddits: listing including sorting, submissions, submissions with permalink
+        function watchPushState() {
+            const samePage = locationHref === location.href;
+            if (!samePage) {
+                locationHref = location.href;
+
+                let contextObject = {
+                    'locationHref' : locationHref,
+                    'pageType' : '',
+                    'pageDetails' : {}
+                };
+
+                // new modmail
+                if(location.host === 'mod.reddit.com') {
+
+                    if (newMMlistingReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(newMMlistingReg);
+                        contextObject.pageType = 'modmailListing';
+                        contextObject.pageDetails = {
+                            'listingType': matchDetails[1]
+                        };
+
+                    } else if (newMMconversationReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(newMMconversationReg);
+                        contextObject.pageType = 'modmailListing';
+                        contextObject.pageDetails = {
+                            'conversationType' : matchDetails[1],
+                            'conversationID' : matchDetails[2]
+                        };
+
+                    } else if (newMMcreate.test(location.pathname)) {
+                        contextObject.pageType = 'createModmail';
+
+                    } else {
+                        contextObject.pageType = 'unknown';
                     }
-                });
-            });
+                // other parts of reddit.
+                } else {
+                    if (redditFrontpageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(redditFrontpageReg);
+                        contextObject.pageType = 'frontpage';
+                        contextObject.pageDetails = {
+                            'sortType': matchDetails[1] || 'hot'
+                        };
+                    } else if (subredditFrontpageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(subredditFrontpageReg);
+                        contextObject.pageType = 'subredditFrontpage';
+                        contextObject.pageDetails = {
+                            'subreddit': matchDetails[1],
+                            'sortType': matchDetails[2] || 'hot'
+                        };
+                    } else if (subredditCommentListingReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(subredditCommentListingReg);
+                        contextObject.pageType = 'subredditCommentListing';
+                        contextObject.pageDetails = {
+                            'subreddit': matchDetails[1]
+                        };
+                    } else if (subredditCommentsPageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(subredditCommentsPageReg);
+                        contextObject.pageType = 'subredditCommentsPage';
+                        contextObject.pageDetails = {
+                            'subreddit': matchDetails[1],
+                            'submissionID': matchDetails[2],
+                            'linkSafeTitle': matchDetails[3]
+                        };
+                    } else if (subredditPermalinkCommentsPageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(subredditPermalinkCommentsPageReg);
+                        console.log(matchDetails);
+                        contextObject.pageType = 'subredditCommentPermalink';
+                        contextObject.pageDetails = {
+                            'subreddit': matchDetails[1],
+                            'submissionID': matchDetails[2],
+                            'linkSafeTitle': matchDetails[3],
+                            'commentID': matchDetails[4]
+                        };
+                    // "Unknown" pageType.
+                    } else {
+                        contextObject.pageType = 'unknown';
+                    }
+                }
 
-            // configuration of the observer:
-            // We specifically want all child elements but nothing else.
-            let config = {
-                attributes: false,
-                childList: true,
-                characterData: false,
-                subtree: true
-            };
+                // The timeout is there because locationHref can change before react is done rendering.
+                setTimeout(function(){
+                    window.dispatchEvent(new CustomEvent('TBNewPage'), { detail : contextObject });
+                    console.log(contextObject);
+                }, 500);
 
-            // pass in the target node, as well as the observer options
-            //observer.observe(target, config);
-        } else {
+
+
+            }
+            requestAnimationFrame(watchPushState);
+        }
+
+        watchPushState();
+        // Watch for new things and send out events based on that.
+        if(TBUtils.isNewModmail) {
 
         // For new modmail we do things a bit different.
         // We only listen for dom changes after a user interaction.
         // Resulting in this event being fired less and less wasted requests.
             let newThingRunning = false;
-            let locationHref = location.href;
-            document.body.addEventListener('click', function(){
-                // First we are going to check if this click resulted in a page change.
-                setTimeout(function(){
-                    let samePage = locationHref === location.href;
-                    if (!samePage) {
-                        locationHref = location.href;
-                        let event = new CustomEvent('TBNewPage', {
-                            detail: {
-                                locationHref: locationHref
-                            }
-                        });
-                        window.dispatchEvent(event);
-                    }
-                }, 500);
 
+            document.body.addEventListener('click', function(){
                 let newMMtarget = document.querySelector('body');
 
                 // create an observer instance

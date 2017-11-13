@@ -50,13 +50,14 @@ function modbutton() {
             $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
         }
 
+
+    };
+
+    self.runRedesign = function () {
         // Not a mod, don't bother.
         if (TB.utils.mySubs.length < 1) {
             return;
         }
-    };
-
-    self.runRedesign = function () {
         TB.listener.on('author', function(e) {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;

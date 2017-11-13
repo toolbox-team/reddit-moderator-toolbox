@@ -82,9 +82,11 @@
                 const readyEvent = new Event('reddit.ready');
 
                 document.addEventListener('reddit', this.boundFunc, true);
+                setTimeout(function() {
+                    document.dispatchEvent(loadedEvent);
+                    document.dispatchEvent(readyEvent);
+                }, 500);
 
-                document.dispatchEvent(loadedEvent);
-                document.dispatchEvent(readyEvent);
 
                 this.started = true;
             }

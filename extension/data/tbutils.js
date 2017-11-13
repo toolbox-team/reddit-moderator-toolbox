@@ -58,6 +58,11 @@ function initwrapper() {
         // If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain.
         TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') ? 'https://www.reddit.com' :  `https://${window.location.hostname}`);
 
+        // As the name suggests
+        // TODO: Once the alpha is no longer alpha switch all instances that use.
+        TBUtils.tempBaseDomain = 'https://alpha.reddit.com';
+
+
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 

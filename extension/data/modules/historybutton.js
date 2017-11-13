@@ -35,8 +35,6 @@ function historybutton() {
  * Attach an [H] button to all users
  */
     self.run = function () {
-        var UserButtonHTML = '<span class="history-button">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
-
 
         var $body = $('body');
         if ($body.find('.ThreadViewer').length > 0) {
@@ -47,7 +45,8 @@ function historybutton() {
                     $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
                 }
                 var $tbAttrs = $this.find('.tb-attr');
-                $tbAttrs.append(UserButtonHTML);
+                const UserButtonHTMLnewMM = `<span class="history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>`;
+                $tbAttrs.append(UserButtonHTMLnewMM);
             });
 
             var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
@@ -59,8 +58,14 @@ function historybutton() {
 
 
         } else {
-            $('.entry').not('.tb-history').each(function () {
-                $(this).addClass('tb-history').find('.userattrs').eq(0).after(UserButtonHTML);
+            TB.listener.on('author', function(e) {
+                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+                const $target = $(e.target);
+                const author = e.detail.data.author;
+
+                const UserButtonHTML = `<span class="history-button" data-author="${author}">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
+
+                $target.append(UserButtonHTML);
             });
         }
 
@@ -92,6 +97,7 @@ function historybutton() {
 
                 $body.on('click', '.user-history-button', function (event) {
                     var $this = $(this);
+                    var $target = $(event.currentTarget);
                     var author;
                     if($body.find('.ThreadViewer').length > 0) {
 
@@ -102,7 +108,7 @@ function historybutton() {
                         }
 
                     } else {
-                        author = TBUtils.getThingInfo($(this).closest('.entry')).user;
+                        author = $target.attr('data-author');
                     }
 
                     var positions = TBui.drawPosition(event);

@@ -36,13 +36,9 @@ function usernotes() {
         var subs = [],
             $body = $('body'),
             maxChars = self.setting('maxChars'),
-            showDate = self.setting('showDate'),
-            showOnModPages = self.setting('showOnModPages');
+            showDate = self.setting('showDate');
 
-        var TYPE_THING = 'thing',
-            TYPE_MODMAIL = 'modmail',
-            TYPE_NEW_MODMAIL = 'newmodmail',
-            TYPE_USER = 'user';
+        var TYPE_NEW_MODMAIL = 'newmodmail';
 
         TBUtils.getModSubs(function () {
             self.log('Got mod subs');
@@ -130,6 +126,7 @@ function usernotes() {
 
             // event based handling of author elements.
             TB.listener.on('author', function(e) {
+                console.log(e);
                 // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;

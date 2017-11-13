@@ -1089,7 +1089,7 @@ function initwrapper() {
                 // Macros look at the sidebar and other modules don't need the body.
                 // Todo: Figure out what body to present when activated from modmacro.
                 $textBody = $threadBase.find('.Message__body .md').clone();
-                console.log($textBody);
+
                 $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
                 body = $textBody.text() || '';
                 body = body.replace(/^\s+|\s+$/g, '');
@@ -1227,7 +1227,7 @@ function initwrapper() {
         };
 
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
-            console.log(id);
+
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
                 const data = response.data;
 

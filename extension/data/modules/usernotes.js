@@ -125,12 +125,12 @@ function usernotes() {
                 if(TBUtils.modsSub(subreddit)) {
                     attachNoteTag($target, subreddit, author);
                     foundSubreddit(subreddit);
-                    processSub(subreddit);
+                    processSub(subreddit, $target);
                 } else if(!TBUtils.mySubs) {
                     TBUtils.getModSubs(function () {
                         attachNoteTag($target, subreddit, author);
                         foundSubreddit(subreddit);
-                        processSub(subreddit);
+                        processSub(subreddit, $target);
                     });
                 }
 
@@ -291,7 +291,7 @@ function usernotes() {
             }
         }
 
-        function processSub(subreddit) {
+        function processSub(subreddit, customThings) {
             if (!subreddit) {
                 return;
             }
@@ -320,7 +320,7 @@ function usernotes() {
                 }
 
                 self.getSubredditColors(subreddit, function (colors) {
-                    setNotes(notes, subreddit, colors);
+                    setNotes(notes, subreddit, colors, customThings);
                 });
             });
         }
@@ -338,12 +338,18 @@ function usernotes() {
             return true;
         }
 
-        function setNotes(notes, subreddit, colors) {
+        function setNotes(notes, subreddit, colors, customThings) {
             self.log(`Setting notes for ${subreddit}`);
             self.startProfile('set-notes');
 
             self.startProfile('set-notes-find');
-            var things = $(`.ut-thing[data-subreddit=${subreddit}]`);
+            var things;
+            if (customThings) {
+                things = customThings;
+            } else {
+                things = $(`.ut-thing[data-subreddit=${subreddit}]`);
+            }
+
             self.endProfile('set-notes-find');
 
             TBUtils.forEachChunked(things, 20, 100, function (thing) {

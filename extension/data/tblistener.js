@@ -15,7 +15,8 @@
      * @type {Object.<string, Array<string>>}
      */
     const listenerAliases = {
-        'postAuthor': ['author']
+        'postAuthor': ['author'],
+        'commentAuthor': ['author']
     };
 
     /**

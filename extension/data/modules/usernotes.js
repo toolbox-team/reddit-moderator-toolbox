@@ -109,10 +109,14 @@ function usernotes() {
             }
 
             self.log('Running usernotes');
-            var things = findThings();
+
+            // This is only used in newmodmail until that also gets the event based api.
+            if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
+                var things = findThings();
+            }
 
 
-
+            // event based handling of author elements.
             TB.listener.on('author', function(e) {
                 // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
                 const $target = $(e.target);
@@ -151,86 +155,27 @@ function usernotes() {
         }
 
         function findThings() {
-            self.startProfile('find-things');
 
-            // Find things based on page type
             var $things;
-            if (showOnModPages && TBUtils.isEditUserPage) {
-                self.log('Finding things on mod user page');
-                $things = $('.content span.user:not(.ut-thing)');
-                $things.attr('data-ut-type', TYPE_USER);
-            }
-            else if (TBUtils.isModmail) {
-                $things = $('div.thing.message:not(.ut-thing)');
-                $things.attr('data-ut-type', TYPE_MODMAIL);
-            }
-            else if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
+            if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
                 $things = $('.Thread__message:not(.ut-thing)');
                 $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
-            }
-            else {
-                $things = $('#siteTable div.thing:not(.ut-thing), .commentarea div.thing:not(.ut-thing)');
-                $things.attr('data-ut-type', TYPE_THING);
+                $things.addClass('ut-thing');
             }
 
-            $things.addClass('ut-thing');
 
-            self.endProfile('find-things');
-            return $things;
         }
 
         function processThing(thing) {
             self.startProfile('process-thing');
             var subreddit,
-                user,
-                author,
-                $userattrs;
+                author;
 
             var $thing = $(thing),
                 thingType = $thing.attr('data-ut-type');
             //self.log("Processing thing: " + thingType);
 
-            // Link and comments
-            if (thingType === TYPE_THING) {
-                var thingInfo = TBUtils.getThingInfo($thing);
-
-                subreddit = thingInfo.subreddit,
-                user = thingInfo.user;
-
-                $userattrs = $thing.find(':not(.parent) .userattrs').first();
-
-                if(TBUtils.modsSub(subreddit)) {
-                    attachNoteTag($userattrs, subreddit, true);
-                    foundSubreddit(subreddit);
-                }
-
-            }
-            // Modmail (ugh)
-            else if (thingType === TYPE_MODMAIL) {
-            //TODO: add tag on recipient; may have to reconsider how ut-thing is applied to modmail
-                subreddit = $thing.attr('data-subreddit');
-                var $sender = $thing.find('.sender').first();
-
-                var $author = $sender.find('.author');
-                author = $author.text();
-
-                $thing.attr('data-author', author);
-
-                $userattrs = $sender.find('.userattrs');
-                attachNoteTag($userattrs, subreddit, true);
-                /*else {
-                // moar mod mail fuckery.  Cocksucking motherfucking hell.
-                // don't show your own tag after 'load full conversation'
-                var $head = $thing.find('.head');
-                if ($head.find('recipient') > 0) {
-                    attachNoteTag($head, subreddit);
-                }
-            }*/
-
-                foundSubreddit(subreddit);
-            }
-            // NEW Modmail! (yay)
-            else if (thingType === TYPE_NEW_MODMAIL) {
+            if (thingType === TYPE_NEW_MODMAIL) {
                 subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text(),
                 author = $thing.find('.Message__author').text().substring(2);
 
@@ -245,25 +190,7 @@ function usernotes() {
                 attachNoteTag($tbAttrs, subreddit, false);
 
                 foundSubreddit(subreddit);
-            }
-            // Users on mod pages
-            else if (thingType === TYPE_USER) {
-                subreddit = TBUtils.post_site;
-                $thing.attr('data-subreddit', subreddit);
-
-                var $user = $thing.find('a:first');
-                user = $user.text();
-                if (user) {
-                    $thing.attr('data-author', user);
-                }
-
-                if($.inArray(subreddit, TBUtils.mySubs) > -1) {
-                    attachNoteTag($user, subreddit, true);
-                    foundSubreddit(subreddit);
-                }
-
-            }
-            else {
+            } else {
                 self.log(`Unknown thing type ${thingType} (THIS IS BAD)`);
             }
 

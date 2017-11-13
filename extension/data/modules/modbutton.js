@@ -29,11 +29,6 @@ function modbutton() {
         'title': 'Exclude subs from Global Actions',
         'hidden': !self.setting('globalButton')
     });
-    self.register_setting('showInUsernameArea', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Move mod button from bottom links to the username links'
-    });
 
     // private storage
     self.register_setting('lastAction', {
@@ -45,40 +40,8 @@ function modbutton() {
     var $body = $('body'),
         titleText = 'Perform various mod actions on this user';
 
-    // Add mod button to all users
-    self.processThing = function (thing) {
-        var $thing = $(thing);
-        if (!$thing.hasClass('mod-button')) {
-        // Add the class so we don't add buttons twice.
-            $thing.addClass('mod-button');
-
-            if (!self.setting('showInUsernameArea')) {
-            // Defer info gathering until button is clicked.
-            // try to insert it to the right of first button
-                var $insertionPoint = $thing.find('.flat-list.buttons .first:first');
-                if ($insertionPoint.length == 0) {
-                // if that doesn't work either stick it to the right of the first button
-                    $insertionPoint = $thing.find('.buttons > li:first');
-                }
-                $insertionPoint.after(`<li><a href="javascript:;" title="${titleText}" class="global-mod-button">${self.buttonName}</a></li>`);
-            } else {
-                $thing.find('.userattrs:first')
-                    .after(`&nbsp;<a href="javascript:;" title="${titleText}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
-            }
-        }
-    };
-
     // need this for RES NER support
     self.run = function () {
-    // do it differently on the about mod page.
-        if (TB.utils.isEditUserPage) {
-
-            $('span.user:not(:first)').each(function () {
-                $(this).find('a:first').after(`<span> - <a href="javascript:;" title="${titleText}" class="global-mod-button">${self.buttonName}</a></span>`);
-            });
-
-            return;
-        }
         if ($body.find('.ThreadViewer').length > 0) {
             var modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
 
@@ -91,13 +54,18 @@ function modbutton() {
         if (TB.utils.mySubs.length < 1) {
             return;
         }
+    };
 
-        var $things = $('div.thing .entry:not(.mod-button)');
-        TB.utils.forEachChunked($things, 15, 650, self.processThing);
+    self.runRedesign = function () {
+        TB.listener.on('author', function(e) {
+            const $target = $(e.target);
+            const subreddit = e.detail.data.subreddit.name;
+            const author = e.detail.data.author;
+            const parentID = e.detail.data.post ? e.detail.data.post.id : e.detail.data.comment.id;
 
-    // WIP selector for adding modbutton for #207
-    // lifted from RES, with modifications. thanks /u/honestbleeps
-    // $('div.md a[href^="/u/"]:not([href*="/m/"]), div.md a[href*="reddit.com/u/"]:not([href*="/m/"]), div.wiki-page-content .author');
+            $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`)
+
+        });
     };
 
     /**
@@ -173,7 +141,7 @@ function modbutton() {
                     self.run();
                 }, 750);
             } else {
-                self.run();
+                self.runRedesign();
             }
         });
 
@@ -182,17 +150,15 @@ function modbutton() {
             self.run();
         });
 
-        // Mod button clicked
-        $body.on('click', '.global-mod-button', function (event) {
+        function openModPopup(event, info) {
             var benbutton = event.target; //huehuehue
-            $(benbutton).text('loading...');
+            var $benbutton = $(benbutton);
+            $benbutton.text('loading...');
             self.log('displaying mod button popup');
-
 
             var lastaction = self.setting('lastAction');
 
-            var info = TB.utils.getThingInfo(this, true),
-                subreddit = info.subreddit,
+            var subreddit = info.subreddit,
                 user = info.user,
                 thing_id = info.id;
 
@@ -200,8 +166,8 @@ function modbutton() {
 
             // no user?
             if (!user) {
-                $(benbutton).text('error');
-                $(benbutton).css('color', 'red');
+                $benbutton.text('error');
+                $benbutton.css('color', 'red');
                 // abort
                 return;
             }
@@ -429,9 +395,29 @@ function modbutton() {
             });
 
             // reset button name.
-            $(benbutton).text(self.buttonName);
+            $benbutton.text(self.buttonName);
+        }
+
+        // Mod button clicked
+        $body.on('click', '.global-mod-button', function (event) {
+            var benbutton = event.target; //huehuehue
+            var $benbutton = $(benbutton);
+
+            if (TBUtils.isNewModmail) {
+                var info = TB.utils.getThingInfo(this, true);
+                openModPopup(event, info);
+
+            } else {
+                const id = $benbutton.attr('data-parentID');
+                const subreddit = $benbutton.attr('data-subreddit');
+
+                TB.utils.getApiThingInfo(id, subreddit, true, function(info) {
+                    openModPopup(event, info);
+                });
+            }
 
             return false;
+
         });
 
         // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!

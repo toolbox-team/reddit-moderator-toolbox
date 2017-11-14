@@ -4,9 +4,8 @@ function initwrapper() {
     // We need these before we can do anything.
         TBUtils.modhash = $('form.logout input[name=uh]').val();
 
-        // set logged to true for the alpha as we do not have a proper method yet to determine if someone is logged in.
         // TODO: make sure to change this as soon as we have a proper method to check on this.
-        TBUtils.logged = true;
+        TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || '';
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 

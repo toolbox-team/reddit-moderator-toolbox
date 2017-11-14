@@ -197,18 +197,16 @@ function usernotes() {
 
         function attachNoteTag($element, subreddit, author) {
             // TODO: redo this with template literals
-            var $tag = $('<span>')
-                            .attr('title', `View and add notes about this user for /r/${subreddit}`)
-                            .addClass(`usernote-button usernote-span-${subreddit}`)
-                            .append(
-                                $('<a>')
-                                    .addClass(`tb-bracket-button add-user-tag-${subreddit}`)
-                                    .attr('data-author', author)
-                                    .attr('data-subreddit', subreddit)
-                                    .attr('id', 'add-user-tag').attr('href', 'javascript:;').text('N'));
+            var $tag = $(`
+            <span title="View and add notes about this user for /r/${subreddit}" class="usernote-button usernote-span-${subreddit}">
+                <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" >N</a>
+            </span>
+            `);
 
             $element.append($tag);
         }
+
+
 
         function foundSubreddit(subreddit) {
             if ($.inArray(subreddit, subs) == -1) {
@@ -363,48 +361,51 @@ function usernotes() {
 
             // So Instead of butchering getThingInfo even more we do this as fallback in new modmail.
 
-            var $typeList = $('<tr>').addClass('utagger-type-list'),
-                $noteList = $('<tbody>').append(
-                    $('<tr>').append(
-                        $('<td>').addClass('utagger-notes-td1').text('Author')
-                    ).append(
-                        $('<td>').addClass('utagger-notes-td2').text('Note')
-                    ).append(
-                        $('<td>').addClass('utagger-notes-td3')
-                    )
-                ),
-                $popup = TB.ui.popup(
-                    $('<div>').addClass('utagger-title').append($('<span>').text('User Notes - ')).append($('<a>').attr('href', `//reddit.com/u/${user}`).attr('id', 'utagger-user-link').text(`/u/${user}`)),
-                    [{
-                        content: $('<div>').addClass('utagger-content').append(
-                            $('<table>').addClass('utagger-notes').append($noteList)
-                        ).append(
-                            $('<table>').addClass('utagger-types').append(
-                                $('<tbody>').append($typeList)
-                            )
-                        ).append(
-                            $('<div>').addClass('utagger-input-wrapper').append(
-                                $('<input>').attr('type', 'text').addClass('utagger-user-note').attr('id', 'utagger-user-note-input')
-                                    .attr('placeholder', 'something about the user...')
-                                    .attr('data-link', link).attr('data-subreddit', subreddit).attr('data-user', user)
-                            ).append(
-                                $('<label>').addClass('utagger-include-link').append(
-                                    $('<input>').attr('type', 'checkbox').prop('checked', !disableLink).prop('disabled', disableLink)
-                                ).append(
-                                    $('<span>').text('Include link')
-                                )
-                            )
-                        ),
+            var $popup = TB.ui.popup(
+                `<div class="utagger-title">
+                    <span>User Notes - <a href="${TBUtils.baseDomain}/u/${user}" id="utagger-user-link">/u/${user}</a></span>
+                </div>`,
+                [{
+                    content: `
+                        <div class="utagger-content">
+                            <table class="utagger-notes">
+                                <tbody>
+                                    <tr>
+                                        <td class="utagger-notes-td1">Author</td>
+                                        <td class="utagger-notes-td2">Note</td>
+                                        <td class="utagger-notes-td3"></td></tr>
+                                </tbody>
+                            </table>
+                            <table class="utagger-types">
+                                <tbody>
+                                    <tr class="utagger-type-list"></tr>
+                                </tbody>
+                            </table>
+                            <div class="utagger-input-wrapper">
+                                <input type="text" class="utagger-user-note" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
+                                <label class="utagger-include-link">
+                                    <input type="checkbox" ${!disableLink ? `checked` : ``}${disableLink ? `disabled` : ``}>
+                                    <span>Include link</span>
+                                </label>
+                            </div>
+                        </div>
+                    `,
 
-                        footer: $('<div>').addClass('utagger-footer').append(
-                            $('<span>').addClass('tb-popup-error').css('display', 'none')
-                        ).append(
-                            $('<input>').attr('type', 'button').addClass('utagger-save-user tb-action-button').attr('id', 'utagger-save-user').attr('value', `Save for /r/${subreddit}`)
-                        )
-                    }],
-                    '', // meta to inject in popup header; just a placeholder
-                    'utagger-popup' // class
-                );
+                    footer: `
+                        <div class="utagger-footer">
+                            <span class="tb-popup-error" style="display: none;"></span>
+                            <input type="button" class="utagger-save-user tb-action-button" id="utagger-save-user" value="Save for /r/${subreddit}">
+                        </div>
+                    `
+                }],
+                '', // meta to inject in popup header; just a placeholder
+                'utagger-popup' // class
+            );
+
+            // defined so we can easily add things to these specific areas after loading the notes.
+            var $noteList = $popup.find('.utagger-content .utagger-notes tbody'),
+                $typeList = $popup.find('.utagger-types tbody .utagger-type-list');
+
             // We want to make sure windows fit on the screen.
             var positions = TBui.drawPosition(e);
 
@@ -425,13 +426,14 @@ function usernotes() {
                     self.log(`  ${info.key}`);
                     self.log(`    ${info.text}`);
                     self.log(`    ${info.color}`);
-                    $typeList.append($('<td>').append(
-                        $('<label>').addClass(`utagger-type type-${info.key}`).append(
-                            $('<input>').attr('type', 'checkbox').attr('name', `type-group-${group}`).attr('value', info.key).addClass(`type-input type-input-${info.key}`)
-                        ).append(
-                            $('<span>').text(info.text).css('color', info.color)
-                        ))
-                    );
+                    $typeList.append(`
+                    <td>
+                        <label class="utagger-type type-${info.key}">
+                            <input type="checkbox" name="type-group-${group}" value="${info.key}" class="type-input type-input-${info.key}">
+                            <span style="color: ${info.color}">${info.text}</span>
+                        </label>
+                    </td>
+                    `);
                 });
 
                 // Radio buttons 2.0, now with deselection
@@ -481,39 +483,37 @@ function usernotes() {
                                 timeString = new Date(note.time).toLocaleString();
 
                             // Construct some elements separately
-                            var $timeDiv = $('<div>');
+                            var timeDiv;
 
                             if (note.link) {
                                 if (TBUtils.isNewModmail && !note.link.startsWith('https://mod.reddit.com')) {
                                     note.link = `https://www.reddit.com${note.link}`;
                                 }
-                                $timeDiv.append($(`<a>${timeString}</a>`).attr('href', note.link));
+                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
                             }
                             else {
-                                $timeDiv.text(timeString);
+                                timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
                             }
 
                             var typeSpan = '';
                             if (info && info.text) {
-                                typeSpan = $('<span>').addClass('note-type').css('color', info.color).text(`[${TBUtils.htmlEncode(info.text)}]`);
+                                typeSpan = `<span class="note-type" style="color: ${info.color}">[${TBUtils.htmlEncode(info.text)}]</span>`;
                             }
 
                             // Add note to list
-                            $noteList.append(
-                                $('<tr>').addClass('utagger-note').append(
-                                    $('<td>').addClass('utagger-notes-td1').append(
-                                        $('<div>').addClass('utagger-mod').text(note.mod)
-                                    ).append(
-                                        $timeDiv.addClass('utagger-date').attr('id', `utagger-date-${i}`)
-                                    )
-                                ).append(
-                                    $('<td>').addClass('utagger-notes-td2').append(typeSpan).append($('<span>').addClass('note-text').text(noteString))
-                                ).append(
-                                    $('<td>').addClass('utagger-notes-td3').append(
-                                        $('<img>').addClass('utagger-remove-note').attr('data-note-id', noteId).attr('src', `data:image/png;base64,${TBui.iconDelete}`)
-                                    )
-                                )
-                            );
+                            $noteList.append(`
+                            <tr class="utagger-note">
+                                <td class="utagger-notes-td1">
+                                    <div class="utagger-mod">${note.mod}</div>
+                                    ${timeDiv}
+                                </td>
+                                <td class="utagger-notes-td2">
+                                    ${typeSpan}
+                                    <span class="note-text">${noteString}</span>
+                                </td>
+                                <td class="utagger-notes-td3"><img class="utagger-remove-note" data-note-id="${noteId}" src="data:image/png;base64,${TBui.iconDelete}"></td>
+                            </tr>
+                            `);
                         });
                     }
                     // No notes on user

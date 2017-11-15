@@ -268,47 +268,33 @@ function tbconfig() {
 
         });
 
-        // Now we want to figure out if we are on a subreddit, or not.
-        // If we are on a subreddit we mod, add a button to the moderation tools box.
-        var subreddit;
-        if (TBUtils.post_site && TBUtils.isMod) {
-            subreddit = TBUtils.post_site;
-            // Load the data we need from the wiki.
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                    self.log('Failed: wiki config');
+
+        window.addEventListener('TBNewPage', function (event) {
+
+            if(event.detail.pageDetails.subreddit) {
+                const subreddit = event.detail.pageDetails.subreddit;
+                const subConfigLink = `<span class="toolbox-edit-from-context" data-subreddit="${subreddit}" title="toolbox configuration for /r/${subreddit}"><img src="data:image/png;base64,${TBui.iconWrench}"/>/r/${subreddit} config</span>`;
+                if(TBUtils.modsSub(subreddit)) {
+                    TBui.contextTrigger(`tb-config-link`, true, subConfigLink);
+                } else if(!TBUtils.mySubs) {
+                    TBUtils.getModSubs(function () {
+                        if(TBUtils.modsSub(subreddit)) {
+                            TBui.contextTrigger('tb-config-link', true, subConfigLink);
+                        }
+                    });
                 } else {
-                // At this point we are good to go! Let's add a button!
-                    config = resp;
-
-
+                    TBui.contextTrigger('tb-config-link', false);
                 }
-            });
 
-            var $toolbox = $('#moderation_tools').find('.content .icon-menu'),
-                configLink = `<li><span class="separator"></span><a href="javascript:;" class="toolbox-edit" title="toolbox configuration for this subreddit"><img class="tb-moderation-tools-icons" src="data:image/png;base64,${TBui.iconWrench}"/>toolbox configuration</a></li>`;
-            $toolbox.append(configLink);
-        // If we are not on a subreddit but we are on a queue page we want to add the buttons to the multireddit listing.
-        }
-        else if (TBUtils.isModpage) {
+            } else {
+                TBui.contextTrigger('tb-config-link', false);
+            }
 
-            $body.find('.subscription-box ul li').each(function () {
-                var $this = $(this),
-                    itemSubreddit = $this.find('a.title').text();
-
-                $this.find('a.title').after(`<a href="javascript:;" class="toolbox-edit-from-multi" data-subreddit="${itemSubreddit}" title="toolbox configuration for /r/${itemSubreddit}"><img src="data:image/png;base64,${TBui.iconWrench}"/></a>`);
-            });
-        }
-
-        // Oh dear! One of the buttons we created is clicked! What do we do!!?!
-        // If it is on a subreddit we already know the sub and can just activate the whole bunch.
-        $body.on('click', '.toolbox-edit', function () {
-            showConfig(subreddit, config);
         });
 
         // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
-        $body.on('click', '.toolbox-edit-from-multi', function () {
-            subreddit = $(this).data('subreddit');
+        $body.on('click', '.toolbox-edit-from-context', function () {
+            const subreddit = $(this).data('subreddit');
 
             TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
 

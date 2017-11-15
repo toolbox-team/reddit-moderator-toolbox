@@ -99,6 +99,7 @@
                 "data/modules/devtools.js",
                 "data/modules/support.js",
                 "data/modules/modbar.js",
+                "data/modules/config.js",
                 "data/modules/modbutton.js",
                 "data/modules/notifier.js",
                 "data/modules/usernotes.js",

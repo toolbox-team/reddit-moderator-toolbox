@@ -36,7 +36,8 @@ function usernotes() {
         var subs = [],
             $body = $('body'),
             maxChars = self.setting('maxChars'),
-            showDate = self.setting('showDate');
+            showDate = self.setting('showDate'),
+            firstRun = true;
 
         var TYPE_NEW_MODMAIL = 'newmodmail';
 
@@ -79,6 +80,32 @@ function usernotes() {
             }
 
         });
+
+        function addTBListener() {
+            // event based handling of author elements.
+            TB.listener.on('author', function(e) {
+                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const author = e.detail.data.author;
+                $target.addClass('ut-thing');
+                $target.attr('data-subreddit', subreddit);
+                $target.attr('data-author', author);
+
+                if(TBUtils.modsSub(subreddit)) {
+                    attachNoteTag($target, subreddit, author);
+                    foundSubreddit(subreddit);
+                    processSub(subreddit, $target);
+                } else if(!TBUtils.mySubs) {
+                    TBUtils.getModSubs(function () {
+                        attachNoteTag($target, subreddit, author);
+                        foundSubreddit(subreddit);
+                        processSub(subreddit, $target);
+                    });
+                }
+
+            });
+        }
 
         function run() {
 
@@ -123,31 +150,18 @@ function usernotes() {
                 });
             }
 
+            // We only need to add the listener on pageload.
+            if(firstRun && !TBUtils.isNewModmail) {
+                addTBListener();
+                firstRun = false;
 
-            // event based handling of author elements.
-            TB.listener.on('author', function(e) {
-                console.log(e);
-                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
-                const $target = $(e.target);
-                const subreddit = e.detail.data.subreddit.name;
-                const author = e.detail.data.author;
-                $target.addClass('ut-thing');
-                $target.attr('data-subreddit', subreddit);
-                $target.attr('data-author', author);
+            //
+            } else if(!TBUtils.isNewModmail) {
+                TBUtils.forEachChunked(subs, 10, 200, processSub);
+            }
 
-                if(TBUtils.modsSub(subreddit)) {
-                    attachNoteTag($target, subreddit, author);
-                    foundSubreddit(subreddit);
-                    processSub(subreddit, $target);
-                } else if(!TBUtils.mySubs) {
-                    TBUtils.getModSubs(function () {
-                        attachNoteTag($target, subreddit, author);
-                        foundSubreddit(subreddit);
-                        processSub(subreddit, $target);
-                    });
-                }
 
-            });
+
 
 
         }

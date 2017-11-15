@@ -720,7 +720,6 @@
     TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
-        console.log('context trigger');
         if (!$tbContextMenu.length) {
             // Toolbox context action menu.
             $tbContextMenu = $(`
@@ -751,7 +750,7 @@
             }
 
             // If the menu was empty it was hidden and we need to show it.
-            if(!currentLength.length) {
+            if(!currentLength.length > 0) {
                 $tbContextMenu.show();
             }
         // We are removing a menu item.
@@ -761,7 +760,7 @@
             // Check the new menu length
             const newLength = $tbContextMenuList.find('tr').length;
             // If there is nothing to show anymore we hide the menu.
-            if(!newLength.length) {
+            if(newLength.length < 1) {
                 $tbContextMenu.hide();
             }
 

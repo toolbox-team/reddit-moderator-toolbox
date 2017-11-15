@@ -8,6 +8,54 @@
 
 /*
 ------------
+    context menu,
+------------
+*/
+
+.mod-toolbox  #tb-context-menu-list td {
+    cursor: pointer;
+}
+
+/* Comment search */
+#tb-context-menu {
+    display: none;
+    position: fixed;
+    left: 0px;
+    bottom: 50px;
+    z-index: 6000;
+    padding: 0;
+    overflow: auto;
+    background-color: rgba(226, 238, 250, 1);
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #B6C9DD;
+    text-align: left;
+    z-index: 501;
+}
+
+#tb-context-menu table {
+    width: 100%;
+}
+
+#tb-context-menu table td {
+    padding-top: 3px;
+    padding-right: 10px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+
+}
+
+#tb-context-menu tr {
+    background: rgba(247, 250, 253, 1);
+    border-bottom: solid 1px #CCD1D7;
+}
+
+#tb-context-menu tr:hover {
+    background-color: rgba(174, 212, 250, 0.5);
+}
+
+/*
+------------
     Overlay windows.
     TODO: Clean up css and remove duplicate code.
 ------------

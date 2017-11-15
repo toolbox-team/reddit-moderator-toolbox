@@ -1,4 +1,5 @@
 (function (TBui) {
+    const $body = $('body');
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
@@ -552,7 +553,6 @@
 
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
-            let $body = $('body');
 
             // If there is still a previous feedback element on the page we remove it.
             $body.find('#tb-feedback-window').remove();
@@ -619,7 +619,6 @@
                     bottom: 10px !important
                 }
                 </style>`);
-                let $body = $('body');
                 if (location.host === 'mod.reddit.com') {
                     $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                     $body.append('<div id="tb-loading"></div>');
@@ -707,6 +706,55 @@
     TBui.beforeunload = function () {
         if (TBui.longLoadArray.length > 0) {
             return 'toolbox is still busy!';
+        }
+    };
+
+
+    /**
+     * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
+     * @param {string} triggerId - this will be part of the id given to the element.
+     * @param {boolean} addTrigger - Indicates of the menu item needs to be added or removed.
+     * @param {boolean} triggerText - Text displayed in menu. Not needed when addTrigger is false.
+     */
+
+    TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
+        // These elements we will need in the future.
+        let $tbContextMenu = $body.find('#tb-context-menu');
+
+        if (!$tbContextMenu.length) {
+            // Toolbox context action menu.
+            $tbContextMenu = $(`
+            <div id="tb-context-menu">
+                <table id="tb-context-menu-list">
+                </table >
+            </div>
+            `).appendTo($body);
+        }
+        const $tbContextMenuList = $body.find('#tb-context-menu-list');
+        // We are adding a menu item.
+        if(addTrigger) {
+
+            // Check if there are currently items in the menu.
+            const currentLength = $tbContextMenuList.find('tr').length;
+            // Build the new menu item.
+            const newMenuItem = `<tr id="${triggerId}"><td href="javascript:void(0)">${triggerText}</td></tr>`;
+            // Add the item to the menu.
+            $tbContextMenuList.append(newMenuItem);
+            // If the menu was empty it was hidden and we need to show it.
+            if(!currentLength.length) {
+                $tbContextMenu.show();
+            }
+        // We are removing a menu item.
+        } else {
+            // Remove the menu item.
+            $tbContextMenuList.find(`#${triggerId}`).remove();
+            // Check the new menu length
+            const newLength = $tbContextMenuList.find('tr').length;
+            // If there is nothing to show anymore we hide the menu.
+            if(!newLength.length) {
+                $tbContextMenu.hide();
+            }
+
         }
     };
 

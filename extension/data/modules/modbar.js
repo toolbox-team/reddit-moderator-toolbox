@@ -165,7 +165,7 @@ function modbar() {
             $('#tb-modmailcount').attr('href', modMailUrl);
         }
 
-        const modQueueUrl = TBUtils.baseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+        const modQueueUrl = TBUtils.tempBaseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
         let modBar = $(`
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconHide}" /></a>
@@ -227,7 +227,7 @@ function modbar() {
         // Add unmoderated icon if it is enabled.
 
         if (unmoderatedOn) {
-            const unModQueueUrl = TBUtils.baseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+            const unModQueueUrl = TBUtils.tempBaseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" id="tb-unmoderated"></a>
 <a href="${unModQueueUrl}" class="tb-toolbar" id="tb-unmoderatedcount"></a>
@@ -293,11 +293,11 @@ function modbar() {
                 $(TBUtils.mySubsData).each(function () {
                     subList = `${subList}
 <tr style="border-left: solid 3px ${TBUtils.stringToColor(this.subreddit + subredditColorSalt)} !important;" data-subreddit="${this.subreddit}">
-    <td><a href="${TBUtils.baseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
+    <td><a href="${TBUtils.tempBaseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
         <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="generic-mail"></a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/modqueue" class="generic-modqueue"></a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/unmoderated" class="generic-unmoderated"></a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/modqueue" class="generic-modqueue"></a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/unmoderated" class="generic-unmoderated"></a>
     </td>
 </tr>
 `;

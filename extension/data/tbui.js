@@ -720,7 +720,7 @@
     TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
-
+        console.log('context trigger');
         if (!$tbContextMenu.length) {
             // Toolbox context action menu.
             $tbContextMenu = $(`
@@ -736,10 +736,20 @@
 
             // Check if there are currently items in the menu.
             const currentLength = $tbContextMenuList.find('tr').length;
+
             // Build the new menu item.
             const newMenuItem = `<tr id="${triggerId}"><td href="javascript:void(0)">${triggerText}</td></tr>`;
-            // Add the item to the menu.
-            $tbContextMenuList.append(newMenuItem);
+
+            let $checkExists = $tbContextMenuList.find(`#${triggerId}`);
+
+            // Check if an item with the same id is already in the menu. If so we will replace it.
+            if($checkExists.length) {
+                $checkExists.replaceWith(newMenuItem);
+            } else {
+                // Add the item to the menu.
+                $tbContextMenuList.append(newMenuItem);
+            }
+
             // If the menu was empty it was hidden and we need to show it.
             if(!currentLength.length) {
                 $tbContextMenu.show();

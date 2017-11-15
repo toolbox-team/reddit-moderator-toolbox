@@ -135,6 +135,13 @@
          */
         listener(event) {
             const eventType = event.detail.type;
+            // We already have seen this attribute and do not need duplicates.
+            if(event.target.hasAttribute('data-tb-details')) {
+                return;
+            }
+
+            const detailJSON = JSON.stringify(event.detail);
+            event.target.setAttribute('data-tb-details', detailJSON);
 
             // See if there's any registered listeners listening for eventType
             if (Array.isArray(this.listeners[eventType])) {

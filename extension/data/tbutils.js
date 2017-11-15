@@ -2435,7 +2435,7 @@ function initwrapper() {
 
         // reddit regex matches.
         const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
-        const subredditFrontpageReg = /^\/r\/([^/]*?)\/(hot|new|rising|controversial)?\/?$/;
+        const subredditFrontpageReg = /^\/r\/([^/]*?)\/?(hot|new|rising|controversial)?\/?$/;
         const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
@@ -2528,8 +2528,7 @@ function initwrapper() {
 
                 // The timeout is there because locationHref can change before react is done rendering.
                 setTimeout(function(){
-                    window.dispatchEvent(new CustomEvent('TBNewPage'), { detail : contextObject });
-                    console.log(contextObject);
+                    window.dispatchEvent(new CustomEvent('TBNewPage', { detail : contextObject }));
                 }, 500);
 
 

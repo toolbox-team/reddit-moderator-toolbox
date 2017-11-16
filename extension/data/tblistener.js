@@ -1,15 +1,5 @@
 (function() {
     /**
-     * Tries to get requestAnimationFrame, and falls back on a setTimeout
-     * @type {Function}
-     */
-    const requestAnimationFrame = window.requestAnimationFrame
-                                    || window.webkitRequestAnimationFrame
-                                    || window.mozRequestAnimationFrame
-                                    || window.msRequestAnimationFrame
-                                    || function(cb) { return setTimeout(cb, 16); };
-
-    /**
      * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,
      * for example.
      * @type {Object.<string, Array<string>>}

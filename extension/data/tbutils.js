@@ -59,7 +59,7 @@ function initwrapper() {
 
         // As the name suggests
         // TODO: Once the alpha is no longer alpha switch all instances that use.
-        TBUtils.tempBaseDomain = 'https://alpha.reddit.com';
+        TBUtils.tempBaseDomain = window.location.hostname === 'alpha.reddit.com' ? 'https://alpha.reddit.com' : 'https://www.reddit.com';
 
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
@@ -2129,7 +2129,7 @@ function initwrapper() {
                     return;
                 }
 
-                if (TBUtils.domain !== 'alpha') {
+                if (TBUtils.domain !== 'alpha' || TBUtils.domain !== 'www') {
                     TBui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`);
                     $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;

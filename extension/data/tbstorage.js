@@ -70,7 +70,10 @@ const domain = window.location.hostname.split('.')[0];
 function storagewrapper() {
     (function (TBStorage) {
         // Check if we are logged in and for now if the domain is the alpha test domain
-        if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
+
+        // Disabled for new modmail until we can sort out conflicts with classic toolbox.
+        //if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox').length) return;
+        if (!$('body').find('#USER_DROPDOWN_ID').text() || $('.mod-toolbox').length) return; // not logged in or toolbox is already loaded.
 
 
         const SHORTNAME = 'TBStorage';

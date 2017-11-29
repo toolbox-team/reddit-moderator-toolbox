@@ -2449,9 +2449,11 @@ function initwrapper() {
         function watchPushState() {
             const samePage = locationHref === location.href;
             if (!samePage) {
+                const oldHref = locationHref;
                 locationHref = location.href;
 
                 let contextObject = {
+                    'oldHref' : oldHref,
                     'locationHref' : locationHref,
                     'pageType' : '',
                     'pageDetails' : {}
@@ -2529,7 +2531,7 @@ function initwrapper() {
                 // The timeout is there because locationHref can change before react is done rendering.
                 setTimeout(function(){
                     window.dispatchEvent(new CustomEvent('TBNewPage', { detail : contextObject }));
-                }, 500);
+                }, 100);
 
 
 

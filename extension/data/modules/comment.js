@@ -42,18 +42,35 @@ function comments() {
         'advanced': false,
         'title': 'Show button to hide old comments.'
     });
+    self.register_setting('commentsAsFullPage', {
+        'type': 'boolean',
+        'default': false,
+        'advanced': false,
+        'title': 'Always open comments as new page (instead of lightbox).'
+    });
+
+    const commentsAsFullPage = self.setting('commentsAsFullPage');
 
     self.init = function () {
-        var $body = $('body');
+        let $body = $('body');
         let newThingRunning = false;
 
-        // Perform comment actions on pages where you are mod and which are not modmail.
-
-
+        // Do not open lightbox but go to full comment page.
+        if (commentsAsFullPage) {
+            $body.on('click', 'a', function(event){
+                const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
+                const $this = $(this);
+                const thisHref = $this.attr('href');
+                if(subredditCommentsPageReg.test(thisHref)) {
+                    event.preventDefault();
+                    window.location.href = thisHref;
+                }
+            });
+        }
 
         // Add flat view link.
-        window.addEventListener('TBNewPage', function (event) {
 
+        window.addEventListener('TBNewPage', function (event) {
             if(event.detail.pageType === 'subredditCommentsPage') {
                 TBui.contextTrigger('tb-flatview-link', true, `<span class="tb-loadFlat">comment flat view</a>`);
             } else {
@@ -342,7 +359,7 @@ function comments() {
                 }
             });
         });
-    }
+    };
 
 
 

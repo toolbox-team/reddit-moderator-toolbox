@@ -2129,8 +2129,8 @@ function initwrapper() {
                     return;
                 }
 
-                if (TBUtils.domain !== 'alpha' || TBUtils.domain !== 'www') {
-                    TBui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`);
+                if (TBUtils.domain !== 'alpha' && TBUtils.domain !== 'www') {
+                    TB.ui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`, TB.ui.FEEDBACK_NEGATIVE);
                     $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;
                 }

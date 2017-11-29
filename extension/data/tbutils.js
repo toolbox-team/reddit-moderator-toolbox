@@ -2531,7 +2531,7 @@ function initwrapper() {
                 // The timeout is there because locationHref can change before react is done rendering.
                 setTimeout(function(){
                     window.dispatchEvent(new CustomEvent('TBNewPage', { detail : contextObject }));
-                }, 100);
+                }, 500);
 
 
 

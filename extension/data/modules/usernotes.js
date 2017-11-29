@@ -705,43 +705,44 @@ function usernotes() {
 
     self.usernotesManager = function () {
         var $body = $('body'),
-            showLink = self.setting('unManagerLink');
+            showLink = self.setting('unManagerLink'),
+            subUsenotes,
+            fetchActive = false;
 
-        if (showLink && TBUtils.post_site && TBUtils.isMod) {
-            var $toolbox = $('#moderation_tools').find('.content .icon-menu'),
-                managerLink = `<li><span class="separator"></span>
-                                <a href="/r/${TBUtils.post_site}/about/usernotes" class="tb-un-manager" title="edit usernotes for this subreddit"><img src="data:image/png;base64,${TB.ui.iconUsernotes}" class="tb-moderation-tools-icons"/>usernotes</a>
-                                </li>`;
-            $toolbox.append(managerLink);
 
-        } else if (showLink && TBUtils.isModpage) {
 
-            $body.find('.subscription-box ul li').each(function () {
-                var $this = $(this),
-                    itemSubreddit = $this.find('a.title').text();
 
-                $this.find('a.title').after(`<a href="/r/${itemSubreddit}/about/usernotes" target="_blank" title="edit usernotes /r/${itemSubreddit}"><img src="data:image/png;base64,${TB.ui.iconUsernotes}"/></a>`);
+
+        if (showLink) {
+            window.addEventListener('TBNewPage', function (event) {
+
+                if(event.detail.pageDetails.subreddit) {
+                    const subreddit = event.detail.pageDetails.subreddit;
+                    const managerLink = `<a href="javascript:;" class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}"><img src="data:image/png;base64,${TB.ui.iconUsernotes}" class="tb-moderation-tools-icons"/>usernotes</a>`;
+                    if(TBUtils.modsSub(subreddit)) {
+                        TBui.contextTrigger(`tb-un-config-link`, true, managerLink);
+                    } else if(!TBUtils.mySubs) {
+                        TBUtils.getModSubs(function () {
+                            if(TBUtils.modsSub(subreddit)) {
+                                TBui.contextTrigger('tb-un-config-link', true, managerLink);
+                            }
+                        });
+                    } else {
+                        TBui.contextTrigger('tb-un-config-link', false);
+                    }
+
+                } else {
+                    TBui.contextTrigger('tb-un-config-link', false);
+                }
+
             });
+
         }
 
-        // End it here if we're not on /about/usernotes
-        if (window.location.href.indexOf('/about/usernotes') < 0) return;
-
-        //userNotes.log(TBUtils.post_site);  // that should work?
-        var sub = $('.pagename a:first').html(),
-            $contentClear = $('.content'),
-            subUsenotes;
-
-        $contentClear.html('<div id="tb-un-note-content-wrap"></div>');
-
-        var $siteTable = $contentClear.find('#tb-un-note-content-wrap'),
-            $pageName = $('.pagename');
-
-        $pageName.html($pageName.html().replace(': page not found', ''));//(': page not found', '<ul class="tabmenu"></ul>'));
-        $(document).prop('title', `usernotes - /r/${sub}`);
-
-
         function showSubNotes(status, notes) {
+            let $siteTable = $body.find('#tb-un-note-content-wrap');
+            const sub = $siteTable.attr('data-subreddit');
+
             if (!status || !notes) {
                 var error = `
             <div class="tb-un-info">
@@ -783,6 +784,9 @@ function usernotes() {
                 TBUtils.forEachChunked(Object.keys(notes.users), 50, 50,
                 // Process a user
                     function (user, counter) {
+                        if(!fetchActive) {
+                            return;
+                        }
                         self.startProfile('manager-render-user');
                         var $userContent = $userContentTemplate.clone();
                         $userContent.attr('data-user', user);
@@ -843,7 +847,7 @@ function usernotes() {
                     // Process done
                     function () {
                         self.endProfile('manager-render');
-
+                        fetchActive = false;
                         TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
 
                         var infoHTML = `
@@ -882,6 +886,7 @@ function usernotes() {
 
         function noteManagerRun() {
             self.startProfile('manager-run');
+            const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
             $('time.timeago').timeago();  //what does this do?
 
@@ -1032,12 +1037,39 @@ function usernotes() {
             self.endProfile('manager-run');
         }
 
-        TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
-        setTimeout(function () {
-            self.log(sub);
+        $body.on('click', 'a.tb-un-manager', function(){
+            TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
+            const sub = $(this).attr('data-subreddit');
+
+            TB.ui.overlay(
+                `usernotes - /r/${sub}`,
+                [
+                    {
+                        title: `usernotes - /r/${sub}`,
+                        tooltip: `edit usernotes for /r/${sub}`,
+                        content: `<div id="tb-un-note-content-wrap" data-subreddit="${sub}"></div>`,
+                        footer: ''
+                    }
+                ],
+                [], // extra header buttons
+                'tb-un-editor', // class
+                false // single overriding footer
+            ).appendTo('body');
+            $body.css('overflow', 'hidden');
+            fetchActive = true;
+
             self.getUserNotes(sub, showSubNotes);
-            self.log('done?'); // is that a question or a statement?
-        }, 50);
+        });
+
+        $body.on('click', '.tb-un-editor .close', function () {
+            fetchActive = false;
+            $('.tb-un-editor').remove();
+            $body.css('overflow', 'auto');
+
+        });
+
+
+
 
     };
 

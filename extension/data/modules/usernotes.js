@@ -761,21 +761,18 @@ function usernotes() {
             var userCount = Object.keys(notes.users).length,
                 noteCount = 0;
 
-            var $userContentTemplate = $('<div>').addClass('tb-un-user').attr('data-user', 'NONE').append(
-                $('<div>').addClass('tb-un-user-header').append(
-                    $('<a>').attr('href', 'javascript:;').addClass('tb-un-refresh').attr('data-user', 'NONE').append(
-                        $('<img>').attr('src', `data:image/png;base64,${TB.ui.iconRefresh}`)
-                    )
-                ).append(
-                    $('<a>').attr('href', 'javascript:;').addClass('tb-un-delete').attr('data-user', 'NONE').append(
-                        $('<img>').attr('src', `data:image/png;base64,${TB.ui.iconDelete}`)
-                    )
-                ).append(
-                    $('<span>').addClass('user').append(
-                        $('<a>').attr('href', '/u/NONE').text('/u/NONE')
-                    )
-                )
-            );//.append(
+            var $userContentTemplate = $(`<div class="tb-un-user" data-user="NONE">
+                <div class="tb-un-user-header">
+                    <a class="tb-un-refresh" data-user="NONE" href="javascript:;"><img src="data:image/png;base64,${TB.ui.iconRefresh}"></a>
+                    <a class="tb-un-delete" data-user="NONE" href="javascript:;"><img src="data:image/png;base64,${TB.ui.iconDelete}"></a>
+                    <span class="user">
+                        <a href="/u/NONE">/u/NONE</a>
+                    </span>
+                </div>
+            </div>`);
+
+
+            //.append(
             //    $('<div>').addClass('tb-usernotes')
             //);
 
@@ -810,25 +807,19 @@ function usernotes() {
                                 timeHuman = TBUtils.timeConverterRead(timeUTC);
 
 
-                            var $note = $('<div>').addClass('tb-un-note-details').append(
-                                $('<a>').addClass('tb-un-notedelete').attr('href', 'javascript:;').attr('data-user', user).attr('data-note', key).append(
-                                    $('<img>').attr('src', `data:image/png;base64,${TB.ui.iconDelete}`)
-                                )
-                            ).append(
-                                $('<span>').addClass('note').append(
-                                    $('<span>').addClass('note-type').css('color', color.color).text(`[${color.text}]`)
-                                ).append(
-                                    $('<a>').addClass('note-content').attr('href', val.link).text(val.note)
-                                )
-                            ).append(
-                                $('<span>').text(' - ')
-                            ).append(
-                                $('<span>').addClass('mod').text(`by /u/${val.mod}`)
-                            ).append(
-                                $('<span>').text(' - ')
-                            ).append(
-                                $('<time>').attr('title', timeHuman).attr('datetime', timeISO).addClass('live-timestamp timeago').text(timeISO)
-                            );
+                            var $note = $(`<div class="tb-un-note-details">
+                                <a class="tb-un-notedelete" data-note="${key}" data-user="${user}" href="javascript:;">
+                                    <img src="data:image/png;base64,${TB.ui.iconDelete}">
+                                </a>
+                                <span class="note">
+                                    <span class="note-type">[${color.text}]</span>
+                                    <a class="note-content" href="${val.link}">${val.note}</a>
+                                </span>
+                                <span>-</span>
+                                <span class="mod">by /u/${val.mod}</span>
+                                <span>-</span>
+                                <time class="live-timestamp timeago" datetime="${timeISO}" title="${timeHuman}">${timeISO}</time>
+                            </div>`);
 
                             //notes.append($note);
                             if (color.key === 'none') {

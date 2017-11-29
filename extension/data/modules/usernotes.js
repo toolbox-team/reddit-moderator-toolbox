@@ -81,7 +81,30 @@ function usernotes() {
 
         });
 
+        // Queue the processing of usernotes.
+        let listnerSubs = {};
+        let queueTimeout;
+
+        function queueProcessSub(subreddit, $target) {
+            clearTimeout(queueTimeout);
+            if(listnerSubs.hasOwnProperty(subreddit)) {
+                listnerSubs[subreddit] = listnerSubs[subreddit].add($target);
+            } else {
+                listnerSubs[subreddit] = $target;
+            }
+            queueTimeout = setTimeout(function(){
+                for (let sub in listnerSubs) {
+                    if (listnerSubs.hasOwnProperty(sub)) {
+                        processSub(sub, listnerSubs[sub]);
+                    }
+                }
+                listnerSubs = {};
+            }, 100);
+
+        }
+
         function addTBListener() {
+
             // event based handling of author elements.
             TB.listener.on('author', function(e) {
                 // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
@@ -95,12 +118,12 @@ function usernotes() {
                 if(TBUtils.modsSub(subreddit)) {
                     attachNoteTag($target, subreddit, author);
                     foundSubreddit(subreddit);
-                    processSub(subreddit, $target);
+                    queueProcessSub(subreddit, $target);
                 } else if(!TBUtils.mySubs) {
                     TBUtils.getModSubs(function () {
                         attachNoteTag($target, subreddit, author);
                         foundSubreddit(subreddit);
-                        processSub(subreddit, $target);
+                        queueProcessSub(subreddit, $target);
                     });
                 }
 

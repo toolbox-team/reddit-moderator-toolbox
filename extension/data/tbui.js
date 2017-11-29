@@ -763,7 +763,7 @@
             // Check the new menu length
             const newLength = $tbContextMenuList.find('tr').length;
             // If there is nothing to show anymore we hide the menu.
-            if(newLength.length < 1) {
+            if(newLength < 1) {
                 $tbContextMenu.hide();
             }
 

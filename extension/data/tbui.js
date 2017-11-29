@@ -724,8 +724,11 @@
             // Toolbox context action menu.
             $tbContextMenu = $(`
             <div id="tb-context-menu">
-                <table id="tb-context-menu-list">
-                </table >
+                <div id="tb-context-menu-wrap">
+                    <div id="tb-context-header"> Toolbox context menu </div>
+                    <table id="tb-context-menu-list">
+                    </table >
+                </div>
             </div>
             `).appendTo($body);
         }

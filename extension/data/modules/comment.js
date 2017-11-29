@@ -4,44 +4,6 @@ function comments() {
 
     self.settings['enabled']['default'] = true;
 
-    self.register_setting('hideRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Hide removed comments by default.'
-    });
-    self.register_setting('approveComments', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show approve button on all comments.'
-    });
-    self.register_setting('spamRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show spam button on comments removed as ham.'
-    });
-    self.register_setting('hamSpammed', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show remove (not spam) button on comments removed as spam.'
-    });
-    self.register_setting('highlighted', {
-        'type': 'list',
-        'default': [],
-        'title': 'Highlight keywords, keywords should entered separated by a comma without spaces.'
-    });
-    self.register_setting('highlightTitles', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': true,
-        'title': 'Also highlight titles of submissions.'
-    });
-    self.register_setting('showHideOld', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': false,
-        'title': 'Show button to hide old comments.'
-    });
     self.register_setting('commentsAsFullPage', {
         'type': 'boolean',
         'default': false,

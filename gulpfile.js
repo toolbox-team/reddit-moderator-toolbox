@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const zip = require('gulp-zip');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const jsdoc = require('gulp-jsdoc3');
 
 const src_dir = 'extension';
 const dest_dir = 'build';
@@ -96,4 +97,12 @@ gulp.task('manifoldJS', function() {
     });
 });
 
-gulp.task('default', ['zip', 'manifoldJS']);
+
+
+gulp.task('doc', function (cb) {
+    const jsdocConfig = require('./jsdoc.json');
+    gulp.src(['./extension/data/modules/*.js', './extension/data/*.js'], {read: false})
+        .pipe(jsdoc(jsdocConfig, cb));
+});
+
+gulp.task('default', ['zip', 'manifoldJS', 'doc']);

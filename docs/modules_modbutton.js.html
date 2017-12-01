@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>modules/modbutton.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TBListener.html">TBListener</a><ul class='methods'><li data-type='method'><a href="TBListener.html#clear">clear</a></li><li data-type='method'><a href="TBListener.html#on">on</a></li><li data-type='method'><a href="TBListener.html#start">start</a></li><li data-type='method'><a href="TBListener.html#stop">stop</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-QueueTools.html">QueueTools</a><ul class='methods'><li data-type='method'><a href="module-QueueTools.html#~checkForActions">checkForActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getActions">getActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getModlog">getModlog</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="TBui.html">TBui</a><ul class='methods'><li data-type='method'><a href="TBui.html#.contextTrigger">contextTrigger</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">modules/modbutton.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>function modbutton() {
+
+    var self = new TB.Module('Mod Button');
+    self.shortname = 'ModButton';
+
+    self.settings['enabled']['default'] = true;
+
+    self.register_setting('savedSubs', {
+        'type': 'sublist',
+        'default': [],
+        'title': 'Saved subs (for quick access)'
+    });
+
+    self.register_setting('rememberLastAction', {
+        'type': 'boolean',
+        'default': false,
+        'title': 'Remember last action'
+    });
+    self.register_setting('globalButton', {
+        'type': 'boolean',
+        'default': false,
+        'advanced': true,
+        'title': 'Enable Global Action button'
+    });
+    self.register_setting('excludeGlobal', {
+        'type': 'sublist',
+        'default': [],
+        'advanced': true,
+        'title': 'Exclude subs from Global Actions',
+        'hidden': !self.setting('globalButton')
+    });
+
+    // private storage
+    self.register_setting('lastAction', {
+        'type': 'text',
+        'default': 'ban',
+        'hidden': true
+    });
+
+    var $body = $('body'),
+        titleText = 'Perform various mod actions on this user';
+
+    // need this for RES NER support
+    self.run = function () {
+        if ($body.find('.ThreadViewer').length > 0) {
+            var modButtonHTMLside = `&lt;span class="tb-attr-history InfoBar__recent">&lt;span class="history-button">&lt;a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}&lt;/a>&lt;/span>&lt;/span>`;
+
+            var $sidebar = $body.find('.ThreadViewer__infobar');
+
+            $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
+        }
+
+
+    };
+
+    self.runRedesign = function () {
+        // Not a mod, don't bother.
+        if (TB.utils.mySubs.length &lt; 1) {
+            return;
+        }
+        TB.listener.on('author', function(e) {
+            const $target = $(e.target);
+            const subreddit = e.detail.data.subreddit.name;
+            const author = e.detail.data.author;
+            const parentID = e.detail.data.post ? e.detail.data.post.id : e.detail.data.comment.id;
+
+            $target.append(`&lt;a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}&lt;/a>`)
+
+        });
+    };
+
+    /**
+ *  updates the current savedsubs' listings in the mod button
+ */
+    self.updateSavedSubs = function () {
+    //
+    // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
+    //
+        var $popups = $body.find('.mod-popup'),
+            $savedSubsLists = $popups.find('.saved-subs');
+
+        // clear out the current stuff
+        $savedSubsLists.html('');
+
+        // add our saved subs to the "remove saved subs" dropdown on the setting tab
+        // and to the saved subs savedSubsList on the role tab
+        $popups.each(function () {
+            var $popup = $(this),
+                $savedSubsList = $popup.find('.saved-subs'),
+                currentSub = $popup.find('.subreddit').text();
+
+            // repopulate the saved sub dropdowns with all the subs we mod
+            $popup.find('.edit-subreddits .savedSubs').remove();
+            $popup.find('.edit-subreddits').prepend(TB.ui.selectMultiple(TB.utils.mySubs, self.savedSubs).addClass('savedSubs'));
+
+            $.each(self.savedSubs, function (i, subreddit) {
+            // only subs we moderate
+            // and not the current sub
+                if ($.inArray(subreddit, TB.utils.mySubs) != -1
+                &amp;&amp; subreddit != currentSub
+                ) {
+                    $savedSubsList.append(`&lt;div>&lt;input type="checkbox" class="action-sub" name="action-sub" value="${this
+                    }" id="action-${this}">&lt;label for="action-${this}">&amp;nbsp;&amp;nbsp;/r/${this}&lt;/label>&lt;/div>`);
+                }
+            });
+        });
+
+        $.each(TB.utils.mySubs, function (i, subreddit) {
+            $popups.find(`select.${self.OTHER}`)
+                .append($('&lt;option>', {
+                    value: subreddit
+                })
+                    .text(subreddit));
+        });
+    };
+
+    self.init = function () {
+
+        if (TBUtils.isNewModmail) {
+            self.buttonName = 'Mod Button';
+        } else {
+            self.buttonName = 'mod';
+        }
+
+        self.saveButton = 'Save';
+        self.OTHER = 'other-sub';
+
+        self.savedSubs = self.setting('savedSubs');
+
+        var rememberLastAction = self.setting('rememberLastAction'),
+            showglobal = self.setting('globalButton'),
+            excludeGlobal = self.setting('excludeGlobal');
+
+        self.savedSubs = TB.utils.saneSort(self.savedSubs);
+
+        TB.utils.getModSubs(function () {
+        // it's Go Time™!
+
+        // Unless it is new modmail...
+            if (TBUtils.isNewModmail) {
+                setTimeout(function () {
+                    self.run();
+                }, 750);
+            } else {
+                self.runRedesign();
+            }
+        });
+
+        // NER support.
+        window.addEventListener('TBNewThings', function () {
+            self.run();
+        });
+
+        function openModPopup(event, info) {
+            var benbutton = event.target; //huehuehue
+            var $benbutton = $(benbutton);
+            $benbutton.text('loading...');
+            self.log('displaying mod button popup');
+
+            var lastaction = self.setting('lastAction');
+
+            var subreddit = info.subreddit,
+                user = info.user,
+                thing_id = info.id;
+
+            //$.log('modbutton ' + subreddit, true);
+
+            // no user?
+            if (!user) {
+                $benbutton.text('error');
+                $benbutton.css('color', 'red');
+                // abort
+                return;
+            }
+
+            // generate the .mod-popup jQuery object
+
+            // We want to make sure windows fit on the screen.
+            var positions = TBui.drawPosition(event);
+
+            var $popup = TB.ui.popup(
+                `Mod Actions  - /u/${user}`,
+                [
+                    {
+                        title: 'Role',
+                        id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
+                        tooltip: 'Add or remove user from subreddit ban, contributor, and moderator lists.',
+                        content: `${subreddit
+                            ? `
+                &lt;div class="current-sub">
+                    &lt;input type="checkbox" class="action-sub" name="action-sub" value="${subreddit}" id="action-${subreddit}" checked>
+                    &lt;label for="action-${subreddit}">&amp;nbsp;&amp;nbsp;/r/${subreddit} (current)&lt;/label>
+                &lt;/div>`
+                            : ''
+                        }
+                &lt;div class="saved-subs">
+                &lt;/div>
+                &lt;div class="other-subs">
+                    &lt;input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">
+                    &lt;select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}">&lt;option value="${self.OTHER}">(select subreddit)&lt;/option>&lt;/select>
+                &lt;/div>
+                &lt;div class="ban-note-container">&lt;input id="ban-note" class="ban-note tb-input" type="text" placeholder="(ban note)" maxlength="300">&lt;/input>&lt;br>
+                &lt;textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000">&lt;/textarea>&lt;br>
+                &lt;input type="number" min="1" max="999" name="ban-duration"  class="ban-duration tb-input" placeholder="time (days)">
+                &lt;/div>`,
+                        footer: `
+                &lt;span class="status error left">&lt;/span>
+                &lt;select class="mod-action tb-action-button inline-button">
+                    &lt;option class="mod-action-negative" data-action="banned" data-api="friend">ban&lt;/option>
+                    &lt;option class="mod-action-positive" data-action="banned" data-api="unfriend">unban&lt;/option>
+                    &lt;option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter&lt;/option>
+                    &lt;option class="mod-action-negative" data-action="contributor" data-api="unfriend" >remove submitter&lt;/option>
+                    &lt;option class="mod-action-positive" data-action="moderator" data-api="friend">mod&lt;/option>
+                    &lt;option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod&lt;/option>
+                &lt;/select>
+                &lt;button class="save tb-action-button inline-button">${self.saveButton}&lt;/button>
+                &lt;button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action&lt;/button>`
+                    },
+                    {
+                        title: 'User Flair',
+                        tooltip: 'Edit User Flair.',
+                        content: `
+                    &lt;p style="clear:both;" class="mod-popup-flair-input">&lt;label for="flair-text" class="mod-popup-flair-label">Text:&lt;/label>&lt;input id="flair-text" class="flair-text tb-input" type="text">&lt;/input>&lt;/p>
+                    &lt;p style="clear:both;" class="mod-popup-flair-input">&lt;label for="flair-class" class="mod-popup-flair-label">Class:&lt;/label>&lt;input id="flair-class" class="flair-class tb-input" type="text">&lt;/input>&lt;/p>`,
+                        footer: `
+                &lt;span class="status error left">&lt;/span>
+                &lt;button class="flair-save tb-action-button">Save Flair&lt;/button>`
+                    },
+                    {
+                        title: 'Send Message',
+                        tooltip: 'Send a message from the subreddit.',
+                        content: `
+                    &lt;input id="subreddit-message-subject" class="subreddit-message-subject tb-input" type="text" placeholder="(subject)" maxlength="100">&lt;/input>&lt;br>
+                    &lt;textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" >&lt;/textarea>&lt;br>
+                    &lt;span id="subreddit-message-callback">&lt;/span>
+                    `,
+                        footer: `
+                &lt;span class="status error left">&lt;/span>
+                &lt;button class="message-send tb-action-button">Send Message&lt;/button>`
+                    }
+                ],
+                `&lt;label class="user">${user}&lt;/label>&lt;label class="subreddit">${subreddit}&lt;/label>&lt;label class="thing_id">${thing_id}&lt;/label>`,
+                'mod-popup' // class
+            ).appendTo('body')
+                .css({
+                    left: positions.leftPosition,
+                    top: positions.topPosition,
+                    display: 'block'
+                });
+            var $actionSelect = $popup.find('.mod-action');
+
+            // Set the action before setting up the initial interface
+            if (rememberLastAction) {
+                $actionSelect.val(lastaction);
+            }
+
+            // If we're not banning someone, we don't need these
+            if ($actionSelect.val() !== 'ban') {
+                $popup.find('.ban-note').hide();
+                $popup.find('textarea.ban-message').hide();
+                $popup.find('.ban-duration').hide();
+                $popup.find('.ban-span-include-time').hide();
+            }
+
+            // If we're doing global actions, add the button for that
+            // (there's a display none in the style attribute if this is disabled)
+            if (showglobal) {
+                var $globalButton = $popup.find('.global-button');
+
+                // unless we're doing a ban, because global bans are evil
+                if ($actionSelect.val() === 'ban') {
+                    $globalButton.addClass('action-hidden');
+                }
+                $actionSelect.change(function () {
+                    if (this.value === 'ban') {
+                        $globalButton.addClass('action-hidden');
+                    } else {
+                        $globalButton.removeClass('action-hidden');
+                    }
+                });
+            }
+
+            // Remove options that only apply to subs we mod
+            if (!subreddit) {
+            // Hide the flair tab and message tab
+            // TODO: add a "disabled" state, with tooltip, and use that instead
+            // We can only edit flair in the current sub.
+                $popup.find('.tb-popup-tabs .user_flair').remove();
+                $popup.find('.tb-popup-tabs .send_message').remove();
+            }
+
+            // get pre-definded ban message/note
+            if (subreddit) {
+                self.log('getting ban macros');
+                TBUtils.getConfig(subreddit, function (config) {
+                    var macros = config.banMacros;
+                    if (config &amp;&amp; macros) {
+                        if (macros.banNote){
+                            self.log(macros.banNote);
+                            $popup.find('.ban-note').val(TB.utils.replaceTokens(info, macros.banNote));
+                        }
+                        if (macros.banMessage){
+                            self.log(macros.banMessage);
+                            $popup.find('.ban-message').val(TB.utils.replaceTokens(info, macros.banMessage));
+                        }
+                    }
+                });
+            }
+
+            // only works if we're a mod of the sub in question
+            if (subreddit) {
+                var user_fullname = ''; // type t2_xxx
+
+                // Show if current user is banned, and why. - thanks /u/LowSociety
+                // TODO: Display *when* they were banned, along with ban note. #194
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
+                    var banned = data.data.children;
+                    for (var i = 0; i &lt; banned.length; i++) {
+                        if (banned[i].name.toLowerCase() == user.toLowerCase()) {
+                            user_fullname = banned[i].id; // we need this to extract data from the modlog
+
+                            var timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
+
+                            $popup.find('.current-sub').append($('&lt;div class="already-banned">banned by &lt;a href="#">&lt;/a> &lt;/div>'));
+                            $popup.find('.current-sub .already-banned').append($('&lt;time>').attr('datetime', timestamp.toISOString()).timeago());
+
+                            $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
+                            $popup.find('.ban-note').val(banned[i].note);
+                            $popup.find('.tb-popup-title').css('color', 'red');
+
+                            // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
+                            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
+                                type: 'banuser',
+                                limit: '1000'
+                            }, function (data) {
+                                var logged = data.data.children;
+                                for (var i = 0; i &lt; logged.length; i++) {
+                                    if (logged[i].data.target_fullname == user_fullname) {
+                                        $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(logged[i].data.mod);
+                                        break;
+                                    }
+                                }
+                            });
+
+                            break;
+                        }
+                    }
+                });
+            }
+
+            // if we're on the mod page, it's likely we want to mod them to another sub.
+            // unselect current, change action to 'mod'.
+            if (location.pathname.match(/\/about\/(?:moderator)\/?/)) {
+                $popup.find('select.mod-action option[data-api=friend][data-action=moderator]').attr('selected', 'selected');
+                $popup.find('.ban-note').hide();
+                $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
+
+                $popup.find('textarea.ban-message').hide();
+                $popup.find('.ban-duration').hide();
+                $popup.find('.ban-span-include-time').hide();
+            } else if (location.pathname.match(/\/about\/(?:contributors)\/?/)) {
+                $popup.find('select.mod-action option[data-api=friend][data-action=contributor]').attr('selected', 'selected');
+                $popup.find('.ban-note').hide();
+                $popup.find('.action-sub:checkbox:checked').removeAttr('checked');
+
+                $popup.find('textarea.ban-message').hide();
+                $popup.find('.ban-duration').hide();
+                $popup.find('.ban-span-include-time').hide();
+            }
+
+            // render the saved subs lists
+            self.updateSavedSubs();
+
+            // custom sub changed.
+            $popup.find(`select.${self.OTHER}`).change(function () {
+                $popup.find(`.${self.OTHER}-checkbox`).prop('checked', ($(this).val() !== self.OTHER));
+            });
+
+            // show/hide ban reason text feild.
+            $actionSelect.change(function () {
+                var $banNote = $popup.find('.ban-note'),
+                    $banMessage = $popup.find('textarea.ban-message'),
+                    $banDuration = $popup.find('.ban-duration'),
+                    $banIncludeTime = $popup.find('.ban-span-include-time');
+                if ($(this).val() == 'ban') {
+                    $banNote.show();
+                    $banMessage.show();
+                    $banDuration.show();
+                    $banIncludeTime.show();
+                } else {
+                    $banNote.hide();
+                    $banMessage.hide();
+                    $banDuration.hide();
+                    $banIncludeTime.hide();
+                }
+            });
+
+            // reset button name.
+            $benbutton.text(self.buttonName);
+        }
+
+        // Mod button clicked
+        $body.on('click', '.global-mod-button', function (event) {
+            var benbutton = event.target; //huehuehue
+            var $benbutton = $(benbutton);
+
+            if (TBUtils.isNewModmail) {
+                var info = TB.utils.getThingInfo(this, true);
+                openModPopup(event, info);
+
+            } else {
+                const id = $benbutton.attr('data-parentID');
+                const subreddit = $benbutton.attr('data-subreddit');
+
+                TB.utils.getApiThingInfo(id, subreddit, true, function(info) {
+                    openModPopup(event, info);
+                });
+            }
+
+            return false;
+
+        });
+
+        // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
+        $body.on('click', '.mod-popup .save, .global-button', function () {
+
+            var $button = $(this),
+                $popup = $button.parents('.mod-popup'),
+                $selected = $popup.find('.mod-action :selected'),
+                api = $selected.attr('data-api'),
+                action = $selected.attr('data-action'),
+                actionName = $selected.val(),
+                settingState = api == 'friend',
+                $status = $popup.find('.status'),
+                banReason = $popup.find('.ban-note').val(),
+                banMessage = $popup.find('textarea.ban-message').val(),
+                banDuration = $popup.find('.ban-duration').val(),
+                subreddits = [],
+                user = $popup.find('.user').text();
+
+            banMessage = createBanReason(banMessage);
+
+            self.setting('lastAction', actionName);
+
+
+            // Check dem values.
+            if (!api) return $status.text('error, no action selected');
+
+            if (!$(this).hasClass('global-button')) {
+
+            // Get dem ban subs.
+                $popup.find('.action-sub:checkbox:checked').each(function () {
+                    var subname = $(this).val();
+                    if (subname !== self.OTHER) {
+                        subreddits.push(subname);
+                    }
+                    else {
+                        subname = $(`.${self.OTHER} option:selected`).val();
+                        if (subname !== self.OTHER) {
+                            subreddits.push(subname);
+
+                        }
+                    }
+                });
+
+                // Check dem values.
+                if (subreddits.length &lt; 1) return $status.text('error, no subreddits selected');
+
+                // do it.
+                massAction(subreddits);
+            }
+            else {
+                if (actionName === 'ban') {
+                    $status.text('Yeah...not happening');
+                } else {
+
+                    let confirmban;
+                    if (actionName === 'unban') {
+                        confirmban = confirm(`This will ${actionName} /u/${user} from every subreddit you moderate.   \nAre you sure?`);
+                    }
+                    else {
+                        confirmban = confirm(`This will ${actionName} /u/${user} on every subreddit you moderate.   \nAre you sure?`);
+                    }
+
+                    if (confirmban) {
+                        const subs = TB.utils.mySubs;
+                        excludeGlobal.forEach(function (val) {
+                            subs.splice(subs.indexOf(val), 1);
+                        });
+                        massAction(subs);
+                    }
+
+                }
+            }
+
+            function createBanReason(message) {
+                var reason = '';
+
+                // Add message if exists
+                if (message &amp;&amp; message.length > 0) {
+                    reason += '{0}';
+                }
+
+                return TBUtils.stringFormat(reason, message);
+            }
+
+            function completeCheck(failedSubs) {
+                var failed = failedSubs.length;
+                self.log(`${failed} subs failed`);
+                if (failed > 0) {
+                    self.log(`${failed} subs failed`);
+                    var retry = confirm(`Action complete, however ${failed} failed.  Would you like to retry these?`);
+                    if (retry) {
+                        self.log('retrying');
+                        massAction(failedSubs);
+                    }
+                    else {
+                        self.log('not retrying');
+                        $('.mod-popup').remove();
+                    }
+                }
+                else {
+                    self.log('complete');
+                    $('.mod-popup').remove();
+                //TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
+                }
+            }
+
+            function massAction(subs) {
+                var failedSubs = [];
+
+                TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
+
+                TBUtils.forEachChunkedRateLimit(subs, 20, function (subreddit) {
+                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+
+                    self.log(`banning from: ${subreddit}`);
+                    if (settingState) {
+                        TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
+                            if (success) {
+                                if (!$.isEmptyObject(response) &amp;&amp; !$.isEmptyObject(response.json.errors) &amp;&amp; response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
+
+                                    // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
+
+                                    self.log('no ban message allowed, falling back to no message.');
+                                    banMessage = '';
+                                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success) {
+                                        if (!success) {
+                                            self.log('missed one');
+                                            failedSubs.push(subreddit);
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
+                            }
+                        });
+                    }
+                    else {
+                        TBUtils.unfriendUser(user, action, subreddit, function (success) {
+                            if (!success) {
+                                self.log('missed one');
+                                failedSubs.push(subreddit);
+                            }
+                        });
+                    }
+                },
+
+                function () {
+                    TB.ui.longLoadSpinner(false);
+
+                    window.setTimeout(function () {
+                        completeCheck(failedSubs);
+                    }, 2000);
+
+                });
+
+
+            }
+        });
+
+        // 'cancel' button clicked
+        $body.on('click', '.mod-popup .close', function () {
+            $(this).parents('.mod-popup').remove();
+        });
+
+        // send a message to the user.
+        $body.on('click', '.mod-popup .message-send', function () {
+
+            TB.ui.longLoadSpinner(true);
+            var $popup = $(this).parents('.mod-popup'),
+                user = $popup.find('.user').text(),
+                subreddit = $popup.find('.subreddit').text(),
+                $callbackSpan = $popup.find('.send_message #subreddit-message-callback'),
+                $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
+                $subredditMessage = $popup.find('.send_message .subreddit-message');
+
+            if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
+                $callbackSpan.text('You forgot a subject or message');
+                $callbackSpan.css('color', 'red');
+                TB.ui.longLoadSpinner(false);
+                return;
+            }
+            else {
+                var subject = $subredditMessageSubject.val(),
+                    message = $subredditMessage.val();
+            }
+
+            TBUtils.sendMessage(user, subject, message, subreddit, function (successful, response) {
+                if (!successful) {
+                    $callbackSpan.text(`an error occurred: ${response[0][1]}`);
+                    TB.ui.longLoadSpinner(false);
+                }
+                else {
+                    if (response.json.errors.length) {
+                        $callbackSpan.text(response.json.errors[1]);
+                        TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
+                        TB.ui.longLoadSpinner(false);
+                    }
+                    else {
+                        TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
+                        $callbackSpan.text('message sent');
+                        $callbackSpan.css('color', 'green');
+                        TB.ui.longLoadSpinner(false);
+                    }
+                }
+            });
+
+        });
+
+        // Flair ALL THE THINGS
+        $body.on('click', '.tb-popup-tabs .user_flair', function () {
+            var $popup = $(this).parents('.mod-popup'),
+                user = $popup.find('.user').text(),
+                subreddit = $popup.find('.subreddit').text(),
+                $textinput = $popup.find('.flair-text'),
+                $classinput = $popup.find('.flair-class');
+
+            if (!user || !subreddit)
+                return;
+
+            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, function (resp) {
+                if (!resp || !resp.users || resp.users.length &lt; 1) return;
+
+                $textinput.val(resp.users[0].flair_text);
+                $classinput.val(resp.users[0].flair_css_class);
+            });
+        });
+
+
+        // Edit save button clicked.
+        $body.on('click', '.flair-save', function () {
+            var $popup = $(this).parents('.mod-popup'),
+                $status = $popup.find('.status'),
+                user = $popup.find('.user').text(),
+                subreddit = $popup.find('.subreddit').text(),
+                text = $popup.find('.flair-text').val(),
+                css_class = $popup.find('.flair-class').val();
+
+            TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
+
+            TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
+                if (success) {
+                    TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
+                }
+                else {
+                    self.log(error.responseText);
+                    TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
+                    $status.text(error.responseText);
+                }
+            });
+        });
+    };
+
+    TB.register_module(self);
+}
+
+(function () {
+    window.addEventListener('TBModuleLoaded2', function () {
+        modbutton();
+    });
+})();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 01 2017 17:03:30 GMT+0100 (W. Europe Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

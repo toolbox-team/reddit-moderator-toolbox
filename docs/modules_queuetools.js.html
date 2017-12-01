@@ -1,4 +1,43 @@
-/** @module QueueTools */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>modules/queuetools.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TBListener.html">TBListener</a><ul class='methods'><li data-type='method'><a href="TBListener.html#clear">clear</a></li><li data-type='method'><a href="TBListener.html#on">on</a></li><li data-type='method'><a href="TBListener.html#start">start</a></li><li data-type='method'><a href="TBListener.html#stop">stop</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-QueueTools.html">QueueTools</a><ul class='methods'><li data-type='method'><a href="module-QueueTools.html#~checkForActions">checkForActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getActions">getActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getModlog">getModlog</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="TBui.html">TBui</a><ul class='methods'><li data-type='method'><a href="TBui.html#.contextTrigger">contextTrigger</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">modules/queuetools.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module QueueTools */
 function queuetools() {
     const self = new TB.Module('Queue Tools');
     self.shortname = 'QueueTools';
@@ -49,7 +88,7 @@ function queuetools() {
 
         // Activate on queue pages.
         window.addEventListener('TBNewPage', function (event) {
-            if(expandActionReasonQueue && event.detail.pageType === 'queueListing') {
+            if(expandActionReasonQueue &amp;&amp; event.detail.pageType === 'queueListing') {
                 $body.addClass('tb-show-actions');
             } else {
                 $body.removeClass('tb-show-actions');
@@ -57,7 +96,7 @@ function queuetools() {
 
             // Queue creature
             // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
-            if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
+            if(event.detail.pageType === 'queueListing' &amp;&amp; queueCreature !== 'i_have_no_soul') {
                 let gotQueue = $body.find('.tb-frontend-container').length;
                 if(gotQueue) {
                     fadeOutCreature();
@@ -71,7 +110,7 @@ function queuetools() {
                     if(!gotQueue) {
                         let $noResults = $body.find('#queueCreatureWrapper');
                         if(!$noResults.length) {
-                            $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
+                            $noResults = $('&lt;div id="queueCreatureWrapper">&lt;div id="queueCreature">&lt;/div>&lt;/div>').appendTo($body);
                         }
 
                         $noResults.fadeIn('400');
@@ -186,7 +225,7 @@ function queuetools() {
                 });
 
             // If we do have data but it is being refreshed we wait and try again.
-            } else if (modlogCache.hasOwnProperty(subreddit) && modlogCache[subreddit].activeFetch) {
+            } else if (modlogCache.hasOwnProperty(subreddit) &amp;&amp; modlogCache[subreddit].activeFetch) {
                 setTimeout(function() {
                     getActions(subreddit, fullName, callback);
                 }, 100);
@@ -213,16 +252,16 @@ function queuetools() {
                         getActions(subreddit, id, function(actions) {
                             if(actions) {
                                 let $postActionTable = $(`
-                                <div class="tb-action-details">
-                                    <span class="tb-bracket-button tb-show-action-table">recent mod actions history</span>
-                                    <table class="tb-action-table">
-                                        <tr>
-                                            <th>mod</th>
-                                            <th>action</th>
-                                            <th>time</th>
-                                        </tr>
-                                    </table>
-                                </div>
+                                &lt;div class="tb-action-details">
+                                    &lt;span class="tb-bracket-button tb-show-action-table">recent mod actions history&lt;/span>
+                                    &lt;table class="tb-action-table">
+                                        &lt;tr>
+                                            &lt;th>mod&lt;/th>
+                                            &lt;th>action&lt;/th>
+                                            &lt;th>time&lt;/th>
+                                        &lt;/tr>
+                                    &lt;/table>
+                                &lt;/div>
                                 `);
                                 $.each(actions, function (i, value) {
                                     const mod = value.mod;
@@ -231,11 +270,11 @@ function queuetools() {
                                     const createdTimeAgo = TBUtils.timeConverterISO(value.created_utc);
 
                                     const actionHTML = `
-                                    <tr>
-                                        <td>${mod}</td>
-                                        <td>${action}</td>
-                                        <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
-                                    </tr>
+                                    &lt;tr>
+                                        &lt;td>${mod}&lt;/td>
+                                        &lt;td>${action}&lt;/td>
+                                        &lt;td>&lt;time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}&lt;/time>&lt;/td>
+                                    &lt;/tr>
                                     `;
                                     $postActionTable.find('.tb-action-table').append(actionHTML);
 
@@ -261,3 +300,22 @@ function queuetools() {
         queuetools();
     });
 })();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 01 2017 17:03:30 GMT+0100 (W. Europe Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

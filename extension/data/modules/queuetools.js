@@ -125,7 +125,6 @@ function queuetools() {
                         return;
                     }
                     if(!modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
-                        console.log('first action')
                         modlogCache[subreddit].actions[fullName] = {};
                     }
                     modlogCache[subreddit].actions[fullName][actionID] = value.data;

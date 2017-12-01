@@ -47,7 +47,7 @@ function tbconfig() {
                         content: `
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
+                <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                         footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
@@ -58,7 +58,7 @@ function tbconfig() {
                 <div class="error"><b>Here be dragons! Only edit this if you are absolutely sure what you are doing.</b></div>
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
+                <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                         footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
@@ -77,7 +77,7 @@ function tbconfig() {
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
                 <textarea class="edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
-                <input type="text" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
+                <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
                         footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
                     },
                     {
@@ -98,41 +98,41 @@ function tbconfig() {
                     <td>
                         get reason from /r/:
                     </td><td>
-                        <input class="getfrom" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ``)}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
+                        <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ``)}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logsub /r/:
                     </td><td>
-                        <input class="logsub" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : ``)}"/>
+                        <input class="logsub tb-input" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : ``)}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                        pmsubject:
                     </td><td>
-                       <input class="pmsubject" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ``)}"/>
+                       <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ``)}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logtitle:
                     </td><td>
-                        <input class="logtitle" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ``)}"/>
+                        <input class="logtitle tb-input" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ``)}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         bantitle:
                     </td><td>
-                        <input class="bantitle" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ``)}"/>
+                        <input class="bantitle tb-input" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ``)}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logreason:
                     </td><td>
-                        <input class="logreason" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : ``)}"/>
+                        <input class="logreason tb-input" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : ``)}"/>
                     </td>
                     </tr><tr>
                 </table>`,
@@ -146,10 +146,10 @@ function tbconfig() {
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form">
                     <textarea class="edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
-                    <input type="text" name="removal-title" placeholder="removal reason title" /><br/>
-                    <input type="text" name="flair-text" placeholder="flair text" /><br/>
-                    <input type="text" name="flair-css" placeholder="flair css class" /><br/>
-                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                    <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" /><br/>
+                    <input type="text" class="tb-input" name="flair-text" placeholder="flair text" /><br/>
+                    <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" /><br/>
+                    <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-reason tb-action-button" type="button" value="Save new reason" /><input class="cancel-new-reason tb-action-button" type="button" value="Cancel adding reason" />
                 </span>
                 <table id="tb-removal-reasons-list">
@@ -181,7 +181,7 @@ function tbconfig() {
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <span id="tb-add-mod-macro-form">
                     <textarea class="edit-area"></textarea><br/>
-                    <input type="text" class="macro-title" name="macro-title" placeholder="macro title" /><br>
+                    <input type="text" class="tb-input" class="macro-title" name="macro-title" placeholder="macro title" /><br>
                     <label><input type="checkbox" id="distinguish" checked>distinguish</label>
                     <label><input type="checkbox" id="banuser">ban user</label>
                     <label><input type="checkbox" id="muteuser">mute user</label>
@@ -191,7 +191,7 @@ function tbconfig() {
                     <label><input type="checkbox" id="sticky">sticky comment</label>
                     <label><input type="checkbox" id="archivemodmail">archive modmail</label>
                     <label><input type="checkbox" id="highlightmodmail">highlight modmail</label><br>
-                    <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                    <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                     <input class="save-new-macro tb-action-button" type="button" value="Save new macro"><input class="cancel-new-macro tb-action-button" type="button" value="Cancel adding macro">
                 </span>
                 <table id="tb-mod-macros-list">
@@ -202,7 +202,7 @@ function tbconfig() {
                     {
                         title: 'domain tags',
                         tooltip: 'basic domain tags stuff.',
-                        content: '<p>import tags from /r/:&nbsp;<input class="importfrom" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
+                        content: '<p>import tags from /r/:&nbsp;<input class="importfrom tb-input" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
                         footer: '<input class="import tb-action-button" type="button" value="import" />'
                     },
                     {
@@ -213,7 +213,7 @@ function tbconfig() {
                     <td>
                         Ban note:
                     </td><td>
-                        <input class="banNote" type="text" value="${((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : ``)}"/>
+                        <input class="banNote tb-input" type="text" value="${((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : ``)}"/>
                     </td>
                     </tr>
                     <tr>
@@ -622,10 +622,10 @@ function tbconfig() {
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
                         <span class="removal-reason-edit">
                             <textarea class="edit-area">{{removalReasonText}}</textarea><br/>
-                            <input type="text" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
-                            <input type="text" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
-                            <input type="text" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                            <input type="text" class="tb-input" name="removal-title" placeholder="removal reason title" value="{{removalReasonTitle}}"/><br/>
+                            <input type="text" class="tb-input" name="flair-text" placeholder="flair text" value="{{removalReasonFlairText}}"/><br/>
+                            <input type="text" class="tb-input" name="flair-css" placeholder="flair css class" value="{{removalReasonFlairCSS}}"/><br/>
+                            <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-reason tb-action-button" type="button" value="Save reason" /><input class="cancel-edit-reason tb-action-button" type="button" value="Cancel" />
                         </span>
                     </td>
@@ -721,7 +721,7 @@ function tbconfig() {
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
                         <span class="mod-macro-edit">
                             <textarea class="edit-area">{{modMacroText}}</textarea><br/>
-                            <input type="text" class="macro-title" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>
+                            <input type="text" class="macro-title tb-input" name="macro-title" placeholder="macro title" value="{{modMacroTitle}}" /><br>
                             <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>
                             <label><input type="checkbox" class="{{i}}-banuser" id="banuser">ban user</label>
                             <label><input type="checkbox" class="{{i}}-muteuser" id="muteuser">mute user</label>
@@ -731,7 +731,7 @@ function tbconfig() {
                             <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
                             <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                             <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
-                            <input type="text" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
+                            <input type="text" class="tb-input" name="edit-note" placeholder="reason for wiki edit (optional)" /><br>
                             <input class="save-edit-macro tb-action-button" type="button" value="Save macro" /><input class="cancel-edit-macro tb-action-button" type="button" value="Cancel editing macro" />
                         </span>
                     </td>

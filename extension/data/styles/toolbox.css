@@ -6,6 +6,18 @@
 ========================
 */
 
+
+/*
+------------
+    give input fields a border as reddit strips them.
+------------
+*/
+
+.mod-toolbox .tb-input {
+    border: solid 1px #c7d6e7;
+}
+
+
 /*
 ------------
     context menu,
@@ -15,8 +27,6 @@
 .mod-toolbox  #tb-context-menu-list td {
     cursor: pointer;
 }
-
-
 
 #tb-context-menu {
     display: none;

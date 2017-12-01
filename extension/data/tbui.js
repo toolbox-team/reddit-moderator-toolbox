@@ -511,8 +511,8 @@
 
         let emptyRow = `
             <tr class="tb-map-input-tr">
-                <td><input type="text" name="key"></td>
-                <td><input type="text" name="value"></td>
+                <td><input type="text" class="tb-input" name="key"></td>
+                <td><input type="text" class="tb-input" name="value"></td>
                 <td class="tb-map-input-td-remove">
                     <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>
                 </td>
@@ -535,8 +535,8 @@
             $.each(items, function (key, value) {
                 let $item = $(`
                 <tr class="tb-map-input-tr">
-                    <td><input type="text" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
-                    <td><input type="text" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
+                    <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
+                    <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
                     <td class="tb-map-input-td-remove">
                         <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>
                     </td>

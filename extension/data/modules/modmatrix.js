@@ -294,7 +294,7 @@ function modmatrix() {
         });
 
         // Highlight percentages
-        modMatrixSettings.find('table').append('<tr><td><label for="highlightpercentages">highlight percentages below:</label></td><td><input id="highlightpercentages" type="number" value="0" min="0" max="100" /></td></tr>');
+        modMatrixSettings.find('table').append('<tr><td><label for="highlightpercentages">highlight percentages below:</label></td><td><input id="highlightpercentages" type="number" class="tb-input" value="0" min="0" max="100" /></td></tr>');
         $('#highlightpercentages').change(function () {
             self.highlightPercentages();
         });

@@ -251,7 +251,7 @@ function modbar() {
     <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>
     <div class="tb-popup-content">
         <textarea class="tb-debug-console" rows="20" cols="20"></textarea>
-        <input type="text" class="tb-debug-input" placeholder="eval() in toolbox scope" />
+        <input type="text" class="tb-debug-input tb-input" placeholder="eval() in toolbox scope" />
     </div>
     <div class="tb-popup-footer">
         <select class="module-select tb-action-button inline-button"><option value="${DEFAULT_MODULE}">all modules</option></select>
@@ -279,7 +279,7 @@ function modbar() {
                 subredditColorSalt = self.setting('subredditColorSalt'),
                 mySubsTemplate = `
 <div id="tb-my-subreddits">
-    <input id="tb-livefilter-input" type="text" placeholder="live search" value="">
+    <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
     <span class="tb-livefilter-count">{{livefilterCount}}</span>
     <br>
     <table id="tb-my-subreddit-list">{{subList}}</table>

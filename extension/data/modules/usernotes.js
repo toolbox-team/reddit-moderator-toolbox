@@ -407,7 +407,7 @@ function usernotes() {
                                 </tbody>
                             </table>
                             <div class="utagger-input-wrapper">
-                                <input type="text" class="utagger-user-note" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
+                                <input type="text" class="utagger-user-note tb-input" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
                                 <label class="utagger-include-link">
                                     <input type="checkbox" ${!disableLink ? `checked` : ``}${disableLink ? `disabled` : ``}>
                                     <span>Include link</span>
@@ -897,7 +897,7 @@ function usernotes() {
                         var infoHTML = `
             <div class="tb-un-info">
                 <span class="tb-info">There are {{usercount}} users with {{notecount}} notes.</span>
-                <br> <input id="tb-unote-user-search" type="text" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" placeholder="search for note contents">
+                <br> <input id="tb-unote-user-search" type="text" class="tb-input" placeholder="search for user"> <input id="tb-unote-contents-search" type="text" class="tb-input" placeholder="search for note contents">
                 <br><br>
                 <a id="tb-un-prune-sb" class="tb-general-button" href="javascript:;">Prune deleted/suspended profiles</a>
                 <label><input type="checkbox" class="tb-prune-old"/> Also prune notes from accounts that have been inactive for more than </label>

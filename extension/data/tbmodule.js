@@ -106,8 +106,8 @@ function tbmodule() {
             </a>&nbsp;
         </p>
         <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">
-            <input type="text" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>
-            <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">
+            <input type="text" class="tb-input" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>
+            <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">
         </div>
         `;
 
@@ -116,7 +116,7 @@ function tbmodule() {
                     settingName: 'settingssub',
                     content: `
                         Backup/restore toolbox settings to a wiki page:<br>
-                        <input type="text" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">
+                        <input type="text" class="tb-input" name="settingssub" placeholder="Fill in a private subreddit where you are mod..." value="${TBUtils.htmlEncode(unescape(settingSub))}">
                         <input class="tb-settings-export tb-action-button" type="button" value="backup">
                         <input class="tb-settings-import tb-action-button" type="button" value="restore">
                         <b> Important:</b> This will reload the page without saving!
@@ -152,13 +152,13 @@ function tbmodule() {
                 {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
-                        <input type="text" name="longLength" value="${longLength}">`,
+                        <input type="text" class="tb-input" name="longLength" value="${longLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>
-                      <input type="text" name="shortLength" value="${shortLength}">`,
+                      <input type="text" class="tb-input" name="shortLength" value="${shortLength}">`,
                     display: (advancedMode) ? '' : dispalyNone
                 },
                 {
@@ -529,8 +529,8 @@ function tbmodule() {
                                 </a>&nbsp;
                             </p>
                             <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
-                                <input type="text" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
-                                <input type="text" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
+                                <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
+                                <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toggle_modules&setting=${name}">
                             </div>
                         `);
 
@@ -612,7 +612,7 @@ function tbmodule() {
                         }
                         case 'number':
                         {
-                            $setting.append($('<label>').append($('<input type="number" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${title}`));
+                            $setting.append($('<label>').append($('<input type="number" class="tb-input" />').prop('min', options.min).prop('max', options.max).prop('step', options.step).val(module.setting(setting))).append(` ${title}`));
                             break;
                         }
                         case 'array':
@@ -634,7 +634,7 @@ function tbmodule() {
                         case 'list':
                         {
                             $setting.append(`${title}:<br />`);
-                            $setting.append($('<input type="text" />').val(module.setting(setting)));
+                            $setting.append($('<input type="text" class="tb-input" />').val(module.setting(setting)));
                             break;
                         }
                         case 'sublist':
@@ -792,8 +792,8 @@ body {
                             $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
                             } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass}"><img src="data:image/png;base64,${TB.ui.iconLink}" /></a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
-                            `<input  type="text" readonly="readonly" value="${redditLink}"/><br>` +
-                            `<input  type="text" readonly="readonly" value="${internetLink}"/></div>`);
+                            `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>` +
+                            `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`);
 
                             $setting = $('<span>').attr('class', 'setting-item').append($setting);
                             $setting.attr('id', `tb-${moduleName}-${settingName}`);

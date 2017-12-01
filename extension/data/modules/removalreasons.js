@@ -447,7 +447,7 @@ function removalreasons() {
                 </div>
                 <div id="log-reason" style="display:${logDisplay}">
                     <p>Log Reason(s):
-                        <input id="log-reason-input" type="text" name="logReason" value="${data.logReason}" />
+                        <input id="log-reason-input" type="text" class="tb-input" name="logReason" value="${data.logReason}" />
                     </p>
                     <p>
                         (Used for posting a log to /r/${data.logSub}. Will only be used when "send" is clicked.) </label>

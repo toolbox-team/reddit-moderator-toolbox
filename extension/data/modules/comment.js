@@ -259,8 +259,8 @@ function comments() {
                 // Add filter options to the page
                 if (!$body.find('#tb-flatview-search').length) {
                     var $filterHTML = $(`<div id="tb-flatview-search">
-                        Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input" placeholder="start typing...">
-                        Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input" placeholder="start typing...">
+                        Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input tb-input" placeholder="start typing...">
+                        Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input tb-input" placeholder="start typing...">
                         <span id="tb-flatview-search-count"></span>
                     </div>`);
                     var FilterRightPosition = $('.side').outerWidth() + 5;

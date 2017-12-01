@@ -199,9 +199,9 @@ function modbutton() {
                     <input type="checkbox" class="action-sub ${self.OTHER}-checkbox name="action-sub" value="${self.OTHER}">
                     <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>
                 </div>
-                <div class="ban-note-container"><input id="ban-note" class="ban-note" type="text" placeholder="(ban note)" maxlength="300"></input><br>
+                <div class="ban-note-container"><input id="ban-note" class="ban-note tb-input" type="text" placeholder="(ban note)" maxlength="300"></input><br>
                 <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>
-                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration" placeholder="time (days)">
+                <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration tb-input" placeholder="time (days)">
                 </div>`,
                         footer: `
                 <span class="status error left"></span>
@@ -220,8 +220,8 @@ function modbutton() {
                         title: 'User Flair',
                         tooltip: 'Edit User Flair.',
                         content: `
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text" type="text"></input></p>
-                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class" type="text"></input></p>`,
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-text" class="mod-popup-flair-label">Text:</label><input id="flair-text" class="flair-text tb-input" type="text"></input></p>
+                    <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
                         footer: `
                 <span class="status error left"></span>
                 <button class="flair-save tb-action-button">Save Flair</button>`
@@ -230,7 +230,7 @@ function modbutton() {
                         title: 'Send Message',
                         tooltip: 'Send a message from the subreddit.',
                         content: `
-                    <input id="subreddit-message-subject" class="subreddit-message-subject" type="text" placeholder="(subject)" maxlength="100"></input><br>
+                    <input id="subreddit-message-subject" class="subreddit-message-subject tb-input" type="text" placeholder="(subject)" maxlength="100"></input><br>
                     <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>
                     <span id="subreddit-message-callback"></span>
                     `,

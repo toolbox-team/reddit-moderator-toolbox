@@ -15,7 +15,9 @@
     "fs": "0.0.2",
     "gulp": "^3.9.0",
     "gulp-jsdoc3": "^1.0.1",
+    "gulp-util": "^3.0.8",
     "gulp-zip": "^3.0.2",
+    "vinyl-ftp": "^0.6.0",
     "vinyl-paths": "^2.1.0",
     "yargs": "^4.3.2"
   }

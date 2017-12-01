@@ -3,6 +3,8 @@ const zip = require('gulp-zip');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const jsdoc = require('gulp-jsdoc3');
+const ftp = require( 'vinyl-ftp' );
+const gutil = require( 'gulp-util' );
 
 const src_dir = 'extension';
 const dest_dir = 'build';
@@ -105,4 +107,24 @@ gulp.task('doc', function (cb) {
         .pipe(jsdoc(jsdocConfig, cb));
 });
 
-gulp.task('default', ['zip', 'manifoldJS', 'doc']);
+
+gulp.task('doc2ftp', ['doc'], function (cb) {
+    if (fs.existsSync('ftpconfig.json')) {
+        const ftpConfig= JSON.parse(fs.readFileSync('ftpconfig.json', "utf8"));
+        ftpConfig.log = gutil.log;
+        const conn = ftp.create(ftpConfig);
+        const globs = [
+            'docs/**'
+        ];
+        return gulp.src( globs, { base: '.', buffer: false } )
+        .pipe( conn.newer( '/' ) ) // only upload newer files
+        .pipe( conn.dest( '/' ) );
+    } else {
+       cb()
+    }
+
+});
+
+
+gulp.task('default', ['zip', 'manifoldJS', 'doc', 'doc2ftp']);
+

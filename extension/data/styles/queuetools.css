@@ -1,25 +1,13 @@
-.mod-toolbox .modtools-active {
-    padding-top: 40px !important;
-}
+#queueCreatureWrapper {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    top: 300px;
+    display: none;
+  }
 
-.mod-toolbox .menuarea.modtools {
-    background-color: rgba(237, 241, 245, 0.8);
-    border: 1px solid #B6C9DD;
-    z-index: 500;
-    overflow: visible;
-}
-
-.drop-choices.lightdrop {
-    z-index: 501;
-}
-
-
-#modtab-threshold {
-    width: 20px;
-}
-
-.mod-toolbox.res-nightmode .tb-popup.context-button-popup {
-    background-color: #262626;
+#queueCreature {
+display: inline-block;
 }
 
 
@@ -95,106 +83,3 @@
     font-size: 10px;
 }
 
-
-/* Color borders */
-.comment.tb-subreddit-color {
-    padding-left: 10px;
-}
-
-
-/* queue sort counter */
-
-a.tb-subreddit-item-count {
-    background-color: #D56F18;
-    color: #FFF;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 0px 3px 3px 3px;
-    margin: 3px;
-    border-radius: 2px;
-    display: inline-block;
-}
-
-.subscription-box li {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-flex-wrap: wrap;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-
-a.tb-subreddit-item-count {
-    -ms-flex-order: -1;
-    order: -1;
-}
-
-.mod-toolbox .tb-sort-subs {
-    float: right;
-    margin: 4px;
-    border: 1px solid #B6C9DD;
-    border-left: 2px solid #B6C9DD;
-    padding: 3px;
-    background-color: white;
-    font-size: 13px;
-}
-
-.mod-toolbox .tb-sort-subs:hover {
-    background-color: #E2EEFA;
-}
-
-.mod-toolbox .tb-sort-subs img {
-    margin-bottom: -3px;
-    margin-right: 3px;
-}
-
-
-/* pretty buttons */
-.menuarea.modtools a.pretty-button {
-    border-radius: 0 !important;
-    border-width: 1px 1px 1px 2px;
-    border-color: #778696;
-    border-style: solid;
-    padding: 1px 5px;
-    text-align: center;
-    font-size: inherit;
-}
-
-.menuarea.modtools  .pretty-button.negative {
-    background: none;
-    background-color: #EDBDBE;
-
-}
-.menuarea.modtools  .pretty-button.positive {
-    background: none;
-    background-color: #D1EABF;
-}
-
-.menuarea.modtools  .pretty-button.neutral {
-    background-image: none;
-    background-color: #D5D5D5;
-}
-
-.menuarea.modtools  .pretty-button.negative.pressed {
-    background: none;
-    background-color: #886B6C;
-
-}
-.menuarea.modtools  .pretty-button.positive.pressed {
-    background: none;
-    background-color: #849479;
-}
-
-.menuarea.modtools  .pretty-button.neutral.pressed {
-    background-image: none;
-    background-color: #9E9C9C;
-}
-
-
-/* Highlight for zero-scored posts */
-.tb-zero-highlight {
-    background: #FFF1C4;
-}

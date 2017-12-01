@@ -2439,6 +2439,8 @@ function initwrapper() {
         const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+        const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated)\/?$/;
+
 
         // This function after being first called will watch for pushstate changes.
         // Once a change is detected it will abstract all the context information from url, update TBUtils variables and emit all information in an event.
@@ -2514,7 +2516,6 @@ function initwrapper() {
                         };
                     } else if (subredditPermalinkCommentsPageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(subredditPermalinkCommentsPageReg);
-                        console.log(matchDetails);
                         contextObject.pageType = 'subredditCommentPermalink';
                         contextObject.pageDetails = {
                             'subreddit': matchDetails[1],
@@ -2523,6 +2524,13 @@ function initwrapper() {
                             'commentID': matchDetails[4]
                         };
                     // "Unknown" pageType.
+                    } else if (queuePageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(queuePageReg);
+                        contextObject.pageType = 'queueListing';
+                        contextObject.pageDetails = {
+                            'subreddit': matchDetails[1],
+                            'queueType': matchDetails[2]
+                        };
                     } else {
                         contextObject.pageType = 'unknown';
                     }

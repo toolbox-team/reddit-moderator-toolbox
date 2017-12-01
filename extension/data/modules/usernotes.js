@@ -572,6 +572,11 @@ function usernotes() {
                 // TODO: fix this once the api returns this info.
                 if($thing.attr('data-tb-type') === 'commentAuthor') {
                     const $thingSibling = $thing.siblings('.tb-frontend-container[data-tb-type="comment"]');
+                    if(!$thingSibling.length) {
+                        disableLink = true;
+                        createUserPopup(subreddit, user, link, disableLink, e);
+                        return;
+                    }
                     thingDetails = JSON.parse($thingSibling.attr('data-tb-details'));
                     thingID = thingDetails.data.id;
                 // Assume post for now.

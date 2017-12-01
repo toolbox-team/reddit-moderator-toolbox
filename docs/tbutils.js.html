@@ -1,4 +1,43 @@
-function initwrapper() {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>tbutils.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TBListener.html">TBListener</a><ul class='methods'><li data-type='method'><a href="TBListener.html#clear">clear</a></li><li data-type='method'><a href="TBListener.html#on">on</a></li><li data-type='method'><a href="TBListener.html#start">start</a></li><li data-type='method'><a href="TBListener.html#stop">stop</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-QueueTools.html">QueueTools</a><ul class='methods'><li data-type='method'><a href="module-QueueTools.html#~checkForActions">checkForActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getActions">getActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getModlog">getModlog</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="TBui.html">TBui</a><ul class='methods'><li data-type='method'><a href="TBui.html#.contextTrigger">contextTrigger</a></li></ul></li><li><a href="TBUtils.html">TBUtils</a><ul class='methods'><li data-type='method'><a href="TBUtils.html#.oauthToken">oauthToken</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">tbutils.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>function initwrapper() {
     /** @namespace  TBUtils */
     (function (TBUtils) {
 
@@ -18,7 +57,7 @@ function initwrapper() {
         // Probably a better way to this but... ah well.
         // We don't need it right away, just when using POST
         // TODO: make this work properly in the context of alpha redesign
-        if(!TBUtils.modhash && (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com')) {
+        if(!TBUtils.modhash &amp;&amp; (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com')) {
             $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
                 TBUtils.modhash = result.data.modhash;
 
@@ -271,7 +310,7 @@ function initwrapper() {
             TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
         }
 
-        if (!toolboxDevs || toolboxDevs.length < 1) {
+        if (!toolboxDevs || toolboxDevs.length &lt; 1) {
             getToolboxDevs();
         }
 
@@ -374,13 +413,13 @@ function initwrapper() {
                 const vivaldiRegex = new RegExp(/\((.*?)\).*Vivaldi\/([0-9.]*?)$/);
                 const yandexRegex = new RegExp(/\((.*?)\).*YaBrowser\/([0-9.]*).*$/);
                 const chromeRegex = new RegExp(/\((.*?)\).*Chrome\/([0-9.]*).*$/);
-                if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 && vivaldiRegex.test(browserUserAgent)) { // Vivaldi
+                if (navigator.userAgent.indexOf(' Vivaldi/') >= 0 &amp;&amp; vivaldiRegex.test(browserUserAgent)) { // Vivaldi
                     browserMatchedInfo = browserUserAgent.match(vivaldiRegex);
                     debugObject.browser = 'Vivaldi';
                     debugObject.browserVersion = browserMatchedInfo[2];
                     debugObject.platformInformation = browserMatchedInfo[1];
 
-                } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 && yandexRegex.test(browserUserAgent)) { // Yandex
+                } else if (navigator.userAgent.indexOf(' YaBrowser/') >= 0 &amp;&amp; yandexRegex.test(browserUserAgent)) { // Yandex
                     browserMatchedInfo = browserUserAgent.match(yandexRegex);
                     debugObject.browser = 'Yandex';
                     debugObject.browserVersion = browserMatchedInfo[2];
@@ -472,10 +511,10 @@ function initwrapper() {
             if ( array.length === 0 ) {
                 return array;
             }
-            while (old_index < 0) {
+            while (old_index &lt; 0) {
                 old_index += array.length;
             }
-            while (new_index < 0) {
+            while (new_index &lt; 0) {
                 new_index += array.length;
             }
             if (new_index >= array.length) {
@@ -491,15 +530,15 @@ function initwrapper() {
         TBUtils.escapeHTML = function(html)
         {
             const  entityMap = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;',
-                '/': '&#x2F;'
+                '&amp;': '&amp;amp;',
+                '&lt;': '&amp;lt;',
+                '>': '&amp;gt;',
+                '"': '&amp;quot;',
+                "'": '&amp;#39;',
+                '/': '&amp;#x2F;'
             };
 
-            return String(html).replace(/[&<>"'\/]/g, function (s) {
+            return String(html).replace(/[&amp;&lt;>"'\/]/g, function (s) {
                 return entityMap[s];
             });
         };
@@ -507,15 +546,15 @@ function initwrapper() {
         TBUtils.unescapeHTML = function(html)
         {
             const  entityMap = {
-                '&amp;': '&',
-                '&lt;': '<',
-                '&gt;': '>',
-                '&quot;': '"',
-                '&#39;': "'",
-                '&#x2F;' : '/'
+                '&amp;amp;': '&amp;',
+                '&amp;lt;': '&lt;',
+                '&amp;gt;': '>',
+                '&amp;quot;': '"',
+                '&amp;#39;': "'",
+                '&amp;#x2F;' : '/'
             };
 
-            return String(html).replace(/[&<>"'\/]/g, function (s) {
+            return String(html).replace(/[&amp;&lt;>"'\/]/g, function (s) {
                 return entityMap[s];
             });
         };
@@ -534,7 +573,7 @@ function initwrapper() {
                 milliseconds = mins * 60 * 1000;
 
             // Never return less than one min.
-            if (milliseconds < oneMin) {
+            if (milliseconds &lt; oneMin) {
                 milliseconds = oneMin;
             }
 
@@ -583,7 +622,7 @@ function initwrapper() {
             let  a1 = 0;
             let  f = 28;
 
-            if (((tyear % 4 === 0) && (tyear % 100 !== 0)) || (tyear % 400 === 0)) {
+            if (((tyear % 4 === 0) &amp;&amp; (tyear % 100 !== 0)) || (tyear % 400 === 0)) {
                 f = 29;
             }
 
@@ -592,25 +631,25 @@ function initwrapper() {
             let  dyear = tyear - ayear;
 
             let  dmonth = tmonth - amonth;
-            if (dmonth < 0 && dyear > 0) {
+            if (dmonth &lt; 0 &amp;&amp; dyear > 0) {
                 dmonth = dmonth + 12;
                 dyear--;
             }
 
             let dday = tday - aday;
-            if (dday < 0) {
+            if (dday &lt; 0) {
                 if (dmonth > 0) {
                     let ma = amonth + tmonth;
 
                     if (ma >= 12) {
                         ma = ma - 12;
                     }
-                    if (ma < 0) {
+                    if (ma &lt; 0) {
                         ma = ma + 12;
                     }
                     dday = dday + m[ma];
                     dmonth--;
-                    if (dmonth < 0) {
+                    if (dmonth &lt; 0) {
                         dyear--;
                         dmonth = dmonth + 12;
                     }
@@ -630,13 +669,13 @@ function initwrapper() {
             if (dday === 0) {
                 d = 0;
             }
-            if ((y === 1) && (mm === 1)) {
+            if ((y === 1) &amp;&amp; (mm === 1)) {
                 a1 = 1;
             }
-            if ((y === 1) && (d === 1)) {
+            if ((y === 1) &amp;&amp; (d === 1)) {
                 a1 = 1;
             }
-            if ((mm === 1) && (d === 1)) {
+            if ((mm === 1) &amp;&amp; (d === 1)) {
                 a2 = 1;
             }
             if (y === 1) {
@@ -646,10 +685,10 @@ function initwrapper() {
                     returnString += `${dyear} years`;
                 }
             }
-            if ((a1 === 1) && (a2 === 0)) {
+            if ((a1 === 1) &amp;&amp; (a2 === 0)) {
                 returnString += ' and ';
             }
-            if ((a1 === 1) && (a2 === 1)) {
+            if ((a1 === 1) &amp;&amp; (a2 === 1)) {
                 returnString += ', ';
             }
             if (mm === 1) {
@@ -720,9 +759,9 @@ function initwrapper() {
 
 
         TBUtils.alert = function (message, callback, showClose) {
-            let $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
+            let $noteDiv = $(`&lt;div id="tb-notification-alert">&lt;span>${message}&lt;/span>&lt;/div>`);
             if (showClose) {
-                $noteDiv.append(`<img src="data:image/png;base64,${TBui.iconClose}" class="note-close" title="Close" />`);
+                $noteDiv.append(`&lt;img src="data:image/png;base64,${TBui.iconClose}" class="note-close" title="Close" />`);
             }
             $noteDiv.appendTo('body');
 
@@ -747,7 +786,7 @@ function initwrapper() {
                     TBUtils.alert(note.text, function (resp) {
                         seenNotes.push(note.id);
                         TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
-                        if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
+                        if (note.link &amp;&amp; note.link.match(/^(https?\:|\/)/i) &amp;&amp; resp) window.open(note.link);
                     }, false);
                 }
             }
@@ -755,16 +794,16 @@ function initwrapper() {
             //platform check.
             switch (note.platform) {
             case 'firefox':
-                if (TBUtils.browser == FIREFOX && TBUtils.isExtension) show();
+                if (TBUtils.browser == FIREFOX &amp;&amp; TBUtils.isExtension) show();
                 break;
             case 'chrome':
-                if (TBUtils.browser == CHROME && TBUtils.isExtension) show();
+                if (TBUtils.browser == CHROME &amp;&amp; TBUtils.isExtension) show();
                 break;
             case 'opera':
-                if (TBUtils.browser == OPERA && TBUtils.isExtension) show();
+                if (TBUtils.browser == OPERA &amp;&amp; TBUtils.isExtension) show();
                 break;
             case 'edge':
-                if (TBUtils.browser == EDGE && TBUtils.isExtension) show();
+                if (TBUtils.browser == EDGE &amp;&amp; TBUtils.isExtension) show();
                 break;
             case 'script':
                 if (!TBUtils.isExtension) show();
@@ -793,8 +832,8 @@ function initwrapper() {
             // fallback on a javascript notification
                 $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
                 body = body.substring(0, 600);
-                body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                body = body.replace(/(?:\r\n|\r|\n)/g, '&lt;br />');
+                $.sticky(`&lt;p>${body}&lt;/p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
 
             } else if (Notification.permission === 'granted') {
 
@@ -860,9 +899,9 @@ function initwrapper() {
                 });
             } else {
             // They have the option enabled, but won't grant permissions, so fall back.
-                body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
+                body = body.replace(/(?:\r\n|\r|\n)/g, '&lt;br />');
                 body = body.substring(0, 600);
-                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                $.sticky(`&lt;p>${body}&lt;/p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
             }
         };
 
@@ -897,7 +936,7 @@ function initwrapper() {
 
         TBUtils.sortBy = function (arr, prop) {
             return arr.sort(function (a, b) {
-                if (a[prop] < b[prop]) return 1;
+                if (a[prop] &lt; b[prop]) return 1;
                 if (a[prop] > b[prop]) return -1;
                 return 0;
             });
@@ -917,7 +956,7 @@ function initwrapper() {
         // Because normal .sort() is case sensitive.
         TBUtils.saneSort = function (arr) {
             return arr.sort(function (a, b) {
-                if (a.toLowerCase() < b.toLowerCase()) return -1;
+                if (a.toLowerCase() &lt; b.toLowerCase()) return -1;
                 if (a.toLowerCase() > b.toLowerCase()) return 1;
                 return 0;
             });
@@ -927,7 +966,7 @@ function initwrapper() {
         TBUtils.saneSortAs = function (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() > b.toLowerCase()) return -1;
-                if (a.toLowerCase() < b.toLowerCase()) return 1;
+                if (a.toLowerCase() &lt; b.toLowerCase()) return 1;
                 return 0;
             });
         };
@@ -946,7 +985,7 @@ function initwrapper() {
         TBUtils.getModSubs = function (callback) {
             $.log('getting mod subs', false, SHORTNAME);
             // If it has been more than ten minutes, refresh mod cache.
-            if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
+            if (TBUtils.mySubs.length &lt; 1 || TBUtils.mySubsData.length &lt; 1) {
             // time to refresh
                 if (gettingModSubs) {
                 // we're already fetching a new list, so enqueue the callback
@@ -1005,7 +1044,7 @@ function initwrapper() {
                 });
 
                 if (after) {
-                    const URL = `${modMineURL}&after=${after}`;
+                    const URL = `${modMineURL}&amp;after=${after}`;
                     getSubs(URL);
                 } else {
                     TBUtils.mySubs = TBUtils.saneSort(TBUtils.mySubs);
@@ -1053,8 +1092,8 @@ function initwrapper() {
         TBUtils.getHashParameter = function(ParameterKey)
         {
             let hash = window.location.hash.substring(1);
-            let params = hash.split('&');
-            for (let i = 0; i < params.length; i++)
+            let params = hash.split('&amp;');
+            for (let i = 0; i &lt; params.length; i++)
             {
                 let keyval = params[i].split('='),
                     key = keyval[0].replace('?','');
@@ -1154,7 +1193,7 @@ function initwrapper() {
                 spam = removal[2] == 'spam' || removal[2] == 'confirm spam';
                 ham = removal[2] == 'remove not spam';
 
-                if (TBUtils.isEditUserPage && !user) {
+                if (TBUtils.isEditUserPage &amp;&amp; !user) {
                     user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
                 }
 
@@ -1177,14 +1216,14 @@ function initwrapper() {
 
                     // If there is only one use present and it says "to" it means that this is not the user sending the message.
 
-                    if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
+                    if ($entry.find('.sender a.author').length &lt; 1 &amp;&amp; $entry.find('.recipient a.author').length > 0) {
                         user = TBUtils.logged;
                     }
 
                     if (user === '') {
                         user = TBUtils.logged;
 
-                        if (!subreddit || subreddit.indexOf('/r/') < 1) {
+                        if (!subreddit || subreddit.indexOf('/r/') &lt; 1) {
                         // Find a better way, I double dog dare ya!
                             subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
                         }
@@ -1199,7 +1238,7 @@ function initwrapper() {
             subreddit = TBUtils.cleanSubredditName(subreddit);
 
             // Not a mod, reset current sub.
-            if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+            if (modCheck &amp;&amp; $.inArray(subreddit, TBUtils.mySubs) === -1) {
                 subreddit = '';
             }
 
@@ -1211,7 +1250,7 @@ function initwrapper() {
 
             // If the permalink is relative, stick the current domain name in.
             // Only do so if a permalink is found.
-            if (permalink && permalink.slice(0,1) == '/')
+            if (permalink &amp;&amp; permalink.slice(0,1) == '/')
             {
                 permalink = TBUtils.baseDomain + permalink;
             }
@@ -1261,7 +1300,7 @@ function initwrapper() {
                 subreddit = TBUtils.cleanSubredditName(subreddit);
 
                 // Not a mod, reset current sub.
-                if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                if (modCheck &amp;&amp; $.inArray(subreddit, TBUtils.mySubs) === -1) {
                     subreddit = '';
                 }
 
@@ -1272,7 +1311,7 @@ function initwrapper() {
 
                 // If the permalink is relative, stick the current domain name in.
                 // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0,1) == '/')
+                if (permalink &amp;&amp; permalink.slice(0,1) == '/')
                 {
                     permalink = TBUtils.baseDomain + permalink;
                 }
@@ -1321,21 +1360,21 @@ function initwrapper() {
         // Prevent page lock while parsing things.  (stolen from RES)
         TBUtils.forEachChunked = function (array, chunkSize, delay, call, complete, start) {
             if (array === null) finish();
-            if (chunkSize === null || chunkSize < 1) finish();
-            if (delay === null || delay < 0) finish();
+            if (chunkSize === null || chunkSize &lt; 1) finish();
+            if (delay === null || delay &lt; 0) finish();
             if (call === null) finish();
             let counter = 0;
 
             function doChunk() {
-                if (counter == 0 && start) {
+                if (counter == 0 &amp;&amp; start) {
                     start();
                 }
 
-                for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+                for (let end = Math.min(array.length, counter + chunkSize); counter &lt; end; counter++) {
                     const ret = call(array[counter], counter, array);
                     if (ret === false) return window.setTimeout(finish, delay);
                 }
-                if (counter < array.length) {
+                if (counter &lt; array.length) {
                     window.setTimeout(doChunk, delay);
                 } else {
                     window.setTimeout(finish, delay);
@@ -1353,7 +1392,7 @@ function initwrapper() {
         // Chunking abused for ratelimiting
         TBUtils.forEachChunkedRateLimit = function (array, chunkSize, call, complete, start) {
             if (array === null) finish();
-            if (chunkSize === null || chunkSize < 1) finish();
+            if (chunkSize === null || chunkSize &lt; 1) finish();
             if (call === null) finish();
 
             let length = array.length,
@@ -1362,20 +1401,20 @@ function initwrapper() {
                 limit = (length > chunkSize) ? 20 : 0;
 
 
-            if (length < chunkSize) {
+            if (length &lt; chunkSize) {
                 chunkSize = length;
             }
 
             function doChunk() {
-                if (counter == 0 && start) {
+                if (counter == 0 &amp;&amp; start) {
                     start();
                 }
 
-                for (let end = Math.min(array.length, counter + chunkSize); counter < end; counter++) {
+                for (let end = Math.min(array.length, counter + chunkSize); counter &lt; end; counter++) {
                     const ret = call(array[counter], counter, array);
                     if (ret === false) return window.setTimeout(finish, delay);
                 }
-                if (counter < array.length) {
+                if (counter &lt; array.length) {
                     window.setTimeout(getRatelimit, delay);
                 } else {
                     window.setTimeout(finish, delay);
@@ -1392,7 +1431,7 @@ function initwrapper() {
                         $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                         if (!$body.find('#ratelimit-counter').length) {
-                            $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
+                            $('div[role="main"].content').append('&lt;span id="ratelimit-counter">&lt;/span>');
                         }
 
                         if (chunkSize + limit > parseInt(ratelimitRemaining)) {
@@ -1402,7 +1441,7 @@ function initwrapper() {
 
                             function timer() {
                                 count = count - 1;
-                                if (count <= 0) {
+                                if (count &lt;= 0) {
                                     clearInterval(counter);
                                     $body.find('#ratelimit-counter').empty();
                                     $body.find('#ratelimit-counter').hide();
@@ -1413,9 +1452,9 @@ function initwrapper() {
                                 const minutes = Math.floor(count / 60);
                                 const seconds = count - minutes * 60;
 
-                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
-                    <br><br>
-                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
+                                $body.find('#ratelimit-counter').html(`&lt;b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.&lt;/b>
+                    &lt;br>&lt;br>
+                    &lt;span class="rate-limit-explain">&lt;b>tl;dr&lt;/b> &lt;br> Reddit's current ratelimit allows for &lt;i>${ratelimitRemaining} requests&lt;/i>. We are currently trying to process &lt;i>${parseInt(chunkSize)} items&lt;/i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.&lt;/span>
                     `);
                             }
 
@@ -1653,9 +1692,9 @@ function initwrapper() {
         // them before parsing.
         TBUtils.unescapeJSON = function (val) {
             if (typeof(val) == 'string') {
-                val = val.replace(/&quot;/g, '"')
-                    .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-                    .replace(/&amp;/g, '&');
+                val = val.replace(/&amp;quot;/g, '"')
+                    .replace(/&amp;gt;/g, '>').replace(/&amp;lt;/g, '&lt;')
+                    .replace(/&amp;amp;/g, '&amp;');
             }
             return val;
         };
@@ -1714,7 +1753,7 @@ function initwrapper() {
                         return;
                     }
                     let reason;
-                    if (jqXHR.responseText.startsWith('<!doctype html>')) {
+                    if (jqXHR.responseText.startsWith('&lt;!doctype html>')) {
                         reason = 'WIKI_PAGE_UNKNOWN';
                     } else {
                         reason = JSON.parse(jqXHR.responseText).reason || '';
@@ -1789,7 +1828,7 @@ function initwrapper() {
                 if (banDuration > 999) {
                     banDuration = 999;
                 }
-                if (banDuration < 0) {
+                if (banDuration &lt; 0) {
                     banDuration = 0;
                 }
             }
@@ -1942,7 +1981,7 @@ function initwrapper() {
                 api_type: 'json'
             })
                 .done(function (response) {
-                    if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (response.json.hasOwnProperty('errors') &amp;&amp; response.json.errors.length > 0) {
                         $.log(`Failed to post comment to on ${parent}`, false, SHORTNAME);
                         $.log(response.json.fails, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
@@ -1974,7 +2013,7 @@ function initwrapper() {
                 api_type: 'json'
             })
                 .done(function (response) {
-                    if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (response.json.hasOwnProperty('errors') &amp;&amp; response.json.errors.length > 0) {
                         $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
@@ -2004,7 +2043,7 @@ function initwrapper() {
                 api_type: 'json'
             })
                 .done(function (response) {
-                    if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
+                    if (response.json.hasOwnProperty('errors') &amp;&amp; response.json.errors.length > 0) {
                         $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
                         if (typeof callback !== 'undefined')
@@ -2067,7 +2106,7 @@ function initwrapper() {
         };
 
         TBUtils.getLastActive = function(user, callback){
-            $.get(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
+            $.get(`${TBUtils.baseDomain}/user/${user}.json?limit=1&amp;sort=new`, {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
@@ -2127,7 +2166,7 @@ function initwrapper() {
                 let key = this.split('.'),
                     setting = TBStorage.getSetting(key[0], key[1], null);
 
-                if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
+                if (setting !== null &amp;&amp; setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
                     settingsObject[this] = setting;
                 }
             });
@@ -2144,13 +2183,13 @@ function initwrapper() {
                     return;
                 }
 
-                if (TBUtils.domain !== 'alpha' && TBUtils.domain !== 'www') {
+                if (TBUtils.domain !== 'alpha' &amp;&amp; TBUtils.domain !== 'www') {
                     TB.ui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`, TB.ui.FEEDBACK_NEGATIVE);
                     $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;
                 }
 
-                if (resp['Utils.lastversion'] < 300) {
+                if (resp['Utils.lastversion'] &lt; 300) {
                     TBui.textFeedback('Cannot import from a toolbox version under 3.0');
                     $.log('Cannot import from a toolbox version under 3.0', false, SHORTNAME);
                     return;
@@ -2176,10 +2215,10 @@ function initwrapper() {
             // str to hash
             let hash,
                 color;
-            for (let i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
+            for (let i = 0, hash = 0; i &lt; str.length; hash = str.charCodeAt(i++) + ((hash &lt;&lt; 5) - hash));
 
             // int/hash to hex
-            for (let index = 0, color = '#'; index < 3; color += (`00${((hash >> index++ * 8) & 0xFF).toString(16)}`).slice(-2));
+            for (let index = 0, color = '#'; index &lt; 3; color += (`00${((hash >> index++ * 8) &amp; 0xFF).toString(16)}`).slice(-2));
 
             return color;
         };
@@ -2187,7 +2226,7 @@ function initwrapper() {
 
         // Added back for MMP's live mod mail.
         TBUtils.compressHTML = function (src) {
-            return src.replace(/(\n+|\s+)?&lt;/g, '<').replace(/&gt;(\n+|\s+)?/g, '>').replace(/&amp;/g, '&').replace(/\n/g, '').replace(/child" > {2}False/, 'child">');
+            return src.replace(/(\n+|\s+)?&amp;lt;/g, '&lt;').replace(/&amp;gt;(\n+|\s+)?/g, '>').replace(/&amp;amp;/g, '&amp;').replace(/\n/g, '').replace(/child" > {2}False/, 'child">');
         };
 
 
@@ -2197,7 +2236,7 @@ function initwrapper() {
             $.get(URL, function (resp) {
                 if (!resp) callback(null);
 
-                resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
+                resp = resp.replace(/&lt;script(.|\s)*?\/script>/g, '');
                 let $sitetable = $(resp).find('#siteTable');
                 $sitetable.find('.nextprev').remove();
 
@@ -2215,11 +2254,11 @@ function initwrapper() {
         TBUtils.htmlEncode = function (value) {
         //create a in-memory div, set it's inner text(which jQuery automatically encodes)
         //then grab the encoded contents back out.  The div never exists on the page.
-            return $('<div/>').text(value).html();
+            return $('&lt;div/>').text(value).html();
         };
 
         TBUtils.htmlDecode = function (value) {
-            return $('<div/>').html(value).text();
+            return $('&lt;div/>').html(value).text();
         };
 
 
@@ -2276,18 +2315,18 @@ function initwrapper() {
                     return;
                 }
 
-                // See if this subreddit is configured for leaving reasons using <removalreasons2>
+                // See if this subreddit is configured for leaving reasons using &lt;removalreasons2>
                 let match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-                    .replace(/&lt;/g, '<')
-                    .replace(/&gt;/g, '>')
-                    .match(/<removereasons2>.+<\/removereasons2>/i);
+                    .replace(/&amp;lt;/g, '&lt;')
+                    .replace(/&amp;gt;/g, '>')
+                    .match(/&lt;removereasons2>.+&lt;\/removereasons2>/i);
 
-                // Try falling back to <removalreasons>
+                // Try falling back to &lt;removalreasons>
                 if (!match) {
                     match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .match(/<removereasons>.+<\/removereasons>/i);
+                        .replace(/&amp;lt;/g, '&lt;')
+                        .replace(/&amp;gt;/g, '>')
+                        .match(/&lt;removereasons>.+&lt;\/removereasons>/i);
                 }
 
                 // Neither can be found.
@@ -2433,8 +2472,8 @@ function initwrapper() {
         function addTbModmailSidebar() {
             setTimeout(function () {
                 let $body = $('body');
-                if (TBUtils.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
-                    $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
+                if (TBUtils.isNewModmail &amp;&amp; $body.find('.ThreadViewer').length > 0 &amp;&amp; $body.find('.tb-recents').length === 0) {
+                    $body.find('.ThreadViewer__infobar').append('&lt;div class="InfoBar__recents tb-recents">&lt;div class="InfoBar__recentsTitle">Toolbox functions:&lt;/div>&lt;/div>');
                 }
             }, 500);
         }
@@ -2672,17 +2711,17 @@ function initwrapper() {
         // get toolbox news
         (function getNotes() {
             TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
-                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+                if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length &lt; 1) return;
 
                 // Custom FF nag for updates.
-                if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
+                if (resp.ffVersion > TBUtils.shortVersion &amp;&amp; TBUtils.browser == FIREFOX &amp;&amp; TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
                         if (clicked) window.open(`http://creesch.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
                     });
                     return; //don't spam the user with notes until they have the current version.
                 }
 
-                if (TBUtils.debugMode && resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
+                if (TBUtils.debugMode &amp;&amp; resp.devVersion > TBUtils.shortVersion &amp;&amp; TBUtils.isExtension) {
                     TBUtils.alert('There is a new development version of toolbox!  Click here to update.', function (clicked) {
                         if (clicked) window.open('https://github.com/creesch/reddit-moderator-toolbox');
                     });
@@ -2695,7 +2734,7 @@ function initwrapper() {
 
             if (betaRelease) {
                 TBUtils.readFromWiki('tb_beta', 'tbnotes', true, function (resp) {
-                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length &lt; 1) return;
                     $(resp.notes).each(function () {
                         TBUtils.showNote(this);
                     });
@@ -2705,7 +2744,7 @@ function initwrapper() {
             //check dev sub, if debugMode
             if (TBUtils.debugMode) {
                 TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
-                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
+                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length &lt; 1) {
                         TBUtils.devMode = false;
                         TBUtils.devModeLock = true;
                         return;
@@ -2737,3 +2776,22 @@ function initwrapper() {
         window.dispatchEvent(event);
     });
 })();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

@@ -330,9 +330,26 @@ function initwrapper() {
             };
         }
 
+        /**
+         * @typedef {Object} debugObject
+         * @memberof TBUtils
+         * @property {string} toolboxVersion The toolbox version
+         * @property {string} browser Browser used (Firefox, Chrome, etc)
+         * @property {string} browserVersion The version of the browser
+         * @property {string} platformInformation Other platform information
+         * @property {boolean} betaMode toolbox beta mode enabled
+         * @property {boolean} debugMode  toolbox debugMode enabled
+         * @property {boolean} compactMode toolbox compactmode enabled
+         * @property {boolean} advancedSettings toolbox advanced settings enabled
+         * @property {boolean} cookiesEnabled Browser cookies enabled
+         */
 
-        // Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
-
+        /**
+         * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
+         * @function debugInformation
+         * @memberof TBUtils
+         * @returns {TBUtils.debugObject} Object with debug information
+         */
         TBUtils.debugInformation = function debugInformation() {
         // Using console log so we are more likely to get this information if toolbox is failing.
             console.log('debug information for browser');
@@ -434,10 +451,16 @@ function initwrapper() {
         };
 
 
-
+        /**
+         * Fetches the toolbox dev from /r/toolbox or falls back to a predefined list.
+         * @function getToolboxDevs
+         * @memberof TBUtils
+         * @returns {array} List of toolbox devs
+         */
         TBUtils.getToolboxDevs = function getToolboxDevs() {
             getToolboxDevs();
         };
+
 
         TBUtils.sendEvent = function (tbuEvent){
             $.log(`Sending event: ${tbuEvent}`, false, SHORTNAME);
@@ -450,7 +473,17 @@ function initwrapper() {
             window.addEventListener(tbuEvent, callback);
         };
 
-        // https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
+
+        /**
+         * Moves an item in an array from one index to another
+         * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
+         * @function moveArrayItem
+         * @memberof TBUtils
+         * @param {array} array input array
+         * @param {integer} old_index
+         * @param {integer} new_index
+         * @returns {array} New array with moved items
+         */
         TBUtils.moveArrayItem = function moveArrayItem(array, old_index, new_index) {
             if ( array.length === 0 ) {
                 return array;
@@ -471,6 +504,13 @@ function initwrapper() {
             return array;
         };
 
+        /**
+         * Escape html entities
+         * @function escapeHTML
+         * @memberof TBUtils
+         * @param {string} html input html
+         * @returns {string} HTML string with escaped entities
+         */
         TBUtils.escapeHTML = function(html)
         {
             const  entityMap = {
@@ -487,6 +527,13 @@ function initwrapper() {
             });
         };
 
+        /**
+         * Unescape html entities
+         * @function unescapeHTML
+         * @memberof TBUtils
+         * @param {string} html input html
+         * @returns {string} HTML string with unescaped entities
+         */
         TBUtils.unescapeHTML = function(html)
         {
             const  entityMap = {
@@ -503,15 +550,34 @@ function initwrapper() {
             });
         };
 
+        /**
+         * Give the nummeric value in milliseconds  of the current date and time.
+         * @function getTime
+         * @memberof TBUtils
+         * @returns {integer} time value in milliseconds
+         */
         TBUtils.getTime = function() {
             return new Date().getTime();
         };
 
+        /**
+         * Give a random number
+         * @function getRandomNumber
+         * @memberof TBUtils
+         * @param {integer} maxInt Max integer
+         * @returns {integer} random number
+         */
         TBUtils.getRandomNumber = function(maxInt){
             return Math.floor((Math.random() * maxInt) + 1);
         };
 
-        //
+        /**
+         * Convert minutes to milliseconds
+         * @function minutesToMilliseconds
+         * @memberof TBUtils
+         * @param {integer} mins Minutes
+         * @returns {integer} Milliseconds
+         */
         TBUtils.minutesToMilliseconds = function (mins) {
             let  oneMin = 60000,
                 milliseconds = mins * 60 * 1000;
@@ -524,15 +590,35 @@ function initwrapper() {
             return milliseconds;
         };
 
+        /**
+         * Convert days to milliseconds
+         * @function daysToMilliseconds
+         * @memberof TBUtils
+         * @param {integer} days days
+         * @returns {integer} Milliseconds
+         */
         TBUtils.daysToMilliseconds = function (days) {
             return days * 86400000;
         };
 
+        /**
+         * Convert milliseconds to days
+         * @function millisecondsToDays
+         * @memberof TBUtils
+         * @param {integer} milliseconds milliseconds
+         * @returns {integer} Days
+         */
         TBUtils.millisecondsToDays = function (milliseconds) {
             return milliseconds / 86400000;
         };
 
-        // convert unix epoch timestamps to ISO format
+        /**
+         * convert unix epoch timestamps to ISO format
+         * @function timeConverterISO
+         * @memberof TBUtils
+         * @param {integer} UNIX_timestamp Unix timestamp
+         * @returns {string} ISO formatted time
+         */
         TBUtils.timeConverterISO = function (UNIX_timestamp) {
             const  a = new Date(UNIX_timestamp * 1000);
             const  year = a.getFullYear();
@@ -544,6 +630,14 @@ function initwrapper() {
             return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
         };
 
+        /**
+         * Returns the difference between days in nice format like "1 year"
+         * @function niceDateDiff
+         * @memberof TBUtils
+         * @param {Date} origdate
+         * @param {Date} newdate
+         * @returns {string} Formatted date difference
+         */
         TBUtils.niceDateDiff = function(origdate, newdate) {
             // Enter the month, day, and year below you want to use as
             // the starting point for the date calculation
@@ -658,7 +752,13 @@ function initwrapper() {
             return returnString;
         };
 
-        // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
+        /**
+         * convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
+         * @function timeConverterRead
+         * @memberof TBUtils
+         * @param {integer} UNIX_timestamp
+         * @returns {string} Formatted date in dd-mm-yyyy hh:mm:ss UTC
+         */
         TBUtils.timeConverterRead = function (UNIX_timestamp) {
             const  a = new Date(UNIX_timestamp * 1000);
             const  year = a.getFullYear();
@@ -670,8 +770,14 @@ function initwrapper() {
             return `${date}-${month}-${year} ${hour}:${min}:${sec} UTC`;
         };
 
-        // convert titles to a format usable in urls
-        // from r2.lib.utils import title_to_url
+        /**
+         * convert titles to a format usable in urls
+         * from r2.lib.utils import title_to_url
+         * @function title_to_url
+         * @memberof TBUtils
+         * @param {string} title
+         * @returns {string} Formatted title
+         */
         TBUtils.title_to_url = function (title) {
             const  max_length = 50;
 
@@ -701,7 +807,16 @@ function initwrapper() {
             });
         };
 
-
+        /**
+         * Opens the toolbox "nag" alert everyone loves so much.
+         * USE SPARINGLY
+         * @function alert
+         * @memberof TBUtils
+         * @param {string} message
+         * @param {callback} callback callback function
+         * @param {boolean} showClose If true the alert can be dismissed by a clost button otherwise it needs to be clicked.
+         * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
+         */
         TBUtils.alert = function (message, callback, showClose) {
             let $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
@@ -761,6 +876,15 @@ function initwrapper() {
         };
 
 
+        /**
+         * Shows a notification, uses native browser notifications if the user allows it or falls back on html notifications.
+         * @function notification
+         * @memberof TBUtils
+         * @param {string} title Notification title
+         * @param {string} body Body text
+         * @param {string} url Url to be opend when clicking the notification
+         * @param {string} markreadid When given will call the reddit api to mark the thing as read.
+         */
         TBUtils.notification = function (title, body, url, markreadid) {
             const timeout = 10000;
 
@@ -849,8 +973,14 @@ function initwrapper() {
             }
         };
 
-
-        TBUtils.humaniseDays = function (diff) {
+        /**
+         * Converts a given amount of days in a "humanized version" of weeks, months and years.
+         * @function humaniseDays
+         * @memberof TBUtils
+         * @param {integer} days
+         * @returns {string} x year x months x weeks x day
+         */
+        TBUtils.humaniseDays = function (days) {
             let str = '';
             let values = {
                 ' year': 365,
@@ -860,16 +990,17 @@ function initwrapper() {
             };
 
             for (let x in values) {
-                const amount = Math.floor(diff / values[x]);
+                const amount = Math.floor(days / values[x]);
 
                 if (amount >= 1) {
                     str += `${amount + x + (amount > 1 ? 's' : '')} `;
-                    diff -= amount * values[x];
+                    days -= amount * values[x];
                 }
             }
             return str.slice(0, -1);
         };
 
+        /** @todo properly describe what this does */
         TBUtils.stringFormat = function(format) {
             const args = Array.prototype.slice.call(arguments, 1);
             return format.replace(/{(\d+)}/g, function(match, number) {
@@ -877,7 +1008,13 @@ function initwrapper() {
             });
         };
 
-
+        /**
+         * Sorts an array of objects by property value of specific properties.
+         * @function sortBy
+         * @memberof TBUtils
+         * @param {array} arr input array
+         * @param {string} prop property name
+         */
         TBUtils.sortBy = function (arr, prop) {
             return arr.sort(function (a, b) {
                 if (a[prop] < b[prop]) return 1;
@@ -886,6 +1023,17 @@ function initwrapper() {
             });
         };
 
+
+
+
+        /**
+         * Do a Header only request
+         * @function getHead
+         * @memberof TBUtils
+         * @param {string} url input array
+         * @param {callback} doneCallback
+         * @returns {callback}
+         */
         TBUtils.getHead = function (url, doneCallback) {
             $.ajax({
                 type: 'HEAD',
@@ -897,7 +1045,12 @@ function initwrapper() {
                 });
         };
 
-        // Because normal .sort() is case sensitive.
+        /**
+         * Because normal .sort() is case sensitive.
+         * @function saneSort
+         * @memberof TBUtils
+         * @param {array} arr input array
+         */
         TBUtils.saneSort = function (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() < b.toLowerCase()) return -1;
@@ -906,7 +1059,12 @@ function initwrapper() {
             });
         };
 
-
+        /**
+         * Because normal .sort() is case sensitive and we also want to sort ascending from time to time.
+         * @function saneSortAs
+         * @memberof TBUtils
+         * @param {array} arr input array
+         */
         TBUtils.saneSortAs = function (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() > b.toLowerCase()) return -1;
@@ -915,11 +1073,27 @@ function initwrapper() {
             });
         };
 
+        /**
+         * Replace all instances of a certaing thing for another thing.
+         * @function replaceAll
+         * @memberof TBUtils
+         * @param {string} find what to find
+         * @param {string} replace what to replace
+         * @param {string} str where to do it all with
+         * @returns {string} shiny new string with replaced stuff
+         */
         TBUtils.replaceAll = function (find, replace, str) {
             find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
             return str.replace(new RegExp(find, 'g'), replace);
         };
 
+        /**
+         * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
+         * @function cleanSubredditName
+         * @memberof TBUtils
+         * @param {string} dirtySub dirty dirty sub.
+         * @returns {string} shiny sub!
+         */
         TBUtils.cleanSubredditName = function (dirtySub) {
             dirtySub = dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
             return dirtySub;

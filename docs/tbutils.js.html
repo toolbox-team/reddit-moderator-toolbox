@@ -22,7 +22,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TBListener.html">TBListener</a><ul class='methods'><li data-type='method'><a href="TBListener.html#clear">clear</a></li><li data-type='method'><a href="TBListener.html#on">on</a></li><li data-type='method'><a href="TBListener.html#start">start</a></li><li data-type='method'><a href="TBListener.html#stop">stop</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-QueueTools.html">QueueTools</a><ul class='methods'><li data-type='method'><a href="module-QueueTools.html#~checkForActions">checkForActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getActions">getActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getModlog">getModlog</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="TBui.html">TBui</a><ul class='methods'><li data-type='method'><a href="TBui.html#.contextTrigger">contextTrigger</a></li></ul></li><li><a href="TBUtils.html">TBUtils</a><ul class='methods'><li data-type='method'><a href="TBUtils.html#.oauthToken">oauthToken</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="TBListener.html">TBListener</a><ul class='methods'><li data-type='method'><a href="TBListener.html#clear">clear</a></li><li data-type='method'><a href="TBListener.html#on">on</a></li><li data-type='method'><a href="TBListener.html#start">start</a></li><li data-type='method'><a href="TBListener.html#stop">stop</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-QueueTools.html">QueueTools</a><ul class='methods'><li data-type='method'><a href="module-QueueTools.html#~checkForActions">checkForActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getActions">getActions</a></li><li data-type='method'><a href="module-QueueTools.html#~getModlog">getModlog</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="TBui.html">TBui</a><ul class='methods'><li data-type='method'><a href="TBui.html#.contextTrigger">contextTrigger</a></li></ul></li><li><a href="TBUtils.html">TBUtils</a><ul class='methods'><li data-type='method'><a href="TBUtils.html#.alert">alert</a></li><li data-type='method'><a href="TBUtils.html#.cleanSubredditName">cleanSubredditName</a></li><li data-type='method'><a href="TBUtils.html#.daysToMilliseconds">daysToMilliseconds</a></li><li data-type='method'><a href="TBUtils.html#.debugInformation">debugInformation</a></li><li data-type='method'><a href="TBUtils.html#.escapeHTML">escapeHTML</a></li><li data-type='method'><a href="TBUtils.html#.getHead">getHead</a></li><li data-type='method'><a href="TBUtils.html#.getRandomNumber">getRandomNumber</a></li><li data-type='method'><a href="TBUtils.html#.getTime">getTime</a></li><li data-type='method'><a href="TBUtils.html#.getToolboxDevs">getToolboxDevs</a></li><li data-type='method'><a href="TBUtils.html#.humaniseDays">humaniseDays</a></li><li data-type='method'><a href="TBUtils.html#.millisecondsToDays">millisecondsToDays</a></li><li data-type='method'><a href="TBUtils.html#.minutesToMilliseconds">minutesToMilliseconds</a></li><li data-type='method'><a href="TBUtils.html#.moveArrayItem">moveArrayItem</a></li><li data-type='method'><a href="TBUtils.html#.niceDateDiff">niceDateDiff</a></li><li data-type='method'><a href="TBUtils.html#.notification">notification</a></li><li data-type='method'><a href="TBUtils.html#.oauthToken">oauthToken</a></li><li data-type='method'><a href="TBUtils.html#.replaceAll">replaceAll</a></li><li data-type='method'><a href="TBUtils.html#.saneSort">saneSort</a></li><li data-type='method'><a href="TBUtils.html#.saneSortAs">saneSortAs</a></li><li data-type='method'><a href="TBUtils.html#.sortBy">sortBy</a></li><li data-type='method'><a href="TBUtils.html#.stringFormat">stringFormat</a></li><li data-type='method'><a href="TBUtils.html#.timeConverterISO">timeConverterISO</a></li><li data-type='method'><a href="TBUtils.html#.timeConverterRead">timeConverterRead</a></li><li data-type='method'><a href="TBUtils.html#.title_to_url">title_to_url</a></li><li data-type='method'><a href="TBUtils.html#.unescapeHTML">unescapeHTML</a></li></ul></li></ul>
 </nav>
 
 <div id="main">
@@ -187,9 +187,9 @@
 
 
         // Public variables
-        TBUtils.toolboxVersion = `3.7.0${(betaRelease) ? ' (beta)' : ''}`;
-        TBUtils.shortVersion = 370; //don't forget to change this one!  This is used for the 'new version' notification.
-        TBUtils.releaseName = 'Cleaning Cockcroach';
+        TBUtils.toolboxVersion = `4.0.1${(betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.shortVersion = 401; //don't forget to change this one!  This is used for the 'new version' notification.
+        TBUtils.releaseName = 'Alpha Aardvark';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;
@@ -197,24 +197,7 @@
         TBUtils.notesMaxSchema = 6;     // The non-default max version (to allow phase-in schema releases)
         TBUtils.NO_WIKI_PAGE = 'NO_WIKI_PAGE';
         TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
-        TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
         TBUtils.isNewModmail = location.host === 'mod.reddit.com';
-        TBUtils.isModmailUnread = location.pathname.match(/\/message\/(?:moderator\/unread)\/?/);
-        TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
-        TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
-        TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
-        TBUtils.isToolbarPage = location.pathname.match(/^\/tb\//);
-        TBUtils.isUnreadPage = location.pathname.match(/\/message\/(?:unread)\/?/);
-        TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
-        TBUtils.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
-        TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
-        TBUtils.isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
-        TBUtils.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
-        TBUtils.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
-        TBUtils.isUserPage = location.pathname.match(/\/(?:user)\/?/);
-        TBUtils.isNewPage = location.pathname.match(/\?*\/(?:new)\/?/);
-        TBUtils.isMultiPage = location.pathname.match(/^\/(?:user\/)?\w+\/m\/\w+/);
-        TBUtils.isMod = $('body.moderator').length;
         TBUtils.isNewMMThread = $('body').find('.ThreadViewer').length > 0;
         TBUtils.isExtension = true;
         TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
@@ -386,9 +369,26 @@
             };
         }
 
+        /**
+         * @typedef {Object} debugObject
+         * @memberof TBUtils
+         * @property {string} toolboxVersion The toolbox version
+         * @property {string} browser Browser used (Firefox, Chrome, etc)
+         * @property {string} browserVersion The version of the browser
+         * @property {string} platformInformation Other platform information
+         * @property {boolean} betaMode toolbox beta mode enabled
+         * @property {boolean} debugMode  toolbox debugMode enabled
+         * @property {boolean} compactMode toolbox compactmode enabled
+         * @property {boolean} advancedSettings toolbox advanced settings enabled
+         * @property {boolean} cookiesEnabled Browser cookies enabled
+         */
 
-        // Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
-
+        /**
+         * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
+         * @function debugInformation
+         * @memberof TBUtils
+         * @returns {TBUtils.debugObject} Object with debug information
+         */
         TBUtils.debugInformation = function debugInformation() {
         // Using console log so we are more likely to get this information if toolbox is failing.
             console.log('debug information for browser');
@@ -490,10 +490,16 @@
         };
 
 
-
+        /**
+         * Fetches the toolbox dev from /r/toolbox or falls back to a predefined list.
+         * @function getToolboxDevs
+         * @memberof TBUtils
+         * @returns {array} List of toolbox devs
+         */
         TBUtils.getToolboxDevs = function getToolboxDevs() {
             getToolboxDevs();
         };
+
 
         TBUtils.sendEvent = function (tbuEvent){
             $.log(`Sending event: ${tbuEvent}`, false, SHORTNAME);
@@ -506,7 +512,17 @@
             window.addEventListener(tbuEvent, callback);
         };
 
-        // https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
+
+        /**
+         * Moves an item in an array from one index to another
+         * https://github.com/brownieboy/array.prototype.move/blob/master/src/array-prototype-move.js
+         * @function moveArrayItem
+         * @memberof TBUtils
+         * @param {array} array input array
+         * @param {integer} old_index
+         * @param {integer} new_index
+         * @returns {array} New array with moved items
+         */
         TBUtils.moveArrayItem = function moveArrayItem(array, old_index, new_index) {
             if ( array.length === 0 ) {
                 return array;
@@ -527,6 +543,13 @@
             return array;
         };
 
+        /**
+         * Escape html entities
+         * @function escapeHTML
+         * @memberof TBUtils
+         * @param {string} html input html
+         * @returns {string} HTML string with escaped entities
+         */
         TBUtils.escapeHTML = function(html)
         {
             const  entityMap = {
@@ -543,6 +566,13 @@
             });
         };
 
+        /**
+         * Unescape html entities
+         * @function unescapeHTML
+         * @memberof TBUtils
+         * @param {string} html input html
+         * @returns {string} HTML string with unescaped entities
+         */
         TBUtils.unescapeHTML = function(html)
         {
             const  entityMap = {
@@ -559,15 +589,34 @@
             });
         };
 
+        /**
+         * Give the nummeric value in milliseconds  of the current date and time.
+         * @function getTime
+         * @memberof TBUtils
+         * @returns {integer} time value in milliseconds
+         */
         TBUtils.getTime = function() {
             return new Date().getTime();
         };
 
+        /**
+         * Give a random number
+         * @function getRandomNumber
+         * @memberof TBUtils
+         * @param {integer} maxInt Max integer
+         * @returns {integer} random number
+         */
         TBUtils.getRandomNumber = function(maxInt){
             return Math.floor((Math.random() * maxInt) + 1);
         };
 
-        //
+        /**
+         * Convert minutes to milliseconds
+         * @function minutesToMilliseconds
+         * @memberof TBUtils
+         * @param {integer} mins Minutes
+         * @returns {integer} Milliseconds
+         */
         TBUtils.minutesToMilliseconds = function (mins) {
             let  oneMin = 60000,
                 milliseconds = mins * 60 * 1000;
@@ -580,15 +629,35 @@
             return milliseconds;
         };
 
+        /**
+         * Convert days to milliseconds
+         * @function daysToMilliseconds
+         * @memberof TBUtils
+         * @param {integer} days days
+         * @returns {integer} Milliseconds
+         */
         TBUtils.daysToMilliseconds = function (days) {
             return days * 86400000;
         };
 
+        /**
+         * Convert milliseconds to days
+         * @function millisecondsToDays
+         * @memberof TBUtils
+         * @param {integer} milliseconds milliseconds
+         * @returns {integer} Days
+         */
         TBUtils.millisecondsToDays = function (milliseconds) {
             return milliseconds / 86400000;
         };
 
-        // convert unix epoch timestamps to ISO format
+        /**
+         * convert unix epoch timestamps to ISO format
+         * @function timeConverterISO
+         * @memberof TBUtils
+         * @param {integer} UNIX_timestamp Unix timestamp
+         * @returns {string} ISO formatted time
+         */
         TBUtils.timeConverterISO = function (UNIX_timestamp) {
             const  a = new Date(UNIX_timestamp * 1000);
             const  year = a.getFullYear();
@@ -600,6 +669,14 @@
             return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
         };
 
+        /**
+         * Returns the difference between days in nice format like "1 year"
+         * @function niceDateDiff
+         * @memberof TBUtils
+         * @param {Date} origdate
+         * @param {Date} newdate
+         * @returns {string} Formatted date difference
+         */
         TBUtils.niceDateDiff = function(origdate, newdate) {
             // Enter the month, day, and year below you want to use as
             // the starting point for the date calculation
@@ -714,7 +791,13 @@
             return returnString;
         };
 
-        // convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
+        /**
+         * convert unix epoch timestamps to readable format dd-mm-yyyy hh:mm:ss UTC
+         * @function timeConverterRead
+         * @memberof TBUtils
+         * @param {integer} UNIX_timestamp
+         * @returns {string} Formatted date in dd-mm-yyyy hh:mm:ss UTC
+         */
         TBUtils.timeConverterRead = function (UNIX_timestamp) {
             const  a = new Date(UNIX_timestamp * 1000);
             const  year = a.getFullYear();
@@ -726,8 +809,14 @@
             return `${date}-${month}-${year} ${hour}:${min}:${sec} UTC`;
         };
 
-        // convert titles to a format usable in urls
-        // from r2.lib.utils import title_to_url
+        /**
+         * convert titles to a format usable in urls
+         * from r2.lib.utils import title_to_url
+         * @function title_to_url
+         * @memberof TBUtils
+         * @param {string} title
+         * @returns {string} Formatted title
+         */
         TBUtils.title_to_url = function (title) {
             const  max_length = 50;
 
@@ -757,7 +846,16 @@
             });
         };
 
-
+        /**
+         * Opens the toolbox "nag" alert everyone loves so much.
+         * USE SPARINGLY
+         * @function alert
+         * @memberof TBUtils
+         * @param {string} message
+         * @param {callback} callback callback function
+         * @param {boolean} showClose If true the alert can be dismissed by a clost button otherwise it needs to be clicked.
+         * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
+         */
         TBUtils.alert = function (message, callback, showClose) {
             let $noteDiv = $(`&lt;div id="tb-notification-alert">&lt;span>${message}&lt;/span>&lt;/div>`);
             if (showClose) {
@@ -817,6 +915,15 @@
         };
 
 
+        /**
+         * Shows a notification, uses native browser notifications if the user allows it or falls back on html notifications.
+         * @function notification
+         * @memberof TBUtils
+         * @param {string} title Notification title
+         * @param {string} body Body text
+         * @param {string} url Url to be opend when clicking the notification
+         * @param {string} markreadid When given will call the reddit api to mark the thing as read.
+         */
         TBUtils.notification = function (title, body, url, markreadid) {
             const timeout = 10000;
 
@@ -905,8 +1012,14 @@
             }
         };
 
-
-        TBUtils.humaniseDays = function (diff) {
+        /**
+         * Converts a given amount of days in a "humanized version" of weeks, months and years.
+         * @function humaniseDays
+         * @memberof TBUtils
+         * @param {integer} days
+         * @returns {string} x year x months x weeks x day
+         */
+        TBUtils.humaniseDays = function (days) {
             let str = '';
             let values = {
                 ' year': 365,
@@ -916,16 +1029,17 @@
             };
 
             for (let x in values) {
-                const amount = Math.floor(diff / values[x]);
+                const amount = Math.floor(days / values[x]);
 
                 if (amount >= 1) {
                     str += `${amount + x + (amount > 1 ? 's' : '')} `;
-                    diff -= amount * values[x];
+                    days -= amount * values[x];
                 }
             }
             return str.slice(0, -1);
         };
 
+        /** @todo properly describe what this does */
         TBUtils.stringFormat = function(format) {
             const args = Array.prototype.slice.call(arguments, 1);
             return format.replace(/{(\d+)}/g, function(match, number) {
@@ -933,7 +1047,13 @@
             });
         };
 
-
+        /**
+         * Sorts an array of objects by property value of specific properties.
+         * @function sortBy
+         * @memberof TBUtils
+         * @param {array} arr input array
+         * @param {string} prop property name
+         */
         TBUtils.sortBy = function (arr, prop) {
             return arr.sort(function (a, b) {
                 if (a[prop] &lt; b[prop]) return 1;
@@ -942,6 +1062,17 @@
             });
         };
 
+
+
+
+        /**
+         * Do a Header only request
+         * @function getHead
+         * @memberof TBUtils
+         * @param {string} url input array
+         * @param {callback} doneCallback
+         * @returns {callback}
+         */
         TBUtils.getHead = function (url, doneCallback) {
             $.ajax({
                 type: 'HEAD',
@@ -953,7 +1084,12 @@
                 });
         };
 
-        // Because normal .sort() is case sensitive.
+        /**
+         * Because normal .sort() is case sensitive.
+         * @function saneSort
+         * @memberof TBUtils
+         * @param {array} arr input array
+         */
         TBUtils.saneSort = function (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() &lt; b.toLowerCase()) return -1;
@@ -962,7 +1098,12 @@
             });
         };
 
-
+        /**
+         * Because normal .sort() is case sensitive and we also want to sort ascending from time to time.
+         * @function saneSortAs
+         * @memberof TBUtils
+         * @param {array} arr input array
+         */
         TBUtils.saneSortAs = function (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() > b.toLowerCase()) return -1;
@@ -971,11 +1112,27 @@
             });
         };
 
+        /**
+         * Replace all instances of a certaing thing for another thing.
+         * @function replaceAll
+         * @memberof TBUtils
+         * @param {string} find what to find
+         * @param {string} replace what to replace
+         * @param {string} str where to do it all with
+         * @returns {string} shiny new string with replaced stuff
+         */
         TBUtils.replaceAll = function (find, replace, str) {
             find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
             return str.replace(new RegExp(find, 'g'), replace);
         };
 
+        /**
+         * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
+         * @function cleanSubredditName
+         * @memberof TBUtils
+         * @param {string} dirtySub dirty dirty sub.
+         * @returns {string} shiny sub!
+         */
         TBUtils.cleanSubredditName = function (dirtySub) {
             dirtySub = dirtySub.replace('/r/', '').replace('r/', '').replace('/', '').replace('−', '').replace('+', '').trim();
             return dirtySub;
@@ -1105,34 +1262,29 @@
         };
 
         TBUtils.getThingInfo = function (sender, modCheck) {
-
-        // declare what we will need.
-            let $sender = $(sender);
-            let $body = $('body');
-
-            let subreddit,
-                permalink,
-                domain,
-                id,
-                body,
-                title,
-                kind,
-                postlink,
-                banned_by,
-                spam,
-                ham,
-                user,
-                removal,
-                approved_text,
-                approved_by = [],
-                $textBody;
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
             if (TBUtils.isNewModmail) {
+            // declare what we will need.
+                let $sender = $(sender);
+                let $body = $('body');
 
+                let subreddit,
+                    permalink,
+                    domain,
+                    id,
+                    body,
+                    title,
+                    kind,
+                    postlink,
+                    banned_by,
+                    spam,
+                    ham,
+                    user,
+                    approved_by = [],
+                    $textBody;
 
-
-            // Lack of a better name, can be a thread_message or infobar.
+                // Lack of a better name, can be a thread_message or infobar.
                 let $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
                 let browserUrl = window.location.href;
 
@@ -1157,131 +1309,60 @@
                 spam = false;
                 ham = false;
                 user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
+
+                // A recent reddit change makes subreddit names sometimes start with "/r/".
+                // Mod mail subreddit names additionally end with "/".
+                // reddit pls, need consistency
+                subreddit = TBUtils.cleanSubredditName(subreddit);
+
+                // Not a mod, reset current sub.
+                if (modCheck &amp;&amp; $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                    subreddit = '';
+                }
+
+                if (user == '[deleted]') {
+                    user = '';
+                }
+
+
+
+                // If the permalink is relative, stick the current domain name in.
+                // Only do so if a permalink is found.
+                if (permalink &amp;&amp; permalink.slice(0,1) == '/')
+                {
+                    permalink = TBUtils.baseDomain + permalink;
+                }
+
+                let info = {
+                    subreddit: subreddit,
+                    user: user,
+                    author: user,
+                    permalink: permalink,
+                    url: permalink,
+                    domain: domain,
+                    id: id,
+                    body: `> ${body.split('\n').join('\n> ')}`,
+                    raw_body: body,
+                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                    approved_by: approved_by[1],
+                    title: title,
+                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                    kind: kind,
+                    postlink: postlink,
+                    link: postlink,
+                    banned_by: banned_by,
+                    spam: spam,
+                    ham: ham,
+                    rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                    sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                    wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                    mod: TBUtils.logged
+                };
+
+                return info;
             } else {
-            // do our regular stuff to gather data.
-
-
-            // If we were passed in a .thing, we may have to walk down the tree to
-            // find the associated .entry
-
-
-                let $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
-                let $thing = $($sender.closest('.thing')[0] || $sender);
-
-                user = $entry.find('.author:first').text() || $thing.find('.author:first').text();
-                subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
-                permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
-                domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
-                id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
-                $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
-                $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
-                body = $textBody.text() || '';
-                body = body.replace(/^\s+|\s+$/g, '');
-
-                $textBody.remove();
-
-
-                // These need some fall backs, but only removal reasons use them for now.
-                title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';
-                kind = $thing.hasClass('link') ? 'submission' : 'comment';
-                postlink = $thing.find('a.title').attr('href');
-
-                // removed? spam or ham?
-                removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
-
-                banned_by = removal[1] || '';
-                spam = removal[2] == 'spam' || removal[2] == 'confirm spam';
-                ham = removal[2] == 'remove not spam';
-
-                if (TBUtils.isEditUserPage &amp;&amp; !user) {
-                    user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
-                }
-
-                // If we still don't have a sub, we're in mod mail, or PMs.
-                if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
-                // Change it to use the parent's title.
-                    title = $sender.find('.subject-text:first').text();
-
-                    subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
-
-                    //This is a weird palce to go about this, and the conditions are strange,
-                    //but if we're going to assume we're us, we better make damned well sure that is likely the case.
-                    // if ($entry.find('.remove-button').text() === '') {
-                    // The previous check would mistakenly catch removed modmail messages as the user's messages.
-                    // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
-                    // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
-
-                    // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
-                    user = $entry.find('.sender a.author').text();
-
-                    // If there is only one use present and it says "to" it means that this is not the user sending the message.
-
-                    if ($entry.find('.sender a.author').length &lt; 1 &amp;&amp; $entry.find('.recipient a.author').length > 0) {
-                        user = TBUtils.logged;
-                    }
-
-                    if (user === '') {
-                        user = TBUtils.logged;
-
-                        if (!subreddit || subreddit.indexOf('/r/') &lt; 1) {
-                        // Find a better way, I double dog dare ya!
-                            subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
-                        }
-                    }
-                }
-                approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '',
-                approved_by = approved_text.match(/by\s(.+?)\s/) || '';
+                return false;
             }
-            // A recent reddit change makes subreddit names sometimes start with "/r/".
-            // Mod mail subreddit names additionally end with "/".
-            // reddit pls, need consistency
-            subreddit = TBUtils.cleanSubredditName(subreddit);
-
-            // Not a mod, reset current sub.
-            if (modCheck &amp;&amp; $.inArray(subreddit, TBUtils.mySubs) === -1) {
-                subreddit = '';
-            }
-
-            if (user == '[deleted]') {
-                user = '';
-            }
-
-
-
-            // If the permalink is relative, stick the current domain name in.
-            // Only do so if a permalink is found.
-            if (permalink &amp;&amp; permalink.slice(0,1) == '/')
-            {
-                permalink = TBUtils.baseDomain + permalink;
-            }
-
-            let info = {
-                subreddit: subreddit,
-                user: user,
-                author: user,
-                permalink: permalink,
-                url: permalink,
-                domain: domain,
-                id: id,
-                body: `> ${body.split('\n').join('\n> ')}`,
-                raw_body: body,
-                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                approved_by: approved_by[1],
-                title: title,
-                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                kind: kind,
-                postlink: postlink,
-                link: postlink,
-                banned_by: banned_by,
-                spam: spam,
-                ham: ham,
-                rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                mod: TBUtils.logged
-            };
-            //$.log(info, false, SHORTNAME);
-            return info;
         };
 
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {

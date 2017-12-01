@@ -8,10 +8,14 @@ Before you fuck around with pushing shit, read this first.
 - Contributing here means that you are on IRC and discussed the things you are working on so we are on the same page. 
 - What that same page entails is roughly outlined [here in this project](https://github.com/creesch/reddit-moderator-toolbox/projects/2)
 
+Documenting our shit
+====================
+We have been lazy in that regard. Use jsdoc to document new functions and old functions you rework, [jsdoc comments get rendered on build](http://www.creesch.com/tb/docs/) and will help future contributors make sense of the maze that is tbutils, tbui, etc. Comment smartly, explain code decisions specifically where it might not immediatly apparanty *why* code looks like it does. 
+
 
 New front-end api
 ====================
-The dev admins have worked with us to implement a front-end event based api which we can use to hook toolbox into reddit. Details about that can be found in /r/tb_dev **those are drafts, not working documents**. We are not fucking around with hacky solutions for implementation until we have access to the frontend api. The only place were we "use" it now is in devtools.js to give us an idea of what elements currently are getting their information broadcasted. 
+The dev admins have worked with us to implement a front-end event based api which we can use to hook toolbox into reddit. This is not finished yet, be aware of that.
 
 If you contribute you are on IRC.
 ====================

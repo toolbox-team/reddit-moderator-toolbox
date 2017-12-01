@@ -106,6 +106,7 @@
                 "data/modules/comment.js",
                 "data/modules/personalnotes.js",
                 "data/modules/historybutton.js",
+                "data/modules/removalreasons.js",
                 "data/modules/queuetools.js",
                 "data/tbmoduleinit.js"
             ]

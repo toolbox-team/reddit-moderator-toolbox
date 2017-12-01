@@ -1,3 +1,4 @@
+/** @namespace QueueTools */
 function queuetools() {
     const self = new TB.Module('Queue Tools');
     self.shortname = 'QueueTools';
@@ -41,24 +42,32 @@ function queuetools() {
             queueCreature = self.setting('queueCreature'),
             expandReports = self.setting('expandReports');
 
+        // If the queue creature element is on page it will fade it out first and then remove the element.
         function fadeOutCreature() {
             $body.find('#queueCreatureWrapper').fadeOut(300, function() { $(this).remove(); });
         }
 
+        // Activate on queue pages.
         window.addEventListener('TBNewPage', function (event) {
             if(expandActionReasonQueue && event.detail.pageType === 'queueListing') {
                 $body.addClass('tb-show-actions');
             } else {
                 $body.removeClass('tb-show-actions');
             }
+
+            // Queue creature
+            // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
             if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
                 let gotQueue = $body.find('.tb-frontend-container').length;
                 if(gotQueue) {
                     fadeOutCreature();
                 }
+
+                // We have to do some funky stuff here to not jump gun as the queue is loaded through an internal api while the page is ready.
                 window.setTimeout(function() {
                     gotQueue = $body.find('.tb-frontend-container').length;
 
+                    // No queue, creature time!
                     if(!gotQueue) {
                         let $noResults = $body.find('#queueCreatureWrapper');
                         if(!$noResults.length) {
@@ -81,6 +90,7 @@ function queuetools() {
                             $queueCreature.addClass('tb-piggy');
                         }
                     } else {
+                        // Creature no longer happy.
                         fadeOutCreature();
                     }
 
@@ -92,6 +102,20 @@ function queuetools() {
 
         });
 
+        /**
+         * Callback for further handling the modlog.
+         *
+         * @callback getModlogCallback
+         * @memberof QueueTools
+         */
+
+        /**
+         * Fetches the modlog for a subreddit and updates modlogCache.
+         * @function getModlog
+         * @memberof QueueTools
+         * @param {string} subreddit - the subreddit for which the modlog needs to be fetched
+         * @param {QueueTools.getModlogCallback} callback - callback that handles further modlog interactions
+         */
         function getModlog(subreddit, callback) {
             $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json?limit=100`).done(function (json) {
                 $.each(json.data.children, function (i, value) {
@@ -111,7 +135,18 @@ function queuetools() {
             });
         }
 
-        function checkForActionReasons(subreddit, fullName) {
+
+
+
+        /**
+         * Checks modLogCache for actions on the given fullName and subreddit.
+         * @function checkForActions
+         * @memberof QueueTools
+         * @param {string} subreddit The subreddit the fullName thing belongs to.
+         * @param {string} fullName Thing (post/comment) fullName
+         * @returns {(false|object)} Either false or an object with actions
+         */
+        function checkForActions(subreddit, fullName) {
             if(modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
                 return modlogCache[subreddit].actions[fullName];
             } else {
@@ -119,7 +154,22 @@ function queuetools() {
             }
         }
 
-        function getActionReasons(subreddit, fullName, callback) {
+        /**
+         * Callback for further handling the modlog.
+         * @callback getActionsCallback
+         * @memberof QueueTools
+         * @param {(Boolean|Object)} result Either false or an object with actions
+         */
+
+        /**
+         * Checks for mod actions on the given fullName thing and subreddit through a caching mechanism.
+         * @function getActions
+         * @memberof QueueTools
+         * @param {string} subreddit - the subreddit for which the modlog needs to be fetched
+         * @param {string} fullName - thing (post/comment) fullName
+         * @param {QueueTools.getActionsCallback} callback - callback that handles further modlog interactions
+         */
+        function getActions(subreddit, fullName, callback) {
             self.log(subreddit);
             const dateNow = Date.now();
 
@@ -132,25 +182,25 @@ function queuetools() {
                 };
 
                 getModlog(subreddit, function() {
-                    callback(checkForActionReasons(subreddit, fullName));
+                    callback(checkForActions(subreddit, fullName));
                 });
 
             // If we do have data but it is being refreshed we wait and try again.
             } else if (modlogCache.hasOwnProperty(subreddit) && modlogCache[subreddit].activeFetch) {
                 setTimeout(function() {
-                    getActionReasons(subreddit, fullName, callback);
+                    getActions(subreddit, fullName, callback);
                 }, 100);
             } else if ((dateNow - modlogCache[subreddit].lastFetch) > 300000) {
                 getModlog(subreddit, function() {
-                    callback(checkForActionReasons(subreddit, fullName));
+                    callback(checkForActions(subreddit, fullName));
                 });
             } else {
-                callback(checkForActionReasons(subreddit, fullName));
+                callback(checkForActions(subreddit, fullName));
             }
 
         }
 
-
+        // Show history of actions near posts.
         if(showActionReason) {
             TB.listener.on('post', function(e) {
 
@@ -158,12 +208,9 @@ function queuetools() {
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
 
-
-
-
                 TBUtils.getModSubs(function () {
                     if(TBUtils.modsSub(subreddit)) {
-                        getActionReasons(subreddit, id, function(actions) {
+                        getActions(subreddit, id, function(actions) {
                             if(actions) {
                                 let $postActionTable = $(`
                                 <div class="tb-action-details">
@@ -190,7 +237,6 @@ function queuetools() {
                                         <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
                                     </tr>
                                     `;
-
                                     $postActionTable.find('.tb-action-table').append(actionHTML);
 
                                 });
@@ -202,14 +248,8 @@ function queuetools() {
                         });
                     }
                 });
-
-
             });
-
         }
-
-
-
 
     }; // queueTools.init()
 

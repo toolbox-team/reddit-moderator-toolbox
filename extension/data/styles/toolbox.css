@@ -704,6 +704,7 @@ body.mod-toolbox .tb-bracket-button {
     text-align: center;
     font-weight: normal;
     text-decoration: none;
+    cursor: pointer;
 }
 
 body.mod-toolbox .tb-bracket-button {

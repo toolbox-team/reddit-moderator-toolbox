@@ -385,19 +385,7 @@ function usernotes() {
             });
         }
 
-        // Click to open dialog
-        $body.on('click', '#add-user-tag', function (e) {
-            let $target = $(e.target);
-            let $thing = $target.closest('.ut-thing');
-            let $button = $thing.find('#add-user-tag');
-
-            var subreddit = $button.attr('data-subreddit'),
-                user = $button.attr('data-author'),
-                link = TBUtils.getThingInfo($thing).permalink,
-                disableLink = TBUtils.isEditUserPage;           //FIXME: change to thing type
-
-            // So Instead of butchering getThingInfo even more we do this as fallback in new modmail.
-
+        function createUserPopup(subreddit, user, link, disableLink, e) {
             var $popup = TB.ui.popup(
                 `<div class="utagger-title">
                     <span>User Notes - <a href="${TBUtils.baseDomain}/u/${user}" id="utagger-user-link">/u/${user}</a></span>
@@ -559,6 +547,48 @@ function usernotes() {
                     }
                 });
             });
+        }
+
+
+        // Click to open dialog
+        $body.on('click', '#add-user-tag', function (e) {
+            let $target = $(e.target);
+            let $thing = $target.closest('.ut-thing');
+            let $button = $thing.find('#add-user-tag');
+
+            var subreddit = $button.attr('data-subreddit'),
+                user = $button.attr('data-author'),
+                link,
+                disableLink = false;           //FIXME: change to thing type
+
+            if(TBUtils.isNewModmail) {
+                link = TBUtils.getThingInfo($thing).permalink;
+                createUserPopup(subreddit, user, link, disableLink, e);
+            } else {
+                let thingID;
+                let thingDetails;
+
+                // Temp fix for commentAuthor not having the comment id in the front end api info.
+                // TODO: fix this once the api returns this info.
+                if($thing.attr('data-tb-type') === 'commentAuthor') {
+                    const $thingSibling = $thing.siblings('.tb-frontend-container[data-tb-type="comment"]');
+                    thingDetails = JSON.parse($thingSibling.attr('data-tb-details'));
+                    thingID = thingDetails.data.id;
+                // Assume post for now.
+                } else {
+                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                    thingID = thingDetails.data.post.id;
+
+                }
+
+                TB.utils.getApiThingInfo(thingID, subreddit, true, function(info) {
+                    link = info.permalink;
+                    createUserPopup(subreddit, user, link, disableLink, e);
+                });
+
+            }
+
+
         });
 
         // Cancel button clicked

@@ -132,7 +132,9 @@
 
             const detailJSON = JSON.stringify(event.detail);
             event.target.setAttribute('data-tb-details', detailJSON);
+            event.target.setAttribute('data-tb-type', event.detail.type);
             event.target.classList.add('tb-frontend-container');
+
 
             // See if there's any registered listeners listening for eventType
             if (Array.isArray(this.listeners[eventType])) {

@@ -1,5 +1,6 @@
 # Build output
 build/*
+doc/*
 
 # gulp
 gulpfile.js
@@ -10,7 +11,7 @@ node_modules/*
 # External libraries
 /extension/data/libs/*
 
-# IDE related 
+# IDE related
 .idea/*
 .settings/*
 .vscode/*

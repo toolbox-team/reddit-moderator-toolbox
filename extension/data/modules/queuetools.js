@@ -153,7 +153,7 @@ function queuetools() {
 
         if(showActionReason) {
             TB.listener.on('post', function(e) {
-                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;

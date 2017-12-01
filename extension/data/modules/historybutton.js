@@ -59,7 +59,6 @@ function historybutton() {
 
         } else {
             TB.listener.on('author', function(e) {
-                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
                 const $target = $(e.target);
                 const author = e.detail.data.author;
 

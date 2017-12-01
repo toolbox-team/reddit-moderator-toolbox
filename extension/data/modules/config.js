@@ -275,18 +275,14 @@ function tbconfig() {
             if(event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
                 const subConfigLink = `<span class="toolbox-edit-from-context" data-subreddit="${subreddit}" title="toolbox configuration for /r/${subreddit}"><img src="data:image/png;base64,${TBui.iconWrench}"/>/r/${subreddit} config</span>`;
-                if(TBUtils.modsSub(subreddit)) {
-                    TBui.contextTrigger(`tb-config-link`, true, subConfigLink);
-                } else if(!TBUtils.mySubs) {
-                    TBUtils.getModSubs(function () {
-                        if(TBUtils.modsSub(subreddit)) {
-                            TBui.contextTrigger('tb-config-link', true, subConfigLink);
-                        }
-                    });
-                } else {
-                    TBui.contextTrigger('tb-config-link', false);
-                }
 
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        TBui.contextTrigger(`tb-config-link`, true, subConfigLink);
+                    } else {
+                        TBui.contextTrigger('tb-config-link', false);
+                    }
+                });
             } else {
                 TBui.contextTrigger('tb-config-link', false);
             }

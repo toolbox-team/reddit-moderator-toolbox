@@ -107,7 +107,7 @@ function usernotes() {
 
             // event based handling of author elements.
             TB.listener.on('author', function(e) {
-                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
@@ -115,17 +115,14 @@ function usernotes() {
                 $target.attr('data-subreddit', subreddit);
                 $target.attr('data-author', author);
 
-                if(TBUtils.modsSub(subreddit)) {
-                    attachNoteTag($target, subreddit, author);
-                    foundSubreddit(subreddit);
-                    queueProcessSub(subreddit, $target);
-                } else if(!TBUtils.mySubs) {
-                    TBUtils.getModSubs(function () {
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
                         attachNoteTag($target, subreddit, author);
                         foundSubreddit(subreddit);
                         queueProcessSub(subreddit, $target);
-                    });
-                }
+                    }
+                });
+
 
             });
         }
@@ -777,18 +774,15 @@ function usernotes() {
                 if(event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
                     const managerLink = `<a href="javascript:;" class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}"><img src="data:image/png;base64,${TB.ui.iconUsernotes}" class="tb-moderation-tools-icons"/>usernotes</a>`;
-                    if(TBUtils.modsSub(subreddit)) {
-                        TBui.contextTrigger(`tb-un-config-link`, true, managerLink);
-                    } else if(!TBUtils.mySubs) {
-                        TBUtils.getModSubs(function () {
-                            if(TBUtils.modsSub(subreddit)) {
-                                TBui.contextTrigger('tb-un-config-link', true, managerLink);
-                            }
-                        });
-                    } else {
-                        TBui.contextTrigger('tb-un-config-link', false);
-                    }
 
+
+                    TBUtils.getModSubs(function () {
+                        if(TBUtils.modsSub(subreddit)) {
+                            TBui.contextTrigger('tb-un-config-link', true, managerLink);
+                        } else {
+                            TBui.contextTrigger('tb-un-config-link', false);
+                        }
+                    });
                 } else {
                     TBui.contextTrigger('tb-un-config-link', false);
                 }

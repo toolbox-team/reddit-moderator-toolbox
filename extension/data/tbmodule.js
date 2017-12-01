@@ -30,14 +30,17 @@ function tbmodule() {
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
                         if (!TB.storage.getSetting('Utils', 'betaMode', false) && module.config['betamode']) {
                         // skip this module entirely
+                            $.log(`Beta  mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
                             continue;
                         }
 
                         // Don't do anything with dev modules unless debug mode is enabled
                         // Need TB.setting() call for non-module settings
                         // if (!TB.setting('betamode') && module.setting('betamode')) {
+
                         if (!TB.storage.getSetting('Utils', 'debugMode', false) && module.config['devmode']) {
                         // skip this module entirely
+                            $.log(`Debug mode not enabled. Skipping ${module.name} module`, false, 'TBinit');
                             continue;
                         }
 

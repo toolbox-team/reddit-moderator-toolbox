@@ -1,13 +1,12 @@
 function devtools() {
-// Developer Tools, for managing /r/toolbox/w/tbnotes (etc.)
+    var self = new TB.Module('Developer Tools');
+    self.shortname = 'DevTools';
 
-    const self = new TB.Module('Developer Tools');
-    self.settings['enabled']['default'] = false;
+    ////Default settings
+    self.settings['enabled']['default'] = true;
 
-    self.setting('betamode', false);
-    self.setting('devmode', true);
-
-
+    self.config['betamode'] = false;
+    self.config['devmode'] = true;
 
     // Module init
     self.init = function() {
@@ -71,7 +70,7 @@ function devtools() {
     TB.register_module(self);
 }
 
-(function () {
+(function() {
     window.addEventListener('TBModuleLoaded2', function () {
         devtools();
     });

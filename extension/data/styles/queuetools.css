@@ -1,3 +1,5 @@
+
+/* queue creater */
 #queueCreatureWrapper {
     width: 100%;
     text-align: center;
@@ -73,13 +75,39 @@ display: inline-block;
 
 /* Action reason stuff */
 
-.action-reason {
-    padding: 5px;
-    font-size: 12px;
-    background-color: rgba(255, 255, 255, 0.59);
+
+.mod-toolbox .tb-action-table {
+    font-size: 10px;
+    text-align: left;
+    display: none;
+ }
+
+ .mod-toolbox .tb-action-details:hover .tb-action-table {
+     display: table;
+ }
+
+ .mod-toolbox .tb-action-details:hover .tb-show-action-table {
+     display: none;
+ }
+
+ .mod-toolbox.tb-show-actions .tb-action-table {
+    display: table;
 }
 
-.action-reason a {
-    font-size: 10px;
+.mod-toolbox.tb-show-actions .tb-show-action-table{
+    display: none;
+}
+
+.mod-toolbox .tb-action-table th {
+    font-weight: bold;
+}
+
+.mod-toolbox .tb-action-table th,
+.mod-toolbox .tb-action-table td {
+    padding: 2px;
+}
+
+.mod-toolbox .tb-action-table tr {
+    border: solid 1px #c7d6e7;
 }
 

@@ -1,5 +1,5 @@
 function queuetools() {
-    var self = new TB.Module('Queue Tools');
+    const self = new TB.Module('Queue Tools');
     self.shortname = 'QueueTools';
 
     self.settings['enabled']['default'] = true;
@@ -8,6 +8,11 @@ function queuetools() {
         'type': 'boolean',
         'default': true,
         'title': 'Show previously taken actions next to submissions. Based on the last 100 actions in the subreddit modlog'
+    });
+    self.register_setting('expandActionReasonQueue', {
+        'type': 'boolean',
+        'default': true,
+        'title': 'Automatically expand the mod action table in queues'
     });
 
     self.register_setting('expandReports', {
@@ -23,21 +28,17 @@ function queuetools() {
         'title': 'Queue Creature'
     });
 
-    self.register_setting('highlightAutomodMatches', {
-        'type': 'boolean',
-        'default': true,
-        'beta': false,
-        'title': 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.'
-    });
+
 
 
     self.init = function () {
-        var $body = $('body');
+        let $body = $('body');
+        let modlogCache = {};
 
         // Cached data
-        var showActionReason = self.setting('showActionReason'),
+        const showActionReason = self.setting('showActionReason'),
+            expandActionReasonQueue = self.setting('expandActionReasonQueue'),
             queueCreature = self.setting('queueCreature'),
-            highlightAutomodMatches = self.setting('highlightAutomodMatches'),
             expandReports = self.setting('expandReports');
 
         function fadeOutCreature() {
@@ -45,6 +46,11 @@ function queuetools() {
         }
 
         window.addEventListener('TBNewPage', function (event) {
+            if(expandActionReasonQueue && event.detail.pageType === 'queueListing') {
+                $body.addClass('tb-show-actions');
+            } else {
+                $body.removeClass('tb-show-actions');
+            }
             if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
                 let gotQueue = $body.find('.tb-frontend-container').length;
                 if(gotQueue) {
@@ -85,6 +91,123 @@ function queuetools() {
             }
 
         });
+
+        function getModlog(subreddit, callback) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json?limit=100`).done(function (json) {
+                $.each(json.data.children, function (i, value) {
+                    const fullName = value.data.target_fullname;
+                    const actionID = value.data.id;
+                    if(!fullName) {
+                        return;
+                    }
+                    if(!modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+                        console.log('first action')
+                        modlogCache[subreddit].actions[fullName] = {};
+                    }
+                    modlogCache[subreddit].actions[fullName][actionID] = value.data;
+                });
+                modlogCache[subreddit].activeFetch = false;
+                callback();
+            });
+        }
+
+        function checkForActionReasons(subreddit, fullName) {
+            if(modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+                return modlogCache[subreddit].actions[fullName];
+            } else {
+                return false;
+            }
+        }
+
+        function getActionReasons(subreddit, fullName, callback) {
+            self.log(subreddit);
+            const dateNow = Date.now();
+
+            // check if we even have data
+            if(!modlogCache.hasOwnProperty(subreddit)) {
+                modlogCache[subreddit] = {
+                    actions: {},
+                    activeFetch: true,
+                    lastFetch: dateNow
+                };
+
+                getModlog(subreddit, function() {
+                    callback(checkForActionReasons(subreddit, fullName));
+                });
+
+            // If we do have data but it is being refreshed we wait and try again.
+            } else if (modlogCache.hasOwnProperty(subreddit) && modlogCache[subreddit].activeFetch) {
+                setTimeout(function() {
+                    getActionReasons(subreddit, fullName, callback);
+                }, 100);
+            } else if ((dateNow - modlogCache[subreddit].lastFetch) > 300000) {
+                getModlog(subreddit, function() {
+                    callback(checkForActionReasons(subreddit, fullName));
+                });
+            } else {
+                callback(checkForActionReasons(subreddit, fullName));
+            }
+
+        }
+
+
+        if(showActionReason) {
+            TB.listener.on('post', function(e) {
+                // HACKY: the modsubs check probably should be done centraly **before** we fire reddit.ready.
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const id = e.detail.data.id;
+
+
+
+
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        getActionReasons(subreddit, id, function(actions) {
+                            if(actions) {
+                                let $postActionTable = $(`
+                                <div class="tb-action-details">
+                                    <span class="tb-bracket-button tb-show-action-table">recent mod actions history</span>
+                                    <table class="tb-action-table">
+                                        <tr>
+                                            <th>mod</th>
+                                            <th>action</th>
+                                            <th>time</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                                `);
+                                $.each(actions, function (i, value) {
+                                    const mod = value.mod;
+                                    const action = value.action;
+                                    const createdUTC = TBUtils.timeConverterRead(value.created_utc);
+                                    const createdTimeAgo = TBUtils.timeConverterISO(value.created_utc);
+
+                                    const actionHTML = `
+                                    <tr>
+                                        <td>${mod}</td>
+                                        <td>${action}</td>
+                                        <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
+                                    </tr>
+                                    `;
+
+                                    $postActionTable.find('.tb-action-table').append(actionHTML);
+
+                                });
+                                $target.append($postActionTable);
+                                $postActionTable.find('time.timeago').timeago();
+
+
+                            }
+                        });
+                    }
+                });
+
+
+            });
+
+        }
+
 
 
 

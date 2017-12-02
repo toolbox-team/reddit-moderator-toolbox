@@ -70,7 +70,7 @@ function queuetools() {
 
         // If the queue creature element is on page it will fade it out first and then remove the element.
         function fadeOutCreature() {
-            $body.find('#queueCreatureWrapper').fadeOut(300, function() { $(this).remove(); });
+            $body.find('#queueCreatureWrapper').fadeOut(200, function() { $(this).remove(); });
         }
 
         // Activate on queue pages.
@@ -85,43 +85,74 @@ function queuetools() {
             // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
             if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
                 let gotQueue = $body.find('.tb-frontend-container').length;
-                if(gotQueue) {
+
+                // No queue, creature time!
+                if(!gotQueue) {
+                    // Well maybe, let's wait a little bit.
+                    setTimeout(function () {
+                        // Creature time for real!
+                        if(!gotQueue) {
+                            gotQueue = $body.find('.tb-frontend-container').length;
+                            let $noResults = $body.find('#queueCreatureWrapper');
+                            if(!$noResults.length) {
+                                $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
+                            }
+                            $noResults.fadeIn('200');
+                            const $queueCreature = $noResults.find('#queueCreature');
+                            self.log(queueCreature);
+                            if (queueCreature === 'puppy') {
+                                $queueCreature.addClass('tb-puppy');
+                            } else if (queueCreature === 'kitteh') {
+                                $queueCreature.addClass('tb-kitteh');
+                            } else if (queueCreature === '/r/babyelephantgifs') {
+                                $queueCreature.addClass('tb-begifs');
+                            } else if (queueCreature === '/r/spiderbros') {
+                                $queueCreature.addClass('tb-spiders');
+                            } else if (queueCreature === 'piggy') {
+                                // https://www.flickr.com/photos/michaelcr/5797087585
+                                $queueCreature.addClass('tb-piggy');
+                            }
+                        }
+;
+                    }, 500);
+                } else {
+                    // Creature no longer happy.
                     fadeOutCreature();
                 }
 
-                // We have to do some funky stuff here to not jump gun as the queue is loaded through an internal api while the page is ready.
-                window.setTimeout(function() {
-                    gotQueue = $body.find('.tb-frontend-container').length;
 
-                    // No queue, creature time!
-                    if(!gotQueue) {
-                        let $noResults = $body.find('#queueCreatureWrapper');
-                        if(!$noResults.length) {
-                            $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
+                let qCreatureObserver = new MutationObserver(function (mutations) {
+
+                    mutations.forEach(function (mutation) {
+                        console.log(mutation);
+                        let $target = $(mutation.target);
+
+                        if ($target.find('.tb-frontend-container').length > 0) {
+                            fadeOutCreature();
                         }
-
-                        $noResults.fadeIn('400');
-                        const $queueCreature = $noResults.find('#queueCreature');
-                        self.log(queueCreature);
-                        if (queueCreature === 'puppy') {
-                            $queueCreature.addClass('tb-puppy');
-                        } else if (queueCreature === 'kitteh') {
-                            $queueCreature.addClass('tb-kitteh');
-                        } else if (queueCreature === '/r/babyelephantgifs') {
-                            $queueCreature.addClass('tb-begifs');
-                        } else if (queueCreature === '/r/spiderbros') {
-                            $queueCreature.addClass('tb-spiders');
-                        } else if (queueCreature === 'piggy') {
-                            // https://www.flickr.com/photos/michaelcr/5797087585
-                            $queueCreature.addClass('tb-piggy');
+                        if ($target.is('.tb-frontend-container')) {
+                            fadeOutCreature();
                         }
-                    } else {
-                        // Creature no longer happy.
-                        fadeOutCreature();
-                    }
+                    });
+                });
 
+                // configuration of the observer:
+                // We specifically want all child elements but nothing else.
+                const qCreatureConfig = {
+                    attributes: false,
+                    childList: true,
+                    characterData: false,
+                    subtree: true
+                };
 
-                }, 500);
+                const qCreatureTarget = document.querySelector('body');
+                // pass in the target node, as well as the observer options
+                qCreatureObserver.observe(qCreatureTarget, qCreatureConfig);
+
+                // Wait a bit for dom changes to occur and then disconnect it again.
+                setTimeout(function () {
+                    qCreatureObserver.disconnect();
+                }, 5000);
             } else {
                 fadeOutCreature();
             }
@@ -232,11 +263,8 @@ function queuetools() {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
-                console.log('got post');
                 TBUtils.getModSubs(function () {
-                    console.log('got post2');
                     if(TBUtils.modsSub(subreddit)) {
-                        console.log('got post3');
                         getActions(subreddit, id, function(actions) {
                             if(actions) {
                                 let $postActionTable = $(`

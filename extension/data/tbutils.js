@@ -2705,7 +2705,7 @@ function initwrapper() {
         const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
-        const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated)\/?$/;
+        const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
 
 
         // This function after being first called will watch for pushstate changes.

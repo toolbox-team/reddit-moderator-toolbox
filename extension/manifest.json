@@ -10,7 +10,8 @@
     "applications": {
         "gecko": {
             "id": "toolboxredesign@toolbox.team",
-            "strict_min_version": "46.0"
+            "strict_min_version": "46.0",
+            "update_url": "https://www.creesch.com/tb/update.json"
         }
     },
     "permissions": [

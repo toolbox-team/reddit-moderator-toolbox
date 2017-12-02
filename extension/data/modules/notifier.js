@@ -492,7 +492,7 @@ function notifiermod() {
             updateMessagesCount(event.detail.unreadMessageCount);
             updateModqueueCount(event.detail.modqueueCount);
             updateUnmodCount(event.detail.unmoderatedCount);
-            updateModMailCount(event.detail.modmailCount);
+            //updateModMailCount(event.detail.modmailCount);
             updateNewModMailCount(event.detail.newModmailCount, event.detail.newModmailCategoryCount);
         });
 
@@ -522,7 +522,7 @@ function notifiermod() {
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
                 updateUnmodCount(unmoderatedCount);
-                updateModMailCount(modmailCount);
+                //updateModMailCount(modmailCount);
                 updateNewModMailCount(newModmailCount, newModmailCategoryCount);
                 return;
             }
@@ -535,7 +535,7 @@ function notifiermod() {
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
                 updateUnmodCount(unmoderatedCount);
-                updateModMailCount(modmailCount);
+                //updateModMailCount(modmailCount);
                 updateNewModMailCount(newModmailCount, newModmailCategoryCount);
                 return;
             }
@@ -543,7 +543,7 @@ function notifiermod() {
             newLoad = false;
 
             // We'll use this to determine if we are done with all counters and want to send a message to the background page telling all other tabs to update.
-            let updateCounters = unmoderatedOn ? 5 : 4;
+            let updateCounters = unmoderatedOn ? 4 : 3;
 
 
             //$.log('updating totals');
@@ -900,120 +900,7 @@ function notifiermod() {
             // Modmail
             //
             // getting unread modmail, will not show replies because... well the api sucks in that regard.
-            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator.json`).done(function (json) {
 
-                var count = json.data.children.length || 0;
-                if (count === 0) {
-                    self.setting('modmailCount', count);
-                    updateModMailCount(count);
-
-                    // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
-                    updateCounters--;
-                    if (updateCounters === 0) {
-                        updateAllTabs();
-                    }
-                    return;
-                }
-
-                var lastSeen = self.setting('lastSeenModmail'),
-                    newIdx = '',
-                    newCount = 0;
-
-                for (var i = 0; i < json.data.children.length; i++) {
-                    var messageTime = json.data.children[i].data.created_utc * 1000,
-                        messageAuthor = json.data.children[i].data.author;
-
-                    var isInviteSpam = false;
-                    if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (json.data.children[i].data.subject == 'moderator invited' || json.data.children[i].data.subject == 'moderator added')) {
-                        isInviteSpam = true;
-                    }
-
-                    if ((!lastSeen || messageTime > lastSeen) && messageAuthor !== TBUtils.logged && !isInviteSpam) {
-                        newCount++;
-                        if (!newIdx) {
-                            newIdx = i;
-                        }
-                    }
-                }
-
-                if (modmailNotifications && newCount > 0 && newCount !== modmailCount) {  // Don't show the message twice.
-                    var notificationbody, messagecount = 0, xmoreModMail = 0;
-
-                    if (consolidatedMessages || newCount > 5) {
-
-                        $.each(json.data.children, function (i, value) {
-
-                            var isInviteSpam = false;
-                            if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
-                                isInviteSpam = true;
-                            }
-
-                            var subreddit = value.data.subreddit,
-                                author = value.data.author;
-
-                            // Prevent changing the message body, since this loops through all messages, again.
-                            // In all honesty, all of this needs to be rewriten...
-                            if (author !== TBUtils.logged && !isInviteSpam) {
-                                messagecount++;
-                                if (messagecount > newCount) return false;
-
-                                if (!notificationbody) {
-                                    notificationbody = `from: ${author}, in: ${subreddit}\n`;
-                                } else if (messagecount <= 6) {
-                                    notificationbody = `${notificationbody}from: ${author}, in: ${subreddit}\n`;
-                                } else if (messagecount > 6) {
-                                    xmoreModMail++;
-                                }
-                            }
-                        });
-
-                        if (newCount === 1) {
-                            TBUtils.notification('One new modmail!', notificationbody, modmailunreadurl);
-
-                        } else if (newCount > 1) {
-                            if (xmoreModMail > 0) {
-                                notificationbody = `${notificationbody}\n and: ${xmoreModMail.toString()} more \n`;
-                            }
-                            TBUtils.notification(`${newCount.toString()} new modmail!`, notificationbody, modmailunreadurl);
-                        }
-                    } else {
-                        $.each(json.data.children, function (i, value) {
-
-                            var isInviteSpam = false;
-                            if (TB.storage.getSetting('ModMail', 'hideinvitespam', false) && (value.data.subject == 'moderator invited' || value.data.subject == 'moderator added')) {
-                                isInviteSpam = true;
-                            }
-
-                            var author = value.data.author;
-
-                            if (author !== TBUtils.logged && !isInviteSpam) {
-                            // Sending 100 messages, since this loops through all messages, again.
-                            // In all honesty, all of this needs to be rewriten...
-                                messagecount++;
-                                if (messagecount > newCount) return false;
-
-                                var modmailbody = TBUtils.htmlDecode(value.data.body_html),
-                                    modmailsubject = value.data.subject,
-                                    modmailsubreddit = value.data.subreddit,
-                                    modmailpermalink = value.data.id;
-
-                                TBUtils.notification(`Modmail: /r/${modmailsubreddit} : ${modmailsubject}`, $(modmailbody).text(), `/message/messages/${modmailpermalink}`);
-                            }
-                        });
-
-                    }
-                }
-
-                self.setting('modmailCount', newCount);
-                updateModMailCount(newCount);
-
-                // Decrease the updateCounters variable by one. Then check if it is zero, if that is the case we are done and can update all tabs.
-                updateCounters--;
-                if (updateCounters === 0) {
-                    updateAllTabs();
-                }
-
-            });
 
             //
             // New modmail

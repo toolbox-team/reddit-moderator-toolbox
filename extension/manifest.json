@@ -9,7 +9,7 @@
     "options_page": "data/background/options.html",
     "applications": {
         "gecko": {
-            "id": "yes@jetpack",
+            "id": "toolboxredesign@toolbox.team",
             "strict_min_version": "46.0"
         }
     },

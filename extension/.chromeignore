@@ -1,6 +1,0 @@
-.*
-*.zip
-*.xpi
-/data/Icon.png
-/manifest-*.json
-/data/libs/redditapi.js

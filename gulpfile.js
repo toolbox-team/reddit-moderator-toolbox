@@ -33,7 +33,7 @@ function execute(execCommand, callback) {
 gulp.task('zip', function() {
     console.log(process.cwd());
 
-    let ignores = fs.readFileSync(src_dir+'/.chromeignore').toString().split("\n");
+    let ignores = fs.readFileSync(src_dir+'/.buildignore').toString().split("\n");
     for (let i = 0; i < ignores.length; i++) {
         if (ignores[i].startsWith("/")) {
             ignores[i] = "!"+src_dir+ignores[i];
@@ -43,14 +43,14 @@ gulp.task('zip', function() {
         }
     }
     return gulp.src([src_dir+'/**'].concat(ignores))
-        .pipe(zip('chrome-moderator-toolbox.zip'))
+        .pipe(zip('moderator-toolbox.zip'))
         .pipe(gulp.dest(output_dir));
 });
 
 gulp.task('manifoldJS', function() {
     console.log(process.cwd());
 
-    let ignores = fs.readFileSync(src_dir+'/.chromeignore').toString().split("\n");
+    let ignores = fs.readFileSync(src_dir+'/.buildignore').toString().split("\n");
     for (let i = 0; i < ignores.length; i++) {
         if (ignores[i].startsWith("/")) {
             ignores[i] = "!"+src_dir+ignores[i];

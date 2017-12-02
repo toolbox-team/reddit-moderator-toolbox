@@ -626,22 +626,22 @@ function removalreasons() {
             var flairText = '', flairCSS = '';
 
             checked.closest('.selectable-reason').each(function () {
-            // Get markdown-formatted reason
-                var markdownReason = $(this).data('reasonMarkdown');
+                var $this = $(this);
+                // Get markdown-formatted reason
+                var markdownReason = $this.data('reasonMarkdown');
                 markdownReasons.push(markdownReason);
 
                 // Get input from HTML-formatted reason
-                var htmlReason = $(this).find('.reason-content');
+                var htmlReason = $this.find('.reason-content');
                 htmlReason.find('select, input, textarea').each(function () {
                     customInput.push(this.value);
                 });
 
                 //Get flair data
-                var temp;
-                if (temp === $(this).data('flairText'))
-                    flairText += ` ${temp}`;
-                if (temp === $(this).data('flairCSS'))
-                    flairCSS += ` ${temp}`;
+                if ($this.data('flairText'))
+                    flairText += ` ${$this.data('flairText')}`;
+                if ($this.data('flairCSS'))
+                    flairCSS += ` ${$this.data('flairCSS')}`;
             });
 
             // Generate reason text

@@ -5,6 +5,7 @@ const fs = require('fs');
 const jsdoc = require('gulp-jsdoc3');
 const ftp = require( 'vinyl-ftp' );
 const gutil = require( 'gulp-util' );
+const argv = require('yargs').argv;
 
 const src_dir = 'extension';
 const dest_dir = 'build';
@@ -14,7 +15,8 @@ const package_dir = 'build/toolbox/edgeextension/package';
 const output_dir = 'build/output';
 const assets = 'edgeAssets';
 
-
+const makeDocs = argv.docs;
+const publishFTP = argv.ftp;
 
 function execute(execCommand, callback) {
     exec(execCommand, function (err, stdout, stderr) {
@@ -102,14 +104,19 @@ gulp.task('manifoldJS', function() {
 
 
 gulp.task('doc', function (cb) {
-    const jsdocConfig = require('./jsdoc.json');
-    gulp.src(['./extension/data/modules/*.js', './extension/data/*.js'], {read: false})
-        .pipe(jsdoc(jsdocConfig, cb));
+    if(makeDocs) {
+        const jsdocConfig = require('./jsdoc.json');
+        gulp.src(['./extension/data/modules/*.js', './extension/data/*.js'], {read: false})
+            .pipe(jsdoc(jsdocConfig, cb));
+    } else {
+        cb()
+    }
+
 });
 
 
 gulp.task('doc2ftp', ['doc'], function (cb) {
-    if (fs.existsSync('ftpconfig.json')) {
+    if (fs.existsSync('ftpconfig.json') && publishFTP) {
         const ftpConfig= JSON.parse(fs.readFileSync('ftpconfig.json', "utf8"));
         ftpConfig.log = gutil.log;
         const conn = ftp.create(ftpConfig);

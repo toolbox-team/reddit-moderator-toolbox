@@ -254,8 +254,12 @@ function comments() {
                     'tb-flat-view', // class
                     false // single overriding footer
                 ).appendTo('body');
+                $body.css('overflow', 'hidden');
+                $body.on('click', '.tb-flat-view .close', function () {
+                    $('.tb-flat-view').remove();
+                    $body.css('overflow', 'auto');
 
-
+                });
                 // Add filter options to the page
                 if (!$body.find('#tb-flatview-search').length) {
                     var $filterHTML = $(`<div id="tb-flatview-search">

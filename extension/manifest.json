@@ -41,7 +41,6 @@
                 "https://*.reddit.com/*"
             ],
             "css": [
-                "data/styles/spectrum.css",
                 "data/styles/toolbox.css",
                 "data/styles/devtools.css",
                 "data/styles/support.css",
@@ -90,7 +89,6 @@
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
                 "data/libs/pako.js",
-                "data/libs/spectrum.js",
                 "data/tbstorage.js",
                 "data/tbui.js",
                 "data/tbutils.js",

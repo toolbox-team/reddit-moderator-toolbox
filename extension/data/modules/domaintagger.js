@@ -202,7 +202,7 @@ function domaintagger() {
         $body.on('click', '.add-domain-tag', function (e) {
             var $this = $(e.target),
                 $domain = $this.siblings('.domain'),
-                currentColor = $domain.data('color'),
+                currentColor = TBUtils.colorNameToHex($domain.data('color')),
                 $thing = $this.closest('.thing'),
                 domain = getThingDomain($thing),
                 //subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
@@ -215,7 +215,7 @@ function domaintagger() {
                     $('<span>').addClass('dt-popup-color-content').append(
                         $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
                     ).append(
-                        $('<input>').prop('type', 'text').addClass('domain-color')
+                        $('<input>').prop('type', 'color').addClass('domain-color').val(currentColor)
                     )
                 ).append(
                     $('<p>').text('This will tag the domain as shown.')
@@ -254,21 +254,6 @@ function domaintagger() {
             for(var i = 0; i < colors.length; i += 2) {
                 colorPalette.push([colors[i], colors[i+1]]);
             }
-
-            var $colorSelector = $popup.find('.domain-color');
-            $colorSelector.spectrum({
-                color: currentColor,
-                showInput: true,
-                showInitial: true,
-                allowEmpty: false,
-                showAlpha: false,
-                preferredFormat: 'hex',
-                containerClassName: 'dt-color-chooser',
-                showPalette: true,
-                showSelectionPalette: false,
-                hideAfterPaletteSelect: true,
-                palette: colorPalette
-            });
 
             // Add to page
             $popup.appendTo('body');

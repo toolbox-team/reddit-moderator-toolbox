@@ -540,6 +540,7 @@ function tbconfig() {
         }
 
         function appendUsernoteType(key, text, color, $list) {
+            const safeColor = TBUtils.colorNameToHex(color);
             if (!$list) {
                 $list = $('#tb-config-usernote-type-list');
             }
@@ -554,7 +555,7 @@ function tbconfig() {
                 )
             ).append(
                 $('<td>').append(
-                    $('<input>').prop('type', 'text').addClass('color').attr('name', 'type-color').val(color)
+                    $('<input>').prop('type', 'color').addClass('color').attr('name', 'type-color').val(safeColor)
                 )
             ).append(
                 $('<td>').append([
@@ -572,16 +573,6 @@ function tbconfig() {
                 $('<td>').addClass('usernote-error error')
             );
             $list.append($thing);
-
-            $thing.find('.color').spectrum({
-            //color: color,
-                showInput: true,
-                showInitial: true,
-                allowEmpty: false,
-                showAlpha: false,
-                preferredFormat: 'hex',      // Defaults to "hsv", which isn't a standard valid CSS property (wtf)
-                containerClassName: 'tb-config-color-chooser'
-            });
 
             return $list;
         }

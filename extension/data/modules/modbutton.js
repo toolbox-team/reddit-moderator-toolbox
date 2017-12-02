@@ -62,7 +62,7 @@ function modbutton() {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.author;
-            const parentID = e.detail.data.post ? e.detail.data.post.id : e.detail.data.comment.id;
+            const parentID = e.detail.data.comment ? e.detail.data.post.id : 'unknown';
 
             $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`)
 
@@ -409,12 +409,45 @@ function modbutton() {
                 openModPopup(event, info);
 
             } else {
-                const id = $benbutton.attr('data-parentID');
                 const subreddit = $benbutton.attr('data-subreddit');
+                const id = $benbutton.attr('data-parentID');
+                const author = $benbutton.attr('data-author');
 
-                TB.utils.getApiThingInfo(id, subreddit, true, function(info) {
+                if(id === 'unknown') {
+                    let info = {
+                        subreddit: subreddit,
+                        user: author,
+                        author: author,
+                        permalink: location.href,
+                        url: location.href,
+                        domain: '',
+                        id: id,
+                        body: `>`,
+                        raw_body: '',
+                        uri_body:'',
+                        approved_by: '',
+                        title: '',
+                        uri_title: '',
+                        kind: 'comment',
+                        postlink: '',
+                        link: '',
+                        banned_by: '',
+                        spam: '',
+                        ham: '',
+                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        mod: TBUtils.logged
+                    };
                     openModPopup(event, info);
-                });
+                } else {
+                    TB.utils.getApiThingInfo(id, subreddit, true, function(info) {
+                        openModPopup(event, info);
+                    });
+                }
+
+
+
             }
 
             return false;

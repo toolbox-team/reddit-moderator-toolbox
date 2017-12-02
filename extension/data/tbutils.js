@@ -2945,7 +2945,7 @@ function initwrapper() {
             });
 
             if (betaRelease) {
-                TBUtils.readFromWiki('tb_beta', 'tbnotes', true, function (resp) {
+                TBUtils.readFromWiki('tb_redesign', 'tbnotes', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
                     $(resp.notes).each(function () {
                         TBUtils.showNote(this);

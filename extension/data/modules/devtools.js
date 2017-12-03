@@ -10,7 +10,7 @@ function devtools() {
 
     // Module init
     self.init = function() {
-
+        let $body = $('body');
         // Function that handles
         function modifyDiv(e) {
             console.log(e);
@@ -65,7 +65,83 @@ function devtools() {
         }
 
         TB.listener.debugFunc = modifyDiv;
+
+
+        window.addEventListener('TBNewPage', function (event) {
+            if(event.detail.pageDetails.subreddit && event.detail.pageDetails.subreddit === 'tb_dev') {
+                const testCommentUILink = `<span class="toolbox-testCommentUI">Show ze overlay!</span>`;
+
+                TBui.contextTrigger(`tb-testCommentUI-link`, true, testCommentUILink);
+            } else {
+                TBui.contextTrigger('tb-testCommentUI-link', false);
+
+            }
+
+        });
+
+        $body.on('click', '.toolbox-testCommentUI', function(){
+            TB.ui.overlay(
+                `Comment UI tester`,
+                [
+                    {
+                        title: 'Flatview',
+                        tooltip: 'commentFlatview.',
+                        content: `
+                            <div id="tb-comment-sitetable"></div>
+                            <div id="tb-testCommentUI-input tb-input">
+                                <input type="text" placeholder="gimme that json url" id="tb-testCommentUI-input-url" class="tb-input">
+                                <button class="tb-action-button tb-testCommentUI-button fetch-single">fetch single</button>
+                                <button class="tb-action-button tb-testCommentUI-button fetch-thread">fetch thread</button>
+                        `,
+                        footer: ''
+                    }
+                ],
+                [], // extra header buttons
+                'tb-comment-ui-test', // class
+                false // single overriding footer
+            ).appendTo('body');
+
+            $body.css('overflow', 'hidden');
+            $body.on('click', '.tb-comment-ui-test .close', function () {
+                $('.tb-comment-ui-test').remove();
+                $body.css('overflow', 'auto');
+
+            });
+
+            $body.on('click', '.tb-testCommentUI-button', function () {
+                const $this = $(this);
+                let $siteTable = $body.find('#tb-comment-sitetable');
+                $siteTable.empty();
+                // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
+                const inputURL = $body.find('#tb-testCommentUI-input-url').val();
+                $.getJSON(inputURL, {raw_json: 1}, function(data) {
+
+                    const commentOptions = {
+                        parentLink : true,
+                        contextLink : true,
+                        fullCommentsLink : true,
+                    };
+
+                    if($this.hasClass('fetch-thread')) {
+                        const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
+                        $siteTable.append($comments);
+                        $('time.timeago').timeago();
+                    } else {
+                        let $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
+                        $siteTable.append($comment);
+                        $('time.timeago').timeago();
+                    }
+
+
+                });
+            });
+
+        });
+
+
     };
+
+
 
     TB.register_module(self);
 }

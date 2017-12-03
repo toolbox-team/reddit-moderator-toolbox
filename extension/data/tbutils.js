@@ -1257,6 +1257,33 @@ function initwrapper() {
             return returnValue;
         };
 
+
+        /**
+         * strips the last directory part of an url. Example:  /this/is/url/with/part/ becomes /this/is/url/with/
+         * @function removeLastDirectoryPartOf
+         * @memberof TBUtils
+         * @param {string} url reddit API comment object.
+         * @returns {string} url without the last directory part
+         */
+        TBUtils.removeLastDirectoryPartOf = function (url) {
+            let array = url.split('/');
+            array.pop();
+            const returnValue = `${array.join('/')}/`;
+            return returnValue;
+        };
+
+        /**
+         * Will tell if a number is odd
+         * @function isOdd
+         * @memberof TBUtils
+         * @param {integer} num reddit API comment object.
+         * @returns {boolean} true if number is odd false if even.
+         */
+
+        TBUtils.isOdd = function (num) {
+            return num % 2;
+        };
+
         /**
          * Because there are a ton of ways how subreddits are written down and sometimes we just want the name.
          * @function cleanSubredditName

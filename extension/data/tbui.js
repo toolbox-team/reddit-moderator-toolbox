@@ -773,6 +773,317 @@
         }
     };
 
+
+    /**
+     * Will build a comment given a reddit API comment object.
+     * @function makeSingleComment
+     * @memberof TBui
+     * @param {object} comment reddit API comment object.
+     * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @returns {object} jquery object with the build comment.
+     */
+
+    TBui.makeSingleComment = function makeSingleComment(comment, commentOptions) {
+
+        // Misc
+        const canModComment = comment.data.can_mod_post,
+
+            // Comment basis (author, body, time)
+            commentAuthor = comment.data.author,
+            commentBodyHTML = comment.data.body_html, // html string
+            commentMarkdownBody = comment.data.body, // markdown string
+            commentCreated = comment.data.created, // unix epoch
+            commentCreatedUTC = comment.data.created_utc, // unix epoch
+            commentDepth = comment.data.depth, // integer
+            commentLinkId = comment.data.link_id, // parent submission ID
+            commentId = comment.data.id, // comment ID
+            commentName = comment.data.name, // fullname t1_<comment ID>
+            commentParentId = comment.data.parent_id,
+            commentPermalink = comment.data.permalink,
+            commentSubreddit = comment.data.subreddit,
+            commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+            commentSubredditType = comment.data.subreddit_type,
+            commentReplies = comment.data.replies, // object with replies
+
+            // Comment details
+            commentScoreHidden = comment.data.score_hidden, // boolean
+            commentScore = comment.data.score, // integer
+            commentControversiality = comment.data.controversiality,  // integer
+            commentEdited = comment.data.edited,
+            commentGilded = comment.data.gilded,
+            commentNumReports = comment.data.num_reports,
+            commentUserReports = comment.data.user_reports, // array with reports by users
+
+            // Comment details - mod related
+            commentStickied = comment.data.stickied, // boolean
+            commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
+            commentModReports = comment.data.mod_reports, // array with reports by mods
+
+            // Author details
+            commentAuthorFlairCssClass = comment.data.author_flair_css_class,
+            commentAuthorFlairText = comment.data.author_flair_text,
+            commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
+
+
+            // Comment status - mod action
+            commentApproved = comment.data.approved, // boolean
+            commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
+            commentApprovedBy = comment.data.approved_by, // unix epoch
+            commentSpam = comment.data.spam, // boolean
+            commentRemoved = comment.data.removed, // boolean
+            commentBannedAtUTC = comment.data.banned_at_utc, // unix epoch
+            commentBannedBy = comment.data.banned_by, // Mod that removed the comment
+            commentIgnoreReports = comment.data.ignore_reports, // boolean
+
+            // Comment status - other
+            commentArchived = comment.data.archived,
+            commentCollapsed = comment.data.collapsed,
+            commentCollapsedReason = comment.data.collapsed_reason;
+
+        // Format the comment datetime nicely
+        const commentReadableCreatedUTC = TBUtils.timeConverterRead(commentCreatedUTC),
+            createdTimeAgo = TBUtils.timeConverterISO(commentCreatedUTC);
+
+        // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
+        const commentThreadPermalink = TBUtils.removeLastDirectoryPartOf(commentPermalink);
+
+        // Build a parentlink
+        // Also determine if we are dealing with a top level comment.
+        let commentIsTopLevel = false;
+        const commentParentKind = commentParentId.substring(0,2);
+        let commentParentLink;
+        if(commentParentKind === 't1') {
+            commentParentLink = commentThreadPermalink + commentParentId.substring(3);
+            commentIsTopLevel = true;
+        } else {
+            commentParentLink = commentThreadPermalink;
+        }
+
+        // Let's figure out what the current state is of the comment (approved, removed, spammed or neutral)
+        let commentStatus,
+            commentStatusUTC,
+            commentStatusReadableUTC,
+            commentStatusBy,
+            commentActionByOn;
+
+        if(commentSpam) {
+            commentStatus = 'spammed';
+            commentStatusUTC = commentBannedAtUTC;
+            commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
+            commentStatusBy = commentBannedBy;
+            commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
+
+        } else if (commentRemoved) {
+            commentStatus = 'removed';
+            commentStatusUTC = commentBannedAtUTC;
+            commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
+            commentStatusBy = commentBannedBy;
+            commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
+        } else if (commentApproved) {
+            commentStatus = 'approved';
+            commentStatusUTC = commentApprovedAtUTC;
+            commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
+            commentStatusBy = commentApprovedBy;
+            commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
+        } else {
+            commentStatus = 'neutral';
+        }
+
+        // Let's figure out what sort of attributes we need to give the OP if any.
+        let authorStatus;
+        let authorAttributes = [];
+        if(commentIsSubmitter) {
+            authorStatus = 'tb-submitter';
+            authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${commentThreadPermalink}">S</a>`);
+        }
+        if (commentDistinguished) {
+            authorStatus = `tb-${commentDistinguished}`;
+            if(commentDistinguished === 'admin') {
+                authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
+            } else if(commentDistinguished === 'moderator') {
+                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="/r/${commentSubreddit}/about/moderators">M</a>`);
+            } else {
+                authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${commentDistinguished}">${commentDistinguished}</a>`);
+            }
+        }
+
+        // Nicely format if we are talking about point or points
+        let commentScoreText;
+        if (commentScore > 1 || commentScore < -1 ) {
+            commentScoreText = `${commentScore} points`;
+        } else {
+            commentScoreText = `${commentScore} point`;
+        }
+
+
+        // Indicate if a comment has been edited or not.
+        let editedHtml;
+        if (commentEdited) {
+            const commentReadableEdited = TBUtils.timeConverterRead(commentEdited),
+                editedTimeAgo = TBUtils.timeConverterISO(commentEdited);
+            editedHtml=  `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
+        }
+
+        // Let's start building our comment.
+        let $buildComment = $(`
+            <div class="tb-comment tb-comment-${TBUtils.isOdd(commentDepth) ? 'odd' : 'even'}">
+                <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
+                    <div class="tb-tagline">
+                        <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
+                        <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>
+                        ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
+                        ${authorAttributes ? `<span class="tb-userattrs">${authorAttributes.join(' ')}</span>` : ''}
+                        <span class="tb-comment-score ${commentControversiality ? 'tb-iscontroversial' : ''}" title="${commentScore}">${commentScoreText}</span>
+                        <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
+                        ${commentEdited ? editedHtml : ''}
+                        ${commentStickied ? '<span class="tb-comment-stickied">stickied</span>' : ''}
+                        ${commentGilded ? `<span class="tb-comment-gilded">gilded ${commentGilded}x</span>` : ''}
+                    </div>
+                    <div class="tb-comment-body">
+                        ${commentBodyHTML}
+                    </div>
+                    <div class="tb-comment-buttons">
+                            <a class="tb-comment-button tb-comment-button-permalink" href="${commentPermalink}">permalink</a>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        // Now that we have the basic comment build we can go and add details where needed.
+        // The two places where we will be adding data specific to the comment are either entry or the button list.
+        let $commentEntry = $buildComment.find('.tb-comment-entry');
+        let $commentButtonList = $buildComment.find('.tb-comment-buttons');
+
+        // Add some data that is otherwise hidden.
+        let $commentData = $(`
+        <div class="tb-comment-data">
+            <ul class="tb-comment-details">
+                ${commentControversiality ? `<li> Controversial score: ${commentControversiality}.</li>` : ''}
+             </ul>
+        </div>`);
+        if(commentStatus !== 'neutral') {
+            $commentData.find('.tb-comment-details').append(`<li class="tb-status-${commentStatus}">${commentStatus} ${commentActionByOn ? commentActionByOn : ''}.</li>`)
+        }
+
+        if($commentData.find('li').length) {
+            $commentEntry.append($commentData);
+        }
+
+        // Let's see if we need to add reports starting with user reports
+        if(commentUserReports.length && !commentIgnoreReports) {
+            let $commentUserReports = $(`
+            <ul class="tb-comment-user-reports">
+                <li>user reports</li>
+            </ul>
+            `);
+
+            commentUserReports.forEach(function(report) {
+                const userReport = `
+                <li class="tb-comment-user-report">
+                    <strong>
+                        ${report[1]} :
+                    </strong>
+                    ${report[0]}
+                </li>
+                `;
+                $commentUserReports.append(userReport);
+            });
+            $commentEntry.append($commentUserReports);
+
+        } else if (commentIgnoreReports) {
+            let $commentIgnoredReports = $(`
+            <span class="tb-comment-ignored-user-reports">
+                reports ignored (${commentUserReports.length})
+            </span>
+            `);
+            $commentEntry.append($commentIgnoredReports);
+        }
+
+        // Now we do the same for mod reports.
+        // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
+
+        if(commentModReports.length) {
+            let $commentModReports = $(`
+                <ul class="tb-comment-user-reports">
+                    <li>mod reports</li>
+                </ul>
+            `);
+
+            commentModReports.forEach(function(report){
+                const modReport = `
+                    <li class="tb-comment-mod-report">
+                        <strong>
+                            ${report[1]} :
+                        </strong>
+                        ${report[0]}
+                    </li>
+                `;
+                $commentModReports.append(modReport);
+            });
+            $commentEntry.append($commentModReports);
+
+        }
+
+        // Now we move on to the buttons. Starting with the more general buttons depending on what the options tell us.
+        if (commentOptions.parentLink) {
+            const $parentLink = $(`<a class="tb-comment-button tb-comment-button-parent" href="${commentParentLink}">parent</a>`);
+            $commentButtonList.append($parentLink);
+        }
+
+        if (commentOptions.contextLink) {
+            const $contextLink = $(`<a class="tb-comment-button tb-comment-button-context" href="${commentPermalink}?context=3">context</a>`);
+            $commentButtonList.append($contextLink);
+        }
+
+        if (commentOptions.fullCommentsLink) {
+            const $fullCommentsLink = $(`<a class="tb-comment-button tb-comment-button-fullcomments" href="${commentThreadPermalink}">full comments</a>`);
+            $commentButtonList.append($fullCommentsLink);
+        }
+
+        // Now add mod action buttons if applicable.
+        if (canModComment) {
+            if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
+                $(`<a class="tb-comment-button tb-comment-button-remove" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
+
+            }
+
+            if (commentStatus === 'approved' || commentStatus === 'neutral') {
+                $(`<a class="tb-comment-button tb-comment-button-spam" href="javascript:void(0)">spam</a>
+                <a class="tb-comment-button tb-comment-button-remove" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
+            }
+        }
+
+        return $buildComment;
+
+    };
+    /**
+     * Will build a comment given a reddit API comment object.
+     * @function makeCommentThread
+     * @memberof TBui
+     * @param {object} jsonInput reddit API comments object.
+     * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @returns {object} jquery object with the build comment thread.
+     */
+    TBui.makeCommentThread = function makeCommentThread(jsonInput, commentOptions) {
+        let $commentContainer = $(`<div class="tb-comment-children"></div>`);
+
+        jsonInput.forEach(function(comment) {
+            let $childComments;
+
+            if(comment.kind === 't1') {
+                let $comment = TBui.makeSingleComment(comment, commentOptions);
+                if(comment.data.replies) {
+                    $childComments = makeCommentThread(comment.data.replies.data.children, commentOptions);
+                    $comment.append($childComments);
+                }
+                $commentContainer.append($comment);
+            }
+
+        });
+
+        return $commentContainer;
+    };
+
     // Utilities
 
     TBui.getBestTextColor = function (bgColor) {

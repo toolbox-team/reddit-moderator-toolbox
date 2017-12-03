@@ -723,6 +723,157 @@ body.mod-toolbox .tb-general-button img {
 }
 
 /*
+-----------
+    Comment rebuilding css
+-----------
+*/
+
+.mod-toolbox .tb-comment-children:not(:first-of-type) {
+    margin-left: 10px;
+
+}
+
+.tb-comment-entry {
+    margin-left: 7px;
+}
+
+.mod-toolbox .tb-comment {
+    margin: 5px;
+    padding: 5px;
+}
+
+.mod-toolbox .tb-comment.tb-comment-even {
+    background-color: #f1f1f1;
+}
+
+.mod-toolbox .tb-comment.tb-comment-odd {
+    background-color: #fff;
+}
+
+.mod-toolbox .tb-tagline {
+    font-size: 10px;
+    border-bottom: solid 1px gray;
+    padding: 3px;
+}
+
+.mod-toolbox .tb-comment-buttons {
+    font-size: 11px;
+
+}
+
+.mod-toolbox a.tb-comment-button {
+    margin-right: 10px;
+}
+
+.mod-toolbox .tb-comment-body {
+    margin-left: 10px;
+}
+
+.mod-toolbox .tb-comment-children .tb-comment .tb-comment-body p {
+    border: none;
+    padding: 0;
+    line-height: inherit;
+    margin-bottom: 5px;
+}
+
+.mod-toolbox .tb-comment .tb-comment-body table td {
+    border: solid 1px #d0d0d0;
+    padding: 3px;
+    text-align: left;
+}
+
+.mod-toolbox .tb-comment .tb-comment-body table th {
+    font-weight: bold;
+    border: solid 1px #d0d0d0;
+    padding: 3px;
+
+}
+
+.mod-toolbox .tb-comment .tb-comment-body blockquote {
+    background: #eae5e5;
+    padding: 3px;
+    margin: 10px;
+    color: #4c4c4c
+}
+
+.mod-toolbox .tb-comment-flair {
+    background-color: #d8d8d8;
+    padding: 2px;
+}
+
+.mod-toolbox .tb-comment-gilded {
+    color: #f78a17
+}
+
+.mod-toolbox .tb-comment-edited {
+    font-style: italic;
+}
+
+.mod-toolbox  .tb-comment-entry.removed {
+    border: solid 2px #ff0000;
+}
+
+.mod-toolbox  .tb-comment-entry.spammed {
+    border: solid 2px #ff0000;
+}
+
+.mod-toolbox a.tb-moderator {
+    color: #228822;
+}
+
+a.tb-submitter {
+    color: #0055df;
+}
+
+.tb-tagline .tb-comment-author {
+    font-weight: bold;
+}
+
+.tb-tagline .tb-comment-author.tb-submitter {
+	color: #fff;
+	background-color: #0055df;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.tb-tagline .tb-comment-author.tb-moderator {
+	color: #fff;
+	background-color: #228822;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.tb-tagline .tb-comment-author.tb-admin {
+	color: #fff;
+	background-color: #e91e1e;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.tb-tagline .tb-comment-author.tb-unknown {
+	color: #fff;
+	background-color: #ff8d64;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.tb-tagline .tb-comment-author.tb-submitter:hover,
+.tb-tagline .tb-comment-author.tb-moderator:hover,
+.tb-tagline .tb-comment-author.tb-admin:hover,
+.tb-tagline .tb-comment-author.tb-unknown:hover {
+    color: #fff;
+}
+
+.tb-comment-data {
+    margin: 5px;
+    font-size: 10px;
+}
+
+/*
 ------------
     Action buttons, are used where you normally would use actual button elements and where you need to be absolutely certain they always show in the same way.
     This is ridiculously locked down because subreddit styles WON'T STOP TOUCHING NATIVE TOOLBOX STUFF - as always, toolbox loves you!

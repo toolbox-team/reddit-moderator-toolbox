@@ -924,9 +924,16 @@
             editedHtml=  `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
+        let commentDepthClass;
+
+        if(commentOptions.noOddEven) {
+            commentDepthClass = commentDepth;
+        } else {
+            commentDepthClass = TBUtils.isOdd(commentDepth) ? 'odd' : 'even';
+        }
         // Let's start building our comment.
         let $buildComment = $(`
-            <div class="tb-comment tb-comment-${TBUtils.isOdd(commentDepth) ? 'odd' : 'even'}">
+            <div class="tb-comment tb-comment-${commentDepthClass}">
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>

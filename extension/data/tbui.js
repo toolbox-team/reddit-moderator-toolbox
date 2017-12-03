@@ -843,7 +843,8 @@
 
         // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
         const commentThreadPermalink = TBUtils.removeLastDirectoryPartOf(commentPermalink);
-
+        console.log(commentThreadPermalink);
+        console.log(commentPermalink);
         // Build a parentlink
         // Also determine if we are dealing with a top level comment.
         let commentIsTopLevel = false;
@@ -887,7 +888,7 @@
         }
 
         // Let's figure out what sort of attributes we need to give the OP if any.
-        let authorStatus;
+        let authorStatus = 'tb-regular';
         let authorAttributes = [];
         if(commentIsSubmitter) {
             authorStatus = 'tb-submitter';
@@ -936,7 +937,7 @@
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
                         <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
-                        ${authorAttributes ? `<span class="tb-userattrs">${authorAttributes.join(' ')}</span>` : ''}
+                        ${authorAttributes ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
                         <span class="tb-comment-score ${commentControversiality ? 'tb-iscontroversial' : ''}" title="${commentScore}">${commentScoreText}</span>
                         <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
                         ${commentEdited ? editedHtml : ''}
@@ -1047,13 +1048,13 @@
         // Now add mod action buttons if applicable.
         if (canModComment) {
             if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
-                $(`<a class="tb-comment-button tb-comment-button-remove" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
+                $(`<a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
 
             }
 
             if (commentStatus === 'approved' || commentStatus === 'neutral') {
-                $(`<a class="tb-comment-button tb-comment-button-spam" href="javascript:void(0)">spam</a>
-                <a class="tb-comment-button tb-comment-button-remove" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
+                $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
+                <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
             }
         }
 

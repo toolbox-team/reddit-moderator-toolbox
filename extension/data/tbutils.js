@@ -1266,7 +1266,8 @@ function initwrapper() {
          * @returns {string} url without the last directory part
          */
         TBUtils.removeLastDirectoryPartOf = function (url) {
-            let array = url.split('/');
+            const urlNoSlash = url.replace(/\/$/, '');
+            let array = urlNoSlash.split('/');
             array.pop();
             const returnValue = `${array.join('/')}/`;
             return returnValue;

@@ -281,7 +281,7 @@ div#tb-context-menu #tb-context-header {
     display: none;
 }
 
-.mod-toolbox .tb-window-content p:not([class^="codemirror"]){
+.mod-toolbox .tb-window-content :not(.tb-comment) p:not([class^="codemirror"]){
     padding-top: 6px !important;
     padding-bottom: 5px;
     padding-left: 10px;
@@ -769,7 +769,7 @@ body.mod-toolbox .tb-general-button img {
     margin-left: 10px;
 }
 
-.mod-toolbox .tb-comment-children .tb-comment .tb-comment-body p {
+.mod-toolbox .tb-comment .tb-comment-body .md p {
     border: none;
     padding: 0;
     line-height: inherit;
@@ -821,15 +821,15 @@ body.mod-toolbox .tb-general-button img {
     color: #228822;
 }
 
-a.tb-submitter {
+.mod-toolbox a.tb-submitter {
     color: #0055df;
 }
 
-.tb-tagline .tb-comment-author {
+.mod-toolbox .tb-tagline .tb-comment-author {
     font-weight: bold;
 }
 
-.tb-tagline .tb-comment-author.tb-submitter {
+.mod-toolbox .tb-tagline .tb-comment-author.tb-submitter {
 	color: #fff;
 	background-color: #0055df;
 	font-weight: bold;
@@ -837,7 +837,7 @@ a.tb-submitter {
 	padding: 0px 2px;
 }
 
-.tb-tagline .tb-comment-author.tb-moderator {
+.mod-toolbox .tb-tagline .tb-comment-author.tb-moderator {
 	color: #fff;
 	background-color: #228822;
 	font-weight: bold;
@@ -845,7 +845,7 @@ a.tb-submitter {
 	padding: 0px 2px;
 }
 
-.tb-tagline .tb-comment-author.tb-admin {
+.mod-toolbox .tb-tagline .tb-comment-author.tb-admin {
 	color: #fff;
 	background-color: #e91e1e;
 	font-weight: bold;
@@ -853,7 +853,7 @@ a.tb-submitter {
 	padding: 0px 2px;
 }
 
-.tb-tagline .tb-comment-author.tb-unknown {
+.mod-toolbox .tb-tagline .tb-comment-author.tb-unknown {
 	color: #fff;
 	background-color: #ff8d64;
 	font-weight: bold;

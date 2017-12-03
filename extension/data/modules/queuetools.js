@@ -84,42 +84,35 @@ function queuetools() {
             // Queue creature
             // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
             if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
-                let gotQueue = $body.find('.tb-frontend-container').length;
+                // Well maybe, let's wait a little bit.
+                setTimeout(function () {
+                    // Creature time for real!
+                    const gotQueue = $body.find('.tb-frontend-container').length;
+                    if(!gotQueue) {
 
-                // No queue, creature time!
-                if(!gotQueue) {
-                    // Well maybe, let's wait a little bit.
-                    setTimeout(function () {
-                        // Creature time for real!
-                        if(!gotQueue) {
-                            gotQueue = $body.find('.tb-frontend-container').length;
-                            let $noResults = $body.find('#queueCreatureWrapper');
-                            if(!$noResults.length) {
-                                $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
-                            }
-                            $noResults.fadeIn('200');
-                            const $queueCreature = $noResults.find('#queueCreature');
-                            self.log(queueCreature);
-                            if (queueCreature === 'puppy') {
-                                $queueCreature.addClass('tb-puppy');
-                            } else if (queueCreature === 'kitteh') {
-                                $queueCreature.addClass('tb-kitteh');
-                            } else if (queueCreature === '/r/babyelephantgifs') {
-                                $queueCreature.addClass('tb-begifs');
-                            } else if (queueCreature === '/r/spiderbros') {
-                                $queueCreature.addClass('tb-spiders');
-                            } else if (queueCreature === 'piggy') {
-                                // https://www.flickr.com/photos/michaelcr/5797087585
-                                $queueCreature.addClass('tb-piggy');
-                            }
+                        let $noResults = $body.find('#queueCreatureWrapper');
+                        if(!$noResults.length) {
+                            $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
                         }
-;
-                    }, 500);
-                } else {
-                    // Creature no longer happy.
-                    fadeOutCreature();
-                }
-
+                        $noResults.fadeIn('200');
+                        const $queueCreature = $noResults.find('#queueCreature');
+                        self.log(queueCreature);
+                        if (queueCreature === 'puppy') {
+                            $queueCreature.addClass('tb-puppy');
+                        } else if (queueCreature === 'kitteh') {
+                            $queueCreature.addClass('tb-kitteh');
+                        } else if (queueCreature === '/r/babyelephantgifs') {
+                            $queueCreature.addClass('tb-begifs');
+                        } else if (queueCreature === '/r/spiderbros') {
+                            $queueCreature.addClass('tb-spiders');
+                        } else if (queueCreature === 'piggy') {
+                            // https://www.flickr.com/photos/michaelcr/5797087585
+                            $queueCreature.addClass('tb-piggy');
+                        }
+                    } else {
+                        fadeOutCreature();
+                    }
+                }, 500);
 
                 let qCreatureObserver = new MutationObserver(function (mutations) {
 

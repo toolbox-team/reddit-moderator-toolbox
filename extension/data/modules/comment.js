@@ -15,7 +15,6 @@ function comments() {
 
     self.init = function () {
         let $body = $('body');
-        let newThingRunning = false;
 
         // Do not open lightbox but go to full comment page.
         if (commentsAsFullPage) {
@@ -42,46 +41,6 @@ function comments() {
         });
 
         $body.on('click', '.tb-loadFlat', function () {
-
-            // Template for comment construction Note: We do not include all user functions like voting since flat view removes all context. This is purely for mod related stuff.
-            var htmlComment = `
-<div class="thing comment noncollapsed id-{{thingClasses}}" onclick="click_thing(this)" data-fullname="{{name}}">
-<div class="entry mod-button" subreddit="{{subreddit}}">
-<p class="tagline">
-    <a href="/user/{{author}}" class="{{authorClass}} may-blank">{{author}}</a>
-    <span class="userattrs">
-    </span>
-    <span class="score">{{score}} points</span>
-    <time title="{{createdUTC}}" datetime="{{createdTimeAgo}}" class="live-timestamp timeago">{{createdTimeAgo}}</time>
-</p>
-<form class="usertext">
-    <div class="usertext-body">
-    {{bodyHtml}}
-    </div>
-</form>
-<ul class="flat-list buttons">
-    <li class="first">
-        <a href="{{permaLinkComment}}" class="bylink" rel="nofollow" target="_blank">permalink</a>
-    </li>
-    <li>
-        <a href="javascript:;" class="global-mod-button">mod</a>
-    </li>
-    <li>
-        <a href="{{permaLinkComment}}/?context=3" class="bylink" rel="nofollow"  target="_blank">context</a>
-    </li>
-    <li>
-        <a href="{{threadPermalink}}" class="bylink" rel="nofollow"  target="_blank">full comments</a>
-    </li>
-    {{bannedBy}}
-    {{modButtons}}
-    <li>
-        <a class="" href="javascript:void(0)" onclick="return reply(this)">reply</a></li>
-</ul>
-</div>
-<div class="child"></div>
-<div class="comment-nest-info">{{commentNestInfo}}</div>
-</div>`;
-
 
             let flatListing = {}, // This will contain all comments later on.
                 idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
@@ -135,12 +94,11 @@ function comments() {
                 $.each(idListing, function (index, value) {
 
                     const commentOptions = {
-                        parentLink : true,
-                        contextLink : true,
-                        fullCommentsLink : true,
-                        noOddEven: true,
+                        'parentLink' : true,
+                        'contextLink' : true,
+                        'fullCommentsLink' : true,
+                        'noOddEven': true
                     };
-                    console.log(flatListing[value]);
                     const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
                     $htmlCommentView.append($comment);
 

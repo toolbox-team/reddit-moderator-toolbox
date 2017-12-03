@@ -781,7 +781,6 @@
      */
 
     TBui.makeSingleComment = function makeSingleComment(comment, commentOptions) {
-
         // Misc
         const canModComment = comment.data.can_mod_post,
 
@@ -791,7 +790,7 @@
             commentMarkdownBody = comment.data.body, // markdown string
             commentCreated = comment.data.created, // unix epoch
             commentCreatedUTC = comment.data.created_utc, // unix epoch
-            commentDepth = comment.data.depth, // integer
+            commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
             commentLinkId = comment.data.link_id, // parent submission ID
             commentId = comment.data.id, // comment ID
             commentName = comment.data.name, // fullname t1_<comment ID>
@@ -843,8 +842,7 @@
 
         // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
         const commentThreadPermalink = TBUtils.removeLastDirectoryPartOf(commentPermalink);
-        console.log(commentThreadPermalink);
-        console.log(commentPermalink);
+
         // Build a parentlink
         // Also determine if we are dealing with a top level comment.
         let commentIsTopLevel = false;
@@ -929,15 +927,17 @@
         } else {
             commentDepthClass = TBUtils.isOdd(commentDepth) ? 'odd' : 'even';
         }
+
+        const commentOptionsJSON = TBUtils.escapeHTML(JSON.stringify(commentOptions));
         // Let's start building our comment.
         let $buildComment = $(`
-            <div class="tb-comment tb-comment-${commentDepthClass}">
+            <div class="tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}">
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
                         <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
-                        ${authorAttributes ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
+                        ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
                         <span class="tb-comment-score ${commentControversiality ? 'tb-iscontroversial' : ''}" title="${commentScore}">${commentScoreText}</span>
                         <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
                         ${commentEdited ? editedHtml : ''}
@@ -1048,7 +1048,7 @@
         // Now add mod action buttons if applicable.
         if (canModComment) {
             if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
-                $(`<a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
+                $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
 
             }
 
@@ -1082,12 +1082,120 @@
                     $comment.append($childComments);
                 }
                 $commentContainer.append($comment);
+            } else if(comment.kind === 'more') {
+                const count = comment.data.count;
+                const commentIDs = comment.data.children.toString();
+
+                $commentContainer.append(`<span class="tb-more-comments"><a class="tb-load-more-comments" data-ids="${commentIDs}" href="javascript:void(0)">load more comments</a> (${count} replies)</span>`);
             }
 
         });
 
         return $commentContainer;
     };
+
+    // handling of comment actions.
+    $body.on('click', '.tb-comment-button-approve', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.approveThing(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>approved</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-comment-button-remove', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.removeThing(fullname, false, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>removed</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-comment-button-spam', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.removeThing(fullname, true, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>spammed</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-comment-toggle', function() {
+        const $this = $(this);
+        const thisState = $this.text();
+        const $comment = $this.closest('.tb-comment');
+        $comment.find('.tb-comment-children').first().toggle();
+        $comment.find('.tb-comment-body').first().toggle();
+        $comment.find('.tb-comment-buttons').first().toggle();
+        $comment.find('.tb-comment-details').first().toggle();
+
+        if(thisState === '[–]') {
+            $this.text('[+]');
+        } else {
+            $this.text('[–]');
+        }
+    });
+
+    $body.on('click', '.tb-load-more-comments', function() {
+        const $this = $(this);
+        const $thisMoreComments = $this.closest('.tb-more-comments');
+        const commentIDs = $this.attr('data-ids').split(',');
+        const commentIDcount = commentIDs.length;
+        const $thisComment = $this.closest('.tb-comment');
+        const threadPermalink = $thisComment.attr('data-thread-permalink');
+        const commentOptionsData = $thisComment.attr('data-comment-options');
+
+
+        let commentOptions = JSON.parse(commentOptionsData);
+        // This is to make sure comment coloring still is correct.
+        commentOptions.commentDepthPlus = true;
+        let processCount = 0;
+        TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
+        commentIDs.forEach(function(id) {
+            const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
+            console.log(fetchUrl);
+            // Lets get the comments.
+            $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
+                const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
+                window.requestAnimationFrame(function() {
+                    $thisMoreComments.before($comments.html());
+                });
+
+                processCount = processCount + 1;
+                if(processCount === commentIDcount) {
+                    $thisMoreComments.remove();
+                    $('time.timeago').timeago();
+                    TB.ui.longLoadSpinner(false);
+                }
+
+            });
+        });
+
+
+    });
+
+
+
 
     // Utilities
 

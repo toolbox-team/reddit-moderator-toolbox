@@ -761,7 +761,7 @@ body.mod-toolbox .tb-general-button img {
 
 }
 
-.mod-toolbox a.tb-comment-button {
+.mod-toolbox .tb-comment-button {
     margin-right: 10px;
 }
 
@@ -871,6 +871,17 @@ body.mod-toolbox .tb-general-button img {
 .tb-comment-data {
     margin: 5px;
     font-size: 10px;
+}
+
+.mod-toolbox .tb-more-comments {
+    margin: 5px;
+    padding: 5px;
+    display: block;
+    font-size: 10px;
+}
+
+.mod-toolbox .tb-more-comments a {
+    font-weight: bold;
 }
 
 /*

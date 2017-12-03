@@ -117,9 +117,9 @@ function devtools() {
                 $.getJSON(inputURL, {raw_json: 1}, function(data) {
 
                     const commentOptions = {
-                        parentLink : true,
-                        contextLink : true,
-                        fullCommentsLink : true,
+                        'parentLink' : true,
+                        'contextLink' : true,
+                        'fullCommentsLink' : true
                     };
 
                     if($this.hasClass('fetch-thread')) {

@@ -8,9 +8,27 @@ function devtools() {
     self.config['betamode'] = false;
     self.config['devmode'] = true;
 
+    self.register_setting('apiHelper', {
+        'type': 'boolean',
+        'default': false,
+        'advanced': true,
+        'title': 'Show api button next for each element received from front-end api'
+    });
+
+    self.register_setting('commentUItester', {
+        'type': 'boolean',
+        'default': false,
+        'advanced': true,
+        'title': 'Add a button to the context menu that opens an overlay to test the TBui comment constructors.'
+    });
     // Module init
     self.init = function() {
         let $body = $('body');
+
+        const apiHelper = self.setting('apiHelper'),
+            commentUItester = self.setting('commentUItester');
+
+
         // Function that handles
         function modifyDiv(e) {
             console.log(e);
@@ -64,20 +82,15 @@ function devtools() {
             });
         }
 
-        TB.listener.debugFunc = modifyDiv;
+        if(apiHelper) {
+            TB.listener.debugFunc = modifyDiv;
+        }
 
+        if(commentUItester) {
+            const testCommentUILink = `<span class="toolbox-testCommentUI">Show ze overlay!</span>`;
+            TBui.contextTrigger(`tb-testCommentUI-link`, true, testCommentUILink);
+        }
 
-        window.addEventListener('TBNewPage', function (event) {
-            if(event.detail.pageDetails.subreddit && event.detail.pageDetails.subreddit === 'tb_dev') {
-                const testCommentUILink = `<span class="toolbox-testCommentUI">Show ze overlay!</span>`;
-
-                TBui.contextTrigger(`tb-testCommentUI-link`, true, testCommentUILink);
-            } else {
-                TBui.contextTrigger('tb-testCommentUI-link', false);
-
-            }
-
-        });
 
         $body.on('click', '.toolbox-testCommentUI', function(){
             TB.ui.overlay(

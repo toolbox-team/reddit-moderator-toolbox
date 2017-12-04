@@ -758,18 +758,23 @@
             }
 
             const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
-            $tbContextMenu.hover(function() {
+            $tbContextMenu.mouseenter(function() {
+                $tbContextMenu.css('background-image', 'none');
                 $contextMenuWrap.fadeIn(200);
-            }, function() {
-                $contextMenuWrap.fadeOut(200);
+            }).mouseleave(function() {
+                $contextMenuWrap.fadeOut(200, function() {
+                    console.log(`url('data:image/png;base64,${TBui.iconShow}')`);
+                    $tbContextMenu.css('background-image', `url('data:image/png;base64,${TBui.iconShow.replace(/(?:\r\n|\r|\n)/g, '')}')`);
+                });
+
             });
 
             // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
             // The alternative would be to always show the entire menu.
-            $contextMenuWrap.trigger('mouseover');
+            $tbContextMenu.trigger('mouseover');
             clearTimeout(contextTimeout);
             contextTimeout = setTimeout(function() {
-                $contextMenuWrap.trigger('mouseleave');
+                $tbContextMenu.trigger('mouseleave');
             }, 1000);
 
 

@@ -29,68 +29,68 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
 
 /* Note styling */
 
-.usernote-button {
+.mod-toolbox-rd .usernote-button {
     margin-left: 2px;
 
     font-size: x-small;
     color: #888888;
 }
 
-.usernote-button #add-user-tag {
+.mod-toolbox-rd .usernote-button #add-user-tag {
     cursor: pointer;
 }
 
-.usernote-button .add-user-tag:hover {
+.mod-toolbox-rd .usernote-button .add-user-tag:hover {
     text-decoration: none;
 }
 
 /* Popup styling */
 
-.utagger-popup .right {
+.mod-toolbox-rd .utagger-popup .right {
     float: right;
 }
 
-.utagger-popup .left {
+.mod-toolbox-rd .utagger-popup .left {
     float: left;
 }
 
-.utagger-popup .utagger-date {
+.mod-toolbox-rd .utagger-popup .utagger-date {
     font-size: 80%;
 }
 
-.utagger-popup .utagger-notes {
+.mod-toolbox-rd .utagger-popup .utagger-notes {
     width: 100%;
 }
 
-.utagger-popup .utagger-notes td {
+.mod-toolbox-rd .utagger-popup .utagger-notes td {
     padding: 2px !important;
     border: solid 1px #C1BFBF;
     vertical-align: top;
 }
 
-.utagger-popup .utagger-notes-td1 {
+.mod-toolbox-rd .utagger-popup .utagger-notes-td1 {
     width: 65px;
 }
 
-.utagger-popup .utagger-notes-td3 {
+.mod-toolbox-rd .utagger-popup .utagger-notes-td3 {
     width: 5px;
     border: 0;
 }
 
-.utagger-popup .utagger-notes-td3 a {
+.mod-toolbox-rd .utagger-popup .utagger-notes-td3 a {
     color: #C92A2A;
     font-weight: bold;
 }
 
-.utagger-popup .utagger-note .note-type {
+.mod-toolbox-rd .utagger-popup .utagger-note .note-type {
     margin-right: 2px;
 }
 
-.utagger-popup .utagger-remove-note {
+.mod-toolbox-rd .utagger-popup .utagger-remove-note {
     cursor: pointer;
 }
 
-.utagger-popup .utagger-types {
+.mod-toolbox-rd .utagger-popup .utagger-types {
     display: inline-block;
     width: 100%;
     margin-top: 5px;
@@ -99,59 +99,59 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     padding-top: 4px;
 }
 
-.utagger-popup .utagger-type input {
+.mod-toolbox-rd .utagger-popup .utagger-type input {
     display: none;
 }
 
-.utagger-popup .utagger-type span {
+.mod-toolbox-rd .utagger-popup .utagger-type span {
     padding: 3px;
     border: 1px solid rgb(114, 134, 154);
     transition: backgroun-color 0.15s ease-out;
 }
 
-.utagger-popup td:not(:last-child) .utagger-type span {
+.mod-toolbox-rd .utagger-popup td:not(:last-child) .utagger-type span {
     border-right: none;
 }
 
-.utagger-popup .utagger-type span:hover {
+.mod-toolbox-rd .utagger-popup .utagger-type span:hover {
     background-color: #e2eefa;
     cursor: pointer;
 }
-.utagger-popup .utagger-type input:checked ~ span {
+.mod-toolbox-rd .utagger-popup .utagger-type input:checked ~ span {
     background-color: #e2eefa;
 }
 
-.utagger-popup .utagger-type span:before {
+.mod-toolbox-rd .utagger-popup .utagger-type span:before {
     content: '\2713';
     margin-right: 2px;
     opacity: 0.5;}
 
-.utagger-popup .utagger-type span:hover:before {
+.mod-toolbox-rd .utagger-popup .utagger-type span:hover:before {
     opacity: 1;
 }
 
-.utagger-popup .utagger-type input:checked ~ span:before {
+.mod-toolbox-rd .utagger-popup .utagger-type input:checked ~ span:before {
     opacity: 1;
     font-weight: bold;
 }
 
-.utagger-popup .utagger-user-note {
+.mod-toolbox-rd .utagger-popup .utagger-user-note {
     width: 98%;
     margin-bottom: 2px;
     padding: 2px;
 }
 
-.utagger-popup #utagger-user-note-input.error {
+.mod-toolbox-rd .utagger-popup #utagger-user-note-input.error {
     border-color: red;
 }
 
 /*.utagger-popup .utagger-type input,*/
-.utagger-popup .utagger-include-link input {
+.mod-toolbox-rd .utagger-popup .utagger-include-link input {
     margin-right: 1px;
     vertical-align: sub;
 }
 
-.utagger-popup .utagger-include-link input[disabled] ~ span {
+.mod-toolbox-rd .utagger-popup .utagger-include-link input[disabled] ~ span {
     color: slategray;
 }
 

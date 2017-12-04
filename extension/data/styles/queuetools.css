@@ -1,6 +1,6 @@
 
 /* queue creater */
-#queueCreatureWrapper {
+.mod-toolbox-rd #queueCreatureWrapper {
     width: 100%;
     text-align: center;
     position: absolute;
@@ -8,7 +8,7 @@
     display: none;
   }
 
-#queueCreature {
+.mod-toolbox-rd #queueCreature {
 display: inline-block;
 }
 

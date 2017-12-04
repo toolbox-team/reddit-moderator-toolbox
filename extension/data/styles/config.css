@@ -1,53 +1,53 @@
 /* Usernote types */
 
-#tb-config-usernote-types {
+.mod-toolbox-rd #tb-config-usernote-types {
     margin-bottom: 2px;
 }
 
-#tb-config-usernote-types th {
+.mod-toolbox-rd #tb-config-usernote-types th {
     padding-left: 2px;
     font-weight: bold;
 }
 
-#tb-config-usernote-type-list .usernote-type td {
+.mod-toolbox-rd #tb-config-usernote-type-list .usernote-type td {
     padding-right: 4px;
     padding-bottom: 4px;
 }
 
-#tb-config-usernote-type-list .usernote-type input[type="text"] {
+.mod-toolbox-rd #tb-config-usernote-type-list .usernote-type input[type="text"] {
     width: 200px;
 }
 
-#tb-config-usernote-type-list .usernote-type input.error {
+.mod-toolbox-rd #tb-config-usernote-type-list .usernote-type input.error {
     box-shadow: 0 0 3px 0 red;
 }
 
-#tb-config-usernote-type-list .usernote-type .usernote-error {
+.mod-toolbox-rd #tb-config-usernote-type-list .usernote-type .usernote-error {
     padding-left: 4px;
 }
 
-.sp-container {
+.mod-toolbox-rd .sp-container {
     z-index: 9999999999;
 }
 
 /* ban-macro */
 
-.tb-page-overlay.tb-config td {
+.mod-toolbox-rd .tb-page-overlay.tb-config td {
     vertical-align: top;
     padding: 3px;
 }
 
 
-.tb-page-overlay.tb-config td:first-child {
+.mod-toolbox-rd .tb-page-overlay.tb-config td:first-child {
     padding-top: 5px;
 }
-.tb-page-overlay.tb-config td textarea.banMessage {
+.mod-toolbox-rd .tb-page-overlay.tb-config td textarea.banMessage {
     width: 600px;
     height: 100px;
     margin: 2px;
 }
 
-.tb-page-overlay.tb-config td input.banNote {
+.mod-toolbox-rd .tb-page-overlay.tb-config td input.banNote {
     width: 597px;
 }
 

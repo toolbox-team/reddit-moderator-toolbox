@@ -1,4 +1,8 @@
-.rts-report,.rts-report-clicked, .markdown-report, .comment-report, .account-report {
+.mod-toolbox-rd .rts-report,
+.mod-toolbox-rd .rts-report-clicked,
+.mod-toolbox-rd .markdown-report,
+.mod-toolbox-rd .comment-report,
+.mod-toolbox-rd .account-report {
     font-weight: bold;
     font-size: x-small;
     padding: 0 5px 0 5px;
@@ -19,60 +23,61 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .history-button {
     color: rgb(136, 136, 136);
 }
 
-.history-button-popup div.table.domain-table,
-.history-button-popup div.table.subreddit-table,
-.history-button-popup div.table.comment-table,
-.history-button-popup div.table.account-table {
+.mod-toolbox-rd .history-button-popup div.table.domain-table,
+.mod-toolbox-rd .history-button-popup div.table.subreddit-table,
+.mod-toolbox-rd .history-button-popup div.table.comment-table,
+.mod-toolbox-rd .history-button-popup div.table.account-table {
     display: inline-block;
     width: 310px;
 }
-.history-button-popup div.tb-popup-content {
+.mod-toolbox-rd .history-button-popup div.tb-popup-content {
     min-width: 650px;
 }
 
-.history-button-popup {
+.mod-toolbox-rd .history-button-popup {
     padding: 0 !important;
 }
 
 
 
-.history-button-popup td {
+.mod-toolbox-rd .history-button-popup td {
     border: 1px dotted lightgray;
     border-bottom: none;
     word-wrap: break-word;
 }
 
-.history-button-popup th {
+.mod-toolbox-rd .history-button-popup th {
     border: 1px solid lightgray;
     border-top: none;
     font-weight: bold;
     word-wrap: break-word;
 }
 
-.history-button-popup td.count-td,.history-button-popup td.percentage-td {
+.mod-toolbox-rd .history-button-popup td.count-td,
+.mod-toolbox-rd .history-button-popup td.percentage-td {
     min-width: 30px !important;
 }
 
-.history-button-popup td.url-td {
+.mod-toolbox-rd .history-button-popup td.url-td {
     max-width: 186px !important;
     word-wrap: break-word;
 }
 
 
-.history-button-popup th,.history-button-popup td {
+.mod-toolbox-rd .history-button-popup th,.history-button-popup td {
     padding: 5px !important;
     border-right: none;
 }
 
-.history-button-popup table {
+.mod-toolbox-rd .history-button-popup table {
     width: 100%;
 }
 
-.history-button .tb-button-active {
+.mod-toolbox-rd .history-button .tb-button-active {
     background-color: #b1d0ef;
 }
 
-.history-button-popup .table {
+.mod-toolbox-rd .history-button-popup .table {
     margin: 10px;
     max-height: 200px;
     max-width: 300px;
@@ -83,16 +88,16 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .history-button {
     border-top: 1px solid lightgray;
 }
 
-.history-button-popup .submission-markdown-text {
+.mod-toolbox-rd .history-button-popup .submission-markdown-text {
     width: 97% !important;
     min-height: 100px;
 }
 
-.history-button-popup .submission-markdown {
+.mod-toolbox-rd .history-button-popup .submission-markdown {
     margin: 0 10px;
 }
 
-.history-button-popup .table .error {
+.mod-toolbox-rd .history-button-popup .table .error {
     text-align: center;
 }
 

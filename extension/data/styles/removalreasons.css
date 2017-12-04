@@ -13,7 +13,7 @@
     font-size: 11px;
 }
 
-.reason-popup-header {
+.mod-toolbox-rd .reason-popup-header {
     right: 0;
     left: 0;
     display: block;
@@ -24,14 +24,14 @@
     font-size: small;
 }
 
-.reason-popup-innercontent {
+.mod-toolbox-rd .reason-popup-innercontent {
     overflow: auto;
     left: 0;
     right: 0;
     padding: 5px !important;
 }
 
-.reason-popup-footer {
+.mod-toolbox-rd .reason-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -40,57 +40,57 @@
     text-align: center;
 }
 
-.reason-popup input,.reason-popup select,.reason-popup textarea {
+.mod-toolbox-rd .reason-popup input,.reason-popup select,.reason-popup textarea {
     font-size: x-small;
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
 
-.reason-popup input[type="checkbox"],.reason-popup input[type="radio"] {
+.mod-toolbox-rd .reason-popup input[type="checkbox"],.reason-popup input[type="radio"] {
     /* CENTER DAT SHIT */
     vertical-align: text-bottom;
     margin-right: 2px;
     margin-top: 0;
 }
 
-.reason-popup textarea {
+.mod-toolbox-rd .reason-popup textarea {
     min-width: 400px;
 }
 
-.reason-popup #reason-table {
+.mod-toolbox-rd .reason-popup #reason-table {
     border-left: solid 1px transparent;
     border-right: solid 1px transparent;
 }
 
-.reason-popup #reason-table.error-highlight {
+.mod-toolbox-rd .reason-popup #reason-table.error-highlight {
     border: solid 1px red;
 }
 
-.reason-popup thead th {
+.mod-toolbox-rd .reason-popup thead th {
     padding: 3px;
     white-space: nowrap;
     font-weight: bold;
     border-bottom: 1px dotted rgb(187, 187, 187);
 }
 
-.reason-popup tbody {
+.mod-toolbox-rd .reason-popup tbody {
     border-bottom: 1px dotted #BBBBBB;
 }
 
-.reason-popup tbody tr {
+.mod-toolbox-rd .reason-popup tbody tr {
     margin-top: 2px;
     vertical-align: top;
 }
 
-.reason-popup tbody td p {
+.mod-toolbox-rd .reason-popup tbody td p {
     margin-top: 2px;
 }
 
-.reason-popup .reason-check {
+.mod-toolbox-rd .reason-popup .reason-check {
     margin: 4px 6px 6px 6px !important;
 }
 
-.reason-popup .reason-num {
+.mod-toolbox-rd .reason-popup .reason-num {
     width: 15px;
     height: 15px;
     margin-left: 2px;
@@ -101,21 +101,21 @@
     color: #D3D3D3;
 }
 
-.reason-popup .selectable-reason.reason-selected .reason-num {
+.mod-toolbox-rd .reason-popup .selectable-reason.reason-selected .reason-num {
     color: black;
 }
 
-.reason-popup select {
+.mod-toolbox-rd .reason-popup select {
     max-width: 200px;
 }
 
-.reason-popup .styled-reason {
+.mod-toolbox-rd .reason-popup .styled-reason {
     margin-top: 4px;
     padding: 1px 3px 3px 3px;
     border: 0;
 }
 
-.reason-popup .selectable-reason:last-child .styled-reason {
+.mod-toolbox-rd .reason-popup .selectable-reason:last-child .styled-reason {
     margin-bottom: 4px;
 }
 
@@ -123,15 +123,15 @@
     border-bottom: solid 5px #F0F0F0;
 }
 
-.reason-popup tr.selectable-reason {
+.mod-toolbox-rd .reason-popup tr.selectable-reason {
     border-bottom: solid 1px #D3D3D3;
 }
 
-.reason-popup tr.selectable-reason td:nth-child(1) {
+.mod-toolbox-rd .reason-popup tr.selectable-reason td:nth-child(1) {
     padding-top: 5px !important;
 }
 
-.reason-popup .selectable-reason.reason-selected .styled-reason {
+.mod-toolbox-rd .reason-popup .selectable-reason.reason-selected .styled-reason {
     background: #B1DDAA;
 }
 
@@ -156,45 +156,45 @@
     margin-bottom: 5px;
 }
 
-.reason-popup .reason-content {
+.mod-toolbox-rd .reason-popup .reason-content {
     padding-left: 8px;
 }
 
-.reason-popup #header-reason, .reason-popup #footer-reason {
+.mod-toolbox-rd .reason-popup #header-reason, .reason-popup #footer-reason {
     border: 0;
     padding: 3px;
 }
 
-.reason-popup #buttons {
+.mod-toolbox-rd .reason-popup #buttons {
     margin-top: 2px;
     padding: 6px 0 6px 2px;
     vertical-align: middle;
     border: solid 1px transparent;
 }
 
-.reason-popup #buttons.error-highlight {
+.mod-toolbox-rd .reason-popup #buttons.error-highlight {
     border-color: red;
 }
 
-.reason-popup #log-reason {
+.mod-toolbox-rd .reason-popup #log-reason {
     border-top: 1px dotted #BBBBBB;
     padding-top: 6px;
 }
 
-.reason-popup #log-reason-input {
+.mod-toolbox-rd .reason-popup #log-reason-input {
     padding-left: 1px;
     min-width: 365px;
 }
 
-.reason-popup #log-reason-input.error-highlight {
+.mod-toolbox-rd .reason-popup #log-reason-input.error-highlight {
     border-color: red;
 }
 
-.reason-popup #log-reason p {
+.mod-toolbox-rd .reason-popup #log-reason p {
     margin-bottom: 4px;
 }
 
-.reason-popup .reason-popup-content {
+.mod-toolbox-rd .reason-popup .reason-popup-content {
     position: relative;
     top: 40px;
     max-width: 1000px;
@@ -207,15 +207,15 @@
     font-size: 11px;
 }
 
-.reason-popup .reason-popup-content span p {
+.mod-toolbox-rd .reason-popup .reason-popup-content span p {
     padding: 3px !important;
 }
 
-.reason-popup strong {
+.mod-toolbox-rd .reason-popup strong {
     font-weight: bold;
 }
 
-.reason-popup em {
+.mod-toolbox-rd .reason-popup em {
     font-style: oblique;
 }
 
@@ -226,68 +226,68 @@
     color: black;
 }
 
-.res-nightmode .reason-popup-header {
+.mod-toolbox-rd.res-nightmode .reason-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.res-nightmode .reason-popup-footer {
+.mod-toolbox-rd.res-nightmode .reason-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }
 
-.res-nightmode .reason-popup input,.reason-popup select,.reason-popup textarea {
+.mod-toolbox-rd.res-nightmode .reason-popup input,.reason-popup select,.reason-popup textarea {
     border: 1px solid #ccc;
     background-color: #fafafa;
 }
 
-.res-nightmode .reason-popup #reason-table.error-highlight {
+.mod-toolbox-rd.res-nightmode .reason-popup #reason-table.error-highlight {
     border: solid 1px red;
 }
 
-.res-nightmode .reason-popup thead th {
+.mod-toolbox-rd.res-nightmode .reason-popup thead th {
     border-bottom: 1px dotted rgb(187, 187, 187);
 }
 
-.res-nightmode .reason-popup tbody {
+.mod-toolbox-rd.res-nightmode .reason-popup tbody {
     border-bottom: 1px dotted #BBBBBB;
 }
 
-.res-nightmode .reason-popup .reason-num {
+.mod-toolbox-rd.res-nightmode .reason-popup .reason-num {
     color: #D3D3D3;
 }
 
-.res-nightmode .reason-popup .selectable-reason.reason-selected .reason-num {
+.mod-toolbox-rd.res-nightmode .reason-popup .selectable-reason.reason-selected .reason-num {
     color: black;
 }
 
-.res-nightmode .reason-popup .styled-reason {
+.mod-toolbox-rd.res-nightmode .reason-popup .styled-reason {
     border: 0 !important;
     padding: 1px 3px 3px 3px !important;
 }
 
-.res-nightmode .reason-popup .selectable-reason.reason-selected .styled-reason {
+.mod-toolbox-rd.res-nightmode .reason-popup .selectable-reason.reason-selected .styled-reason {
     background: #B1DDAA;
 }
 
-.res-nightmode .reason-popup #header-reason, .reason-popup #footer-reason {
+.mod-toolbox-rd.res-nightmode .reason-popup #header-reason, .reason-popup #footer-reason {
     border-color: #E9E9E9 !important;
 }
 
-.res-nightmode .reason-popup #buttons.error-highlight {
+.mod-toolbox-rd.res-nightmode .reason-popup #buttons.error-highlight {
     border-color: red;
 }
 
-.res-nightmode .reason-popup #log-reason {
+.mod-toolbox-rd.res-nightmode .reason-popup #log-reason {
     border-top: 1px dotted #BBBBBB;
     padding-top: 6px;
 }
 
-.res-nightmode .reason-popup #log-reason-input.error-highlight {
+.mod-toolbox-rd.res-nightmode .reason-popup #log-reason-input.error-highlight {
     border-color: red;
 }
 
-.res-nightmode .reason-popup .reason-popup-content {
+.mod-toolbox-rd.res-nightmode .reason-popup .reason-popup-content {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);

@@ -1,31 +1,31 @@
-.add-domain-tag {
+.mod-toolbox-rd .add-domain-tag {
     margin-left: 2px;
 }
 
-.add-domain-tag:hover {
+.mod-toolbox-rd .add-domain-tag:hover {
     cursor: pointer;
 }
 
 /* Popup */
 
-.tb-popup.dtagger-popup {
+.mod-toolbox-rd .tb-popup.dtagger-popup {
     max-width: 900px;
     text-align: center;
 }
-.tb-popup.dtagger-popup .dt-popup-content {
+.mod-toolbox-rd .tb-popup.dtagger-popup .dt-popup-content {
     display: inline-block;
 }
-.dtagger-popup .right {
+.mod-toolbox-rd .dtagger-popup .right {
     float: right;
 }
-.dtagger-popup .left {
+.mod-toolbox-rd .dtagger-popup .left {
     float: left;
 }
-.dtagger-popup .status {
+.mod-toolbox-rd .dtagger-popup .status {
     display: none;
 }
 
-.dtagger-popup tbody tr {
+.mod-toolbox-rd .dtagger-popup tbody tr {
     width: 225px;
     vertical-align: top;
     border-bottom: 1px solid gray;
@@ -33,21 +33,21 @@
     padding: 5px;
 }
 
-.dtagger-popup th {
+.mod-toolbox-rd .dtagger-popup th {
     padding-right: 10px !important;
 }
 
-.dtagger-popup .dt-popup-color-content {
+.mod-toolbox-rd .dtagger-popup .dt-popup-color-content {
     margin-bottom: 2px;
 }
 
-.dtagger-popup .domain-name {
+.mod-toolbox-rd .dtagger-popup .domain-name {
     width: 150px;
     margin-left: 2px;
     margin-right: 7px;
 }
 
-.dtagger-popup .clear-domain {
+.mod-toolbox-rd .dtagger-popup .clear-domain {
     margin-left: 4px;
 }
 
@@ -57,7 +57,7 @@ body.mod-toolbox-rd .dtagger-popup .clear-domain:hover {
 
 /* Tag styles */
 
-.tb-dt-little-dot {
+.mod-toolbox-rd .tb-dt-little-dot {
     margin-right: 3px;
     font-size: 25px;
     line-height: 0;

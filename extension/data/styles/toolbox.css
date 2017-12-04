@@ -28,7 +28,7 @@
     cursor: pointer;
 }
 
-#tb-context-menu {
+.mod-toolbox-rd #tb-context-menu {
     display: none;
     position: fixed;
     left: 0px;
@@ -50,15 +50,15 @@
 
 }
 
-#tb-context-menu:hover {
+.mod-toolbox-rd #tb-context-menu:hover {
     background-image: none;
 }
 
-#tb-context-menu-wrap {
+.mod-toolbox-rd #tb-context-menu-wrap {
     display: none;
 }
 
-#tb-context-menu:hover #tb-context-menu-wrap {
+.mod-toolbox-rd #tb-context-menu:hover #tb-context-menu-wrap {
     display: block;
 }
 
@@ -69,11 +69,11 @@ div#tb-context-menu #tb-context-header {
 }
 
 
-#tb-context-menu table {
+.mod-toolbox-rd #tb-context-menu table {
     width: 100%;
 }
 
-#tb-context-menu table td {
+.mod-toolbox-rd #tb-context-menu table td {
     padding-top: 3px;
     padding-right: 10px;
     padding-bottom: 3px;
@@ -81,12 +81,12 @@ div#tb-context-menu #tb-context-header {
 
 }
 
-#tb-context-menu tr {
+.mod-toolbox-rd #tb-context-menu tr {
     background: rgba(247, 250, 253, 1);
     border-bottom: solid 1px #CCD1D7;
 }
 
-#tb-context-menu tr:hover {
+.mod-toolbox-rd #tb-context-menu tr:hover {
     background-color: rgba(174, 212, 250, 0.5);
 }
 
@@ -146,7 +146,7 @@ div#tb-context-menu #tb-context-header {
     width: 845px;
 }
 
-.tb-window-wrapper-two {
+.mod-toolbox-rd .tb-window-wrapper-two {
     position: relative;
     top: 60px;
     max-width: 1000px;
@@ -257,7 +257,7 @@ div#tb-context-menu #tb-context-header {
 
 
 /* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
-.tb-window-footer {
+.mod-toolbox-rd .tb-window-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -406,7 +406,7 @@ div#tb-context-menu #tb-context-header {
 }
 
 
-.tb-popup-header {
+.mod-toolbox-rd .tb-popup-header {
     right: 0;
     left: 0;
     text-align: left;
@@ -421,7 +421,7 @@ div#tb-context-menu #tb-context-header {
     border: 0;
     padding: 3px;
 }
-.tb-popup-header .tb-popup-title {
+.mod-toolbox-rd .tb-popup-header .tb-popup-title {
     position: relative;
     display: inline-block;
     box-sizing: border-box;
@@ -452,12 +452,12 @@ div#tb-context-menu #tb-context-header {
     height: 100%;
 }
 
-.tb-popup-tabs {
+.mod-toolbox-rd .tb-popup-tabs {
     border-bottom: 1px solid #B6C9DD;
     background-color: #C7D6E6;
 }
 
-.tb-popup-tabs a {
+.mod-toolbox-rd .tb-popup-tabs a {
     background-color: #C7D6E6;
     border-right: 1px dotted #A8B5C2;
     display: inline-block;
@@ -465,45 +465,45 @@ div#tb-context-menu #tb-context-header {
     cursor: pointer;
 }
 
-.tb-popup-tabs a:hover,
-.tb-popup-tabs a.active {
+.mod-toolbox-rd .tb-popup-tabs a:hover,
+.mod-toolbox-rd .tb-popup-tabs a.active {
     background-color: #9FBAD6;
     border-right: 1px solid #9FBAD6;
 }
-.tb-popup-tabs a:not(:first-child):hover,
-.tb-popup-tabs a:not(:first-child).active {
+.mod-toolbox-rd .tb-popup-tabs a:not(:first-child):hover,
+.mod-toolbox-rd .tb-popup-tabs a:not(:first-child).active {
     box-shadow: -1px 0 #9FBAD6;
 }
 
-.tb-popup-content {
+.mod-toolbox-rd .tb-popup-content {
     overflow: auto;
     left: 0;
     right: 0;
     padding: 5px !important;
 }
 
-.mod-popup .other-subs {
+.mod-toolbox-rd .mod-popup .other-subs {
     padding: 5px;
 }
 
-.mod-popup .ban-note {
+.mod-toolbox-rd .mod-popup .ban-note {
     margin-bottom: 3px;
 }
 
-.mod-popup-flair-label {
+.mod-toolbox-rd .mod-popup-flair-label {
     display: inline-block;
     min-width: 35px;
 }
 
-.mod-popup-flair-input {
+.mod-toolbox-rd .mod-popup-flair-input {
     padding: 3px;
 }
 
-.mod-popup .flair-text {
+.mod-toolbox-rd .mod-popup .flair-text {
     width: initial !important;
 }
 
-.tb-popup-footer {
+.mod-toolbox-rd .tb-popup-footer {
     width: 100%;
     height: 30px;
     line-height: 30px;
@@ -514,26 +514,26 @@ div#tb-context-menu #tb-context-header {
     padding: 3px 0px 3px;
 }
 
-.tb-popup-error {
+.mod-toolbox-rd .tb-popup-error {
     color: red;
 }
 
-.mod-popup .subreddit-message {
+.mod-toolbox-rd .mod-popup .subreddit-message {
     min-width: 235px;
     min-height: 65px;
 }
 
-.mod-popup .subreddit-message-subject {
+.mod-toolbox-rd .mod-popup .subreddit-message-subject {
     min-width: 235px;
     margin-bottom: 3px;
     padding: 1px;
 }
 
-.mod-popup .add-sub-link {
+.mod-toolbox-rd .mod-popup .add-sub-link {
     text-decoration: none;
 }
 
-.mod-popup .remove-sub-link {
+.mod-toolbox-rd .mod-popup .remove-sub-link {
     text-decoration: none;
 }
 
@@ -546,43 +546,43 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     color: red !important;
 }
 
-.mod-popup .current-sub,
-.mod-popup .saved-subs div,
-.mod-popup div.other-sub,
-.mod-popup .ban-note-container {
+.mod-toolbox-rd .mod-popup .current-sub,
+.mod-toolbox-rd .mod-popup .saved-subs div,
+.mod-toolbox-rd .mod-popup div.other-sub,
+.mod-toolbox-rd .mod-popup .ban-note-container {
     width: 225px;
     border-bottom: 1px dotted gray;
     padding: 5px;
 }
 
-.mod-popup .current-sub {
+.mod-toolbox-rd .mod-popup .current-sub {
     border-bottom: 1px solid gray;
 }
 
-.mod-popup .ban-note-container {
+.mod-toolbox-rd .mod-popup .ban-note-container {
     width: auto;
     border: none;
 }
 
-.mod-popup .ban-note {
+.mod-toolbox-rd .mod-popup .ban-note {
     width: 100%;
 }
 
-.mod-popup .ban-message {
+.mod-toolbox-rd .mod-popup .ban-message {
     padding: 1px;
     width: 100%;
 }
 
-.mod-popup .ban-duration {
+.mod-toolbox-rd .mod-popup .ban-duration {
     padding: 2px;
     width: 82px;
 }
 
-.mod-popup .edit-subreddits {
+.mod-toolbox-rd .mod-popup .edit-subreddits {
     width: 260px;
 }
 
-.mod-popup .edit-dropdown {
+.mod-toolbox-rd .mod-popup .edit-dropdown {
     width: 190px;
 }
 
@@ -734,7 +734,7 @@ body.mod-toolbox-rd .tb-general-button img {
 
 }
 
-.tb-comment-entry {
+.mod-toolbox-rd .tb-comment-entry {
     margin-left: 7px;
 }
 
@@ -862,14 +862,14 @@ body.mod-toolbox-rd .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.tb-tagline .tb-comment-author.tb-submitter:hover,
-.tb-tagline .tb-comment-author.tb-moderator:hover,
-.tb-tagline .tb-comment-author.tb-admin:hover,
-.tb-tagline .tb-comment-author.tb-unknown:hover {
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-moderator:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown:hover {
     color: #fff;
 }
 
-.tb-comment-data {
+.mod-toolbox-rd .tb-comment-data {
     margin: 5px;
     font-size: 10px;
 }
@@ -993,7 +993,7 @@ body.mod-toolbox-rd .tb-action-button:active {
    level one, and the button should be visible on top-level comments but not on
    replies to other comments. */
 button.save-sticky.tb-action-button { display: none !important }
-.commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
+.mod-toolbox-rd .commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
 
 
 body.mod-toolbox-rd .tb-action-button:focus {
@@ -1031,7 +1031,7 @@ body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button)
 ------------
 */
 
-#tb-feedback-window {
+.mod-toolbox-rd #tb-feedback-window {
     max-width: 400px;
     position: fixed;
     z-index: 2147483647;
@@ -1044,7 +1044,7 @@ body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button)
     box-shadow: rgba(214, 214, 214, 0.47) 0 1px 3px 1px;
 }
 
-#tb-feedback-window .tb-feedback-text {
+.mod-toolbox-rd #tb-feedback-window .tb-feedback-text {
     background-color: #FFF;
     margin: 0;
     display: block;
@@ -1052,11 +1052,11 @@ body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button)
     font-size: 12px;
 }
 
-#tb-feedback-window.positive {
+.mod-toolbox-rd #tb-feedback-window.positive {
     background: #69d47d;
 }
 
-#tb-feedback-window.negative {
+.mod-toolbox-rd #tb-feedback-window.negative {
     background: #ff7f4f;
 }
 
@@ -1110,7 +1110,7 @@ span.rate-limit-explain {
 /*
     The persistent loadbar css, blue in color.
 */
-#tb-loading {
+.mod-toolbox-rd #tb-loading {
     left:0;
     right: 0;
     bottom: 0;
@@ -1127,7 +1127,7 @@ span.rate-limit-explain {
 /*
     The non-persistent loadbar css, red in color.
 */
-#tb-loading-non-persistent {
+.mod-toolbox-rd #tb-loading-non-persistent {
     left:0;
     right: 0;
     bottom: 0;
@@ -1144,8 +1144,8 @@ span.rate-limit-explain {
 /*
     People kept missing the big animated bar, so we added additional stuff and animations. It is great!
 */
-#tb-loading-stuff .tb-loading-content,
-#tb-loading-stuff-non-persistent .tb-loading-content{
+.mod-toolbox-rd #tb-loading-stuff .tb-loading-content,
+.mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content{
     background-color: rgb(255, 255, 255);
     margin: 0px;
     display: block;
@@ -1153,19 +1153,19 @@ span.rate-limit-explain {
     font-size: 12px;
 }
 
-#tb-loading-stuff .tb-loading-content img,
-#tb-loading-stuff-non-persistent .tb-loading-content img{
+.mod-toolbox-rd #tb-loading-stuff .tb-loading-content img,
+.mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content img{
     vertical-align: middle;
 }
 
-#tb-loading-stuff .tb-loading-content .tb-loading-text,
-#tb-loading-stuff-non-persistent .tb-loading-content .tb-loading-text{
+.mod-toolbox-rd #tb-loading-stuff .tb-loading-content .tb-loading-text,
+.mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content .tb-loading-text{
     display: inline-block;
     vertical-align: middle;
 }
 
-#tb-loading-stuff,
-#tb-loading-stuff-non-persistent {
+.mod-toolbox-rd #tb-loading-stuff,
+.mod-toolbox-rd #tb-loading-stuff-non-persistent {
     max-width: 500px;
     position: fixed;
     z-index: 2147483647;
@@ -1193,15 +1193,15 @@ span.rate-limit-explain {
 ------------
 */
 
-.mod-action {
+.mod-toolbox-rd .mod-action {
     max-width: 70px;
 }
 
-.mod-action-positive {
+.mod-toolbox-rd .mod-action-positive {
     background-color: #E5F0E1;
 }
 
-.mod-action-negative {
+.mod-toolbox-rd .mod-action-negative {
     background-color: #FA8072;
 }
 
@@ -1223,11 +1223,11 @@ span.rate-limit-explain {
     height: 26px !important;
 }
 
-.macro-popup .tb-popup-content {
+.mod-toolbox-rd .macro-popup .tb-popup-content {
     margin-bottom: 30px;
 }
 
-.macro-popup .tb-popup-footer {
+.mod-toolbox-rd .macro-popup .tb-popup-footer {
     position: absolute;
     bottom: 0;
 }
@@ -1239,7 +1239,9 @@ span.rate-limit-explain {
 ------------
 */
 
-#stylesheet_contents_div, #json_contents_div, #wiki_contents_div {
+.mod-toolbox-rd #stylesheet_contents_div,
+.mod-toolbox-rd #json_contents_div,
+.mod-toolbox-rd #wiki_contents_div {
     height: 500px;
     border: solid 1px #E4E4E4;
 }
@@ -1264,15 +1266,15 @@ span.rate-limit-explain {
 /* css fix for banlist module
 TODO: Find out what this is supposed to fix and put that in the comment instead.
 */
-.moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
+.mod-toolbox-rd .moderator-table.filtered tr, .banned-table.filtered tr, .contributor-table.filtered tr {
     background: inherit;
 }
 
-.moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
+.mod-toolbox-rd .moderator-table.filtered tr.visible.even, .banned-table.filtered tr.visible.even, .contributor-table.filtered tr.visible.even {
     background: rgba(162, 162, 162, 0.2) !important;
 }
 
-.moderator-table.filtered tr.visible.even:hover , .banned-table.filtered tr.visible.even:hover, .contributor-table.filtered tr.visible.even:hover {
+.mod-toolbox-rd .moderator-table.filtered tr.visible.even:hover , .banned-table.filtered tr.visible.even:hover, .contributor-table.filtered tr.visible.even:hover {
     background-color: rgba(80, 123, 167, 0.2)  !important;
 }
 
@@ -1294,7 +1296,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 /* Comment search */
-#tb-search-suggest {
+.mod-toolbox-rd #tb-search-suggest {
     display: none;
     max-height: 65%;
     position: absolute;
@@ -1309,11 +1311,11 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     z-index: 501;
 }
 
-#tb-search-suggest table {
+.mod-toolbox-rd #tb-search-suggest table {
     width: 100%;
 }
 
-#tb-search-suggest table td {
+.mod-toolbox-rd #tb-search-suggest table td {
     padding-top: 3px;
     padding-right: 10px;
     padding-bottom: 3px;
@@ -1321,12 +1323,12 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 
 }
 
-#tb-search-suggest tr {
+.mod-toolbox-rd #tb-search-suggest tr {
     background: rgba(247, 250, 253, 1);
     border-bottom: solid 1px #CCD1D7;
 }
 
-#tb-search-suggest tr:hover {
+.mod-toolbox-rd #tb-search-suggest tr:hover {
     background-color: rgba(174, 212, 250, 0.5);
 }
 
@@ -1338,7 +1340,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 */
 
 /* metrics tab/dropdown stuff */
-#tb-metrics-expand-list {
+.mod-toolbox-rd #tb-metrics-expand-list {
     display: none;
     max-height: 65%;
     position: absolute;
@@ -1353,7 +1355,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     text-align: left;
     z-index: 501;
 }
-#tb-metrics-expand-list li {
+.mod-toolbox-rd #tb-metrics-expand-list li {
     padding-top: 3px;
     padding-right: 10px;
     padding-bottom: 3px;
@@ -1362,7 +1364,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border-bottom: 1px solid rgb(204, 209, 215);
 }
 
-#tb-metrics-expand-list a:hover {
+.mod-toolbox-rd #tb-metrics-expand-list a:hover {
     text-decoration: underline;
 }
 
@@ -1458,11 +1460,11 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border-bottom: dotted 1px #D2D2D2;
 }
 
-.toolbox-edit:hover {
+.mod-toolbox-rd .toolbox-edit:hover {
     text-decoration: underline;
 }
 
-.edit-wikidata {
+.mod-toolbox-rd .edit-wikidata {
     width: 99%;
     font: normal small verdana,arial,helvetica,sans-serif;
     -webkit-appearance: textarea;
@@ -1478,12 +1480,12 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 
-#tb-config-help {
+.mod-toolbox-rd #tb-config-help {
     float: right;
     margin-right: 10px;
 }
 
-.rr-advanced {
+.mod-toolbox-rd .rr-advanced {
     display: none;
 }
 
@@ -1496,7 +1498,7 @@ Icons in the sidebar
     margin-bottom: -3px;
 }
 
-#moderation_tools .tb-moderation-tools-icons {
+.mod-toolbox-rd #moderation_tools .tb-moderation-tools-icons {
     margin: 0 5px 0 1px;
     vertical-align: bottom;
 }
@@ -1510,26 +1512,6 @@ Icons in the sidebar
 ========================
 */
 
-
-/* Make some tables that reddit shows somewhat more userfriendly. */
-
-.moderator-table tr:hover,
-.moderator-table tr:nth-child(even):hover,
-.banned-table tr:hover, .banned-table tr:nth-child(even):hover,
-.contributor-table tr:hover, .contributor-table tr:nth-child(even):hover,
-.modactionlisting .generic-table tr:hover,
-.modactionlisting .generic-table tr:nth-child(even):hover,
-.wikirevisionlisting .generic-table tr:hover,
-.wikirevisionlisting .generic-table tr:nth-child(even):hover{
-    background-color: rgba(80, 123, 167, 0.2) !important;
-}
-
-.moderator-table tr:nth-child(even),
-.contributor-table tr:nth-child(even),
-.wikirevisionlisting .generic-table tr:nth-child(even),
-.modactionlisting .generic-table tr:nth-child(even) {
-    background: rgba(162, 162, 162, 0.2) !important;
-}
 
 /*
 ------------
@@ -1574,7 +1556,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 ------------
 */
 
-.debuginfo {
+.mod-toolbox-rd .debuginfo {
     height: 40px;
 }
 
@@ -1587,27 +1569,27 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     display: none;
 }
 
-body .choice.dashed {
+.mod-toolbox-rd .choice.dashed {
     border-top: 1px dashed;
 }
 
-body .thing.approved {
+.mod-toolbox-rd .thing.approved {
     background-color: paleGreen;
 }
 
-body .thing.removed {
+.mod-toolbox-rd .thing.removed {
     background-color: lightgray;
 }
 
-body .thing.spammed {
+.mod-toolbox-rd .thing.spammed {
     background-color: Tomato;
 }
 
-body .thing.flaired {
+.mod-toolbox-rd .thing.flaired {
     background-color: PaleTurquoise;
 }
 
-.pretty-button.inoffensive {
+.mod-toolbox-rd .pretty-button.inoffensive {
     background-position: 0px -105px;
     background-image: url(http://a.thumbs.redditmedia.com/Ec85AWdAyumYZeFVgEaxwSr6Go8NZyCgGmtTVQsQqc8.png);
     background-repeat: repeat;
@@ -1616,25 +1598,14 @@ body .thing.flaired {
     border-radius: 0;
 }
 
-.pretty-button.inoffensive.pressed {
+.mod-toolbox-rd .pretty-button.inoffensive.pressed {
     background-position: 0 -82px!important;
 }
 
-.thing+input[type="checkbox"]:focus {
+.mod-toolbox-rd .thing+input[type="checkbox"]:focus {
     outline: blue solid 1px;
 }
 
-/*
-========================
-
-    RES specific css
-
-========================
-*/
-
-.res #BigEditor {
-    margin-bottom: 25px !important;
-}
 
 /*
 ========================
@@ -1709,7 +1680,7 @@ border: solid 1px #808080;
     font-size: small;
 }
 
-.res-nightmode .tb-window-wrapper-two {
+.mod-toolbox-rd.res-nightmode .tb-window-wrapper-two {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
@@ -1753,7 +1724,7 @@ border: solid 1px #808080;
     background-color: #5D7186;
 }
 
-.res-nightmode .tb-window-footer {
+.mod-toolbox-rd.res-nightmode .tb-window-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }
@@ -1793,39 +1764,39 @@ div.sticky {
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
-.res-nightmode .tb-first-run {
+.mod-toolbox-rd.res-nightmode .tb-first-run {
     color: red;
 }
 
-.res-nightmode .dtagger-popup {
+.mod-toolbox-rd.res-nightmode .dtagger-popup {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.res-nightmode .dtagger-popup-header {
+.mod-toolbox-rd.res-nightmode .dtagger-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.res-nightmode .dtagger-popup-footer {
+.mod-toolbox-rd.res-nightmode .dtagger-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }
 
-.res-nightmode .dtagger-popup tbody tr {
+.mod-toolbox-rd.res-nightmode .dtagger-popup tbody tr {
     border-bottom: 1px solid gray;
 }
 
 
-.res-nightmode .utagger-notes td {
+.mod-toolbox-rd.res-nightmode .utagger-notes td {
     border: solid 1px #C1BFBF;
 }
 
-.res-nightmode .utagger-notes-td3 a {
+.mod-toolbox-rd.res-nightmode .utagger-notes-td3 a {
     color: #C92A2A;
 }
-.res-nightmode .utagger-type {
+.mod-toolbox-rd.res-nightmode .utagger-type {
     border-top: 1px dotted #C1BFBF;
 }
 
@@ -1959,63 +1930,63 @@ border-color: #808080;
 
 /* Modtools mod page-only CSS */
 
-body.res-nightmode.mod-page .subscription-box .option.add {
+.mod-toolbox-rd.res-nightmode.mod-page .subscription-box .option.add {
     background-color: #7BB850;
 }
 
-body.res-nightmode.mod-page .subscription-box .option.remove {
+.mod-toolbox-rd.res-nightmode.mod-page .subscription-box .option.remove {
     background-color: #C85F63;
 }
 
-body.res-nightmode.mod-page a.pretty-button:focus {
+.mod-toolbox-rd.res-nightmode.mod-page a.pretty-button:focus {
     box-shadow: 0 0 5px rgba(0,0,255,1);
 }
 
 /* mod log matrix */
-.res-nightmode #mod-matrix tr {
+.mod-toolbox-rd.res-nightmode #mod-matrix tr {
     border-bottom: 1px solid #eee;
 }
 
-.res-nightmode #mod-matrix tfoot tr {
+.mod-toolbox-rd.res-nightmode #mod-matrix tfoot tr {
     border-top: 1px solid #eee;
 }
 
-.res-nightmode #mod-matrix tbody tr:nth-of-type(even) {
+.mod-toolbox-rd.res-nightmode #mod-matrix tbody tr:nth-of-type(even) {
     background: #fafafa;
 }
 
-.res-nightmode #mod-matrix tr:hover, .res-nightmode #mod-matrix td.hover {
+.mod-toolbox-rd.res-nightmode #mod-matrix tr:hover, .res-nightmode #mod-matrix td.hover {
     background: #ffc!important;
 }
 
-.res-nightmode #mod-matrix .action-number {
+.mod-toolbox-rd.res-nightmode #mod-matrix .action-number {
     color: #CECECE;
 }
 
-.res-nightmode #mod-matrix .zero a, .res-nightmode #mod-matrix .zero span {
+.mod-toolbox-rd.res-nightmode #mod-matrix .zero a, .res-nightmode #mod-matrix .zero span {
     color: #c0c0c0;
 }
 
-.res-nightmode #mod-matrix .highlight a, .res-nightmode #mod-matrix .highlight span {
+.mod-toolbox-rd.res-nightmode #mod-matrix .highlight a, .res-nightmode #mod-matrix .highlight span {
     color: #f00;
 }
 
-.res-nightmode .tb-internal-overlay {
+.mod-toolbox-rd.res-nightmode .tb-internal-overlay {
     background-color: rgba(255, 255, 255, 0.82);
 }
 
-.res-nightmode #tb-toolbar-mysubs {
+.mod-toolbox-rd .res-nightmode #tb-toolbar-mysubs {
     background: none !important;
 }
 
-.res-nightmode #stylesheet_contents_div, .res-nightmode #json_contents_div, .res-nightmode #wiki_contents_div {
+.mod-toolbox-rd .res-nightmode #stylesheet_contents_div, .res-nightmode #json_contents_div, .res-nightmode #wiki_contents_div {
     border: solid 1px #383838;
 }
 
-.thing.threaded-modmail .child, .thing.threaded-modmail .entry {
+.mod-toolbox-rd .thing.threaded-modmail .child, .thing.threaded-modmail .entry {
     border-left : 2px solid #efefef!important;
     margin-left : 0!important;
 }
-.thing.threaded-modmail .child .thing {
+.mod-toolbox-rd .thing.threaded-modmail .child .thing {
     padding-left: 20px!important;
 }

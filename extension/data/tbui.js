@@ -18,11 +18,11 @@
              url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
       }
 
-      .tb-icons {
+      html body.mod-toolbox-rd .tb-icons {
         font-family: 'Material Icons';
         font-weight: normal;
         font-style: normal;
-        font-size: 16x;  /* Preferred icon size */
+        font-size: 16px;  /* Preferred icon size */
         display: inline-block;
         line-height: 1;
         text-transform: none;

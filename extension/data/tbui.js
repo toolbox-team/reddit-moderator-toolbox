@@ -716,7 +716,7 @@
      * @param {boolean} addTrigger - Indicates of the menu item needs to be added or removed.
      * @param {boolean} triggerText - Text displayed in menu. Not needed when addTrigger is false.
      */
-
+    let contextTimeout;
     TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
@@ -756,6 +756,23 @@
             if(!currentLength.length > 0) {
                 $tbContextMenu.show();
             }
+
+            const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
+            $tbContextMenu.hover(function() {
+                $contextMenuWrap.fadeIn(200);
+            }, function() {
+                $contextMenuWrap.fadeOut(200);
+            });
+
+            // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
+            // The alternative would be to always show the entire menu.
+            $contextMenuWrap.trigger('mouseover');
+            clearTimeout(contextTimeout);
+            contextTimeout = setTimeout(function() {
+                $contextMenuWrap.trigger('mouseleave');
+            }, 1000);
+
+
         // We are removing a menu item.
         } else {
             // Remove the menu item.

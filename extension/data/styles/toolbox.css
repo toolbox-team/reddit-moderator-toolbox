@@ -58,10 +58,6 @@
     display: none;
 }
 
-.mod-toolbox-rd #tb-context-menu:hover #tb-context-menu-wrap {
-    display: block;
-}
-
 div#tb-context-menu #tb-context-header {
     font-weight: bold;
     padding: 5px;
@@ -158,7 +154,7 @@ div#tb-context-menu #tb-context-header {
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
-.mod-toolbox-rd .tb-window-wrapper a:hover,
+.mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover,
 .mod-toolbox-rd .tb-window-tabs a.active,
 .mod-toolbox-rd .tb-window-tabs a:hover {
     color: #000 !important;
@@ -766,6 +762,10 @@ body.mod-toolbox-rd .tb-general-button img {
     margin-right: 10px;
 }
 
+.mod-toolbox-rd a.tb-comment-button:hover {
+    text-decoration: underline;
+}
+
 .mod-toolbox-rd .tb-comment-body {
     margin-left: 10px;
 }
@@ -830,6 +830,9 @@ body.mod-toolbox-rd .tb-general-button img {
     font-weight: bold;
 }
 
+.mod-toolbox-rd .tb-tagline .tb-comment-author:hover {
+    text-decoration: underline;
+}
 .mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter {
 	color: #fff;
 	background-color: #0055df;
@@ -867,6 +870,8 @@ body.mod-toolbox-rd .tb-general-button img {
 .mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin:hover,
 .mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown:hover {
     color: #fff;
+    opacity: 0.8;
+    text-decoration: none;
 }
 
 .mod-toolbox-rd .tb-comment-data {

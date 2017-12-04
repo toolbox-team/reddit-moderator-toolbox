@@ -1,15 +1,15 @@
-body.mod-toolbox.mod-toolbox-new-modmail .InfoBar__recents.tb-recents .InfoBar__recent  {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .InfoBar__recents.tb-recents .InfoBar__recent  {
     margin-bottom: 3px;
 }
 
-body.mod-toolbox.mod-toolbox-new-modmail .usernote-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .usernote-button {
     vertical-align: middle;
     margin-right: 3px;
 }
 
-body.mod-toolbox.mod-toolbox-new-modmail .tb-general-button,
-body.mod-toolbox.mod-toolbox-new-modmail li a.tb-general-button,
-body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-general-button,
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail li a.tb-general-button,
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-bracket-button {
     display: inline-block;
     height: 12px;
     line-height: 12px;
@@ -17,11 +17,11 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-bracket-button {
     padding: 0 2px;
     border-width: 0 0 0 3px;
 }
-body.mod-toolbox.mod-toolbox-new-modmail .tb-popup a {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-popup a {
     text-decoration: none;
 }
 
-body.mod-toolbox.mod-toolbox-new-modmail .tb-recents .tb-bracket-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
     border-width: 0 0 0 3px;
     padding: 3px;
     font-size: 1.2em;
@@ -157,57 +157,57 @@ body.mod-toolbox.mod-toolbox-new-modmail .tb-recents .tb-bracket-button {
 
 /* Usernote manager */
 
-.mod-toolbox  a.tb-un-notedelete img {
+.mod-toolbox-rd  a.tb-un-notedelete img {
     width: 13px;
     opacity: 0.8;
     margin-bottom: -3px;
 }
 
-.mod-toolbox .tb-un-user:nth-child(even) {
+.mod-toolbox-rd .tb-un-user:nth-child(even) {
     background: #F6F9FC;
 }
 
-.mod-toolbox .tb-un-user {
+.mod-toolbox-rd .tb-un-user {
     padding: 5px;
     margin-bottom: 3px;
     border: solid 1px #FAFAFA;
 }
 
-.mod-toolbox .tb-un-note-details {
+.mod-toolbox-rd .tb-un-note-details {
     padding: 3px;
 }
 
-.mod-toolbox .tb-un-user-header {
+.mod-toolbox-rd .tb-un-user-header {
     border-bottom: solid 1px #E7E7E7;
     margin-bottom: 3px;
 }
 
-.mod-toolbox .tb-un-user-header .tb-un-delete {
+.mod-toolbox-rd .tb-un-user-header .tb-un-delete {
     margin-right: 4px;
 }
 
-.mod-toolbox .tb-un-user-header .user {
+.mod-toolbox-rd .tb-un-user-header .user {
     font-size: 12px;
 }
 
-.mod-toolbox #tb-un-note-content-wrap {
+.mod-toolbox-rd #tb-un-note-content-wrap {
     max-width: 115em;
     margin: 30px;
 }
 
-.mod-toolbox .tb-un-note-details .note {
+.mod-toolbox-rd .tb-un-note-details .note {
     margin-left: 4px;
 }
 
-.mod-toolbox .tb-un-note-details .note .note-type {
+.mod-toolbox-rd .tb-un-note-details .note .note-type {
     margin-right: 2px;
 }
 
-.mod-toolbox .tb-un-user-header .mod,
-.mod-toolbox .tb-un-note-details .date {
+.mod-toolbox-rd .tb-un-user-header .mod,
+.mod-toolbox-rd .tb-un-note-details .date {
     color: #A8A8A8;
 }
 
-.mod-toolbox .tb-un-user-header .tb-un-notedelete {
+.mod-toolbox-rd .tb-un-user-header .tb-un-notedelete {
     margin-right: 4px;
 }

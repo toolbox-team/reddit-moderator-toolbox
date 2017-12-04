@@ -1,30 +1,30 @@
-.mod-toolbox .tb-popup.personal-notes-popup {
+.mod-toolbox-rd .tb-popup.personal-notes-popup {
     max-width: 95%;
 }
 
 /* Don't allow the popup to get bigger than the window */
-.mod-toolbox .tb-popup.personal-notes-popup .tb-popup-content {
+.mod-toolbox-rd .tb-popup.personal-notes-popup .tb-popup-content {
     max-height: calc(100vh - 95px); /* 95px = modbar + popup header + popup footer + padding */
 }
 
 /* Box layout */
-.mod-toolbox #tb-personal-notes-listing,
-.mod-toolbox #tb-personal-notes-content {
+.mod-toolbox-rd #tb-personal-notes-listing,
+.mod-toolbox-rd #tb-personal-notes-content {
     overflow: hidden;
     vertical-align: top;
 }
-.mod-toolbox .tb-popup.personal-notes-popup table {
+.mod-toolbox-rd .tb-popup.personal-notes-popup table {
     height: 100%;
     position: relative; /* To help with absolute positioning of the sidebar */
 }
 
 /* Note selection sidebar */
-.mod-toolbox #tb-personal-notes-listing {
+.mod-toolbox-rd #tb-personal-notes-listing {
     height: 100%;
     margin-left: -5px;
     min-width: 175px;
 }
-.mod-toolbox .personal-notes-popup input {
+.mod-toolbox-rd .personal-notes-popup input {
     width: 100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -32,7 +32,7 @@
     margin-top: 2px;
     margin-bottom: 2px;
 }
-.mod-toolbox #tb-new-personal-note-div {
+.mod-toolbox-rd #tb-new-personal-note-div {
     position: absolute;
     bottom: 0;
     width: 165px;
@@ -42,50 +42,50 @@
     box-shadow: 0 -1px #FFF;
 }
 /* Hack to get background on the list */
-.mod-toolbox .tb-popup.personal-notes-popup .tb-popup-content {
+.mod-toolbox-rd .tb-popup.personal-notes-popup .tb-popup-content {
     box-shadow: inset 175px 0 #C7D6E6;
     padding: 0 !important;
     height: 100%;
 }
 /* Actual list */
-.mod-toolbox #tb-personal-notes-list {
+.mod-toolbox-rd #tb-personal-notes-list {
     width: 175px;
     position: absolute;
     top: 0;
     bottom: 76px;
     overflow: auto;
 }
-.mod-toolbox #tb-personal-notes-ul li {
+.mod-toolbox-rd #tb-personal-notes-ul li {
     background: #C7D6E6;
     border-bottom: 1px solid #FFF;
     padding: 5px 5px 5px 23px;
     position: relative;
     word-wrap: break-word;
 }
-.mod-toolbox #tb-personal-notes-ul .tb-personal-notes-active {
+.mod-toolbox-rd #tb-personal-notes-ul .tb-personal-notes-active {
     background: #9FBAD6
 }
-.mod-toolbox #tb-personal-notes-ul .tb-personal-notes-active a {
+.mod-toolbox-rd #tb-personal-notes-ul .tb-personal-notes-active a {
     color: #000;
 }
-.mod-toolbox .tb-personal-note-delete {
+.mod-toolbox-rd .tb-personal-note-delete {
     display: block;
     position: absolute;
     left: 5px;
     height: 100%;
     top: 0;
 }
-.mod-toolbox .tb-personal-note-delete img {
+.mod-toolbox-rd .tb-personal-note-delete img {
     width: 13px;
     opacity: 0.8;
     margin-top: 7px;
 }
 
-.mod-toolbox .tb-personal-note-link {
+.mod-toolbox-rd .tb-personal-note-link {
     font-size: 14px;
 }
 
-.mod-toolbox .personal-notes-popup {
+.mod-toolbox-rd .personal-notes-popup {
     left : 305px;
     bottom : 31px;
     display : block;
@@ -94,13 +94,13 @@
 
 
 /* Main edit view */
-.mod-toolbox #tb-personal-notes-content {
+.mod-toolbox-rd #tb-personal-notes-content {
     min-width: 450px;
     margin-right: -5px;
     position: relative;
 }
 
-.mod-toolbox #tb-personal-notes-editarea {
+.mod-toolbox-rd #tb-personal-notes-editarea {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -111,7 +111,7 @@
 }
 
 /* Save button in footer */
-.mod-toolbox #save-personal-note {
+.mod-toolbox-rd #save-personal-note {
     display: none;
     width: initial;
 }

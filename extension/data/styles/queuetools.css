@@ -13,7 +13,7 @@ display: inline-block;
 }
 
 
-.mod-toolbox .tb-kitteh {
+.mod-toolbox-rd .tb-kitteh {
     display: block;
     min-width: 330px;
     min-height: 351px;
@@ -24,7 +24,7 @@ display: inline-block;
     overflow: hidden;
 }
 
-.mod-toolbox .tb-puppy {
+.mod-toolbox-rd .tb-puppy {
     display: block;
     min-width: 360px;
     min-height: 460px;
@@ -35,7 +35,7 @@ display: inline-block;
     overflow: hidden;
 }
 
-.mod-toolbox .tb-begifs {
+.mod-toolbox-rd .tb-begifs {
     display: block;
     min-width: 360px;
     min-height: 460px;
@@ -46,7 +46,7 @@ display: inline-block;
     overflow: hidden;
 }
 
-.mod-toolbox .tb-spiders {
+.mod-toolbox-rd .tb-spiders {
     display: block;
     min-width: 360px;
     min-height: 460px;
@@ -57,7 +57,7 @@ display: inline-block;
     overflow: hidden;
 }
 
-.mod-toolbox .tb-piggy {
+.mod-toolbox-rd .tb-piggy {
     display: block;
     min-width: 360px;
     min-height: 460px;
@@ -68,7 +68,7 @@ display: inline-block;
     overflow: hidden;
 }
 
-.mod-toolbox .tb-begifs:after {
+.mod-toolbox-rd .tb-begifs:after {
     content: "baby elephant is pleased!";
 }
 
@@ -76,38 +76,40 @@ display: inline-block;
 /* Action reason stuff */
 
 
-.mod-toolbox .tb-action-table {
-    font-size: 10px;
+.mod-toolbox-rd .tb-action-table {
+    font-size: 11px;
     text-align: left;
+    color: rgb(105, 105, 105);
+    margin: 5px 0;
     display: none;
  }
 
- .mod-toolbox .tb-action-details:hover .tb-action-table {
+ .mod-toolbox-rd .tb-action-details:hover .tb-action-table {
      display: table;
  }
 
- .mod-toolbox .tb-action-details:hover .tb-show-action-table {
+ .mod-toolbox-rd .tb-action-details:hover .tb-show-action-table {
      display: none;
  }
 
- .mod-toolbox.tb-show-actions .tb-action-table {
+ .mod-toolbox-rd.tb-show-actions .tb-action-table {
     display: table;
 }
 
-.mod-toolbox.tb-show-actions .tb-show-action-table{
+.mod-toolbox-rd.tb-show-actions .tb-show-action-table{
     display: none;
 }
 
-.mod-toolbox .tb-action-table th {
+.mod-toolbox-rd .tb-action-table th {
     font-weight: bold;
 }
 
-.mod-toolbox .tb-action-table th,
-.mod-toolbox .tb-action-table td {
-    padding: 2px;
+.mod-toolbox-rd .tb-action-table th,
+.mod-toolbox-rd .tb-action-table td {
+    padding: 3px;
 }
 
-.mod-toolbox .tb-action-table tr {
+.mod-toolbox-rd .tb-action-table tr {
     border: solid 1px #c7d6e7;
 }
 

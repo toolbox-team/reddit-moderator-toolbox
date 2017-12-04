@@ -13,7 +13,7 @@
 ------------
 */
 
-.mod-toolbox .tb-input {
+.mod-toolbox-rd .tb-input {
     border: solid 1px #c7d6e7;
 }
 
@@ -24,7 +24,7 @@
 ------------
 */
 
-.mod-toolbox  #tb-context-menu-list td {
+.mod-toolbox-rd  #tb-context-menu-list td {
     cursor: pointer;
 }
 
@@ -97,7 +97,7 @@ div#tb-context-menu #tb-context-header {
 ------------
 */
 
-.mod-toolbox .tb-page-overlay {
+.mod-toolbox-rd .tb-page-overlay {
     padding: 10px 15px !important;
     background-color: rgba(250, 250, 250, 0.84);
     border: 0;
@@ -112,13 +112,13 @@ div#tb-context-menu #tb-context-header {
     font: normal x-small verdana,arial,helvetica,sans-serif !important;
 }
 
-.mod-toolbox ul.inline-list { display: inline; }
-.mod-toolbox ul.inline-list li { display: inline; }
-.mod-toolbox ul.inline-list li:after { content: ','; }
-.mod-toolbox ul.inline-list li:last-child:after { content: ''; }
-.mod-toolbox ul.inline-list li:nth-last-child(2):after { content: ', and';}
+.mod-toolbox-rd ul.inline-list { display: inline; }
+.mod-toolbox-rd ul.inline-list li { display: inline; }
+.mod-toolbox-rd ul.inline-list li:after { content: ','; }
+.mod-toolbox-rd ul.inline-list li:last-child:after { content: ''; }
+.mod-toolbox-rd ul.inline-list li:nth-last-child(2):after { content: ', and';}
 
-.mod-toolbox .tb-overlay-label {
+.mod-toolbox-rd .tb-overlay-label {
     width: auto;
     padding: 40px 5px 5px 5px;
     font-weight: bold;
@@ -128,7 +128,7 @@ div#tb-context-menu #tb-context-header {
     text-align: center;
 }
 
-.mod-toolbox .tb-window-wrapper {
+.mod-toolbox-rd .tb-window-wrapper {
     position: relative;
     top: 40px;
     max-width: 1100px;
@@ -139,9 +139,10 @@ div#tb-context-menu #tb-context-header {
     border: 0;
     box-shadow: rgba(214, 214, 214, 0.47) 0px 1px 3px 1px;
     font-size: small;
+    margin-bottom: 150px;
 }
 
-.mod-toolbox .tb-settings .tb-window-wrapper {
+.mod-toolbox-rd .tb-settings .tb-window-wrapper {
     width: 845px;
 }
 
@@ -157,13 +158,13 @@ div#tb-context-menu #tb-context-header {
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
-.mod-toolbox .tb-window-wrapper a:hover,
-.mod-toolbox .tb-window-tabs a.active,
-.mod-toolbox .tb-window-tabs a:hover {
+.mod-toolbox-rd .tb-window-wrapper a:hover,
+.mod-toolbox-rd .tb-window-tabs a.active,
+.mod-toolbox-rd .tb-window-tabs a:hover {
     color: #000 !important;
 }
 
-.mod-toolbox .tb-window-header {
+.mod-toolbox-rd .tb-window-header {
     right: 0;
     left: 0;
     display: block;
@@ -175,41 +176,41 @@ div#tb-context-menu #tb-context-header {
     border-bottom: 0;
 }
 
-.mod-toolbox .tb-window-tabs {
+.mod-toolbox-rd .tb-window-tabs {
     border-bottom: solid 1px #B6C9DD;
     background-color: #C7D6E6;
     font-size: 11px !important;
 }
 
-.mod-toolbox .tb-settings .tb-window-tabs {
+.mod-toolbox-rd .tb-settings .tb-window-tabs {
     display: inline-block;
     width: 135px;
     height: 100%;
     border-bottom: 0;
 }
 
-.mod-toolbox .tb-window-tabs a {
+.mod-toolbox-rd .tb-window-tabs a {
     background-color: #C7D6E6;
     border-right: dotted 1px #A8B5C2;
     display: inline-block;
     padding: 10px !important;
 }
 
-.mod-toolbox .tb-personal-settings .tb-window-tabs a {
+.mod-toolbox-rd .tb-personal-settings .tb-window-tabs a {
     padding: 7px !important;
 }
 
-.mod-toolbox .tb-settings .tb-window-tabs a {
+.mod-toolbox-rd .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;
     border-bottom: solid 1px #eef5fd;
 }
 
-.mod-toolbox .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
+.mod-toolbox-rd .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
     border-bottom: 0;
 }
 
-.mod-toolbox .tb-window-spacer {
+.mod-toolbox-rd .tb-window-spacer {
     background-color: #8d9caa;
     display: inline-block;
     border-right: 1px dotted #A8B5C2;
@@ -217,12 +218,12 @@ div#tb-context-menu #tb-context-header {
     line-height: 34px;
 }
 
-.mod-toolbox .tb-window-tabs a.active,
-.mod-toolbox .tb-window-tabs a:hover {
+.mod-toolbox-rd .tb-window-tabs a.active,
+.mod-toolbox-rd .tb-window-tabs a:hover {
     background-color: #9FBAD6;
 }
 
-.mod-toolbox .tb-window-content:not([class^="CodeMirror"]) {
+.mod-toolbox-rd .tb-window-content:not([class^="CodeMirror"]) {
     overflow: auto;
     left: 0;
     right: 0;
@@ -230,27 +231,27 @@ div#tb-context-menu #tb-context-header {
     font-size: 12px !important;
 }
 
-.mod-toolbox .tb-settings .tb-window-tabs-wrapper {
+.mod-toolbox-rd .tb-settings .tb-window-tabs-wrapper {
     display: inline-block;
     vertical-align: top;
     width: 705px;
 }
 
-.mod-toolbox .tb-window-content input {
+.mod-toolbox-rd .tb-window-content input {
     padding: 2px;
     margin: 2px;
 }
 
-.mod-toolbox .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link {
+.mod-toolbox-rd .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link {
     opacity: 0.5;
     display: inline-block;
 }
 
-.mod-toolbox .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link img {
+.mod-toolbox-rd .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link img {
     vertical-align: middle;
 }
 
-.mod-toolbox .tb-window-content  input.tb-setting-input {
+.mod-toolbox-rd .tb-window-content  input.tb-setting-input {
     font-style: italic;
 }
 
@@ -269,19 +270,19 @@ div#tb-context-menu #tb-context-header {
 }
 
 
-.mod-toolbox .tb-close {
+.mod-toolbox-rd .tb-close {
     cursor: pointer;
 }
 
-.mod-toolbox .tb-help,.mod-toolbox .tb-help-main {
+.mod-toolbox-rd .tb-help,.mod-toolbox-rd .tb-help-main {
     cursor: pointer;
 }
 
-.mod-toolbox .tb-help-content, .mod-toolbox .tb-help-config-content,  .mod-toolbox .tb-help-main-content {
+.mod-toolbox-rd .tb-help-content, .mod-toolbox-rd .tb-help-config-content,  .mod-toolbox-rd .tb-help-main-content {
     display: none;
 }
 
-.mod-toolbox .tb-window-content :not(.tb-comment) p:not([class^="codemirror"]){
+.mod-toolbox-rd .tb-window-content p:not([class^="codemirror"]):not(.tb-comment-p) {
     padding-top: 6px !important;
     padding-bottom: 5px;
     padding-left: 10px;
@@ -290,11 +291,11 @@ div#tb-context-menu #tb-context-header {
     border-bottom: 1px dotted #E0E0E0;
 }
 
-.mod-toolbox .tb-window-content input[type="text"] {
+.mod-toolbox-rd .tb-window-content input[type="text"] {
     width: 94%;
 }
 
-.mod-toolbox .tb-mark-unread {
+.mod-toolbox-rd .tb-mark-unread {
     width: 100%;
     cursor: pointer;
     padding: 5px;
@@ -303,62 +304,62 @@ div#tb-context-menu #tb-context-header {
     font-weight: bold;
 }
 
-.mod-toolbox .tb-mark-unread:hover {
+.mod-toolbox-rd .tb-mark-unread:hover {
     text-decoration: underline;
 }
 
-.mod-toolbox .tb-window-content-shortcuts-table td {
+.mod-toolbox-rd .tb-window-content-shortcuts-table td {
     width: 50%;
     padding: 3px;
 }
 
-.mod-toolbox .tb-window-content-shortcuts-table td input {
+.mod-toolbox-rd .tb-window-content-shortcuts-table td input {
     width: 98%;
 }
 
-.mod-toolbox .tb-window-content-shortcuts-td-remove {
+.mod-toolbox-rd .tb-window-content-shortcuts-td-remove {
     width: 25px;
 }
 
-.mod-toolbox .tb-map-input-table td {
+.mod-toolbox-rd .tb-map-input-table td {
     width: 50%;
     padding: 3px;
 }
 
-.mod-toolbox .tb-map-input-table td input {
+.mod-toolbox-rd .tb-map-input-table td input {
     width: 98%;
 }
 
-.mod-toolbox .tb-map-input-td-remove {
+.mod-toolbox-rd .tb-map-input-td-remove {
     width: 25px;
 }
 
 
-.mod-toolbox .tb-form td {
+.mod-toolbox-rd .tb-form td {
     padding: 2px;
 }
 
-.mod-toolbox .tb-form td:first-child {
+.mod-toolbox-rd .tb-form td:first-child {
     width: 10%;
 }
 
-.mod-toolbox .tb-form td:last-child {
+.mod-toolbox-rd .tb-form td:last-child {
     width: 90%;
 }
 
-.mod-toolbox .tb-form .edit-header, .mod-toolbox .tb-form .edit-footer {
+.mod-toolbox-rd .tb-form .edit-header, .mod-toolbox-rd .tb-form .edit-footer {
     width: 98%;
     height: 100px;
 }
 
 /* Module settings stuff */
 
-.mod-toolbox  .tb-window-tabs a.tb-module-disabled {
+.mod-toolbox-rd  .tb-window-tabs a.tb-module-disabled {
     background-color: #D6D9DD;
     color: #808080;
 }
 
-.mod-toolbox .tb-window-tab span.tb-module-disabled {
+.mod-toolbox-rd .tb-window-tab span.tb-module-disabled {
     font-size: 14px;
     display: block;
     padding: 4px;
@@ -367,7 +368,7 @@ div#tb-context-menu #tb-context-header {
     font-weight: bold;
 }
 
-.mod-toolbox .tb-window-content a.tb-help-toggle {
+.mod-toolbox-rd .tb-window-content a.tb-help-toggle {
     font-weight: bold;
 }
 
@@ -382,7 +383,7 @@ div#tb-context-menu #tb-context-header {
 ------------
 */
 
-.mod-toolbox .tb-popup .tb-popup-header .buttons {
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
     display: inline-block;
     position: absolute;
     right: 0 !important;
@@ -393,7 +394,7 @@ div#tb-context-menu #tb-context-header {
     margin-left: 1px;
 }
 
-.mod-toolbox .tb-popup {
+.mod-toolbox-rd .tb-popup {
     font-size:11px;
     max-width: 1000px;
     padding: 0 !important;
@@ -430,7 +431,7 @@ div#tb-context-menu #tb-context-header {
 }
 
 
-.mod-toolbox .tb-popup .tb-popup-header .buttons {
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
     display: inline-block;
     position: absolute;
     right: 0 !important;
@@ -441,11 +442,11 @@ div#tb-context-menu #tb-context-header {
     margin-left: 1px;
 }
 
-.mod-toolbox .tb-popup .tb-popup-header .buttons:hover {
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons:hover {
     background-color: #9FBAD6;
 }
 
-.mod-toolbox .tb-popup .tb-popup-header .buttons a.close {
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a.close {
     padding: 0px 11px;
     display: inline-block;
     height: 100%;
@@ -536,11 +537,11 @@ div#tb-context-menu #tb-context-header {
     text-decoration: none;
 }
 
-body.mod-toolbox .mod-popup .tb-action-button.global-button.action-hidden {
+body.mod-toolbox-rd .mod-popup .tb-action-button.global-button.action-hidden {
     display: none !important;
 }
 
-body.mod-toolbox .mod-popup .tb-action-button.global-button {
+body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     text-decoration: none !important;
     color: red !important;
 }
@@ -593,7 +594,7 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
 ------------
 */
 
-.mod-toolbox .tb-debug-window {
+.mod-toolbox-rd .tb-debug-window {
     position: fixed;
     bottom: 30px;
     right: 20px;
@@ -602,7 +603,7 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     min-height: 286px;
 }
 
-.mod-toolbox .tb-debug-header {
+.mod-toolbox-rd .tb-debug-header {
     right: 0;
     left: 0;
     display: block;
@@ -617,11 +618,11 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     line-height: 20px;
 }
 
-.mod-toolbox .tb-debug-window .tb-popup-content {
+.mod-toolbox-rd .tb-debug-window .tb-popup-content {
     box-sizing: content-box;
 }
 
-.mod-toolbox .tb-debug-footer {
+.mod-toolbox-rd .tb-debug-footer {
     width: 100%;
     height: 25px;
     line-height: 25px;
@@ -631,7 +632,7 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     border-top: solid 1px #B6C9DD;
 }
 
-.mod-toolbox .tb-debug-header-options {
+.mod-toolbox-rd .tb-debug-header-options {
     display: inline-block;
     position: absolute;
     right: 0;
@@ -641,12 +642,12 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     border-left: 1px solid #B6C9DD;
 }
 
-.mod-toolbox .tb-debug-header-options:hover {
+.mod-toolbox-rd .tb-debug-header-options:hover {
     background-color: #9FBAD6;
 }
 
 
-.mod-toolbox .tb-debug-console {
+.mod-toolbox-rd .tb-debug-console {
     width: 100%;
     height: 220px;
     font: normal small CONSOLAS, COURIER,"COURIER NEW";
@@ -663,13 +664,13 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     box-sizing: border-box;
 }
 
-.mod-toolbox .tb-debug-input {
+.mod-toolbox-rd .tb-debug-input {
     width: 100%;
     box-sizing: border-box;
 }
 
 
-.mod-toolbox #tb-debug-header-handle {
+.mod-toolbox-rd #tb-debug-header-handle {
     left: 0;
     top: 0;
     display: inline-block;
@@ -691,13 +692,13 @@ body.mod-toolbox .mod-popup .tb-action-button.global-button {
     Do NOT use in cases where you would normally use button elements. That is what the action button css is for.
 ------------
 */
-body.mod-toolbox .tb-general-button,
-body.mod-toolbox li a.tb-general-button,
-body.mod-toolbox .tb-bracket-button {
+body.mod-toolbox-rd .tb-general-button,
+body.mod-toolbox-rd li a.tb-general-button,
+body.mod-toolbox-rd .tb-bracket-button {
     background-color: #F7FAFD;
     color: #696969;
     font-size: 11px;
-    border-width: 1px 1px 1px 2px;
+    border-width: 0 0 0 3px;
     border-color: #B6C9DD;
     border-style: solid;
     padding: 1px 5px;
@@ -707,18 +708,18 @@ body.mod-toolbox .tb-bracket-button {
     cursor: pointer;
 }
 
-body.mod-toolbox .tb-bracket-button {
-    padding: 0 1px;
-    font-size: 9px;
+body.mod-toolbox-rd .tb-bracket-button {
+    padding: 1px 1px 0 1px;
+    font-size: 10px;
 }
 
-body.mod-toolbox .tb-general-button:hover,
-body.mod-toolbox li a.tb-general-button:hover {
+body.mod-toolbox-rd .tb-general-button:hover,
+body.mod-toolbox-rd li a.tb-general-button:hover {
     background-color: #E2EEFA;
     text-decoration: none;
 }
 
-body.mod-toolbox .tb-general-button img {
+body.mod-toolbox-rd .tb-general-button img {
     vertical-align: top;
 }
 
@@ -728,7 +729,7 @@ body.mod-toolbox .tb-general-button img {
 -----------
 */
 
-.mod-toolbox .tb-comment-children:not(:first-of-type) {
+.mod-toolbox-rd .tb-comment-children:not(:first-of-type) {
     margin-left: 10px;
 
 }
@@ -737,99 +738,99 @@ body.mod-toolbox .tb-general-button img {
     margin-left: 7px;
 }
 
-.mod-toolbox .tb-comment {
+.mod-toolbox-rd .tb-comment {
     margin: 5px;
     padding: 5px;
 }
 
-.mod-toolbox .tb-comment.tb-comment-even {
+.mod-toolbox-rd .tb-comment.tb-comment-even {
     background-color: #f1f1f1;
 }
 
-.mod-toolbox .tb-comment.tb-comment-odd {
+.mod-toolbox-rd .tb-comment.tb-comment-odd {
     background-color: #fff;
 }
 
-.mod-toolbox .tb-tagline {
+.mod-toolbox-rd .tb-tagline {
     font-size: 10px;
     border-bottom: solid 1px gray;
     padding: 3px;
 }
 
-.mod-toolbox .tb-comment-buttons {
+.mod-toolbox-rd .tb-comment-buttons {
     font-size: 11px;
 
 }
 
-.mod-toolbox .tb-comment-button {
+.mod-toolbox-rd .tb-comment-button {
     margin-right: 10px;
 }
 
-.mod-toolbox .tb-comment-body {
+.mod-toolbox-rd .tb-comment-body {
     margin-left: 10px;
 }
 
-.mod-toolbox .tb-comment .tb-comment-body .md p {
+.mod-toolbox-rd .tb-comment .tb-comment-body .md p {
     border: none;
     padding: 0;
     line-height: inherit;
     margin-bottom: 5px;
 }
 
-.mod-toolbox .tb-comment .tb-comment-body table td {
+.mod-toolbox-rd .tb-comment .tb-comment-body table td {
     border: solid 1px #d0d0d0;
     padding: 3px;
     text-align: left;
 }
 
-.mod-toolbox .tb-comment .tb-comment-body table th {
+.mod-toolbox-rd .tb-comment .tb-comment-body table th {
     font-weight: bold;
     border: solid 1px #d0d0d0;
     padding: 3px;
 
 }
 
-.mod-toolbox .tb-comment .tb-comment-body blockquote {
+.mod-toolbox-rd .tb-comment .tb-comment-body blockquote {
     background: #eae5e5;
     padding: 3px;
     margin: 10px;
     color: #4c4c4c
 }
 
-.mod-toolbox .tb-comment-flair {
+.mod-toolbox-rd .tb-comment-flair {
     background-color: #d8d8d8;
     padding: 2px;
 }
 
-.mod-toolbox .tb-comment-gilded {
+.mod-toolbox-rd .tb-comment-gilded {
     color: #f78a17
 }
 
-.mod-toolbox .tb-comment-edited {
+.mod-toolbox-rd .tb-comment-edited {
     font-style: italic;
 }
 
-.mod-toolbox  .tb-comment-entry.removed {
+.mod-toolbox-rd  .tb-comment-entry.removed {
     border: solid 2px #ff0000;
 }
 
-.mod-toolbox  .tb-comment-entry.spammed {
+.mod-toolbox-rd  .tb-comment-entry.spammed {
     border: solid 2px #ff0000;
 }
 
-.mod-toolbox a.tb-moderator {
+.mod-toolbox-rd a.tb-moderator {
     color: #228822;
 }
 
-.mod-toolbox a.tb-submitter {
+.mod-toolbox-rd a.tb-submitter {
     color: #0055df;
 }
 
-.mod-toolbox .tb-tagline .tb-comment-author {
+.mod-toolbox-rd .tb-tagline .tb-comment-author {
     font-weight: bold;
 }
 
-.mod-toolbox .tb-tagline .tb-comment-author.tb-submitter {
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter {
 	color: #fff;
 	background-color: #0055df;
 	font-weight: bold;
@@ -837,7 +838,7 @@ body.mod-toolbox .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox .tb-tagline .tb-comment-author.tb-moderator {
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-moderator {
 	color: #fff;
 	background-color: #228822;
 	font-weight: bold;
@@ -845,7 +846,7 @@ body.mod-toolbox .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox .tb-tagline .tb-comment-author.tb-admin {
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin {
 	color: #fff;
 	background-color: #e91e1e;
 	font-weight: bold;
@@ -853,7 +854,7 @@ body.mod-toolbox .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox .tb-tagline .tb-comment-author.tb-unknown {
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown {
 	color: #fff;
 	background-color: #ff8d64;
 	font-weight: bold;
@@ -873,14 +874,14 @@ body.mod-toolbox .tb-general-button img {
     font-size: 10px;
 }
 
-.mod-toolbox .tb-more-comments {
+.mod-toolbox-rd .tb-more-comments {
     margin: 5px;
     padding: 5px;
     display: block;
     font-size: 10px;
 }
 
-.mod-toolbox .tb-more-comments a {
+.mod-toolbox-rd .tb-more-comments a {
     font-weight: bold;
 }
 
@@ -892,7 +893,7 @@ body.mod-toolbox .tb-general-button img {
 */
 
 
-body.mod-toolbox .tb-action-button.action-hidden {
+body.mod-toolbox-rd .tb-action-button.action-hidden {
     display: none;
 }
 
@@ -900,16 +901,18 @@ body.mod-toolbox .tb-action-button.action-hidden {
 Because they are so locked down you cannot easily show or hide these buttons.
 Apply the "tb-button-hidden" class to be able to hide them anyway.
 */
-body.mod-toolbox .tb-action-button.tb-button-hidden {
+body.mod-toolbox-rd .tb-action-button.tb-button-hidden {
     display: none !important;
 }
 
-body.mod-toolbox .tb-action-button {
+body.mod-toolbox-rd .tb-action-button {
     display: inline-block !important;
-    height: initial !important;
+    height: 25px !important;
+    vertical-align: bottom !important;
     padding: 2px 6px 3px 6px !important;
     font-family: verdana,arial,helvetica,sans-serif !important;
     font-size: 13px !important;
+    line-height: 13px !important;;
     text-shadow: none !important;
     text-decoration: none !important;
     text-align: left !important;
@@ -932,7 +935,7 @@ body.mod-toolbox .tb-action-button {
     outline: none !important;
 }
 
-body.mod-toolbox .tb-action-button:active {
+body.mod-toolbox-rd .tb-action-button:active {
     border-width: 1px !important;
     border-color: #9FBAD6 !important;
     padding: 2px 6px 3px 6px !important;
@@ -940,7 +943,7 @@ body.mod-toolbox .tb-action-button:active {
     outline: none !important;
 }
 
-.mod-toolbox select.tb-action-button {
+.mod-toolbox-rd select.tb-action-button {
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAFBAMAAACOSmBbAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAMFBMVEUAAAByhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhppyhpoAAAAzyklRAAAADnRSTlMAg+bd3+d6pqKNlZOkqEeC9h4AAAABYktHRACIBR1IAAAACXBIWXMAAAsSAAALEgHS3X78AAAAJklEQVQI12OQU3YxfcbA/u7duwYGhnnvXjEwMHC/OwAkGfYyMAAApLAJ3r+t9WUAAAAASUVORK5CYII=');    background-repeat: no-repeat;
     background-position: right 5px center;
     -moz-appearance:none; /* Firefox */
@@ -950,33 +953,37 @@ body.mod-toolbox .tb-action-button:active {
 }
 
 
-.mod-toolbox select.tb-action-button:active {
+.mod-toolbox-rd select.tb-action-button:active {
     border-width: 1px 1px 2px 2px !important;
     padding: 1px 20px 2px 6px !important;
 }
 
 /* inline action buttons */
 
-.mod-toolbox .tb-action-button.inline-button {
+.mod-toolbox-rd .tb-action-button.inline-button {
     font-size: 11px !important;
+    line-height: 11px !important;
+    height: 20px !important;
 }
-.mod-toolbox select.tb-action-button.inline-button {
+.mod-toolbox-rd select.tb-action-button.inline-button {
     padding: 1px 15px 1px 5px !important;
     font-size: 11px !important;
+    line-height: 11px !important;
+    height: 20px !important;
 }
 
-.mod-toolbox .tb-action-button.inline-button:active {
+.mod-toolbox-rd .tb-action-button.inline-button:active {
     padding: 2px 6px 4px 7px !important;
 }
 
-.mod-toolbox select.tb-action-button.inline-button:active {
+.mod-toolbox-rd select.tb-action-button.inline-button:active {
     border-width: 1px 1px 2px 2px !important;
     padding: 1px 15px 1px 5px !important;
 
 }
 
-.mod-toolbox button.save-mod.tb-action-button,
-.mod-toolbox button.save-sticky.tb-action-button {
+.mod-toolbox-rd button.save-mod.tb-action-button,
+.mod-toolbox-rd button.save-sticky.tb-action-button {
     box-sizing: border-box !important;
     height: 26px !important;
 }
@@ -989,11 +996,11 @@ button.save-sticky.tb-action-button { display: none !important }
 .commentarea > form button.save-sticky.tb-action-button { display: inline-block !important; }
 
 
-body.mod-toolbox .tb-action-button:focus {
+body.mod-toolbox-rd .tb-action-button:focus {
     outline: none !important;
 }
 
-body.mod-toolbox .tb-action-button:hover {
+body.mod-toolbox-rd .tb-action-button:hover {
     background-color: #E2EEFA !important;
     text-decoration: none !important;
     outline: none !important;
@@ -1010,9 +1017,9 @@ body.mod-toolbox .tb-action-button:hover {
 */
 
 /* link colors (for those themes that change all the link colors */
-body.mod-toolbox .tb-page-overlay a,
-body.mod-toolbox .tb-popup a,
-body.mod-toolbox .tb-toolbar a
+body.mod-toolbox-rd .tb-page-overlay a,
+body.mod-toolbox-rd .tb-popup a,
+body.mod-toolbox-rd .tb-toolbar a
 {
     color: #369;
     box-sizing: initial !important;
@@ -1059,11 +1066,11 @@ body.mod-toolbox .tb-toolbar a
     Highlighting plugin related css
 ------------
 */
-.mod-toolbox .tb-highlight {
+.mod-toolbox-rd .tb-highlight {
     background-color: #ffff16;
 }
 
-.mod-toolbox .tb-highlight-action-reason {
+.mod-toolbox-rd .tb-highlight-action-reason {
     background-color: #ffd016;
 }
 
@@ -1203,13 +1210,13 @@ span.rate-limit-explain {
     ModMacros
 ------------
 */
-.mod-toolbox .tb-macro-newmm {
+.mod-toolbox-rd .tb-macro-newmm {
     float: right;
     margin-right: 10px;
 }
 
-.mod-toolbox select.tb-macro-select.tb-action-button,
-.mod-toolbox select.tb-top-macro-select.tb-action-button
+.mod-toolbox-rd select.tb-macro-select.tb-action-button,
+.mod-toolbox-rd select.tb-top-macro-select.tb-action-button
 {
     max-width: 90px;
     box-sizing: border-box !important;
@@ -1237,13 +1244,13 @@ span.rate-limit-explain {
     border: solid 1px #E4E4E4;
 }
 
-.mod-toolbox.mod-syntax .sheets .buttons .btn,
-.mod-toolbox.mod-syntax  #wiki_save_button{
+.mod-toolbox-rd.mod-syntax .sheets .buttons .btn,
+.mod-toolbox-rd.mod-syntax  #wiki_save_button{
     display: none;
 }
 
-.mod-toolbox.mod-syntax #tb-syntax-buttons,
-.mod-toolbox.mod-syntax .sheets .buttons {
+.mod-toolbox-rd.mod-syntax #tb-syntax-buttons,
+.mod-toolbox-rd.mod-syntax .sheets .buttons {
     display: inline-block;
     margin-left: 5px;
 }
@@ -1276,13 +1283,13 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 ------------
 */
 
-.mod-toolbox  .comment-nest-info {
+.mod-toolbox-rd  .comment-nest-info {
     font-size: 11px;
     margin-top: -10px;
     color: #888;
 }
 
-.mod-toolbox  #tb-search-suggest-list td {
+.mod-toolbox-rd  #tb-search-suggest-list td {
     cursor: pointer;
 }
 
@@ -1365,21 +1372,21 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 ------------
 */
 
-.mod-toolbox span.tb-config-intro {
+.mod-toolbox-rd span.tb-config-intro {
     max-width: 59em;
 }
 
-.mod-toolbox .tb-window-tabs a {
+.mod-toolbox-rd .tb-window-tabs a {
     cursor: pointer;
 }
 
-.mod-toolbox .tb-window-header .buttons {
+.mod-toolbox-rd .tb-window-header .buttons {
     display: inline-block;
     position: absolute;
     right: 0;
     top: 0;
 }
-.mod-toolbox .tb-window-header .buttons a {
+.mod-toolbox-rd .tb-window-header .buttons a {
     display: inline-block;
     background-color: #C7D6E6;
     border-left: 0;
@@ -1391,62 +1398,62 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     text-align: center;
 }
 
-.mod-toolbox .tb-page-overlay a.close:hover,
-.mod-toolbox .tb-page-overlay a.tb-help-main:hover {
+.mod-toolbox-rd .tb-page-overlay a.close:hover,
+.mod-toolbox-rd .tb-page-overlay a.tb-help-main:hover {
     background-color: #9FBAD6;
 }
 
-.mod-toolbox #tb-removal-reasons-list,
-.mod-toolbox #tb-mod-macros-list {
+.mod-toolbox-rd #tb-removal-reasons-list,
+.mod-toolbox-rd #tb-mod-macros-list {
     border-top: solid 2px gray;
     margin-top: 5px;
     width: 99%;
 }
 
-.mod-toolbox #tb-removal-reasons-list td,
-.mod-toolbox #tb-mod-macros-list td {
+.mod-toolbox-rd #tb-removal-reasons-list td,
+.mod-toolbox-rd #tb-mod-macros-list td {
     padding: 5px;
     vertical-align: top;
 }
-.mod-toolbox .removal-reasons-buttons,
-.mod-toolbox .mod-macros-buttons {
+.mod-toolbox-rd .removal-reasons-buttons,
+.mod-toolbox-rd .mod-macros-buttons {
     width: 25px;
 }
 
-.mod-toolbox .removal-reason-edit,
-.mod-toolbox #tb-add-removal-reason-form,
-.mod-toolbox .mod-macro-edit,
-.mod-toolbox #tb-add-mod-macro-form
+.mod-toolbox-rd .removal-reason-edit,
+.mod-toolbox-rd #tb-add-removal-reason-form,
+.mod-toolbox-rd .mod-macro-edit,
+.mod-toolbox-rd #tb-add-mod-macro-form
 {
     display: none;
 }
 
-.mod-toolbox .edit_removal_reasons tr.removal-reason,
-.mod-toolbox .edit_mod_macros tr.mod-macro {
+.mod-toolbox-rd .edit_removal_reasons tr.removal-reason,
+.mod-toolbox-rd .edit_mod_macros tr.mod-macro {
     border-bottom: solid 5px #F0F0F0;
 }
 
-.mod-toolbox .edit_removal_reasons input[type="text"],
-.mod-toolbox .edit_mod_macros input[type="text"]{
+.mod-toolbox-rd .edit_removal_reasons input[type="text"],
+.mod-toolbox-rd .edit_mod_macros input[type="text"]{
     max-width: 600px;
 }
 
-.mod-toolbox .edit_removal_reasons .edit-area,
-.mod-toolbox .edit_mod_macros .edit-area {
+.mod-toolbox-rd .edit_removal_reasons .edit-area,
+.mod-toolbox-rd .edit_mod_macros .edit-area {
     width: 600px;
     height: 150px;
     margin: 2px;
 }
 
-.mod-toolbox .removal_reasons_settings .edit-header,
-.mod-toolbox .removal_reasons_settings .edit-footer {
+.mod-toolbox-rd .removal_reasons_settings .edit-header,
+.mod-toolbox-rd .removal_reasons_settings .edit-footer {
     width: 600px;
     height: 100px;
     margin: 2px;
 }
 
-.mod-toolbox h3.macro-title,
-.mod-toolbox h3.removal-title {
+.mod-toolbox-rd h3.macro-title,
+.mod-toolbox-rd h3.removal-title {
     font-size: 12px;
     border-bottom: dotted 1px #D2D2D2;
 }
@@ -1485,7 +1492,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 Icons in the sidebar
 */
 
-.mod-toolbox .tb-moderation-tools-icons {
+.mod-toolbox-rd .tb-moderation-tools-icons {
     margin-bottom: -3px;
 }
 
@@ -1571,7 +1578,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     height: 40px;
 }
 
-.mod-toolbox .articleFrame {
+.mod-toolbox-rd .articleFrame {
     border: solid 1px #A2BAD3;
     position: relative;
     width: 70%;
@@ -1638,7 +1645,7 @@ TODO: Redo the below mess in a structured manner AFTER the reddit redesign.
 ========================
 */
 
-.mod-toolbox.res-nightmode #tb-my-subreddits {
+.mod-toolbox-rd.res-nightmode #tb-my-subreddits {
     background-color: #6E7A86;
     color: #B5B5B5;
     border: 1px solid #A8B5C2;
@@ -1646,56 +1653,56 @@ TODO: Redo the below mess in a structured manner AFTER the reddit redesign.
 }
 
 
-.mod-toolbox.res-nightmode #tb-my-subreddits td a {
+.mod-toolbox-rd.res-nightmode #tb-my-subreddits td a {
     color: #2C4C6C;
 }
 
-.mod-toolbox.res-nightmode .thing.spam, .mod-toolbox.res-nightmode .thing.spam {
+.mod-toolbox-rd.res-nightmode .thing.spam, .mod-toolbox-rd.res-nightmode .thing.spam {
     background-color: #621c1c;
 }
 
-.mod-toolbox.res-nightmode .comment.spam>.child, .mod-toolbox.res-nightmode .message.spam>.child {
+.mod-toolbox-rd.res-nightmode .comment.spam>.child, .mod-toolbox-rd.res-nightmode .message.spam>.child {
 background-color: #1f1f1f;
 }
 
-.mod-toolbox.res-nightmode .tb-page-overlay select,
-.mod-toolbox.res-nightmode .tb-page-overlay input,
-.mod-toolbox.res-nightmode .tb-page-overlay textarea {
+.mod-toolbox-rd.res-nightmode .tb-page-overlay select,
+.mod-toolbox-rd.res-nightmode .tb-page-overlay input,
+.mod-toolbox-rd.res-nightmode .tb-page-overlay textarea {
 background: #969696 !important;
 }
 
-.mod-toolbox.res-nightmode .tb-highlight {
+.mod-toolbox-rd.res-nightmode .tb-highlight {
     background-color: #97971b;
 }
 
-.mod-toolbox.res-nightmode #tb-bottombar {
+.mod-toolbox-rd.res-nightmode #tb-bottombar {
     background-color: rgba(7, 7, 7, 0.89);
     color: #696969;
     border-top: solid 1px #111;
 
 }
 
-.mod-toolbox.res-nightmode #tb-bottombar-hidden {
+.mod-toolbox-rd.res-nightmode #tb-bottombar-hidden {
     background-color: rgba(7, 7, 7, 0.89);
     border-top: solid 1px #111;
     border-right: solid 1px #111;
 }
 
 
-.mod-toolbox.res-nightmode .articleFrame {
+.mod-toolbox-rd.res-nightmode .articleFrame {
 border: solid 1px #808080;
 }
 
-.mod-toolbox.res-nightmode .tb-page-overlay {
+.mod-toolbox-rd.res-nightmode .tb-page-overlay {
     background-color: rgba(135, 135, 135, 0.84);
 }
 
-.mod-toolbox.res-nightmode .tb-overlay-label {
+.mod-toolbox-rd.res-nightmode .tb-overlay-label {
 
     text-shadow: 0 0 4px #878787;
 }
 
-.mod-toolbox.res-nightmode .tb-window-wrapper {
+.mod-toolbox-rd.res-nightmode .tb-window-wrapper {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
@@ -1708,41 +1715,41 @@ border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode .tb-window-wrapper a:hover,
-.mod-toolbox.res-nightmode .tb-window-tabs a.active,
-.mod-toolbox.res-nightmode .tb-window-tabs a:hover {
+.mod-toolbox-rd.res-nightmode .tb-window-wrapper a:hover,
+.mod-toolbox-rd.res-nightmode .tb-window-tabs a.active,
+.mod-toolbox-rd.res-nightmode .tb-window-tabs a:hover {
     color: #000 !important;
 }
 
-.mod-toolbox.res-nightmode .tb-window-header {
+.mod-toolbox-rd.res-nightmode .tb-window-header {
     background-color: #6E7A86;
     border-bottom: solid 1px #111;
 }
 
-.mod-toolbox.res-nightmode .tb-window-header-options a,
-.mod-toolbox.res-nightmode .buttons a,
-.mod-toolbox.res-nightmode .tb-debug-header a {
+.mod-toolbox-rd.res-nightmode .tb-window-header-options a,
+.mod-toolbox-rd.res-nightmode .buttons a,
+.mod-toolbox-rd.res-nightmode .tb-debug-header a {
     color: #393E44;
 }
 
-.mod-toolbox.res-nightmode .tb-window-tabs {
+.mod-toolbox-rd.res-nightmode .tb-window-tabs {
     border-bottom: solid 1px #39526b;
     background-color: #828B96;
 }
 
-.mod-toolbox.res-nightmode .tb-window-tabs a {
+.mod-toolbox-rd.res-nightmode .tb-window-tabs a {
     background-color: #828B96;
     border-right: dotted 1px #39526b;
     color: #393E44;
 }
 
-.mod-toolbox.res-nightmode .tb-window-spacer {
+.mod-toolbox-rd.res-nightmode .tb-window-spacer {
     background-color: #8d9caa;
     border-right: dotted 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .tb-window-tabs a.active,
-.mod-toolbox.res-nightmode .tb-window-tabs a:hover {
+.mod-toolbox-rd.res-nightmode .tb-window-tabs a.active,
+.mod-toolbox-rd.res-nightmode .tb-window-tabs a:hover {
     background-color: #5D7186;
 }
 
@@ -1751,18 +1758,18 @@ border: solid 1px #808080;
     border-top: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .tb-window-content p {
+.mod-toolbox-rd.res-nightmode .tb-window-content p {
     border-bottom: 1px dotted #E0E0E0;
 }
-.mod-toolbox.res-nightmode .tb-mark-unread {
+.mod-toolbox-rd.res-nightmode .tb-mark-unread {
     color: #369;
 }
 
-.mod-toolbox.res-nightmode .tb-settings .tb-window-content {
+.mod-toolbox-rd.res-nightmode .tb-settings .tb-window-content {
     background-color: #878787;
 }
 
-.mod-toolbox.res-nightmode .tb-window-tab span.tb-module-disabled {
+.mod-toolbox-rd.res-nightmode .tb-window-tab span.tb-module-disabled {
     background-color: #B8B8B8;
 }
 
@@ -1771,7 +1778,7 @@ div.sticky {
     color: #696969;
 }
 
-.mod-toolbox.res-nightmode #tb-notification-alert {
+.mod-toolbox-rd.res-nightmode #tb-notification-alert {
     background-color: rgba(206, 227, 248, 1);
     color: #000;
     padding: 2px !important;
@@ -1779,7 +1786,7 @@ div.sticky {
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
-.mod-toolbox.res-nightmode #tb-tooltip {
+.mod-toolbox-rd.res-nightmode #tb-tooltip {
     background-color: rgba(206, 227, 248, 0.86);
     color: #000;
     border: solid 1px #39526b;
@@ -1822,130 +1829,130 @@ div.sticky {
     border-top: 1px dotted #C1BFBF;
 }
 
-.mod-toolbox.res-nightmode .mod-popup {
+.mod-toolbox-rd.res-nightmode .mod-popup {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode .mod-popup-header {
+.mod-toolbox-rd.res-nightmode .mod-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs {
+.mod-toolbox-rd.res-nightmode .mod-popup-tabs {
     border-bottom: 1px solid #39526b;
     background-color: #828B96;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs a {
+.mod-toolbox-rd.res-nightmode .mod-popup-tabs a {
     background-color: #828B96;
     border-right: 1px dotted #39526b;
     color: #393E44;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-tabs a:hover,
-.mod-toolbox.res-nightmode .mod-popup-tabs a.active {
+.mod-toolbox-rd.res-nightmode .mod-popup-tabs a:hover,
+.mod-toolbox-rd.res-nightmode .mod-popup-tabs a.active {
     background-color: #5D7186;
 }
 
-.mod-toolbox.res-nightmode .mod-popup-footer {
+.mod-toolbox-rd.res-nightmode .mod-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .status {
+.mod-toolbox-rd.res-nightmode .mod-popup .status {
 }
 
-.mod-toolbox.res-nightmode .mod-popup .add-sub-link {
+.mod-toolbox-rd.res-nightmode .mod-popup .add-sub-link {
     text-decoration: none;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .remove-sub-link {
+.mod-toolbox-rd.res-nightmode .mod-popup .remove-sub-link {
     text-decoration: none;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .global-button {
+.mod-toolbox-rd.res-nightmode .mod-popup .global-button {
     color: red;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .current-sub,
-.mod-toolbox.res-nightmode .mod-popup .saved-subs div,
-.mod-toolbox.res-nightmode .mod-popup div.other-sub,
-.mod-toolbox.res-nightmode .mod-popup .ban-note-container {
+.mod-toolbox-rd.res-nightmode .mod-popup .current-sub,
+.mod-toolbox-rd.res-nightmode .mod-popup .saved-subs div,
+.mod-toolbox-rd.res-nightmode .mod-popup div.other-sub,
+.mod-toolbox-rd.res-nightmode .mod-popup .ban-note-container {
     border-bottom: 1px dotted gray;
     padding: 5px;
 }
 
 
-.mod-toolbox.res-nightmode .tb-popup-header {
+.mod-toolbox-rd.res-nightmode .tb-popup-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .tb-popup-tabs {
+.mod-toolbox-rd.res-nightmode .tb-popup-tabs {
     border-bottom: 1px solid #39526b;
     background-color: #828B96;
 }
 
-.mod-toolbox.res-nightmode .tb-popup-tabs a {
+.mod-toolbox-rd.res-nightmode .tb-popup-tabs a {
     background-color: #828B96;
     border-right: 1px dotted #39526b;
     color: #393E44;
 }
 
-.mod-toolbox.res-nightmode .tb-popup-footer {
+.mod-toolbox-rd.res-nightmode .tb-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .tb-popup {
+.mod-toolbox-rd.res-nightmode .tb-popup {
 background-color: #878787;
 }
 
-.mod-toolbox.res-nightmode #tb-personal-notes-button, .mod-toolbox.res-nightmode #tb-personal-notes-button:hover {
+.mod-toolbox-rd.res-nightmode #tb-personal-notes-button, .mod-toolbox-rd.res-nightmode #tb-personal-notes-button:hover {
 background: none;
 }
 
-.mod-toolbox.res-nightmode #tb-search-suggest tr {
+.mod-toolbox-rd.res-nightmode #tb-search-suggest tr {
 background: #A3A3A3;
 }
 
-.mod-toolbox.res-nightmode .menuarea.modtools {
+.mod-toolbox-rd.res-nightmode .menuarea.modtools {
 background-color: rgba(110, 122, 134, 0.86);
 border-color: #808080;
 }
 
-.mod-toolbox.res-nightmode .mod-popup .current-sub {
+.mod-toolbox-rd.res-nightmode .mod-popup .current-sub {
     border-bottom: 1px solid gray;
 }
 
 
-.mod-toolbox.res-nightmode .mod-action-positive {
+.mod-toolbox-rd.res-nightmode .mod-action-positive {
     background-color: #E5F0E1;
 }
 
-.mod-toolbox.res-nightmode .mod-action-negative {
+.mod-toolbox-rd.res-nightmode .mod-action-negative {
     background-color: #FA8072;
 }
 
-.mod-toolbox.res-nightmode .thing+input[type="checkbox"]:focus {
+.mod-toolbox-rd.res-nightmode .thing+input[type="checkbox"]:focus {
     outline: blue solid 1px;
 }
 
-.mod-toolbox.res-nightmode .tb-debug-window {
+.mod-toolbox-rd.res-nightmode .tb-debug-window {
     background-color: #878787;
     border: solid 1px #808080;
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 
 }
 
-.mod-toolbox.res-nightmode .tb-debug-header {
+.mod-toolbox-rd.res-nightmode .tb-debug-header {
     background-color: #6e7a86;
     border-bottom: solid 1px #39526b;
 }
 
-.mod-toolbox.res-nightmode .tb-debug-footer {
+.mod-toolbox-rd.res-nightmode .tb-debug-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
 }

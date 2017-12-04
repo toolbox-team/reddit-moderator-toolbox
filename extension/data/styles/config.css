@@ -54,24 +54,24 @@
 
 /* changing tabs around */
 
-.mod-toolbox .tb-config .tb-window-tabs {
+.mod-toolbox-rd .tb-config .tb-window-tabs {
     display: inline-block;
     width: 135px;
     height: 100%;
     border-bottom: 0;
 }
 
-.mod-toolbox .tb-config .tb-window-tabs a {
+.mod-toolbox-rd .tb-config .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;
     border-bottom: solid 1px #eef5fd;
 }
 
-.mod-toolbox .tb-config .tb-window-tabs a:nth-last-of-type(1) {
+.mod-toolbox-rd .tb-config .tb-window-tabs a:nth-last-of-type(1) {
     border-bottom: 0;
 }
 
-.mod-toolbox .tb-config .tb-window-tabs-wrapper {
+.mod-toolbox-rd .tb-config .tb-window-tabs-wrapper {
     display: inline-block;
     vertical-align: top;
     width: calc(100% - 135px);
@@ -87,7 +87,7 @@ tr.removal-reason:last-of-type a.tb-sort-down {
     visibility: hidden;
 }
 
-.mod-toolbox .sort_removal_reasons ul {
+.mod-toolbox-rd .sort_removal_reasons ul {
     padding: 0 40px;
     list-style-type: disc;
     margin: 5px 0;

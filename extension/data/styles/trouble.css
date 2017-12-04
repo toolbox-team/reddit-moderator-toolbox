@@ -1,61 +1,61 @@
-.mod-toolbox.tb-controversy-hl .controversial > .entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial > .entry{
     box-shadow: -2px 0 rgba(255,0,0,1);
 }
 
-.mod-toolbox.tb-controversy-hl .controversial:not(.link) > .entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial:not(.link) > .entry{
     background-color: rgba(255,0,0,0.2);
 }
-.mod-toolbox.tb-controversy-hl .controversial:not(.link) > .RES-keyNav-activeElement.entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial:not(.link) > .RES-keyNav-activeElement.entry{
     box-shadow: inset 0 0 3px 1px rgba(255,0,0,1);
 }
 
-.mod-toolbox .tb-controversy{
+.mod-toolbox-rd .tb-controversy{
     box-shadow: -2px 0 rgba(255,0,0,0.5);
 }
 
-.mod-toolbox .tb-neg:not(.link) > .entry{
+.mod-toolbox-rd .tb-neg:not(.link) > .entry{
     background-color: rgba(0,0,255,0.2);
 }
-.mod-toolbox .tb-neg:not(.link) > .RES-keyNav-activeElement.entry{
+.mod-toolbox-rd .tb-neg:not(.link) > .RES-keyNav-activeElement.entry{
     box-shadow: inset 0 0 3px 1px rgba(0,0,255,1);
 }
 
-.mod-toolbox .tb-neg > .entry{
+.mod-toolbox-rd .tb-neg > .entry{
     box-shadow: -2px 0 rgba(0,0,255,1);
 }
 
-.mod-toolbox .tb-ncontroversy{
+.mod-toolbox-rd .tb-ncontroversy{
     box-shadow: -2px 0 rgba(0,0,255,0.5);
 }
 
-.mod-toolbox.tb-controversy-hl .controversial.tb-neg > .entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial.tb-neg > .entry{
     box-shadow: -2px 0 rgba(255,0,255,1);
 }
 
-.mod-toolbox.tb-controversy-hl .controversial.tb-neg:not(.link) > .entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial.tb-neg:not(.link) > .entry{
     background-color: rgba(255,0,255,0.2);
 }
 
-.mod-toolbox.tb-controversy-hl .controversial.tb-neg:not(.link) > .RES-keyNav-activeElement.entry{
+.mod-toolbox-rd.tb-controversy-hl .controversial.tb-neg:not(.link) > .RES-keyNav-activeElement.entry{
     box-shadow: inset 0 0 3px 1px rgba(255,0,255,1);
 }
 
-.mod-toolbox .tb-controversy.tb-ncontroversy{
+.mod-toolbox-rd .tb-controversy.tb-ncontroversy{
     box-shadow: -2px 0 rgba(255,0,255,0.5);
 }
 
-.mod-toolbox #tb-trouble-buttons {
+.mod-toolbox-rd #tb-trouble-buttons {
     margin: 0px 5px 15px;
 }
 
-.mod-toolbox.tb-nchildren .comment.noncollapsed .numchildren{
+.mod-toolbox-rd.tb-nchildren .comment.noncollapsed .numchildren{
     display: inline;
 }
 
-.mod-toolbox.tb-nchildrentop .thing:before{
+.mod-toolbox-rd.tb-nchildrentop .thing:before{
     content: attr(data-nchildren);
 }
 
-.mod-toolbox .thing.collapsed:before{
+.mod-toolbox-rd .thing.collapsed:before{
     position: absolute;
 }

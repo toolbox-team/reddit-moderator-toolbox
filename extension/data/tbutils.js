@@ -192,7 +192,7 @@ function initwrapper() {
             return;
         }
 
-        $('body').addClass('mod-toolbox');
+        $('body').addClass('mod-toolbox-rd');
 
         // Get cached info.
         TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});

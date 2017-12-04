@@ -11,7 +11,7 @@ td.url-td {
     background-color: #fff;
 }
 
-body.mod-toolbox.mod-toolbox-new-modmail .history-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .history-button {
     vertical-align: middle;
     margin-right: 3px;
     margin-left: 2px;
@@ -96,13 +96,13 @@ body.mod-toolbox.mod-toolbox-new-modmail .history-button {
     text-align: center;
 }
 
-.mod-toolbox .tb-history-disclaimer {
+.mod-toolbox-rd .tb-history-disclaimer {
     margin: 5px;
     max-width: 500px;
     background: #e6e6e6;
     padding: 5px;
 }
 
-.mod-toolbox .tb-history-disclaimer strong{
+.mod-toolbox-rd .tb-history-disclaimer strong{
     font-weight: bold;
 }

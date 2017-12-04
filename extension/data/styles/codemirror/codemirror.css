@@ -1,13 +1,13 @@
 /* BASICS */
 
-.mod-toolbox .CodeMirror {
+.mod-toolbox-rd .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
   height: 600px;
   color: black;
 }
 
-.mod-toolbox .CodeMirror-fullscreen {
+.mod-toolbox-rd .CodeMirror-fullscreen {
     z-index: 2147483646;
     bottom: 25px;
 
@@ -17,7 +17,7 @@
     font-size: medium;
 }
 
-.mod-toolbox .tb-syntax-keyboard {
+.mod-toolbox-rd .tb-syntax-keyboard {
     position: absolute;
     width: 150px;
     background-color: rgba(206, 227, 248, 0.55);
@@ -29,11 +29,11 @@
     transition: width 0.3s;
 }
 
-.mod-toolbox .tb-syntax-keyboard:hover {
+.mod-toolbox-rd .tb-syntax-keyboard:hover {
     width: 500px;
 }
 
-.mod-toolbox .tb-syntax-keyboard ul {
+.mod-toolbox-rd .tb-syntax-keyboard ul {
     display: none;
 }
 

@@ -205,7 +205,7 @@ function modbutton() {
                 </div>`,
                         footer: `
                 <span class="status error left"></span>
-                <select class="mod-action tb-action-button inline-button">
+                <select class="mod-action tb-action-button">
                     <option class="mod-action-negative" data-action="banned" data-api="friend">ban</option>
                     <option class="mod-action-positive" data-action="banned" data-api="unfriend">unban</option>
                     <option class="mod-action-positive" data-action="contributor" data-api="friend">add submitter</option>
@@ -213,7 +213,7 @@ function modbutton() {
                     <option class="mod-action-positive" data-action="moderator" data-api="friend">mod</option>
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
-                <button class="save tb-action-button inline-button">${self.saveButton}</button>
+                <button class="save tb-action-button">${self.saveButton}</button>
                 <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`
                     },
                     {

@@ -1,4 +1,4 @@
-.mod-toolbox .reason-popup {
+.mod-toolbox-rd .reason-popup {
     padding: 10px 15px !important;
     background-color: rgba(250, 250, 250, 0.84);
     border: 0;
@@ -119,7 +119,7 @@
     margin-bottom: 4px;
 }
 
-.mod-toolbox tr.removal-reason {
+.mod-toolbox-rd tr.removal-reason {
     border-bottom: solid 5px #F0F0F0;
 }
 
@@ -135,23 +135,23 @@
     background: #B1DDAA;
 }
 
-.mod-toolbox .removal-reason-title {
+.mod-toolbox-rd .removal-reason-title {
     margin-top: 9px;
     margin-left: 6px;
     font-size: 14px;
     font-family: "Lucida Console", Monaco, monospace;
 }
 
-.mod-toolbox .reason-popup #buttons ul {
+.mod-toolbox-rd .reason-popup #buttons ul {
     list-style-type: none;
     margin: 5px;
 }
 
-.mod-toolbox .reason-popup #buttons ul li {
+.mod-toolbox-rd .reason-popup #buttons ul li {
      margin-top: 5px;
  }
 
-.mod-toolbox .reason-popup #buttons ul li ul {
+.mod-toolbox-rd .reason-popup #buttons ul li ul {
     margin-left: 15px;
     margin-bottom: 5px;
 }
@@ -221,7 +221,7 @@
 
 /* Nightmode */
 
-.mod-toolbox.res-nightmode .reason-popup {
+.mod-toolbox-rd.res-nightmode .reason-popup {
     background-color: rgba(250, 250, 250, 0.84);
     color: black;
 }
@@ -293,35 +293,35 @@
     box-shadow: 0 1px 3px 1px rgba(83, 83, 83, 0.61);
 }
 
-.mod-toolbox.res-nightmode tr.removal-reason {
+.mod-toolbox-rd.res-nightmode tr.removal-reason {
     border-bottom: solid 5px #7A7A7A;
 }
 
 /* 3.0 fixes */
 
-.mod-toolbox #removal-reasons-table {
+.mod-toolbox-rd #removal-reasons-table {
     width: 99%;
 }
 
-.mod-toolbox .removal-toggle {
+.mod-toolbox-rd .removal-toggle {
     width: 40px;
 }
 
-.mod-toolbox .flair-text {
+.mod-toolbox-rd .flair-text {
     width: 75px;
 }
 
-.mod-toolbox .flair-css {
+.mod-toolbox-rd .flair-css {
     width: 50px;
     overflow: hidden;
 }
 
-.mod-toolbox td.flair-css,
-.mod-toolbox td.flair-text {
+.mod-toolbox-rd td.flair-css,
+.mod-toolbox-rd td.flair-text {
     padding-top: 8px;
 }
 
-.mod-toolbox .reason-popup .reason-check {
+.mod-toolbox-rd .reason-popup .reason-check {
     margin: 4px 0 0 3px !important;
     display: inline;
 }

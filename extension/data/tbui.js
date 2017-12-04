@@ -616,7 +616,7 @@
             if (createOrDestroy && TBui.longLoadArray.length == 0) {
 
                 $('head').append(`<style id="tb-long-load-style">
-                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {
+                .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
                 }
                 </style>`);
@@ -667,7 +667,7 @@
             if (createOrDestroy && TBui.longLoadArrayNonPersistent.length == 0) {
 
                 $('head').append(`<style id="tb-long-load-style-non-persistent">
-                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {
+                .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
                 }
                 </style>`);
@@ -1057,7 +1057,7 @@
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
             }
         }
-
+        $buildComment.find('p').addClass('tb-comment-p');
         return $buildComment;
 
     };

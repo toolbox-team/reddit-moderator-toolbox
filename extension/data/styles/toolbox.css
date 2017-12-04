@@ -911,8 +911,8 @@ body.mod-toolbox-rd .tb-action-button {
     vertical-align: bottom !important;
     padding: 2px 6px 3px 6px !important;
     font-family: verdana,arial,helvetica,sans-serif !important;
-    font-size: 13px !important;
-    line-height: 13px !important;;
+    font-size: 12px !important;
+    line-height: 12px !important;;
     text-shadow: none !important;
     text-decoration: none !important;
     text-align: left !important;
@@ -1017,9 +1017,9 @@ body.mod-toolbox-rd .tb-action-button:hover {
 */
 
 /* link colors (for those themes that change all the link colors */
-body.mod-toolbox-rd .tb-page-overlay a,
-body.mod-toolbox-rd .tb-popup a,
-body.mod-toolbox-rd .tb-toolbar a
+body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button)
+body.mod-toolbox-rd .tb-popup a:not(.tb-action-button),
+body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button)
 {
     color: #369;
     box-sizing: initial !important;

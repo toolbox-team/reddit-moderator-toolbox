@@ -168,8 +168,8 @@ function modbar() {
         const modQueueUrl = TBUtils.tempBaseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
         let modBar = $(`
 <div id="tb-bottombar" class="tb-toolbar">
-    <a class="tb-bottombar-hide" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconHide}" /></a>
-    <a class="tb-toolbar tb-toolbar-new-settings" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconGear}" title="toolbox settings"/></a>
+    <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
+    <a class="tb-toolbar tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
     <label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label>
     <span id="tb-bottombar-contentleft">
         <span id="tb-toolbarshortcuts"></span>

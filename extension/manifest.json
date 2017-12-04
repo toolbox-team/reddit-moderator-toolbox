@@ -112,6 +112,9 @@
         }
     ],
     "web_accessible_resources": [
-        "data/libs/snuownd.js"
+        "/data/libs/snuownd.js",
+        "/data/styles/font/MaterialIcons-Regular.woff2",
+        "/data/styles/font/MaterialIcons-Regular.woff",
+        "/data/styles/font/MaterialIcons-Regular.ttf"
     ]
 }

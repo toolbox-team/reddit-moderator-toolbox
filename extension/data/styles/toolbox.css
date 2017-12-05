@@ -35,15 +35,12 @@
     bottom: 50px;
     z-index: 6000;
     padding: 0;
-    overflow: auto;
     background-color: rgba(226, 238, 250, 1);
     font-size: 11px;
     color: #696969;
     border: 1px solid #B6C9DD;
     text-align: left;
     z-index: 501;
-    min-width: 15px;
-    min-height: 22px;
     background-repeat: no-repeat;
     background-position-y: 3px;
 

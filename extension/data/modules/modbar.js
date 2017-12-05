@@ -178,9 +178,9 @@ function modbar() {
         <span id="tb-toolbarcounters">
             <a title="no mail" href="${TBUtils.baseDomain}/message/inbox/" class="nohavemail tb-icons" id="tb-mail">email</a>
             <a href="${TBUtils.baseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
-            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">assignment</a>
+            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
             <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}>label</a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}>move_to_inbox</a>
             <a href="${newModmailUrl}" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">report_problem</a>
             <a href="${modQueueUrl}" class="tb-toolbar" id="tb-queueCount"></a>
@@ -372,7 +372,7 @@ function modbar() {
         }
 
         if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link"><img title="reload toolbox" src="data:image/png;base64,${TBui.iconRefresh}" /></a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>`);
 
             $body.on('click', '#tb-reload-link', function () {
                 self.log('reloading chrome');
@@ -382,7 +382,7 @@ function modbar() {
 
         // Debug mode/console
         if (debugMode) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console"><img title="debug console" src="data:image/png;base64,${TBui.iconConsole}" /></a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>`);
             let selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;

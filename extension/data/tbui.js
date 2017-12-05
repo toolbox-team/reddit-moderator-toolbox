@@ -773,6 +773,7 @@
                     <table id="tb-context-menu-list">
                     </table >
                 </div>
+                <i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right</i>
             </div>
             `).appendTo($body);
         }
@@ -803,12 +804,12 @@
 
             const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
             $tbContextMenu.mouseenter(function() {
-                $tbContextMenu.css('background-image', 'none');
+                $tbContextMenu.find('.tb-context-arrow').hide();
                 $contextMenuWrap.fadeIn(200);
             }).mouseleave(function() {
                 $contextMenuWrap.fadeOut(200, function() {
-                    console.log(`url('data:image/png;base64,${TBui.iconShow}')`);
-                    $tbContextMenu.css('background-image', `url('data:image/png;base64,${TBui.iconShow.replace(/(?:\r\n|\r|\n)/g, '')}')`);
+
+                    $tbContextMenu.find('.tb-context-arrow').show();
                 });
 
             });

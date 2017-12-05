@@ -48,6 +48,7 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     padding: 0 3px;
 }
 
+.mod-toolbox-rd #tb-bottombar-hidden .tb-icons,
 .mod-toolbox-rd #tb-bottombar .tb-icons {
     color: #46596d;
 }

@@ -22,7 +22,8 @@
         font-family: 'Material Icons';
         font-weight: normal;
         font-style: normal;
-        font-size: 16px;  /* Preferred icon size */
+        font-size: 18px;  /* Preferred icon size */
+        color: #46596d;
         display: inline-block;
         line-height: 1;
         text-transform: none;

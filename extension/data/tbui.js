@@ -819,13 +819,9 @@
 
             const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
             $tbContextMenu.mouseenter(function() {
-                $tbContextMenu.find('.tb-context-arrow').hide();
                 $contextMenuWrap.fadeIn(200);
             }).mouseleave(function() {
-                $contextMenuWrap.fadeOut(200, function() {
-
-                    $tbContextMenu.find('.tb-context-arrow').show();
-                });
+                $contextMenuWrap.fadeOut(200);
 
             });
 

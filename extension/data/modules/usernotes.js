@@ -773,7 +773,7 @@ function usernotes() {
 
                 if(event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
-                    const managerLink = `<a href="javascript:;" class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}">edit usernotes</a>`;
+                    const managerLink = `<span class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}">edit usernotes</span>`;
 
 
                     TBUtils.getModSubs(function () {
@@ -1088,7 +1088,7 @@ function usernotes() {
 
 
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
-            const sub = $(this).find('a.tb-un-manager').attr('data-subreddit');
+            const sub = $(this).find('.tb-un-manager').attr('data-subreddit');
 
             TB.ui.overlay(
                 `usernotes - /r/${sub}`,

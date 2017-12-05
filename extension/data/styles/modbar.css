@@ -1,46 +1,39 @@
-body.mod-toolbox-rd #tb-bottombar {
-    bottom: 0;
-    z-index: 2147483646 !important;
+.mod-toolbox-rd #tb-bottombar,
+.mod-toolbox-rd #tb-bottombar-hidden {
     position: fixed;
-    text-align: left;
-    margin-left: 0;
-    margin-right: 0;
-    height: 22px;
-    background-color: rgba(206, 227, 248, 0.86);
-    font-size:12px;
-    color: #696969;
-    padding: 0 !important;
-    border-top: solid 1px #B6C9DD;
+    z-index: 2147483646 !important;
+    bottom: 0;
     left: 0;
     right: 0;
-    box-sizing: initial !important;
+    /* These two rules control height for the whole toolbar*/
+    height: 22px;
+    line-height: 22px;
+
+    font-size: 12px;
+    text-align: left;
+    background-color: rgba(206, 227, 248, 0.86);
+    color: #696969;
+    border-top: solid 1px #B6C9DD;
+    
+    /* Rules to work with subreddit styles */
+    box-sizing: content-box !important;
+    padding: 0 !important;
+    margin-left: 0;
+    margin-right: 0;
 }
+.mod-toolbox-rd #tb-bottombar-hidden {
+    right: unset;
+    border-right: 1px solid #B6C9DD;
+}
+
 body.mod-toolbox-rd #tb-bottombar span {
     display: inline-block;
     vertical-align: top;
-    height: 22px;
-    line-height: 22px;
+    height: inherit;
+    line-height: inherit;
 }
 body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     float: right;
-}
-
-.mod-toolbox-rd #tb-bottombar-hidden {
-    bottom: 0;
-    z-index: 6000;
-    position: fixed;
-    text-align: left;
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    height: 22px;
-    background-color: rgba(206, 227, 248, 0.86);
-    font-size: 11px;
-    color: #696969;
-    padding: 0 !important;
-    border-top: solid 1px #B6C9DD;
-    border-right: solid 1px #B6C9DD;
-    left: 0;
 }
 
 /* Icons in the bottom bar */
@@ -49,9 +42,9 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
 .mod-toolbox-rd #tb-bottombar .tb-toolbar-new-settings,
 .mod-toolbox-rd #tb-toggle-console,
 .mod-toolbox-rd #tb-reload-link {
-    display: inline-block;
-    height: 16px;
-    padding: 3px;
+    height: inherit;
+    line-height: inherit;
+    padding: 0 3px;
 }
 
 .mod-toolbox-rd #tb-mail.nohavemail {
@@ -194,7 +187,7 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     width: 265px;
     padding: 0;
     overflow: auto;
-    font-size: 11px;
+    /* font-size: 11px; */
     color: #696969;
     text-align: center;
 }
@@ -348,7 +341,6 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
 
 .mod-toolbox-rd  #tb-toolbar-mysubs:hover, .mod-toolbox-rd  #tb-personal-notes-button:hover {
     background: #9FBAD6;
-
 }
 
 .mod-toolbox-rd  #tb-toolbar-mysubs,
@@ -358,7 +350,7 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     border-right: 1px dotted #A8B5C2;
     display: inline-block;
     vertical-align: top;
-    height: 22px;
+    height: inherit;
     padding: 0 3px;
 }
 

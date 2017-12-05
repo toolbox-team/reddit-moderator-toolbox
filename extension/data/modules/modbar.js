@@ -239,7 +239,9 @@ function modbar() {
 
         let modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar">
-    <a class="tb-bottombar-unhide" href="javascript:void(0)"><img id="tb-bottombar-image" src="data:image/png;base64,${compactHide ? TBui.iconGripper : TBui.iconShow}" /></a>
+    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide
+        ? `<img id="tb-bottombar-image" src="data:image/png;base64,${TBui.iconGripper}" />`
+        : 'keyboard_arrow_right'}</a>
 </div>
 `);
 

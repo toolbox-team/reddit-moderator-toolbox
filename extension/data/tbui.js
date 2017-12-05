@@ -4,6 +4,12 @@
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
+    // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
+    $body.on('click', '.tb-bracket-button', function(event) {
+        event.stopPropagation();
+    });
+
+    // icon font
     const fontStyle = `
     <style>
     @font-face {

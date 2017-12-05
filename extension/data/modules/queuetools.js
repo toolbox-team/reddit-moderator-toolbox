@@ -251,6 +251,7 @@ function queuetools() {
 
         // Show history of actions near posts.
         if(showActionReason) {
+
             TB.listener.on('post', function(e) {
 
                 const $target = $(e.target);
@@ -262,7 +263,7 @@ function queuetools() {
                             if(actions) {
                                 let $postActionTable = $(`
                                 <div class="tb-action-details">
-                                    <span class="tb-bracket-button tb-show-action-table">recent mod actions history</span>
+                                    <span class="tb-bracket-button tb-show-action-table">show recent actions</span>
                                     <table class="tb-action-table">
                                         <tr>
                                             <th>mod</th>
@@ -297,6 +298,20 @@ function queuetools() {
                     }
                 });
             });
+
+            $body.on('click', '.tb-show-action-table', function() {
+                const $this = $(this);
+                const $actionTable = $this.closest('.tb-action-details').find('.tb-action-table');
+                if($actionTable.is(':visible')) {
+                    $actionTable.hide();
+                    $this.text('show recent actions');
+                } else {
+                    $actionTable.show();
+                    $this.text('hide recent actions');
+                }
+
+            });
+
         }
 
     }; // queueTools.init()

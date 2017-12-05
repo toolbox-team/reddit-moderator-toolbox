@@ -84,20 +84,11 @@ display: inline-block;
     display: none;
  }
 
- .mod-toolbox-rd .tb-action-details:hover .tb-action-table {
-     display: table;
- }
 
- .mod-toolbox-rd .tb-action-details:hover .tb-show-action-table {
-     display: none;
- }
+
 
  .mod-toolbox-rd.tb-show-actions .tb-action-table {
     display: table;
-}
-
-.mod-toolbox-rd.tb-show-actions .tb-show-action-table{
-    display: none;
 }
 
 .mod-toolbox-rd .tb-action-table th {

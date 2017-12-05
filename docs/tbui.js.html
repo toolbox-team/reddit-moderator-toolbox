@@ -43,6 +43,56 @@
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
+    // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
+    $body.on('click', '.tb-bracket-button', function(event) {
+        event.stopPropagation();
+    });
+
+    // icon font
+    const fontStyle = `
+    &lt;style>
+    @font-face {
+        font-family: 'Material Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
+        src: local('Material Icons'),
+             local('MaterialIcons-Regular'),
+             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
+      }
+
+      html body.mod-toolbox-rd .tb-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 18px;  /* Preferred icon size */
+        color: #46596d;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+
+        /* Support for all WebKit browsers. */
+        -webkit-font-smoothing: antialiased;
+        /* Support for Safari and Chrome. */
+        text-rendering: optimizeLegibility;
+
+        /* Support for Firefox. */
+        -moz-osx-font-smoothing: grayscale;
+
+        /* Support for IE. */
+        font-feature-settings: 'liga';
+      }
+
+    &lt;/style>`;
+
+    $('head').append(fontStyle);
+
     // Icons NOTE: string line length is ALWAYS 152 chars
     TBui.iconWrench = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1d
                     dRRBLA6lg4iTd5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5
@@ -655,7 +705,7 @@
             if (createOrDestroy &amp;&amp; TBui.longLoadArray.length == 0) {
 
                 $('head').append(`&lt;style id="tb-long-load-style">
-                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {
+                .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
                 }
                 &lt;/style>`);
@@ -706,7 +756,7 @@
             if (createOrDestroy &amp;&amp; TBui.longLoadArrayNonPersistent.length == 0) {
 
                 $('head').append(`&lt;style id="tb-long-load-style-non-persistent">
-                .mod-toolbox #tb-bottombar, .mod-toolbox #tb-bottombar-hidden {
+                .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
                 }
                 &lt;/style>`);
@@ -751,12 +801,16 @@
      * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
      * @function contextTrigger
      * @memberof TBui
-     * @param {string} triggerId - this will be part of the id given to the element.
-     * @param {boolean} addTrigger - Indicates of the menu item needs to be added or removed.
-     * @param {boolean} triggerText - Text displayed in menu. Not needed when addTrigger is false.
+     * @param {string} triggerId This will be part of the id given to the element.
+     * @param {object} options
+     * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
+     * @param {string} options.triggerText Text displayed in menu. Not needed when addTrigger is false.
+     * @param {string} options.triggerIcon The material icon that needs to be displayed before the menu item. Defaults to 'label'
      */
+    let contextTimeout;
+    TBui.contextTrigger = function contextTrigger(triggerId, options) {
 
-    TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
+        const addTrigger = options.addTrigger;
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
         if (!$tbContextMenu.length) {
@@ -768,18 +822,24 @@
                     &lt;table id="tb-context-menu-list">
                     &lt;/table >
                 &lt;/div>
+                &lt;i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right&lt;/i>
             &lt;/div>
             `).appendTo($body);
         }
         const $tbContextMenuList = $body.find('#tb-context-menu-list');
         // We are adding a menu item.
         if(addTrigger) {
+            const triggerText = options.triggerText;
+            let triggerIcon = 'label';
+            if(options.triggerIcon) {
+                triggerIcon = options.triggerIcon;
+            }
 
             // Check if there are currently items in the menu.
             const currentLength = $tbContextMenuList.find('tr').length;
 
             // Build the new menu item.
-            const newMenuItem = `&lt;tr id="${triggerId}">&lt;td href="javascript:void(0)">${triggerText}&lt;/td>&lt;/tr>`;
+            const newMenuItem = `&lt;tr id="${triggerId}">&lt;td href="javascript:void(0)">&lt;i class="tb-icons">${triggerIcon}&lt;/i>${triggerText}&lt;/td>&lt;/tr>`;
 
             let $checkExists = $tbContextMenuList.find(`#${triggerId}`);
 
@@ -795,6 +855,24 @@
             if(!currentLength.length > 0) {
                 $tbContextMenu.show();
             }
+
+            const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
+            $tbContextMenu.mouseenter(function() {
+                $contextMenuWrap.fadeIn(200);
+            }).mouseleave(function() {
+                $contextMenuWrap.fadeOut(200);
+
+            });
+
+            // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
+            // The alternative would be to always show the entire menu.
+            $tbContextMenu.trigger('mouseover');
+            clearTimeout(contextTimeout);
+            contextTimeout = setTimeout(function() {
+                $tbContextMenu.trigger('mouseleave');
+            }, 1000);
+
+
         // We are removing a menu item.
         } else {
             // Remove the menu item.
@@ -1096,7 +1174,7 @@
                 &lt;a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove&lt;/a>`).appendTo($commentButtonList);
             }
         }
-
+        $buildComment.find('p').addClass('tb-comment-p');
         return $buildComment;
 
     };

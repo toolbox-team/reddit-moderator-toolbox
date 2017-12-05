@@ -5,9 +5,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    /* These two rules control height for the whole toolbar*/
-    height: 22px;
-    line-height: 22px;
+    /* These two rules control height for the whole toolbar */
+    height: 30px;
+    line-height: 30px;
 
     font-size: 12px;
     text-align: left;

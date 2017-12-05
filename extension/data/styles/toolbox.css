@@ -88,7 +88,7 @@ div#tb-context-menu #tb-context-header {
 
 .mod-toolbox-rd #tb-context-menu tr {
     background: rgba(247, 250, 253, 1);
-    border-bottom: 1px solid #CCD1D7;
+    border-top: 1px solid #CCD1D7;
     border-right: 1px solid #CCD1D7;
 }
 

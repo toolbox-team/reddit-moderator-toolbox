@@ -13,7 +13,7 @@
     text-align: left;
     background-color: rgba(206, 227, 248, 0.86);
     color: #696969;
-    border-top: solid 1px #B6C9DD;
+    border-top: solid 1px #9FBAD6;
     
     /* Rules to work with subreddit styles */
     box-sizing: content-box !important;
@@ -23,7 +23,7 @@
 }
 .mod-toolbox-rd #tb-bottombar-hidden {
     right: unset;
-    border-right: 1px solid #B6C9DD;
+    border-right: 1px solid #9FBAD6;
 }
 
 body.mod-toolbox-rd #tb-bottombar span {
@@ -346,8 +346,8 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
 .mod-toolbox-rd  #tb-toolbar-mysubs,
 .mod-toolbox-rd  #tb-personal-notes-button {
     background: rgba(199, 214, 230, 0.8);
-    border-left: 1px dotted #A8B5C2;
-    border-right: 1px dotted #A8B5C2;
+    border-left: 1px solid #9FBAD6;
+    border-right: 1px solid #9FBAD6;
     display: inline-block;
     vertical-align: top;
     height: inherit;

@@ -176,13 +176,13 @@ function modbar() {
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBUtils.baseDomain}/message/inbox/" class="nohavemail" id="tb-mail"></a>
+            <a title="no mail" href="${TBUtils.baseDomain}/message/inbox/" class="nohavemail tb-icons" id="tb-mail">email</a>
             <a href="${TBUtils.baseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
-            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail"></a>
+            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">assignment</a>
             <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}></a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}>label</a>
             <a href="${newModmailUrl}" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}></a>
-            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" ></a>
+            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">report_problem</a>
             <a href="${modQueueUrl}" class="tb-toolbar" id="tb-queueCount"></a>
         </span>
     </span>
@@ -229,7 +229,7 @@ function modbar() {
         if (unmoderatedOn) {
             const unModQueueUrl = TBUtils.tempBaseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             modBar.find('#tb-toolbarcounters').append(`
-<a title="unmoderated" href="${unModQueueUrl}" id="tb-unmoderated"></a>
+<a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">remove_red_eye</a>
 <a href="${unModQueueUrl}" class="tb-toolbar" id="tb-unmoderatedcount"></a>
 `);
 

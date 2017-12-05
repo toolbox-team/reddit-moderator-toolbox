@@ -87,10 +87,9 @@ function devtools() {
         }
 
         if(commentUItester) {
-            const testCommentUILink = `<span>Show ze overlay!</span>`;
             TBui.contextTrigger(`tb-testCommentUI-link`, {
                 addTrigger: true,
-                triggerText: testCommentUILink,
+                triggerText: `Show ze overlay!`,
                 triggerIcon: 'view_array'
             });
         }

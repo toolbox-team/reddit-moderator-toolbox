@@ -773,15 +773,18 @@ function usernotes() {
 
                 if(event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
-                    const managerLink = `<span class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}">edit usernotes</span>`;
 
 
                     TBUtils.getModSubs(function () {
                         if(TBUtils.modsSub(subreddit)) {
                             TBui.contextTrigger('tb-un-config-link', {
                                 addTrigger: true,
-                                triggerText: managerLink,
-                                triggerIcon: 'note'
+                                triggerText: `edit usernotes`,
+                                triggerIcon: 'note',
+                                title: `edit usernotes for /r/${subreddit}`,
+                                dataAttributes: {
+                                    subreddit: subreddit
+                                }
                             });
                         } else {
                             TBui.contextTrigger('tb-un-config-link', { addTrigger: false });
@@ -1088,7 +1091,7 @@ function usernotes() {
 
 
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
-            const sub = $(this).find('.tb-un-manager').attr('data-subreddit');
+            const sub = $(this).attr('data-subreddit');
 
             TB.ui.overlay(
                 `usernotes - /r/${sub}`,

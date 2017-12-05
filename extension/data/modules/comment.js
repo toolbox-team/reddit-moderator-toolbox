@@ -35,7 +35,8 @@ function comments() {
             if(event.detail.pageType === 'subredditCommentsPage') {
                 TBui.contextTrigger('tb-flatview-link', {
                     addTrigger: true,
-                    triggerText: `<span class="tb-loadFlat">comment flat view</a>`,
+                    title: 'View comments for this thread in chronological flat view.',
+                    triggerText: `comment flat view`,
                     triggerIcon: 'list'
                 });
             } else {

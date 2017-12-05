@@ -767,6 +767,8 @@
      * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
      * @param {string} options.triggerText Text displayed in menu. Not needed when addTrigger is false.
      * @param {string} options.triggerIcon The material icon that needs to be displayed before the menu item. Defaults to 'label'
+     * @param {string} options.title Title to be used in title attribute. If no title is given the triggerText will be used.
+     * @param {object} options.dataAttributes Any data attribute that might be needed. Object keys will be used as the attribute name and value as value.
      */
     let contextTimeout;
     TBui.contextTrigger = function contextTrigger(triggerId, options) {
@@ -796,20 +798,32 @@
                 triggerIcon = options.triggerIcon;
             }
 
+            let title = options.triggerText;
+            if (options.title) {
+                title = options.triggerText;
+            }
+
             // Check if there are currently items in the menu.
             const currentLength = $tbContextMenuList.find('tr').length;
 
             // Build the new menu item.
-            const newMenuItem = `<tr id="${triggerId}"><td href="javascript:void(0)"><i class="tb-icons">${triggerIcon}</i>${triggerText}</td></tr>`;
+            const $newMenuItem = $(`<tr id="${triggerId}"><td href="javascript:void(0)" title="${title}"><i class="tb-icons">${triggerIcon}</i><span>${triggerText}<span></td></tr>`);
+
+            // Add data attributes if needed.
+            if(options.dataAttributes) {
+                $.each(options.dataAttributes, function(name, value) {
+                    $newMenuItem.attr(`data-${name}`, value);
+                });
+            }
 
             let $checkExists = $tbContextMenuList.find(`#${triggerId}`);
 
             // Check if an item with the same id is already in the menu. If so we will replace it.
             if($checkExists.length) {
-                $checkExists.replaceWith(newMenuItem);
+                $checkExists.replaceWith($newMenuItem);
             } else {
                 // Add the item to the menu.
-                $tbContextMenuList.append(newMenuItem);
+                $tbContextMenuList.append($newMenuItem);
             }
 
             // If the menu was empty it was hidden and we need to show it.

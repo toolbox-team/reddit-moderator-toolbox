@@ -773,18 +773,22 @@ function usernotes() {
 
                 if(event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
-                    const managerLink = `<a href="javascript:;" class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}"><img src="data:image/png;base64,${TB.ui.iconUsernotes}" class="tb-moderation-tools-icons"/>usernotes</a>`;
+                    const managerLink = `<a href="javascript:;" class="tb-un-manager" data-subreddit="${subreddit}" title="edit usernotes for /r/${subreddit}">edit usernotes</a>`;
 
 
                     TBUtils.getModSubs(function () {
                         if(TBUtils.modsSub(subreddit)) {
-                            TBui.contextTrigger('tb-un-config-link', true, managerLink);
+                            TBui.contextTrigger('tb-un-config-link', {
+                                addTrigger: true,
+                                triggerText: managerLink,
+                                triggerIcon: 'note'
+                            });
                         } else {
-                            TBui.contextTrigger('tb-un-config-link', false);
+                            TBui.contextTrigger('tb-un-config-link', { addTrigger: false });
                         }
                     });
                 } else {
-                    TBui.contextTrigger('tb-un-config-link', false);
+                    TBui.contextTrigger('tb-un-config-link', { addTrigger: false });
                 }
 
             });
@@ -1080,9 +1084,11 @@ function usernotes() {
             self.endProfile('manager-run');
         }
 
-        $body.on('click', 'a.tb-un-manager', function(){
+        $body.on('click', '#tb-un-config-link', function(){
+
+
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
-            const sub = $(this).attr('data-subreddit');
+            const sub = $(this).find('a.tb-un-manager').attr('data-subreddit');
 
             TB.ui.overlay(
                 `usernotes - /r/${sub}`,

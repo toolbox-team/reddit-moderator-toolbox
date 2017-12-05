@@ -23,10 +23,17 @@
     context menu,
 ------------
 */
-
-.mod-toolbox-rd  #tb-context-menu-list td {
-    cursor: pointer;
+.mod-toolbox-rd #tb-context-menu-list .tb-icons {
+    padding-right: 2px;
+    margin-right: 2px;
 }
+
+#tb-context-menu-list td a,
+#tb-context-menu-list td span {
+    font-size: 12px;
+    vertical-align: super;
+}
+
 
 .mod-toolbox-rd #tb-context-menu {
     display: none;
@@ -66,10 +73,11 @@ div#tb-context-menu #tb-context-header {
 }
 
 .mod-toolbox-rd #tb-context-menu table td {
-    padding-top: 3px;
     padding-right: 10px;
-    padding-bottom: 3px;
     padding-left: 10px;
+    padding-top: 0;
+    padding-bottom: 0;
+    cursor: pointer;
 
 }
 

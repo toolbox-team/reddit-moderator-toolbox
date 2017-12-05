@@ -33,14 +33,18 @@ function comments() {
 
         window.addEventListener('TBNewPage', function (event) {
             if(event.detail.pageType === 'subredditCommentsPage') {
-                TBui.contextTrigger('tb-flatview-link', true, `<span class="tb-loadFlat">comment flat view</a>`);
+                TBui.contextTrigger('tb-flatview-link', {
+                    addTrigger: true,
+                    triggerText: `<span class="tb-loadFlat">comment flat view</a>`,
+                    triggerIcon: 'list'
+                });
             } else {
-                TBui.contextTrigger('tb-flatview-link', false);
+                TBui.contextTrigger('tb-flatview-link', { addTrigger: false });
             }
 
         });
 
-        $body.on('click', '.tb-loadFlat', function () {
+        $body.on('click', '#tb-flatview-link', function () {
 
             let flatListing = {}, // This will contain all comments later on.
                 idListing = []; // this will list all IDs in order from which we will rebuild the comment area.

@@ -87,12 +87,16 @@ function devtools() {
         }
 
         if(commentUItester) {
-            const testCommentUILink = `<span class="toolbox-testCommentUI">Show ze overlay!</span>`;
-            TBui.contextTrigger(`tb-testCommentUI-link`, true, testCommentUILink);
+            const testCommentUILink = `<span>Show ze overlay!</span>`;
+            TBui.contextTrigger(`tb-testCommentUI-link`, {
+                addTrigger: true,
+                triggerText: testCommentUILink,
+                triggerIcon: 'view_array'
+            });
         }
 
 
-        $body.on('click', '.toolbox-testCommentUI', function(){
+        $body.on('click', '#tb-testCommentUI-link', function(){
             TB.ui.overlay(
                 `Comment UI tester`,
                 [

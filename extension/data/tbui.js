@@ -762,12 +762,16 @@
      * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
      * @function contextTrigger
      * @memberof TBui
-     * @param {string} triggerId - this will be part of the id given to the element.
-     * @param {boolean} addTrigger - Indicates of the menu item needs to be added or removed.
-     * @param {boolean} triggerText - Text displayed in menu. Not needed when addTrigger is false.
+     * @param {string} triggerId This will be part of the id given to the element.
+     * @param {object} options
+     * @param {boolean} options.addTrigger Indicates of the menu item needs to be added or removed.
+     * @param {string} options.triggerText Text displayed in menu. Not needed when addTrigger is false.
+     * @param {string} options.triggerIcon The material icon that needs to be displayed before the menu item. Defaults to 'label'
      */
     let contextTimeout;
-    TBui.contextTrigger = function contextTrigger(triggerId, addTrigger, triggerText) {
+    TBui.contextTrigger = function contextTrigger(triggerId, options) {
+
+        const addTrigger = options.addTrigger;
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
         if (!$tbContextMenu.length) {
@@ -786,12 +790,17 @@
         const $tbContextMenuList = $body.find('#tb-context-menu-list');
         // We are adding a menu item.
         if(addTrigger) {
+            const triggerText = options.triggerText;
+            let triggerIcon = 'label';
+            if(options.triggerIcon) {
+                triggerIcon = options.triggerIcon;
+            }
 
             // Check if there are currently items in the menu.
             const currentLength = $tbContextMenuList.find('tr').length;
 
             // Build the new menu item.
-            const newMenuItem = `<tr id="${triggerId}"><td href="javascript:void(0)">${triggerText}</td></tr>`;
+            const newMenuItem = `<tr id="${triggerId}"><td href="javascript:void(0)"><i class="tb-icons">${triggerIcon}</i>${triggerText}</td></tr>`;
 
             let $checkExists = $tbContextMenuList.find(`#${triggerId}`);
 

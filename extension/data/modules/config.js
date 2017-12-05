@@ -274,24 +274,29 @@ function tbconfig() {
 
             if(event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
-                const subConfigLink = `<span class="toolbox-edit-from-context" data-subreddit="${subreddit}" title="toolbox configuration for /r/${subreddit}"><img src="data:image/png;base64,${TBui.iconWrench}"/>/r/${subreddit} config</span>`;
+                const subConfigLink = `<span class="toolbox-edit-from-context" data-subreddit="${subreddit}" title="toolbox configuration for /r/${subreddit}">/r/${subreddit} config</span>`;
 
                 TBUtils.getModSubs(function () {
                     if(TBUtils.modsSub(subreddit)) {
-                        TBui.contextTrigger(`tb-config-link`, true, subConfigLink);
+                        TBui.contextTrigger('tb-config-link', {
+                            addTrigger: true,
+                            triggerText: subConfigLink,
+                            triggerIcon: 'build'
+                        });
                     } else {
-                        TBui.contextTrigger('tb-config-link', false);
+                        TBui.contextTrigger('tb-config-link', { addTrigger: false });
                     }
                 });
             } else {
-                TBui.contextTrigger('tb-config-link', false);
+                TBui.contextTrigger('tb-config-link', { addTrigger: false });
             }
 
         });
 
         // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
-        $body.on('click', '.toolbox-edit-from-context', function () {
-            subreddit = $(this).data('subreddit');
+        $body.on('click', '#tb-config-link', function () {
+
+            subreddit = $(this).find('.toolbox-edit-from-context').data('subreddit');
 
             TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
 

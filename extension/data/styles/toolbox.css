@@ -35,6 +35,8 @@
 
 
 .mod-toolbox-rd #tb-context-menu {
+    align-items: center;
+    min-height: 30px;
     display: none;
     position: fixed;
     left: 0px;
@@ -50,6 +52,10 @@
     background-repeat: no-repeat;
     background-position-y: 3px;
 
+}
+
+.mod-toolbox-rd #tb-context-menu.show-tb-context {
+    display: flex;
 }
 
 .mod-toolbox-rd #tb-context-menu:hover {

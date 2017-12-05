@@ -814,7 +814,7 @@
 
             // If the menu was empty it was hidden and we need to show it.
             if(!currentLength.length > 0) {
-                $tbContextMenu.show();
+                $tbContextMenu.addClass('show-tb-context');
             }
 
             const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
@@ -842,7 +842,7 @@
             const newLength = $tbContextMenuList.find('tr').length;
             // If there is nothing to show anymore we hide the menu.
             if(newLength < 1) {
-                $tbContextMenu.hide();
+                $tbContextMenu.removeClass('show-tb-context');
             }
 
         }

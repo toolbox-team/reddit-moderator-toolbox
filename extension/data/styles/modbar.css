@@ -116,6 +116,16 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     width: 13px;
 } */
 
+.mod-toolbox-rd #tb-modmail.havemail,
+.mod-toolbox-rd #tb-new_modmail.havemail {
+    color: #65d260;
+}
+
+
+.mod-toolbox-rd #tb-mail.havemail {
+    color: #ff4500;
+}
+
 
 .mod-toolbox-rd #tb-new-modmail-tooltip {
     display:none;

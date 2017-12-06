@@ -252,7 +252,7 @@ function modbar() {
 <div class="tb-debug-window tb-popup">
     <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>
     <div class="tb-popup-content">
-        <textarea class="tb-debug-console" rows="20" cols="20"></textarea>
+        <textarea class="tb-input tb-debug-console" rows="20" cols="20"></textarea>
         <input type="text" class="tb-debug-input tb-input" placeholder="eval() in toolbox scope" />
     </div>
     <div class="tb-popup-footer">

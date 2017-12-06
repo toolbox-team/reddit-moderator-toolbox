@@ -159,7 +159,7 @@ function personalnotes() {
                         </td>
                         <td id="tb-personal-notes-content">
                             <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>
-                            <textarea id="tb-personal-notes-editarea"${monospace ? ` style="font-family: monospace;"` : ``}></textarea>
+                            <textarea class="tb-input" id="tb-personal-notes-editarea"${monospace ? ` style="font-family: monospace;"` : ``}></textarea>
                         </td>
                     </tr></table>`;
 

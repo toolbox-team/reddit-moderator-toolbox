@@ -15,8 +15,12 @@
 
 .mod-toolbox-rd .tb-input {
     border: solid 1px #c7d6e7;
+    padding: 5px;
 }
 
+.tb-input:focus {
+    outline-color: #9fbad7;
+}
 
 /*
 ------------

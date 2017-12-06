@@ -200,7 +200,7 @@ function modbutton() {
                     <select class="${self.OTHER} tb-action-button inline-button" for="action-${self.OTHER}"><option value="${self.OTHER}">(select subreddit)</option></select>
                 </div>
                 <div class="ban-note-container"><input id="ban-note" class="ban-note tb-input" type="text" placeholder="(ban note)" maxlength="300"></input><br>
-                <textarea name="ban-message" class="ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>
+                <textarea name="ban-message" class="tb-input ban-message" placeholder="(ban message to user)" maxlength="1000"></textarea><br>
                 <input type="number" min="1" max="999" name="ban-duration"  class="ban-duration tb-input" placeholder="time (days)">
                 </div>`,
                         footer: `
@@ -231,7 +231,7 @@ function modbutton() {
                         tooltip: 'Send a message from the subreddit.',
                         content: `
                     <input id="subreddit-message-subject" class="subreddit-message-subject tb-input" type="text" placeholder="(subject)" maxlength="100"></input><br>
-                    <textarea name="subreddit-message" class="subreddit-message" placeholder="(message to user)" ></textarea><br>
+                    <textarea name="subreddit-message" class="tb-input subreddit-message" placeholder="(message to user)" ></textarea><br>
                     <span id="subreddit-message-callback"></span>
                     `,
                         footer: `

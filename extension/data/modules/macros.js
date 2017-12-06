@@ -267,7 +267,7 @@ function modmacros() {
                         title: 'Mod Macro:',
                         id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
                         tooltip: `Mod Macro:${title}`,
-                        content: `<textarea class="macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>
+                        content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>
                                     <span>${actionList}</span>`,
                         footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`
                     }

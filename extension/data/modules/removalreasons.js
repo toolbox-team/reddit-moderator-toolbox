@@ -43,7 +43,7 @@ function removalreasons() {
     // May make this a user setting, one day.
     self.register_setting('customRemovalReason', {
         'type': 'string',
-        'default': '%3Ctextarea%20id%3D%22customTextarea%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
+        'default': '%3Ctextarea%20id%3D%22customTextarea%22%20%20class%3D%22tb-input%22%20placeholder%3D%22Enter%20Custom%20reason%22%3E%3C/textarea%3E',
         'hidden': true
     });
 

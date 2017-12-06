@@ -307,7 +307,7 @@ function historybutton() {
         } else {
             $contentBox.find('.table.domain-table').before(
                 `<div class="submission-markdown">
-                <textarea class="submission-markdown-text">${markdownReport}</textarea>
+                <textarea class="tb-input submission-markdown-text">${markdownReport}</textarea>
             </div>`);
         }
     };

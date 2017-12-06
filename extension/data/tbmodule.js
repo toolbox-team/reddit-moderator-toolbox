@@ -413,7 +413,7 @@ function tbmodule() {
                             tooltip: '',
                             content: `
                 <span class="tb-settings-display">
-                <textarea class="edit-settings" rows="20" cols="20"></textarea>
+                <textarea class="tb-input edit-settings" rows="20" cols="20"></textarea>
                 </br>
                 </span>
                 `,
@@ -620,13 +620,13 @@ function tbmodule() {
                         {
                             let json = JSON.stringify(module.setting(setting), null, 0);
                             $setting.append(`${title}:<br />`);
-                            $setting.append($('<textarea rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                            $setting.append($('<textarea class="tb-input" rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
                             break;
                         }
                         case 'code':
                         {
                             $setting.append(`${title}:<br />`);
-                            $setting.append($('<textarea rows="25" cols="80">').val(module.setting(setting)));
+                            $setting.append($('<textarea class="tb-input" rows="25" cols="80">').val(module.setting(setting)));
                             break;
                         }
                         case 'subreddit':
@@ -662,7 +662,7 @@ function tbmodule() {
                             $setting.append(TB.modules.Syntax.themeSelect);
                             $setting.find('select').attr('id', `${module.shortname}_syntax_theme`);
                             $setting.append($(`
-                    <textarea class="syntax-example" id="${module.shortname}_syntax_theme_css">
+                    <textarea class="tb-input syntax-example" id="${module.shortname}_syntax_theme_css">
 /* This is just some example code*/
 body {
     font-family: sans-serif, "Helvetica Neue", Arial;

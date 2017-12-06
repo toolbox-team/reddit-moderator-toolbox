@@ -69,6 +69,17 @@
 
 /* TODO: Change up the styles for the shortcuts here */
 
+/* Message counters */
+.mod-toolbox-rd #tb-toolbarcounters {
+    display: flex;
+    margin-right: 10px;
+    font-weight: bold;
+}
+.mod-toolbox-rd #tb-toolbarcounters .tb-icons {
+    margin-left: 5px;
+    padding: 0 2px;
+}
+
 /* Custom colors for unread things */
 .mod-toolbox-rd #tb-modmail.havemail,
 .mod-toolbox-rd #tb-new_modmail.havemail {
@@ -103,14 +114,11 @@
     font-weight: bold;
 }
 
-/* Things on the right side TODO */
-.mod-toolbox-rd #tb-toolbarcounters,
-.mod-toolbox-rd #tb-toggle-console {
-    display: inline-block;
-    margin-right: 25px;
-    font-weight: bold;
-}
+/* TODO:
+.mod-toolbox-rd #tb-toggle-console 
+*/
 .mod-toolbox-rd #tb-reload-link {
+    /* TODO: untested */
     float: right;
     display: inline-block;
     margin-right: 5px;

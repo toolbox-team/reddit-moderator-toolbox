@@ -775,8 +775,10 @@ body.mod-toolbox-rd .tb-general-button img {
 
 .mod-toolbox-rd .tb-comment-buttons {
     font-size: 11px;
-
+    margin-left: 8px;
+    margin-bottom: 8px;
 }
+
 
 .mod-toolbox-rd .tb-comment-button {
     margin-right: 10px;
@@ -788,6 +790,12 @@ body.mod-toolbox-rd .tb-general-button img {
 
 .mod-toolbox-rd .tb-comment-body {
     margin-left: 10px;
+    margin-top: 5px;
+}
+
+.tb-comment-body .md {
+    color: #222222;
+    max-width: 60em;
 }
 
 .mod-toolbox-rd .tb-comment .tb-comment-body .md p {

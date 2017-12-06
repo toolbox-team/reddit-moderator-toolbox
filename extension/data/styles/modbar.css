@@ -267,6 +267,7 @@
     vertical-align: top;
     height: 22px;
     line-height: 22px;
+    margin-right: 6px;
 }
 
 /* Settings links get an icon after them indicating they're internal links */

@@ -2453,14 +2453,18 @@ function initwrapper() {
             return string.replace(/['"]/g, '');
         };
 
-        TBUtils.stringToColor = function (str) {
+        TBUtils.stringToColor = function stringToColor(str) {
             // str to hash
-            let hash,
-                color;
-            for (let i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
 
             // int/hash to hex
-            for (let index = 0, color = '#'; index < 3; color += (`00${((hash >> index++ * 8) & 0xFF).toString(16)}`).slice(-2));
+            let color = '#';
+            for (let index = 0; index < 3; index++) {
+                color += (`00${((hash >> index * 8) & 0xFF).toString(16)}`).slice(-2);
+            }
 
             return color;
         };

@@ -170,7 +170,7 @@ function modbar() {
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
     <a class="tb-toolbar tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
-    <label class="tb-first-run">&#060;-- Click for settings<label>
+    <label class="tb-first-run">&#060;-- Click for settings</label>
     <span id="tb-bottombar-contentleft">
         <span id="tb-toolbarshortcuts"></span>
     </span>

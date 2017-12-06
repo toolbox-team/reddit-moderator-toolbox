@@ -193,6 +193,8 @@ function initwrapper() {
         }
 
         $('body').addClass('mod-toolbox-rd');
+        // Bit hacky maybe but allows us more flexibility in specificity.
+        $('body').addClass('mod-toolbox-extra');
 
         // Get cached info.
         TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});

@@ -13,13 +13,20 @@
 ------------
 */
 
-.mod-toolbox-rd .tb-input {
+body.mod-toolbox-rd.mod-toolbox-extra .tb-input {
     border: solid 1px #c7d6e7;
+    font-size: 1em;
     padding: 5px;
 }
 
-.tb-input:focus {
+body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     outline-color: #9fbad7;
+    border-color: #9fbad7;
+}
+
+/* This fixes the placeholder text being clipped off in firefox */
+body.mod-toolbox-rd.mod-toolbox-extra .tb-input[type="number"] {
+    line-height: 1.4;
 }
 
 /*
@@ -574,12 +581,12 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
 }
 
 .mod-toolbox-rd .mod-popup .ban-note {
-    width: 100%;
+    width: calc(100% - 10px);
 }
 
 .mod-toolbox-rd .mod-popup .ban-message {
-    padding: 1px;
-    width: 100%;
+    width: calc(100% - 10px);
+    padding: 5px;
 }
 
 .mod-toolbox-rd .mod-popup .ban-duration {

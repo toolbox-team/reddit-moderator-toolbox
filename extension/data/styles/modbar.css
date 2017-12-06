@@ -232,7 +232,7 @@
 /* Update alert */
 .mod-toolbox-rd #tb-notification-alert {
     left: 5px;
-    bottom: 36px;
+    bottom: 41px;
     z-index: 10001;
     position: fixed;
     text-align: left;

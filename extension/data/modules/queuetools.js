@@ -35,6 +35,20 @@ function queuetools() {
         'title': 'Open legacy user overview when clicking on profile links.'
     });
 
+    self.register_setting('subredditColor', {
+        'type': 'boolean',
+        'default': false,
+        'title': 'Add a border to items in the queue with color unique to the subreddit name.'
+    });
+
+    self.register_setting('subredditColorSalt', {
+        'type': 'text',
+        'default': 'PJSalt',
+        'title': 'Text to randomly change the subreddit color',
+        'advanced': true,
+        'hidden': !self.setting('subredditColor')
+    });
+
 
 
 

@@ -1050,9 +1050,9 @@ body.mod-toolbox-rd .tb-action-button:hover {
 */
 
 /* link colors (for those themes that change all the link colors */
-body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button),
-body.mod-toolbox-rd .tb-popup a:not(.tb-action-button),
-body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button)
+body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-icons),
+body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-icons),
+body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button):not(.tb-icons)
 {
     color: #369;
 }

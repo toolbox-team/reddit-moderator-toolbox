@@ -160,9 +160,18 @@
 .mod-toolbox-rd #tb-my-subreddit-list {
     text-align: left;
 }
-.mod-toolbox-rd #tb-my-subreddits a {
-    font-size: 11px;
+.mod-toolbox-rd #tb-my-subreddit-list tr {
+    display: flex;
 }
+
+.mod-toolbox-rd #tb-my-subreddit-list .tb-my-subreddits-name {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    max-width: 111px;
+    overflow: hidden;
+}
+
 .mod-toolbox-rd #tb-my-subreddits h1 {
     margin: 0;
     width: 100%;

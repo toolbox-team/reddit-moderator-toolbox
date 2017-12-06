@@ -66,7 +66,7 @@ function modbar() {
 
     self.register_setting('subredditColorSalt', {
         'type': 'text',
-        'default': TB.storage.getSetting('ModMail', 'subredditColorSalt', 'PJSalt'),
+        'default': TB.storage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt'),
         'hidden': true
     });
 
@@ -280,37 +280,37 @@ function modbar() {
             let subList = '',
                 livefilterCount,
                 subredditColorSalt = self.setting('subredditColorSalt'),
-                mySubsTemplate = `
-<div id="tb-my-subreddits">
-    <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
-    <span class="tb-livefilter-count">{{livefilterCount}}</span>
-    <br>
-    <table id="tb-my-subreddit-list">{{subList}}</table>
-</div>
-`;
-
+                configEnabled = TB.storage.getSetting('TBConfig', 'enabled', false);
             TBUtils.getModSubs(function () {
                 self.log('got mod subs');
                 self.log(TBUtils.mySubs.length);
                 self.log(TBUtils.mySubsData.length);
                 $(TBUtils.mySubsData).each(function () {
+                    const subColor = TBUtils.stringToColor(this.subreddit + subredditColorSalt);
                     subList = `${subList}
-<tr style="border-left: solid 3px ${TBUtils.stringToColor(this.subreddit + subredditColorSalt)} !important;" data-subreddit="${this.subreddit}">
-    <td><a href="${TBUtils.tempBaseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
+<tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
+    <td class="tb-my-subreddits-name"><a href="${TBUtils.tempBaseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
-        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="generic-mail"></a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/modqueue" class="generic-modqueue"></a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/unmoderated" class="generic-unmoderated"></a>
+        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="tb-icons">inbox</a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/modqueue" class="tb-icons">report_problem</a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/unmoderated" class="tb-icons">remove_red_eye</a>
+        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/log" class="tb-icons">grid_on</a>
+        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/traffic" class="tb-icons">show_chart</a>
+        ${configEnabled ? `<a title="/r/${this.subreddit} config" target="_blank" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">build</a>` : ''}
     </td>
 </tr>
 `;
                 });
                 livefilterCount = TBUtils.mySubs.length;
 
-                const modSubsPopupContent = TBUtils.template(mySubsTemplate, {
-                    'livefilterCount': livefilterCount,
-                    'subList': subList
-                });
+                const modSubsPopupContent = `
+                <div id="tb-my-subreddits">
+                    <input id="tb-livefilter-input" type="text" class="tb-input" placeholder="live search" value="">
+                    <span class="tb-livefilter-count">${livefilterCount}</span>
+                    <br>
+                    <table id="tb-my-subreddit-list">${subList}</table>
+                </div>
+                `;
 
 
                 $body.on('click', '#tb-toolbar-mysubs', function () {

@@ -287,7 +287,7 @@ function tbconfig() {
         });
 
         // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
-        $body.on('click', '#tb-config-link, tb-config-link', function () {
+        $body.on('click', '#tb-config-link, .tb-config-link', function () {
 
             subreddit = $(this).data('subreddit');
 

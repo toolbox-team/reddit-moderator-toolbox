@@ -332,7 +332,7 @@ function modbar() {
                             'subreddits-you-mod-popup' // class
                         ).appendTo('body').css({
                             'position': 'fixed',
-                            'bottom': '31px',
+                            'bottom': '36px',
                             'left': '20px'
                         });
                         // Focus the filter bar for convenience

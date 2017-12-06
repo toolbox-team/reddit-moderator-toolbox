@@ -110,8 +110,7 @@
     height: initial;
     width: initial;
     right: 55px;
-    margin-bottom: 15px;
-    bottom: 15px;
+    bottom: 36px;
     background-color: #FFF;
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     border: solid 10px rgb(206, 227, 248);
@@ -225,7 +224,7 @@
 /* Update alert */
 .mod-toolbox-rd #tb-notification-alert {
     left: 5px;
-    bottom: 30px;
+    bottom: 36px;
     z-index: 10001;
     position: fixed;
     text-align: left;

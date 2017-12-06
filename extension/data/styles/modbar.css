@@ -134,9 +134,9 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     position: fixed;
     height: initial;
     width: initial;
-    right: 55px;
-    margin-bottom: 15px;
-    bottom: 15px;
+    right: 135px;
+    margin-bottom: 11px;
+    bottom: 30px;
     background-color: #FFF;
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     border: solid 10px rgb(206, 227, 248);

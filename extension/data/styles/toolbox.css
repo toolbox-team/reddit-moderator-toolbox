@@ -603,7 +603,7 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
 
 .mod-toolbox-rd .tb-debug-window {
     position: fixed;
-    bottom: 30px;
+    bottom: 41px;
     right: 20px;
     min-width: 700px;
     max-width: none;

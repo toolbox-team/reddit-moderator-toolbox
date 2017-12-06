@@ -51,6 +51,11 @@
     align-items: center;
 }
 
+.mod-toolbox-rd #tb-bottombar-contentright {
+    display: flex;
+    align-items: center;
+}
+
 /* Buttons for personal notes, mod subs */
 .mod-toolbox-rd .tb-modbar-button {
     background: rgba(199, 214, 230, 0.8);
@@ -87,6 +92,7 @@
     display: flex;
     margin-right: 10px;
     font-weight: bold;
+    order: 1;
 }
 .mod-toolbox-rd #tb-toolbarcounters .tb-icons {
     margin-left: 5px;
@@ -127,12 +133,13 @@
     font-weight: bold;
 }
 
-/* TODO:
-.mod-toolbox-rd #tb-toggle-console
-*/
+/* TODO:*/
+.mod-toolbox-rd #tb-toggle-console {
+    order: 2;
+}
 .mod-toolbox-rd #tb-reload-link {
     /* TODO: untested */
-    float: right;
+    order: 3;
     display: inline-block;
     margin-right: 5px;
 }

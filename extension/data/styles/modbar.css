@@ -7,7 +7,6 @@
     left: 0;
     right: 0;
     /* These two rules control height for the whole toolbar */
-    /* height: 30px; */
     line-height: 30px;
 
     display: flex;
@@ -67,7 +66,21 @@
     background: #9FBAD6;
 }
 
-/* TODO: Change up the styles for the shortcuts here */
+/* User-defined shortcut list */
+.mod-toolbox-rd #tb-toolbarshortcuts {
+    display: flex;
+    align-items: center;
+    margin-left: 6px;
+}
+.mod-toolbox-rd #tb-toolbarshortcuts a {
+    margin-right: 3px;
+}
+.mod-toolbox-rd #tb-toolbarshortcuts a + a:before {
+    content: "\2013"; /* En dash (slightly larger than hyphen) */
+    margin-right: 3px;
+    color: #46596d;
+}
+
 
 /* Message counters */
 .mod-toolbox-rd #tb-toolbarcounters {

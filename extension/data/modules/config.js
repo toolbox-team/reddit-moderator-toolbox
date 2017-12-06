@@ -64,7 +64,17 @@ function tbconfig() {
                     {
                         title: 'edit user note types',
                         tooltip: 'Edit user note types and colors here.',
-                        content: genUsernoteTypesContent(),
+                        content: `<div id="tb-config-usernote-types">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Key</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb-config-usernote-type-list"></tbody>
+                        </table><a class="tb-general-button" href="javascript:;" id="add-usernote-type">Add user note type</a><a class="tb-general-button" data-module="usernotes" href="javascript:;" id="tb-config-help">help</a>
+                    </div>`,
                         footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass('tb-action-button').prop('value', 'Save user note types')
                     },
                     {
@@ -233,26 +243,6 @@ function tbconfig() {
             ).appendTo('body');
             $body.css('overflow', 'hidden');
 
-            // TODO: This should not be called here, tabs should only be filled when actively used. Something something performance.
-            // Also while it is nifty dom building it isn't inline with how we do it in other parts of toolbox and could easily be just a single string. This seems like overkill.
-            function genUsernoteTypesContent() {
-                return $('<div>').attr('id', 'tb-config-usernote-types').append(
-                    $('<table>').append(
-                        $('<thead>').append(
-                            $('<tr>').append(
-                                $('<th>').text('Name')
-                            ).append(
-                                $('<th>').text('Key')
-                            )
-                        )
-                    ).append(
-                        $('<tbody>').attr('id', 'tb-config-usernote-type-list')
-                    )
-                ).append([
-                    $('<a>').attr('href', 'javascript:;').attr('id', 'add-usernote-type').addClass('tb-general-button').text('Add user note type'),
-                    $('<a>').attr('href', 'javascript:;').attr('id', 'tb-config-help').addClass('tb-general-button').attr('data-module', 'usernotes').text('help')
-                ]);
-            }
         }
 
 
@@ -297,7 +287,7 @@ function tbconfig() {
         });
 
         // If it is one of the many buttons on a queue page we first have to fetch the data and see if it is there.
-        $body.on('click', '#tb-config-link', function () {
+        $body.on('click', '#tb-config-link, tb-config-link', function () {
 
             subreddit = $(this).data('subreddit');
 

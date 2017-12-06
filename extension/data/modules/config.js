@@ -553,33 +553,17 @@ function tbconfig() {
                 $list = $('#tb-config-usernote-type-list');
             }
 
-            var $thing = $('<tr>').addClass('usernote-type').append(
-                $('<td>').append(
-                    $('<input>').prop('type', 'text').addClass('name').attr('name', 'type-name').prop('placeholder', 'name (shown when adding a note)').val(text)
-                )
-            ).append(
-                $('<td>').append(
-                    $('<input>').prop('type', 'text').addClass('key').attr('name', 'type-key').prop('placeholder', 'key (should be unique)').val(key)
-                )
-            ).append(
-                $('<td>').append(
-                    $('<input>').prop('type', 'color').addClass('color').attr('name', 'type-color').val(safeColor)
-                )
-            ).append(
-                $('<td>').append([
-                    $('<a>').attr('href', 'javascript:;').addClass('up-usernote-type').append(
-                        $('<img>').attr('src', `data:image/png;base64,${TBui.topIcon}`)
-                    ),
-                    $('<a>').attr('href', 'javascript:;').addClass('down-usernote-type').append(
-                        $('<img>').attr('src', `data:image/png;base64,${TBui.bottomIcon}`)
-                    ),
-                    $('<a>').attr('href', 'javascript:;').addClass('remove-usernote-type').append(
-                        $('<img>').attr('src', `data:image/png;base64,${TBui.iconDelete}`)
-                    )
-                ])
-            ).append(
-                $('<td>').addClass('usernote-error error')
-            );
+            var $thing = $(`
+            <tr class="usernote-type">
+                <td><input class="name tb-input" name="type-name" placeholder="name (shown when adding a note)" type="text" value="${text}"></td>
+                <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${text}"></td>
+                <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
+                <td>
+                    <a class="up-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.topIcon}"></a><a class="down-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.bottomIcon}"></a><a class="remove-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.iconDelete}"></a>
+                </td>
+                <td class="usernote-error error"></td>
+		    </tr>
+            ` );
             $list.append($thing);
 
             return $list;

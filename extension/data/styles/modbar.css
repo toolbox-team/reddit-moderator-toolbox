@@ -1,3 +1,4 @@
+/* The toolbar itself */
 .mod-toolbox-rd #tb-bottombar,
 .mod-toolbox-rd #tb-bottombar-hidden {
     position: fixed;
@@ -6,8 +7,10 @@
     left: 0;
     right: 0;
     /* These two rules control height for the whole toolbar */
-    height: 30px;
     line-height: 30px;
+
+    display: flex;
+    align-items: center;
 
     font-size: 12px;
     text-align: left;
@@ -26,108 +29,80 @@
     border-right: 1px solid #9FBAD6;
 }
 
-.mod-toolbox-rd #tb-bottombar span,
-.mod-toolbox-rd #tb-toolbarcounters a {
-    display: inline-block;
-    vertical-align: top;
-    height: inherit;
-    line-height: inherit;
-}
-body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
-    float: right;
-}
-
 /* Icons in the bottom bar */
 .mod-toolbox-rd #tb-bottombar .tb-bottombar-hide,
 .mod-toolbox-rd #tb-bottombar-hidden .tb-bottombar-unhide,
 .mod-toolbox-rd #tb-bottombar .tb-toolbar-new-settings,
 .mod-toolbox-rd #tb-toggle-console,
 .mod-toolbox-rd #tb-reload-link {
-    height: inherit;
-    line-height: inherit;
+    flex: 0 0 auto;
     padding: 0 3px;
 }
-
 .mod-toolbox-rd #tb-bottombar-hidden .tb-icons,
 .mod-toolbox-rd #tb-bottombar .tb-icons {
+    line-height: inherit;
     color: #46596d;
 }
 
-/* .mod-toolbox-rd #tb-mail.nohavemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -16px -645px;
-    background-repeat: no-repeat;
+/* Content on the left of the bar */
+.mod-toolbox-rd #tb-bottombar-contentleft {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
 }
 
-.mod-toolbox-rd #tb-mail.havemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: 0 -645px;
-    background-repeat: no-repeat;
-} */
-
-/* .mod-toolbox-rd #tb-mail {
-    top: 2px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
+/* Buttons for personal notes, mod subs */
+.mod-toolbox-rd .tb-modbar-button {
+    background: rgba(199, 214, 230, 0.8);
+    border-left: 1px solid #9FBAD6;
+    border-right: 1px solid #9FBAD6;
     display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 15px;
-    height: 10px;
-} */
-
-/* .mod-toolbox-rd #tb-modmail,
-.mod-toolbox-rd #tb-new_modmail {
-    top: 2px;
-    display: inline-block;
-    height: 16px;
-    overflow: hidden;
-    position: relative;
-    text-indent: -9999px;
-    width: 16px;
-} */
-
-/* .mod-toolbox-rd #tb-modmail.havemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -85px -577px;
-    background-repeat: no-repeat;
+    vertical-align: top;
+    height: 100%;
+    margin-left: 3px;
+    padding: 0 3px;
+}
+.mod-toolbox-rd .tb-modbar-button:hover {
+    background: #9FBAD6;
 }
 
-.mod-toolbox-rd #tb-modmail.nohavemail {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -577px;
-    background-repeat: no-repeat;
+/* User-defined shortcut list */
+.mod-toolbox-rd #tb-toolbarshortcuts {
+    display: flex;
+    align-items: center;
+    margin-left: 6px;
 }
-
-.mod-toolbox-rd #tb-new_modmail.havemail {
-    background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png");
-    background-position: -102px -1435px;
-    background-repeat: no-repeat;
+.mod-toolbox-rd #tb-toolbarshortcuts a {
+    margin-right: 3px;
+}
+.mod-toolbox-rd #tb-toolbarshortcuts a + a:before {
+    content: "\2013"; /* En dash (slightly larger than hyphen) */
+    margin-right: 3px;
+    color: #46596d;
 }
 
 
-.mod-toolbox-rd #tb-new_modmail.nohavemail {
-    background-image: url("https://www.redditstatic.com/sprite-reddit.6Om8v6KMv28.png");
-    background-position: -126px -1323px;
-    background-repeat: no-repeat;
-} */
+/* Message counters */
+.mod-toolbox-rd #tb-toolbarcounters {
+    display: flex;
+    margin-right: 10px;
+    font-weight: bold;
+}
+.mod-toolbox-rd #tb-toolbarcounters .tb-icons {
+    margin-left: 5px;
+    padding: 0 2px;
+}
 
-/* .mod-toolbox-rd #tb-new_modmail {
-    width: 13px;
-} */
-
+/* Custom colors for unread things */
 .mod-toolbox-rd #tb-modmail.havemail,
 .mod-toolbox-rd #tb-new_modmail.havemail {
     color: #65d260;
 }
-
-
 .mod-toolbox-rd #tb-mail.havemail {
     color: #ff4500;
 }
 
-
+/* Tooltip for new modmail categories */
 .mod-toolbox-rd #tb-new-modmail-tooltip {
     display:none;
     z-index: 9999;
@@ -142,62 +117,27 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     border: solid 10px rgb(206, 227, 248);
     padding: 5px;
 }
-
-
 .mod-toolbox-rd #tb-new-modmail-tooltip tr:nth-child(2n) {
     background: rgba(162, 162, 162, 0.2);
 }
-
 .mod-toolbox-rd #tb-new-modmail-tooltip td {
     padding: 3px;
 }
-
 .mod-toolbox-rd #tb-new-modmail-tooltip td.tb-new-mm-count {
     font-weight: bold;
 }
 
-/* .mod-toolbox-rd #tb-modqueue {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -102px -595px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 2px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 16px;
-    height: 16px;
-} */
-
-/* .mod-toolbox-rd #tb-unmoderated {
-    background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
-    background-position: -51px -612px;
-    background-repeat: no-repeat;
-    line-height: 8px;
-    position: relative;
-    top: 3px;
-    display: inline-block;
-    text-indent: -9999px;
-    overflow: hidden;
-    width: 17px;
-    height: 15px;
-} */
-
-.mod-toolbox-rd #tb-toolbarcounters,
-.mod-toolbox-rd #tb-toggle-console {
-    float: right;
-    display: inline-block;
-    margin-right: 25px;
-    font-weight: bold;
-}
-
+/* TODO:
+.mod-toolbox-rd #tb-toggle-console
+*/
 .mod-toolbox-rd #tb-reload-link {
+    /* TODO: untested */
     float: right;
     display: inline-block;
     margin-right: 5px;
 }
 
+/* My subreddits list */
 .mod-toolbox-rd #tb-my-subreddits {
     max-height: 65vh;
     width: 265px;
@@ -207,19 +147,15 @@ body.mod-toolbox-rd #tb-bottombar #tb-bottombar-contentright {
     color: #696969;
     text-align: center;
 }
-
 .mod-toolbox-rd .subreddits-you-mod-popup .tb-popup-footer {
     height: 10px;
 }
-
 .mod-toolbox-rd #tb-my-subreddit-list {
-text-align: left;
+    text-align: left;
 }
-
 .mod-toolbox-rd #tb-my-subreddits a {
     font-size: 11px;
 }
-
 .mod-toolbox-rd #tb-my-subreddits h1 {
     margin: 0;
     width: 100%;
@@ -227,27 +163,27 @@ text-align: left;
     font-weight: bold;
     font-size: medium;
 }
-
 .mod-toolbox-rd #tb-my-subreddits table {
     width: 100%;
 }
-
 .mod-toolbox-rd #tb-my-subreddits table td {
     padding: 3px;
 }
-
 .mod-toolbox-rd #tb-my-subreddits tr:nth-child(even) {
     background: rgba(162, 162, 162, 0.2);
 }
-
-.mod-toolbox-rd #tb-my-subreddits tr:nth-child(even):hover, .mod-toolbox-rd #tb-my-subreddits tr:hover {
+.mod-toolbox-rd #tb-my-subreddits tr:nth-child(even):hover,
+.mod-toolbox-rd #tb-my-subreddits tr:hover {
     background-color: rgba(80, 123, 167, 0.2);
 }
 
-.mod-toolbox-rd #tb-my-subreddits .generic-modqueue, .mod-toolbox-rd #tb-my-subreddits .generic-unmoderated, .mod-toolbox-rd #tb-my-subreddits .generic-mail {
+/* Mail/queue icons for sub list */
+/* TODO: Icon font stuff */
+.mod-toolbox-rd #tb-my-subreddits .generic-modqueue,
+.mod-toolbox-rd #tb-my-subreddits .generic-unmoderated,
+.mod-toolbox-rd #tb-my-subreddits .generic-mail {
     margin-right: 3px;
 }
-
 .mod-toolbox-rd .generic-modqueue {
     background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -595px;
@@ -261,7 +197,6 @@ text-align: left;
     width: 16px;
     height: 16px;
 }
-
 .mod-toolbox-rd .generic-unmoderated {
     background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -51px -612px;
@@ -275,7 +210,6 @@ text-align: left;
     width: 17px;
     height: 15px;
 }
-
 .mod-toolbox-rd .generic-mail {
     background-image: url("https://s3.amazonaws.com/b.thumbs.redditmedia.com/woYtFG4lfF5h5VMhKJ-b-djnzdr5_sR2aNqdZfd7RmI.png");
     background-position: -102px -577px;
@@ -288,11 +222,10 @@ text-align: left;
     width: 16px;
 }
 
-
-
+/* Update alert */
 .mod-toolbox-rd #tb-notification-alert {
     left: 5px;
-    bottom: 30px;
+    bottom: 36px;
     z-index: 10001;
     position: fixed;
     text-align: left;
@@ -307,13 +240,13 @@ text-align: left;
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
     cursor: pointer;
 }
-
 .mod-toolbox-rd #tb-notification-alert span {
     position: relative;
     display: inline-block;
     padding: 10px;
 }
 
+/* TODO: where is this used? */
 .mod-toolbox-rd #tb-tooltip {
     z-index: 9999;
     position: fixed;
@@ -327,17 +260,17 @@ text-align: left;
     box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
 }
 
-
+/* First run text (pointing out the settings button) */
 .mod-toolbox-rd .tb-first-run {
     display: none;
     color: red;
     vertical-align: top;
     height: 22px;
     line-height: 22px;
+    margin-right: 6px;
 }
 
-
-/* Okay...*/
+/* Settings links get an icon after them indicating they're internal links */
 a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     height:16px;
     width:16px;
@@ -347,7 +280,6 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     content: "";
 }
 
-
 /* console stuff */
 .mod-toolbox-rd .tb-debug-window .CodeMirror {
     width: 800px;
@@ -355,35 +287,15 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, source-code-pro, monospace;
 }
 
-.mod-toolbox-rd  #tb-toolbar-mysubs:hover, .mod-toolbox-rd  #tb-personal-notes-button:hover {
-    background: #9FBAD6;
-}
-
-.mod-toolbox-rd  #tb-toolbar-mysubs,
-.mod-toolbox-rd  #tb-personal-notes-button {
-    background: rgba(199, 214, 230, 0.8);
-    border-left: 1px solid #9FBAD6;
-    border-right: 1px solid #9FBAD6;
-    display: inline-block;
-    vertical-align: top;
-    height: inherit;
-    padding: 0 3px;
-}
-
-.mod-toolbox-rd  #tb-toolbar-mysubs:hover,
-.mod-toolbox-rd  #tb-personal-notes-button:hover {
-    background: #9FBAD6;
-}
-
+/* Backup warnings in settings dialog */
+/* TODO: put these in toolbox.css? Don't strictly pertain to the modbar... */
 .mod-toolbox-rd .backup-warning {
     margin-left: 6px;
     color: #EAC117;
 }
-
 .mod-toolbox-rd .backup-warning.happy {
     color: #54c355;
 }
-
 .mod-toolbox-rd .backup-warning.sad {
     color: #FF0000;
 }

@@ -33,7 +33,6 @@
     font-size: 12px;
 }
 
-
 .mod-toolbox-rd #tb-context-menu {
     align-items: center;
     min-height: 30px;
@@ -51,7 +50,6 @@
     z-index: 501;
     background-repeat: no-repeat;
     background-position-y: 3px;
-
 }
 
 .mod-toolbox-rd #tb-context-menu.show-tb-context {
@@ -85,12 +83,12 @@ div#tb-context-menu #tb-context-header {
     padding-top: 2px;
     padding-bottom: 2px;
     cursor: pointer;
-
 }
 
 .mod-toolbox-rd #tb-context-menu tr {
     background: rgba(247, 250, 253, 1);
-    border-bottom: solid 1px #CCD1D7;
+    border-top: 1px solid #CCD1D7;
+    border-right: 1px solid #CCD1D7;
 }
 
 .mod-toolbox-rd #tb-context-menu tr:hover {

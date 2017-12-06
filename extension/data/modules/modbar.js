@@ -170,7 +170,7 @@ function modbar() {
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
     <a class="tb-toolbar tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
-    <label class="tb-first-run">&#060;-- Click for settings &nbsp;&nbsp;&nbsp;</label>
+    <label class="tb-first-run">&#060;-- Click for settings</label>
     <span id="tb-bottombar-contentleft">
         <span id="tb-toolbarshortcuts"></span>
     </span>
@@ -236,7 +236,7 @@ function modbar() {
         }
 
 
-
+        // TODO: handle compact mode
         let modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar">
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide
@@ -272,7 +272,8 @@ function modbar() {
         $body.append(modBar);
 
         // Always add moderated subreddits, but hide it.  Reason: personal notes needs the elem to exist.
-        $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+        // TODO: there's gotta be a better way for this, pnotes could just use .prepend() or something
+        $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
         // moderated subreddits button.
         if (enableModSubs) {
@@ -486,7 +487,7 @@ function modbar() {
         // Append shortcuts
         $.each(shortcuts, function (index, value) {
             // TODO: Separators here should probably use CSS rather than having nested elements and stuff
-            let $shortcut = $(`<span>&nbsp;- <a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a> </span>`);
+            let $shortcut = $(`<a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a>`);
             $shortcut.appendTo('#tb-toolbarshortcuts');
         });
 

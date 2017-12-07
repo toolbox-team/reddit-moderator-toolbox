@@ -33,6 +33,10 @@
     right: unset;
     border-right: 1px solid #9FBAD6;
 }
+/* Compact mode: Unhide button is much smaller */
+.mod-toolbox-rd .tb-bottombar-compact .tb-bottombar-unhide {
+    margin: -4px -8px;
+}
 
 /* Icons in the bottom bar */
 .mod-toolbox-rd #tb-bottombar .tb-bottombar-hide,

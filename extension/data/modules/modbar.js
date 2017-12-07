@@ -242,10 +242,8 @@ function modbar() {
 
         // TODO: handle compact mode
         let modbarhid = $(`
-<div id="tb-bottombar-hidden" class="tb-toolbar">
-    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide
-        ? `<img id="tb-bottombar-image" src="data:image/png;base64,${TBui.iconGripper}" />`
-        : 'keyboard_arrow_right'}</a>
+<div id="tb-bottombar-hidden" class="tb-toolbar ${compactHide ? 'tb-bottombar-compact' : ''}">
+    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? 'more_vert' : 'keyboard_arrow_right'}</a>
 </div>
 `);
 
@@ -501,7 +499,6 @@ function modbar() {
 
         if (compactHide) {
             modbarHidden = true;
-            $('#tb-bottombar-image').hide();
         }
 
         function toggleMenuBar(hidden) {
@@ -533,16 +530,6 @@ function modbar() {
 
             $.tooltip(hoverString, e);
         });
-
-        if (compactHide) {
-            $(modbarhid)
-                .mouseover(function () {
-                    $body.find('#tb-bottombar-image').show();
-                })
-                .mouseout(function () {
-                    $body.find('#tb-bottombar-image').hide();
-                });
-        }
 
         /// Console stuff
         // Show/hide console

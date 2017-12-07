@@ -1,3 +1,8 @@
+/* footer block element that makes sure modbar never is in the way of content lower on the page */
+#tb-footer-block {
+    height: 200px;
+}
+
 /* The toolbar itself */
 .mod-toolbox-rd #tb-bottombar,
 .mod-toolbox-rd #tb-bottombar-hidden {
@@ -115,7 +120,7 @@
     position: fixed;
     height: initial;
     width: initial;
-    right: 135px;
+    right: 55px;
     margin-bottom: 11px;
     bottom: 30px;
     background-color: #FFF;

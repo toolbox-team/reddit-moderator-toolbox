@@ -142,6 +142,10 @@ function modbar() {
 
         }
 
+        // Footer element below the page so toolbox never should be in the way.
+        // Doing it like this because it means we don't have to mess with reddit css
+        $body.append('<div id="tb-footer-block">');
+
         // Custom CSS for devmode/testing
         if (customCSS) {
             $('head').append(`<style type="text/css">${customCSS}</style>`);

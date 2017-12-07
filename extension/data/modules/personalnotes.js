@@ -112,7 +112,7 @@ function personalnotes() {
         }
 
         // add the button to the modbar
-        $body.find('#tb-toolbar-mysubs').after(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
+        $body.find('#tb-toolbarshortcuts').before(' <a href="javascript:void(0)" class="tb-modbar-button" id="tb-personal-notes-button">Personal Notes</a>');
 
         // Since we have a button we can click on it!
         $body.on('click', '#tb-personal-notes-button', function () {

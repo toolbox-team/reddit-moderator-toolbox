@@ -240,7 +240,6 @@ function modbar() {
         }
 
 
-        // TODO: handle compact mode
         let modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar ${compactHide ? 'tb-bottombar-compact' : ''}">
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? 'more_vert' : 'keyboard_arrow_right'}</a>
@@ -273,12 +272,10 @@ function modbar() {
 
         $body.append(modBar);
 
-        // Always add moderated subreddits, but hide it.  Reason: personal notes needs the elem to exist.
-        // TODO: there's gotta be a better way for this, pnotes could just use .prepend() or something
-        $body.find('#tb-toolbarshortcuts').before('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
-
         // moderated subreddits button.
         if (enableModSubs) {
+            $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
+
             let subList = '',
                 livefilterCount,
                 subredditColorSalt = self.setting('subredditColorSalt'),

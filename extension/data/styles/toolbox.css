@@ -159,7 +159,7 @@ div#tb-context-menu #tb-context-header {
 }
 
 .mod-toolbox-rd .tb-settings .tb-window-wrapper {
-    width: 845px;
+    max-width: 845px;
 }
 
 .mod-toolbox-rd .tb-window-wrapper-two {
@@ -250,7 +250,7 @@ div#tb-context-menu #tb-context-header {
 .mod-toolbox-rd .tb-settings .tb-window-tabs-wrapper {
     display: inline-block;
     vertical-align: top;
-    width: 705px;
+    width: calc(100% - 135px);
 }
 
 .mod-toolbox-rd .tb-window-content input {

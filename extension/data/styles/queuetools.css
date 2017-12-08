@@ -93,6 +93,8 @@
 
 .mod-toolbox-rd .tb-action-table th {
     font-weight: bold;
+    background-color: #cee3f8;
+    color: #000000;
 }
 
 .mod-toolbox-rd .tb-action-table th,
@@ -105,6 +107,6 @@
 }
 
 .mod-toolbox-rd .tb-action-table tr {
-    border: solid 1px #c7d6e7;
+    background: #fff
 }
 

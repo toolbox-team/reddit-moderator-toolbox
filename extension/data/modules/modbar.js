@@ -170,7 +170,7 @@ function modbar() {
         }
 
         const modQueueUrl = TBUtils.tempBaseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
-        let modBar = $(`
+        let $modBar = $(`
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
     <a class="tb-toolbar tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
@@ -216,12 +216,12 @@ function modbar() {
 </div>
 `);
         let hoverTimeout;
-        modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function() {
+        $modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function() {
             clearTimeout(hoverTimeout);
-            modBar.find('#tb-new-modmail-tooltip').show();
+            $modBar.find('#tb-new-modmail-tooltip').show();
         }, function() {
             hoverTimeout = setTimeout(function(){
-                modBar.find('#tb-new-modmail-tooltip').hide(100);
+                $modBar.find('#tb-new-modmail-tooltip').hide(100);
             }, 1000);
         });
 
@@ -232,7 +232,7 @@ function modbar() {
 
         if (unmoderatedOn) {
             const unModQueueUrl = TBUtils.tempBaseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
-            modBar.find('#tb-toolbarcounters').append(`
+            $modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">remove_red_eye</a>
 <a href="${unModQueueUrl}" class="tb-toolbar" id="tb-unmoderatedcount"></a>
 `);
@@ -240,7 +240,7 @@ function modbar() {
         }
 
 
-        let modbarhid = $(`
+        let $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar ${compactHide ? 'tb-bottombar-compact' : ''}">
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? 'more_vert' : 'keyboard_arrow_right'}</a>
 </div>
@@ -270,7 +270,7 @@ function modbar() {
             $console.drag('#tb-debug-header-handle');
         }
 
-        $body.append(modBar);
+        $body.append($modBar);
 
         // moderated subreddits button.
         if (enableModSubs) {
@@ -490,7 +490,7 @@ function modbar() {
             $shortcut.appendTo('#tb-toolbarshortcuts');
         });
 
-        $body.append(modbarhid);
+        $body.append($modbarhid);
 
         // Always default to hidden.
 
@@ -500,13 +500,13 @@ function modbar() {
 
         function toggleMenuBar(hidden) {
             if (hidden) {
-                $(modBar).hide();
-                $(modbarhid).show();
+                $modBar.hide();
+                $modbarhid.show();
                 $body.find('.tb-debug-window').hide(); // hide the console, but don't change consoleShowing.
                 $body.toggleClass('tb-modbar-shown', false); // New modmail uses this style to add space to the bottom of the page
             } else {
-                $(modBar).show();
-                $(modbarhid).hide();
+                $modBar.show();
+                $modbarhid.hide();
                 if (consoleShowing && debugMode) $body.find('.tb-debug-window').show();
                 $body.toggleClass('tb-modbar-shown', true);
             }
@@ -521,11 +521,41 @@ function modbar() {
         });
 
         // Show counts on hover
-        $(modbarhid).hover(function modbarHover(e) {
-            if (!notifierEnabled || compactHide) return;
-            const hoverString = `New Messages: ${unreadMessageCount}<br>Mod Queue: ${modqueueCount}<br>Unmoderated Queue: ${unmoderatedCount}<br>Mod Mail: ${modmailCount}<br>New Mod Mail ${newModmailCount}`;
+        let $modBarHidTooltip = $body.find('#tb-modbar-hide-tooltip');
+        $modbarhid.mouseenter(function() {
 
-            $.tooltip(hoverString, e);
+            const hoverContent = `
+                <table>
+                    <tr>
+                        <td>New Messages</td>
+                        <td>${unreadMessageCount}</td>
+                    </tr>
+                    <tr >
+                        <td>Mod Queue</td>
+                        <td>${modqueueCount}</td>
+                    </tr>
+                    <tr >
+                        <td>Unmoderated Queue</td>
+                        <td>${unmoderatedCount}</td>
+                    </tr>
+                    <tr>
+                        <td>Mod Mail</td>
+                        <td >${modmailCount}</td>
+                    </tr>
+                    <tr>
+                        <td>New Mod Mail</td>
+                        <td >${newModmailCount}</td>
+                    </tr>
+                </table>
+            `;
+
+            if(!$modBarHidTooltip.length) {
+                $modBarHidTooltip = $('<div id="tb-modbar-hide-tooltip"></div>').appendTo($body);
+            }
+            $modBarHidTooltip.html(hoverContent);
+            $modBarHidTooltip.fadeIn(200);
+        }).mouseleave(function() {
+            $modBarHidTooltip.fadeOut(200);
         });
 
         /// Console stuff

@@ -124,6 +124,7 @@
     position: fixed;
     height: initial;
     width: initial;
+    line-height: initial;
     right: 55px;
     margin-bottom: 11px;
     bottom: 30px;
@@ -132,6 +133,7 @@
     border: solid 10px rgb(206, 227, 248);
     padding: 5px;
 }
+
 .mod-toolbox-rd #tb-new-modmail-tooltip tr:nth-child(2n) {
     background: rgba(162, 162, 162, 0.2);
 }
@@ -272,18 +274,29 @@
     padding: 10px;
 }
 
-/* TODO: where is this used? */
-.mod-toolbox-rd #tb-tooltip {
+
+.mod-toolbox-rd #tb-modbar-hide-tooltip {
     z-index: 9999;
     position: fixed;
-    text-align: left;
-    background-color: rgba(206, 227, 248, 0.86);
+    bottom: 37px;
+    left: 32px;
+    height: initial;
+    width: initial;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: rgb(206, 227, 248);
+    border-image: initial;
+    padding: 5px;
     font-size: 11px;
-    color: #000;
-    padding: 2px !important;
-    border: solid 1px #B6C9DD;
-    top: auto;
-    box-shadow: rgba(209, 209, 209, 0.47) 0 1px 3px 1px;
+}
+
+.mod-toolbox-rd #tb-modbar-hide-tooltip td {
+    padding: 2px;
+}
+.mod-toolbox-rd #tb-modbar-hide-tooltip tr:nth-child(2n) {
+    background: rgba(162, 162, 162, 0.2);
 }
 
 /* First run text (pointing out the settings button) */

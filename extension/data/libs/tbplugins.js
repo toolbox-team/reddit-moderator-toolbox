@@ -60,61 +60,6 @@
     };
 })(jQuery);
 
-(function ($) {
-    $.fn.tooltip = function (message, sender) {
-        if ($('body').find('#tb-tooltip').length) return; // don't show more than one, ever.
-        var posX = sender.clientX,
-            posY = sender.clientY;
-        $sender = $(sender.target);
-        //$('body').find('#tb-tooltip').remove(); // remove any old tooltips.
-        var $tooltip = $('<div id="tb-tooltip">' + message + '</div>').appendTo('body');
-        $tooltip.append('<img src="data:image/png;base64,' + TBui.iconClose + '" class="note-close" title="Close" />');
-        $tooltip.delegate('.note-close', 'click', function (e) {
-            $tooltip.remove();
-        });
-        /*  The hover to dismis method works better.
-        $sender.hover(null, function () {
-            console.log('firing leave');
-            $tooltip.remove();
-            $sender.unbind('mouseleave');
-        });
-        */
-
-        $tooltip.css({
-            left: posX - $tooltip.width() + 155,
-            top: posY - $tooltip.height() - 15,
-        });
-
-        return $tooltip.each(function () {
-            var $this = $(this);
-            var hide = function () {
-                var timeout = setTimeout(function () {
-                    $tooltip.remove();
-                }, 500);
-
-                $this.data("tooltip.timeout", timeout);
-            };
-
-            /* Bind an event handler to 'hover' (mouseover/mouseout): */
-            $this.hover(function () {
-                clearTimeout($this.data("tooltip.timeout"));
-                $tooltip.show();
-            }, hide);
-
-            /* If the user is hovering over the tooltip div, cancel the timeout: */
-            $tooltip.hover(function () {
-                clearTimeout($this.data("tooltip.timeout"));
-            }, hide);
-        });
-    };
-    // No clue why I need to do this.
-    $.tooltip = function (message, sender) {
-        $.fn.tooltip(message, sender);
-    };
-})(jQuery);
-
-
-
 // highlight jquery plugin https://github.com/tankchintan/highlight-js
 !function ($) {
     $.fn.highlight = function (pat, ignore, actionReason = false) {

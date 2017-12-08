@@ -861,7 +861,7 @@ body.mod-toolbox-rd .tb-general-button img {
 .mod-toolbox-rd .tb-tagline .tb-comment-author:hover {
     text-decoration: underline;
 }
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter {
+.mod-toolbox-rd.mod-toolbox-extra .tb-tagline .tb-comment-author.tb-submitter {
 	color: #fff;
 	background-color: #0055df;
 	font-weight: bold;
@@ -869,7 +869,7 @@ body.mod-toolbox-rd .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-moderator {
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-moderator {
 	color: #fff;
 	background-color: #228822;
 	font-weight: bold;
@@ -877,7 +877,7 @@ body.mod-toolbox-rd .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin {
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-admin {
 	color: #fff;
 	background-color: #e91e1e;
 	font-weight: bold;
@@ -885,7 +885,7 @@ body.mod-toolbox-rd .tb-general-button img {
 	padding: 0px 2px;
 }
 
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown {
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-unknown {
 	color: #fff;
 	background-color: #ff8d64;
 	font-weight: bold;

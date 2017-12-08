@@ -315,7 +315,11 @@ function tbmodule() {
                 let settingsDialog = e.delegateTarget;
 
                 $(settingsDialog).remove();
-                $('body').css('overflow', 'auto');
+                // Settings can go on top of other overlays.
+                if(!$('body').find('.tb-page-overlay').length) {
+                    $('body').css('overflow', 'auto');
+                }
+
             });
 
             $settingsDialog.on('click', '.tb-save, .tb-save-reload', function (e) {
@@ -349,7 +353,10 @@ function tbmodule() {
                 }
 
                 $(settingsDialog).remove();
-                $('body').css('overflow', 'auto');
+                // Settings can go on top of other overlays.
+                if(!$('body').find('.tb-page-overlay').length) {
+                    $('body').css('overflow', 'auto');
+                }
 
                 TB.storage.verifiedSettingsSave(function (succ) {
                     if (succ) {

@@ -38,7 +38,7 @@ const domain = window.location.hostname.split('.')[0];
 
     const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r == true) {
-        // Chrome
+        // Chrome, Edge en firefox webextensions.
         if (typeof (chrome) !== 'undefined') {
             chrome.storage.local.remove('tbsettings', function () {
                 // Wait a sec for stuff to clear.
@@ -47,17 +47,7 @@ const domain = window.location.hostname.split('.')[0];
                 }, 1000);
             });
 
-        // Firefox
-        } else if ((typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style)) {
-            self.port.on('tb-clearsettings-reply', function () {
-                // Wait a sec for stuff to clear.
-                setTimeout(function () {
-                    clearLocal();
-                }, 1000);
-            });
-
-            self.port.emit('tb-clearsettings');
-            // Donno, fuck it.
+        // Donno, fuck it.
         } else {
             // Wait a sec for stuff to clear.
             setTimeout(function () {

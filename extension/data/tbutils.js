@@ -197,6 +197,7 @@ function initwrapper() {
         $('body').addClass('mod-toolbox-extra');
 
         // Add icon font
+        // Edge seems to think cross origins rules apply for locally loaded fonds.
         if (TBUtils.browser === EDGE) {
             $('head').append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">');
         } else {

@@ -11,7 +11,15 @@ function comments() {
         'title': 'Always open comments as new page (instead of lightbox).'
     });
 
+    self.register_setting('openContextInPopup', {
+        'type': 'boolean',
+        'default': true,
+        'beta': false,
+        'title': 'Add a link to comments where appropiate to open the context in a popup on page.'
+    });
+
     const commentsAsFullPage = self.setting('commentsAsFullPage');
+    const openContextInPopup = self.setting('openContextInPopup');
 
     self.init = function () {
         let $body = $('body');
@@ -102,7 +110,8 @@ function comments() {
                         'parentLink' : true,
                         'contextLink' : true,
                         'fullCommentsLink' : true,
-                        'noOddEven': true
+                        'noOddEven': true,
+                        'contextPopup': openContextInPopup
                     };
                     const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
                     $htmlCommentView.append($comment);
@@ -181,6 +190,80 @@ function comments() {
                 $('time.timeago').timeago();
             });
         });
+        if (openContextInPopup) {
+            self.log('openContextInPopup enabled.');
+
+            $body.on('click', '.tb-comment-context-popup', function(event){
+                self.log('Context button clicked.');
+
+                const $this = $(this);
+                // Grab the url.
+                let contextUrl = $this.attr('data-context-json-url');
+                if (contextUrl.indexOf('.reddit.com') < 0) {
+                    contextUrl = `${TBUtils.baseDomain}${contextUrl}`;
+                }
+
+                // Get the context
+                $.getJSON(contextUrl, {raw_json: 1}).done(function(data) {
+
+                    const commentOptions = {
+                        'parentLink' : true,
+                        'contextLink' : true,
+                        'fullCommentsLink' : true
+                    };
+
+                    const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
+                    const contextUser = data[1].data.children[0].data.author;
+                    const contextSubreddit = data[1].data.children[0].data.subreddit;
+
+                    // Prepare for the popup.
+                    let leftPosition;
+                    if (document.documentElement.clientWidth - event.pageX < 400) {
+                        leftPosition = event.pageX - 600;
+                    } else {
+                        leftPosition = event.pageX - 50;
+                    }
+
+                    // Title is probably also nice.
+                    const contextTitle =  `Context for /u/${contextUser} in /r/${contextSubreddit}`;
+
+                    // Build the context popup and once that is done append it to the body.
+                    let $contextPopup = TB.ui.popup(
+                        contextTitle,
+                        [
+                            {
+                                title: 'Context tab',
+                                tooltip: 'Tab with context for comment.',
+                                content: $comments,
+                                footer: ''
+                            }
+                        ],
+                        '',
+                        'context-button-popup',
+                        {
+                            draggable: true
+                        }
+                    ).appendTo($body)
+                        .css({
+                            left: leftPosition,
+                            top: event.pageY - 10,
+                            display: 'block'
+                        });
+                    TBui.tbRedditEvent($comments, 'comment');
+                    $('time.timeago').timeago();
+
+                    // Close the popup
+                    $contextPopup.on('click', '.close', function () {
+                        $contextPopup.remove();
+                    });
+
+
+                });
+
+
+            });
+        }
+
     };
 
 

@@ -1134,6 +1134,11 @@
             $commentButtonList.append($contextLink);
         }
 
+        if (commentOptions.contextPopup) {
+            const $contextLink = $(`<a class="tb-comment-button tb-comment-context-popup" href="javascript:;" data-context-json-url="${commentPermalink}.json?context=3">context-popup</a>`);
+            $commentButtonList.append($contextLink);
+        }
+
         if (commentOptions.fullCommentsLink) {
             const $fullCommentsLink = $(`<a class="tb-comment-button tb-comment-button-fullcomments" href="${commentThreadPermalink}">full comments</a>`);
             $commentButtonList.append($fullCommentsLink);

@@ -85,109 +85,108 @@ function comments() {
             }
 
             // Variables we need later on to be able to reconstruct comments.
-            let $htmlCommentView = $(`<div id="tb-sitetable"></div>`); // This will contain the new html we will add to the page.
+            let $windowContent = $(`
+            <div id="tb-flatview-search">
+            Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input tb-input" placeholder="start typing...">
+            Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input tb-input" placeholder="start typing...">
+            <span id="tb-flatview-search-count">0</span>
+            </div>
+            <div id="tb-sitetable"></div>`);
 
-            var siteTable = `#tb-sitetable`; // sitetable id which we will be clearing.
-            $(siteTable).empty(); // clear the site table.
+            // add the new comment list to the page.
+            const $flatViewOverlay = TB.ui.overlay(
+                `Flatview`,
+                [
+                    {
+                        title: 'Flatview',
+                        tooltip: 'commentFlatview.',
+                        content: $windowContent,
+                        footer: ''
+                    }
+                ],
+                [], // extra header buttons
+                'tb-flat-view', // class
+                false // single overriding footer
+            ).appendTo('body');
+
+            $flatViewOverlay.hide();
+
+            $body.on('click', '.tb-flat-view .close', function () {
+                $('.tb-flat-view').remove();
+                $body.css('overflow', 'auto');
+
+            });
+            let $flatSearchCount = $body.find('#tb-flatview-search-count');
+            let $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
+
+            $body.find('.tb-flatview-search-input').keyup(function () {
+                self.log('typing');
+                var FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
+                var FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
+
+                self.log(FlatViewSearchName);
+                self.log(FlatViewSearchContent);
+
+                $htmlCommentView.find(`.tb-comment`).each(function () {
+                    var $this = $(this);
+
+                    var flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
+                    var flatContent = $this.find('.tb-comment-body .md').text();
+
+                    if (flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0 || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0) {
+                        $this.hide();
+                    } else {
+                        $this.show();
+
+
+
+                    }
+                    $flatSearchCount.text($htmlCommentView.find(`.tb-comment:visible`).length);
+                });
+            });
+
             TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
             // construct the url from which we grab the comments json.
             var jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
-
+            TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
             $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(function (data) {
-            // put the json through our deconstructor.
+                // put the json through our deconstructor.
                 data[1].isreply = false;
                 parseComments(data[1]);
                 // and get back a nice flat listing of ids
                 idListing = TBUtils.saneSortAs(idListing);
-
-
+                const commentOptions = {
+                    'parentLink' : true,
+                    'contextLink' : true,
+                    'fullCommentsLink' : true,
+                    'noOddEven': true,
+                    'contextPopup': openContextInPopup
+                };
+                let count = 0;
                 // from each id in the idlisting we construct a new comment.
-                $.each(idListing, function (index, value) {
-
-                    const commentOptions = {
-                        'parentLink' : true,
-                        'contextLink' : true,
-                        'fullCommentsLink' : true,
-                        'noOddEven': true,
-                        'contextPopup': openContextInPopup
-                    };
+                TBUtils.forEachChunkedDynamic(idListing, function(value) {
+                    count++;
+                    const msg = `Building comment ${count}/${idListing.length}`;
+                    TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
                     const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
+                    $comment.find('time.timeago').timeago();
                     $htmlCommentView.append($comment);
 
-                });
-
-                TB.ui.longLoadSpinner(false);
-
-                // add the new comment list to the page.
-                TB.ui.overlay(
-                    `Flatview`,
-                    [
-                        {
-                            title: 'Flatview',
-                            tooltip: 'commentFlatview.',
-                            content: $htmlCommentView,
-                            footer: ''
-                        }
-                    ],
-                    [], // extra header buttons
-                    'tb-flat-view', // class
-                    false // single overriding footer
-                ).appendTo('body');
-
-                TBui.tbRedditEvent($htmlCommentView, 'comment');
-                $body.css('overflow', 'hidden');
-                $body.on('click', '.tb-flat-view .close', function () {
-                    $('.tb-flat-view').remove();
-                    $body.css('overflow', 'auto');
-
-                });
-                // Add filter options to the page
-                if (!$body.find('#tb-flatview-search').length) {
-                    var $filterHTML = $(`<div id="tb-flatview-search">
-                        Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input tb-input" placeholder="start typing...">
-                        Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input tb-input" placeholder="start typing...">
-                        <span id="tb-flatview-search-count"></span>
-                    </div>`);
-
-                    $(siteTable).before($filterHTML);
-                    $('#tb-flatview-search-count').text($body.find(`${siteTable} .tb-comment:visible`).length);
-                } else {
-                    $body.find('#tb-flatview-search-name').val('');
-                    $body.find('#tb-flatview-search-content').val('');
-                    $('#tb-flatview-search-count').text($body.find(`${siteTable} .tb-comment:visible`).length);
-                }
-
-                $body.find('.tb-flatview-search-input').keyup(function () {
-                    self.log('typing');
-                    var FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
-                    var FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
-
-                    self.log(FlatViewSearchName);
-                    self.log(FlatViewSearchContent);
-
-                    $body.find(`${siteTable} .tb-comment`).each(function () {
-                        var $this = $(this);
-
-                        var flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
-                        var flatContent = $this.find('.tb-comment-body .md').text();
-
-                        if (flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0 || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0) {
-                            $this.hide();
-                        } else {
-                            $this.show();
-
-
-
-                        }
-                        $('#tb-flatview-search-count').text($body.find(`${siteTable} .tb-comment:visible`).length);
-                    });
+                }).then(function() {
+                    $flatSearchCount.text(count);
+                    setTimeout(function () {
+                        TBui.tbRedditEvent($htmlCommentView, 'comment');
+                        TB.ui.longLoadSpinner(false);
+                        $body.css('overflow', 'hidden');
+                        $flatViewOverlay.show();
+                    }, 1000);
                 });
 
 
-                // and simulate reddits timeago function with our native function.
-                $('time.timeago').timeago();
+
+
             });
         });
         if (openContextInPopup) {

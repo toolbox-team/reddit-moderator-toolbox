@@ -829,36 +829,42 @@
     TBui.tbRedditEvent = function tbRedditEvent($elements, type) {
         if(type === 'comment') {
             const $comments = $elements.find('.tb-comment');
-            $comments.each(function(){
-                const $element = $(this);
-                const commentAuthor = $element.attr('data-comment-author'),
-                    postID = $element.attr('data-comment-post-id'),
-                    commentID = $element.attr('data-comment-id'),
-                    subredditName = $element.attr('data-comment-subreddit'),
-                    subredditType = $element.attr('data-comment-subreddit-type');
-
-                const detailObject = {
-                    'type': 'TBcommentAuthor',
-                    'data': {
-                        'author': commentAuthor,
-                        'post': {
-                            'id': postID
-                        },
-                        'comment': {
-                            'id': commentID
-                        },
-                        'subreddit': {
-                            'name': subredditName,
-                            'type': subredditType
-                        }
-                    }
-                };
-
+            TBUtils.forEachChunkedDynamic($comments, function(value) {
+                const $element = $(value);
                 const $jsApiPlaceholder = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
                 const jsApiPlaceholder = $jsApiPlaceholder[0];
-                const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
-                jsApiPlaceholder.dispatchEvent(tbRedditEvent);
-            });
+
+                // We don't want to send events for things already handled.
+                if(!$jsApiPlaceholder.hasClass('.tb-frontend-container')) {
+                    const commentAuthor = $element.attr('data-comment-author'),
+                        postID = $element.attr('data-comment-post-id'),
+                        commentID = $element.attr('data-comment-id'),
+                        subredditName = $element.attr('data-comment-subreddit'),
+                        subredditType = $element.attr('data-comment-subreddit-type');
+
+                    const detailObject = {
+                        'type': 'TBcommentAuthor',
+                        'data': {
+                            'author': commentAuthor,
+                            'post': {
+                                'id': postID
+                            },
+                            'comment': {
+                                'id': commentID
+                            },
+                            'subreddit': {
+                                'name': subredditName,
+                                'type': subredditType
+                            }
+                        }
+                    };
+
+
+                    const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
+                    jsApiPlaceholder.dispatchEvent(tbRedditEvent);
+                }
+
+            }, {framerate: 40});
         }
 
     };

@@ -196,6 +196,24 @@ function initwrapper() {
         // Bit hacky maybe but allows us more flexibility in specificity.
         $('body').addClass('mod-toolbox-extra');
 
+        // Add icon font
+        if (TBUtils.browser === EDGE) {
+            $('head').append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">');
+        } else {
+            $('head').append(`<style>
+            @font-face {
+                font-family: 'Material Icons';
+                font-style: normal;
+                font-weight: 400;
+                src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
+                src: local('Material Icons'),
+                    local('MaterialIcons-Regular'),
+                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
+            }
+            </style>`);
+        }
         // Get cached info.
         TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
         TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});

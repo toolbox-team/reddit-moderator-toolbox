@@ -9,50 +9,6 @@
         event.stopPropagation();
     });
 
-    // icon font
-    const fontStyle = `
-    <style>
-    @font-face {
-        font-family: 'Material Icons';
-        font-style: normal;
-        font-weight: 400;
-        src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
-        src: local('Material Icons'),
-             local('MaterialIcons-Regular'),
-             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
-             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
-             url(${chrome.extension.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
-      }
-
-      html body.mod-toolbox-rd .tb-icons {
-        font-family: 'Material Icons';
-        font-weight: normal;
-        font-style: normal;
-        font-size: 18px;  /* Preferred icon size */
-        color: #46596d;
-        display: inline-block;
-        line-height: 1;
-        text-transform: none;
-        letter-spacing: normal;
-        word-wrap: normal;
-        white-space: nowrap;
-        direction: ltr;
-
-        /* Support for all WebKit browsers. */
-        -webkit-font-smoothing: antialiased;
-        /* Support for Safari and Chrome. */
-        text-rendering: optimizeLegibility;
-
-        /* Support for Firefox. */
-        -moz-osx-font-smoothing: grayscale;
-
-        /* Support for IE. */
-        font-feature-settings: 'liga';
-      }
-
-    </style>`;
-
-    $('head').append(fontStyle);
 
     // Icons NOTE: string line length is ALWAYS 152 chars
     TBui.iconWrench = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1d

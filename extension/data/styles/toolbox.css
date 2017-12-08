@@ -1,6 +1,31 @@
 /*
 ========================
 
+    TB Font stuff
+    TODO: Move a bunch of general font sizing stuff here for overview
+
+========================
+*/
+
+/* Let's use verdana for toolbox stuff. Can't get used to the reddit font */
+
+.mod-toolbox-rd.mod-toolbox-extra .tb-popup,
+.mod-toolbox-rd.mod-toolbox-extra  .tb-page-overlay {
+    font-family: verdana,arial,helvetica,sans-serif;
+    font-size: 12px !important;
+}
+
+
+.mod-toolbox-rd .tb-window-header {
+    font-size: 14px;
+}
+
+
+
+
+/*
+========================
+
     TB Icons
 
 ========================
@@ -151,7 +176,7 @@ div#tb-context-menu #tb-context-header {
 
 .mod-toolbox-rd .tb-page-overlay {
     padding: 10px 15px !important;
-    background-color: rgba(250, 250, 250, 0.84);
+    background-color: rgba(35, 41, 47, 0.84);
     border: 0;
     border-radius: 0;
     position: fixed;
@@ -161,7 +186,6 @@ div#tb-context-menu #tb-context-header {
     bottom: 0;
     overflow: auto;
     z-index: 2147483644 !important;
-    font: normal x-small verdana,arial,helvetica,sans-serif !important;
 }
 
 /*
@@ -197,8 +221,6 @@ div#tb-context-menu #tb-context-header {
     padding: 0 !important;
     background-color: #FFF;
     border: 0;
-    box-shadow: rgba(214, 214, 214, 0.47) 0px 1px 3px 1px;
-    font-size: small;
     margin-bottom: 150px;
 }
 
@@ -231,8 +253,7 @@ div#tb-context-menu #tb-context-header {
     background-color: #CEE3F8;
     text-align: center;
     font-weight: bold;
-    padding: 10px !important;
-    font-size: small;
+    padding: 11px !important;
     border-bottom: 0;
 }
 
@@ -455,7 +476,6 @@ div#tb-context-menu #tb-context-header {
 }
 
 .mod-toolbox-rd .tb-popup {
-    font-size:11px;
     max-width: 1000px;
     padding: 0 !important;
     background-color: #FFF;
@@ -847,6 +867,8 @@ body.mod-toolbox-rd .tb-general-button img {
     padding: 0;
     line-height: inherit;
     margin-bottom: 5px;
+    font-size: 13px;
+    line-height: 1.32;
 }
 
 .mod-toolbox-rd .tb-comment .tb-comment-body table td {

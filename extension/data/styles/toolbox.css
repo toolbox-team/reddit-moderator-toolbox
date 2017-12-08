@@ -160,8 +160,16 @@ div#tb-context-menu #tb-context-header {
     right: 0;
     bottom: 0;
     overflow: auto;
-    z-index: 2147483646 !important;
+    z-index: 2147483644 !important;
     font: normal x-small verdana,arial,helvetica,sans-serif !important;
+}
+
+/*
+ config and settings need a slightly higher z-index so popups don't go over them but do go over other overlays.
+*/
+.mod-toolbox-rd .tb-page-overlay.tb-personal-settings,
+.mod-toolbox-rd .tb-page-overlay.tb-config {
+    z-index: 2147483646 !important;
 }
 
 .mod-toolbox-rd ul.inline-list { display: inline; }
@@ -454,7 +462,7 @@ div#tb-context-menu #tb-context-header {
     border: 0;
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     position: absolute;
-    z-index: 2147483640;
+    z-index: 2147483645 !important;
 }
 
 

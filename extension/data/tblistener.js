@@ -6,7 +6,8 @@
      */
     const listenerAliases = {
         'postAuthor': ['author'],
-        'commentAuthor': ['author']
+        'commentAuthor': ['author'],
+        'TBcommentAuthor': ['author']
     };
 
     /**
@@ -73,6 +74,7 @@
                 const readyEvent = new Event('reddit.ready');
 
                 document.addEventListener('reddit', this.boundFunc, true);
+                document.addEventListener('tbReddit', this.boundFunc, true);
                 setTimeout(function() {
                     document.dispatchEvent(loadedEvent);
                     document.dispatchEvent(readyEvent);
@@ -89,6 +91,7 @@
         stop() {
             if (this.started) {
                 document.removeEventListener('reddit', this.boundFunc);
+                document.removeEventListener('tbReddit', this.boundFunc);
                 this.started = false;
             }
         }

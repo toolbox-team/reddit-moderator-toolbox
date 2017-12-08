@@ -62,7 +62,15 @@ function modbutton() {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.author;
-            const parentID = e.detail.data.comment ? e.detail.data.post.id : 'unknown';
+
+            let parentID;
+            if(e.detail.data.comment) {
+                parentID = e.detail.data.comment.id;
+            } else if(e.detail.data.post) {
+                parentID = e.detail.data.post.id;
+            } else {
+                parentID = 'unknown';
+            }
 
             $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`)
 

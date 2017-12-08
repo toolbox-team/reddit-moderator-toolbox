@@ -818,6 +818,51 @@
         }
     };
 
+    /**
+     * Will send out events similar to the reddit jsAPI events for the elements given.
+     * Only support 'comment' for now and will only send the commentAuthor event.
+     * @function tbRedditEvent
+     * @memberof TBui
+     * @param {object} $elements jquery object containing the e
+     * @param {string} type type of element the events need to be send for.
+     */
+    TBui.tbRedditEvent = function tbRedditEvent($elements, type) {
+        if(type === 'comment') {
+            const $comments = $elements.find('.tb-comment');
+            $comments.each(function(){
+                const $element = $(this);
+                const commentAuthor = $element.attr('data-comment-author'),
+                    postID = $element.attr('data-comment-post-id'),
+                    commentID = $element.attr('data-comment-id'),
+                    subredditName = $element.attr('data-comment-subreddit'),
+                    subredditType = $element.attr('data-comment-subreddit-type');
+
+                const detailObject = {
+                    'type': 'TBcommentAuthor',
+                    'data': {
+                        'author': commentAuthor,
+                        'post': {
+                            'id': postID
+                        },
+                        'comment': {
+                            'id': commentID
+                        },
+                        'subreddit': {
+                            'name': subredditName,
+                            'type': subredditType
+                        }
+                    }
+                };
+
+                const $jsApiPlaceholder = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
+                const jsApiPlaceholder = $jsApiPlaceholder[0];
+                const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
+                jsApiPlaceholder.dispatchEvent(tbRedditEvent);
+            });
+        }
+
+    };
+
 
     /**
      * Will build a comment given a reddit API comment object.
@@ -979,13 +1024,14 @@
         const commentOptionsJSON = TBUtils.escapeHTML(JSON.stringify(commentOptions));
         // Let's start building our comment.
         let $buildComment = $(`
-            <div class="tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}">
+            <div class="tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-comment-subreddit="${commentSubreddit}" data-comment-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
                         <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
                         ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
+                        <span class="tb-jsapi-author-container"></span>
                         <span class="tb-comment-score ${commentControversiality ? 'tb-iscontroversial' : ''}" title="${commentScore}">${commentScoreText}</span>
                         <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
                         ${commentEdited ? editedHtml : ''}
@@ -1228,6 +1274,8 @@
                 window.requestAnimationFrame(function() {
                     $thisMoreComments.before($comments.html());
                 });
+
+                TBui.tbRedditEvent($comments, 'comment');
 
                 processCount = processCount + 1;
                 if(processCount === commentIDcount) {

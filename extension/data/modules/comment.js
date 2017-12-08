@@ -126,6 +126,8 @@ function comments() {
                     'tb-flat-view', // class
                     false // single overriding footer
                 ).appendTo('body');
+
+                TBui.tbRedditEvent($htmlCommentView, 'comment');
                 $body.css('overflow', 'hidden');
                 $body.on('click', '.tb-flat-view .close', function () {
                     $('.tb-flat-view').remove();

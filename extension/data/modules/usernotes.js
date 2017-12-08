@@ -577,6 +577,9 @@ function usernotes() {
                     thingDetails = JSON.parse($thingSibling.attr('data-tb-details'));
                     thingID = thingDetails.data.id;
                 // Assume post for now.
+                } else if($thing.attr('data-tb-type') === 'TBcommentAuthor') {
+                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                    thingID = thingDetails.data.comment.id;
                 } else {
                     thingDetails = JSON.parse($thing.attr('data-tb-details'));
                     thingID = thingDetails.data.post.id;

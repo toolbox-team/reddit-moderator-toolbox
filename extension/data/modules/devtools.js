@@ -141,10 +141,12 @@ function devtools() {
                     if($this.hasClass('fetch-thread')) {
                         const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                         $siteTable.append($comments);
+                        TBui.tbRedditEvent($comments, 'comment');
                         $('time.timeago').timeago();
                     } else {
                         let $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
                         $siteTable.append($comment);
+                        TBui.tbRedditEvent($comment, 'comment');
                         $('time.timeago').timeago();
                     }
 

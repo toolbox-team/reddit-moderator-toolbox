@@ -167,6 +167,7 @@
     height: 10px;
 }
 .mod-toolbox-rd #tb-my-subreddit-list {
+    font-size: 9px;
     text-align: left;
 }
 .mod-toolbox-rd #tb-my-subreddit-list tr {

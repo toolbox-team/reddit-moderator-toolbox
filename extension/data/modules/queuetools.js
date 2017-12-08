@@ -159,7 +159,7 @@ function queuetools() {
                 // Wait a bit for dom changes to occur and then disconnect it again.
                 setTimeout(function () {
                     qCreatureObserver.disconnect();
-                }, 5000);
+                }, 10000);
             } else {
                 fadeOutCreature();
             }

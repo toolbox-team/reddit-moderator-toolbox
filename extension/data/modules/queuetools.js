@@ -181,7 +181,7 @@ function queuetools() {
          * @param {getModlogCallback} callback - callback that handles further modlog interactions
          */
         function getModlog(subreddit, callback) {
-            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json?limit=100`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {limit: 500}).done(function (json) {
                 $.each(json.data.children, function (i, value) {
                     const fullName = value.data.target_fullname;
                     const actionID = value.data.id;
@@ -282,6 +282,7 @@ function queuetools() {
                                         <tr>
                                             <th>mod</th>
                                             <th>action</th>
+                                            <th>details</th>
                                             <th>time</th>
                                         </tr>
                                     </table>
@@ -290,6 +291,7 @@ function queuetools() {
                                 $.each(actions, function (i, value) {
                                     const mod = value.mod;
                                     const action = value.action;
+                                    const details = value.details;
                                     const createdUTC = TBUtils.timeConverterRead(value.created_utc);
                                     const createdTimeAgo = TBUtils.timeConverterISO(value.created_utc);
 
@@ -297,6 +299,7 @@ function queuetools() {
                                     <tr>
                                         <td>${mod}</td>
                                         <td>${action}</td>
+                                        <td>${details}</td>
                                         <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
                                     </tr>
                                     `;

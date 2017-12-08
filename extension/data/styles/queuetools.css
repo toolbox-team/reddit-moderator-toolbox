@@ -100,6 +100,10 @@
     padding: 3px;
 }
 
+.mod-toolbox-rd .tb-action-table td:not(:first-child) {
+    border-left: solid 1px #c7d6e7;
+}
+
 .mod-toolbox-rd .tb-action-table tr {
     border: solid 1px #c7d6e7;
 }

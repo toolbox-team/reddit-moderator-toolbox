@@ -31,7 +31,7 @@ function nukecomments() {
 
         // Nuke button clicked
         $body.on('click', '.tb-nuke-button', function (event) {
-            console.log('nuke button clicked.');
+            self.log('nuke button clicked.');
             if(nukeOpen) {
                 TB.ui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
                 return;
@@ -128,7 +128,6 @@ function nukecomments() {
                 const removalArrayLength = removalArray.length;
                 let removalCount = 0;
                 TBUtils.forEachChunkedRateLimit(removalArray, 20, function (comment) {
-                    console.log(comment);
                     removalCount++;
                     TB.ui.textFeedback(`Removing comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
                     TBUtils.removeThing(`t1_${comment}`, false, function(result) {
@@ -173,8 +172,6 @@ function nukecomments() {
          */
 
         function parseComments(object, postID, subreddit, callback) {
-            console.log(object);
-            console.log(object.kind);
             switch (object.kind) {
 
             case 'Listing': {
@@ -206,7 +203,7 @@ function nukecomments() {
                 break;
 
             case 'more': {
-                console.log('"load more" encountered, going even deeper');
+                self.log('"load more" encountered, going even deeper');
                 const commentIDs = object.data.children;
                 const commentIDcount = commentIDs.length;
                 let processCount = 0;
@@ -228,7 +225,7 @@ function nukecomments() {
             }
                 break;
             default: {
-                console.log('default, this should not happen');
+                self.log('default, this should not happen...');
                 // This shouldn't actually happen...
                 return callback();
             }
@@ -250,10 +247,6 @@ function nukecomments() {
 
                     $target.append(NukeButtonHTML);
 
-                } else {
-                    const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
-
-                    $target.append(NukeButtonHTML);
                 }
             });
         });

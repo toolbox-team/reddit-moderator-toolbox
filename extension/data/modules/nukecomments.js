@@ -1,172 +1,268 @@
+/** @module CommentNuke */
 function nukecomments() {
-// Adapted from:
-// @name          Reddit Mod Nuke Userscript
-// @author        djimbob (dr jimbob)
 
-    var self = new TB.Module('Comment Nuke');
-    self.shortname = 'Nuke';
+
+    let self = new TB.Module('Comment Nuke');
+    self.shortname = 'CommentNuke';
 
     ////Default settings
     self.settings['enabled']['default'] = false;
     self.config['betamode'] = false;
 
-    self.register_setting('hideAfterNuke', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Hide nuked comments after they are removed'
-    });
-
-    self.register_setting('ignoreMods', {
+    self.register_setting('ignoreDistinguished', {
         'type': 'boolean',
         'default': true,
-        'title': 'Ignore moderators\' comments when removing'
+        'title': 'Ignore distinguished comments from mods and admins when nuking a chain.'
     });
-
-    self.register_setting('confirmNuke', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Show a confirmation window before nuking a comment chain'
-    });
-
-    // self.register_setting('useImage', {
-    //     'type': 'boolean',
-    //     'default': true,
-    //     'title': 'Use an image button instead of [R]'
-    // });
 
 
     self.init = function () {
-    // // Image or text?
-    // if (self.setting('useImage')) {
-    //     self.button = $('<img>')
-    //             .attr('title', 'Nuke!')
-    //             .attr('src', TB.ui.iconNuke)
-    //             .prop('outerHTML');
-    // } else {
-    //     self.button = '[R]';
-    // }
+        // This will contain a flat listing of all comments to be removed.
+        let removalChain = [];
+        // Distinguished chain
+        let distinguishedComments = [];
+        // If we do get api errors we put the comment id in here so we can retry removing them.
+        let missedComments = [];
+        let removalRunning = false;
+        let nukeOpen = false;
+        let $body = $('body');
 
-        self.button = 'R';
+        let ignoreDistinguished = self.setting('ignoreDistinguished');
 
-        // Mod button clicked
-        $('body').on('click', '.nuke-button', function (event) {
-            var $nukeButton = $(event.target);
-            var $comment = $nukeButton.closest('.comment');
-
-            var $continue_thread = $comment.find('span.morecomments>a');
-
-
-            var confirmMessage = 'Are you sure you want to nuke the following ';
-            var $delete_button = $comment.find('form.remove-button input[name="spam"][value="False"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
-            // form input[value="removed"]~span.option.error a.yes -- finds the yes for normal deleting comments.
-            // a.pretty-button.neutral finds the 'remove' button for flagged comments
-            confirmMessage += $delete_button.length;
-            if ($continue_thread.length > 0) {
-                confirmMessage += '+ comments (more after expanding collapsed threads; there will be a pause before the first deletion to retrieve more comments)?';
-            } else {
-                confirmMessage += ' comments?';
+        // Nuke button clicked
+        $body.on('click', '.tb-nuke-button', function (event) {
+            console.log('nuke button clicked.');
+            if(nukeOpen) {
+                TB.ui.textFeedback('Nuke popup is already open.', TBui.FEEDBACK_NEGATIVE);
+                return;
             }
+            TB.ui.longLoadSpinner(true);
 
-            if (!self.setting('confirmNuke')
-            || confirm(confirmMessage)
-            ) {
-                $continue_thread.each(function (idx, $continue_button) {
-                // wait a bit before each ajax call
-                    setTimeout(function () {
-                        $continue_button.click();
-                    }, 2000 * idx);
+            nukeOpen = true;
+            removalChain = [];
+            missedComments = [];
+            distinguishedComments = [];
+
+            const $this = $(this);
+            const commentID = $this.attr('data-comment-id');
+            const postID = $this.attr('data-post-id');
+            const subreddit  = $this.attr('data-subreddit');
+            const positions = TBui.drawPosition(event);
+
+            const fetchURL = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${commentID}.json?limit=1500`;
+
+            let $popupContents = $(`<div class="tb-nuke-popup-content">
+                <div class="tb-nuke-feedback">Fetching all comments belonging to chain.</div>
+                <div class="tb-nuke-details"></div>
+            </div>`);
+
+            // Pop-up
+            let $popup = TB.ui.popup(
+                'Nuke comment chain',
+                [
+                    {
+                        title: 'Nuke tab',
+                        tooltip: '',
+                        content: $popupContents,
+                        footer: '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>'
+                    }
+                ],
+                '',
+                'nuke-button-popup',
+                {
+                    draggable: true
+                }
+            ).appendTo($body)
+                .css({
+                    left: positions.leftPosition,
+                    top: positions.topPosition,
+                    display: 'block'
                 });
 
-                // wait a bit after last ajax call before deleting
-                setTimeout(function () {
-                    self.deleteThreadFromComment($comment);
-                }, 2000 * ($continue_thread.length + ($continue_thread.length ? 1 : 0)));
-            }
+            $.getJSON(fetchURL, {raw_json: 1}).done(function (data) {
 
+                parseComments(data[1].data.children[0], postID, subreddit, function() {
+                    TB.ui.longLoadSpinner(false);
+                    $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
 
-            return false; // necessary?
+                    const removalChainLength = removalChain.length;
+                    // Distinguished chain
+                    const distinguishedCommentsLength = distinguishedComments.length;
+
+                    $popup.find('.tb-nuke-details').html(`
+                    <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
+                    <p>${distinguishedCommentsLength} distinguished comments found.</p>
+                    <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ` checked="checked"` : ``}>Ignore distinguished comments from mods and admins</label></p>
+                    `);
+                    $popup.find('.tb-execute-nuke').show();
+
+                });
+
+            });
+
+            $popup.on('click', '.tb-execute-nuke, .tb-retry-nuke', function() {
+                removalRunning = true;
+                TB.ui.longLoadSpinner(true);
+                const $this = $(this);
+                $this.hide();
+                let removalArray;
+                let $nukeFeedback = $popup.find('.tb-nuke-feedback');
+                let $nukeDetails = $popup.find('.tb-nuke-details');
+                const temptIgnoreDistinguished = $popup.find('.tb-ignore-distinguished-checkbox').prop('checked');
+                if($this.hasClass('tb-retry-nuke')) {
+                    removalArray = missedComments;
+                    missedComments = [];
+                } else {
+                    if(temptIgnoreDistinguished) {
+                        removalArray = removalChain;
+                    } else {
+                        removalArray = removalChain.concat(distinguishedComments);
+                    }
+                }
+
+                $nukeFeedback.text('Removing comments.');
+                $nukeDetails.html(``);
+
+                // Oldest comments first.
+                removalArray = TBUtils.saneSort(removalArray);
+                const removalArrayLength = removalArray.length;
+                let removalCount = 0;
+                TBUtils.forEachChunkedRateLimit(removalArray, 20, function (comment) {
+                    console.log(comment);
+                    removalCount++;
+                    TB.ui.textFeedback(`Removing comment ${removalCount}/${removalArrayLength}`, TB.ui.FEEDBACK_NEUTRAL);
+                    TBUtils.removeThing(`t1_${comment}`, false, function(result) {
+                        if(!result) {
+                            missedComments.push(comment);
+                        }
+                    });
+                }, function() {
+                    setTimeout(function() {
+                        removalRunning = false;
+                        TB.ui.longLoadSpinner(false);
+                        $nukeFeedback.text('Done removing comments.');
+                        const missedLength = missedComments.length;
+                        if(missedLength) {
+                            $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
+                            $popup.find('.tb-retry-nuke').show;
+                        }
+                    }, 1000);
+                });
+
+            });
+
+            $popup.on('click', '.close', function () {
+                if(removalRunning) {
+                    TB.ui.textFeedback('Comment chain nuke in progress, cannot close popup.', TBui.FEEDBACK_NEGATIVE);
+                } else {
+                    $popup.remove();
+                    nukeOpen = false;
+                }
+
+            });
+
         });
 
-        // https://github.com/reddit/reddit/blob/master/r2/r2/public/static/js/jquery.reddit.js#L531
-        // $(document).on('new_thing', function(e, thing) {
-        //     // This could be useful...
-        // });
+        /**
+         * Will given a reddit API comment object go through the chain and put all comments
+         * @function parseComments
+         * @param {object} object Comment chain object
+         * @param {string} postID Post id the comments belong to
+         * @param {string} subreddit Subreddit the comment chain belongs to.
+         * @param {function} callback
+         */
 
-        // https://github.com/reddit/reddit/blob/master/r2/r2/public/static/js/jquery.reddit.js#L531
-        // $(document).on('new_things_inserted', function(e, thing) {
-        //     // eh?
-        // });
+        function parseComments(object, postID, subreddit, callback) {
+            console.log(object);
+            console.log(object.kind);
+            switch (object.kind) {
 
-
-        // NER support.
-        window.addEventListener('TBNewThings', function () {
-            self.run();
-        });
-
-        self.run();
-    };
-
-    self.deleteThreadFromComment = function ($thread_root) {
-        var ignoreMods = self.setting('ignoreMods');
-
-        var $removeButtons = $thread_root.find('form input[value="removed"]~span.option.error a.yes,a[onclick^="return big_mod_action($(this), -1)"]');
-        TB.ui.longLoadSpinner(true, 'removing comments', 'neutral');
-        self.log(`Nuking ${$removeButtons.length} comments`);
-
-        // we need a delay between every single click of >1sec
-        // this should be re-written to use the API
-        TB.utils.forEachChunked($removeButtons, 1, 1500, function remove_comment(button, num) {
-            var msg = `removing comment ${num + 1}/${$removeButtons.length}`;
-            TB.ui.textFeedback(msg, 'neutral');
-
-            if (ignoreMods) {
-                var $entry = $(button).parents('.entry'),
-                    $author = $entry.find('a.author');
-
-                if ($author.hasClass('moderator')) {
-                    self.log(`  ${num + 1}... ignored`);
-                    return;
+            case 'Listing': {
+                for (let i = 0; i < object.data.children.length; i++) {
+                    parseComments(object.data.children[i], postID, subreddit, function() {
+                        return callback();
+                    });
                 }
             }
+                break;
 
-            self.log(`  ${num + 1}... removed`);
-            button.click();
-        }, function complete() {
-            if (self.setting('hideAfterNuke')) {
-                $thread_root.hide(750);
+            case 't1': {
+                const distinguishedType = object.data.distinguished;
+                if((distinguishedType === 'admin' || distinguishedType === 'moderator') && !distinguishedComments.includes(object.data.id)) {
+                    distinguishedComments.push(object.data.id);
+                // Ignore already removed stuff to lower the amount of calls we need to make.
+                } else if(!removalChain.includes(object.data.id) && !object.data.removed && !object.data.spam) {
+                    removalChain.push(object.data.id);
+                }
+
+                if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
+                    parseComments(object.data.replies, postID, subreddit, function() {
+                        return callback();
+                    }); // we need to go deeper.
+                } else {
+                    return callback();
+                }
             }
-            self.log('kill spinner');
-            TB.ui.longLoadSpinner(false);
-            TB.ui.textFeedback('all comments removed', 'positive');
+                break;
+
+            case 'more': {
+                console.log('"load more" encountered, going even deeper');
+                const commentIDs = object.data.children;
+                const commentIDcount = commentIDs.length;
+                let processCount = 0;
+
+
+                commentIDs.forEach(function(id) {
+                    const fetchUrl = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
+                    // Lets get the comments.
+                    $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
+                        parseComments(data[1].data.children[0], postID, subreddit, function() {
+                            processCount++;
+
+                            if(processCount === commentIDcount) {
+                                return callback();
+                            }
+                        });
+                    });
+                });
+            }
+                break;
+            default: {
+                console.log('default, this should not happen');
+                // This shouldn't actually happen...
+                return callback();
+            }
+
+            }
+        }
+
+        // Add nuke buttons where needed
+        TB.listener.on('comment', function(e) {
+            const pageType = TBUtils.pageDetails.pageType;
+            const $target = $(e.target);
+            const subreddit = e.detail.data.subreddit.name;
+            const commentID = e.detail.data.id.substring(3);
+            const postID = e.detail.data.post.id.substring(3);
+
+            TBUtils.getModSubs(function () {
+                if(TBUtils.modsSub(subreddit) && (pageType=== 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
+                    const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
+
+                    $target.append(NukeButtonHTML);
+
+                } else {
+                    const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
+
+                    $target.append(NukeButtonHTML);
+                }
+            });
         });
+
+
     };
 
 
-    // Add nuke button to all comments
-    self.processComment = function (comment) {
-        var $comment = $(comment);
-        if (!$comment.hasClass('nuke-processed')) {
-        // Add the class so we don't add buttons twice.
-            $comment.addClass('nuke-processed');
 
-            // Defer info gathering until button is clicked.
-            // the report button is always visible, so we don't have to do anything special for the big mod action buttons
-            $comment.find('.tagline:first > .userattrs')
-                .after(`&nbsp;<a href="javascript:;" title="Remove (nuke) comment chain." class="nuke-button tb-bracket-button">${self.button}</a>`);
-        }
-    };
-
-    // need this for RES NER support
-    self.run = function () {
-    // Not a mod, don't bother.
-        if (!TB.utils.isMod  || TB.utils.isModQueuePage) {
-        //self.log('Not a mod of the sub, d\'oh!');
-            return;
-        }
-
-        var $comments = $('div.comment:not(.nuke-processed)');
-        TB.utils.forEachChunked($comments, 15, 650, self.processComment);
-    };
 
     TB.register_module(self);
 } // nukecomments() wrapper

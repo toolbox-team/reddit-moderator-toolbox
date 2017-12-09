@@ -1005,7 +1005,7 @@ body.mod-toolbox-rd .tb-action-button.tb-button-hidden {
 }
 
 body.mod-toolbox-rd .tb-action-button {
-    display: inline-block !important;
+    display: inline-block;
     height: 25px !important;
     vertical-align: bottom !important;
     padding: 2px 6px 3px 6px !important;

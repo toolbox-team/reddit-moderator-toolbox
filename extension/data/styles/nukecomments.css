@@ -1,0 +1,19 @@
+.mod-toolbox-rd .nuke-button-popup .tb-retry-nuke,
+.mod-toolbox-rd .nuke-button-popup .tb-execute-nuke {
+    display: none;
+}
+
+.mod-toolbox-rd .tb-nuke-feedback {
+    padding: 3px;
+    border-bottom: solid 1px #cee3f8;
+    margin-bottom: 5px;
+}
+
+.mod-toolbox-rd .tb-nuke-details {
+    padding: 3px;
+    margin-bottom: 5px;
+}
+
+.mod-toolbox-rd .tb-nuke-details p {
+    margin-bottom: 5px;
+}

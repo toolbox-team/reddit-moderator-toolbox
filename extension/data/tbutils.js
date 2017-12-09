@@ -160,6 +160,7 @@ function initwrapper() {
         TBUtils.WIKI_PAGE_UNKNOWN = 'WIKI_PAGE_UNKNOWN';
         TBUtils.isNewModmail = location.host === 'mod.reddit.com';
         TBUtils.isNewMMThread = $('body').find('.ThreadViewer').length > 0;
+        TBUtils.pageDetails = {};
         TBUtils.isExtension = true;
         TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
         TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
@@ -2842,7 +2843,7 @@ function initwrapper() {
                             'linkSafeTitle': matchDetails[3],
                             'commentID': matchDetails[4]
                         };
-                    // "Unknown" pageType.
+
                     } else if (queuePageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(queuePageReg);
                         contextObject.pageType = 'queueListing';
@@ -2850,10 +2851,13 @@ function initwrapper() {
                             'subreddit': matchDetails[1],
                             'queueType': matchDetails[2]
                         };
+                    // "Unknown" pageType.
                     } else {
                         contextObject.pageType = 'unknown';
                     }
                 }
+
+                TBUtils.pageDetails = contextObject;
 
                 // The timeout is there because locationHref can change before react is done rendering.
                 setTimeout(function(){

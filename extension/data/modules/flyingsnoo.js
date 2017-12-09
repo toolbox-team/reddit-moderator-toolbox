@@ -47,7 +47,7 @@ function flyingsnoo() {
 
 
             function startFlying() {
-                const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.001)));
+                const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.0002)));
 
                 if (iterations % 50 == 0) {
                     wind = ((Math.random() * 200) - 100) * 0.02;
@@ -70,7 +70,7 @@ function flyingsnoo() {
             }
 
             function killSnoo() {
-                let newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.05));
+                let newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.0005));
                 floater.css({
                     'top': `${newTop}px`
                 });

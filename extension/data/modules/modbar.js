@@ -291,8 +291,8 @@ function modbar() {
     <td class="tb-my-subreddits-name"><a href="${TBUtils.tempBaseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
         <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="tb-icons">inbox</a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/modqueue" class="tb-icons">report_problem</a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/${this.subreddit}/about/unmoderated" class="tb-icons">remove_red_eye</a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/mod/about/modqueue?subreddit=${this.subreddit}" class="tb-icons">report_problem</a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/mod/about/unmoderated?subreddit=${this.subreddit}" class="tb-icons">remove_red_eye</a>
         <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/log" class="tb-icons">grid_on</a>
         <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/traffic" class="tb-icons">show_chart</a>
         ${configEnabled ? `<a title="/r/${this.subreddit} config" target="_blank" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">build</a>` : ''}

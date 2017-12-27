@@ -101,8 +101,8 @@ function tbmodule() {
             let settingTemplate = `
         <p id="tb-toolbox-{{settingName}}" style="{{display}}">
             {{content}}&nbsp;
-            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}}">
-                <img src="data:image/png;base64,${TB.ui.iconLink}">
+            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}} tb-icons">
+                link
             </a>&nbsp;
         </p>
         <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">
@@ -531,8 +531,8 @@ function tbmodule() {
                             <p id="tb-toggle_modules-${name}">
                                 <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ` checked="checked"` : ``}>${options.title}</label>
                                         <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
-                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}">
-                                    <img src="data:image/png;base64,${TB.ui.iconLink}">
+                                <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
+                                    link
                                 </a>&nbsp;
                             </p>
                             <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
@@ -797,7 +797,7 @@ body {
 
 
                             $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
-                            } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass}"><img src="data:image/png;base64,${TB.ui.iconLink}" /></a>` +
+                            } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">link</a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`);

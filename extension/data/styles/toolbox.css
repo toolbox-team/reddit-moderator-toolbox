@@ -44,7 +44,7 @@ html body.mod-toolbox-rd .tb-icons {
     font-family: 'Material Icons';
     font-weight: normal;
     font-style: normal;
-    font-size: 18px;  /* Preferred icon size */
+    font-size: 19px;  /* Preferred icon size */
     color: #46596d;
     display: inline-block;
     line-height: 1;
@@ -332,14 +332,14 @@ div#tb-context-menu #tb-context-header {
     margin: 2px;
 }
 
-.mod-toolbox-rd .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link {
+.mod-toolbox-rd .tb-window-content  a.tb-setting-link,
+.mod-toolbox-rd .tb-gen-setting-link,
+.mod-toolbox-rd .tb-module-setting-link {
     opacity: 0.5;
     display: inline-block;
-}
-
-.mod-toolbox-rd .tb-window-content  a.tb-setting-link, .tb-gen-setting-link, .tb-module-setting-link img {
     vertical-align: middle;
 }
+
 
 .mod-toolbox-rd .tb-window-content  input.tb-setting-input {
     font-style: italic;

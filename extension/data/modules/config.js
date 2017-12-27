@@ -549,7 +549,7 @@ function tbconfig() {
                 <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${text}"></td>
                 <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
                 <td>
-                    <a class="up-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.topIcon}"></a><a class="down-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.bottomIcon}"></a><a class="remove-usernote-type" href="javascript:;"><img src="data:image/png;base64,${TBui.iconDelete}"></a>
+                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">arrow_upward</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">arrow_downward</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">delete</a>
                 </td>
                 <td class="usernote-error error"></td>
 		    </tr>

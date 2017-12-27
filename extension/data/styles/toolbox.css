@@ -66,6 +66,24 @@ html body.mod-toolbox-rd .tb-icons {
     font-feature-settings: 'liga';
 }
 
+html body.mod-toolbox-rd .tb-icons-negative {
+    color: #d6393c;
+}
+html body.mod-toolbox-rd.mod-toolbox-extra .tb-icons.tb-icons-negative:hover {
+    color: #9b292b !important;
+}
+
+html body.mod-toolbox-rd .tb-icons-positive {
+    color: #36a74a;
+}
+html body.mod-toolbox-rd.mod-toolbox-extra .tb-icons.tb-icons-positive:hover {
+    color: #247533 !important;;
+}
+
+
+html body.mod-toolbox-rd .tb-icons-align-middle {
+    vertical-align: middle;
+}
 
 
 /*

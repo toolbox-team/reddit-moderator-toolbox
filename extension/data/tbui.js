@@ -514,14 +514,14 @@
                 </tr></thead>
                 <tbody></tbody>
             </table>
-            <a class="tb-map-input-add" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconAdd}" /></a></div>`);
+            <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">add_box</a></div>`);
 
         let emptyRow = `
             <tr class="tb-map-input-tr">
                 <td><input type="text" class="tb-input" name="key"></td>
                 <td><input type="text" class="tb-input" name="value"></td>
                 <td class="tb-map-input-td-remove">
-                    <a class="tb-map-input-td-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>
+                    <a class="tb-map-input-td-remove" href="javascript:void(0)"></a>
                 </td>
             </tr>`;
 
@@ -545,7 +545,7 @@
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
                     <td class="tb-map-input-td-remove">
-                        <a class="tb-map-input-remove" href="javascript:void(0)"><img src="data:image/png;base64,${TBui.iconDelete}" /></a>
+                        <a class="tb-map-input-remove tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:void(0)">delete</a>
                     </td>
                 </tr>`);
                 $item.appendTo($mapInput.find('.tb-map-input-table tbody'));

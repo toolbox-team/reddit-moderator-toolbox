@@ -780,6 +780,14 @@
             } else {
                 // Add the item to the menu.
                 $tbContextMenuList.append($newMenuItem);
+
+                // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
+                // The alternative would be to always show the entire menu.
+                $tbContextMenu.trigger('mouseover');
+                clearTimeout(contextTimeout);
+                contextTimeout = setTimeout(function() {
+                    $tbContextMenu.trigger('mouseleave');
+                }, 1000);
             }
 
             // If the menu was empty it was hidden and we need to show it.
@@ -794,14 +802,6 @@
                 $contextMenuWrap.fadeOut(200);
 
             });
-
-            // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
-            // The alternative would be to always show the entire menu.
-            $tbContextMenu.trigger('mouseover');
-            clearTimeout(contextTimeout);
-            contextTimeout = setTimeout(function() {
-                $tbContextMenu.trigger('mouseleave');
-            }, 1000);
 
 
         // We are removing a menu item.

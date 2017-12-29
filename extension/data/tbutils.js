@@ -11,7 +11,8 @@ function initwrapper() {
         TBUtils.modhash = $('form.logout input[name=uh]').val();
 
         // TODO: make sure to change this as soon as we have a proper method to check on this.
-        TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || '';
+        TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || $('.BlueBar__account a.BlueBar__username').text() || '';
+        console.log(TBUtils.logged)
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 

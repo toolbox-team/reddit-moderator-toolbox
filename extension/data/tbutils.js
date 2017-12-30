@@ -12,7 +12,6 @@ function initwrapper() {
 
         // TODO: make sure to change this as soon as we have a proper method to check on this.
         TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || $('.BlueBar__account a.BlueBar__username').text() || '';
-        console.log(TBUtils.logged)
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
@@ -2761,7 +2760,7 @@ function initwrapper() {
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
         const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
-
+        const userProfile = /^\/user\/([^/]*?)\/?(overview|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
 
         // This function after being first called will watch for pushstate changes.
         // Once a change is detected it will abstract all the context information from url, update TBUtils variables and emit all information in an event.
@@ -2851,6 +2850,13 @@ function initwrapper() {
                         contextObject.pageDetails = {
                             'subreddit': matchDetails[1],
                             'queueType': matchDetails[2]
+                        };
+                    } else if (userProfile.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(userProfile);
+                        contextObject.pageType = 'userProfile';
+                        contextObject.pageDetails = {
+                            'user': matchDetails[1],
+                            'listing': matchDetails[2]
                         };
                     // "Unknown" pageType.
                     } else {

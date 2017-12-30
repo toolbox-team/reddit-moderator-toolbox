@@ -827,6 +827,7 @@
      * @param {string} type type of element the events need to be send for.
      */
     TBui.tbRedditEvent = function tbRedditEvent($elements, type) {
+        console.log('fake comment')
         if(type === 'comment') {
             const $comments = $elements.find('.tb-comment');
             TBUtils.forEachChunkedDynamic($comments, function(value) {
@@ -861,6 +862,7 @@
 
 
                     const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
+                    console.log('fake event', detailObject)
                     jsApiPlaceholder.dispatchEvent(tbRedditEvent);
                 }
 

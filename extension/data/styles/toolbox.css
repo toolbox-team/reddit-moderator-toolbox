@@ -1011,6 +1011,19 @@ body.mod-toolbox-rd .tb-general-button img {
     font-weight: bold;
 }
 
+.mod-toolbox-rd ul.tb-comment-user-reports {
+    width: 80%;
+    background-color: #f6e69f;
+    border: thin solid black;
+    padding: 5px;
+}
+
+.mod-toolbox-rd ul.tb-comment-user-reports li:first-of-type {
+    margin-bottom: 5px;
+    font-weight: bold;
+
+}
+
 /*
 ------------
     Action buttons, are used where you normally would use actual button elements and where you need to be absolutely certain they always show in the same way.

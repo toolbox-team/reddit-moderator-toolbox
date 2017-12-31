@@ -47,7 +47,8 @@ function profilepro() {
                 const commentOptions = {
                     'parentLink' : true,
                     'contextLink' : true,
-                    'fullCommentsLink' : true
+                    'fullCommentsLink' : true,
+                    'overviewData': true
                 };
                 TBUtils.forEachChunkedDynamic(data.data.children, function(comment) {
                     let $comment = TBui.makeSingleComment(comment, commentOptions);

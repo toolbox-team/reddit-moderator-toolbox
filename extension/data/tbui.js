@@ -921,7 +921,6 @@
             commentAuthorFlairText = comment.data.author_flair_text,
             commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
 
-
             // Comment status - mod action
             commentApproved = comment.data.approved, // boolean
             commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
@@ -936,6 +935,21 @@
             commentArchived = comment.data.archived,
             commentCollapsed = comment.data.collapsed,
             commentCollapsedReason = comment.data.collapsed_reason;
+
+        // Do we have overview data?
+        let parentHtml;
+        if(commentOptions.overviewData) {
+            const linkUrl = comment.data.link_url,
+                linkTitle = comment.data.link_title,
+                linkAuthor = comment.data.link_author;
+
+            parentHtml = `
+            <div class="tb-parent">
+                <a class="tb-link-title" href="${linkUrl}">${linkTitle}</a>
+                by <a class="tb-link-author" href="/user/${linkAuthor}">${linkAuthor}</a> in <a class="subreddit hover" href="/r/${commentSubreddit}/">${commentSubreddit}</a>
+            </div>
+            `;
+        }
 
         // Format the comment datetime nicely
         const commentReadableCreatedUTC = TBUtils.timeConverterRead(commentCreatedUTC),
@@ -1034,6 +1048,7 @@
         let $buildComment = $(`
             <div class="tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-comment-subreddit="${commentSubreddit}" data-comment-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
+                    ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
                         <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>

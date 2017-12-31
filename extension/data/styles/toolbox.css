@@ -947,8 +947,19 @@ body.mod-toolbox-rd .tb-general-button img {
     color: #0055df;
 }
 
+.mod-toolbox-rd .tb-parent .tb-link-author,
 .mod-toolbox-rd .tb-tagline .tb-comment-author {
     font-weight: bold;
+}
+
+.mod-toolbox-rd .tb-parent {
+    font-size: 10px;
+    margin-bottom: 5px;
+    line-height: 15px;
+}
+
+.mod-toolbox-rd .tb-parent .tb-link-title {
+    font-size: 13px;
 }
 
 .mod-toolbox-rd .tb-tagline .tb-comment-author:hover {

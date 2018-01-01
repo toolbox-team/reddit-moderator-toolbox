@@ -265,7 +265,7 @@ function profilepro() {
             $sortSelect.hide();
 
             $sortSelect.val(sort);
-            if(!renew && type === 'comments') {
+            if(!renew && type === 'comments' && !$body.find('#tb-searchuser').length) {
                 commentSearch($options);
             }
 

@@ -872,7 +872,6 @@
 
 
                     const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
-                    console.log('fake event', detailObject)
                     jsApiPlaceholder.dispatchEvent(tbRedditEvent);
                 }
 
@@ -908,7 +907,6 @@
                     };
 
                     const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
-                    console.log('fake event', detailObject)
                     jsApiPlaceholder.dispatchEvent(tbRedditEvent);
                 }
 

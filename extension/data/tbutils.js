@@ -18,7 +18,7 @@ function initwrapper() {
         // Probably a better way to this but... ah well.
         // We don't need it right away, just when using POST
         // TODO: make this work properly in the context of alpha redesign
-        if(!TBUtils.modhash && (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com')) {
+        if(!TBUtils.modhash && (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com' || window.location.pathname.includes('/user/'))) {
             $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
                 TBUtils.modhash = result.data.modhash;
 

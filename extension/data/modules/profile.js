@@ -44,6 +44,7 @@ function profilepro() {
                 const commentOptions = {
                     'parentLink' : true,
                     'contextLink' : true,
+                    'contextPopup' : true,
                     'fullCommentsLink' : true,
                     'overviewData': true
                 };

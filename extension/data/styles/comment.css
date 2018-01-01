@@ -26,3 +26,7 @@
     z-index: 2147483645;
 }
 
+.mod-toolbox-rd form#tb-searchuser {
+    margin-left: 10px;
+    display: inline-block;
+}

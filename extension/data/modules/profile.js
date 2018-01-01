@@ -32,8 +32,7 @@ function profilepro() {
         // Find comments made by the user in specific subreddits.
             if (TBUtils.modCheck) {
 
-            // TODO: move the inline style to proper css. Add suggestins of subreddits you moderate (basically the same principle as used in toolbar)
-                $optionsArea.append(`<form id="tb-searchuser" style="display: inline-block">
+                $optionsArea.append(`<form id="tb-searchuser">
                         search comments: <input id="subredditsearch" type="text" placeholder="subreddit" class="tb-input tb-comment-search-input"> <input id="contentsearch" type="text" placeholder="content (optional)" class="tb-input tb-comment-search-input">
                         <input type="submit" value=" search " class="tb-action-button">
                     </form>`);

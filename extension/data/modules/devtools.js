@@ -108,6 +108,7 @@ function devtools() {
                                 <input type="text" placeholder="gimme that json url" id="tb-testCommentUI-input-url" class="tb-input">
                                 <button class="tb-action-button tb-testCommentUI-button fetch-single">fetch single</button>
                                 <button class="tb-action-button tb-testCommentUI-button fetch-thread">fetch thread</button>
+                                <button class="tb-action-button tb-testSubmissionUI-button fetch-listing">fetch submission listing</button>
                         `,
                         footer: ''
                     }
@@ -152,6 +153,29 @@ function devtools() {
 
 
                 });
+            });
+
+            $body.on('click', '.tb-testSubmissionUI-button', function () {
+                const $this = $(this);
+                let $siteTable = $body.find('#tb-comment-sitetable');
+                $siteTable.empty();
+                const inputURL = $body.find('#tb-testCommentUI-input-url').val();
+                $.getJSON(inputURL, {raw_json: 1}, function(data) {
+                    TBUtils.forEachChunkedDynamic(data.data.children, function(entry) {
+                        if(entry.kind === `t3`) {
+                            let $submission = TBui.makeSubmissionEntry(entry);
+                            $siteTable.append($submission);
+                            $('time.timeago').timeago();
+                        }
+
+                    }).then(function() {
+                        setTimeout(function () {
+                            TBui.tbRedditEvent($siteTable, 'comment');
+                            TB.ui.longLoadSpinner(false);
+                        }, 1000);
+                    });
+                });
+
             });
 
         });

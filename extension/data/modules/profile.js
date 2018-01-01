@@ -41,7 +41,7 @@ function profilepro() {
             let $siteTable = $body.find('#tb-comment-sitetable');
             $siteTable.empty();
             // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
-            const inputURL = `https://www.reddit.com/user/${user}/comments.json`;
+            const inputURL = `https://www.reddit.com/user/${user}/submitted.json`;
             $.getJSON(inputURL, {raw_json: 1}, function(data) {
 
                 const commentOptions = {
@@ -50,10 +50,20 @@ function profilepro() {
                     'fullCommentsLink' : true,
                     'overviewData': true
                 };
-                TBUtils.forEachChunkedDynamic(data.data.children, function(comment) {
-                    let $comment = TBui.makeSingleComment(comment, commentOptions);
-                    $siteTable.append($comment);
-                    $('time.timeago').timeago();
+                TBUtils.forEachChunkedDynamic(data.data.children, function(entry) {
+                    if(entry.kind === `t1`) {
+                        let $comment = TBui.makeSingleComment(entry, commentOptions);
+                        $siteTable.append($comment);
+                        $('time.timeago').timeago();
+                    }
+
+                    if(entry.kind === `t3`) {
+                        let $submission = TBui.makeSubmissionEntry(entry);
+                        $siteTable.append($submission);
+                        $('time.timeago').timeago();
+                    }
+
+
                 }).then(function() {
                     setTimeout(function () {
                         TBui.tbRedditEvent($siteTable, 'comment');

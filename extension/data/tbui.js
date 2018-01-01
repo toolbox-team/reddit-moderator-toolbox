@@ -827,7 +827,6 @@
      * @param {string} type type of element the events need to be send for.
      */
     TBui.tbRedditEvent = function tbRedditEvent($elements, type) {
-        console.log('fake comment')
         if(type === 'comment') {
             const $comments = $elements.find('.tb-comment');
             TBUtils.forEachChunkedDynamic($comments, function(value) {
@@ -871,6 +870,242 @@
 
     };
 
+    /**
+     * Will build a submission entry given a reddit API submission object.
+     * @function makeSubmissionEntry
+     * @memberof TBui
+     * @param {object} submission reddit API submission object.
+     * @returns {object} jquery object with the build submission.
+     */
+
+    TBui.makeSubmissionEntry = function makeSubmissionEntry(submission) {
+        // Misc
+        const canModsubmission = submission.data.can_mod_post,
+
+            // submission basis (author, body, time)
+            submissionAuthor = submission.data.author,
+            submissionSelfTextHTML = submission.data.selftext_html, // html string
+            submissionCreatedUTC = submission.data.created_utc, // unix epoch
+            submissionPermalink = submission.data.permalink,
+            submissionSubreddit = submission.data.subreddit,
+            submissionName = submission.data.name,
+            submissionUrl = submission.data.url,
+            submissionTitle = submission.data.title,
+            submissionThumbnail = submission.data.thumbnail,
+            submissionDomain = submission.data.domain,
+
+
+            // submission details
+            submissionScore = submission.data.score, // integer
+            submissionIsSelf = submission.data.is_self,
+            submissionEdited = submission.data.edited,
+            submissionGilded = submission.data.gilded,
+            submissionPinned = submission.data.pinned,
+            submissionNumComments = submission.data.num_comments,
+            submissionUserReports = submission.data.user_reports, // array with reports by users
+
+            // submission details - mod related
+            submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
+            submissionModReports = submission.data.mod_reports, // array with reports by mods
+
+            // Author details
+            submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
+
+            // submission status - mod action
+            submissionApproved = submission.data.approved, // boolean
+            submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
+            submissionApprovedBy = submission.data.approved_by, // unix epoch
+            submissionSpam = submission.data.spam, // boolean
+            submissionRemoved = submission.data.removed, // boolean
+            submissionBannedAtUTC = submission.data.banned_at_utc, // unix epoch
+            submissionBannedBy = submission.data.banned_by, // Mod that removed the submission
+            submissionIgnoreReports = submission.data.ignore_reports; // boolean
+
+        // Format the submission datetime nicely
+        const submissionReadableCreatedUTC = TBUtils.timeConverterRead(submissionCreatedUTC),
+            createdTimeAgo = TBUtils.timeConverterISO(submissionCreatedUTC);
+
+        // Let's figure out what the current state is of the submission (approved, removed, spammed or neutral)
+        let submissionStatus,
+            submissionStatusUTC,
+            submissionStatusReadableUTC,
+            submissionStatusBy,
+            submissionActionByOn;
+
+        if(submissionSpam) {
+            submissionStatus = 'spammed';
+            submissionStatusUTC = submissionBannedAtUTC;
+            submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
+            submissionStatusBy = submissionBannedBy;
+            submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
+
+        } else if (submissionRemoved) {
+            submissionStatus = 'removed';
+            submissionStatusUTC = submissionBannedAtUTC;
+            submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
+            submissionStatusBy = submissionBannedBy;
+            submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
+        } else if (submissionApproved) {
+            submissionStatus = 'approved';
+            submissionStatusUTC = submissionApprovedAtUTC;
+            submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
+            submissionStatusBy = submissionApprovedBy;
+            submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
+        } else {
+            submissionStatus = 'neutral';
+        }
+
+        // Let's figure out what sort of attributes we need to give the OP if any.
+        let authorStatus = 'tb-regular';
+        let authorAttributes = [];
+        if(submissionIsSubmitter) {
+            authorStatus = 'tb-submitter';
+            authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${submissionPermalink}">S</a>`);
+        }
+        if (submissionDistinguished) {
+            authorStatus = `tb-${submissionDistinguished}`;
+            if(submissionDistinguished === 'admin') {
+                authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
+            } else if(submissionDistinguished === 'moderator') {
+                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="/r/${submissionSubreddit}/about/moderators">M</a>`);
+            } else {
+                authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${submissionDistinguished}">${submissionDistinguished}</a>`);
+            }
+        }
+
+
+        let commentsButtonText = 'comment';
+        if(submissionNumComments === 1) {
+            commentsButtonText = '1 comment';
+        } else if(submissionNumComments > 1) {
+            commentsButtonText = `${submissionNumComments} comments`;
+        }
+
+
+        // Indicate if a submission has been edited or not.
+        let editedHtml;
+        if (submissionEdited) {
+            const submissionReadableEdited = TBUtils.timeConverterRead(submissionEdited),
+                editedTimeAgo = TBUtils.timeConverterISO(submissionEdited);
+            editedHtml=  `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
+        }
+
+        let $buildsubmission = $(`
+            <div class="tb-submission ${submissionStatus}">
+                <div class="tb-submission-score">${submissionScore}</div>
+                <a class="tb-submission-thumbnail" href="${submissionUrl}">
+                    ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
+                </a>
+                <div class="tb-submission-entry">
+                    <div class="tb-submission-title">
+                        <a href="${submissionUrl}">${submissionTitle}</a>
+                        <span class="tb-domain">
+                            (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
+                        </span>
+                    </div>
+                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>': ``}
+                    <div class="tb-tagline">
+                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs"></span>
+                        ${submissionPinned ? `- <span class="tb-pinned-tagline" title="pinned to this user's profile">pinned</span>` : ''}
+                        ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
+                    </div>
+                    <div class="tb-submission-buttons">
+                        <a class="tb-submission-button tb-submission-button-comments" href="${submissionPermalink}">${commentsButtonText}</a>
+                    </div>
+                    ${submissionIsSelf && submissionSelfTextHTML ? `
+                    <div class="tb-self-expando">
+                        ${submissionSelfTextHTML}
+                    </div>
+                    ` : ''}
+                </div>
+            </div>
+            `);
+
+        // Now that we have the basic submission build we can go and add details where needed.
+        // The two places where we will be adding data specific to the submission are either entry or the button list.
+        let $submissionEntry = $buildsubmission.find('.tb-submission-entry');
+        let $submissionButtonList = $buildsubmission.find('.tb-submission-buttons');
+
+        if(submissionStatus !== 'neutral') {
+            $submissionEntry.append(`
+            <div class="tb-submission-data">
+                <ul class="tb-submission-details">
+                    <li class="tb-status-${submissionStatus}">${submissionStatus} ${submissionActionByOn ? submissionActionByOn : ''}.</li>
+                    </ul>
+            </div>`);
+        }
+
+        // Let's see if we need to add reports starting with user reports
+        if(submissionUserReports.length && !submissionIgnoreReports) {
+            let $submissionUserReports = $(`
+            <ul class="tb-user-reports">
+                <li>user reports</li>
+            </ul>
+            `);
+
+            submissionUserReports.forEach(function(report) {
+                const userReport = `
+                <li class="tb-user-report">
+                    <strong>
+                        ${report[1]} :
+                    </strong>
+                    ${report[0]}
+                </li>
+                `;
+                $submissionUserReports.append(userReport);
+            });
+            $submissionEntry.append($submissionUserReports);
+
+        } else if (submissionIgnoreReports) {
+            let $submissionIgnoredReports = $(`
+            <span class="tb-ignored-user-reports">
+                reports ignored (${submissionUserReports.length})
+            </span>
+            `);
+            $submissionEntry.append($submissionIgnoredReports);
+        }
+
+        // Now we do the same for mod reports.
+        // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
+
+        if(submissionModReports.length) {
+            let $submissionModReports = $(`
+                <ul class="tb-user-reports">
+                    <li>mod reports</li>
+                </ul>
+            `);
+
+            submissionModReports.forEach(function(report){
+                const modReport = `
+                    <li class="tb-mod-report">
+                        <strong>
+                            ${report[1]} :
+                        </strong>
+                        ${report[0]}
+                    </li>
+                `;
+                $submissionModReports.append(modReport);
+            });
+            $submissionEntry.append($submissionModReports);
+
+        }
+
+
+        // Now add mod action buttons if applicable.
+        if (canModsubmission) {
+            if(submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral') {
+                $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
+
+            }
+
+            if (submissionStatus === 'approved' || submissionStatus === 'neutral') {
+                $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
+                <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
+            }
+        }
+        $buildsubmission.find('p').addClass('tb-comment-p');
+        return $buildsubmission;
+    };
 
     /**
      * Will build a comment given a reddit API comment object.
@@ -1094,7 +1329,7 @@
         // Let's see if we need to add reports starting with user reports
         if(commentUserReports.length && !commentIgnoreReports) {
             let $commentUserReports = $(`
-            <ul class="tb-comment-user-reports">
+            <ul class="tb-user-reports">
                 <li>user reports</li>
             </ul>
             `);
@@ -1114,7 +1349,7 @@
 
         } else if (commentIgnoreReports) {
             let $commentIgnoredReports = $(`
-            <span class="tb-comment-ignored-user-reports">
+            <span class="tb-ignored-user-reports">
                 reports ignored (${commentUserReports.length})
             </span>
             `);
@@ -1126,14 +1361,14 @@
 
         if(commentModReports.length) {
             let $commentModReports = $(`
-                <ul class="tb-comment-user-reports">
+                <ul class="tb-user-reports">
                     <li>mod reports</li>
                 </ul>
             `);
 
             commentModReports.forEach(function(report){
                 const modReport = `
-                    <li class="tb-comment-mod-report">
+                    <li class="tb-mod-report">
                         <strong>
                             ${report[1]} :
                         </strong>
@@ -1232,7 +1467,7 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-remove', function() {
+    $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, false, function (succes, error) {
@@ -1247,7 +1482,7 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-spam', function() {
+    $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, true, function (succes, error) {

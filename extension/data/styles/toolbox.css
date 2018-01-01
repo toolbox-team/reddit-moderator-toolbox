@@ -858,99 +858,11 @@ body.mod-toolbox-rd .tb-general-button img {
     background-color: #fff;
 }
 
-.mod-toolbox-rd .tb-tagline {
-    font-size: 10px;
-    border-bottom: solid 1px gray;
-    padding: 3px;
-}
-
-.mod-toolbox-rd .tb-comment-buttons {
-    font-size: 11px;
-    margin-left: 8px;
-    margin-bottom: 8px;
-}
-
-
-.mod-toolbox-rd .tb-comment-button {
-    margin-right: 10px;
-}
-
-.mod-toolbox-rd a.tb-comment-button:hover {
-    text-decoration: underline;
-}
-
 .mod-toolbox-rd .tb-comment-body {
     margin-left: 10px;
     margin-top: 5px;
 }
 
-.tb-comment-body .md {
-    color: #222222;
-    max-width: 60em;
-}
-
-.mod-toolbox-rd .tb-comment .tb-comment-body .md p {
-    border: none;
-    padding: 0;
-    line-height: inherit;
-    margin-bottom: 5px;
-    font-size: 13px;
-    line-height: 1.32;
-}
-
-.mod-toolbox-rd .tb-comment .tb-comment-body table td {
-    border: solid 1px #d0d0d0;
-    padding: 3px;
-    text-align: left;
-}
-
-.mod-toolbox-rd .tb-comment .tb-comment-body table th {
-    font-weight: bold;
-    border: solid 1px #d0d0d0;
-    padding: 3px;
-
-}
-
-.mod-toolbox-rd .tb-comment .tb-comment-body blockquote {
-    background: #eae5e5;
-    padding: 3px;
-    margin: 10px;
-    color: #4c4c4c
-}
-
-.mod-toolbox-rd .tb-comment-flair {
-    background-color: #d8d8d8;
-    padding: 2px;
-}
-
-.mod-toolbox-rd .tb-comment-gilded {
-    color: #f78a17
-}
-
-.mod-toolbox-rd .tb-comment-edited {
-    font-style: italic;
-}
-
-.mod-toolbox-rd  .tb-comment-entry.removed {
-    border: solid 2px #ff0000;
-}
-
-.mod-toolbox-rd  .tb-comment-entry.spammed {
-    border: solid 2px #ff0000;
-}
-
-.mod-toolbox-rd a.tb-moderator {
-    color: #228822;
-}
-
-.mod-toolbox-rd a.tb-submitter {
-    color: #0055df;
-}
-
-.mod-toolbox-rd .tb-parent .tb-link-author,
-.mod-toolbox-rd .tb-tagline .tb-comment-author {
-    font-weight: bold;
-}
 
 .mod-toolbox-rd .tb-parent {
     font-size: 10px;
@@ -960,55 +872,6 @@ body.mod-toolbox-rd .tb-general-button img {
 
 .mod-toolbox-rd .tb-parent .tb-link-title {
     font-size: 13px;
-}
-
-.mod-toolbox-rd .tb-tagline .tb-comment-author:hover {
-    text-decoration: underline;
-}
-.mod-toolbox-rd.mod-toolbox-extra .tb-tagline .tb-comment-author.tb-submitter {
-	color: #fff;
-	background-color: #0055df;
-	font-weight: bold;
-	border-radius: 0px;
-	padding: 0px 2px;
-}
-
-.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-moderator {
-	color: #fff;
-	background-color: #228822;
-	font-weight: bold;
-	border-radius: 0px;
-	padding: 0px 2px;
-}
-
-.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-admin {
-	color: #fff;
-	background-color: #e91e1e;
-	font-weight: bold;
-	border-radius: 0px;
-	padding: 0px 2px;
-}
-
-.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-unknown {
-	color: #fff;
-	background-color: #ff8d64;
-	font-weight: bold;
-	border-radius: 0px;
-	padding: 0px 2px;
-}
-
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter:hover,
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-moderator:hover,
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin:hover,
-.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown:hover {
-    color: #fff;
-    opacity: 0.8;
-    text-decoration: none;
-}
-
-.mod-toolbox-rd .tb-comment-data {
-    margin: 5px;
-    font-size: 10px;
 }
 
 .mod-toolbox-rd .tb-more-comments {
@@ -1022,19 +885,274 @@ body.mod-toolbox-rd .tb-general-button img {
     font-weight: bold;
 }
 
-.mod-toolbox-rd ul.tb-comment-user-reports {
+/*
+-----------
+    Submission entry rebuilding css
+-----------
+*/
+
+.mod-toolbox-rd .tb-submission-score {
+    margin: 10px 0;
+    font-weight: bold;
+    width: 4em;
+    text-align: center;
+}
+
+.mod-toolbox-rd .tb-submission {
+    display: flex;
+    margin-bottom: 10px 0;
+    border-bottom: solid 1px gray;
+    padding: 5px;
+}
+
+.mod-toolbox-rd .tb-submission-title a {
+    font-size: 16px;
+}
+
+.mod-toolbox-rd .tb-submission-title span.tb-domain,
+.mod-toolbox-rd .tb-submission-title span.tb-domain a {
+    font-size: 10px;
+}
+
+.mod-toolbox-rd .tb-self-expando-button {
+    float: left;
+    height: 25px;
+    width: 25px;
+    border: solid 1px;
+    margin: 3px;
+}
+
+.mod-toolbox-rd .tb-self-expando {
+    margin-top: 5px;
+}
+
+
+.mod-toolbox-rd .tb-noImage-thumbnail {
+    height: 40px;
+    width: 70px;
+    background: #d8d8d8;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    text-decoration: none !important;
+    color: #808080;
+}
+
+.mod-toolbox-rd  a.tb-submission-thumbnail {
+    margin: 5px;
+}
+
+/*
+-----------
+    Comment & submission entry rebuilding css (shared)
+-----------
+*/
+
+.mod-toolbox-rd .tb-tagline {
+    font-size: 10px;
+    padding: 3px;
+}
+
+.mod-toolbox-rd .tb-submission-buttons,
+.mod-toolbox-rd .tb-comment-buttons {
+    font-size: 11px;
+    margin-left: 8px;
+    margin-bottom: 8px;
+}
+
+
+.mod-toolbox-rd .tb-submission-button,
+.mod-toolbox-rd .tb-comment-button {
+    margin-right: 10px;
+}
+
+.mod-toolbox-rd .tb-submission-button
+.mod-toolbox-rd .tb-comment-button {
+    text-decoration: underline;
+}
+
+.mod-toolbox-rd .tb-self-expando .md,
+.mod-toolbox-rd .tb-comment-body .md {
+    color: #222222;
+    max-width: 60em;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md p,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md p {
+    border: none;
+    padding: 0;
+    line-height: inherit;
+    margin-bottom: 5px;
+    font-size: 13px;
+    line-height: 1.32;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md ul,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md ul {
+    font-size: 13px;
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md h1,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md h2,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md h2 {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md h3,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md h3 {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+
+
+
+.mod-toolbox-rd .tb-submission .tb-self-expando  table td,
+.mod-toolbox-rd .tb-comment .tb-comment-body table td {
+    border: solid 1px #d0d0d0;
+    padding: 3px;
+    text-align: left;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando  table th,
+.mod-toolbox-rd .tb-comment .tb-comment-body table th {
+    font-weight: bold;
+    border: solid 1px #d0d0d0;
+    padding: 3px;
+
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando blockquote,
+.mod-toolbox-rd .tb-comment .tb-comment-body blockquote {
+    background: #eae5e5;
+    padding: 3px;
+    margin: 10px;
+    color: #4c4c4c
+}
+
+.mod-toolbox-rd .tb-submission-flair,
+.mod-toolbox-rd .tb-comment-flair {
+    background-color: #d8d8d8;
+    padding: 2px;
+}
+
+.mod-toolbox-rd .tb-submission-gilded,
+.mod-toolbox-rd .tb-comment-gilded {
+    color: #f78a17
+}
+
+.mod-toolbox-rd .tb-submission-edited,
+.mod-toolbox-rd .tb-comment-edited {
+    font-style: italic;
+}
+
+.mod-toolbox-rd  .tb-submission-entry.removed,
+.mod-toolbox-rd  .tb-comment-entry.removed {
+    border: solid 2px #ff0000;
+}
+
+.mod-toolbox-rd  .tb-submission-entry.spammed,
+.mod-toolbox-rd  .tb-comment-entry.spammed {
+    border: solid 2px #a03030;
+}
+
+.mod-toolbox-rd a.tb-moderator {
+    color: #228822;
+}
+
+.mod-toolbox-rd a.tb-submitter {
+    color: #0055df;
+}
+
+.mod-toolbox-rd .tb-parent .tb-author,
+.mod-toolbox-rd .tb-parent .tb-link-author,
+.mod-toolbox-rd .tb-tagline .tb-comment-author {
+    font-weight: bold;
+}
+
+.mod-toolbox-rd ul.tb-user-reports {
     width: 80%;
     background-color: #f6e69f;
     border: thin solid black;
     padding: 5px;
 }
 
-.mod-toolbox-rd ul.tb-comment-user-reports li:first-of-type {
+.mod-toolbox-rd ul.tb-user-reports li:first-of-type {
     margin-bottom: 5px;
     font-weight: bold;
-
 }
 
+.mod-toolbox-rd .tb-tagline .tb-submission-author:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author:hover {
+    text-decoration: underline;
+}
+
+.mod-toolbox-rd.mod-toolbox-extra .tb-tagline .tb-submission-author.tb-submitter,
+.mod-toolbox-rd.mod-toolbox-extra .tb-tagline .tb-comment-author.tb-submitter {
+	color: #fff;
+	background-color: #0055df;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-submission-author.tb-moderator,
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-moderator {
+	color: #fff;
+	background-color: #228822;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-submission-author.tb-admin,
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-admin {
+	color: #fff;
+	background-color: #e91e1e;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-submission-author.tb-unknown,
+.mod-toolbox-rd.mod-toolbox-extra  .tb-tagline .tb-comment-author.tb-unknown {
+	color: #fff;
+	background-color: #ff8d64;
+	font-weight: bold;
+	border-radius: 0px;
+	padding: 0px 2px;
+}
+.mod-toolbox-rd .tb-tagline .tb-submission-author.tb-submitter:hover,
+.mod-toolbox-rd .tb-tagline .tb-submission-author.tb-moderator:hover,
+.mod-toolbox-rd .tb-tagline .tb-submission-author.tb-admin:hover,
+.mod-toolbox-rd .tb-tagline .tb-submission-author.tb-unknown:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-submitter:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-moderator:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-admin:hover,
+.mod-toolbox-rd .tb-tagline .tb-comment-author.tb-unknown:hover {
+    color: #fff;
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.mod-toolbox-rd .tb-submission-data,
+.mod-toolbox-rd .tb-comment-data {
+    margin: 5px;
+    font-size: 10px;
+}
 /*
 ------------
     Action buttons, are used where you normally would use actual button elements and where you need to be absolutely certain they always show in the same way.

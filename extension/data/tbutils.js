@@ -2760,7 +2760,7 @@ function initwrapper() {
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
         const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
-        const userProfile = /^\/user\/([^/]*?)\/?(overview|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
+        const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
 
         // This function after being first called will watch for pushstate changes.
         // Once a change is detected it will abstract all the context information from url, update TBUtils variables and emit all information in an event.
@@ -2853,10 +2853,16 @@ function initwrapper() {
                         };
                     } else if (userProfile.test(location.pathname)) {
                         const matchDetails = location.pathname.match(userProfile);
+                        let listing = matchDetails[2];
+
+                        // silly new profile bussines.
+                        if (listing === 'posts') {
+                            listing = 'submitted';
+                        }
                         contextObject.pageType = 'userProfile';
                         contextObject.pageDetails = {
                             'user': matchDetails[1],
-                            'listing': matchDetails[2]
+                            'listing': listing
                         };
                     // "Unknown" pageType.
                     } else {

@@ -330,9 +330,19 @@
         return positions;
     };
 
+    TBui.switchOverlayTab = function switchOverlayTab(overlayClass, tabName) {
+        const $overlay = $body.find(`.${overlayClass}`);
 
+        let $tab = $overlay.find(`[data-module="${tabName}"]`)
+
+        $overlay.find('.tb-window-tabs a').removeClass('active');
+        $tab.addClass('active');
+
+        $('.tb-window-wrapper .tb-window-tab').hide();
+        $(`.tb-window-wrapper .tb-window-tab.${tabName}`).show();
+    };
     // Window Overlay HTML generator
-    TBui.overlay = function overlay(title, tabs, buttons, css_class, single_footer) {
+    TBui.overlay = function overlay(title, tabs, buttons, css_class, single_footer, details) {
         buttons = (typeof buttons !== 'undefined') ? buttons : '';
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
         single_footer = (typeof single_footer !== 'undefined') ? single_footer : false;
@@ -340,12 +350,22 @@
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         let $overlay = $(`
 <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ``}">
-<div class="tb-window-wrapper">
-    <div class="tb-window-header">
-        <div class="tb-window-title">${title}</div>
-        <div class="buttons">${buttons}<a class="close" href="javascript:;">✕</a></div>
+    <div class="tb-window-wrapper">
+        <div class="tb-window-header">
+            <div class="tb-window-title">${title}</div>
+            <div class="buttons">
+                ${buttons}<a class="close" href="javascript:;">✕</a>
+            </div>
+        </div>
     </div>
 </div>`);
+
+        if(details) {
+
+            $.each(details, function(key, value) {
+                $overlay.attr(`data-${key}`, value);
+            });
+        }
 
         // we need a way to handle closing the overlay with a default, but also with use-specific cleanup code to run
         // NOTE: Click handler binds should be attached to the parent element of the relevant object, not $(body).

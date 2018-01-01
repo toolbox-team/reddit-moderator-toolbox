@@ -1159,12 +1159,12 @@ body.mod-toolbox-rd .tb-general-button img {
     font-style: italic;
 }
 
-.mod-toolbox-rd  .tb-submission-entry.removed,
+.mod-toolbox-rd  .tb-submission.removed,
 .mod-toolbox-rd  .tb-comment-entry.removed {
     border: solid 2px #ff0000;
 }
 
-.mod-toolbox-rd  .tb-submission-entry.spammed,
+.mod-toolbox-rd  .tb-submission.spammed,
 .mod-toolbox-rd  .tb-comment-entry.spammed {
     border: solid 2px #a03030;
 }

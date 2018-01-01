@@ -1408,12 +1408,12 @@ span.rate-limit-explain {
     right: 0;
     bottom: 0;
     display: block;
-    z-index: 6000;
     position: fixed;
     margin-left: 0;
     margin-right: 0;
     width: auto;
     height: 10px;
+    z-index: 2147483645;
     background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
 }
 
@@ -1425,12 +1425,12 @@ span.rate-limit-explain {
     right: 0;
     bottom: 0;
     display: block;
-    z-index: 6000;
     position: fixed;
     margin-left: 0;
     margin-right: 0;
     width: auto;
     height: 10px;
+    z-index: 2147483645;
     background: url("https://creesch.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar_non_persistant.gif") center center fixed;
 }
 

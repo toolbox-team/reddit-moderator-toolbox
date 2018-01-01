@@ -4,6 +4,16 @@
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
+    // new profiles have some weird css going on. This remedies the weirdness...
+    window.addEventListener('TBNewPage', function (event) {
+        if(event.detail.pageType === 'userProfile') {
+            $body.addClass('mod-toolbox-profile');
+        } else {
+            $body.removeClass('mod-toolbox-profile');
+        }
+
+    });
+
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
     $body.on('click', '.tb-bracket-button', function(event) {
         event.stopPropagation();
@@ -824,10 +834,11 @@
      * @function tbRedditEvent
      * @memberof TBui
      * @param {object} $elements jquery object containing the e
-     * @param {string} type type of element the events need to be send for.
+     * @param {string} types comma seperated list of type of elements the events need to be send for.
      */
-    TBui.tbRedditEvent = function tbRedditEvent($elements, type) {
-        if(type === 'comment') {
+    TBui.tbRedditEvent = function tbRedditEvent($elements, types) {
+        const typesArray = types.split(',');
+        if(typesArray.includes('comment')) {
             const $comments = $elements.find('.tb-comment');
             TBUtils.forEachChunkedDynamic($comments, function(value) {
                 const $element = $(value);
@@ -867,6 +878,42 @@
 
             }, {framerate: 40});
         }
+        if(typesArray.includes('submission')) {
+            const $submissions = $elements.find('.tb-submission');
+            TBUtils.forEachChunkedDynamic($submissions, function(value) {
+                const $element = $(value);
+                const $jsApiPlaceholder = $element.find('.tb-jsapi-author-container');
+                const jsApiPlaceholder = $jsApiPlaceholder[0];
+
+                // We don't want to send events for things already handled.
+                if(!$jsApiPlaceholder.hasClass('.tb-frontend-container')) {
+
+                    const submissionAuthor = $element.attr('data-submission-author'),
+                        postID = $element.attr('data-post-id'),
+                        subredditName = $element.attr('data-submission-subreddit'),
+                        subredditType = $element.attr('data-submission-subreddit-type');
+
+                    const detailObject = {
+                        'type': 'postAuthor',
+                        'data': {
+                            'author': submissionAuthor,
+                            'post': {
+                                'id': postID
+                            },
+                            'subreddit': {
+                                'name': subredditName,
+                                'type': subredditType
+                            }
+                        }
+                    };
+
+                    const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
+                    console.log('fake event', detailObject)
+                    jsApiPlaceholder.dispatchEvent(tbRedditEvent);
+                }
+
+            }, {framerate: 40});
+        }
 
     };
 
@@ -888,6 +935,7 @@
             submissionCreatedUTC = submission.data.created_utc, // unix epoch
             submissionPermalink = submission.data.permalink,
             submissionSubreddit = submission.data.subreddit,
+            submissionSubredditType = submission.data.subreddit_type,
             submissionName = submission.data.name,
             submissionUrl = submission.data.url,
             submissionTitle = submission.data.title,
@@ -991,7 +1039,7 @@
         }
 
         let $buildsubmission = $(`
-            <div class="tb-submission ${submissionStatus}">
+            <div class="tb-submission ${submissionStatus}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-submission-subreddit="${submissionSubreddit}" data-submission-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score">${submissionScore}</div>
                 <a class="tb-submission-thumbnail" href="${submissionUrl}">
                     ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
@@ -1006,6 +1054,7 @@
                     ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>': ``}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs"></span>
+                        <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? `- <span class="tb-pinned-tagline" title="pinned to this user's profile">pinned</span>` : ''}
                         ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
                     </div>
@@ -1106,6 +1155,7 @@
         $buildsubmission.find('p').addClass('tb-comment-p');
         return $buildsubmission;
     };
+
 
     /**
      * Will build a comment given a reddit API comment object.
@@ -1451,7 +1501,7 @@
         return $commentContainer;
     };
 
-    // handling of comment actions.
+    // handling of comment & submisstion actions.
     $body.on('click', '.tb-comment-button-approve', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
@@ -1552,6 +1602,20 @@
 
 
     });
+
+    $body.on('click', '.tb-self-expando-button', function() {
+        const $this = $(this);
+        const thisState = $this.text();
+        const $selfText = $this.closest('.tb-submission').find('.tb-self-expando');
+        $selfText.toggle();
+
+        if(thisState === '+') {
+            $this.text('-');
+        } else {
+            $this.text('+');
+        }
+    });
+
 
 
 

@@ -7,9 +7,6 @@ function profilepro() {
     self.config['betamode'] = false;
     TB.register_module(self);
 
-
-
-
     self.init = function () {
         const $body = $('body');
 
@@ -66,7 +63,7 @@ function profilepro() {
 
                 }).then(function() {
                     setTimeout(function () {
-                        TBui.tbRedditEvent($siteTable, 'comment');
+                        TBui.tbRedditEvent($siteTable, 'comment,submission');
                         TB.ui.longLoadSpinner(false);
                     }, 1000);
                 });

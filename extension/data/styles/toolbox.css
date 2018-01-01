@@ -5,6 +5,18 @@ div#tb-snoo-footer {
     margin: 50px auto auto auto;
 }
 
+/*
+========================
+
+    TB reddit css fixes
+
+========================
+*/
+
+
+.mod-toolbox-profile a {
+    text-decoration: none;
+}
 
 
 /*
@@ -891,8 +903,13 @@ body.mod-toolbox-rd .tb-general-button img {
 -----------
 */
 
+.tb-submission-entry {
+    width: 100%;
+    margin-top: 5px;
+}
+
 .mod-toolbox-rd .tb-submission-score {
-    margin: 10px 0;
+    margin: 20px 0;
     font-weight: bold;
     width: 4em;
     text-align: center;
@@ -900,9 +917,9 @@ body.mod-toolbox-rd .tb-general-button img {
 
 .mod-toolbox-rd .tb-submission {
     display: flex;
-    margin-bottom: 10px 0;
-    border-bottom: solid 1px gray;
+    margin: 5px;
     padding: 5px;
+    background-color: #f1f1f1;
 }
 
 .mod-toolbox-rd .tb-submission-title a {
@@ -916,14 +933,23 @@ body.mod-toolbox-rd .tb-general-button img {
 
 .mod-toolbox-rd .tb-self-expando-button {
     float: left;
-    height: 25px;
-    width: 25px;
-    border: solid 1px;
+    color: #808080;
+    background: #d8d8d8;
+    padding: 5px;
+    height: 15px;
+    width: 15px;
     margin: 3px;
+    cursor: pointer;
+}
+
+.mod-toolbox-rd .tb-self-expando-button:hover {
+    background: #808080;
+    color: #d8d8d8;
 }
 
 .mod-toolbox-rd .tb-self-expando {
     margin-top: 5px;
+    display: none;
 }
 
 

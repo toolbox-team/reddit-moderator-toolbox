@@ -2859,6 +2859,9 @@ function initwrapper() {
                         if (listing === 'posts') {
                             listing = 'submitted';
                         }
+                        if (!listing) {
+                            listing = 'overview';
+                        }
                         contextObject.pageType = 'userProfile';
                         contextObject.pageDetails = {
                             'user': matchDetails[1],

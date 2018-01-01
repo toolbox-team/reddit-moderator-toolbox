@@ -13,7 +13,7 @@ function profilepro() {
     self.init = function () {
         const $body = $('body');
 
-        function makeProfile(user) {
+        function makeProfile(user, type) {
             TB.ui.longLoadSpinner(true);
             TB.ui.overlay(
                 `Toolbox profile for /u/${user}`,
@@ -22,7 +22,7 @@ function profilepro() {
                         title: 'profile',
                         tooltip: 'profile.',
                         content: `
-                            <div id="tb-comment-sitetable"></div>
+                            <div id="tb-sitetable"></div>
                         `,
                         footer: ''
                     }
@@ -38,10 +38,10 @@ function profilepro() {
                 $body.css('overflow', 'auto');
 
             });
-            let $siteTable = $body.find('#tb-comment-sitetable');
+            let $siteTable = $body.find('#tb-sitetable');
             $siteTable.empty();
-            // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
-            const inputURL = `https://www.reddit.com/user/${user}/submitted.json`;
+
+            const inputURL = `https://www.reddit.com/user/${user}/${type}.json`;
             $.getJSON(inputURL, {raw_json: 1}, function(data) {
 
                 const commentOptions = {
@@ -78,9 +78,9 @@ function profilepro() {
         }
 
         window.addEventListener('TBNewPage', function (event) {
-            if(event.detail.pageType === 'userProfile') {
-                console.log(event)
-                makeProfile(event.detail.pageDetails.user);
+            const popupTypes = ['comments', 'submitted', 'overview'];
+            if(event.detail.pageType === 'userProfile' && popupTypes.includes(event.detail.pageDetails.listing)) {
+                makeProfile(event.detail.pageDetails.user, event.detail.pageDetails.listing);
             }
 
         });

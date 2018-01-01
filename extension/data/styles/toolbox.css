@@ -1013,11 +1013,81 @@ body.mod-toolbox-rd .tb-general-button img {
     line-height: 1.32;
 }
 
+.mod-toolbox-rd .tb-submission .tb-self-expando .md s,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md s
+.mod-toolbox-rd .tb-submission .tb-self-expando .md strike,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md strike
+.mod-toolbox-rd .tb-submission .tb-self-expando .md del,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md del {
+    text-decoration: line-through;
+    font-weight: inherit;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md em,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md em {
+    font-style: italic;
+    font-weight: inherit;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md strong,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md strong {
+    font-weight: 600;
+    font-style: inherit;
+}
+
+.mod-toolbox-rd .tb-comment .tb-self-expando .md code,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md code {
+    margin: 0 2px;
+    padding: 0 4px;
+    white-space: nowrap;
+    word-break: normal;
+    font-style: normal;
+    font-weight: normal;
+    font-family: monospace,monospace;
+}
+
+.mod-toolbox-rd .tb-comment .tb-self-expando .md pre,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md pre,
+.mod-toolbox-rd .tb-comment .tb-self-expando .md code,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md code {
+    border: 1px solid #e6e6de;
+    background-color: #fcfcfb;
+}
+
+.mod-toolbox-rd .tb-comment .tb-self-expando .md pre code,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md pre code {
+    white-space: pre;
+    background-color: transparent;
+    border: 0;
+    display: block;
+    padding: 0!important;
+}
+
+.mod-toolbox-rd .tb-comment .tb-self-expando .md pre,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md pre {
+    padding: 4px 9px;
+    overflow: auto;
+    margin-bottom: 5px;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md ol,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md ol {
+    font-size: 13px;
+    list-style-type: decimal;
+    padding-left: 40px;
+}
+
 .mod-toolbox-rd .tb-submission .tb-self-expando .md ul,
 .mod-toolbox-rd .tb-comment .tb-comment-body .md ul {
     font-size: 13px;
     list-style-type: disc;
     padding-left: 40px;
+}
+
+.mod-toolbox-rd .tb-submission .tb-self-expando .md ul li,
+.mod-toolbox-rd .tb-comment .tb-comment-body .md ul li {
+    line-height: 1.32;
+    margin-bottom: 3px;
 }
 
 .mod-toolbox-rd .tb-submission .tb-self-expando .md h1,
@@ -1044,6 +1114,10 @@ body.mod-toolbox-rd .tb-general-button img {
     margin-bottom: 3px;
 }
 
+.mod-toolbox-rd .tb-submission .tb-self-expando  table,
+.mod-toolbox-rd .tb-comment .tb-comment-body table {
+    margin-bottom: 5px;
+}
 
 
 .mod-toolbox-rd .tb-submission .tb-self-expando  table td,

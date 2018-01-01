@@ -17,3 +17,12 @@
     padding: 0 !important;
     margin-left: 4px;
 }
+
+.mod-toolbox-rd #tb-searchuser .tb-input.tb-comment-search-input {
+    width: 150px;
+}
+
+.mod-toolbox-rd #tb-search-suggest {
+    z-index: 2147483645;
+}
+

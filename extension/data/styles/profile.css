@@ -15,3 +15,37 @@
     margin-left: 10px;
     display: inline-block;
 }
+
+.mod-toolbox-rd .tb-mod-hidden,
+.mod-toolbox-rd .tb-mod-filtered {
+    display: none;
+}
+.mod-toolbox-rd .tb-filter-options {
+    margin: 10px 0;
+    padding: 1px;
+}
+
+.mod-toolbox-rd .tb-profile-options {
+    margin-left: 5px;
+}
+
+.mod-toolbox-rd .tb-load-more {
+    background-color: #f7fafd;
+    color: #696969;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    border-width: 0px 3px 0px 3px;
+    border-color: #b6c9dd;
+    border-style: solid;
+    padding: 5px;
+    margin: 5px;
+    text-decoration: none;
+}
+
+.mod-toolbox-rd .tb-load-more:hover {
+    border-color: #f7fafd;
+    background-color: #b6c9dd;
+    color: #ffffff;
+}

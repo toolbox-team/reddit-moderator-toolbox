@@ -873,8 +873,8 @@
                     const commentAuthor = $element.attr('data-comment-author'),
                         postID = $element.attr('data-comment-post-id'),
                         commentID = $element.attr('data-comment-id'),
-                        subredditName = $element.attr('data-comment-subreddit'),
-                        subredditType = $element.attr('data-comment-subreddit-type');
+                        subredditName = $element.attr('data-subreddit'),
+                        subredditType = $element.attr('data-subreddit-type');
 
                     const detailObject = {
                         'type': 'TBcommentAuthor',
@@ -912,8 +912,8 @@
 
                     const submissionAuthor = $element.attr('data-submission-author'),
                         postID = $element.attr('data-post-id'),
-                        subredditName = $element.attr('data-submission-subreddit'),
-                        subredditType = $element.attr('data-submission-subreddit-type');
+                        subredditName = $element.attr('data-subreddit'),
+                        subredditType = $element.attr('data-subreddit-type');
 
                     const detailObject = {
                         'type': 'postAuthor',
@@ -1069,7 +1069,7 @@
         }
 
         let $buildsubmission = $(`
-            <div class="tb-submission ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-submission-subreddit="${submissionSubreddit}" data-submission-subreddit-type="${submissionSubredditType}">
+            <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
                 <a class="tb-submission-thumbnail" href="${submissionUrl}">
                     ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
@@ -1083,7 +1083,7 @@
                     </div>
                     ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>': ``}
                     <div class="tb-tagline">
-                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs"></span>
+                        submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? `- <span class="tb-pinned-tagline" title="pinned to this user's profile">pinned</span>` : ''}
                         ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
@@ -1366,7 +1366,7 @@
         const commentOptionsJSON = TBUtils.escapeHTML(JSON.stringify(commentOptions));
         // Let's start building our comment.
         let $buildComment = $(`
-            <div class="tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-comment-subreddit="${commentSubreddit}" data-comment-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
+            <div class="tb-thing tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-subreddit="${commentSubreddit}" data-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
                     ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">

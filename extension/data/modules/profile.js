@@ -31,6 +31,8 @@ function profilepro() {
 
     self.init = function () {
         const $body = $('body');
+        let filterModThings = false;
+        let hideModActions = false;
 
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
             directProfileToLegacy = self.setting('directProfileToLegacy'),
@@ -53,6 +55,51 @@ function profilepro() {
                     }
                 }
             });
+        }
+
+        function hideModActionsThings(hide) {
+            const $things = $('.tb-thing');
+            if(hide) {
+                TBUtils.forEachChunkedDynamic($things, function(thing) {
+                    const $thing = $(thing);
+                    const modAction = $thing.find('.tb-moderator').length;
+                    if (modAction) {
+                        $thing.addClass('tb-mod-hidden');
+                    }
+                }, {framerate: 40});
+            } else {
+                TBUtils.forEachChunkedDynamic($things, function(thing) {
+                    const $thing = $(thing);
+                    const modAction = $thing.find('.tb-moderator').length;
+                    if (modAction) {
+                        $thing.removeClass('tb-mod-hidden');
+                    }
+                }, {framerate: 40});
+            }
+        }
+
+        function filterModdable(hide) {
+            const $things = $('.tb-thing');
+            if(hide) {
+                TBUtils.getModSubs(function () {
+
+                    TBUtils.forEachChunkedDynamic($things, function(thing) {
+                        const $thing = $(thing);
+                        const subreddit = TB.utils.cleanSubredditName($thing.attr('data-subreddit'));
+                        if (!TBUtils.mySubs.includes(subreddit)) {
+                            $thing.addClass('tb-mod-filtered');
+                        }
+                    }, {framerate: 40});
+
+                });
+            } else {
+                TBUtils.forEachChunkedDynamic($things, function(thing) {
+                    const $thing = $(thing);
+                    $thing.removeClass('tb-mod-filtered');
+                }, {framerate: 40});
+            }
+
+
         }
 
         function populateSearchSuggestion() {
@@ -178,7 +225,7 @@ function profilepro() {
 
 
                         if(results.length > 0) {
-                            addToSiteTable(results, $siteTable, function() {
+                            addToSiteTable(results, $siteTable, false, function() {
                                 TB.ui.longLoadSpinner(false);
                             });
                         } else {
@@ -192,7 +239,7 @@ function profilepro() {
             }
         }
 
-        function addToSiteTable(data, $siteTable, callback) {
+        function addToSiteTable(data, $siteTable, after, callback) {
             let commentOptions = {
                 'parentLink' : true,
                 'contextLink' : true,
@@ -222,14 +269,26 @@ function profilepro() {
 
 
             }).then(function() {
+                if(after) {
+                    $siteTable.append(`<div data-after="${after}" class="tb-load-more">load more</div>`);
+                }
                 setTimeout(function () {
                     TBui.tbRedditEvent($siteTable, 'comment,submission');
+                    if(filterModThings) {
+                        filterModdable(true);
+                    }
+                    if(hideModActions) {
+                        hideModActionsThings(true);
+                    }
                     return callback();
                 }, 1000);
             });
         }
 
-        function makeProfile(user, type, sort, renew) {
+        function makeProfile(user, type, options) {
+            const sort = options.sort || 'new';
+            const renew = options.renew || false;
+            const after = options.after || '';
             TB.ui.longLoadSpinner(true);
 
             let $overlay = $body.find('.tb-profile-overlay');
@@ -242,8 +301,8 @@ function profilepro() {
                             title: 'overview',
                             tooltip: 'Overview profile.',
                             content: `
-                                <div class="tb-profile-options-overview"></div>
-                                <div class="tb-sitetable-overview"></div>
+                                <div class="tb-profile-options tb-profile-options-overview"></div>
+                                <div class="tb-sitetable tb-sitetable-overview"></div>
                             `,
                             footer: ''
                         },
@@ -251,8 +310,8 @@ function profilepro() {
                             title: 'submitted',
                             tooltip: 'submitted profile.',
                             content: `
-                                <div class="tb-profile-options-submitted"></div>
-                                <div class="tb-sitetable-submitted"></div>
+                                <div class="tb-profile-options tb-profile-options-submitted"></div>
+                                <div class="tb-sitetable tb-sitetable-submitted"></div>
                             `,
                             footer: ''
                         },
@@ -260,8 +319,8 @@ function profilepro() {
                             title: 'comments',
                             tooltip: 'comment profile.',
                             content: `
-                                <div class="tb-profile-options-comments"></div>
-                                <div class="tb-sitetable-comments"></div>
+                                <div class="tb-profile-options tb-profile-options-comments"></div>
+                                <div class="tb-sitetable tb-sitetable-comments"></div>
                             `,
                             footer: ''
                         }
@@ -278,17 +337,25 @@ function profilepro() {
                 $body.on('click', '.tb-profile-overlay .close', function () {
                     $('.tb-profile-overlay').remove();
                     $body.css('overflow', 'auto');
-
+                    filterModThings = false;
                 });
 
             }
             let $siteTable = $overlay.find(`.tb-sitetable-${type}`);
             let $options = $overlay.find(`.tb-profile-options-${type}`);
 
-            if($siteTable.hasClass('tb-sitetable-processed') && !renew) {
+            $siteTable.attr({
+                'data-user' : user,
+                'data-sort' : sort,
+                'data-listing' : type
+            });
+
+            if($siteTable.hasClass('tb-sitetable-processed') && !renew && !after) {
                 TB.ui.longLoadSpinner(false);
                 return;
             }
+            // Prevent some issues with people selecting a new sort method while toolbox is still busy.
+            $options.hide();
 
             let $sortSelect = $options.find('.tb-sort-select');
             if(!$sortSelect.length) {
@@ -300,46 +367,102 @@ function profilepro() {
                     <option value="hot">hot</option>
                 </select>`).appendTo($options);
             }
-            // Prevent some issues with people selecting a new sort method while toolbox is still busy.
-            $sortSelect.hide();
+
 
             $sortSelect.val(sort);
+
+            // Filter options
+            let $filterOptions = $options.find('.tb-filter-options');
+            if(!$filterOptions.length) {
+                $filterOptions = $(`
+                <div class="tb-filter-options">
+                    <button class="tb-general-button tb-filter-moddable">${filterModThings? 'Show unmoddable' : `Hide unmoddable`}</button>
+                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Don't show mod actions`}</a>
+                </div>`).appendTo($options);
+            }
+            // comment search
             if(!renew && type === 'comments' && !$body.find('#tb-searchuser').length) {
                 commentSearch($options);
             }
 
-            $body.find('#tb-searchuser').hide();
+            if(!after) {
+                $siteTable.addClass('tb-sitetable-processed');
+                $siteTable.empty();
+            }
 
-            $siteTable.addClass('tb-sitetable-processed');
-            $siteTable.empty();
 
             TBui.switchOverlayTab('tb-profile-overlay', type);
             const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
-            $.getJSON(inputURL, {raw_json: 1, sort: sort}, function(data) {
-
-                addToSiteTable(data.data.children, $siteTable, function() {
+            $.getJSON(inputURL, {
+                raw_json: 1,
+                'after': after,
+                sort: sort,
+                'limit': 25
+            }, function(data) {
+                let after = false;
+                if (data.data.after) {
+                    after = data.data.after;
+                }
+                addToSiteTable(data.data.children, $siteTable, after, function() {
                     TB.ui.longLoadSpinner(false);
-                    $sortSelect.show();
-                    $body.find('#tb-searchuser').show();
+                    $options.show();
                 });
             });
 
         }
+
+        $body.on('click', '.tb-load-more', function() {
+            const $this = $(this);
+            const $siteTable = $this.closest('.tb-sitetable');
+            const after = $this.attr('data-after'),
+                user = $siteTable.attr('data-user'),
+                listing = $siteTable.attr('data-listing'),
+                sort = $siteTable.attr('data-sort');
+            makeProfile(user, listing, {sort: sort, renew: false, after: after});
+
+            $this.remove();
+        });
 
         $body.on('change keydown', '.tb-sort-select', function () {
             const $this = $(this);
             const newSort = $this.val(),
                 user = $this.closest('.tb-page-overlay').attr('data-user'),
                 listing = $this.attr('data-type');
-            makeProfile(user, listing, newSort, true);
+            makeProfile(user, listing, {sort: newSort, renew: true});
 
+        });
+
+        $body.on('click', '.tb-filter-moddable', function() {
+            const $filterMod = $body.find('.tb-filter-moddable');
+            if(filterModThings) {
+                filterModdable(false);
+                $filterMod.text(`Hide unmoddable`);
+                filterModThings = false;
+            } else {
+                filterModdable(true);
+                $filterMod.text('Show unmoddable');
+                filterModThings = true;
+            }
+        });
+
+        $body.on('click', '.tb-hide-mod-comments', function() {
+            const $hideMod = $('.tb-hide-mod-comments');
+            if(hideModActions) {
+                hideModActionsThings(false);
+                $hideMod.text(`Don't show mod actions`);
+                hideModActions = false;
+            } else {
+                hideModActionsThings(true);
+                $hideMod.text('Show mod actions');
+                hideModActions = true;
+            }
         });
 
         $body.on('click', '.tb-profile-overlay .tb-window-tabs a', function() {
             const $this = $(this);
             const listing = $this.attr('data-module'),
                 user = $this.closest('.tb-page-overlay').attr('data-user');
-            makeProfile(user, listing, 'new', false);
+            makeProfile(user, listing, {sort: 'new'});
         });
 
         window.addEventListener('TBNewPage', function (event) {
@@ -358,7 +481,7 @@ function profilepro() {
                     }
                 });
                 if(alwaysTbProfile) {
-                    makeProfile(user, listing, 'new', false);
+                    makeProfile(user, listing, {sort: 'new', renew: false});
                 }
 
             }
@@ -373,7 +496,7 @@ function profilepro() {
             const user = $this.attr('data-user'),
                 listing = $this.attr('data-listing');
 
-            makeProfile(user, listing, 'new', false);
+            makeProfile(user, listing, {sort: 'new', renew: false});
         });
 
     };

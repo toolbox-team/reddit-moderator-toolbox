@@ -12,21 +12,3 @@
     color: #F7FAFD;
     font-weight: bold;
 }
-
-.mod-toolbox-rd #tb-searchuser input[type="submit"] {
-    padding: 0 !important;
-    margin-left: 4px;
-}
-
-.mod-toolbox-rd #tb-searchuser .tb-input.tb-comment-search-input {
-    width: 150px;
-}
-
-.mod-toolbox-rd #tb-search-suggest {
-    z-index: 2147483645;
-}
-
-.mod-toolbox-rd form#tb-searchuser {
-    margin-left: 10px;
-    display: inline-block;
-}

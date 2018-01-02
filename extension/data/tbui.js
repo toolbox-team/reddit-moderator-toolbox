@@ -963,6 +963,7 @@
 
             // submission details
             submissionScore = submission.data.score, // integer
+            submissionLikes = submission.data.likes, // boolean or null
             submissionIsSelf = submission.data.is_self,
             submissionEdited = submission.data.edited,
             submissionGilded = submission.data.gilded,
@@ -991,6 +992,14 @@
         const submissionReadableCreatedUTC = TBUtils.timeConverterRead(submissionCreatedUTC),
             createdTimeAgo = TBUtils.timeConverterISO(submissionCreatedUTC);
 
+        console.log(submissionLikes === null)
+        // vote status
+        let voteState = 'neutral';
+        if(submissionLikes !== null && !submissionLikes) {
+            voteState = 'disliked';
+        } else if(submissionLikes) {
+            voteState = 'liked';
+        }
         // Let's figure out what the current state is of the submission (approved, removed, spammed or neutral)
         let submissionStatus,
             submissionStatusUTC,
@@ -1057,14 +1066,14 @@
         }
 
         let $buildsubmission = $(`
-            <div class="tb-submission ${submissionStatus}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-submission-subreddit="${submissionSubreddit}" data-submission-subreddit-type="${submissionSubredditType}">
-                <div class="tb-submission-score">${submissionScore}</div>
+            <div class="tb-submission ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-submission-subreddit="${submissionSubreddit}" data-submission-subreddit-type="${submissionSubredditType}">
+                <div class="tb-submission-score ${voteState}">${submissionScore}</div>
                 <a class="tb-submission-thumbnail" href="${submissionUrl}">
                     ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
                 </a>
                 <div class="tb-submission-entry">
                     <div class="tb-submission-title">
-                        <a href="${submissionUrl}">${submissionTitle}</a>
+                        <a class="tb-title" href="${submissionUrl}">${submissionTitle}</a>
                         <span class="tb-domain">
                             (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
                         </span>

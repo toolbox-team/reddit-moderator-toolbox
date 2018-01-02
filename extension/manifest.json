@@ -55,6 +55,7 @@
                 "data/styles/notifier.css",
                 "data/styles/usernotes.css",
                 "data/styles/config.css",
+                "data/styles/profile.css",
                 "data/styles/codemirror/codemirror.css",
                 "data/styles/codemirror/dialog.css",
                 "data/styles/codemirror/fullscreen.css",

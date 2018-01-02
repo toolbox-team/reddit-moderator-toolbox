@@ -902,19 +902,33 @@ body.mod-toolbox-rd .tb-general-button img {
     Submission entry rebuilding css
 -----------
 */
-
-.tb-submission-entry {
+.mod-toolbox-rd .tb-submission-entry {
     width: 100%;
     margin-top: 5px;
 }
 
+.mod-toolbox-rd .tb-pinned-tagline,
+.mod-toolbox-rd .tb-page-overlay .tb-submission.pinned .tb-submission-title a.tb-title {
+    font-weight: bold;
+    color: #008985;
+}
+
+
 .mod-toolbox-rd .tb-submission-score {
     margin: 20px 0;
+    color: #c6c6c6;
     font-weight: bold;
     width: 4em;
     text-align: center;
 }
 
+.mod-toolbox-rd .tb-submission-score.liked {
+    color: #FF8B60;
+}
+
+.mod-toolbox-rd .tb-submission-score.disliked {
+    color: #9494FF;
+}
 .mod-toolbox-rd .tb-submission {
     display: flex;
     margin: 5px;

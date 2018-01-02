@@ -20,6 +20,12 @@ function profilepro() {
         'title': 'Open legacy user overview when clicking on profile links.'
     });
 
+    self.register_setting('subredditColor', {
+        'type': 'boolean',
+        'default': TB.storage.getSetting('QueueTools', 'subredditColor', false),
+        'hidden': true
+    });
+
 
     TB.register_module(self);
 
@@ -27,7 +33,8 @@ function profilepro() {
         const $body = $('body');
 
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
-            directProfileToLegacy = self.setting('directProfileToLegacy');
+            directProfileToLegacy = self.setting('directProfileToLegacy'),
+            subredditColor = self.setting('subredditColor');
 
         if(directProfileToLegacy) {
             $body.on('click', 'a', function(event) {
@@ -186,13 +193,20 @@ function profilepro() {
         }
 
         function addToSiteTable(data, $siteTable, callback) {
-            const commentOptions = {
+            let commentOptions = {
                 'parentLink' : true,
                 'contextLink' : true,
                 'contextPopup' : true,
                 'fullCommentsLink' : true,
                 'overviewData': true
             };
+
+            let submissionOptions = {};
+
+            if(subredditColor) {
+                commentOptions.subredditColor = true;
+                submissionOptions.subredditColor = true;
+            }
             TBUtils.forEachChunkedDynamic(data, function(entry) {
                 if(entry.kind === `t1`) {
                     let $comment = TBui.makeSingleComment(entry, commentOptions);
@@ -201,7 +215,7 @@ function profilepro() {
                 }
 
                 if(entry.kind === `t3`) {
-                    let $submission = TBui.makeSubmissionEntry(entry);
+                    let $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
                     $siteTable.append($submission);
                     $('time.timeago').timeago();
                 }

@@ -19,6 +19,9 @@
         event.stopPropagation();
     });
 
+    const subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
+
+
 
     // Icons NOTE: string line length is ALWAYS 152 chars
     TBui.iconWrench = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1d
@@ -333,7 +336,7 @@
     TBui.switchOverlayTab = function switchOverlayTab(overlayClass, tabName) {
         const $overlay = $body.find(`.${overlayClass}`);
 
-        let $tab = $overlay.find(`[data-module="${tabName}"]`)
+        let $tab = $overlay.find(`[data-module="${tabName}"]`);
 
         $overlay.find('.tb-window-tabs a').removeClass('active');
         $tab.addClass('active');
@@ -940,10 +943,11 @@
      * @function makeSubmissionEntry
      * @memberof TBui
      * @param {object} submission reddit API submission object.
+     * @param {object} submissionOptions object denoting what needs to be included.
      * @returns {object} jquery object with the build submission.
      */
 
-    TBui.makeSubmissionEntry = function makeSubmissionEntry(submission) {
+    TBui.makeSubmissionEntry = function makeSubmissionEntry(submission, submissionOptions) {
         // Misc
         const canModsubmission = submission.data.can_mod_post,
 
@@ -992,7 +996,6 @@
         const submissionReadableCreatedUTC = TBUtils.timeConverterRead(submissionCreatedUTC),
             createdTimeAgo = TBUtils.timeConverterISO(submissionCreatedUTC);
 
-        console.log(submissionLikes === null)
         // vote status
         let voteState = 'neutral';
         if(submissionLikes !== null && !submissionLikes) {
@@ -1180,6 +1183,11 @@
             }
         }
         $buildsubmission.find('p').addClass('tb-comment-p');
+        if(submissionOptions && submissionOptions.subredditColor) {
+            const subColor = TBUtils.stringToColor(submissionSubreddit + subredditColorSalt);
+            $buildsubmission.css(`border-left`, `solid 3px ${subColor}`);
+        }
+
         return $buildsubmission;
     };
 
@@ -1189,11 +1197,11 @@
      * @function makeSingleComment
      * @memberof TBui
      * @param {object} comment reddit API comment object.
-     * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
+     * @param {object} commentOptions object denoting what needs to be included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment.
      */
 
-    TBui.makeSingleComment = function makeSingleComment(comment, commentOptions) {
+    TBui.makeSingleComment = function makeSingleComment(comment, commentOptions = {}) {
         // Misc
         const canModComment = comment.data.can_mod_post,
 
@@ -1492,6 +1500,12 @@
             }
         }
         $buildComment.find('p').addClass('tb-comment-p');
+
+        if(commentOptions.subredditColor) {
+            const subColor = TBUtils.stringToColor(commentSubreddit + subredditColorSalt);
+            $buildComment.css(`border-left`, `solid 3px ${subColor}`);
+        }
+
         return $buildComment;
 
     };

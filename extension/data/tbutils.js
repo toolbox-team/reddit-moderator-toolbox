@@ -2181,6 +2181,36 @@ function initwrapper() {
                 });
         };
 
+        TBUtils.markOver18 = function (id, callback) {
+            $.post(`${TBUtils.baseDomain}/api/marknsfw`, {
+                id: id,
+                uh: TBUtils.modhash
+            })
+                .done(function () {
+                    if (typeof callback !== 'undefined')
+                        callback(true);
+                })
+                .fail(function (error) {
+                    if (typeof callback !== 'undefined')
+                        callback(false, error);
+                });
+        };
+
+        TBUtils.unMarkOver18 = function (id, callback) {
+            $.post(`${TBUtils.baseDomain}/api/unmarknsfw`, {
+                uh: TBUtils.modhash,
+                id: id
+            })
+                .done(function () {
+                    if (typeof callback !== 'undefined')
+                        callback(true);
+                })
+                .fail(function (error) {
+                    if (typeof callback !== 'undefined')
+                        callback(false, error);
+                });
+        };
+
         TBUtils.lockThread = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/lock`, {
                 id: id,

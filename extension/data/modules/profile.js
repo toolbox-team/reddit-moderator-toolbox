@@ -357,29 +357,25 @@ function profilepro() {
             // Prevent some issues with people selecting a new sort method while toolbox is still busy.
             $options.hide();
 
-            let $sortSelect = $options.find('.tb-sort-select');
-            if(!$sortSelect.length) {
-                $sortSelect = $(`
-                <select class="tb-sort-select tb-action-button" data-type="${type}">
-                    <option value="new">new</option>
-                    <option value="top">top</option>
-                    <option value="controversial">controversial</option>
-                    <option value="hot">hot</option>
-                </select>`).appendTo($options);
-            }
-
-
-            $sortSelect.val(sort);
-
             // Filter options
             let $filterOptions = $options.find('.tb-filter-options');
             if(!$filterOptions.length) {
                 $filterOptions = $(`
                 <div class="tb-filter-options">
+                    <select class="tb-sort-select tb-general-button" data-type="${type}">
+                        <option value="new">new</option>
+                        <option value="top">top</option>
+                        <option value="controversial">controversial</option>
+                        <option value="hot">hot</option>
+                    </select>
                     <button class="tb-general-button tb-filter-moddable">${filterModThings? 'Show unmoddable' : `Hide unmoddable`}</button>
-                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Don't show mod actions`}</a>
+                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Hide mod actions`}</a>
                 </div>`).appendTo($options);
             }
+
+            const $sortSelect = $filterOptions.find('.tb-sort-select');
+
+            $sortSelect.val(sort);
             // comment search
             if(!renew && type === 'comments' && !$body.find('#tb-searchuser').length) {
                 commentSearch($options);
@@ -449,7 +445,7 @@ function profilepro() {
             const $hideMod = $('.tb-hide-mod-comments');
             if(hideModActions) {
                 hideModActionsThings(false);
-                $hideMod.text(`Don't show mod actions`);
+                $hideMod.text(`Hide mod actions`);
                 hideModActions = false;
             } else {
                 hideModActionsThings(true);

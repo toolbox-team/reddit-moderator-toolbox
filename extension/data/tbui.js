@@ -972,6 +972,8 @@
             submissionEdited = submission.data.edited,
             submissionGilded = submission.data.gilded,
             submissionPinned = submission.data.pinned,
+            submissionLocked = submission.data.locked,
+            submissionOver18 = submission.data.over_18,
             submissionNumComments = submission.data.num_comments,
             submissionUserReports = submission.data.user_reports, // array with reports by users
 
@@ -1071,7 +1073,7 @@
         let $buildsubmission = $(`
             <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
-                <a class="tb-submission-thumbnail" href="${submissionUrl}">
+                <a class="tb-submission-thumbnail ${submissionOver18 ? 'nsfw' : ''}" href="${submissionUrl}">
                     ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
                 </a>
                 <div class="tb-submission-entry">
@@ -1169,6 +1171,9 @@
 
         }
 
+        if(submissionOver18) {
+            $(`<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>`).prependTo($submissionButtonList);
+        }
 
         // Now add mod action buttons if applicable.
         if (canModsubmission) {
@@ -1180,6 +1185,18 @@
             if (submissionStatus === 'approved' || submissionStatus === 'neutral') {
                 $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
                 <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
+            }
+
+            if (submissionLocked) {
+                $(`<a class="tb-submission-button tb-submission-button-unlock" data-fullname="${submissionName}" href="javascript:void(0)">unlock</a>`).appendTo($submissionButtonList);
+            } else {
+                $(`<a class="tb-submission-button tb-submission-button-lock" data-fullname="${submissionName}" href="javascript:void(0)">lock</a>`).appendTo($submissionButtonList);
+            }
+
+            if (submissionOver18) {
+                $(`<a class="tb-submission-button tb-submission-button-unnsfw" data-fullname="${submissionName}" href="javascript:void(0)">un-nsfw</a>`).appendTo($submissionButtonList);
+            } else {
+                $(`<a class="tb-submission-button tb-submission-button-nsfw" data-fullname="${submissionName}" href="javascript:void(0)">nsfw</a>`).appendTo($submissionButtonList);
             }
         }
         $buildsubmission.find('p').addClass('tb-comment-p');
@@ -1543,6 +1560,7 @@
     };
 
     // handling of comment & submisstion actions.
+    // TODO make this into command pattern
     $body.on('click', '.tb-comment-button-approve', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
@@ -1587,6 +1605,69 @@
 
         });
     });
+
+    $body.on('click', '.tb-submission-button-lock', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.lockThread(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>locked</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-submission-button-unlock', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.lockThread(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>unlocked</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+
+    $body.on('click', '.tb-submission-button-nsfw', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.markOver18(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>marked nsfw</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-submission-button-unsfw', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.unMarkOver18(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span>unmarked nsfw</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="color: red">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+            }
+
+        });
+    });
+
+
 
     $body.on('click', '.tb-comment-toggle', function() {
         const $this = $(this);

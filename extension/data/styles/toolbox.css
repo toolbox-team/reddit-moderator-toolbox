@@ -982,11 +982,32 @@ body.mod-toolbox-rd .tb-general-button img {
     margin: 5px;
 }
 
+.mod-toolbox-rd .tb-submission-thumbnail.nsfw .tb-noImage-thumbnail {
+    color: #d10023;
+    border: solid 1px #d10023;
+}
+
 /*
 -----------
     Comment & submission entry rebuilding css (shared)
 -----------
 */
+
+.mod-toolbox-rd .tb-nsfw-stamp {
+    color: #d10023;
+}
+
+.mod-toolbox-rd .tb-stamp {
+    border: 1px solid;
+    display: inline-block;
+    font-size: 10px;
+    line-height: 14px;
+    padding: 0 4px;
+}
+
+.mod-toolbox-rd .tb-stamp acronym {
+    text-decoration: none;
+}
 
 .mod-toolbox-rd .tb-tagline {
     font-size: 10px;

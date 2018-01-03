@@ -544,8 +544,8 @@ Object.defineProperty(Array.prototype, "clean", {
                             top: y + e.pageY
                         });
                         $drag.css({
-                            'bottom': 'inherit',
-                            'right': 'inherit'
+                            'bottom': 'auto',
+                            'right': 'auto'
                         });
 
                     })

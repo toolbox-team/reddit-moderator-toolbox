@@ -196,6 +196,16 @@ function comments() {
                 self.log('Context button clicked.');
 
                 const $this = $(this);
+
+                const $overlay = $this.closest('.tb-page-overlay');
+
+                let $appendTo;
+                if ($overlay.length) {
+                    $appendTo = $overlay;
+                } else {
+                    $appendTo = $body;
+                }
+
                 // Grab the url.
                 let contextUrl = $this.attr('data-context-json-url');
                 if (contextUrl.indexOf('.reddit.com') < 0) {
@@ -242,7 +252,7 @@ function comments() {
                         {
                             draggable: true
                         }
-                    ).appendTo($body)
+                    ).appendTo($appendTo)
                         .css({
                             left: leftPosition,
                             top: event.pageY - 10,

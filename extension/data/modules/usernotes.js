@@ -383,6 +383,14 @@ function usernotes() {
         }
 
         function createUserPopup(subreddit, user, link, disableLink, e) {
+
+            const $overlay = $(e.target).closest('.tb-page-overlay');
+            let $appendTo;
+            if ($overlay.length) {
+                $appendTo = $overlay;
+            } else {
+                $appendTo = $('body');
+            }
             var $popup = TB.ui.popup(
                 `<div class="utagger-title">
                     <span>User Notes - <a href="${TBUtils.baseDomain}/u/${user}" id="utagger-user-link">/u/${user}</a></span>
@@ -435,7 +443,7 @@ function usernotes() {
                 left: positions.leftPosition,
                 top: positions.topPosition
             });
-            $body.append($popup);
+            $appendTo.append($popup);
 
             // Generate dynamic parts of dialog and show
             self.getSubredditColors(subreddit, function (colors) {

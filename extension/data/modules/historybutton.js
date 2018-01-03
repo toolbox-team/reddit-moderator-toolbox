@@ -219,6 +219,14 @@ function historybutton() {
         </div>
     `;
 
+                    const $overlay = $this.closest('.tb-page-overlay');
+                    let $appendTo;
+                    if ($overlay.length) {
+                        $appendTo = $overlay;
+                    } else {
+                        $appendTo = $('body');
+                    }
+
                     var $popup = TB.ui.popup(
                         'History Button',
                         [
@@ -234,7 +242,7 @@ function historybutton() {
                         {
                             draggable: true
                         }
-                    ).appendTo('body')
+                    ).appendTo($appendTo)
                         .css({
                             left: positions.leftPosition,
                             top: positions.topPosition,

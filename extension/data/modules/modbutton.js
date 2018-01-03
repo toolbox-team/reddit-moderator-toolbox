@@ -186,6 +186,14 @@ function modbutton() {
             // We want to make sure windows fit on the screen.
             var positions = TBui.drawPosition(event);
 
+            const $overlay = $benbutton.closest('.tb-page-overlay');
+            let $appendTo;
+            if ($overlay.length) {
+                $appendTo = $overlay;
+            } else {
+                $appendTo = $('body');
+            }
+
             var $popup = TB.ui.popup(
                 `Mod Actions  - /u/${user}`,
                 [
@@ -249,7 +257,7 @@ function modbutton() {
                 ],
                 `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
                 'mod-popup' // class
-            ).appendTo('body')
+            ).appendTo($appendTo)
                 .css({
                     left: positions.leftPosition,
                     top: positions.topPosition,

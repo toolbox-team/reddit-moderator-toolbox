@@ -1495,7 +1495,7 @@
         }
 
         if (commentOptions.contextPopup) {
-            const $contextLink = $(`<a class="tb-comment-button tb-comment-context-popup" href="javascript:;" data-context-json-url="${commentPermalink}.json?context=3">context-popup</a>`);
+            const $contextLink = $(`<a class="tb-comment-button tb-comment-context-popup" href="javascript:;" data-comment-id="${commentName}" data-context-json-url="${commentPermalink}.json?context=3">context-popup</a>`);
             $commentButtonList.append($contextLink);
         }
 

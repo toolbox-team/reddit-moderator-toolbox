@@ -205,7 +205,7 @@ function comments() {
                 } else {
                     $appendTo = $body;
                 }
-
+                const commentID = $this.attr('data-comment-id');
                 // Grab the url.
                 let contextUrl = $this.attr('data-context-json-url');
                 if (contextUrl.indexOf('.reddit.com') < 0) {
@@ -260,7 +260,7 @@ function comments() {
                         });
                     TBui.tbRedditEvent($comments, 'comment');
                     $('time.timeago').timeago();
-
+                    $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
                     // Close the popup
                     $contextPopup.on('click', '.close', function () {
                         $contextPopup.remove();

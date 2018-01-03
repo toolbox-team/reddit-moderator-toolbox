@@ -811,25 +811,50 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     Do NOT use in cases where you would normally use button elements. That is what the action button css is for.
 ------------
 */
+
+body.mod-toolbox-rd .tb-usernote-button,
+body.mod-toolbox-rd .tb-history-button {
+    display: inline-block;
+}
+
 body.mod-toolbox-rd .tb-general-button,
 body.mod-toolbox-rd li a.tb-general-button,
 body.mod-toolbox-rd .tb-bracket-button {
-    background-color: #F7FAFD;
+    background-color: rgba(182, 201, 221, 0.23);
+    font-family: verdana, arial, helvetica, sans-serif;
+    margin: 0 2px;
+    font-variant: normal;
     color: #696969;
     font-size: 11px;
+    font-weight: normal;
+    line-height: 11px;
     border-width: 0 0 0 3px;
     border-color: #B6C9DD;
     border-style: solid;
+    box-shadow: none;
     padding: 1px 5px;
-    text-align: center;
-    font-weight: normal;
-    text-decoration: none;
     cursor: pointer;
+    display: inline-block;
+    box-sizing: content-box;
+    height: 15px;
+    vertical-align: baseline;
+    text-shadow: none;
+    text-align: center;
+    text-indent: 0px;
+    text-transform: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-decoration: none;
+    outline: none;
 }
 
 body.mod-toolbox-rd .tb-bracket-button {
     padding: 1px 1px 0 1px;
     font-size: 10px;
+    line-height: 10px;
+    height: 12px;
 }
 
 body.mod-toolbox-rd .tb-general-button:hover,

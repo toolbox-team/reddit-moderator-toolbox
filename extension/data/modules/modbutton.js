@@ -43,7 +43,7 @@ function modbutton() {
     // need this for RES NER support
     self.run = function () {
         if ($body.find('.ThreadViewer').length > 0) {
-            var modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
+            var modButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="global-mod-button tb-bracket-button modmail-sidebar" title="Perform actions on users">${self.buttonName}</a></span></span>`;
 
             var $sidebar = $body.find('.ThreadViewer__infobar');
 

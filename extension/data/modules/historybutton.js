@@ -45,11 +45,11 @@ function historybutton() {
                     $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
                 }
                 var $tbAttrs = $this.find('.tb-attr');
-                const UserButtonHTMLnewMM = `<span class="history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>`;
+                const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>`;
                 $tbAttrs.append(UserButtonHTMLnewMM);
             });
 
-            var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
+            var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
 
             var $sidebar = $body.find('.ThreadViewer__infobar');
 
@@ -62,7 +62,7 @@ function historybutton() {
                 const $target = $(e.target);
                 const author = e.detail.data.author;
 
-                const UserButtonHTML = `<span class="history-button" data-author="${author}">&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
+                const UserButtonHTML = `<span class="tb-history-button" data-author="${author}"><a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
 
                 $target.append(UserButtonHTML);
             });

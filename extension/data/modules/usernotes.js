@@ -232,7 +232,7 @@ function usernotes() {
         function attachNoteTag($element, subreddit, author) {
             // TODO: redo this with template literals
             var $tag = $(`
-            <span title="View and add notes about this user for /r/${subreddit}" class="usernote-button usernote-span-${subreddit}">
+            <span title="View and add notes about this user for /r/${subreddit}" class="tb-usernote-button usernote-span-${subreddit}">
                 <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" >N</a>
             </span>
             `);

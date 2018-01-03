@@ -15,7 +15,7 @@ td.url-td {
     background-color: #fff;
 }
 
-body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .history-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-history-button {
     vertical-align: middle;
     margin-right: 3px;
     margin-left: 2px;
@@ -73,7 +73,7 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .history-button {
     width: 100%;
 }
 
-.mod-toolbox-rd .history-button .tb-button-active {
+.mod-toolbox-rd .tb-history-button .tb-button-active {
     background-color: #b1d0ef;
 }
 

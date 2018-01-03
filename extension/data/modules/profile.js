@@ -487,7 +487,16 @@ function profilepro() {
             }
         });
 
-        $body.on('click', '#tb-user-profile', function(){
+        TB.listener.on('author', function(e) {
+            const $target = $(e.target);
+            const author = e.detail.data.author;
+
+            const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" title="view & filter user's profile in toolbox overlay">P</a>`;
+
+            $target.append(profileButton);
+        });
+
+        $body.on('click', '#tb-user-profile, .tb-user-profile', function(){
             const $this = $(this);
             const user = $this.attr('data-user'),
                 listing = $this.attr('data-listing');

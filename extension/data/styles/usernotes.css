@@ -2,7 +2,7 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .InfoBar__recents.tb-recents .Inf
     margin-bottom: 3px;
 }
 
-body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .usernote-button {
+body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-usernote-button {
     vertical-align: middle;
     margin-right: 3px;
 }
@@ -29,18 +29,12 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-recents .tb-bracket-button {
 
 /* Note styling */
 
-.mod-toolbox-rd .usernote-button {
-    margin-left: 2px;
 
-    font-size: x-small;
-    color: #888888;
-}
-
-.mod-toolbox-rd .usernote-button #add-user-tag {
+.mod-toolbox-rd .tb-usernote-button #add-user-tag {
     cursor: pointer;
 }
 
-.mod-toolbox-rd .usernote-button .add-user-tag:hover {
+.mod-toolbox-rd .tb-usernote-button .add-user-tag:hover {
     text-decoration: none;
 }
 

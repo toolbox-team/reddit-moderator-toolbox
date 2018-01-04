@@ -135,7 +135,7 @@ function initwrapper(modhash, newModSubs) {
                 "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
         // Public variables
-        if(newModSubs) {
+        if(newModSubs && newModSubs.length > 0) {
             TBUtils.mySubs = [];
             TBUtils.mySubsData = [];
             $(newModSubs).each(function () {
@@ -3118,6 +3118,20 @@ function initwrapper(modhash, newModSubs) {
                 modhash = result.data.modhash;
 
                 return callback(modhash);
+            }).fail(function(jqxhr, textStatus, error) {
+                console.log(`getModHash failed (${jqxhr.status}), ${textStatus}: ${error}`);
+                console.log(jqxhr);
+                if (jqxhr.status == 504) {
+                    console.log('504 Timeout retrying request');
+                    getModHash(function(hash) {
+                        return callback(hash);
+                    });
+                }
+                else {
+                    // return null since most of toolbox will still work without a modhash.
+                    // TODO: display a message to the user that toolbox has not been able to initialize properly.
+                    return callback(null);
+                }
             });
         } else {
             modhash = $('form.logout input[name=uh]').val();
@@ -3140,6 +3154,20 @@ function initwrapper(modhash, newModSubs) {
                     return callback(modSubs.concat(subs));
                 });
             } else {
+                return callback(modSubs);
+            }
+        }).fail(function(jqxhr, textStatus, error) {
+            console.log(`getModSubs failed (${jqxhr.status}), ${textStatus}: ${error}`);
+            console.log(jqxhr);
+            if (jqxhr.status == 504) {
+                console.log('504 Timeout retrying request');
+                getModSubs(after, function(subs) {
+                    return callback(modSubs.concat(subs));
+                });
+
+            }
+            else {
+                modSubs = [];
                 return callback(modSubs);
             }
         });

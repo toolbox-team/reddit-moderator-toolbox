@@ -154,6 +154,60 @@ function profilepro() {
             });
         }
 
+        function addModSubsToSidebar(user, $sidebar) {
+            const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
+            $.getJSON(inputURL).done(function (data) {
+                if(Object.keys(data).length > 0 && data.constructor === Object) {
+                    $sidebar.append(`<h3> ${data.data.length} Moderated subreddits </h3>`);
+                    let $moderatedSubList = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($sidebar);
+                    TBUtils.forEachChunkedDynamic(data.data, function(subreddit) {
+                        const subredditName = subreddit.sr,
+                            iconImage = subreddit.icon_img,
+                            over18 = subreddit.over_18,
+                            subscribers = subreddit.subscribers;
+                        $moderatedSubList.append(`<li>
+                                <a href="${TBUtils.basedomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
+                                ${over18? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
+                                ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ``}
+                            </li>`);
+
+                    }, {framerate: 40});
+                }
+
+            });
+
+        }
+        function makeUserSidebar(user, $overlay) {
+            const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
+            const inputURL = `${TBUtils.baseDomain}/user/${user}/about.json`;
+            $.getJSON(inputURL).done(function (data) {
+                const userThumbnail = data.data.icon_img,
+                    userCreated = data.data.created_utc,
+                    verifiedMail = data.data.has_verified_email,
+                    linkKarma = data.data.link_karma,
+                    commentKarma = data.data.comment_karma;
+                const readableCreatedUTC = TBUtils.timeConverterRead(userCreated),
+                    createdTimeAgo = TBUtils.timeConverterISO(userCreated);
+
+                const $sidebar = $(
+                    `<div class="tb-profile-sidebar">
+                    ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ``}
+                    <ul class="tb-user-detail-ul">
+                        <li><a href="${TBUtils.basedomain}/user/${user}">/u/${user}</a></li>
+                        <li>Link karma: ${linkKarma}</li>
+                        <li>Comment karma: ${commentKarma}</li>
+                        <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time</li>
+                        <li>${verifiedMail? `Verified mail` : `No verified mail`}</li>
+                    </ul>
+                </div>`);
+                $tabWrapper.after($sidebar);
+                $sidebar.find('time.timeago').timeago();
+
+                addModSubsToSidebar(user, $sidebar);
+
+            });
+        }
+
         function searchProfile(user, type, sortMethod, $siteTable, options, after, match, callback) {
             let hits = match || false;
             let results = [];
@@ -390,6 +444,8 @@ function profilepro() {
                 ).appendTo('body');
 
                 $body.css('overflow', 'hidden');
+
+                makeUserSidebar(user, $overlay);
                 $body.on('click', '.tb-profile-overlay .tb-window-header .close', function () {
                     $('.tb-profile-overlay').remove();
                     $body.css('overflow', 'auto');

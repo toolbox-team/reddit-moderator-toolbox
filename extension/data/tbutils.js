@@ -1861,7 +1861,7 @@ function initwrapper(modhash, newModSubs) {
         };
 
         // Generic promise based POST request. Can be used to construct all api calls involving post.
-        TBUtils.apiOauthGET = function apiOauthPost(endpoint, data) {
+        TBUtils.apiOauthGET = function apiOauthGET(endpoint, data) {
             // let's fetch the token we need first.
             return TBUtils.oauthToken().then(function(token) {
                 return $.ajax({

@@ -49,3 +49,74 @@
     background-color: #b6c9dd;
     color: #ffffff;
 }
+
+
+.mod-toolbox-rd img.tb-user-thumbnail {
+    width: 70px;
+    display: block;
+    margin: auto;
+    background-color: #fff;
+    padding: 3px;
+    border: solid 5px #f1f1f1;
+}
+
+.mod-toolbox-rd  ul.tb-user-detail-ul {
+    margin-top: 10px;
+    max-width: 170px;
+    vertical-align: middle;
+    display: inline-block;
+    list-style-type: disc;
+    line-height: 15px;
+    padding-left: 16px;
+}
+
+.mod-toolbox-rd .tb-window-tabs-wrapper {
+    display: inline-block;
+    width: calc(100% - 250px);
+}
+
+.mod-toolbox-rd .tb-profile-sidebar {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 235px;
+    padding: 5px;
+    vertical-align: top;
+    border-left: solid 3px white;
+    margin: 5px;
+}
+
+.mod-toolbox-rd .tb-profile-overlay .tb-window-wrapper {
+    max-width: 1350px;
+}
+
+.mod-toolbox-rd .tb-profile-sidebar  h3 {
+    font-weight: bold;
+    margin: 10px 0 5px 0;
+}
+
+.mod-toolbox-rd ul.tb-user-modsubs-ul {
+    list-style-type: none;
+    line-height: 25px;
+    padding-left: 3px;
+    max-height: 1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd ul.tb-user-modsubs-ul:hover {
+    max-height: 100%
+}
+
+.mod-toolbox-rd ul.tb-user-modsubs-ul li a {
+    vertical-align: middle;
+}
+
+.mod-toolbox-rd ul.tb-user-modsubs-ul li img {
+    vertical-align: middle;
+    float: right
+
+}
+
+.mod-toolbox-rd .tb-subreddit-icon {
+    width: 25px;
+}
+

@@ -78,7 +78,7 @@
                 setTimeout(function() {
                     document.dispatchEvent(loadedEvent);
                     document.dispatchEvent(readyEvent);
-                }, 500);
+                }, 1000);
 
 
                 this.started = true;

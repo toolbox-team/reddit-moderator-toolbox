@@ -227,6 +227,10 @@ div#tb-context-menu #tb-context-header {
     z-index: 2147483644 !important;
 }
 
+.mod-toolbox-rd.tb-modbar-shown .tb-page-overlay {
+    margin-bottom: 31px;
+}
+
 /*
  config and settings need a slightly higher z-index so popups don't go over them but do go over other overlays.
 */

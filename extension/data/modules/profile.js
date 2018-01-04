@@ -102,143 +102,6 @@ function profilepro() {
 
         }
 
-        function populateSearchSuggestion() {
-
-            $(TBUtils.mySubs).each(function () {
-                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
-            });
-        }
-        function commentSearch($optionsArea) {
-        // Find comments made by the user in specific subreddits.
-            if (TBUtils.modCheck) {
-
-                $optionsArea.append(`<form id="tb-searchuser">
-                        search comments: <input id="subredditsearch" type="text" placeholder="subreddit" class="tb-input tb-comment-search-input"> <input id="contentsearch" type="text" placeholder="content (optional)" class="tb-input tb-comment-search-input">
-                        <input type="submit" value=" search " class="tb-action-button">
-                    </form>`);
-
-                $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-
-
-
-                TBUtils.getModSubs(function () {
-                    populateSearchSuggestion();
-                });
-
-                $body.on('focus', '#subredditsearch', function () {
-                    const offset = $(this).offset();
-                    const offsetLeft = offset.left;
-                    const offsetTop = (offset.top + 20);
-
-                    $body.find('#tb-search-suggest').css({
-                        'left': `${offsetLeft}px`,
-                        'top': `${offsetTop}px`
-                    });
-
-                    if (!$body.find('#tb-search-suggest').is(':visible')) {
-                        $body.find('#tb-search-suggest').show();
-                    }
-                });
-
-                $body.find('#subredditsearch').keyup(function () {
-                    let LiveSearchValue = $(this).val();
-                    $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
-                        var $this = $(this),
-                            subredditName = $this.attr('data-subreddit');
-
-                        if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
-                            $this.hide();
-                        } else {
-                            $this.show();
-                        }
-                    });
-                });
-
-                $(document).on('click', function (event) {
-                    if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('#subredditsearch').length) {
-                        $body.find('#tb-search-suggest').hide();
-                    }
-                });
-
-                $body.on('click', '#tb-search-suggest-list tr', function () {
-                    const subSuggestion = $(this).attr('data-subreddit');
-                    $body.find('#subredditsearch').val(subSuggestion);
-                    $body.find('#tb-search-suggest').hide();
-                });
-                $body.on('submit', '#tb-searchuser', function () {
-                    TB.ui.longLoadSpinner(true);
-                    const $this = $(this);
-                    const results = [];
-                    const $windowContent = $this.closest('.tb-window-content');
-                    const $siteTable = $windowContent.find('.tb-sitetable-comments');
-                    $siteTable.removeClass('tb-sitetable-processed');
-                    $siteTable.empty();
-                    let subredditsearch = $body.find('#subredditsearch').val(),
-                        usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
-                        contentsearch = $body.find('#contentsearch').val();
-
-                    subredditsearch = subredditsearch.replace(/\/?r\//g, '');
-                    subredditsearch = TBUtils.htmlEncode(subredditsearch);
-
-                    function searchComments(user, options, after, callback) {
-                        $.getJSON(`${TBUtils.baseDomain}/user/${user}/comments.json`, {
-                            'raw_json': 1,
-                            'after': after,
-                            'limit': 100
-                        }).done(function (data) {
-
-                            $.each(data.data.children, function (i, value) {
-                                let hit = true;
-
-                                for (let option in options) {
-                                    if (!value.data[option] || !options[option].test(`${value.data[option]}`)) {
-                                        hit = false;
-                                        break;
-                                    }
-                                }
-
-                                if (hit) {
-                                    results.push(value);
-                                }
-                            });
-                            if (!data.data.after) {
-                                return callback();
-                            } else {
-                                searchComments(user, options, data.data.after, function() {
-                                    return callback();
-                                });
-                            }
-                        });
-                    }
-                    function regExpEscape(query) {
-                        return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-                    }
-
-                    let searchOptions = {};
-                    if (subredditsearch) {
-                        searchOptions.subreddit = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');
-                    }
-                    if (contentsearch) {
-                        searchOptions.body = new RegExp(regExpEscape(contentsearch), 'gi');
-                    }
-                    searchComments(usersearch, searchOptions, null, function() {
-
-
-                        if(results.length > 0) {
-                            addToSiteTable(results, $siteTable, false, function() {
-                                TB.ui.longLoadSpinner(false);
-                            });
-                        } else {
-                            TB.ui.longLoadSpinner(false);
-                            $siteTable.append('<div class="error">no results found</div>');
-                        }
-                    });
-                    return false;
-
-                });
-            }
-        }
-
         function addToSiteTable(data, $siteTable, after, callback) {
             let commentOptions = {
                 'parentLink' : true,
@@ -257,12 +120,18 @@ function profilepro() {
             TBUtils.forEachChunkedDynamic(data, function(entry) {
                 if(entry.kind === `t1`) {
                     let $comment = TBui.makeSingleComment(entry, commentOptions);
+                    if(entry.highlight) {
+                        $comment.find('.md p').highlight(entry.highlight, '', true);
+                    }
                     $siteTable.append($comment);
                     $('time.timeago').timeago();
                 }
 
                 if(entry.kind === `t3`) {
                     let $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
+                    if(entry.highlight) {
+                        $submission.find('.tb-title, .md').highlight(entry.highlight, '', true);
+                    }
                     $siteTable.append($submission);
                     $('time.timeago').timeago();
                 }
@@ -284,6 +153,193 @@ function profilepro() {
                 }, 1000);
             });
         }
+
+        function searchProfile(user, type, sortMethod, $siteTable, options, after, match, callback) {
+            let hits = match || false;
+            let results = [];
+            const subreddit = options.subreddit || false;
+            const searchPattern = options.searchPattern || false;
+
+            if(!subreddit && !searchPattern) {
+                return callback(false);
+            }
+            const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
+            $.getJSON(inputURL, {
+                'raw_json': 1,
+                'after': after,
+                'sort' : sortMethod,
+                'limit': 100,
+                't': 'all'
+            }).done(function (data) {
+
+                $.each(data.data.children, function (i, value) {
+                    let hit = false;
+                    let subredditMatch = false;
+                    let patternMatch = false;
+                    if(value.kind === 't1') {
+                        subredditMatch = subreddit && value.data.subreddit === subreddit;
+                        patternMatch = searchPattern && searchPattern.test(value.data.body);
+
+                    }
+
+                    if(value.kind === 't3') {
+                        subredditMatch = subreddit && value.data.subreddit === subreddit;
+                        patternMatch = searchPattern && (value.data.selftext && searchPattern.test(value.data.selftext) || searchPattern.test(value.data.title));
+                    }
+
+
+                    if(
+                        (subredditMatch && !searchPattern) ||
+                        (patternMatch && !subreddit) ||
+                        (subredditMatch && patternMatch)
+                    ) {
+                        hit = true;
+                    }
+
+
+                    if (hit) {
+                        if (searchPattern) {
+                            value.highlight = options.searchString;
+                        }
+                        results.push(value);
+                        hits = true;
+                    }
+                });
+                if (!data.data.after) {
+                    return callback(hits);
+                } else {
+                    if(results.length > 0) {
+                        addToSiteTable(results, $siteTable, false, function() {
+                            searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, function(found) {
+                                return callback(found);
+                            });
+                        });
+                    } else {
+                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, function(found) {
+                            return callback(found);
+                        });
+                    }
+
+                }
+            });
+        }
+
+        function regExpEscape(query) {
+            return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+        }
+
+        $body.on('submit', '.tb-searchuser', function () {
+            TB.ui.longLoadSpinner(true);
+            const $this = $(this);
+            const $windowContent = $this.closest('.tb-window-content');
+            const $siteTable = $windowContent.find('.tb-sitetable');
+
+            const typeListing = $siteTable.attr('data-listing');
+
+            let subredditsearch = $this.find('.tb-subredditsearch').val(),
+                usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
+                contentsearch = $this.find('.tb-contentsearch').val(),
+                useSort = $this.find('.tb-search-sort').is(':checked');
+
+            let sortMethod = 'new';
+
+            if(useSort) {
+                sortMethod = $siteTable.attr('data-sort');
+            }
+
+            subredditsearch = subredditsearch.replace(/\/?r\//g, '');
+            subredditsearch = TBUtils.htmlEncode(subredditsearch);
+
+            $siteTable.removeClass('tb-sitetable-processed');
+            $siteTable.empty();
+
+            let searchOptions = {};
+            if (subredditsearch) {
+                searchOptions.subreddit = subredditsearch;
+            }
+            if (contentsearch) {
+                searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');
+                searchOptions.searchString = contentsearch;
+            }
+            searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, function(results) {
+
+
+                if(results) {
+                    TB.ui.longLoadSpinner(false);
+                } else {
+                    TB.ui.longLoadSpinner(false);
+                    $siteTable.append('<div class="error">no results found</div>');
+                }
+            });
+            return false;
+
+        });
+
+
+        function populateSearchSuggestion() {
+            $(TBUtils.mySubs).each(function () {
+                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+            });
+        }
+
+        function liveSearch(liveSearchValue) {
+            $body.find('#tb-search-suggest table#tb-search-suggest-list tr').each(function () {
+                const $this = $(this),
+                    subredditName = $this.attr('data-subreddit');
+
+                if (subredditName.toUpperCase().indexOf(liveSearchValue.toUpperCase()) < 0) {
+                    $this.hide();
+                } else {
+                    $this.show();
+                }
+            });
+        }
+
+        function initSearchSuggestion() {
+            if(!$body.find('#tb-search-suggest').length) {
+                $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
+                TBUtils.getModSubs(function () {
+                    populateSearchSuggestion();
+                });
+            }
+
+
+
+            $body.on('focus', '.tb-subredditsearch', function () {
+                const offset = $(this).offset();
+                const offsetLeft = offset.left;
+                const offsetTop = (offset.top + 26);
+
+                $body.find('#tb-search-suggest').css({
+                    'left': `${offsetLeft}px`,
+                    'top': `${offsetTop}px`
+                });
+
+                if (!$body.find('#tb-search-suggest').is(':visible')) {
+                    $body.find('#tb-search-suggest').show();
+                }
+                let liveSearchValue = $(this).val();
+                liveSearch(liveSearchValue);
+            });
+
+            $body.find('.tb-subredditsearch').keyup(function () {
+                let liveSearchValue = $(this).val();
+                liveSearch(liveSearchValue);
+            });
+
+            $(document).on('click', function (event) {
+                if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('.tb-subredditsearch').length) {
+                    $body.find('#tb-search-suggest').hide();
+                }
+            });
+
+            $body.on('click', '#tb-search-suggest-list tr', function () {
+                const subSuggestion = $(this).attr('data-subreddit');
+                $body.find('.tb-subredditsearch:visible').val(subSuggestion);
+                $body.find('#tb-search-suggest').hide();
+            });
+        }
+
 
         function makeProfile(user, type, options) {
             const sort = options.sort || 'new';
@@ -347,7 +403,8 @@ function profilepro() {
             $siteTable.attr({
                 'data-user' : user,
                 'data-sort' : sort,
-                'data-listing' : type
+                'data-listing' : type,
+                't': 'all'
             });
 
             if($siteTable.hasClass('tb-sitetable-processed') && !renew && !after) {
@@ -371,15 +428,19 @@ function profilepro() {
                     <button class="tb-general-button tb-filter-moddable">${filterModThings? 'Show unmoddable' : `Hide unmoddable`}</button>
                     <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Hide mod actions`}</a>
                 </div>`).appendTo($options);
+
+                $options.append(`<form class="tb-searchuser">
+                        search: <input type="text" placeholder="subreddit" class="tb-subredditsearch tb-input tb-search-input"> <input type="text" placeholder="content (optional)" class="tb-contentsearch tb-input tb-search-input">
+                        <label> <input type="checkbox" class="tb-search-sort"> use sort selection </label>
+                        <input type="submit" value=" search " class="tb-action-button">
+                </form>`);
+                initSearchSuggestion();
+
             }
 
             const $sortSelect = $filterOptions.find('.tb-sort-select');
 
             $sortSelect.val(sort);
-            // comment search
-            if(!renew && type === 'comments' && !$body.find('#tb-searchuser').length) {
-                commentSearch($options);
-            }
 
             if(!after) {
                 $siteTable.addClass('tb-sitetable-processed');

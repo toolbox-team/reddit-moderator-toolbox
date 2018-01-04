@@ -1,9 +1,9 @@
-.mod-toolbox-rd #tb-searchuser input[type="submit"] {
+.mod-toolbox-rd .tb-searchuser input[type="submit"] {
     padding: 0 !important;
     margin-left: 4px;
 }
 
-.mod-toolbox-rd #tb-searchuser .tb-input.tb-comment-search-input {
+.mod-toolbox-rd .tb-searchuser .tb-input.tb-search-input {
     width: 150px;
 }
 
@@ -11,7 +11,7 @@
     z-index: 2147483645;
 }
 
-.mod-toolbox-rd form#tb-searchuser {
+.mod-toolbox-rd form.tb-searchuser {
     margin-left: 10px;
     display: inline-block;
 }

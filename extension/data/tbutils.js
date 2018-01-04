@@ -177,8 +177,8 @@ function initwrapper(modhash, newModSubs) {
         }
 
 
-        TBUtils.toolboxVersion = `4.0.9${(betaRelease) ? ' (beta)' : ''}`;
-        TBUtils.shortVersion = 409; //don't forget to change this one!  This is used for the 'new version' notification.
+        TBUtils.toolboxVersion = `4.0.10${(betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.shortVersion = 4010; //don't forget to change this one!  This is used for the 'new version' notification. Always needs to be 4 characters long. Translating x.x.x to xx0x
         TBUtils.releaseName = 'Alpha Aardvark';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;

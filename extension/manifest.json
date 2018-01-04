@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "4.0.9",
-    "version_name": "4.0.9: \"Alpha Aardvark\"",
+    "version": "4.0.10",
+    "version_name": "4.0.10: \"Alpha Aardvark\"",
     "options_page": "data/background/options.html",
     "applications": {
         "gecko": {

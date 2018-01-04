@@ -390,7 +390,7 @@ function profilepro() {
                 ).appendTo('body');
 
                 $body.css('overflow', 'hidden');
-                $body.on('click', '.tb-profile-overlay .close', function () {
+                $body.on('click', '.tb-profile-overlay .tb-window-header .close', function () {
                     $('.tb-profile-overlay').remove();
                     $body.css('overflow', 'auto');
                     filterModThings = false;

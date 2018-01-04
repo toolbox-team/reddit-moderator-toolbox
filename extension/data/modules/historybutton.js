@@ -249,22 +249,28 @@ function historybutton() {
                             display: 'block'
                         });
 
-                    self.fetched[author] = {
-                        popup: $popup,
-                        subreddits : subreddits,
-                        counters : counters,
-                        accounts : accounts,
-                        subredditList : subredditList,
-                        domainList : domainList,
-                        commentSubredditList: commentSubredditList,
-                        author : author,
-                        gettingUserData : gettingUserData,
-                        domains : domains,
-                        domainslist : domainslist,
-                    };
+                    if (!$overlay.length) {
+                        self.fetched[author] = {
+                            popup: $popup,
+                            subreddits : subreddits,
+                            counters : counters,
+                            accounts : accounts,
+                            subredditList : subredditList,
+                            domainList : domainList,
+                            commentSubredditList: commentSubredditList,
+                            author : author,
+                            gettingUserData : gettingUserData,
+                            domains : domains,
+                            domainslist : domainslist,
+                        };
+                    }
 
                     $popup.on('click', '.close', function () {
-                        $popup.hide();
+                        if (!$overlay.length) {
+                            $popup.hide();
+                        } else {
+                            $popup.remove();
+                        }
                     });
 
                     self.showAuthorInformation(author);

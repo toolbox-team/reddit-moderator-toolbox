@@ -148,8 +148,8 @@ function initwrapper() {
 
 
         // Public variables
-        TBUtils.toolboxVersion = `4.0.8${(betaRelease) ? ' (beta)' : ''}`;
-        TBUtils.shortVersion = 408; //don't forget to change this one!  This is used for the 'new version' notification.
+        TBUtils.toolboxVersion = `4.0.9${(betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.shortVersion = 409; //don't forget to change this one!  This is used for the 'new version' notification.
         TBUtils.releaseName = 'Alpha Aardvark';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;

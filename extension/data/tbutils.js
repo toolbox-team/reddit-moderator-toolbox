@@ -1,35 +1,23 @@
-function initwrapper() {
+function initwrapper(modhash, newModSubs) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
 
     // We need these before we can do anything.
-        /**
-         * Used for api authentication
-         * @var {string} modhash
-         * @memberof TBUtils
-         * */
-        TBUtils.modhash = $('form.logout input[name=uh]').val();
+        TBUtils.modhash = modhash;
 
         // TODO: make sure to change this as soon as we have a proper method to check on this.
         TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || $('.BlueBar__account a.BlueBar__username').text() || '';
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
-        // Probably a better way to this but... ah well.
-        // We don't need it right away, just when using POST
-        // TODO: make this work properly in the context of alpha redesign
-        if(!TBUtils.modhash && (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com' || window.location.pathname.includes('/user/'))) {
-            $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
-                TBUtils.modhash = result.data.modhash;
+        if(window.location.hostname === 'mod.reddit.com') {
+            $('body').addClass('mod-toolbox-new-modmail');
+        }
 
-            });
-            if(window.location.hostname === 'mod.reddit.com') {
-                $('body').addClass('mod-toolbox-new-modmail');
-            }
-
+        if (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') {
             TBUtils.modCheck = true;
         } else {
-            TBUtils.modCheck = $('#modmail, #new_modmail').length > 0;
+            TBUtils.modCheck = $('#modmail, #new_modmail, .BlueBar__modmail').length > 0;
         }
 
         // Let's get oauth information
@@ -146,8 +134,49 @@ function initwrapper() {
                 'Requesting a new insurance quote from /u/andytuba',
                 "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
-
         // Public variables
+        if(newModSubs) {
+            TBUtils.mySubs = [];
+            TBUtils.mySubsData = [];
+            $(newModSubs).each(function () {
+                const sub = this.data.display_name.trim();
+                if ($.inArray(sub, TBUtils.mySubs) === -1) {
+                    TBUtils.mySubs.push(sub);
+                }
+
+                let isinthere = false;
+                $(TBUtils.mySubsData).each(function () {
+                    if (this.subreddit === sub) {
+                        isinthere = true;
+                    }
+                });
+
+                if (!isinthere) {
+                    const subredditData = {
+                        'subreddit': sub,
+                        'subscribers': this.data.subscribers,
+                        'over18': this.data.over18,
+                        'created_utc': this.data.created_utc,
+                        'subreddit_type': this.data.subreddit_type,
+                        'submission_type': this.data.submission_type
+                    };
+
+                    TBUtils.mySubsData.push(subredditData);
+                }
+            });
+
+            TBUtils.mySubs = saneSort(TBUtils.mySubs);
+            TBUtils.mySubsData = sortBy(TBUtils.mySubsData, 'subscribers');
+            // Update the cache.
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBUtils.mySubs);
+            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
+
+        } else {
+            TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
+            TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
+        }
+
+
         TBUtils.toolboxVersion = `4.0.9${(betaRelease) ? ' (beta)' : ''}`;
         TBUtils.shortVersion = 409; //don't forget to change this one!  This is used for the 'new version' notification.
         TBUtils.releaseName = 'Alpha Aardvark';
@@ -223,8 +252,6 @@ function initwrapper() {
         TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
         TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
         TBUtils.noRules = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noRules', []);
-        TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
-        TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
 
         if (TBUtils.debugMode) {
             const consoleText = `toolbox version: ${TBUtils.toolboxVersion
@@ -1037,15 +1064,14 @@ function initwrapper() {
          * @param {array} arr input array
          * @param {string} prop property name
          */
-        TBUtils.sortBy = function (arr, prop) {
+        function sortBy(arr, prop) {
             return arr.sort(function (a, b) {
                 if (a[prop] < b[prop]) return 1;
                 if (a[prop] > b[prop]) return -1;
                 return 0;
             });
-        };
-
-
+        }
+        TBUtils.sortBy = sortBy;
 
 
         /**
@@ -1073,13 +1099,14 @@ function initwrapper() {
          * @memberof TBUtils
          * @param {array} arr input array
          */
-        TBUtils.saneSort = function (arr) {
+        function saneSort(arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() < b.toLowerCase()) return -1;
                 if (a.toLowerCase() > b.toLowerCase()) return 1;
                 return 0;
             });
-        };
+        }
+        TBUtils.saneSort = saneSort;
 
         /**
          * Because normal .sort() is case sensitive and we also want to sort ascending from time to time.
@@ -1087,7 +1114,7 @@ function initwrapper() {
          * @memberof TBUtils
          * @param {array} arr input array
          */
-        TBUtils.saneSortAs = function (arr) {
+        TBUtils.saneSortAs = function saneSortAs (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() > b.toLowerCase()) return -1;
                 if (a.toLowerCase() < b.toLowerCase()) return 1;
@@ -3084,10 +3111,58 @@ function initwrapper() {
 
 (function () {
     // wait for storage
-    window.addEventListener('TBStorageLoaded2', function () {
-        initwrapper();
+    function getModHash(callback) {
+        let modhash;
+        if(window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com' || window.location.pathname.includes('/user/')) {
+            $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
+                modhash = result.data.modhash;
 
-        const event = new CustomEvent('TBUtilsLoaded2');
-        window.dispatchEvent(event);
+                return callback(modhash);
+            });
+        } else {
+            modhash = $('form.logout input[name=uh]').val();
+            return callback(modhash);
+
+        }
+    }
+
+    function getModSubs(after, callback) {
+
+        let modSubs = [];
+        $.getJSON('https://www.reddit.com/subreddits/mine/moderator.json',{
+            'after': after,
+            'limit': 100
+        }, function (json) {
+            modSubs = modSubs.concat(json.data.children);
+
+            if(json.data.after) {
+                getModSubs(json.data.after, function(subs) {
+                    return callback(modSubs.concat(subs));
+                });
+            } else {
+                return callback(modSubs);
+            }
+        });
+    }
+    window.addEventListener('TBStorageLoaded2', function () {
+
+        getModHash(function(modhash) {
+            let modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
+            if (modSubs.length === 0) {
+                console.log('No modsubs in cache, getting mod subs before initalizing');
+                getModSubs(null, function(subs) {
+                    initwrapper(modhash, subs);
+                    const event = new CustomEvent('TBUtilsLoaded2');
+                    window.dispatchEvent(event);
+                });
+
+            } else {
+                initwrapper(modhash);
+                const event = new CustomEvent('TBUtilsLoaded2');
+                window.dispatchEvent(event);
+            }
+
+
+        });
     });
 })();

@@ -283,7 +283,7 @@ function profilepro() {
                         <li><a href="${TBUtils.basedomain}/user/${user}">/u/${user}</a></li>
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
-                        <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time</li>
+                        <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>
                         <li>${verifiedMail? `Verified mail` : `No verified mail`}</li>
                     </ul>
                 </div>`);

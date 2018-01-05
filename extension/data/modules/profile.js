@@ -154,27 +154,107 @@ function profilepro() {
             });
         }
 
+        function addTrophiesToSidebar(user, $sidebar) {
+            const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
+            $.getJSON(inputURL).done(function (data) {
+                if(Object.keys(data).length > 0 && data.constructor === Object) {
+                    let $userTrophies= $(`<div class="tb-user-trophies">
+                        <h3> Trophies </h3>
+                    </div>`).appendTo($sidebar);
+                    $.each(data.data.trophies, function (i, trophy) {
+                        let tropyHTML;
+
+                        const trophyInnerHTML = `
+                            <img class="tb-trophy-icon" src="${trophy.data.icon_40}">
+                            <br>
+                            <span class="tb-trophy-name">${trophy.data.name}</span>
+                            <br>
+                            ${trophy.data.description ? `<span class="tb-trophy-description">${trophy.data.description}</span>` : ``}
+                            <br>`;
+
+                        if (trophy.data.url) {
+                            tropyHTML = `
+                            <div class="tb-trophy-info">
+                                <a href="${trophy.data.url}">
+                                    ${trophyInnerHTML}
+                                </a>
+                            </div>`;
+                        } else {
+                            tropyHTML = `
+                            <div class="tb-trophy-info">
+                                ${trophyInnerHTML}
+                            </div>`;
+                        }
+                        $userTrophies.append(tropyHTML);
+                    });
+                }
+            });
+        }
+
         function addModSubsToSidebar(user, $sidebar) {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
-                    $sidebar.append(`<h3> ${data.data.length} Moderated subreddits </h3>`);
-                    let $moderatedSubList = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($sidebar);
+                    let $userModSubs = $(`<div class="tb-user-modsubs">
+                        <h3> ${data.data.length} Moderated subreddits </h3>
+                    </div>`).appendTo($sidebar);
+
+                    let $moderatedSubListVisible = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($userModSubs);
+                    let $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
+                    let subCount = 0;
+
                     TBUtils.forEachChunkedDynamic(data.data, function(subreddit) {
+                        subCount++;
                         const subredditName = subreddit.sr,
                             iconImage = subreddit.icon_img,
                             over18 = subreddit.over_18,
                             subscribers = subreddit.subscribers;
-                        $moderatedSubList.append(`<li>
-                                <a href="${TBUtils.basedomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
-                                ${over18? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
-                                ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ``}
-                            </li>`);
 
-                    }, {framerate: 40});
+                        const liElement = `<li>
+                            <a href="${TBUtils.basedomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
+                            ${over18? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
+                            ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ``}
+                        </li>`;
+
+                        if(subCount < 10) {
+                            $moderatedSubListVisible.append(liElement);
+                        } else {
+                            $moderatedSubListExpanded.append(liElement);
+                        }
+
+
+                    }, {framerate: 40}).then(function() {
+                        if(subCount > 10) {
+                            $moderatedSubListVisible.after(`<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${subCount-10} more ...</button>`);
+                            $moderatedSubListExpanded.after(`<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${subCount-10} less</button>`);
+
+                            $body.on('click', '.tb-sidebar-loadmod', function() {
+                                const $this = $(this);
+                                const action = $this.attr('data-action');
+
+                                if(action === 'more') {
+                                    $moderatedSubListExpanded.show();
+                                    $sidebar.find('.tb-sidebar-loadmod.tb-less').show();
+                                    $this.hide();
+                                } else if(action === 'less') {
+                                    $moderatedSubListExpanded.hide();
+                                    $sidebar.find('.tb-sidebar-loadmod.tb-more').show();
+                                    $this.hide();
+                                }
+
+                            });
+                        }
+
+                        addTrophiesToSidebar(user, $sidebar);
+                    });
+
+                } else {
+                    addTrophiesToSidebar(user, $sidebar);
                 }
 
             });
+
+
 
         }
         function makeUserSidebar(user, $overlay) {

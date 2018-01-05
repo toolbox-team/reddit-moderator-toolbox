@@ -94,22 +94,29 @@
     margin: 10px 0 5px 0;
 }
 
+.mod-toolbox-rd ul.tb-user-modsubs-expand-ul {
+    display: none;
+}
+
+.mod-toolbox-rd ul.tb-user-modsubs-expand-ul,
 .mod-toolbox-rd ul.tb-user-modsubs-ul {
     list-style-type: none;
     line-height: 25px;
     padding-left: 3px;
-    max-height: 1000px;
     overflow: hidden;
 }
 
-.mod-toolbox-rd ul.tb-user-modsubs-ul:hover {
-    max-height: 100%
+.mod-toolbox-rd ul.tb-user-modsubs-expand-ul li,
+.mod-toolbox-rd ul.tb-user-modsubs-ul li {
+    border-bottom: solid 1px #f1f1f1;
 }
 
+.mod-toolbox-rd ul.tb-user-modsubs-expand-ul li a,
 .mod-toolbox-rd ul.tb-user-modsubs-ul li a {
     vertical-align: middle;
 }
 
+.mod-toolbox-rd ul.tb-user-modsubs-expand-ul li img,
 .mod-toolbox-rd ul.tb-user-modsubs-ul li img {
     vertical-align: middle;
     float: right
@@ -120,6 +127,41 @@
     width: 25px;
 }
 
-.mod-toolbox-rd ul.tb-user-modsubs-ul li {
-    border-bottom: solid 1px #f1f1f1;
+.mod-toolbox-rd.mod-toolbox-extra .tb-general-button.tb-sidebar-loadmod {
+    margin-top: 3px;
 }
+
+.mod-toolbox-rd.mod-toolbox-extra .tb-general-button.tb-sidebar-loadmod.tb-less {
+    display: none;
+}
+
+.mod-toolbox-rd .tb-user-trophies {
+    margin-top: 15px;
+}
+
+.mod-toolbox-rd .tb-trophy-info{
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    width: 105px;
+    text-align: center;
+    vertical-align: top;
+    padding: 15px 0 15px
+}
+
+.mod-toolbox-rd .tb-trophy-icon {
+    margin-bottom: 2px;
+    width: 40px;
+    height: 40px
+}
+
+.mod-toolbox-rd .tb-trophy-name {
+    color: #000 !important
+}
+
+.mod-toolbox-rd .tb-trophy-description {
+    color: #555555;
+    font-size: 10px;
+}
+
+

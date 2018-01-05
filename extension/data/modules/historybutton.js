@@ -35,7 +35,7 @@ function historybutton() {
  * Attach an [H] button to all users
  */
     self.run = function () {
-
+        self.log('run');
         var $body = $('body');
         if ($body.find('.ThreadViewer').length > 0) {
 
@@ -58,10 +58,11 @@ function historybutton() {
 
 
         } else {
+            self.log('alpha reddit');
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
                 const author = e.detail.data.author;
-
+                self.log(`listener author: ${author}`);
                 const UserButtonHTML = `<span class="tb-history-button" data-author="${author}"><a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user\'s submission and comment history">H</a></span>`;
 
                 $target.append(UserButtonHTML);
@@ -74,10 +75,13 @@ function historybutton() {
  * Initiate the module
  */
     self.init = function () {
+        self.log(`init`);
         var $body = $('body');
         TBUtils.modSubCheck(function(modSubCheck){
+            self.log(`mscheck: ${modSubCheck}`);
+            self.log(`mcheck: ${TBUtils.modCheck}`);
             if(TBUtils.modCheck && modSubCheck){
-
+                self.log(`passed`);
 
 
                 if (TBUtils.isNewModmail) {
@@ -85,6 +89,7 @@ function historybutton() {
                         self.run();
                     }, 750);
                 } else {
+                    self.log(`not new modmail`);
                     self.run();
                 }
 

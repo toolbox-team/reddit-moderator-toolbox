@@ -14,6 +14,12 @@ function profilepro() {
         'title': 'Always open toolbox profile overlay on reddit profiles.'
     });
 
+    self.register_setting('profileButtonEnabled', {
+        'type': 'boolean',
+        'default': true,
+        'title': 'Show profile button next to usernames in subs you mod. Allows you to quickly open the toolbox profile on that page.'
+    });
+
     self.register_setting('directProfileToLegacy', {
         'type': 'boolean',
         'default': false,
@@ -36,7 +42,8 @@ function profilepro() {
 
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
             directProfileToLegacy = self.setting('directProfileToLegacy'),
-            subredditColor = self.setting('subredditColor');
+            subredditColor = self.setting('subredditColor'),
+            profileButtonEnabled = self.setting('profileButtonEnabled');
 
         if(directProfileToLegacy) {
             $body.on('click', 'a', function(event) {
@@ -410,9 +417,14 @@ function profilepro() {
         });
 
 
-        function populateSearchSuggestion() {
+        function populateSearchSuggestion(subreddit) {
+            if(subreddit && TBUtils.mySubs.includes(subreddit)) {
+                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${subreddit}"><td>${subreddit}</td></td></tr>`);
+            }
             $(TBUtils.mySubs).each(function () {
-                $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+                if(this !== subreddit) {
+                    $body.find('#tb-search-suggest table#tb-search-suggest-list').append(`<tr data-subreddit="${this}"><td>${this}</td></td></tr>`);
+                }
             });
         }
 
@@ -429,11 +441,11 @@ function profilepro() {
             });
         }
 
-        function initSearchSuggestion() {
+        function initSearchSuggestion(subreddit) {
             if(!$body.find('#tb-search-suggest').length) {
                 $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
                 TBUtils.getModSubs(function () {
-                    populateSearchSuggestion();
+                    populateSearchSuggestion(subreddit);
                 });
             }
 
@@ -479,6 +491,7 @@ function profilepro() {
             const sort = options.sort || 'new';
             const renew = options.renew || false;
             const after = options.after || '';
+            const subreddit = options.subreddit || '';
             TB.ui.longLoadSpinner(true);
 
             let $overlay = $body.find('.tb-profile-overlay');
@@ -570,7 +583,7 @@ function profilepro() {
                         <label> <input type="checkbox" class="tb-search-sort"> use sort selection </label>
                         <input type="submit" value=" search " class="tb-action-button">
                 </form>`);
-                initSearchSuggestion();
+                initSearchSuggestion(subreddit);
 
             }
 
@@ -684,21 +697,39 @@ function profilepro() {
             }
         });
 
-        TB.listener.on('author', function(e) {
-            const $target = $(e.target);
-            const author = e.detail.data.author;
+        if (profileButtonEnabled) {
+            TB.listener.on('author', function(e) {
+                const $target = $(e.target);
 
-            const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" title="view & filter user's profile in toolbox overlay">P</a>`;
+                if (!$target.closest('.tb-profile-overlay').length) {
+                    const author = e.detail.data.author;
+                    const subreddit = e.detail.data.subreddit.name;
+                    TBUtils.getModSubs(function () {
+                        if(TBUtils.modsSub(subreddit)) {
+                            const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
+                            $target.append(profileButton);
+                        }
+                    });
+                }
 
-            $target.append(profileButton);
-        });
+            });
+        }
+
 
         $body.on('click', '#tb-user-profile, .tb-user-profile', function(){
             const $this = $(this);
             const user = $this.attr('data-user'),
-                listing = $this.attr('data-listing');
+                listing = $this.attr('data-listing'),
+                subreddit = $this.attr('data-subreddit');
 
-            makeProfile(user, listing, {sort: 'new', renew: false});
+            let options = {
+                sort: 'new',
+                renew: false
+            };
+            if(subreddit) {
+                options.subreddit = subreddit;
+            }
+            makeProfile(user, listing, options);
         });
 
     };

@@ -198,6 +198,7 @@ function comments() {
                 const $this = $(this);
 
                 const $overlay = $this.closest('.tb-page-overlay');
+                const positions = TBui.drawPosition(event);
 
                 let $appendTo;
                 if ($overlay.length) {
@@ -225,14 +226,6 @@ function comments() {
                     const contextUser = data[1].data.children[0].data.author;
                     const contextSubreddit = data[1].data.children[0].data.subreddit;
 
-                    // Prepare for the popup.
-                    let leftPosition;
-                    if (document.documentElement.clientWidth - event.pageX < 400) {
-                        leftPosition = event.pageX - 600;
-                    } else {
-                        leftPosition = event.pageX - 50;
-                    }
-
                     // Title is probably also nice.
                     const contextTitle =  `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
@@ -254,8 +247,8 @@ function comments() {
                         }
                     ).appendTo($appendTo)
                         .css({
-                            left: leftPosition,
-                            top: event.pageY - 10,
+                            left: positions.leftPosition,
+                            top: positions.topPosition,
                             display: 'block'
                         });
                     TBui.tbRedditEvent($comments, 'comment');

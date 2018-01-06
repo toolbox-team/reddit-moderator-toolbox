@@ -254,21 +254,19 @@ function historybutton() {
                             display: 'block'
                         });
 
-                    if (!$overlay.length) {
-                        self.fetched[author] = {
-                            popup: $popup,
-                            subreddits : subreddits,
-                            counters : counters,
-                            accounts : accounts,
-                            subredditList : subredditList,
-                            domainList : domainList,
-                            commentSubredditList: commentSubredditList,
-                            author : author,
-                            gettingUserData : gettingUserData,
-                            domains : domains,
-                            domainslist : domainslist,
-                        };
-                    }
+                    self.fetched[author] = {
+                        popup: $popup,
+                        subreddits : subreddits,
+                        counters : counters,
+                        accounts : accounts,
+                        subredditList : subredditList,
+                        domainList : domainList,
+                        commentSubredditList: commentSubredditList,
+                        author : author,
+                        gettingUserData : gettingUserData,
+                        domains : domains,
+                        domainslist : domainslist,
+                    };
 
                     $popup.on('click', '.close', function () {
                         if (!$overlay.length) {

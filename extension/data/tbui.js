@@ -311,6 +311,9 @@
             leftPosition: '',
             topPosition : ''
         };
+
+        const $overlay = $(event.target).closest('.tb-page-overlay');
+
         if (document.documentElement.clientWidth - event.pageX < 400) {
             positions.leftPosition = event.pageX - 600;
         } else {
@@ -327,6 +330,11 @@
             }
         } else {
             positions.topPosition = event.pageY - 50;
+        }
+
+        if($overlay.length) {
+            const scrollTop = $overlay.scrollTop();
+            positions.topPosition = positions.topPosition + scrollTop;
         }
 
 

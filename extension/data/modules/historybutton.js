@@ -79,8 +79,7 @@ function historybutton() {
         var $body = $('body');
         TBUtils.modSubCheck(function(modSubCheck){
             self.log(`mscheck: ${modSubCheck}`);
-            self.log(`mcheck: ${TBUtils.modCheck}`);
-            if(TBUtils.modCheck && modSubCheck){
+            if(modSubCheck){
                 self.log(`passed`);
 
 

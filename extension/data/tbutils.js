@@ -16,12 +16,6 @@ function initwrapper(modhash, newModSubs) {
             $('body').addClass('mod-toolbox-new-modmail');
         }
 
-        if (window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') {
-            TBUtils.modCheck = true;
-        } else {
-            TBUtils.modCheck = $('#modmail, #new_modmail, .BlueBar__modmail').length > 0;
-        }
-
         // Let's get oauth information
         // We fetch the data on page load but we don't access the variable directly.
 

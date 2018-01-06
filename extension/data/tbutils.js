@@ -5,6 +5,8 @@ function initwrapper(modhash, newModSubs) {
     // We need these before we can do anything.
         TBUtils.modhash = modhash;
 
+
+
         // TODO: make sure to change this as soon as we have a proper method to check on this.
         TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || $('.BlueBar__account a.BlueBar__username').text() || '';
 
@@ -176,9 +178,13 @@ function initwrapper(modhash, newModSubs) {
             TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
         }
 
+        const manifest = chrome.runtime.getManifest();
+        const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d).*?"(.*?)"/;
+        const matchVersion = manifest.version_name.match(versionRegex);
+        const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2,'0')}${matchVersion[3].padStart(2,'0')}`;
 
-        TBUtils.toolboxVersion = `4.0.10${(betaRelease) ? ' (beta)' : ''}`;
-        TBUtils.shortVersion = 4010; //don't forget to change this one!  This is used for the 'new version' notification. Always needs to be 4 characters long. Translating x.x.x to xx0x
+        TBUtils.toolboxVersion = `${manifest.version}${(betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.shortVersion = shortVersion;
         TBUtils.releaseName = 'Alpha Aardvark';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;

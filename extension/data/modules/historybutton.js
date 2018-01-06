@@ -1,5 +1,5 @@
 function historybutton() {
-    var self = new TB.Module('History Button');
+    const self = new TB.Module('History Button');
 
     self.shortname = 'HButton';
 
@@ -36,22 +36,22 @@ function historybutton() {
  */
     self.run = function () {
         self.log('run');
-        var $body = $('body');
+        let $body = $('body');
         if ($body.find('.ThreadViewer').length > 0) {
 
             $body.find('.Thread__message').not('.tb-history').each(function () {
-                var $this = $(this);
+                let $this = $(this);
                 if ($this.find('.tb-attr').length === 0) {
                     $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
                 }
-                var $tbAttrs = $this.find('.tb-attr');
+                let $tbAttrs = $this.find('.tb-attr');
                 const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>`;
                 $tbAttrs.append(UserButtonHTMLnewMM);
             });
 
-            var userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
+            const userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
 
-            var $sidebar = $body.find('.ThreadViewer__infobar');
+            let $sidebar = $body.find('.ThreadViewer__infobar');
 
             $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
 
@@ -76,7 +76,7 @@ function historybutton() {
  */
     self.init = function () {
         self.log(`init`);
-        var $body = $('body');
+        let $body = $('body');
         TBUtils.modSubCheck(function(modSubCheck){
             self.log(`mscheck: ${modSubCheck}`);
             if(modSubCheck){
@@ -99,9 +99,9 @@ function historybutton() {
                 });
 
                 $body.on('click', '.user-history-button', function (event) {
-                    var $this = $(this);
-                    var $target = $(event.currentTarget);
-                    var author;
+                    let $this = $(this);
+                    let $target = $(event.currentTarget);
+                    let author;
                     if($body.find('.ThreadViewer').length > 0) {
 
                         if ($this.hasClass('modmail-sidebar')) {
@@ -114,18 +114,9 @@ function historybutton() {
                         author = $target.attr('data-author');
                     }
 
-                    var positions = TBui.drawPosition(event);
-                    //If we've already got this before, just move it to the mouse
-                    if(typeof self.fetched[author] != 'undefined'){
-                        self.fetched[author].popup.css({
-                            left: positions.leftPosition,
-                            top: positions.topPosition,
-                            display: 'block'
-                        });
-                        return;
-                    }
+                    const positions = TBui.drawPosition(event);
 
-                    var subreddits = {submissions: {}, comments: {}},
+                    let subreddits = {submissions: {}, comments: {}},
                         counters = {submissions: 0, comments: 0, commentsOP: 0},
                         accounts = {},
                         subredditList = [],
@@ -231,7 +222,7 @@ function historybutton() {
                         $appendTo = $('body');
                     }
 
-                    var $popup = TB.ui.popup(
+                    let $popup = TB.ui.popup(
                         'History Button',
                         [
                             {
@@ -299,10 +290,10 @@ function historybutton() {
  * Show author information (Karma, How long they've been a redditor for)
  */
     self.showAuthorInformation = function (author) {
-        var $contentBox = self.fetched[author].popup;
+        const $contentBox = self.fetched[author].popup;
 
         $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).done(function (d) {
-            var joinedDate = new Date(d.data.created_utc * 1000),
+            const joinedDate = new Date(d.data.created_utc * 1000),
                 redditorTime = TBUtils.niceDateDiff(joinedDate);
 
             $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
@@ -314,7 +305,7 @@ function historybutton() {
  * Show the markdown report
  */
     self.showMarkdownReport = function (author) {
-        var $contentBox = self.fetched[author].popup,
+        let $contentBox = self.fetched[author].popup,
             markdownReport = $contentBox.find('.rts-report').attr('data-commentbody'),
             $markdown = $contentBox.find('.submission-markdown-text');
 
@@ -335,7 +326,7 @@ function historybutton() {
  */
     self.populateSubmissionHistory = function (after, author) {
 
-        var user = self.fetched[author],
+        let user = self.fetched[author],
             $contentBox = user.popup,
             $rtsLink = $contentBox.find('.rts-report'),
             $submissionCount = $contentBox.find('.submission-count'),
@@ -412,7 +403,7 @@ function historybutton() {
                 return;
             }
 
-            var after = d.data.after,
+            let after = d.data.after,
                 commentBody = `Available submission history for /u/${author}:\n\ndomain submitted from|count|%\n:-|-:|-:`;
 
             user.counters.submissions += d.data.children.length;
@@ -430,7 +421,7 @@ function historybutton() {
             TB.ui.longLoadNonPersistent(false);
             //For every submission, incremenet the count for the subreddit and domain by one.
             $.each(d.data.children, function (index, value) {
-                var data = value.data;
+                const data = value.data;
 
                 if (!user.domains[data.domain]) {
                     user.domains[data.domain] = {
@@ -452,7 +443,7 @@ function historybutton() {
                 user.subreddits.submissions[data.subreddit].karma += data.score;
 
                 if (data.media && data.media.oembed && data.media.oembed.author_url) {
-                    var oembed = data.media.oembed;
+                    const oembed = data.media.oembed;
 
                     addAccount({
                         name: oembed.author_name,
@@ -461,7 +452,7 @@ function historybutton() {
                         url: oembed.author_url
                     });
                 } else {
-                    var spec = domainSpecs[data.domain],
+                    let spec = domainSpecs[data.domain],
                         details, domain;
 
                     if (!spec) {
@@ -489,20 +480,20 @@ function historybutton() {
             $domainTable.empty();
 
             //Get the total account od domain submissions
-            var totalDomainCount = 0;
+            let totalDomainCount = 0;
 
-            for (var domain in user.domains) {
+            for (let domain in user.domains) {
                 if (user.domains.hasOwnProperty(domain)) {
                     totalDomainCount += user.domains[domain].count;
                 }
             }
 
             //Are there more domains than are shown?
-            var moreDomains = 0;
+            let moreDomains = 0;
 
             //Append all domains to the table and to the report comment
             $.each(user.domainList, function (index, value) {
-                var domain = value,
+                let domain = value,
                     domainCount = user.domains[domain].count,
                     url = `/search?q=%28and+site%3A%27${domain}%27+author%3A%27${author}%27+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`,
                     match = domain.match(/^self.(\w+)$/),
@@ -544,19 +535,19 @@ function historybutton() {
             $subredditTable.empty();
 
             //Get the total count of subreddit submissions
-            var totalSubredditCount = 0;
-            for (var subreddit in user.subreddits.submissions) {
+            let totalSubredditCount = 0;
+            for (let subreddit in user.subreddits.submissions) {
                 totalSubredditCount += user.subreddits.submissions[subreddit].count;
             }
 
 
             //Append a list of subreddits submitted to the subreddit table and to the comment body for reports
             $.each(user.subredditList, function (index, value) {
-                var subreddit = value,
+                let subreddit = value,
                     subredditCount = user.subreddits.submissions[subreddit].count,
                     subredditKarma = user.subreddits.submissions[subreddit].karma,
                     url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`;
-                var percentage = Math.round(subredditCount / totalSubredditCount * 100);
+                let percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 $subredditTable.append(
                     `<tr>
@@ -582,9 +573,9 @@ function historybutton() {
         //Get the total account of account submissions
             $accountTable.empty();
 
-            var accountList = [];
+            let accountList = [];
 
-            for (var account in user.accounts) {
+            for (let account in user.accounts) {
 
                 accountList.push(account);
             }
@@ -598,7 +589,7 @@ function historybutton() {
             $.each(accountList, function(index, account) {
                 account = user.accounts[account];
 
-                var percentage = Math.round(account.count / user.counters.submissions * 100),
+                let percentage = Math.round(account.count / user.counters.submissions * 100),
                     bgcolor = 'fff';
 
                 if (percentage >= 10 && account.count > 4){
@@ -646,7 +637,7 @@ function historybutton() {
                 }
             }
 
-            var match = url.match(spec.rx),
+            let match = url.match(spec.rx),
                 author = match && match[1],
                 scheme, author_url, provider_url;
 
@@ -675,7 +666,7 @@ function historybutton() {
     self.populateCommentHistory = function (after, author) {
         TB.ui.longLoadNonPersistent(true);
 
-        var user = self.fetched[author],
+        let user = self.fetched[author],
             $contentBox = user.popup,
             $commentCount = $contentBox.find('.comment-count'),
             $commentCountOp = $contentBox.find('.comment-count-OP'),
@@ -692,7 +683,7 @@ function historybutton() {
             TB.ui.longLoadNonPersistent(false);
         }).done(function (d) {
             $.each(d.data.children, function (index, value) {
-                var data = value.data;
+                const data = value.data;
 
                 if (!user.subreddits.comments[data.subreddit]) {
                     user.subreddits.comments[data.subreddit] = {count: 0};
@@ -707,7 +698,7 @@ function historybutton() {
                 }
             });
 
-            var after = d.data.after;
+            const after = d.data.after;
 
             if (after && user.counters.comments < Number(self.setting('commentCount'))) {
                 self.populateCommentHistory(after, author);
@@ -720,7 +711,7 @@ function historybutton() {
             $commentTable.empty();
 
             $.each(user.commentSubredditList, function (index, value) {
-                var count = user.subreddits.comments[value].count,
+                let count = user.subreddits.comments[value].count,
                     percentage = Math.round(count / user.counters.comments * 100);
 
                 $commentTable.append(
@@ -728,7 +719,7 @@ function historybutton() {
                     <td>${value}</td><td>${count}</td><td>${percentage}</td>
                 </tr>`);
             });
-            var percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
+            const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
 
             $commentCount.html(user.counters.comments);
             $commentCountOp.html(`${user.counters.commentsOP} (${percentageOP}%)`);
@@ -741,7 +732,7 @@ function historybutton() {
  * Report the use to /r/spam
  */
     self.reportAuthorToSpam = function (author) {
-        var user = self.fetched[author],
+        let user = self.fetched[author],
             $contentBox = user.popup,
             rtsComment = self.setting('rtsComment'),
             $rtsLink = $contentBox.find('.rts-report'),
@@ -752,7 +743,7 @@ function historybutton() {
         rtsNativeLink.className = '.rts-report-clicked';
 
         //Submit to RTS
-        var link = `https://www.reddit.com/user/${author}`,
+        const link = `https://www.reddit.com/user/${author}`,
             title = `Overview for ${author}`;
 
         TBUtils.postLink(link, title, self.SPAM_REPORT_SUB, function (successful, submission) {

@@ -291,6 +291,11 @@ function queuetools() {
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
                 makeActionTable($target, subreddit, id);
+                if(e.details.type === 'TBpost') {
+                    const $actionTable = $target.find('.tb-action-table');
+                    $actionTable.show();
+                    $target.find('.tb-show-action-table').hide();
+                }
             });
 
             TB.listener.on('comment', function(e) {
@@ -301,6 +306,10 @@ function queuetools() {
                 // For now only try this on toolbox generated comments due to target placement.
                 if(e.detail.type === 'TBcomment') {
                     makeActionTable($target, subreddit, id);
+                    const $actionTable = $target.find('.tb-action-table');
+                    $actionTable.show();
+                    $target.find('.tb-show-action-table').hide();
+
                 }
 
             });

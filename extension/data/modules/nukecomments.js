@@ -235,20 +235,22 @@ function nukecomments() {
 
         // Add nuke buttons where needed
         TB.listener.on('comment', function(e) {
-            const pageType = TBUtils.pageDetails.pageType;
-            const $target = $(e.target);
-            const subreddit = e.detail.data.subreddit.name;
-            const commentID = e.detail.data.id.substring(3);
-            const postID = e.detail.data.post.id.substring(3);
+            if(e.detail.type !== 'TBcomment') {
+                const pageType = TBUtils.pageDetails.pageType;
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const commentID = e.detail.data.id.substring(3);
+                const postID = e.detail.data.post.id.substring(3);
 
-            TBUtils.getModSubs(function () {
-                if(TBUtils.modsSub(subreddit) && (pageType=== 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
-                    const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit) && (pageType=== 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
+                        const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
 
-                    $target.append(NukeButtonHTML);
+                        $target.append(NukeButtonHTML);
 
-                }
-            });
+                    }
+                });
+            }
         });
 
 

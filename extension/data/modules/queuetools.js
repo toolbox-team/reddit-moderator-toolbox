@@ -237,57 +237,72 @@ function queuetools() {
 
         }
 
+        function makeActionTable($target, subreddit, id) {
+            TBUtils.getModSubs(function () {
+                if(TBUtils.modsSub(subreddit)) {
+                    getActions(subreddit, id, function(actions) {
+                        if(actions) {
+                            let $actionTable = $(`
+                            <div class="tb-action-details">
+                                <span class="tb-bracket-button tb-show-action-table">show recent actions</span>
+                                <table class="tb-action-table">
+                                    <tr>
+                                        <th>mod</th>
+                                        <th>action</th>
+                                        <th>details</th>
+                                        <th>time</th>
+                                    </tr>
+                                </table>
+                            </div>
+                            `);
+
+                            $.each(actions, function (i, value) {
+                                const mod = value.mod;
+                                const action = value.action;
+                                const details = value.details;
+                                const createdUTC = TBUtils.timeConverterRead(value.created_utc);
+                                const createdTimeAgo = TBUtils.timeConverterISO(value.created_utc);
+
+                                const actionHTML = `
+                                <tr>
+                                    <td>${mod}</td>
+                                    <td>${action}</td>
+                                    <td>${details}</td>
+                                    <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
+                                </tr>
+                                `;
+                                $actionTable.find('.tb-action-table').append(actionHTML);
+                            });
+                            $target.append($actionTable);
+                            $actionTable.find('time.timeago').timeago();
+                        }
+                    });
+                }
+            });
+
+        }
         // Show history of actions near posts.
         if(showActionReason) {
 
-            TB.listener.on('post', function(e) {
 
+
+            TB.listener.on('post', function(e) {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
-                TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
-                        getActions(subreddit, id, function(actions) {
-                            if(actions) {
-                                let $postActionTable = $(`
-                                <div class="tb-action-details">
-                                    <span class="tb-bracket-button tb-show-action-table">show recent actions</span>
-                                    <table class="tb-action-table">
-                                        <tr>
-                                            <th>mod</th>
-                                            <th>action</th>
-                                            <th>details</th>
-                                            <th>time</th>
-                                        </tr>
-                                    </table>
-                                </div>
-                                `);
-                                $.each(actions, function (i, value) {
-                                    const mod = value.mod;
-                                    const action = value.action;
-                                    const details = value.details;
-                                    const createdUTC = TBUtils.timeConverterRead(value.created_utc);
-                                    const createdTimeAgo = TBUtils.timeConverterISO(value.created_utc);
+                makeActionTable($target, subreddit, id);
+            });
 
-                                    const actionHTML = `
-                                    <tr>
-                                        <td>${mod}</td>
-                                        <td>${action}</td>
-                                        <td>${details}</td>
-                                        <td><time title="${createdUTC}" datetime="${createdTimeAgo}" class="live-timestamp timeago">${createdTimeAgo}</time></td>
-                                    </tr>
-                                    `;
-                                    $postActionTable.find('.tb-action-table').append(actionHTML);
+            TB.listener.on('comment', function(e) {
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const id = e.detail.data.id;
 
-                                });
-                                $target.append($postActionTable);
-                                $postActionTable.find('time.timeago').timeago();
+                // For now only try this on toolbox generated comments due to target placement.
+                if(e.detail.type === 'TBcomment') {
+                    makeActionTable($target, subreddit, id);
+                }
 
-
-                            }
-                        });
-                    }
-                });
             });
 
             $body.on('click', '.tb-show-action-table', function() {

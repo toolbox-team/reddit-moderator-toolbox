@@ -7,7 +7,9 @@
     const listenerAliases = {
         'postAuthor': ['author'],
         'commentAuthor': ['author'],
-        'TBcommentAuthor': ['author']
+        'TBcommentAuthor': ['author'],
+        'TBcomment': ['comment'],
+        'TBpost': ['post']
     };
 
     /**

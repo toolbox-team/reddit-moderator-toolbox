@@ -873,16 +873,38 @@
             const $comments = $elements.find('.tb-comment');
             TBUtils.forEachChunkedDynamic($comments, function(value) {
                 const $element = $(value);
-                const $jsApiPlaceholder = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
-                const jsApiPlaceholder = $jsApiPlaceholder[0];
+                const $jsApiPlaceholderComment= $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
+                const jsApiPlaceholderComment = $jsApiPlaceholderComment[0];
+                const $jsApiPlaceholderAuthor = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
+                const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
+                const commentAuthor = $element.attr('data-comment-author'),
+                    postID = $element.attr('data-comment-post-id'),
+                    commentID = $element.attr('data-comment-id'),
+                    subredditName = $element.attr('data-subreddit'),
+                    subredditType = $element.attr('data-subreddit-type');
 
+                // Comment
+                if(!$jsApiPlaceholderComment.hasClass('.tb-frontend-container')) {
+                    const detailObject = {
+                        'type': 'TBcomment',
+                        'data': {
+                            'author': commentAuthor,
+                            'post': {
+                                'id': postID
+                            },
+                            'id': commentID,
+                            'subreddit': {
+                                'name': subredditName,
+                                'type': subredditType
+                            }
+                        }
+                    };
+                    const tbRedditEventComment = new CustomEvent('tbReddit', {detail: detailObject});
+                    jsApiPlaceholderComment.dispatchEvent(tbRedditEventComment);
+                }
+                // Author
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholder.hasClass('.tb-frontend-container')) {
-                    const commentAuthor = $element.attr('data-comment-author'),
-                        postID = $element.attr('data-comment-post-id'),
-                        commentID = $element.attr('data-comment-id'),
-                        subredditName = $element.attr('data-subreddit'),
-                        subredditType = $element.attr('data-subreddit-type');
+                if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
 
                     const detailObject = {
                         'type': 'TBcommentAuthor',
@@ -900,10 +922,8 @@
                             }
                         }
                     };
-
-
-                    const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
-                    jsApiPlaceholder.dispatchEvent(tbRedditEvent);
+                    const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
+                    jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
 
             }, {framerate: 40});
@@ -912,16 +932,35 @@
             const $submissions = $elements.find('.tb-submission');
             TBUtils.forEachChunkedDynamic($submissions, function(value) {
                 const $element = $(value);
-                const $jsApiPlaceholder = $element.find('.tb-jsapi-author-container');
-                const jsApiPlaceholder = $jsApiPlaceholder[0];
+                const $jsApiPlaceholderSubmission= $element.find('.tb-jsapi-submission-container');
+                const jsApiPlaceholderSubmission = $jsApiPlaceholderSubmission[0];
+                const $jsApiPlaceholderAuthor = $element.find('.tb-jsapi-author-container');
+                const jsApiPlaceholderAuthor= $jsApiPlaceholderAuthor[0];
 
+                const submissionAuthor = $element.attr('data-submission-author'),
+                    postID = $element.attr('data-post-id'),
+                    subredditName = $element.attr('data-subreddit'),
+                    subredditType = $element.attr('data-subreddit-type');
+
+                if(!$jsApiPlaceholderSubmission.hasClass('.tb-frontend-container')) {
+
+                    const detailObject = {
+                        'type': 'TBpost',
+                        'data': {
+                            'author': submissionAuthor,
+                            'id': postID,
+                            'subreddit': {
+                                'name': subredditName,
+                                'type': subredditType
+                            }
+                        }
+                    };
+
+                    const tbRedditEventSubmission = new CustomEvent('tbReddit', {detail: detailObject});
+                    jsApiPlaceholderSubmission.dispatchEvent(tbRedditEventSubmission);
+                }
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholder.hasClass('.tb-frontend-container')) {
-
-                    const submissionAuthor = $element.attr('data-submission-author'),
-                        postID = $element.attr('data-post-id'),
-                        subredditName = $element.attr('data-subreddit'),
-                        subredditType = $element.attr('data-subreddit-type');
+                if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
 
                     const detailObject = {
                         'type': 'postAuthor',
@@ -937,8 +976,8 @@
                         }
                     };
 
-                    const tbRedditEvent = new CustomEvent('tbReddit', {detail: detailObject});
-                    jsApiPlaceholder.dispatchEvent(tbRedditEvent);
+                    const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
+                    jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
 
             }, {framerate: 40});
@@ -1113,6 +1152,7 @@
                         ${submissionSelfTextHTML}
                     </div>
                     ` : ''}
+                    <div class="tb-jsapi-submission-container"></div>
                 </div>
             </div>
             `);
@@ -1426,6 +1466,7 @@
                     <div class="tb-comment-buttons">
                             <a class="tb-comment-button tb-comment-button-permalink" href="${commentPermalink}">permalink</a>
                     </div>
+                    <div class="tb-jsapi-comment-container"></div>
                 </div>
             </div>
         `);

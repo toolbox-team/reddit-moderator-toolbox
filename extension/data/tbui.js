@@ -1000,7 +1000,8 @@
             submissionRemoved = submission.data.removed, // boolean
             submissionBannedAtUTC = submission.data.banned_at_utc, // unix epoch
             submissionBannedBy = submission.data.banned_by, // Mod that removed the submission
-            submissionIgnoreReports = submission.data.ignore_reports; // boolean
+            submissionIgnoreReports = submission.data.ignore_reports, // boolean
+            submissionBanNote = submission.data.ban_note;
 
         // Format the submission datetime nicely
         const submissionReadableCreatedUTC = TBUtils.timeConverterRead(submissionCreatedUTC),
@@ -1039,6 +1040,12 @@
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
             submissionStatusBy = submissionApprovedBy;
             submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
+        } else if (submissionBanNote && !submissionSpam && !submissionRemoved && !submissionApproved) {
+            submissionStatus = 'filtered';
+            submissionStatusUTC = submissionBannedAtUTC;
+            submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
+            submissionStatusBy = submissionBannedBy;
+            submissionActionByOn = `${submissionStatusBy ? `by ${submissionStatusBy}` : ``} on ${submissionStatusReadableUTC} [${submissionBanNote}]`;
         } else {
             submissionStatus = 'neutral';
         }
@@ -1185,12 +1192,12 @@
 
         // Now add mod action buttons if applicable.
         if (canModsubmission) {
-            if(submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral') {
+            if(submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
                 $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
 
             }
 
-            if (submissionStatus === 'approved' || submissionStatus === 'neutral') {
+            if (submissionStatus === 'approved' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
                 $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
                 <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
             }
@@ -1279,7 +1286,8 @@
             // Comment status - other
             commentArchived = comment.data.archived,
             commentCollapsed = comment.data.collapsed,
-            commentCollapsedReason = comment.data.collapsed_reason;
+            commentCollapsedReason = comment.data.collapsed_reason,
+            commentBanNote = comment.data.ban_note;
 
         // Do we have overview data?
         let parentHtml;
@@ -1341,6 +1349,12 @@
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
             commentStatusBy = commentApprovedBy;
             commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
+        } else if (commentBanNote && !commentRemoved && !commentSpam && !commentApproved) {
+            commentStatus = 'filtered';
+            commentStatusUTC = commentBannedAtUTC;
+            commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
+            commentStatusBy = commentBannedBy;
+            commentActionByOn = `${commentStatusBy ? `by ${commentStatusBy}` : ``}  on ${commentStatusReadableUTC} [${commentBanNote}]`;
         } else {
             commentStatus = 'neutral';
         }
@@ -1514,12 +1528,12 @@
 
         // Now add mod action buttons if applicable.
         if (canModComment) {
-            if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
+            if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
                 $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
 
             }
 
-            if (commentStatus === 'approved' || commentStatus === 'neutral') {
+            if (commentStatus === 'approved' || commentStatus === 'neutral' || commentStatus === 'filtered') {
                 $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
             }

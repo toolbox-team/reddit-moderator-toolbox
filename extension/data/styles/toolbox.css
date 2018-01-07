@@ -1233,6 +1233,37 @@ body.mod-toolbox-rd .tb-general-button img {
     border: solid 2px #a03030;
 }
 
+.mod-toolbox-rd  .tb-submission.filtered,
+.mod-toolbox-rd  .tb-comment-entry.filtered {
+    border: dashed 2px #a03030;
+}
+
+body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-remove,
+body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-remove {
+    border: 1px solid #666;
+    color: #000;
+    padding: 1px 6px;
+    background: rgb(191, 207, 224);
+
+}
+body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-spam,
+body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-spam {
+    border: 1px solid #666;
+    color: #000;
+    padding: 1px 6px;
+    background: rgb(237, 189, 190);
+}
+
+
+
+body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-approve,
+body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-approve {
+    border: 1px solid #666;
+    color: #000;
+    padding: 1px 6px;
+    background: rgb(209, 234, 191);
+}
+
 .mod-toolbox-rd a.tb-moderator {
     color: #228822;
 }

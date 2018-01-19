@@ -871,6 +871,15 @@ body.mod-toolbox-rd .tb-general-button img {
     vertical-align: top;
 }
 
+/* Handle icons within buttons */
+body.mod-toolbox-rd .tb-general-button .tb-icons,
+body.mod-toolbox-rd li a.tb-general-button .tb-icons,
+body.mod-toolbox-rd .tb-bracket-button .tb-icons {
+    font-size: 15px;
+    display: inline-block;
+    vertical-align: top;
+}
+
 /*
 -----------
     Comment rebuilding css

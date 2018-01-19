@@ -152,7 +152,7 @@ function tbconfig() {
                         title: 'edit removal reasons',
                         tooltip: 'Edit and add your removal reasons here.',
                         content: `
-                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><img src="data:image/png;base64,${TBui.iconAdd}"> Add new removal reason</a>
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">add_circle_outline</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form">
                     <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
@@ -187,7 +187,7 @@ function tbconfig() {
                         title: 'edit mod macros',
                         tooltip: 'Edit and add your mod macros here.',
                         content: `
-                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><img src="data:image/png;base64,${TBui.iconAdd}"> Add new mod macro</a>
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">add_circle_outline</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <span id="tb-add-mod-macro-form">
                     <textarea class="tb-input edit-area"></textarea><br/>
@@ -584,8 +584,8 @@ function tbconfig() {
                     var removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="removal-reasons-buttons">
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiCommentEdit}}"></a> <br>
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiCommentRemove}}"></a>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">edit</a> <br>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">delete</a>
                     </td>
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
@@ -609,8 +609,6 @@ function tbconfig() {
                         'removalReasonTitle': removalReasonTitle,
                         'removalReasonFlairText': removalReasonFlairText,
                         'removalReasonFlairCSS': removalReasonFlairCSS,
-                        'uiCommentRemove': TBui.iconCommentRemove,
-                        'uiCommentEdit': TBui.iconCommentsEdit
                     });
 
                     var $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');
@@ -645,8 +643,8 @@ function tbconfig() {
                     var removalReasonTemplateHTML = `
                 <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
                     <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-sort-up"><img src="data:image/png;base64,${TBui.topIcon}"></a>
-                        <a href="javascript:;" class="tb-sort-down"><img src="data:image/png;base64,${TBui.bottomIcon}"></a>
+                        <a href="javascript:;" class="tb-sort-up tb-icons">arrow_upward</a>
+                        <a href="javascript:;" class="tb-sort-down tb-icons">arrow_downward</a>
                     </td>
                     <td class="removal-reasons-content">
                         <span class="removal-reason-label">${removalReasonTitle}</span>
@@ -683,8 +681,8 @@ function tbconfig() {
                     var modMacroTemplate = `
                 <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="mod-macros-buttons">
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit"><img src="data:image/png;base64,{{uiMacroEdit}}"></a> <br>
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete"><img src="data:image/png;base64,{{uiMacroRemove}}"></a>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">edit</a> <br>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">delete</a>
                     </td>
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>
@@ -712,8 +710,6 @@ function tbconfig() {
                         'label': label,
                         'modMacroText': modMacroText,
                         'modMacroTitle': modMacroTitle,
-                        'uiMacroRemove': TBui.iconCommentRemove,
-                        'uiMacroEdit': TBui.iconCommentsEdit
                     });
 
                     var $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');

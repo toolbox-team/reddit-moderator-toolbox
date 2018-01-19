@@ -831,7 +831,6 @@ body.mod-toolbox-rd .tb-bracket-button {
     color: #696969;
     font-size: 11px;
     font-weight: normal;
-    line-height: 11px;
     border-width: 0 0 0 3px;
     border-color: #B6C9DD;
     border-style: solid;
@@ -841,6 +840,7 @@ body.mod-toolbox-rd .tb-bracket-button {
     display: inline-block;
     box-sizing: content-box;
     height: 15px;
+    line-height: 15px;
     vertical-align: baseline;
     text-shadow: none;
     text-align: center;

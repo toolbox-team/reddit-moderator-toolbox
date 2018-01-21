@@ -315,7 +315,6 @@ div#tb-context-menu #tb-context-header {
 
 .mod-toolbox-rd .tb-window-tabs a {
     background-color: #C7D6E6;
-    border-right: dotted 1px #A8B5C2;
     display: inline-block;
     padding: 10px !important;
 }
@@ -327,7 +326,7 @@ div#tb-context-menu #tb-context-header {
 .mod-toolbox-rd .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;
-    border-bottom: solid 1px #eef5fd;
+    border-bottom: solid 1px #FFF;
 }
 
 .mod-toolbox-rd .tb-settings .tb-window-tabs a:nth-last-of-type(1) {

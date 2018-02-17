@@ -160,7 +160,7 @@ function modbar() {
 
         // This is here in case notifier is disabled which is where this normally is set.
         // Atleast, I think.... - creesch
-        let modMailUrl = $('#modmail').attr('href') || `${TBUtils.baseDomain}/message/moderator/`;
+        let modMailUrl = $('#modmail').attr('href') || `${TBUtils.tempBaseDomain}/message/moderator/`;
         if (parseInt(modmailCustomLimit) > 0) {
 
             modMailUrl += `?limit=${modmailCustomLimit}`;
@@ -180,8 +180,8 @@ function modbar() {
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBUtils.baseDomain}/message/inbox/" class="nohavemail tb-icons" id="tb-mail">email</a>
-            <a href="${TBUtils.baseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
+            <a title="no mail" href="${TBUtils.tempBaseDomain}/message/inbox/" class="nohavemail tb-icons" id="tb-mail">email</a>
+            <a href="${TBUtils.tempBaseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
             <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}>move_to_inbox</a>

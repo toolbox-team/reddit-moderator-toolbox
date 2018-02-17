@@ -229,8 +229,8 @@ function notifiermod() {
             newModmailCount = self.setting('newModmailCount'),
             newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
-            messageunreadurl = `${TBUtils.baseDomain}/message/inbox/`,
-            modmailunreadurl = `${TBUtils.baseDomain}/message/moderator/`,
+            messageunreadurl = `${TBUtils.tempBaseDomain}/message/inbox/`,
+            modmailunreadurl = `${TBUtils.tempBaseDomain}/message/moderator/`,
             $body = $('body'),
             activeNewMMcheck = false;
 
@@ -310,12 +310,12 @@ function notifiermod() {
                 $mailCount.empty();
                 $mail.attr('class', 'nohavemail');
                 $mail.attr('title', 'no new mail!');
-                $mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+                $mail.attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
                 $mailcount.attr('href', messageunreadurl);
                 $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
                 $tb_mail.attr('title', 'no new mail!');
-                $tb_mail.attr('href', `${TBUtils.baseDomain}/message/inbox/`);
-                $('#tb-mailCount').attr('href', `${TBUtils.baseDomain}/message/inbox/`);
+                $tb_mail.attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
+                $('#tb-mailCount').attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
             } else {
                 $mail.attr('class', 'havemail');
                 $mail.attr('title', 'new mail!');

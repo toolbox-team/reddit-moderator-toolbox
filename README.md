@@ -1,28 +1,69 @@
 [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
 
-Before you fuck around with pushing shit, read this first.
+toolbox for reddit
 ========================
 
-- This repo is for team development for the redesign.
-- Experimenting aka fucking around with the redesign is to be done in your own private repo. 
-- Contributing here means that you are on IRC and discussed the things you are working on so we are on the same page. 
-- What that same page entails is roughly outlined [here in this project](https://github.com/creesch/reddit-moderator-toolbox/projects/2)
+Bundled extension of the /r/toolbox moderator tools for reddit.com
 
-Documenting our shit
-====================
-We have been lazy in that regard. Use jsdoc to document new functions and old functions you rework, [jsdoc comments get rendered on build](http://www.creesch.com/tb/docs/) and will help future contributors make sense of the maze that is tbutils, tbui, etc. Comment smartly, explain code decisions specifically where it might not immediatly apparanty *why* code looks like it does. 
+Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 
-New front-end api
-====================
-The dev admins have worked with us to implement a front-end event based api which we can use to hook toolbox into reddit. This is not finished yet, be aware of that.
+# Contributing 
 
-If you contribute you are on IRC.
-====================
+Thinking about contributing to toolbox? Awesome! [Here is some information to get you started!](/CONTRIBUTING.md)
 
-Yes, that already has been said but just to make shit absolutely clear. If we do not work together on this properly it will turn into a unholy mess of spagetti code. 
+# Development
 
-Read up on our development guidelines. 
-====================
+## Chrome
 
-They have been updated since most of you contributed to toolbox. 
+- Go to `chrome://extensions`.
+- Check the "Developer mode" checkbox if it's not already checked.
+- Click the "Load unpacked extension..." button.
+- Load the `extension` directory.
+
+Reload the extension when needed.
+
+## Firefox (developer or nightly edition)
+
+- Go to `about:debugging`.
+- Click the "Load Temporary Add-on" button.
+- Point to `extension/manifest.json`.
+
+Reload the addon when needed.
+
+# Building
+
+**Note that it is not needed to use the build process for development purposes, all supported browsers can run the unpacked version of toolbox directly from the `/extension` directory**
+
+Building is relatively easy through [nodejs](https://nodejs.org/) with gulp.
+
+Install gulp globally.
+
+```sh
+$ npm install --global gulp manifoldjs
+```
+
+Then navigate to the root of the toolbox folder and install the dependencies
+
+```sh
+$ npm install
+```
+
+To build toolbox now simply run
+
+```sh
+$ gulp
+```
+
+Or if you have followed these steps before and are on windows click the build.bat file.
+
+This will create a zip file which can be used in both Chrome as well as Firefox versions that support web extensions.
+
+### Third party support
+
+All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes.
+
+Examples:
+
+- https://github.com/creesch/reddit-moderator-toolbox/wiki/JSON:-usernotes
+- https://github.com/creesch/reddit-moderator-toolbox/wiki/JSON:-toolbox-config

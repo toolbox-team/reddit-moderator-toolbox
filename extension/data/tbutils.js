@@ -1,14 +1,12 @@
-function initwrapper(modhash, newModSubs) {
+function initwrapper(userDetails, newModSubs) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
 
     // We need these before we can do anything.
-        TBUtils.modhash = modhash;
+        TBUtils.userDetails = userDetails;
+        TBUtils.modhash = userDetails.data.modhash;
 
-
-
-        // TODO: make sure to change this as soon as we have a proper method to check on this.
-        TBUtils.logged = $('body').find('#USER_DROPDOWN_ID').text() || $('.App__header .Header__user').text() || $('.BlueBar__account a.BlueBar__username').text() || '';
+        TBUtils.logged = userDetails.data.name;
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html();  // This may need to be changed to regex, if this is unreliable.
 
@@ -3113,31 +3111,26 @@ function initwrapper(modhash, newModSubs) {
     // wait for storage
     function getModHash(callback) {
         let modhash;
-        if(window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com' || window.location.pathname.includes('/user/')) {
-            $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
-                modhash = result.data.modhash;
+        $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
+            console.log(result);
+            modhash = result.data.modhash;
 
-                return callback(modhash);
-            }).fail(function(jqxhr, textStatus, error) {
-                console.log(`getModHash failed (${jqxhr.status}), ${textStatus}: ${error}`);
-                console.log(jqxhr);
-                if (jqxhr.status == 504) {
-                    console.log('504 Timeout retrying request');
-                    getModHash(function(hash) {
-                        return callback(hash);
-                    });
-                }
-                else {
-                    // return null since most of toolbox will still work without a modhash.
-                    // TODO: display a message to the user that toolbox has not been able to initialize properly.
-                    return callback(null);
-                }
-            });
-        } else {
-            modhash = $('form.logout input[name=uh]').val();
             return callback(modhash);
-
-        }
+        }).fail(function(jqxhr, textStatus, error) {
+            console.log(`getModHash failed (${jqxhr.status}), ${textStatus}: ${error}`);
+            console.log(jqxhr);
+            if (jqxhr.status == 504) {
+                console.log('504 Timeout retrying request');
+                getModHash(function(hash) {
+                    return callback(hash);
+                });
+            }
+            else {
+                // return null since most of toolbox will still work without a modhash.
+                // TODO: display a message to the user that toolbox has not been able to initialize properly.
+                return callback({error: error});
+            }
+        });
     }
 
     function getModSubs(after, callback) {
@@ -3172,25 +3165,47 @@ function initwrapper(modhash, newModSubs) {
             }
         });
     }
-    window.addEventListener('TBStorageLoaded2', function () {
 
-        getModHash(function(modhash) {
+    function getUserDetails(callback) {
+
+        $.getJSON('https://www.reddit.com/api/me.json', function (json) {
+            console.log(json);
+            callback(json);
+        }).fail(function(jqxhr, textStatus, error) {
+            console.log(`getUserDetails failed (${jqxhr.status}), ${textStatus}: ${error}`);
+            console.log(jqxhr);
+            if (jqxhr.status == 504) {
+                console.log('504 Timeout retrying request');
+                getUserDetails(function(details) {
+                    return callback(details);
+                });
+
+            }
+            else {
+                return callback({error : error});
+            }
+        });
+    }
+    window.addEventListener('TBStorageLoaded2', function () {
+        getUserDetails(function(userDetails) {
+            if(userDetails.error) {
+                console.log('Error: ', userDetails.error);
+                return;
+            }
             let modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
             if (modSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, function(subs) {
-                    initwrapper(modhash, subs);
+                    initwrapper(userDetails, subs);
                     const event = new CustomEvent('TBUtilsLoaded2');
                     window.dispatchEvent(event);
                 });
 
             } else {
-                initwrapper(modhash);
+                initwrapper(userDetails);
                 const event = new CustomEvent('TBUtilsLoaded2');
                 window.dispatchEvent(event);
             }
-
-
         });
     });
 })();

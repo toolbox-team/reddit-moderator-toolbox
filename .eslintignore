@@ -1,6 +1,6 @@
 # Build output
 build/*
-doc/*
+docs/*
 
 # gulp
 gulpfile.js

@@ -15,3 +15,16 @@ node_modules/*
 .idea/*
 .settings/*
 .vscode/*
+
+# Not yet ported node_modules
+/extension/data/libs/redditapi.js
+/extension/data/modules/bagel.js
+/extension/data/modules/banlist.js
+/extension/data/modules/betterbuttons.js
+/extension/data/modules/domaintagger.js
+/extension/data/modules/macro.js
+/extension/data/modules/metricstab.js
+/extension/data/modules/modmailpro.js
+/extension/data/modules/modmatrix.js
+/extension/data/modules/syntax.js
+/extension/data/modules/trouble.js

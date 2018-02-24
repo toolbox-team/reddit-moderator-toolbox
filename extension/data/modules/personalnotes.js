@@ -28,6 +28,18 @@ function personalnotes() {
             notesArray = [],
             notesPopupContent;
 
+        // Template HTML for each item in the note list
+        const noteListTemplate = `
+            <li>
+                <a href="javascript:void(0)" class="tb-personal-note-delete tb-icons tb-icons-negative" data-wiki="{{name}}">
+                    delete
+                </a>
+                <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="{{name}}">
+                    {{name}}
+                </a>
+            </li>
+        `;
+
         // Here we create the popup containing all relevant information
         function createPersonalNotesPopup(notesPopupContent) {
             TB.ui.popup(
@@ -99,11 +111,12 @@ function personalnotes() {
                         $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
 
 
-                        if ($body.find('#tb-personal-notes-ul').length) {
-                            $body.find('#tb-personal-notes-ul').append(`<li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${page}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${page}">${page}</a> </li>`);
-                        } else {
-                            $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul><li class="tb-personal-notes-active"><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${page}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${page}">${page}</a> </li></ul>`);
+                        if (!$body.find('#tb-personal-notes-ul').length) {
+                            $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul>`);
                         }
+                        let $noteItem = $(TBUtils.template(noteListTemplate, {name: page}));
+                        $noteItem.toggleClass('tb-personal-notes-active', true);
+                        $body.find('#tb-personal-notes-ul').append($noteItem);
 
                         loadNoteWiki(page);
                     }
@@ -182,7 +195,7 @@ function personalnotes() {
                                             value = value.replace('notes/', '');
                                             notecount++;
                                             notesArray.push(value);
-                                            noteListConstruction += `<li><a href="javascript:void(0)" class="tb-personal-note-delete" data-wiki="${value}"><img src="data:image/png;base64,${TBui.iconDelete}"></a> <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="${value}">${value}</a> </li> \n`;
+                                            noteListConstruction += TBUtils.template(noteListTemplate, {name: value});
                                         }
                                     });
 

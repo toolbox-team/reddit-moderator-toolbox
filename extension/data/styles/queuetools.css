@@ -6,6 +6,7 @@
     position: absolute;
     top: 200px;
     display: none;
+    z-index: 2147483646 !important;
   }
 
 .mod-toolbox-rd .tb-kitteh {

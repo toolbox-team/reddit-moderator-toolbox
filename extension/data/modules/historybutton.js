@@ -495,7 +495,7 @@ function historybutton() {
             $.each(user.domainList, function (index, value) {
                 let domain = value,
                     domainCount = user.domains[domain].count,
-                    url = `/search?q=%28and+site%3A%27${domain}%27+author%3A%27${author}%27+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`,
+                    url = `/search?q=%28and+site%3A${domain}+author%3A${author}+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`,
                     match = domain.match(/^self.(\w+)$/),
                     percentage = Math.round(domainCount / totalDomainCount * 100),
                     bgcolor = '#fff';
@@ -506,7 +506,7 @@ function historybutton() {
                 }
 
                 //If the domain is a self post, change the URL
-                if (match) url = `/r/${match[1]}/search?q=%28and+author%3A%27${author}%27+is_self%3A1+%29&restrict_sr=on&sort=new&syntax=cloudsearch&feature=legacy_search`;
+                if (match) url = `/r/${match[1]}/search?q=%28and+author%3A${author}+is_self%3A1+%29&restrict_sr=on&sort=new&syntax=cloudsearch&feature=legacy_search`;
 
                 //Append domain to the table
                 $domainTable.append(
@@ -546,7 +546,7 @@ function historybutton() {
                 let subreddit = value,
                     subredditCount = user.subreddits.submissions[subreddit].count,
                     subredditKarma = user.subreddits.submissions[subreddit].karma,
-                    url = `/r/${subreddit}/search?q=author%3A%27${author}%27&restrict_sr=on&sort=new&feature=legacy_search`;
+                    url = `/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`;
                 let percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 $subredditTable.append(

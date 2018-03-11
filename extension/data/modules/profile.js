@@ -298,10 +298,10 @@ function profilepro() {
         function searchProfile(user, type, sortMethod, $siteTable, options, after, match, callback) {
             let hits = match || false;
             let results = [];
-            const subreddit = options.subreddit || false;
+            const subredditPattern = options.subredditPattern || false;
             const searchPattern = options.searchPattern || false;
 
-            if(!subreddit && !searchPattern) {
+            if(!subredditPattern && !searchPattern) {
                 return callback(false);
             }
             const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
@@ -318,20 +318,20 @@ function profilepro() {
                     let subredditMatch = false;
                     let patternMatch = false;
                     if(value.kind === 't1') {
-                        subredditMatch = subreddit && value.data.subreddit === subreddit;
+                        subredditMatch = subredditPattern && subredditPattern.test(value.data.subreddit);
                         patternMatch = searchPattern && searchPattern.test(value.data.body);
 
                     }
 
                     if(value.kind === 't3') {
-                        subredditMatch = subreddit && value.data.subreddit === subreddit;
+                        subredditMatch = subredditPattern && subredditPattern.test(value.data.subreddit);
                         patternMatch = searchPattern && (value.data.selftext && searchPattern.test(value.data.selftext) || searchPattern.test(value.data.title));
                     }
 
 
                     if(
                         (subredditMatch && !searchPattern) ||
-                        (patternMatch && !subreddit) ||
+                        (patternMatch && !subredditPattern) ||
                         (subredditMatch && patternMatch)
                     ) {
                         hit = true;
@@ -396,7 +396,7 @@ function profilepro() {
 
             let searchOptions = {};
             if (subredditsearch) {
-                searchOptions.subreddit = subredditsearch;
+                searchOptions.subredditPattern = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');;
             }
             if (contentsearch) {
                 searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');

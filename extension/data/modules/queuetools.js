@@ -53,8 +53,8 @@ function queuetools() {
         // Cached data
         const showActionReason = self.setting('showActionReason'),
             expandActionReasonQueue = self.setting('expandActionReasonQueue'),
-            queueCreature = self.setting('queueCreature'),
-            expandReports = self.setting('expandReports');
+            queueCreature = self.setting('queueCreature');
+            //expandReports = self.setting('expandReports');
 
         // If the queue creature element is on page it will fade it out first and then remove the element.
         function fadeOutCreature() {

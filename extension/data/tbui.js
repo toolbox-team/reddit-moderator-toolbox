@@ -1280,27 +1280,27 @@
             // Comment basis (author, body, time)
             commentAuthor = comment.data.author,
             commentBodyHTML = comment.data.body_html, // html string
-            commentMarkdownBody = comment.data.body, // markdown string
-            commentCreated = comment.data.created, // unix epoch
+            //commentMarkdownBody = comment.data.body, // markdown string
+            //commentCreated = comment.data.created, // unix epoch
             commentCreatedUTC = comment.data.created_utc, // unix epoch
             commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
             commentLinkId = comment.data.link_id, // parent submission ID
-            commentId = comment.data.id, // comment ID
+            //commentId = comment.data.id, // comment ID
             commentName = comment.data.name, // fullname t1_<comment ID>
             commentParentId = comment.data.parent_id,
             commentPermalink = comment.data.permalink,
             commentSubreddit = comment.data.subreddit,
-            commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+            //commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
             commentSubredditType = comment.data.subreddit_type,
-            commentReplies = comment.data.replies, // object with replies
+            //commentReplies = comment.data.replies, // object with replies
 
             // Comment details
-            commentScoreHidden = comment.data.score_hidden, // boolean
+            //commentScoreHidden = comment.data.score_hidden, // boolean
             commentScore = comment.data.score, // integer
             commentControversiality = comment.data.controversiality,  // integer
             commentEdited = comment.data.edited,
             commentGilded = comment.data.gilded,
-            commentNumReports = comment.data.num_reports,
+            //commentNumReports = comment.data.num_reports,
             commentUserReports = comment.data.user_reports, // array with reports by users
 
             // Comment details - mod related
@@ -1324,9 +1324,9 @@
             commentIgnoreReports = comment.data.ignore_reports, // boolean
 
             // Comment status - other
-            commentArchived = comment.data.archived,
-            commentCollapsed = comment.data.collapsed,
-            commentCollapsedReason = comment.data.collapsed_reason,
+            //commentArchived = comment.data.archived,
+            //commentCollapsed = comment.data.collapsed,
+            //commentCollapsedReason = comment.data.collapsed_reason,
             commentBanNote = comment.data.ban_note;
 
         // Do we have overview data?
@@ -1353,12 +1353,12 @@
 
         // Build a parentlink
         // Also determine if we are dealing with a top level comment.
-        let commentIsTopLevel = false;
+        //let commentIsTopLevel = false;
         const commentParentKind = commentParentId.substring(0,2);
         let commentParentLink;
         if(commentParentKind === 't1') {
             commentParentLink = commentThreadPermalink + commentParentId.substring(3);
-            commentIsTopLevel = true;
+            //commentIsTopLevel = true;
         } else {
             commentParentLink = commentThreadPermalink;
         }
@@ -1484,7 +1484,7 @@
              </ul>
         </div>`);
         if(commentStatus !== 'neutral') {
-            $commentData.find('.tb-comment-details').append(`<li class="tb-status-${commentStatus}">${commentStatus} ${commentActionByOn ? commentActionByOn : ''}.</li>`)
+            $commentData.find('.tb-comment-details').append(`<li class="tb-status-${commentStatus}">${commentStatus} ${commentActionByOn ? commentActionByOn : ''}.</li>`);
         }
 
         if($commentData.find('li').length) {

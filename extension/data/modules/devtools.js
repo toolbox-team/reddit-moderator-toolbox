@@ -156,7 +156,6 @@ function devtools() {
             });
 
             $body.on('click', '.tb-testSubmissionUI-button', function () {
-                const $this = $(this);
                 let $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();

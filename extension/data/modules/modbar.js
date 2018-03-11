@@ -523,6 +523,7 @@ function modbar() {
         // Show counts on hover
         let $modBarHidTooltip = $body.find('#tb-modbar-hide-tooltip');
         $modbarhid.mouseenter(function() {
+            if (!notifierEnabled || compactHide) return;
 
             const hoverContent = `
                 <table>

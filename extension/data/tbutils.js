@@ -569,7 +569,7 @@ function initwrapper(userDetails, newModSubs) {
                 '/': '&#x2F;'
             };
 
-            return String(html).replace(/[&<>"'\/]/g, function (s) {
+            return String(html).replace(/[&<>"'/]/g, function (s) {
                 return entityMap[s];
             });
         };
@@ -592,7 +592,7 @@ function initwrapper(userDetails, newModSubs) {
                 '&#x2F;' : '/'
             };
 
-            return String(html).replace(/[&<>"'\/]/g, function (s) {
+            return String(html).replace(/[&<>"'/]/g, function (s) {
                 return entityMap[s];
             });
         };
@@ -892,7 +892,7 @@ function initwrapper(userDetails, newModSubs) {
                     TBUtils.alert(note.text, function (resp) {
                         seenNotes.push(note.id);
                         TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
-                        if (note.link && note.link.match(/^(https?\:|\/)/i) && resp) window.open(note.link);
+                        if (note.link && note.link.match(/^(https?:|\/)/i) && resp) window.open(note.link);
                     }, false);
                 }
             }
@@ -1130,7 +1130,7 @@ function initwrapper(userDetails, newModSubs) {
          * @returns {string} shiny new string with replaced stuff
          */
         TBUtils.replaceAll = function (find, replace, str) {
-            find = find.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+            find = find.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
             return str.replace(new RegExp(find, 'g'), replace);
         };
 
@@ -1495,7 +1495,7 @@ function initwrapper(userDetails, newModSubs) {
                 let browserUrl = window.location.href;
 
 
-                const idRegex = new RegExp('.*mod\.reddit\.com\/mail\/.*?\/(.*?)$', 'i');
+                const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
 
                 subreddit = $body.find('.ThreadTitle__community').text();
                 permalink = ($threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`);
@@ -1708,6 +1708,25 @@ function initwrapper(userDetails, newModSubs) {
                 }
             }
 
+            function timer(count, $body, ratelimitRemaining) {
+                count = count - 1;
+                if (count <= 0) {
+                    $body.find('#ratelimit-counter').empty();
+                    $body.find('#ratelimit-counter').hide();
+                    return count;
+                }
+
+                const minutes = Math.floor(count / 60);
+                const seconds = count - minutes * 60;
+
+                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
+    <br><br>
+    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
+    `);
+
+                return count;
+            }
+
             function getRatelimit() {
             //return doChunk();
                 TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
@@ -1726,26 +1745,15 @@ function initwrapper(userDetails, newModSubs) {
                             let count = parseInt(ratelimitReset),
                                 counter = 0;
 
-                            function timer() {
-                                count = count - 1;
+
+
+                            counter = setInterval(function() {
+                                count = timer(count, $body, ratelimitRemaining);
                                 if (count <= 0) {
                                     clearInterval(counter);
-                                    $body.find('#ratelimit-counter').empty();
-                                    $body.find('#ratelimit-counter').hide();
                                     doChunk();
-                                    return;
                                 }
-
-                                const minutes = Math.floor(count / 60);
-                                const seconds = count - minutes * 60;
-
-                                $body.find('#ratelimit-counter').html(`<b>Oh dear, it seems we have hit a limit, waiting for ${minutes} minutes and ${seconds} seconds before resuming operations.</b>
-                    <br><br>
-                    <span class="rate-limit-explain"><b>tl;dr</b> <br> Reddit's current ratelimit allows for <i>${ratelimitRemaining} requests</i>. We are currently trying to process <i>${parseInt(chunkSize)} items</i>. Together with toolbox requests in the background that is cutting it a little bit too close. Luckily for us reddit tells us when the ratelimit will be reset, that is the timer you see now.</span>
-                    `);
-                            }
-
-                            counter = setInterval(timer, 1000);
+                            }, 1000);
 
                         } else {
                             doChunk();
@@ -3109,30 +3117,6 @@ function initwrapper(userDetails, newModSubs) {
 
 (function () {
     // wait for storage
-    function getModHash(callback) {
-        let modhash;
-        $.getJSON('https://www.reddit.com/r/toolbox.json',{ limit: 1 }, function(result) {
-            console.log(result);
-            modhash = result.data.modhash;
-
-            return callback(modhash);
-        }).fail(function(jqxhr, textStatus, error) {
-            console.log(`getModHash failed (${jqxhr.status}), ${textStatus}: ${error}`);
-            console.log(jqxhr);
-            if (jqxhr.status == 504) {
-                console.log('504 Timeout retrying request');
-                getModHash(function(hash) {
-                    return callback(hash);
-                });
-            }
-            else {
-                // return null since most of toolbox will still work without a modhash.
-                // TODO: display a message to the user that toolbox has not been able to initialize properly.
-                return callback({error: error});
-            }
-        });
-    }
-
     function getModSubs(after, callback) {
 
         let modSubs = [];

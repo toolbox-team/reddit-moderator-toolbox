@@ -72,7 +72,7 @@ function modbutton() {
                 parentID = 'unknown';
             }
 
-            $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`)
+            $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
 
         });
     };

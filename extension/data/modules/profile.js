@@ -366,7 +366,7 @@ function profilepro() {
         }
 
         function regExpEscape(query) {
-            return query.trim().replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+            return query.trim().replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
         }
 
         $body.on('submit', '.tb-searchuser', function () {
@@ -396,7 +396,7 @@ function profilepro() {
 
             let searchOptions = {};
             if (subredditsearch) {
-                searchOptions.subredditPattern = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');;
+                searchOptions.subredditPattern = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');
             }
             if (contentsearch) {
                 searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');

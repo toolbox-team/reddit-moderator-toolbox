@@ -1428,7 +1428,7 @@ function usernotes() {
             return '';
 
         // Compatibility with Sweden
-        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^\/]+\/(?:(\w+))?)?/,
+        var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/,
             MODMAIL_LINK_RE = /\/messages\/(\w+)/;
 
 

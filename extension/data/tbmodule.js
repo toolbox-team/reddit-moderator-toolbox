@@ -879,7 +879,7 @@ body {
                     //
                     // We get one additional click handler for each module that gets injected.
                     // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-                    $('.tb-settings').bindFirst('click', '.tb-save', function (event) {
+                    $('.tb-settings').bindFirst('click', '.tb-save', function () {
                     // handle module enable/disable on Toggle Modules first
                         let $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
                         module.setting('enabled', $moduleEnabled);

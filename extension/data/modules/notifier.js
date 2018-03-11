@@ -33,21 +33,6 @@ function notifiermod() {
         'title': 'Use /f/mod/about/unmoderated/ instead.'
     });
 
-    self.register_setting('modmailSubreddits', {
-        'type': 'text',
-        'default': 'mod',
-        'advanced': false,
-        'hidden': self.setting('modmailSubredditsFromPro'),
-        'title': 'Multireddit of subs you want displayed in the modmail counter'
-    });
-
-    self.register_setting('modmailSubredditsFromPro', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Use filtered subreddits from ModMail Pro'
-    });
-
     self.register_setting('messageNotifications', {
         'type': 'boolean',
         'default': true,
@@ -71,17 +56,6 @@ function notifiermod() {
         'type': 'boolean',
         'default': false,
         'title': 'Link to /message/unread/ if unread messages are present'
-    });
-
-    self.register_setting('modmailNotifications', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Get modmail notifications'
-    });
-    self.register_setting('modmailUnreadLink', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Link to /message/moderator/unread/ if unread modmail is present'
     });
 
     self.register_setting('straightToInbox', {
@@ -125,12 +99,6 @@ function notifiermod() {
         'title': 'Only check for notifications on www.reddit.com (prevents duplicate notifications)'
     });
 
-    self.register_setting('customModmailIcon', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Use custom modmail icon'
-    });
-
     /// Private storage settings.
     self.register_setting('unreadMessageCount', {
         'type': 'number',
@@ -147,11 +115,7 @@ function notifiermod() {
         'default': 0,
         'hidden': true
     });
-    self.register_setting('modmailCount', {
-        'type': 'number',
-        'default': 0,
-        'hidden': true
-    });
+
     self.register_setting('newModmailCount', {
         'type': 'number',
         'default': 0,
@@ -199,7 +163,6 @@ function notifiermod() {
             modNotifications = self.setting('modNotifications'),
             messageNotifications = self.setting('messageNotifications'),
             messageNotificationSound = self.setting('messageNotificationSound'),
-            modmailNotifications = self.setting('modmailNotifications'),
             unmoderatedNotifications = self.setting('unmoderatedNotifications'),
             consolidatedMessages = self.setting('consolidatedMessages'),
             straightToInbox = self.setting('straightToInbox'),
@@ -208,7 +171,6 @@ function notifiermod() {
             unmoderatedSubreddits = self.setting('unmoderatedSubreddits'),
             unmoderatedSubredditsFMod = self.setting('unmoderatedSubredditsFMod'),
             modmailSubreddits = self.setting('modmailSubreddits'),
-            customModmailIcon = self.setting('customModmailIcon'),
 
             modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
@@ -216,8 +178,6 @@ function notifiermod() {
             unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
             messageunreadlink = self.setting('messageUnreadLink'),
-            modmailunreadlink = self.setting('modmailUnreadLink'),
-            modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
 
             checkInterval = TB.utils.minutesToMilliseconds(self.setting('checkInterval')),//setting is in seconds, convert to milliseconds.
             newLoad = true,
@@ -225,23 +185,12 @@ function notifiermod() {
             unreadMessageCount = self.setting('unreadMessageCount'),
             modqueueCount = self.setting('modqueueCount'),
             unmoderatedCount = self.setting('unmoderatedCount'),
-            modmailCount = self.setting('modmailCount'),
             newModmailCount = self.setting('newModmailCount'),
             newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
             messageunreadurl = `${TBUtils.tempBaseDomain}/message/inbox/`,
-            modmailunreadurl = `${TBUtils.tempBaseDomain}/message/moderator/`,
             $body = $('body'),
             activeNewMMcheck = false;
-
-        // Use custom modmail icons if applicable
-        if(customModmailIcon) {
-            var $modmail = $('#modmail'),
-                $tb_modmail = $('#tb-modmail');
-
-            $modmail.addClass('custom');
-            $tb_modmail.addClass('custom');
-        }
 
 
         // use filter subs from MMP, if appropriate
@@ -254,17 +203,6 @@ function notifiermod() {
 
         if (messageunreadlink) {
             messageunreadurl = '/message/unread/';
-        }
-
-        // this is a placeholder from issue #217
-        // TODO: provide an option for this once we fix modmailpro filtering
-        if (modmailunreadlink) {
-        // modmailunreadurl = '/r/' + modmailFilteredSubreddits + '/message/moderator/unread';
-            modmailunreadurl += 'unread/';
-        }
-
-        if (modmailCustomLimit > 0) {
-            modmailunreadurl += `?limit=${modmailCustomLimit}`;
         }
 
         //
@@ -300,6 +238,12 @@ function notifiermod() {
             audio.play();
         });
 
+        function youveGotMail() {
+            if (messageNotificationSound) {
+                var audio = new Audio(NOTIFICATION_SOUND);
+                audio.play();
+            }
+        }
         function updateMessagesCount(count) {
             var $mail = $('#mail'),
                 $mailCount = $('#mailCount'),
@@ -341,55 +285,6 @@ function notifiermod() {
             $('#tb-unmoderatedcount').text(`[${count}]`);
         }
 
-        // Ok this mess needs more commenting because otherwise we'll keep mixing things up.
-        function updateModMailCount(count) {
-        // $modmail is native to reddit $tb_modmail in the modbar.
-            var $modmail = $('#modmail'),
-                $tb_modmail = $('#tb-modmail'),
-                $tbModmailCount = $('#tb-modmailcount');
-
-            // Determine if we need to point to a filtered inbox.
-            if (modmailFilteredSubreddits !== 'mod') {
-                var modmailHrefAttr = `/r/${modmailFilteredSubreddits}/message/moderator/`;
-                if (modmailCustomLimit > 0) {
-                    modmailHrefAttr = `${modmailHrefAttr}?limit=${modmailCustomLimit}`;
-                }
-
-                $tb_modmail.attr('href', modmailHrefAttr);
-                $modmail.attr('href', modmailHrefAttr);
-                $tbModmailCount.attr('href', modmailHrefAttr);
-            }
-
-            if (count < 1) {
-
-            // We are doing it like this to preserve other classes
-                $tb_modmail.removeClass('havemail');
-                $tb_modmail.addClass('nohavemail');
-                $tb_modmail.attr('title', 'no new mail!');
-            } else {
-            // We are doing it like this to preserve other classes
-                $modmail.removeClass('nohavemail');
-                $modmail.addClass('havemail');
-
-                $modmail.attr('title', 'new mail!');
-                $modmail.attr('href', modmailunreadurl);
-
-                // We are doing it like this to preserve other classes
-                $tb_modmail.removeClass('nohavemail');
-                $tb_modmail.addClass('havemail');
-                $tb_modmail.attr('title', 'new mail!');
-
-            }
-            $('#tb-modmailcount').text(`[${count}]`);
-        }
-
-        function updateNewModmailSidebar($sidebarItem, count) {
-            if(count > 0) {
-                $sidebarItem.append(`<div class="SidebarNav__count">${count}</div>`);
-            } else {
-                $sidebarItem.find('.SidebarNav__count').remove();
-            }
-        }
         // Here we update the count for new modmail. Is somewhat simpler than old modmail.
         function updateNewModMailCount(count, data) {
 
@@ -509,7 +404,6 @@ function notifiermod() {
             unreadMessageCount = self.setting('unreadMessageCount');
             modqueueCount = self.setting('modqueueCount');
             unmoderatedCount = self.setting('unmoderatedCount');
-            modmailCount = self.setting('modmailCount');
             newModmailCount = self.setting('newModmailCount');
             newModmailCategoryCount = self.setting('newModmailCategoryCount');
             //
@@ -626,13 +520,6 @@ function notifiermod() {
                                 pushedunread.push(value.data.name);
                             }
                         });
-
-                        function youveGotMail() {
-                            if (messageNotificationSound) {
-                                var audio = new Audio(NOTIFICATION_SOUND);
-                                audio.play();
-                            }
-                        }
 
                         //$.log(messagecount);
                         //$.log(notificationbody);

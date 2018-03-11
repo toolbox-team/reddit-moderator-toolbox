@@ -59,22 +59,21 @@
 .mod-toolbox-rd #tb-personal-notes-ul li {
     background: #C7D6E6;
     border-bottom: 1px solid #FFF;
-    padding: 5px 5px 5px 23px;
+    padding: 5px 5px 5px 25px;
     position: relative;
     word-wrap: break-word;
 }
 .mod-toolbox-rd #tb-personal-notes-ul .tb-personal-notes-active {
     background: #9FBAD6
 }
-.mod-toolbox-rd #tb-personal-notes-ul .tb-personal-notes-active a {
+.mod-toolbox-rd #tb-personal-notes-ul .tb-personal-notes-active .tb-personal-note-link {
     color: #000;
 }
 .mod-toolbox-rd .tb-personal-note-delete {
     display: block;
     position: absolute;
-    left: 5px;
-    height: 100%;
-    top: 0;
+    left: 3px;
+    top: 3px;
 }
 .mod-toolbox-rd .tb-personal-note-delete img {
     width: 13px;

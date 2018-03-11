@@ -6,7 +6,7 @@
   "homepage": "http://www.reddit.com/r/toolbox",
   "repository": {
     "type": "git",
-    "url": "https://github.com/creesch/reddit-moderator-toolbox.git"
+    "url": "https://github.com/toolbox-team/reddit-moderator-toolbox.git"
   },
   "license": "Apache-2.0",
   "devDependencies": {

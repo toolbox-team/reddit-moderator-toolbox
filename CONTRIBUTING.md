@@ -14,7 +14,7 @@ New contributions to toolbox are always welcome, there are some guidelines we as
 
 Since toolbox is a project that receives contributions from multiple people from various programming backgrounds it is important to be aware of style conventions. Our programming style guidelines aim is to make it easier for someone who starts work on toolbox to familiarize themselves with the style conventions agreed upon in toolbox.
 
-The document can be found [here in our wiki](https://github.com/creesch/reddit-moderator-toolbox/wiki/Programming-style-guide).
+The document can be found [here in our wiki](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Programming-style-guide).
 
 ### Contributing completely new functionality 
 
@@ -26,9 +26,9 @@ We have a lot of utility functions in toolbox ready to be used for background op
 
 You can find the documentation for all this on the following locations 
 
-- [TBUtils](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBUtils-function-calls) contains the main bulk of the utility functions. 
-- [TBui](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBui-function-class) takes care of most of our interface needs. 
-- [Toolbox module documentation](https://github.com/creesch/reddit-moderator-toolbox/wiki/Toolbox-module-notes) details how the general toolbox module structure works. 
+- [TBUtils](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/TBUtils-function-calls) contains the main bulk of the utility functions. 
+- [TBui](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/TBui-function-class) takes care of most of our interface needs. 
+- [Toolbox module documentation](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Toolbox-module-notes) details how the general toolbox module structure works. 
 
 
 ## Project structure
@@ -39,8 +39,8 @@ You can find the documentation for all this on the following locations
 - `extension/data/`: Directory containing the functional code of toolbox. All files starting with `tb` are toolbox core scripts.
 - `extension/data/tbmodule.js`: Modules are loaded into toolbox through this.
 - `extension/data/tbstorage.js`: Everything storage related. 
-- `extension/data/tbui.js`: Handles creating UI elements, [wiki page](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBui-function-class).
-- `extension/data/tbutils.js`: TBUtils is one of the core blocks on which toolbox is build. It contains most of functions used to interact with reddit. [Wiki page](https://github.com/creesch/reddit-moderator-toolbox/wiki/TBUtils-function-calls).
+- `extension/data/tbui.js`: Handles creating UI elements, [wiki page](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/TBui-function-class).
+- `extension/data/tbutils.js`: TBUtils is one of the core blocks on which toolbox is build. It contains most of functions used to interact with reddit. [Wiki page](https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/TBUtils-function-calls).
 - `extension/data/background/`: Contains extension background scripts
 - `extension/data/images/`: Images used by toolbox.
 - `extension/data/libs/`: Contains javascript libraries used by toolbox

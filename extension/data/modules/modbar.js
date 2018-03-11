@@ -611,6 +611,7 @@ function modbar() {
 
         // Open the settings
         $body.on('click', '.tb-toolbar-new-settings', function () {
+            if ($('.tb-settings').length) return; // Don't show the window twice
             TB.utils.getModSubs(function () {
                 TB.showSettings();
             });

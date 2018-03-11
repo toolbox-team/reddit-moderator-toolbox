@@ -1467,9 +1467,12 @@ function initwrapper(userDetails, newModSubs) {
             }
         };
 
+
+
         TBUtils.getThingInfo = function (sender, modCheck) {
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
+            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
             if (TBUtils.isNewModmail) {
             // declare what we will need.
                 let $sender = $(sender);
@@ -1539,6 +1542,10 @@ function initwrapper(userDetails, newModSubs) {
                     permalink = TBUtils.baseDomain + permalink;
                 }
 
+                if (permalink && permaCommentLinkRegex.test(permalink)) {
+                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+                }
+
                 let info = {
                     subreddit: subreddit,
                     user: user,
@@ -1572,7 +1579,7 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
-
+            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
                 const data = response.data;
 
@@ -1601,6 +1608,10 @@ function initwrapper(userDetails, newModSubs) {
                 if (permalink && permalink.slice(0,1) == '/')
                 {
                     permalink = TBUtils.baseDomain + permalink;
+                }
+
+                if (permalink && permaCommentLinkRegex.test(permalink)) {
+                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
                 }
 
                 let info = {

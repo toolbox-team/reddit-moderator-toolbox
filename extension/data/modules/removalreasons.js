@@ -224,7 +224,7 @@ function removalreasons() {
                 postSubreddit = $button.attr('data-subreddit');
             } else {
                 const $parent = $button.parents().eq(2);
-                const postDetails = JSON.parse($parent.find('.tb-frontend-container').attr('data-tb-details'));
+                const postDetails = JSON.parse($parent.find('.tb-frontend-container[data-tb-type="post"]').attr('data-tb-details'));
                 postID = postDetails.data.id;
                 postSubreddit = postDetails.data.subreddit.name;
             }

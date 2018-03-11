@@ -265,7 +265,7 @@ function tbmodule() {
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
-                    <span>© 2013-2017 toolbox development team. </span>
+                    <span>© 2013-2018 toolbox development team. </span>
                     <p>Licensed under the Apache License, Version 2.0 (the "License");
                         <br> you may not use this file except in compliance with the License.
                         <br> You may obtain a copy of the License at </p>

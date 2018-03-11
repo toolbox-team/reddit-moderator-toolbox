@@ -67,8 +67,8 @@ function personalnotes() {
             $body.find('#tb-personal-notes-landing').remove();
 
             let $editArea = $body.find('#tb-personal-notes-editarea');
-            $editArea.val('loading stuff...');
-            $editArea.show();
+            $editArea.val('loading stuff...').attr('disabled', true);
+            $editArea.css('display', 'block');
 
             TBUtils.readFromWiki(notewiki, `notes/${wikiPage}`, false, function (resp) {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -78,7 +78,7 @@ function personalnotes() {
                 }
 
                 if (resp === TBUtils.NO_WIKI_PAGE) {
-                    $editArea.val('Not sure how you did this, but this is not an excisting page.');
+                    $editArea.val('Not sure how you did this, but this is not an existing page.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
                     return;
                 }
@@ -86,7 +86,7 @@ function personalnotes() {
                 resp = TBUtils.unescapeJSON(resp);
 
                 // Found it, show it.
-                $editArea.val(resp);
+                $editArea.val(resp).attr('disabled', false);
                 let $saveButton = $body.find('#save-personal-note');
 
                 $saveButton.attr('data-note', wikiPage);
@@ -171,8 +171,11 @@ function personalnotes() {
 
                         </td>
                         <td id="tb-personal-notes-content">
-                            <span id="tb-personal-notes-landing"> Welcome to your personal notes! Click or create a note on the left to get started!</span>
-                            <textarea class="tb-input" id="tb-personal-notes-editarea"${monospace ? ` style="font-family: monospace;"` : ``}></textarea>
+                            <div id="tb-personal-notes-landing">
+                                <span>Welcome to your personal notes!</span>
+                                <span class="tb-personal-notes-landing-subtitle">Click or create a note on the left to get started.</span>
+                            </div>
+                            <textarea class="tb-input" id="tb-personal-notes-editarea" ${monospace ? 'style="font-family: monospace;"' : ''}></textarea>
                         </td>
                     </tr></table>`;
 

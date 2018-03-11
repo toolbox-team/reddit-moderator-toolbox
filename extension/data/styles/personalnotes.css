@@ -1,21 +1,21 @@
-.mod-toolbox-rd .tb-popup.personal-notes-popup {
-    max-width: 95%;
-}
-
-/* Don't allow the popup to get bigger than the window */
-.mod-toolbox-rd .tb-popup.personal-notes-popup .tb-popup-content {
-    max-height: calc(100vh - 95px); /* 95px = modbar + popup header + popup footer + padding */
+.mod-toolbox-rd .personal-notes-popup {
+    left: 305px;
+    bottom: 41px;
+    display: block;
+    position: fixed;
+    /* Remove the max-width definition set for normal popups - we set our own max-width from the textarea */
+    max-width: initial;
 }
 
 /* Box layout */
+.mod-toolbox-rd .tb-popup.personal-notes-popup table {
+    height: 100%;
+    position: relative; /* To help with absolute positioning of the sidebar */
+}
 .mod-toolbox-rd #tb-personal-notes-listing,
 .mod-toolbox-rd #tb-personal-notes-content {
     overflow: hidden;
     vertical-align: top;
-}
-.mod-toolbox-rd .tb-popup.personal-notes-popup table {
-    height: 100%;
-    position: relative; /* To help with absolute positioning of the sidebar */
 }
 
 /* Note selection sidebar */
@@ -85,29 +85,40 @@
     font-size: 14px;
 }
 
-.mod-toolbox-rd .personal-notes-popup {
-    left : 305px;
-    bottom : 41px;
-    display : block;
-    position : fixed;
-}
-
-
 /* Main edit view */
 .mod-toolbox-rd #tb-personal-notes-content {
-    min-width: 450px;
     margin-right: -5px;
     position: relative;
 }
-
 .mod-toolbox-rd #tb-personal-notes-editarea {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    min-height: 100%;
-    min-width: 100%;
     display: none;
     border: 0;
+
+    /* Since the textarea is the thing with the resize handle, we set constraints here */
+    min-width: 450px;
+    min-height: 300px;
+    max-width: calc(100vw - 215px); /* 195px = width of sidebar + some padding */
+    max-height: calc(100vh - 120px); /* 100px = popup header + footer + modbar + some padding */
+}
+/* Landing content */
+.mod-toolbox-rd #tb-personal-notes-landing {
+    width: 410px; /* 450 minus padding */
+    height: 260px; /* 300 minus padding */
+    padding: 20px;
+    font-size: 14px;
+    line-height: 2;
+    /* Centering */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.mod-toolbox-rd .tb-personal-notes-landing-subtitle {
+    opacity: 0.7;
 }
 
 /* Save button in footer */

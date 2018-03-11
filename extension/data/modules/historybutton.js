@@ -379,7 +379,11 @@ function historybutton() {
 
         TB.ui.longLoadNonPersistent(true);
 
-        $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json?limit=100&after=${after}`).fail(function () {
+        $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json`, {
+            'after': after,
+            'sort': 'new',
+            'limit': 100
+        }).fail(function () {
             self.log('Shadowbanned?');
             $error.html('unable to load userdata</br>shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
@@ -678,7 +682,11 @@ function historybutton() {
         $contentBox.find('.tb-history-comment-stats').show();
         $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-        $.get(`${TBUtils.baseDomain}/user/${author}/comments.json?limit=100&after=${after}`).fail(function () {
+        $.get(`${TBUtils.baseDomain}/user/${author}/comments.json`, {
+            'after': after,
+            'sort': 'new',
+            'limit': 100
+        }).fail(function () {
             $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).done(function (d) {

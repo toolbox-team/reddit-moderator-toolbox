@@ -280,7 +280,7 @@ function profilepro() {
                     `<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ``}
                     <ul class="tb-user-detail-ul">
-                        <li><a href="${TBUtils.basedomain}/user/${user}">/u/${user}</a></li>
+                        <li><a href="${TBUtils.baseDomain}/user/${user}">/u/${user}</a></li>
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
                         <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>

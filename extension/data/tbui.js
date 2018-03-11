@@ -1128,7 +1128,7 @@
             <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
                 <a class="tb-submission-thumbnail ${submissionOver18 ? 'nsfw' : ''}" href="${submissionUrl}">
-                    ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70" height="40">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
+                    ${submissionThumbnail.startsWith('http') ? `<img src="${submissionThumbnail}" width="70">` : `<div class="tb-noImage-thumbnail">${submissionThumbnail}</div>`}
                 </a>
                 <div class="tb-submission-entry">
                     <div class="tb-submission-title">

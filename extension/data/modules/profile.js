@@ -690,10 +690,8 @@ function profilepro() {
                     makeProfile(user, listing, {sort: 'new', renew: false});
                 }
 
-            }
-
-            if (event.detail.pageType !== 'userProfile' || !popupTypes.includes(event.detail.pageDetails.listing)){
-                TBui.contextTrigger('tb-un-config-link', { addTrigger: false });
+            } else {
+                TBui.contextTrigger('tb-user-profile', { addTrigger: false });
             }
         });
 

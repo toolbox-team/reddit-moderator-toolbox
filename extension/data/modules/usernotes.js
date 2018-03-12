@@ -1,5 +1,6 @@
+'use strict';
 function usernotes() {
-    var self = new TB.Module('User Notes');
+    let self = new TB.Module('User Notes');
     self.shortname = 'UserNotes';
 
     ////Default settings
@@ -33,13 +34,13 @@ function usernotes() {
     };
 
     self.usernotes = function usernotes() {
-        var subs = [],
+        let subs = [],
             $body = $('body'),
             maxChars = self.setting('maxChars'),
             showDate = self.setting('showDate'),
             firstRun = true;
 
-        var TYPE_NEW_MODMAIL = 'newmodmail';
+        const TYPE_NEW_MODMAIL = 'newmodmail';
 
         TBUtils.getModSubs(function () {
             self.log('Got mod subs');
@@ -142,7 +143,7 @@ function usernotes() {
                 }
 
                 var $tbAttrs = $thing.find('.tb-attr-note');
-                attachNoteTag($tbAttrs, subreddit, false);
+                attachNoteTag($tbAttrs, subreddit, author);
 
                 foundSubreddit(subreddit);
                 processSub(subreddit);
@@ -152,8 +153,8 @@ function usernotes() {
 
             // This is only used in newmodmail until that also gets the event based api.
             if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
-                var things = findThings();
-                var done = false;
+                const things = findThings();
+                let done = false;
                 TBUtils.forEachChunked(things, 30, 100, processThing, function () {
                     self.log('Done processing things');
                     TBUtils.forEachChunked(subs, 10, 200, processSub, function () {
@@ -181,12 +182,13 @@ function usernotes() {
 
         function findThings() {
 
-            var $things;
+            let $things;
             if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
                 $things = $('.Thread__message:not(.ut-thing)');
                 $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
                 $things.addClass('ut-thing');
             }
+            return $things;
 
         }
 
@@ -211,7 +213,7 @@ function usernotes() {
                 }
 
                 var $tbAttrs = $thing.find('.tb-attr');
-                attachNoteTag($tbAttrs, subreddit, false);
+                attachNoteTag($tbAttrs, subreddit, author);
 
                 foundSubreddit(subreddit);
             } else {
@@ -222,8 +224,10 @@ function usernotes() {
         }
 
         function attachNoteTag($element, subreddit, author) {
-            // TODO: redo this with template literals
-            var $tag = $(`
+            if($element.find('.tb-usernote-button').length > 0) {
+                return;
+            }
+            const $tag = $(`
             <span title="View and add notes about this user for /r/${subreddit}" class="tb-usernote-button usernote-span-${subreddit}">
                 <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" >N</a>
             </span>
@@ -233,7 +237,7 @@ function usernotes() {
         }
 
         function foundSubreddit(subreddit) {
-            if ($.inArray(subreddit, subs) == -1) {
+            if ($.inArray(subreddit, subs) === -1) {
                 subs.push(subreddit);
             }
         }
@@ -605,7 +609,7 @@ function usernotes() {
                 user = $unote.attr('data-user'),
                 noteId = $(e.target).attr('data-note-id'),
                 noteText = $unote.val(),
-                deleteNote = (e.target.className == 'utagger-remove-note'),
+                deleteNote = (e.target.className === 'utagger-remove-note'),
                 type = $popup.find('.utagger-type input:checked').val(),
                 link = '';
 

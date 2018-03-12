@@ -62,7 +62,7 @@ function storagewrapper() {
 
         // Disabled for new modmail until we can sort out conflicts with classic Toolboxv4.
         //if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return;
-        if ((!$('body').find('#USER_DROPDOWN_ID').text() && !$('.BlueBar__account a.BlueBar__username').text()) || $('.mod-toolbox-rd').length) return; // not logged in or toolbox is already loaded.
+        if ((!$('body').find('#USER_DROPDOWN_ID').text() && !$('.BlueBar__account a.BlueBar__username').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return; // not logged in or toolbox is already loaded.
 
         const SHORTNAME = 'TBStorage';
 

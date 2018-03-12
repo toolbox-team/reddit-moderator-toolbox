@@ -50,7 +50,6 @@ function modbutton() {
             $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
         }
 
-
     };
 
     self.runRedesign = function () {
@@ -311,11 +310,11 @@ function modbutton() {
                 TBUtils.getConfig(subreddit, function (config) {
                     var macros = config.banMacros;
                     if (config && macros) {
-                        if (macros.banNote){
+                        if (macros.banNote) {
                             self.log(macros.banNote);
                             $popup.find('.ban-note').val(TB.utils.replaceTokens(info, macros.banNote));
                         }
-                        if (macros.banMessage){
+                        if (macros.banMessage) {
                             self.log(macros.banMessage);
                             $popup.find('.ban-message').val(TB.utils.replaceTokens(info, macros.banMessage));
                         }
@@ -462,8 +461,6 @@ function modbutton() {
                     });
                 }
 
-
-
             }
 
             return false;
@@ -490,7 +487,6 @@ function modbutton() {
             banMessage = createBanReason(banMessage);
 
             self.setting('lastAction', actionName);
-
 
             // Check dem values.
             if (!api) return $status.text('error, no action selected');
@@ -626,7 +622,6 @@ function modbutton() {
 
                 });
 
-
             }
         });
 
@@ -697,7 +692,6 @@ function modbutton() {
                 $classinput.val(resp.users[0].flair_css_class);
             });
         });
-
 
         // Edit save button clicked.
         $body.on('click', '.flair-save', function () {

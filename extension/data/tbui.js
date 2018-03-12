@@ -21,8 +21,6 @@
 
     const subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
 
-
-
     // Icons NOTE: string line length is ALWAYS 152 chars
     TBui.iconWrench = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHaSURBVDjLlZO7a1NRHMfzfzhIKQ5OHR1d
                     dRRBLA6lg4iTd5PSas37YR56Y2JiHgg21uoFxSatCVFjbl5iNBBiMmUJgWwZhCB4pR9/V4QKfSQdDufF5/v7nu85xwJYprV0Oq0kk8luIpEw4vG48f/eVDiVSikCTobDIePxmGg0yokEBO4OBgNGoxH5
@@ -87,14 +85,12 @@
                             Tw+GMHN2N6YOuTB9YieCozfE4EvNYDO5Ttz2vn/Q+x5zC3EwEyw9GcaH7v0ovLiN6mcf8g8v4O35vRg+edTr+Ne/tU2OEV03SvB3uGFQjDvtQM8moM+N+M0D8B92LjQ0sE2+MhdMHXShOutF/ZO6toXn
                             LdVm4o1yA1KYOLI+lrvbBVBU7HYgSZbOOeFvc4abGWwjXrLndefW3jeeVjPS44Z2xYXvnnVQ7S2rvjbn1aYj1BPo3H6ZHRfl2nz/ELGc/wJRo/MQHUFwBgAAAABJRU5ErkJggg==`;
 
-
     TBui.iconCommentsEdit = `iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIWSURBVDjLjZNPSBRRHMf32rVTdFOsDkJE
                             hODNLGqXukgJpmiEURBGdEnbskNktrhCRQuaLEEikUhlbK5EiZmxjbWwfxvL0dHdtdlCx3VtZxyaed/eG5qwZct98DnM4/f9vN/M+40NgK1Y5p7tPTY9UIeZ4Q6EvIcQ9pQ3FR1O+kvqpbFWZCI+YG0R
                             K5EhBNz2dFHhxIvSWjl+TdOSzyGNd0GJPoE+P4nogzPqpuGUv8wux64ahjIJZbYFy1Pnwfc3I9LXuDR1t2bnf8PC0xKHHL0MQw0gJ5yEmmhA9pMTYm9VOth9cA+rsdV1jm6lDFA0Cizabl6H9KH1d7gJ
                             6kI9VmNXIHiqs5/dFfusQ5hg+PGbL/ipG7CWxPvAv7wEQ5mAKjZjPdGIDO2E9xwmgS7Hjo1dMoFuEIKMQvAtS8C9eoT4iBNh/22kuFrkxAYsh9ow661Bp9fHuqv4S9DiGTdPTa8SfM0QDLoOANl5TN8/
                             jjHndrzrceCt2w71uwDXYJAJjhQULNJwQia4cXY3tMA9aNwdcB37MXRuF4Ih3qwpKLBegbUvLhGcqN6GW6fK8dp1FBP9F/AxvoBwSjcF7Q/fM0FlvsD8iEyycbFuQknDFLPl40QWnqFsyRdY16hbV+gd
                             jf8Rraytm890P0opy5+VggNECwVJzllBldL+r2ErFO7uHYmx4A/Kxc1GPT9cSpmjnC72L/0FRS76cD+dhSEAAAAASUVORK5CYII=`;
-
 
     TBui.iconGripper = `iVBORw0KGgoAAAANSUhEUgAAAAYAAAAOCAIAAACD/fpyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVChTY/iPAXAL1c3bD0QQNm4hZDBkzPr/
                         HwBeT+1tHhuGywAAAABJRU5ErkJggg==`;
@@ -284,7 +280,6 @@
 
                 $button.appendTo($tabs);
 
-
                 let $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
                 $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
                 $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
@@ -336,7 +331,6 @@
             const scrollTop = $overlay.scrollTop();
             positions.topPosition = positions.topPosition + scrollTop;
         }
-
 
         return positions;
     };
@@ -419,7 +413,6 @@
                     $overlay.find('.tb-window-tabs a').removeClass('active');
                     $overlay.find('.tb-window-tab').hide();
 
-
                     // show current
                     $overlay.find(`.tb-window-tab.${tab.id}`).show();
 
@@ -428,7 +421,6 @@
                         $overlay.find('.tb-window-footer').hide();
                         $overlay.find(`.tb-window-footer.${tab.id}`).show();
                     }
-
 
                     $(this).addClass('active');
 
@@ -615,7 +607,7 @@
             let $feedbackWindow = $body.find('#tb-feedback-window');
 
             switch (displayLocation) {
-            case TBui.DISPLAY_CENTER:{
+            case TBui.DISPLAY_CENTER: {
                 const feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
                     feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
 
@@ -625,7 +617,7 @@
                 });
             }
                 break;
-            case TBui.DISPLAY_BOTTOM:{
+            case TBui.DISPLAY_BOTTOM: {
                 $feedbackWindow.css({
                     'left': '5px',
                     'bottom': '40px',
@@ -719,9 +711,7 @@
                 }
                 </style>`);
 
-
                 $('.footer-parent').append('<div id="tb-loading-non-persistent"></div>');
-
 
                 TBui.longLoadArrayNonPersistent.push('load');
 
@@ -753,7 +743,6 @@
             return 'toolbox is still busy!';
         }
     };
-
 
     /**
      * Add or remove a menu element to the context aware menu. Makes the menu shows if it was empty before adding, hides menu if it is empty after removing.
@@ -844,7 +833,6 @@
 
             });
 
-
         // We are removing a menu item.
         } else {
             // Remove the menu item.
@@ -873,7 +861,7 @@
             const $comments = $elements.find('.tb-comment');
             TBUtils.forEachChunkedDynamic($comments, function(value) {
                 const $element = $(value);
-                const $jsApiPlaceholderComment= $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
+                const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
                 const jsApiPlaceholderComment = $jsApiPlaceholderComment[0];
                 const $jsApiPlaceholderAuthor = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
@@ -932,10 +920,10 @@
             const $submissions = $elements.find('.tb-submission');
             TBUtils.forEachChunkedDynamic($submissions, function(value) {
                 const $element = $(value);
-                const $jsApiPlaceholderSubmission= $element.find('.tb-jsapi-submission-container');
+                const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
                 const jsApiPlaceholderSubmission = $jsApiPlaceholderSubmission[0];
                 const $jsApiPlaceholderAuthor = $element.find('.tb-jsapi-author-container');
-                const jsApiPlaceholderAuthor= $jsApiPlaceholderAuthor[0];
+                const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
                 const submissionAuthor = $element.attr('data-submission-author'),
                     postID = $element.attr('data-post-id'),
@@ -1010,7 +998,6 @@
             submissionTitle = submission.data.title,
             submissionThumbnail = submission.data.thumbnail,
             submissionDomain = submission.data.domain,
-
 
             // submission details
             submissionScore = submission.data.score, // integer
@@ -1107,7 +1094,6 @@
             }
         }
 
-
         let commentsButtonText = 'comment';
         if(submissionNumComments === 1) {
             commentsButtonText = '1 comment';
@@ -1115,13 +1101,12 @@
             commentsButtonText = `${submissionNumComments} comments`;
         }
 
-
         // Indicate if a submission has been edited or not.
         let editedHtml;
         if (submissionEdited) {
             const submissionReadableEdited = TBUtils.timeConverterRead(submissionEdited),
                 editedTimeAgo = TBUtils.timeConverterISO(submissionEdited);
-            editedHtml=  `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
+            editedHtml = `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
         let $buildsubmission = $(`
@@ -1137,7 +1122,7 @@
                             (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
                         </span>
                     </div>
-                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>': ``}
+                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>' : ``}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
@@ -1211,7 +1196,7 @@
                 </ul>
             `);
 
-            submissionModReports.forEach(function(report){
+            submissionModReports.forEach(function(report) {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1263,7 +1248,6 @@
         return $buildsubmission;
     };
 
-
     /**
      * Will build a comment given a reddit API comment object.
      * @function makeSingleComment
@@ -1297,7 +1281,7 @@
             // Comment details
             //commentScoreHidden = comment.data.score_hidden, // boolean
             commentScore = comment.data.score, // integer
-            commentControversiality = comment.data.controversiality,  // integer
+            commentControversiality = comment.data.controversiality, // integer
             commentEdited = comment.data.edited,
             commentGilded = comment.data.gilded,
             //commentNumReports = comment.data.num_reports,
@@ -1425,13 +1409,12 @@
             commentScoreText = `${commentScore} point`;
         }
 
-
         // Indicate if a comment has been edited or not.
         let editedHtml;
         if (commentEdited) {
             const commentReadableEdited = TBUtils.timeConverterRead(commentEdited),
                 editedTimeAgo = TBUtils.timeConverterISO(commentEdited);
-            editedHtml=  `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
+            editedHtml = `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
         let commentDepthClass;
@@ -1446,7 +1429,7 @@
         // Let's start building our comment.
         let $buildComment = $(`
             <div class="tb-thing tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-subreddit="${commentSubreddit}" data-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
-                <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied': ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` :  ''}">
+                <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied' : ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` : ''}">
                     ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
@@ -1531,7 +1514,7 @@
                 </ul>
             `);
 
-            commentModReports.forEach(function(report){
+            commentModReports.forEach(function(report) {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1699,7 +1682,6 @@
         });
     });
 
-
     $body.on('click', '.tb-submission-button-nsfw', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
@@ -1730,8 +1712,6 @@
         });
     });
 
-
-
     $body.on('click', '.tb-comment-toggle', function() {
         const $this = $(this);
         const thisState = $this.text();
@@ -1756,7 +1736,6 @@
         const $thisComment = $this.closest('.tb-comment');
         const threadPermalink = $thisComment.attr('data-thread-permalink');
         const commentOptionsData = $thisComment.attr('data-comment-options');
-
 
         let commentOptions = JSON.parse(commentOptionsData);
         // This is to make sure comment coloring still is correct.
@@ -1785,7 +1764,6 @@
             });
         });
 
-
     });
 
     $body.on('click', '.tb-self-expando-button', function() {
@@ -1800,10 +1778,6 @@
             $this.text('+');
         }
     });
-
-
-
-
 
     // Utilities
 

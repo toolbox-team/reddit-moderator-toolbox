@@ -187,14 +187,13 @@ function achievements() {
         // Achievement definitions
         self.log('Registering achievements');
 
-
         // Random awesome
         self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
             var awesome = 7,
                 chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
             self.log(`You rolled a: ${chanceOfBeingAwesome}`);
-            if (awesome == chanceOfBeingAwesome) {
+            if (awesome === chanceOfBeingAwesome) {
                 self.manager.unlock(saveIndex);
             }
         });
@@ -236,7 +235,7 @@ function achievements() {
                 var $this = $(this);
                 var auth = TB.utils.getThingInfo($this).author;
 
-                if (TB.utils.tbDevs.indexOf(auth) != -1) {
+                if (TB.utils.tbDevs.indexOf(auth) !== -1) {
                     self.manager.unlock(saveIndex, 1);
                 }
             // TODO: wait for 'yes' click.

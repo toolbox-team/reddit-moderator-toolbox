@@ -26,7 +26,7 @@ function comments() {
 
         // Do not open lightbox but go to full comment page.
         if (commentsAsFullPage) {
-            $body.on('click', 'a', function(event){
+            $body.on('click', 'a', function(event) {
                 const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
                 const $this = $(this);
                 const thisHref = $this.attr('href');
@@ -138,8 +138,6 @@ function comments() {
                     } else {
                         $this.show();
 
-
-
                     }
                     $flatSearchCount.text($htmlCommentView.find(`.tb-comment:visible`).length);
                 });
@@ -184,15 +182,12 @@ function comments() {
                     }, 1000);
                 });
 
-
-
-
             });
         });
         if (openContextInPopup) {
             self.log('openContextInPopup enabled.');
 
-            $body.on('click', '.tb-comment-context-popup', function(event){
+            $body.on('click', '.tb-comment-context-popup', function(event) {
                 self.log('Context button clicked.');
 
                 const $this = $(this);
@@ -227,7 +222,7 @@ function comments() {
                     const contextSubreddit = data[1].data.children[0].data.subreddit;
 
                     // Title is probably also nice.
-                    const contextTitle =  `Context for /u/${contextUser} in /r/${contextSubreddit}`;
+                    const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
                     let $contextPopup = TB.ui.popup(
@@ -259,22 +254,12 @@ function comments() {
                         $contextPopup.remove();
                     });
 
-
                 });
-
 
             });
         }
 
     };
-
-
-
-
-
-
-
-
 
     TB.register_module(self);
 }

@@ -10,7 +10,6 @@ function tbconfig() {
     //    return;
     //}
 
-
     // Set up some base variables
         let $body = $('body'),
             config = TBUtils.config,
@@ -230,7 +229,7 @@ function tbconfig() {
                     <td>
                        Ban message:
                     </td><td>
-                       <textarea class="tb-input banMessage">${((configData.banMacros && configData.banMacros.banMessage)  ? configData.banMacros.banMessage : ``)}</textarea>
+                       <textarea class="tb-input banMessage">${((configData.banMacros && configData.banMacros.banMessage) ? configData.banMacros.banMessage : ``)}</textarea>
                     </td>
                     </tr>
                 </table>`,
@@ -245,7 +244,6 @@ function tbconfig() {
 
         }
 
-
         // Advanced removal reasons
         $body.on('click', '.show-advanced', function () {
             $('.advanced-enable').hide();
@@ -258,7 +256,6 @@ function tbconfig() {
             window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'scrollbars=1,width=500,height=600,location=0,menubar=0,top=100,left=100');
 
         });
-
 
         window.addEventListener('TBNewPage', function (event) {
 
@@ -326,7 +323,6 @@ function tbconfig() {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
 
-
                     self.log(err);
                     if (page === 'config/automoderator') {
                         var $error = $body.find('.edit_automoderator_config .error');
@@ -367,13 +363,12 @@ function tbconfig() {
                 break;
             case 'edit_automoderator_config':
                 page = 'automoderator';
-                actualPage =  'config/automoderator';
+                actualPage = 'config/automoderator';
                 break;
             }
             var $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
                 $textArea = $wikiContentArea.find('.edit-wikidata'),
                 $saveButton = $wikiContentArea.find('.save-wiki-data');
-
 
             if (TB.storage.getSetting('Syntax', 'enabled', true)) {
                 $body.addClass('mod-syntax');
@@ -403,14 +398,13 @@ function tbconfig() {
                                                 </ul>
                                               </div>`;
 
-
-                $textArea.each(function(index, elem){
+                $textArea.each(function(index, elem) {
                 // This makes sure codemirror behaves and uses spaces instead of tabs.
                     function betterTab(cm) {
                         if (cm.somethingSelected()) {
                             cm.indentSelection('add');
                         } else {
-                            cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
+                            cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
                                 Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
                         }
                     }
@@ -441,16 +435,12 @@ function tbconfig() {
                     $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
                 });
 
-
-
-
                 $textArea.val('getting wiki data...');
                 configEditor.setValue('getting wiki data...');
 
                 configEditor.on('change', function () {
                     configEditor.save();
                 });
-
 
                 TBUtils.readFromWiki(subreddit, actualPage, false, function (resp) {
                     if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -725,8 +715,6 @@ function tbconfig() {
                     $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
                     $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
 
-
-
                 });
             }
         }
@@ -993,7 +981,6 @@ function tbconfig() {
                     removalReasonsContent();
                 }
 
-
                 $this.addClass('content-populated');
             }
         });
@@ -1035,7 +1022,6 @@ function tbconfig() {
                 reasonFlairCSS = $removalContent.find('input[name=flair-css]').val(),
                 editNote = $removalContent.find('input[name=edit-note]').val();
 
-
             if (!editNote) {
             // default note
                 editNote = 'update';
@@ -1059,10 +1045,8 @@ function tbconfig() {
                 label = TBUtils.htmlEncode(label);
             }
 
-
             var $removalReasonLabel = $removalContent.find('.removal-reason-label');
             $removalReasonLabel.html(`<span><h3 class="removal-title">${TBUtils.htmlEncode(reasonTitle)}</h3>${label}</span>`);
-
 
             $removalReasonLabel.show();
             $removalContent.find('.removal-reason-edit').hide();
@@ -1166,7 +1150,6 @@ function tbconfig() {
             } else {
                 removalReasonsEditContent();
             }
-
 
             $this.addClass('content-populated');
 
@@ -1310,7 +1293,6 @@ function tbconfig() {
                 editNote = $macroContent.find('input[name=edit-note]').val(),
                 macro = config.modMacros[macroNum];
 
-
             if (macroTitle.length < 1) {
                 TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
                 return;
@@ -1335,7 +1317,6 @@ function tbconfig() {
             macro.highlightmodmail = highlightmodmail;
 
             postToWiki('toolbox', config, editNote, true);
-
 
             var label = unescape(macroText);
 
@@ -1370,7 +1351,6 @@ function tbconfig() {
                 }
                 postToWiki('toolbox', config, `delete macro #${macroNum + 1}`, true);
 
-
                 $this.closest('.mod-macro').remove();
             }
 
@@ -1398,7 +1378,6 @@ function tbconfig() {
                 highlightmodmail = $body.find('#highlightmodmail').prop('checked'),
                 editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
-
             if (macroTitle.length < 1) {
                 TB.ui.textFeedback('Macro title is required', TB.ui.FEEDBACK_NEGATIVE);
                 return;
@@ -1420,7 +1399,6 @@ function tbconfig() {
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
-
 
             if (!config.modMacros) {
                 config.modMacros = [];
@@ -1448,8 +1426,6 @@ function tbconfig() {
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);
 
-
-
         });
 
         // cancel
@@ -1469,8 +1445,6 @@ function tbconfig() {
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);
         });
-
-
 
         // When the import button is clicked on the domain tags thing.
         $body.on('click', '.domain_tags .import', function () {

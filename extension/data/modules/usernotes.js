@@ -46,7 +46,6 @@ function usernotes() {
             self.log(TBUtils.mySubs);
             // In new modmail we only run on threads.
 
-
             if (TBUtils.isNewModmail) {
                 setTimeout(function () {
                     if($body.find('.ThreadViewer').length > 0) {
@@ -73,7 +72,7 @@ function usernotes() {
             // That is why we use a timeout here to prevent run() from being triggered multiple times.
             if(!newThingRunning) {
                 newThingRunning = true;
-                setTimeout(function(){
+                setTimeout(function() {
                     newThingRunning = false;
                     run();
                 }, 500);
@@ -92,7 +91,7 @@ function usernotes() {
             } else {
                 listnerSubs[subreddit] = $target;
             }
-            queueTimeout = setTimeout(function(){
+            queueTimeout = setTimeout(function() {
                 for (let sub in listnerSubs) {
                     if (listnerSubs.hasOwnProperty(sub)) {
                         processSub(sub, listnerSubs[sub]);
@@ -123,7 +122,6 @@ function usernotes() {
                     }
                 });
 
-
             });
         }
 
@@ -133,7 +131,6 @@ function usernotes() {
             if ($body.find('.ThreadViewer').length > 0) {
                 var subreddit = $body.find('.ThreadTitle__community').text(),
                     author = $body.find('.InfoBar__username').text();
-
 
                 var $thing = $body.find('.ThreadViewer__infobar');
                 $thing.addClass('ut-thing');
@@ -180,10 +177,6 @@ function usernotes() {
                 TBUtils.forEachChunked(subs, 10, 200, processSub);
             }
 
-
-
-
-
         }
 
         function findThings() {
@@ -194,7 +187,6 @@ function usernotes() {
                 $things.attr('data-ut-type', TYPE_NEW_MODMAIL);
                 $things.addClass('ut-thing');
             }
-
 
         }
 
@@ -239,8 +231,6 @@ function usernotes() {
 
             $element.append($tag);
         }
-
-
 
         function foundSubreddit(subreddit) {
             if ($.inArray(subreddit, subs) == -1) {
@@ -364,7 +354,6 @@ function usernotes() {
                 $usertag.empty();
                 $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? `  (+${u.notes.length - 1})` : ''));
 
-
                 var type = u.notes[0].type;
                 if (!type) type = 'none';
 
@@ -467,7 +456,7 @@ function usernotes() {
                 });
 
                 // Radio buttons 2.0, now with deselection
-                $popup.find('.utagger-type').click(function(){
+                $popup.find('.utagger-type').click(function() {
                     var $thisInput = $(this).find('input');
                     // Are we already checked?
                     if ($thisInput.prop('checked')) {
@@ -508,7 +497,7 @@ function usernotes() {
                             // to be saved — and therefore still retain millisecond accuracy — may not be considered
                             // equal to saved versions if compared. This caused problems when deleting new notes,
                             // which searches a saved version based on ID.
-                            var noteId = Math.trunc(note.time/1000)*1000,
+                            var noteId = Math.trunc(note.time / 1000) * 1000,
                                 noteString = TBUtils.htmlEncode(note.note),
                                 timeString = new Date(note.time).toLocaleString();
 
@@ -554,7 +543,6 @@ function usernotes() {
             });
         }
 
-
         // Click to open dialog
         $body.on('click', '#add-user-tag', function (e) {
             let $target = $(e.target);
@@ -564,7 +552,7 @@ function usernotes() {
             var subreddit = $button.attr('data-subreddit'),
                 user = $button.attr('data-author'),
                 link,
-                disableLink = false;           //FIXME: change to thing type
+                disableLink = false; //FIXME: change to thing type
 
             if(TBUtils.isNewModmail) {
                 link = TBUtils.getThingInfo($thing).permalink;
@@ -600,7 +588,6 @@ function usernotes() {
                 });
 
             }
-
 
         });
 
@@ -775,16 +762,11 @@ function usernotes() {
             subUsenotes,
             fetchActive = false;
 
-
-
-
-
         if (showLink) {
             window.addEventListener('TBNewPage', function (event) {
 
                 if(event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
-
 
                     TBUtils.getModSubs(function () {
                         if(TBUtils.modsSub(subreddit)) {
@@ -841,7 +823,6 @@ function usernotes() {
                 </div>
             </div>`);
 
-
             //.append(
             //    $('<div>').addClass('tb-usernotes')
             //);
@@ -876,7 +857,6 @@ function usernotes() {
                                 timeISO = TBUtils.timeConverterISO(timeUTC),
                                 timeHuman = TBUtils.timeConverterRead(timeUTC);
 
-
                             var $note = $(`<div class="tb-un-note-details">
                                 <a class="tb-un-notedelete" data-note="${key}" data-user="${user}" href="javascript:;">
                                     <img src="data:image/png;base64,${TB.ui.iconDelete}">
@@ -897,7 +877,6 @@ function usernotes() {
                             }
                             $userNotes.append($note);
                         //});
-
 
                         });
                         //$userNotes.append(notes);
@@ -949,7 +928,7 @@ function usernotes() {
             self.startProfile('manager-run');
             const sub = $body.find('#tb-un-note-content-wrap').attr('data-subreddit');
 
-            $('time.timeago').timeago();  //what does this do?
+            $('time.timeago').timeago(); //what does this do?
 
             // Live search - users
             $body.find('#tb-unote-user-search').keyup(function () {
@@ -976,7 +955,6 @@ function usernotes() {
                 });
             });
 
-
             // Get the account status for all users.
             $body.find('#tb-un-prune-sb').on('click', function () {
                 var emptyProfiles = [],
@@ -1002,7 +980,7 @@ function usernotes() {
                             var timeSince = now - (date * 1000),
                                 daysSince = TBUtils.millisecondsToDays(timeSince);
 
-                            if (daysSince > pruneLength){
+                            if (daysSince > pruneLength) {
                                 self.log(`${user} has not been active in: ${daysSince.toFixed()} days.`);
                                 $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
                                 emptyProfiles.push(user);
@@ -1014,7 +992,7 @@ function usernotes() {
                 function () {
 
                     // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
-                    setTimeout(function(){
+                    setTimeout(function() {
                         self.log(emptyProfiles);
                         if (emptyProfiles.length > 0) {
                             var deleteEmptyProfile = confirm(`${emptyProfiles.length} deleted or shadowbanned users. Delete all notes for these users?`);
@@ -1042,7 +1020,6 @@ function usernotes() {
 
                 });
             });
-
 
             // Update user status.
             $body.find('.tb-un-refresh').on('click', function () {
@@ -1098,8 +1075,7 @@ function usernotes() {
             self.endProfile('manager-run');
         }
 
-        $body.on('click', '#tb-un-config-link', function(){
-
+        $body.on('click', '#tb-un-config-link', function() {
 
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
@@ -1130,9 +1106,6 @@ function usernotes() {
             $body.css('overflow', 'auto');
 
         });
-
-
-
 
     };
 
@@ -1430,7 +1403,6 @@ function usernotes() {
         // Compatibility with Sweden
         var COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/,
             MODMAIL_LINK_RE = /\/messages\/(\w+)/;
-
 
         var linkMatches = permalink.match(COMMENTS_LINK_RE),
             modMailMatches = permalink.match(MODMAIL_LINK_RE),

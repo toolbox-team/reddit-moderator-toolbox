@@ -85,7 +85,6 @@ function removalreasons() {
         // Remote stuff retrieval
         function getRemovalReasons(subreddit, callback) {
 
-
         // Nothing to do if no toolbox config
             if (TBUtils.noConfig.indexOf(subreddit) != -1) {
                 callback(false);
@@ -173,7 +172,6 @@ function removalreasons() {
                 postID = postDetails.data.id;
                 postSubreddit = postDetails.data.subreddit.name;
             }
-
 
             TBUtils.getApiThingInfo(postID, postSubreddit, false, function(info) {
                 // Get link/comment attributes
@@ -498,8 +496,6 @@ function removalreasons() {
                 }
             }
         });
-
-
 
         // 'no reason' button clicked
         $body.on('click', '.reason-popup .no-reason', function () {

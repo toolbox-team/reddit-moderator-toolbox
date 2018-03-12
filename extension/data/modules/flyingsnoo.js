@@ -8,7 +8,7 @@ function flyingsnoo() {
 
     ////Default settings
     self.settings['enabled']['default'] = true;
-    self.settings['enabled']['hidden'] = true;  // it's an easter egg.
+    self.settings['enabled']['hidden'] = true; // it's an easter egg.
 
     self.init = function () {
         //if (!TB.utils.isUserPage) return;
@@ -44,7 +44,6 @@ function flyingsnoo() {
                 oldLeft = floater.position().left;
 
             let keepFlying = false;
-
 
             function startFlying() {
                 const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.0002)));

@@ -5,7 +5,6 @@ function profilepro() {
     ////Default settings
     self.settings['enabled']['default'] = true;
 
-
     self.config['betamode'] = false;
 
     self.register_setting('alwaysTbProfile', {
@@ -31,7 +30,6 @@ function profilepro() {
         'default': TB.storage.getSetting('QueueTools', 'subredditColor', false),
         'hidden': true
     });
-
 
     TB.register_module(self);
 
@@ -106,7 +104,6 @@ function profilepro() {
                 }, {framerate: 40});
             }
 
-
         }
 
         function addToSiteTable(data, $siteTable, after, callback) {
@@ -143,7 +140,6 @@ function profilepro() {
                     $('time.timeago').timeago();
                 }
 
-
             }).then(function() {
                 if(after) {
                     $siteTable.append(`<div data-after="${after}" class="tb-load-more">load more</div>`);
@@ -165,7 +161,7 @@ function profilepro() {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
-                    let $userTrophies= $(`<div class="tb-user-trophies">
+                    let $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
                     $.each(data.data.trophies, function (i, trophy) {
@@ -219,7 +215,7 @@ function profilepro() {
 
                         const liElement = `<li>
                             <a href="${TBUtils.tempBaseDomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
-                            ${over18? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
+                            ${over18 ? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
                             ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ``}
                         </li>`;
 
@@ -229,11 +225,10 @@ function profilepro() {
                             $moderatedSubListExpanded.append(liElement);
                         }
 
-
                     }, {framerate: 40}).then(function() {
                         if(subCount > 10) {
-                            $moderatedSubListVisible.after(`<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${subCount-10} more ...</button>`);
-                            $moderatedSubListExpanded.after(`<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${subCount-10} less</button>`);
+                            $moderatedSubListVisible.after(`<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${subCount - 10} more ...</button>`);
+                            $moderatedSubListExpanded.after(`<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${subCount - 10} less</button>`);
 
                             $body.on('click', '.tb-sidebar-loadmod', function() {
                                 const $this = $(this);
@@ -261,8 +256,6 @@ function profilepro() {
 
             });
 
-
-
         }
         function makeUserSidebar(user, $overlay) {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
@@ -284,7 +277,7 @@ function profilepro() {
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
                         <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>
-                        <li>${verifiedMail? `Verified mail` : `No verified mail`}</li>
+                        <li>${verifiedMail ? `Verified mail` : `No verified mail`}</li>
                     </ul>
                 </div>`);
                 $tabWrapper.after($sidebar);
@@ -328,7 +321,6 @@ function profilepro() {
                         patternMatch = searchPattern && (value.data.selftext && searchPattern.test(value.data.selftext) || searchPattern.test(value.data.title));
                     }
 
-
                     if(
                         (subredditMatch && !searchPattern) ||
                         (patternMatch && !subredditPattern) ||
@@ -336,7 +328,6 @@ function profilepro() {
                     ) {
                         hit = true;
                     }
-
 
                     if (hit) {
                         if (searchPattern) {
@@ -404,7 +395,6 @@ function profilepro() {
             }
             searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, function(results) {
 
-
                 if(results) {
                     TB.ui.longLoadSpinner(false);
                 } else {
@@ -415,7 +405,6 @@ function profilepro() {
             return false;
 
         });
-
 
         function populateSearchSuggestion(subreddit) {
             if(subreddit && TBUtils.mySubs.includes(subreddit)) {
@@ -448,8 +437,6 @@ function profilepro() {
                     populateSearchSuggestion(subreddit);
                 });
             }
-
-
 
             $body.on('focus', '.tb-subredditsearch', function () {
                 const offset = $(this).offset();
@@ -485,7 +472,6 @@ function profilepro() {
                 $body.find('#tb-search-suggest').hide();
             });
         }
-
 
         function makeProfile(user, type, options) {
             const sort = options.sort || 'new';
@@ -574,7 +560,7 @@ function profilepro() {
                         <option value="controversial">controversial</option>
                         <option value="hot">hot</option>
                     </select>
-                    <button class="tb-general-button tb-filter-moddable">${filterModThings? 'Show unmoddable' : `Hide unmoddable`}</button>
+                    <button class="tb-general-button tb-filter-moddable">${filterModThings ? 'Show unmoddable' : `Hide unmoddable`}</button>
                     <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Hide mod actions`}</a>
                 </div>`).appendTo($options);
 
@@ -595,7 +581,6 @@ function profilepro() {
                 $siteTable.addClass('tb-sitetable-processed');
                 $siteTable.empty();
             }
-
 
             TBui.switchOverlayTab('tb-profile-overlay', type);
             const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
@@ -713,8 +698,7 @@ function profilepro() {
             });
         }
 
-
-        $body.on('click', '#tb-user-profile, .tb-user-profile', function(){
+        $body.on('click', '#tb-user-profile, .tb-user-profile', function() {
             const $this = $(this);
             const user = $this.attr('data-user'),
                 listing = $this.attr('data-listing'),
@@ -731,7 +715,6 @@ function profilepro() {
         });
 
     };
-
 
 }
 

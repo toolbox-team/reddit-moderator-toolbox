@@ -27,7 +27,6 @@ Info| &nbsp;
 *Cookies Enabled*|{{cookiesEnabled}}
 `;
 
-
         const debugInfo = TBUtils.debugInformation();
         const submissionAddition = TBUtils.template(debugTemplate, {
             'toolboxVersion': debugInfo.toolboxVersion,
@@ -50,8 +49,6 @@ Info| &nbsp;
             // First we stop the action on the button for a bit.
             //event.preventDefault();
                 let submissionText = $submissionTextArea.val();
-
-
 
                 $submissionTextArea.val(submissionText + submissionAddition);
             });

@@ -82,7 +82,7 @@ function newmodmailpro() {
             $threadPreviewerThreads.scrollTop(scrollDistance);
 
             // Now wait a bit so we are sure they are loaded and then activate another loop of this function.
-            setTimeout(function(){
+            setTimeout(function() {
                 searchAndScroll(searchString, $threadPreviewerThreads, $searchResults, count);
             }, 1000);
         }
@@ -166,7 +166,6 @@ function newmodmailpro() {
         }
     }
 
-
     // All stuff we want to do when we are on new modmail
     if (TBUtils.isNewModmail) {
         // Add a class to body
@@ -178,7 +177,6 @@ function newmodmailpro() {
         var modMailNightmode = self.setting('modmailnightmode'),
             lastReplyTypeCheck = self.setting('lastreplytypecheck'),
             searchArchive = self.setting('searcharchive');
-
 
         if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', function(event) {
@@ -241,7 +239,6 @@ function newmodmailpro() {
         // ready some variables.
         var modmailLink = self.setting('modmaillink'),
             openMailTab = self.setting('openmailtab');
-
 
         // Let's mess around with the link to modmail.
         var $newModmailLinkElement = $('#new_modmail'),

@@ -1,7 +1,6 @@
 /** @module CommentNuke */
 function nukecomments() {
 
-
     let self = new TB.Module('Comment Nuke');
     self.shortname = 'CommentNuke';
 
@@ -14,7 +13,6 @@ function nukecomments() {
         'default': true,
         'title': 'Ignore distinguished comments from mods and admins when nuking a chain.'
     });
-
 
     self.init = function () {
         // This will contain a flat listing of all comments to be removed.
@@ -46,7 +44,7 @@ function nukecomments() {
             const $this = $(this);
             const commentID = $this.attr('data-comment-id');
             const postID = $this.attr('data-post-id');
-            const subreddit  = $this.attr('data-subreddit');
+            const subreddit = $this.attr('data-subreddit');
             const positions = TBui.drawPosition(event);
 
             const fetchURL = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${commentID}.json?limit=1500`;
@@ -208,7 +206,6 @@ function nukecomments() {
                 const commentIDcount = commentIDs.length;
                 let processCount = 0;
 
-
                 commentIDs.forEach(function(id) {
                     const fetchUrl = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
@@ -243,7 +240,7 @@ function nukecomments() {
                 const postID = e.detail.data.post.id.substring(3);
 
                 TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit) && (pageType=== 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
+                    if(TBUtils.modsSub(subreddit) && (pageType === 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
                         const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">R</span>`;
 
                         $target.append(NukeButtonHTML);
@@ -253,11 +250,7 @@ function nukecomments() {
             }
         });
 
-
     };
-
-
-
 
     TB.register_module(self);
 } // nukecomments() wrapper

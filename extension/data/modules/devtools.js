@@ -28,7 +28,6 @@ function devtools() {
         const apiHelper = self.setting('apiHelper'),
             commentUItester = self.setting('commentUItester');
 
-
         // Function that handles
         function modifyDiv(e) {
             console.log(e);
@@ -49,8 +48,6 @@ function devtools() {
                 } else {
                     leftPosition = event.pageX - 50;
                 }
-
-
 
                 // Build the context popup and once that is done append it to the body.
                 const $apiPopup = TB.ui.popup(
@@ -94,8 +91,7 @@ function devtools() {
             });
         }
 
-
-        $body.on('click', '#tb-testCommentUI-link', function(){
+        $body.on('click', '#tb-testCommentUI-link', function() {
             TB.ui.overlay(
                 `Comment UI tester`,
                 [
@@ -151,7 +147,6 @@ function devtools() {
                         $('time.timeago').timeago();
                     }
 
-
                 });
             });
 
@@ -179,10 +174,7 @@ function devtools() {
 
         });
 
-
     };
-
-
 
     TB.register_module(self);
 }

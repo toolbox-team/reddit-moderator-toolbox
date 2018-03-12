@@ -154,7 +154,6 @@ function notifiermod() {
         'hidden': true
     });
 
-
     self.init = function () {
 
         var NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
@@ -174,7 +173,7 @@ function notifiermod() {
 
             modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
-            modmailFilteredSubreddits = modmailSubreddits,  //wat?
+            modmailFilteredSubreddits = modmailSubreddits, //wat?
             unmoderatedOn = TB.storage.getSetting('Modbar', 'unmoderatedon', true), //why? RE: because people sometimes don't use unmoderated and we included this a long time per request.
 
             messageunreadlink = self.setting('messageUnreadLink'),
@@ -191,7 +190,6 @@ function notifiermod() {
             messageunreadurl = `${TBUtils.tempBaseDomain}/message/inbox/`,
             $body = $('body'),
             activeNewMMcheck = false;
-
 
         // use filter subs from MMP, if appropriate
         if (modmailSubredditsFromPro) {
@@ -229,7 +227,6 @@ function notifiermod() {
                 });
             });
         }
-
 
         TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, function () {
             self.log('playing sound');
@@ -314,7 +311,6 @@ function notifiermod() {
                 $tbNewModmail.removeClass('nohavemail');
                 $tbNewModmail.addClass('havemail');
 
-
             }
             $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
             $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
@@ -324,8 +320,6 @@ function notifiermod() {
 
             $tbNewModmailCount.text(`[${count}]`);
         }
-
-
 
         function updateAllTabs() {
             self.log('updating all counters accross tabs');
@@ -377,12 +371,10 @@ function notifiermod() {
                 self.log('Checking modmail count based on click on specific element.');
                 newModMailCheck();
 
-
             });
         }
 
-
-        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, function(event){
+        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, function(event) {
             self.log('updating counters from background');
             updateMessagesCount(event.detail.unreadMessageCount);
             updateModqueueCount(event.detail.modqueueCount);
@@ -410,8 +402,6 @@ function notifiermod() {
             // Update methods
             //
 
-
-
             if (!newLoad && (now - lastchecked) < checkInterval) {
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
@@ -421,10 +411,9 @@ function notifiermod() {
                 return;
             }
 
-
             // We still want counts updated, just no notifications shown.
             // That's why we do this here.
-            if (wwwNotifications && TB.utils.domain !== 'www' && TB.utils.domain !== 'alpha') {  //It's intentional that we don't also check for mod.reddit, here.  That would still cause dup messages.
+            if (wwwNotifications && TB.utils.domain !== 'www' && TB.utils.domain !== 'alpha') { //It's intentional that we don't also check for mod.reddit, here.  That would still cause dup messages.
                 self.log("non-www domain; don't show notifications");
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
@@ -438,7 +427,6 @@ function notifiermod() {
 
             // We'll use this to determine if we are done with all counters and want to send a message to the background page telling all other tabs to update.
             let updateCounters = unmoderatedOn ? 4 : 3;
-
 
             //$.log('updating totals');
             // We're checking now.
@@ -543,7 +531,6 @@ function notifiermod() {
                                 subject,
                                 id;
 
-
                             if ($.inArray(value.data.name, pushedunread) == -1 && value.kind == 't1') {
 
                                 context = value.data.context,
@@ -580,7 +567,6 @@ function notifiermod() {
                     self.setting('unreadPushed', pushedunread);
                 }
             });
-
 
             //
             // Modqueue
@@ -699,7 +685,6 @@ function notifiermod() {
                     }
                     self.setting('modqueuePushed', pusheditems);
 
-
                 }
                 self.setting('modqueueCount', count);
             });
@@ -719,7 +704,6 @@ function notifiermod() {
 
                 $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(function (json) {
                     var count = json.data.children.length || 0;
-
 
                     if (unmoderatedNotifications && count > unmoderatedCount) {
                         var lastSeen = self.setting('lastSeenUnmoderated');
@@ -788,7 +772,6 @@ function notifiermod() {
             //
             // getting unread modmail, will not show replies because... well the api sucks in that regard.
 
-
             //
             // New modmail
             //
@@ -814,8 +797,6 @@ function notifiermod() {
 
         getmessages();
     // Because firefox is "special" we wait a tiny bit and try again.
-
-
 
     };
 

@@ -32,7 +32,6 @@ function getCookie(tries, callback) {
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
 
-
         console.log(request);
 
         // Request to reload the extension. Let's do so.
@@ -58,14 +57,13 @@ chrome.runtime.onMessage.addListener(
         if(request.action === 'tb-global' ) {
             console.log('global event');
 
-
             const message = {
                 action: request.globalEvent,
                 payload: request.payload
             };
 
             chrome.tabs.query({}, function(tabs) {
-                for (let i=0; i<tabs.length; ++i) {
+                for (let i = 0; i < tabs.length; ++i) {
                     if(sender.tab.id !== tabs[i].id) {
                         chrome.tabs.sendMessage(tabs[i].id, message);
                     }
@@ -75,6 +73,4 @@ chrome.runtime.onMessage.addListener(
             return true;
         }
     });
-
-
 

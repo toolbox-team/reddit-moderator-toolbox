@@ -63,13 +63,11 @@ function modbar() {
         'hidden': true
     });
 
-
     self.register_setting('subredditColorSalt', {
         'type': 'text',
         'default': TB.storage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt'),
         'hidden': true
     });
-
 
     self.init = function() {
         if (!TBUtils.logged || TBUtils.isToolbarPage) return;
@@ -157,7 +155,6 @@ function modbar() {
         // style="display: none;"
         // toolbar, this will display all counters, quick links and other settings for the toolbox
 
-
         // This is here in case notifier is disabled which is where this normally is set.
         // Atleast, I think.... - creesch
         let modMailUrl = $('#modmail').attr('href') || `${TBUtils.tempBaseDomain}/message/moderator/`;
@@ -184,8 +181,8 @@ function modbar() {
             <a href="${TBUtils.tempBaseDomain}/message/inbox/" class="tb-toolbar" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
             <a href="${modMailUrl}" class="tb-toolbar" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"`: ``}>move_to_inbox</a>
-            <a href="${newModmailUrl}" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}></a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"` : ``}>move_to_inbox</a>
+            <a href="${newModmailUrl}" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">report_problem</a>
             <a href="${modQueueUrl}" class="tb-toolbar" id="tb-queueCount"></a>
         </span>
@@ -193,23 +190,23 @@ function modbar() {
     <div id="tb-new-modmail-tooltip">
         <table>
             <tr id="tb-new-modmail-new">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>New</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>New</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-inprogress">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>In Progress</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>In Progress</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-highlighted">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Highlighted</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Highlighted</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-mod">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Mod Discussions</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Mod Discussions</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-notifications">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"`: ``}>Notifications</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" class="tb-toolbar" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Notifications</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
     </div>
@@ -220,13 +217,10 @@ function modbar() {
             clearTimeout(hoverTimeout);
             $modBar.find('#tb-new-modmail-tooltip').show();
         }, function() {
-            hoverTimeout = setTimeout(function(){
+            hoverTimeout = setTimeout(function() {
                 $modBar.find('#tb-new-modmail-tooltip').hide(100);
             }, 1000);
         });
-
-
-
 
         // Add unmoderated icon if it is enabled.
 
@@ -238,7 +232,6 @@ function modbar() {
 `);
 
         }
-
 
         let $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar ${compactHide ? 'tb-bottombar-compact' : ''}">
@@ -310,7 +303,6 @@ function modbar() {
                     <table id="tb-my-subreddit-list">${subList}</table>
                 </div>
                 `;
-
 
                 $body.on('click', '#tb-toolbar-mysubs', function () {
                     let $this = $(this);
@@ -386,7 +378,7 @@ function modbar() {
             let selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;
-            $('.tb-debug-console').each(function(index, elem){
+            $('.tb-debug-console').each(function(index, elem) {
             // This makes sure codemirror behaves and uses spaces instead of tabs.
             // Editor setup.
                 debugEditor = CodeMirror.fromTextArea(elem, {
@@ -409,9 +401,7 @@ function modbar() {
                     lineWrapping: true
                 });
 
-
             });
-
 
             let logLength = 0;
             let logVisibleLength = 0;
@@ -454,7 +444,7 @@ function modbar() {
                 }
 
                 // add new modules to dropdown.
-                if (TB.utils.logModules.length > moduleCount){
+                if (TB.utils.logModules.length > moduleCount) {
                     moduleCount = TB.utils.logModules.length;
 
                     let $moduleSelect = $('.module-select');
@@ -471,7 +461,7 @@ function modbar() {
                         $moduleSelect.append($('<option>', {
                             value: this
                         }).text(this));
-                    }).promise().done( function(){
+                    }).promise().done( function() {
                         $moduleSelect.val(currentModule);
                     });
                 }
@@ -624,13 +614,12 @@ function modbar() {
                 $tb_help_mains = $('.tb-help-main');
 
             // achievement support
-            if (module === 'about'){
+            if (module === 'about') {
                 TB.utils.sendEvent(TB.utils.events.TB_ABOUT_PAGE);
             }
             if (module === 'syntax') {
                 TB.utils.sendEvent(TB.utils.events.TB_SYNTAX_SETTINGS);
             }
-
 
             $('.tb-window-tabs a').removeClass('active');
             $this.addClass('active');

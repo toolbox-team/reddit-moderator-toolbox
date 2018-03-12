@@ -8,7 +8,6 @@ function modmacros() {
         var $body = $('body'),
             MACROS = 'TB-MACROS';
 
-
         function getConfig(sub, callback) {
             if (TBUtils.noConfig.indexOf(sub) != -1) {
                 self.log('TBUtils.noConfig.indexOf(sub) != -1');
@@ -89,7 +88,6 @@ function modmacros() {
                             $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
                         }
 
-
                         populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
                     }
                 });
@@ -144,8 +142,6 @@ function modmacros() {
             // Don't add macro button twice.
             if ($body.find('.tb-usertext-buttons').length) return;
 
-
-
             // are we a mod?
             if (!info.subreddit) return;
             self.log(info.subreddit);
@@ -155,10 +151,8 @@ function modmacros() {
             // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
 
-
                     var macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').before(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
-
 
                     populateSelect('.tb-macro-select', info.subreddit, config);
                 }
@@ -244,9 +238,6 @@ function modmacros() {
                 }
 
             }
-
-
-
 
             // replace token.
             comment = TB.utils.replaceTokens(info, comment);
@@ -348,8 +339,6 @@ function modmacros() {
                             TB.ui.longLoadSpinner(false);
                         }, 1500);
 
-
-
                     } else {
 
                         TBUtils.postComment(info.id, editedcomment, function (successful, response) {
@@ -418,8 +407,6 @@ function modmacros() {
             var $currentMacroPopup = $(this).closest('.macro-popup'),
                 infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
                 $selectElement = $body.find(`#macro-dropdown-${infoId}`);
-
-
 
             $selectElement.val(MACROS);
             $currentMacroPopup.remove();

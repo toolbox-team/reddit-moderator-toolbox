@@ -93,7 +93,6 @@ function tbmodule() {
                 lastExportState = 'happy';
             }
 
-
             /// Template for 'general settings'.
             let dispalyNone = 'display: none;',
                 settingContent = '';
@@ -454,7 +453,6 @@ function tbmodule() {
                 window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${module}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
-
             // Lock 'n load
             $settingsDialog.appendTo('body').show();
             $body.css('overflow', 'hidden');
@@ -494,7 +492,6 @@ function tbmodule() {
                     // use `return false` because we're in a self-executing anonymous function
                         return false;
                     }
-
 
                     //
                     // build and inject our settings tab
@@ -691,7 +688,7 @@ body {
                                 $body.addClass('mod-syntax');
                                 let editorSettings;
                                 let enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
-                                $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem){
+                                $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem) {
 
                                     // Editor setup.
                                     editorSettings = CodeMirror.fromTextArea(elem, {
@@ -718,8 +715,6 @@ body {
                                         editorSettings.refresh();
                                     },5);
                                 });
-
-
 
                                 $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
                                 $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
@@ -794,7 +789,6 @@ body {
                                 inputClass = `tb-setting-input-${settingName}`,
                                 redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
                                 internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
-
 
                             $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
                             } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">link</a>` +

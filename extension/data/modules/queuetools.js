@@ -43,9 +43,6 @@ function queuetools() {
         'hidden': !self.setting('subredditColor')
     });
 
-
-
-
     self.init = function () {
         let $body = $('body');
         let modlogCache = {};
@@ -172,9 +169,6 @@ function queuetools() {
             });
         }
 
-
-
-
         /**
          * Checks modLogCache for actions on the given fullName and subreddit.
          * @function checkForActions
@@ -283,8 +277,6 @@ function queuetools() {
         }
         // Show history of actions near posts.
         if(showActionReason) {
-
-
 
             TB.listener.on('post', function(e) {
                 const $target = $(e.target);

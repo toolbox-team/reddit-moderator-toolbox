@@ -60,7 +60,6 @@ function personalnotes() {
             $body.find('.personal-notes-popup').drag('.personal-notes-popup .tb-popup-title');
         }
 
-
         // Let's load a note!
 
         function loadNoteWiki(wikiPage) {
@@ -109,7 +108,6 @@ function personalnotes() {
 
                     if (newnote) {
                         $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
-
 
                         if (!$body.find('#tb-personal-notes-ul').length) {
                             $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul>`);
@@ -191,7 +189,6 @@ function personalnotes() {
                                 } else {
                                     let notecount = 0,
                                         noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
-
 
                                     $.each(json.data, function (i, value) {
                                         if (/notes\//.test(value)) {

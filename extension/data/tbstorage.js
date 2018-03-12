@@ -29,7 +29,6 @@ const domain = window.location.hostname.split('.')[0];
                 }
             });
 
-
         // Wait a sec for stuff to clear.
         setTimeout(function () {
             window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
@@ -65,19 +64,17 @@ function storagewrapper() {
         //if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return;
         if ((!$('body').find('#USER_DROPDOWN_ID').text() && !$('.BlueBar__account a.BlueBar__username').text()) || $('.mod-toolbox-rd').length) return; // not logged in or toolbox is already loaded.
 
-
         const SHORTNAME = 'TBStorage';
 
         // Type safe keys.
         TBStorage.SAFE_STORE_KEY = 'Toolboxv4.Storage.safeToStore';
 
-        TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]');  //always use local storage.
+        TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); //always use local storage.
         TBStorage.domain = window.location.hostname.split('.')[0];
 
         $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
 
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'alpha' || TBStorage.domain === 'mod' || TBStorage.domain === 'www');
-
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
         TBStorage.browsers = {
@@ -94,7 +91,7 @@ function storagewrapper() {
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style) {
             TBStorage.browser = FIREFOX;
-        } else if (typeof (window.browser) !== 'undefined'){
+        } else if (typeof (window.browser) !== 'undefined') {
             TBStorage.browser = EDGE;
             chrome = window.browser;
         } else if (typeof (chrome) !== 'undefined') {
@@ -104,7 +101,6 @@ function storagewrapper() {
                 TBStorage.browser = OPERA;
             }
         }
-
 
         if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
             chrome.storage.local.get('tbsettings', function (sObject) {
@@ -120,41 +116,36 @@ function storagewrapper() {
             SendInit();
         }
 
-
         // methods.
         TBStorage.setSetting = function (module, setting, value) {
             return setSetting(module, setting, value, true);
         };
 
-
         TBStorage.getSetting = function (module, setting, defaultVal) {
             return getSetting(module, setting, defaultVal);
         };
-
 
         // methods.
         TBStorage.setCache = function (module, setting, value) {
             return setCache(module, setting, value, true);
         };
 
-
         TBStorage.getCache = function (module, setting, defaultVal) {
             return getCache(module, setting, defaultVal);
         };
-
 
         TBStorage.unloading = function () {
             saveSettingsToBrowser();
         };
 
-        TBStorage.getSettingsObject = function(callback){
+        TBStorage.getSettingsObject = function(callback) {
             if (!callback) return;
             settingsToObject(function (sObject) {
                 callback(sObject);
             });
         };
 
-        TBStorage.getAnonymizedSettingsObject = function(callback){
+        TBStorage.getAnonymizedSettingsObject = function(callback) {
             if (!callback) return;
             settingsToObject(function (sObject) {
 
@@ -204,21 +195,18 @@ function storagewrapper() {
                 sObject['Toolboxv4.QueueTools.subredditColorSalt'] = undefindedOrTrue(sObject['Toolboxv4.QueueTools.subredditColorSalt']);
                 sObject['Toolboxv4.Utils.settingSub'] = undefindedOrTrue(sObject['Toolboxv4.Utils.settingSub']);
 
-
                 callback(sObject);
 
-                function undefindedOrLength(setting){
-                    return (setting === undefined) ?  0 : setting.length;
+                function undefindedOrLength(setting) {
+                    return (setting === undefined) ? 0 : setting.length;
                 }
 
-                function undefindedOrTrue(setting){
+                function undefindedOrTrue(setting) {
                     if (!setting || setting === undefined) return false;
                     if (setting.length > 0) return true;
                 }
             });
         };
-
-
 
         TBStorage.clearCache = function () {
 
@@ -243,7 +231,6 @@ function storagewrapper() {
         $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', function() {
             TBStorage.clearCache();
         });
-
 
         TBStorage.verifiedSettingsSave = function (callback) {
         // Don't re-store the settings after a save on the the refresh that follows.
@@ -275,14 +262,12 @@ function storagewrapper() {
             }
         };
 
-
         function SendInit() {
             setTimeout(function () {
                 const event = new CustomEvent('TBStorageLoaded2');
                 window.dispatchEvent(event);
             }, 10);
         }
-
 
         function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
@@ -297,7 +282,6 @@ function storagewrapper() {
                 localStorage['Toolboxv4.Storage.settings'] = JSON.stringify(TBStorage.settings.sort());
             }
         }
-
 
         function settingsToObject(callback) {
             let settingsObject = {};
@@ -316,7 +300,6 @@ function storagewrapper() {
             callback(settingsObject);
         }
 
-
         function saveSettingsToBrowser() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
             if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
@@ -331,7 +314,6 @@ function storagewrapper() {
             }
         }
 
-
         function objectToSettings(object, callback) {
         //console.log(object);
             $.each(object, function (fullKey, value) {
@@ -342,7 +324,6 @@ function storagewrapper() {
 
             callback();
         }
-
 
         function getSetting(module, setting, defaultVal) {
             const storageKey = `Toolboxv4.${module}.${setting}`;
@@ -372,7 +353,6 @@ function storagewrapper() {
             }
         }
 
-
         function setSetting(module, setting, value, syncSettings) {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
@@ -384,7 +364,6 @@ function storagewrapper() {
 
             return getSetting(module, setting);
         }
-
 
         function getCache(module, setting, defaultVal) {
             const storageKey = `TBCachev4.${module}.${setting}`;
@@ -413,7 +392,6 @@ function storagewrapper() {
             }
         }
 
-
         function setCache(module, setting, value) {
             const storageKey = `TBCachev4.${module}.${setting}`;
 
@@ -421,7 +399,6 @@ function storagewrapper() {
 
             return getSetting(module, setting);
         }
-
 
         // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
         // added recursive object checks - al

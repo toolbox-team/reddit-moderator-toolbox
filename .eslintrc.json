@@ -20,10 +20,21 @@
     "extends": "eslint:recommended",
     "rules": {
         "no-console": 0,
+        "eqeqeq": "warn",
+        "no-multi-spaces": "error",
         "no-inner-declarations": "warn",
         "prefer-template": "warn",
         "no-useless-escape": "warn",
         "no-constant-condition": "warn",
+        "no-trailing-spaces": "error",
+        "space-before-blocks": "error",
+        "space-infix-ops": "error",
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max" : 1
+            }
+        ],
         "template-curly-spacing": [
             "error",
             "never"

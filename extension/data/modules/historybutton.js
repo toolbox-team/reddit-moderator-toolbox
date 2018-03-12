@@ -55,8 +55,6 @@ function historybutton() {
 
             $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
 
-
-
         } else {
             self.log('alpha reddit');
             TB.listener.on('author', function(e) {
@@ -77,11 +75,10 @@ function historybutton() {
     self.init = function () {
         self.log(`init`);
         let $body = $('body');
-        TBUtils.modSubCheck(function(modSubCheck){
+        TBUtils.modSubCheck(function(modSubCheck) {
             self.log(`mscheck: ${modSubCheck}`);
-            if(modSubCheck){
+            if(modSubCheck) {
                 self.log(`passed`);
-
 
                 if (TBUtils.isNewModmail) {
                     setTimeout(function () {
@@ -91,7 +88,6 @@ function historybutton() {
                     self.log(`not new modmail`);
                     self.run();
                 }
-
 
                 // NER support.
                 window.addEventListener('TBNewThings', function () {
@@ -271,7 +267,7 @@ function historybutton() {
 
                     $popup.on('click', '.markdown-report', self.showMarkdownReport.bind(self, author));
                     $popup.on('click', '.rts-report', self.reportAuthorToSpam.bind(self, author));
-                    $popup.on('click.comment-report', '.comment-report', function(){
+                    $popup.on('click.comment-report', '.comment-report', function() {
                         $(this).hide();
                         $popup.off('click.comment-report');
                         self.populateCommentHistory('', author);
@@ -335,8 +331,8 @@ function historybutton() {
             $error = $contentBox.find('.subreddit-table .error, .domain-table .error, .account-table-table .error'),
             $accountTable = $contentBox.find('.account-table tbody'),
             TYPE = {
-                PATH: 1,        // e.g. example.org/path/user
-                SUBDOMAIN: 2    // e.g. user.example.org
+                PATH: 1, // e.g. example.org/path/user
+                SUBDOMAIN: 2 // e.g. user.example.org
             },
             domainSpecs = {
             // keys are the supported sites, and determine if we have a match
@@ -435,7 +431,6 @@ function historybutton() {
                 }
                 user.domains[data.domain].count++;
 
-
                 if (!user.subreddits.submissions[data.subreddit]) {
                     user.subreddits.submissions[data.subreddit] = {
                         count: 0,
@@ -504,8 +499,7 @@ function historybutton() {
                     percentage = Math.round(domainCount / totalDomainCount * 100),
                     bgcolor = '#fff';
 
-
-                if (percentage >= 10  && domainCount > 4){
+                if (percentage >= 10 && domainCount > 4) {
                     bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
                 }
 
@@ -543,7 +537,6 @@ function historybutton() {
             for (let subreddit in user.subreddits.submissions) {
                 totalSubredditCount += user.subreddits.submissions[subreddit].count;
             }
-
 
             //Append a list of subreddits submitted to the subreddit table and to the comment body for reports
             $.each(user.subredditList, function (index, value) {
@@ -589,14 +582,13 @@ function historybutton() {
                 return user.accounts[b].count - user.accounts[a].count;
             });
 
-
             $.each(accountList, function(index, account) {
                 account = user.accounts[account];
 
                 let percentage = Math.round(account.count / user.counters.submissions * 100),
                     bgcolor = 'fff';
 
-                if (percentage >= 10 && account.count > 4){
+                if (percentage >= 10 && account.count > 4) {
                     bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
                 }
 
@@ -665,7 +657,6 @@ function historybutton() {
         }
 
     };
-
 
     self.populateCommentHistory = function (after, author) {
         TB.ui.longLoadNonPersistent(true);
@@ -775,7 +766,6 @@ function historybutton() {
                     rtsNativeLink.className = 'tb-general-button';
                     return;
                 }
-
 
                 TBUtils.postComment(submission.json.data.name, commentBody, function (successful, comment) {
                     if (!successful) {

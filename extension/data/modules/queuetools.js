@@ -291,7 +291,8 @@ function queuetools() {
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
                 makeActionTable($target, subreddit, id);
-                if(e.details.type === 'TBpost') {
+
+                if(e.detail.type === 'TBpost') {
                     const $actionTable = $target.find('.tb-action-table');
                     $actionTable.show();
                     $target.find('.tb-show-action-table').hide();

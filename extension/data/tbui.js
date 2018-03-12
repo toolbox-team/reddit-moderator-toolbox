@@ -4,16 +4,6 @@
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
-    // new profiles have some weird css going on. This remedies the weirdness...
-    window.addEventListener('TBNewPage', function (event) {
-        if(event.detail.pageType === 'userProfile') {
-            $body.addClass('mod-toolbox-profile');
-        } else {
-            $body.removeClass('mod-toolbox-profile');
-        }
-
-    });
-
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
     $body.on('click', '.tb-bracket-button', function(event) {
         event.stopPropagation();

@@ -14,6 +14,15 @@ function initwrapper(userDetails, newModSubs) {
             $('body').addClass('mod-toolbox-new-modmail');
         }
 
+        // new profiles have some weird css going on. This remedies the weirdness...
+        window.addEventListener('TBNewPage', function (event) {
+            if(event.detail.pageType === 'userProfile') {
+                $('body').addClass('mod-toolbox-profile');
+            } else {
+                $('body').removeClass('mod-toolbox-profile');
+            }
+        });
+
         // Let's get oauth information
         // We fetch the data on page load but we don't access the variable directly.
 

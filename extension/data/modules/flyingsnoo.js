@@ -11,7 +11,7 @@ function flyingsnoo() {
     self.settings['enabled']['hidden'] = true; // it's an easter egg.
 
     self.init = function () {
-        //if (!TB.utils.isUserPage) return;
+        if (TBUtils.isNewModmail) return;
         const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo('#tb-footer-block');
         $snooFooter.css({
             'background-image': `url(${chrome.runtime.getURL('data/images/balloon.png')})`,

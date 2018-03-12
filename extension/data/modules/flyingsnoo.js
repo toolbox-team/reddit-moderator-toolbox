@@ -3,7 +3,7 @@ function flyingsnoo() {
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
 
-    var self = new TB.Module('Userpage');
+    let self = new TB.Module('Userpage');
     self.shortname = 'Userpage';
 
     ////Default settings
@@ -48,7 +48,7 @@ function flyingsnoo() {
             function startFlying() {
                 const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.0002)));
 
-                if (iterations % 50 == 0) {
+                if (iterations % 50 === 0) {
                     wind = ((Math.random() * 200) - 100) * 0.02;
                 }
 

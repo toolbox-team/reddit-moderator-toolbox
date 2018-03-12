@@ -778,7 +778,9 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
     border: 1px solid;
     -webkit-rtl-ordering: logical;
     -webkit-user-select: text;
+    user-select: text;
     -webkit-flex-direction: column;
+    flex-direction: column;
     cursor: auto;
     padding: 2px !important;
     white-space: pre-wrap;

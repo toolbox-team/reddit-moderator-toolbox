@@ -78,7 +78,7 @@ function initwrapper(userDetails, newModSubs) {
             seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
             lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
             toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
-            newLogin = (cacheName != TBUtils.logged),
+            newLogin = (cacheName !== TBUtils.logged),
             getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
             getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
             betaRelease = true, /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
@@ -211,7 +211,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.browsers = TBStorage.browsers;
 
         // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
-        if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) != -1) {
+        if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) !== -1) {
             TBUtils.post_site = '';
         }
 
@@ -898,16 +898,16 @@ function initwrapper(userDetails, newModSubs) {
             //platform check.
             switch (note.platform) {
             case 'firefox':
-                if (TBUtils.browser == FIREFOX && TBUtils.isExtension) show();
+                if (TBUtils.browser === FIREFOX && TBUtils.isExtension) show();
                 break;
             case 'chrome':
-                if (TBUtils.browser == CHROME && TBUtils.isExtension) show();
+                if (TBUtils.browser === CHROME && TBUtils.isExtension) show();
                 break;
             case 'opera':
-                if (TBUtils.browser == OPERA && TBUtils.isExtension) show();
+                if (TBUtils.browser === OPERA && TBUtils.isExtension) show();
                 break;
             case 'edge':
-                if (TBUtils.browser == EDGE && TBUtils.isExtension) show();
+                if (TBUtils.browser === EDGE && TBUtils.isExtension) show();
                 break;
             case 'script':
                 if (!TBUtils.isExtension) show();
@@ -940,7 +940,7 @@ function initwrapper(userDetails, newModSubs) {
                 return;
             }
 
-            if (!('Notification' in window) || TBUtils.browser == EDGE) {
+            if (!('Notification' in window) || TBUtils.browser === EDGE) {
             // fallback on a javascript notification
                 $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
                 body = body.substring(0, 600);
@@ -1454,7 +1454,7 @@ function initwrapper(userDetails, newModSubs) {
             {
                 let keyval = params[i].split('='),
                     key = keyval[0].replace('?','');
-                if (key == ParameterKey)
+                if (key === ParameterKey)
                 {
                     return keyval[1];
                 }
@@ -1520,13 +1520,13 @@ function initwrapper(userDetails, newModSubs) {
                     subreddit = '';
                 }
 
-                if (user == '[deleted]') {
+                if (user === '[deleted]') {
                     user = '';
                 }
 
                 // If the permalink is relative, stick the current domain name in.
                 // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0,1) == '/')
+                if (permalink && permalink.slice(0,1) === '/')
                 {
                     permalink = TBUtils.baseDomain + permalink;
                 }
@@ -1587,13 +1587,13 @@ function initwrapper(userDetails, newModSubs) {
                     subreddit = '';
                 }
 
-                if (user == '[deleted]') {
+                if (user === '[deleted]') {
                     user = '';
                 }
 
                 // If the permalink is relative, stick the current domain name in.
                 // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0,1) == '/')
+                if (permalink && permalink.slice(0,1) === '/')
                 {
                     permalink = TBUtils.baseDomain + permalink;
                 }
@@ -1651,7 +1651,7 @@ function initwrapper(userDetails, newModSubs) {
             let counter = 0;
 
             function doChunk() {
-                if (counter == 0 && start) {
+                if (counter === 0 && start) {
                     start();
                 }
 
@@ -1689,7 +1689,7 @@ function initwrapper(userDetails, newModSubs) {
             }
 
             function doChunk() {
-                if (counter == 0 && start) {
+                if (counter === 0 && start) {
                     start();
                 }
 
@@ -2041,7 +2041,7 @@ function initwrapper(userDetails, newModSubs) {
                         reason = JSON.parse(jqXHR.responseText).reason || '';
                     }
 
-                    if (reason == 'PAGE_NOT_CREATED' || reason == 'WIKI_DISABLED') {
+                    if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
                         callback(TBUtils.NO_WIKI_PAGE);
                     } else {
                     // we don't know why it failed, we should not try to write to it.
@@ -2469,7 +2469,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.exportSettings = function (subreddit, callback) {
             let settingsObject = {};
             $(TBStorage.settings).each(function () {
-                if (this == 'Storage.settings') return; // don't backup the setting registry.
+                if (this === 'Storage.settings') return; // don't backup the setting registry.
 
                 let key = this.split('.'),
                     setting = TBStorage.getSetting(key[0], key[1], null);
@@ -2671,7 +2671,7 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         TBUtils.hasNoConfig = function (sub) {
-            return TBUtils.noConfig.indexOf(sub) != -1;
+            return TBUtils.noConfig.indexOf(sub) !== -1;
         };
 
         TBUtils.hasConfig = function (sub) {
@@ -3026,7 +3026,7 @@ function initwrapper(userDetails, newModSubs) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
 
                 // Custom FF nag for updates.
-                if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser == FIREFOX && TBUtils.isExtension) {
+                if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser === FIREFOX && TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
                         if (clicked) window.open(`http://toolbox-team.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
                     });
@@ -3100,7 +3100,7 @@ function initwrapper(userDetails, newModSubs) {
         }).fail(function(jqxhr, textStatus, error) {
             console.log(`getModSubs failed (${jqxhr.status}), ${textStatus}: ${error}`);
             console.log(jqxhr);
-            if (jqxhr.status == 504) {
+            if (jqxhr.status === 504) {
                 console.log('504 Timeout retrying request');
                 getModSubs(after, function(subs) {
                     return callback(modSubs.concat(subs));
@@ -3122,7 +3122,7 @@ function initwrapper(userDetails, newModSubs) {
         }).fail(function(jqxhr, textStatus, error) {
             console.log(`getUserDetails failed (${jqxhr.status}), ${textStatus}: ${error}`);
             console.log(jqxhr);
-            if (jqxhr.status == 504) {
+            if (jqxhr.status === 504) {
                 console.log('504 Timeout retrying request');
                 getUserDetails(function(details) {
                     return callback(details);

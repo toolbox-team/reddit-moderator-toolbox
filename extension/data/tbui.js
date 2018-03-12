@@ -229,7 +229,7 @@
             )
         )
         );
-        if (tabs.length == 1) {
+        if (tabs.length === 1) {
             $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
         }
@@ -264,7 +264,7 @@
                 });
 
                 // default first tab is active tab
-                if (i == 0) {
+                if (i === 0) {
                     $button.addClass('active');
                 }
 
@@ -275,7 +275,7 @@
                 $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
 
                 // default first tab is visible; hide others
-                if (i == 0) {
+                if (i === 0) {
                     $tab.show();
                 } else {
                     $tab.hide();
@@ -366,7 +366,7 @@
         // NOTE: Click handler binds should be attached to the parent element of the relevant object, not $(body).
         // $overlay.on('click', '.buttons .close', function () {});
 
-        if (tabs.length == 1) {
+        if (tabs.length === 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append( (single_footer ? single_footer : tabs[0].footer) ));
         } else if (tabs.length > 1) {
@@ -428,7 +428,7 @@
                     $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
                     let $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
-                    if (i == 0) {
+                    if (i === 0) {
                         $footer.show();
                     } else {
                         $footer.hide();
@@ -436,7 +436,7 @@
                 }
 
                 // default first tab is active = visible; hide others
-                if (i == 0) {
+                if (i === 0) {
                     $button.addClass('active');
 
                     $tab.show();
@@ -642,7 +642,7 @@
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
-            if (createOrDestroy && TBui.longLoadArray.length == 0) {
+            if (createOrDestroy && TBui.longLoadArray.length === 0) {
 
                 $('head').append(`<style id="tb-long-load-style">
                 .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
@@ -669,7 +669,7 @@
                 TBui.longLoadArray.push('load');
 
                 // if done and the only instance
-            } else if (!createOrDestroy && TBui.longLoadArray.length == 1) {
+            } else if (!createOrDestroy && TBui.longLoadArray.length === 1) {
                 $('head').find('#tb-long-load-style').remove();
                 $('body').find('#tb-loading').remove();
                 $('body').find('#tb-loading-stuff').remove();
@@ -693,7 +693,7 @@
         if (createOrDestroy !== undefined) {
 
             // if requested and the element is not present yet
-            if (createOrDestroy && TBui.longLoadArrayNonPersistent.length == 0) {
+            if (createOrDestroy && TBui.longLoadArrayNonPersistent.length === 0) {
 
                 $('head').append(`<style id="tb-long-load-style-non-persistent">
                 .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
@@ -710,7 +710,7 @@
                 TBui.longLoadArrayNonPersistent.push('load');
 
                 // if done and the only instance
-            } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length == 1) {
+            } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length === 1) {
                 $('head').find('#tb-long-load-style-non-persistent').remove();
                 $('body').find('#tb-loading-non-persistent').remove();
                 TBui.longLoadArrayNonPersistent.pop();

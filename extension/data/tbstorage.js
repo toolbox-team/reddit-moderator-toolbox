@@ -36,7 +36,7 @@ const domain = window.location.hostname.split('.')[0];
     }
 
     const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
-    if (r == true) {
+    if (r === true) {
         // Chrome, Edge en firefox webextensions.
         if (typeof (chrome) !== 'undefined') {
             chrome.storage.local.remove('tbsettings', function () {
@@ -409,7 +409,7 @@ function storagewrapper() {
 
             // If number of properties is different,
             // objects are not equivalent
-            if (aProps.length != bProps.length) {
+            if (aProps.length !== bProps.length) {
                 $.log(`length :${aProps.length} ${bProps.length}`);
                 return false;
             }

@@ -124,6 +124,29 @@ function usernotes() {
                 });
 
             });
+
+            // event based handling of author elements.
+            TB.listener.on('userHovercard', function(e) {
+
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const author = e.detail.data.user.username;
+                $target.addClass('ut-thing');
+                $target.attr('data-subreddit', subreddit);
+                $target.attr('data-author', author);
+
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        attachNoteTag($target, subreddit, author, {
+                            customText: 'Usernotes',
+                            customClass: 'tb-usernote-button-block'
+                        });
+                        foundSubreddit(subreddit);
+                        queueProcessSub(subreddit, $target);
+                    }
+                });
+
+            });
         }
 
         function run() {
@@ -143,7 +166,9 @@ function usernotes() {
                 }
 
                 var $tbAttrs = $thing.find('.tb-attr-note');
-                attachNoteTag($tbAttrs, subreddit, author);
+                attachNoteTag($tbAttrs, subreddit, author, {
+                    customText: 'attachNoteTag'
+                });
 
                 foundSubreddit(subreddit);
                 processSub(subreddit);
@@ -223,13 +248,15 @@ function usernotes() {
             self.endProfile('process-thing');
         }
 
-        function attachNoteTag($element, subreddit, author) {
+        function attachNoteTag($element, subreddit, author, options = {}) {
             if($element.find('.tb-usernote-button').length > 0) {
                 return;
             }
+
+            const usernoteDefaultText = options.customText ? options.customText : 'N';
             const $tag = $(`
-            <span title="View and add notes about this user for /r/${subreddit}" class="tb-usernote-button usernote-span-${subreddit}">
-                <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" >N</a>
+            <span title="View and add notes about this user for /r/${subreddit}" class="tb-usernote-button usernote-span-${subreddit} ${options.customClass ? options.customClass : ''}">
+                <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" data-default-text="${usernoteDefaultText}">${usernoteDefaultText}</a>
             </span>
             `);
 
@@ -320,18 +347,18 @@ function usernotes() {
                     $usertag = $thing.find(`.add-user-tag-${subreddit}`);
 
                 }
-                var isInNewModmailSidebar = $usertag.closest('.ThreadViewer__infobarContainer').length > 0;
 
                 // Only happens if you delete the last note.
-                if (u === undefined || u.notes.length < 1) {
+                const defaultButtonText = $usertag.attr('data-default-text'),
+                    currentText = $usertag.text();
+                if ((u === undefined || u.notes.length < 1) && currentText !== defaultButtonText) {
                     $usertag.css('color', '');
                     $usertag.empty();
-                    // Since there's more room in the sidebar, display a more descriptive label
-                    if (isInNewModmailSidebar) {
-                        $usertag.text('User Notes');
-                    } else {
-                        $usertag.text('N');
-                    }
+                    $usertag.text(defaultButtonText);
+
+                    self.endProfile('set-notes-process');
+                    return;
+                } else if (u === undefined || u.notes.length < 1) {
                     self.endProfile('set-notes-process');
                     return;
                 }
@@ -580,10 +607,12 @@ function usernotes() {
                 } else if($thing.attr('data-tb-type') === 'TBcommentAuthor') {
                     thingDetails = JSON.parse($thing.attr('data-tb-details'));
                     thingID = thingDetails.data.comment.id;
+                } else if($thing.attr('data-tb-type') === 'userHovercard') {
+                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                    thingID = thingDetails.data.contextId;
                 } else {
                     thingDetails = JSON.parse($thing.attr('data-tb-details'));
                     thingID = thingDetails.data.post.id;
-
                 }
 
                 TB.utils.getApiThingInfo(thingID, subreddit, true, function(info) {

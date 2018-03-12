@@ -1,15 +1,15 @@
 function modmacros() {
-    var self = new TB.Module('Mod Macros');
+    let self = new TB.Module('Mod Macros');
     self.shortname = 'ModMacros';
 
     self.settings['enabled']['default'] = true;
 
     self.init = function () {
-        var $body = $('body'),
+        const $body = $('body'),
             MACROS = 'TB-MACROS';
 
         function getConfig(sub, callback) {
-            if (TBUtils.noConfig.indexOf(sub) != -1) {
+            if (TBUtils.noConfig.indexOf(sub) !== -1) {
                 self.log('TBUtils.noConfig.indexOf(sub) != -1');
                 callback(false);
             }
@@ -49,13 +49,13 @@ function modmacros() {
 
         function populateSelect(selectClass, subreddit, config) {
             $(selectClass).each(function () {
-                var $select = $(this),
+                let $select = $(this),
                     sub = $select.attr('data-subreddit');
 
                 self.log($select);
                 self.log(`${sub} ${subreddit}`);
 
-                if (sub == subreddit) {
+                if (sub === subreddit) {
                     $(config).each(function (idx, item) {
                         $($select)
                             .append($('<option>', {
@@ -71,72 +71,9 @@ function modmacros() {
             });
         }
 
-        TB.utils.getModSubs(function () {
-            if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
-                self.log('getting config');
-                getConfig(TB.utils.post_site, function (success, config) {
-                // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-
-                        var $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
-                        var $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                            macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
-
-                        if ($tbUsertextButtons.length) {
-                            $tbUsertextButtons.append(macroButtonHtml);
-                        } else {
-                            $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
-                        }
-
-                        populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
-                    }
-                });
-            }
-        });
-
-        // add macro buttons after we click reply, if we're a mod.
-        $body.on('click', 'ul.buttons a', function () {
-            var $this = $(this);
-            if ($this.text() === 'reply') {
-
-                var $thing = $this.closest('.thing'),
-                    info = TB.utils.getThingInfo($thing, true);
-
-                // This is because reddit clones the top-level reply box for all reply boxes.
-                // We need to remove it before adding the new one, because the new one works differently.
-                // RES' @andytuba is a golden fucking god.
-                $thing.find('.tb-top-macro-select').remove();
-
-                // Don't add macro button twice.
-                $thing.find('.tb-macro-select').remove();
-
-                // are we a mod?
-                if (!info.subreddit) return;
-                self.log(info.subreddit);
-
-                // if we don't have a config, get it.  If it fails, return.
-                getConfig(info.subreddit, function (success, config) {
-                // if we're a mod, add macros to top level reply button.
-                    if (success && config.length > 0) {
-
-                        var $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
-                            macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
-
-                        if ($tbUsertextButtons.length) {
-                            $tbUsertextButtons.append(macroButtonHtml);
-                        } else {
-                            $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
-                        }
-
-                        populateSelect('.tb-macro-select', info.subreddit, config);
-                    }
-                });
-            }
-        });
-
         // Add macro button in new modmail
         function addNewMMMacro() {
-            var $thing = $body.find('.InfoBar'),
+            const $thing = $body.find('.InfoBar'),
                 info = TB.utils.getThingInfo($thing, true);
 
             // Don't add macro button twice.
@@ -151,7 +88,7 @@ function modmacros() {
             // if we're a mod, add macros to top level reply button.
                 if (success && config.length > 0) {
 
-                    var macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                    const macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
                     $body.find('.ThreadViewerReplyForm__replyOptions').before(`<div class="tb-usertext-buttons tb-macro-newmm">${macroButtonHtml}</div>`);
 
                     populateSelect('.tb-macro-select', info.subreddit, config);
@@ -176,7 +113,7 @@ function modmacros() {
         function editMacro(dropdown, info, macro, topLevel) {
         // get some placement variables
 
-            var $usertext = dropdown.closest('.usertext-edit'),
+            let $usertext = dropdown.closest('.usertext-edit'),
                 comment = unescape(macro.text),
                 remove = macro.remove,
                 approve = macro.approve,
@@ -242,16 +179,16 @@ function modmacros() {
             // replace token.
             comment = TB.utils.replaceTokens(info, comment);
 
-            var offset = $usertext.offset(),
+            const offset = $usertext.offset(),
                 offsetLeft = offset.left,
                 offsetTop = offset.top,
                 minHeight = $usertext.outerHeight(),
                 editMinWidth = $usertext.outerWidth(),
                 editMinHeight = minHeight - 74;
 
-            var title = dropdown.find('option:selected').text();
+            const title = dropdown.find('option:selected').text();
             self.log(title);
-            var $macroPopup = TB.ui.popup(
+            const $macroPopup = TB.ui.popup(
                 `Mod Macro: ${title}`,
                 [
                     {
@@ -284,7 +221,7 @@ function modmacros() {
             });
 
             $macroPopup.on('click', `.macro-send-${info.id}`, function () {
-                var $currentMacroPopup = $(this).closest('.macro-popup'),
+                const $currentMacroPopup = $(this).closest('.macro-popup'),
                     $selectElement = $body.find(`#macro-dropdown-${info.id}`),
                     editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
@@ -404,7 +341,7 @@ function modmacros() {
 
         $body.on('click', '.macro-popup .close', function () {
 
-            var $currentMacroPopup = $(this).closest('.macro-popup'),
+            const $currentMacroPopup = $(this).closest('.macro-popup'),
                 infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
                 $selectElement = $body.find(`#macro-dropdown-${infoId}`);
 
@@ -415,7 +352,7 @@ function modmacros() {
 
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
 
-            var $this = $(this),
+            let $this = $(this),
                 sub = $this.closest('select').attr('data-subreddit'),
                 index = $this.val(),
                 topLevel = $this.hasClass('tb-top-macro-select'),
@@ -438,7 +375,7 @@ function modmacros() {
 
             getConfig(sub, function (success, config) {
                 if (success && config.length > 0) {
-                    var macro = config[index];
+                    const macro = config[index];
 
                     // add unique id to the dropdown
                     $this.attr('id', `macro-dropdown-${info.id}`);

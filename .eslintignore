@@ -22,7 +22,6 @@ node_modules/*
 /extension/data/modules/banlist.js
 /extension/data/modules/betterbuttons.js
 /extension/data/modules/domaintagger.js
-/extension/data/modules/macro.js
 /extension/data/modules/metricstab.js
 /extension/data/modules/modmailpro.js
 /extension/data/modules/modmatrix.js

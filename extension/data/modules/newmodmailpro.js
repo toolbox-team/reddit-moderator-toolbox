@@ -1,5 +1,5 @@
 function newmodmailpro() {
-    var self = new TB.Module('New Mod Mail Pro');
+    let self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
 
     ////Default settings
@@ -40,6 +40,8 @@ function newmodmailpro() {
 
     let activeSearch = false,
         searchAdded = false;
+
+    const $body = $('body');
 
     // Function to search through archive.
     function searchAndScroll(searchString, $threadPreviewerThreads, $searchResults, count) {
@@ -169,12 +171,10 @@ function newmodmailpro() {
     // All stuff we want to do when we are on new modmail
     if (TBUtils.isNewModmail) {
         // Add a class to body
-        var $body = $('body');
-
         $body.addClass('tb-new-modmail');
 
         // ready some variables.
-        var modMailNightmode = self.setting('modmailnightmode'),
+        const modMailNightmode = self.setting('modmailnightmode'),
             lastReplyTypeCheck = self.setting('lastreplytypecheck'),
             searchArchive = self.setting('searcharchive');
 
@@ -237,11 +237,11 @@ function newmodmailpro() {
     if (!TBUtils.isNewModmail) {
 
         // ready some variables.
-        var modmailLink = self.setting('modmaillink'),
+        const modmailLink = self.setting('modmaillink'),
             openMailTab = self.setting('openmailtab');
 
         // Let's mess around with the link to modmail.
-        var $newModmailLinkElement = $('#new_modmail'),
+        const $newModmailLinkElement = $('#new_modmail'),
             newModmailBaseUrl = 'https://mod.reddit.com/mail/';
 
         // Open modmail in a new tab if the option is selected

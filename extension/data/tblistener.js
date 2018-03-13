@@ -73,7 +73,9 @@
         start() {
             if (!this.started) {
                 const loadedEvent = new CustomEvent('TBListenerLoaded');
-                const readyEvent = new Event('reddit.ready');
+                const readyEvent = new CustomEvent('reddit.ready', { detail: {
+                    name: 'toolbox' }
+                });
 
                 document.addEventListener('reddit', this.boundFunc, true);
                 document.addEventListener('tbReddit', this.boundFunc, true);
@@ -129,20 +131,27 @@
          */
         listener(event) {
             const eventType = event.detail.type;
+            const target = event.target.querySelector('[data-name="toolbox"]');
+
             // We already have seen this attribute and do not need duplicates.
-            if(event.target.hasAttribute('data-tb-details')) {
+            if(target.hasAttribute('data-tb-details')) {
                 return;
             }
 
             const detailJSON = JSON.stringify(event.detail);
-            event.target.setAttribute('data-tb-details', detailJSON);
-            event.target.setAttribute('data-tb-type', event.detail.type);
-            event.target.classList.add('tb-frontend-container');
+            target.setAttribute('data-tb-details', detailJSON);
+            target.setAttribute('data-tb-type', event.detail.type);
+            target.classList.add('tb-frontend-container');
+
+            const internalEvent = {
+                detail: event.detail,
+                target,
+            };
 
             // See if there's any registered listeners listening for eventType
             if (Array.isArray(this.listeners[eventType])) {
                 for (let listener of this.listeners[eventType]) {
-                    this.queue.push(listener.bind(event.target, event));
+                    this.queue.push(listener.bind(target, internalEvent));
                 }
             }
 
@@ -151,7 +160,7 @@
                 for (let alias of listenerAliases[eventType]) {
                     if (Array.isArray(this.listeners[alias])) {
                         for (let listener of this.listeners[alias]) {
-                            this.queue.push(listener.bind(event.target, event));
+                            this.queue.push(listener.bind(target, internalEvent));
                         }
                     }
                 }
@@ -159,7 +168,7 @@
 
             // Run the debug function on the queue, if there's any
             if (this.debugFunc) {
-                this.queue.push(this.debugFunc.bind(event.target, event));
+                this.queue.push(this.debugFunc.bind(target, internalEvent));
             }
 
             // Flush the queue

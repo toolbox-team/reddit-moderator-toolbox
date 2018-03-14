@@ -890,7 +890,7 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] {
     display: block;
 }
 
-
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bracket-button.tb-history-button,
 body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bracket-button {
     display: block;
     width: -moz-max-content;

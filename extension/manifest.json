@@ -98,6 +98,7 @@
                 "data/modules/modbar.js",
                 "data/modules/config.js",
                 "data/modules/modbutton.js",
+                "data/modules/general.js",
                 "data/modules/notifier.js",
                 "data/modules/usernotes.js",
                 "data/modules/comment.js",

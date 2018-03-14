@@ -31,6 +31,12 @@ function profilepro() {
         'hidden': true
     });
 
+    self.register_setting('onlyshowInhover', {
+        'type': 'boolean',
+        'default': TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+        'hidden': true
+    });
+
     TB.register_module(self);
 
     self.init = function () {
@@ -41,7 +47,8 @@ function profilepro() {
         const alwaysTbProfile = self.setting('alwaysTbProfile'),
             directProfileToLegacy = self.setting('directProfileToLegacy'),
             subredditColor = self.setting('subredditColor'),
-            profileButtonEnabled = self.setting('profileButtonEnabled');
+            profileButtonEnabled = self.setting('profileButtonEnabled'),
+            onlyshowInhover = self.setting('onlyshowInhover');
 
         if(directProfileToLegacy) {
             $body.on('click', 'a', function(event) {
@@ -684,7 +691,7 @@ function profilepro() {
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
 
-                if (!$target.closest('.tb-profile-overlay').length) {
+                if (!$target.closest('.tb-profile-overlay').length && !onlyshowInhover) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
                     TBUtils.getModSubs(function () {
@@ -694,8 +701,23 @@ function profilepro() {
                         }
                     });
                 }
+            });
+
+            TB.listener.on('userHovercard', function(e) {
+
+                const $target = $(e.target);
+                const subreddit = e.detail.data.subreddit.name;
+                const author = e.detail.data.user.username;
+
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
+                        $target.append(profileButton);
+                    }
+                });
 
             });
+
         }
 
         $body.on('click', '#tb-user-profile, .tb-user-profile', function() {

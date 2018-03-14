@@ -31,6 +31,12 @@ function historybutton() {
         'title': 'Number of comments to retrieve per user history'
     });
 
+    self.register_setting('onlyshowInhover', {
+        'type': 'boolean',
+        'default': TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+        'hidden': true
+    });
+
     /**
  * Attach an [H] button to all users
  */
@@ -44,6 +50,7 @@ function historybutton() {
     self.run = function () {
         self.log('run');
         let $body = $('body');
+        const onlyshowInhover = self.setting('onlyshowInhover');
         if ($body.find('.ThreadViewer').length > 0) {
 
             $body.find('.Thread__message').not('.tb-history').each(function () {
@@ -63,11 +70,12 @@ function historybutton() {
             $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
 
         } else {
-
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
-                const author = e.detail.data.author;
-                self.attachHistoryButton($target, author);
+                if ($target.closest('.tb-thing').length || !onlyshowInhover) {
+                    const author = e.detail.data.author;
+                    self.attachHistoryButton($target, author);
+                }
             });
 
             TB.listener.on('userHovercard', function(e) {

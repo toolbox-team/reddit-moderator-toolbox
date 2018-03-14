@@ -852,9 +852,11 @@
             TBUtils.forEachChunkedDynamic($comments, function(value) {
                 const $element = $(value);
                 const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
+                $jsApiPlaceholderComment.append('<span data-name="toolbox">');
                 const jsApiPlaceholderComment = $jsApiPlaceholderComment[0];
                 const $jsApiPlaceholderAuthor = $element.find('> .tb-comment-entry > .tb-tagline .tb-jsapi-author-container');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
+                $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const commentAuthor = $element.attr('data-comment-author'),
                     postID = $element.attr('data-comment-post-id'),
                     commentID = $element.attr('data-comment-id'),
@@ -911,8 +913,10 @@
             TBUtils.forEachChunkedDynamic($submissions, function(value) {
                 const $element = $(value);
                 const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
+                $jsApiPlaceholderSubmission.append('<span data-name="toolbox">');
                 const jsApiPlaceholderSubmission = $jsApiPlaceholderSubmission[0];
                 const $jsApiPlaceholderAuthor = $element.find('.tb-jsapi-author-container');
+                $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
                 const submissionAuthor = $element.attr('data-submission-author'),

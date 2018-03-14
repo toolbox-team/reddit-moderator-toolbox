@@ -28,6 +28,11 @@ function usernotes() {
         'title': 'Max characters to display in current note tag (excluding date)'
     });
 
+    self.register_setting('onlyshowInhover', {
+        'type': 'boolean',
+        'default': TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+        'hidden': true
+    });
     self.init = function () {
         self.usernotesManager();
         self.usernotes();
@@ -104,26 +109,29 @@ function usernotes() {
         }
 
         function addTBListener() {
+            const onlyshowInhover = self.setting('onlyshowInhover');
 
             // event based handling of author elements.
             TB.listener.on('author', function(e) {
 
                 const $target = $(e.target);
-                const subreddit = e.detail.data.subreddit.name;
-                const author = e.detail.data.author;
-                $target.addClass('ut-thing');
-                $target.attr('data-subreddit', subreddit);
-                $target.attr('data-author', author);
+                if ($target.closest('.tb-thing').length || !onlyshowInhover) {
+                    const subreddit = e.detail.data.subreddit.name;
+                    const author = e.detail.data.author;
+                    $target.addClass('ut-thing');
+                    $target.attr('data-subreddit', subreddit);
+                    $target.attr('data-author', author);
 
-                TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
-                        attachNoteTag($target, subreddit, author);
-                        foundSubreddit(subreddit);
-                        queueProcessSub(subreddit, $target);
-                    }
-                });
-
+                    TBUtils.getModSubs(function () {
+                        if(TBUtils.modsSub(subreddit)) {
+                            attachNoteTag($target, subreddit, author);
+                            foundSubreddit(subreddit);
+                            queueProcessSub(subreddit, $target);
+                        }
+                    });
+                }
             });
+
 
             // event based handling of author elements.
             TB.listener.on('userHovercard', function(e) {

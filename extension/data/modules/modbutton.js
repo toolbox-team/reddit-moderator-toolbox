@@ -30,6 +30,12 @@ function modbutton() {
         'hidden': !self.setting('globalButton')
     });
 
+    self.register_setting('onlyshowInhover', {
+        'type': 'boolean',
+        'default': TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+        'hidden': true
+    });
+
     // private storage
     self.register_setting('lastAction', {
         'type': 'text',
@@ -57,23 +63,28 @@ function modbutton() {
         if (TB.utils.mySubs.length < 1) {
             return;
         }
+        const onlyshowInhover = self.setting('onlyshowInhover');
+
         TB.listener.on('author', function(e) {
             const $target = $(e.target);
-            const subreddit = e.detail.data.subreddit.name;
-            const author = e.detail.data.author;
+            if ($target.closest('.tb-thing').length || !onlyshowInhover) {
 
-            let parentID;
-            if(e.detail.data.comment) {
-                parentID = e.detail.data.comment.id;
-            } else if(e.detail.data.post) {
-                parentID = e.detail.data.post.id;
-            } else {
-                parentID = 'unknown';
+                const subreddit = e.detail.data.subreddit.name;
+                const author = e.detail.data.author;
+
+                let parentID;
+                if(e.detail.data.comment) {
+                    parentID = e.detail.data.comment.id;
+                } else if(e.detail.data.post) {
+                    parentID = e.detail.data.post.id;
+                } else {
+                    parentID = 'unknown';
+                }
+
+                $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
             }
-
-            $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
-
         });
+
 
         // event based handling of author elements.
         TB.listener.on('userHovercard', function(e) {

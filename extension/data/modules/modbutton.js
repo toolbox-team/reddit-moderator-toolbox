@@ -74,11 +74,23 @@ function modbutton() {
             $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">${self.buttonName}</a>`);
 
         });
+
+        // event based handling of author elements.
+        TB.listener.on('userHovercard', function(e) {
+
+            const $target = $(e.target);
+            const subreddit = e.detail.data.subreddit.name;
+            const author = e.detail.data.user.username;
+            const parentID = e.detail.data.contextId;
+
+            $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">Mod Button</a>`);
+
+        });
     };
 
     /**
- *  updates the current savedsubs' listings in the mod button
- */
+     *  updates the current savedsubs' listings in the mod button
+     */
     self.updateSavedSubs = function () {
     //
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls

@@ -34,6 +34,13 @@ function historybutton() {
     /**
  * Attach an [H] button to all users
  */
+
+    self.attachHistoryButton = function($target, author, buttonText = 'H') {
+
+        const UserButtonHTML = `<span class="tb-history-button" data-author="${author}"><a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user's submission and comment history">${buttonText}</a></span>`;
+
+        $target.append(UserButtonHTML);
+    };
     self.run = function () {
         self.log('run');
         let $body = $('body');
@@ -56,14 +63,17 @@ function historybutton() {
             $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
 
         } else {
-            self.log('alpha reddit');
+
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
                 const author = e.detail.data.author;
-                self.log(`listener author: ${author}`);
-                const UserButtonHTML = `<span class="tb-history-button" data-author="${author}"><a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user's submission and comment history">H</a></span>`;
+                self.attachHistoryButton($target, author);
+            });
 
-                $target.append(UserButtonHTML);
+            TB.listener.on('userHovercard', function(e) {
+                const $target = $(e.target);
+                const author = e.detail.data.user.username;
+                self.attachHistoryButton($target, author, 'User History');
             });
         }
 

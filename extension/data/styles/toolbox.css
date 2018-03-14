@@ -810,6 +810,7 @@ body.mod-toolbox-rd .mod-popup .tb-action-button.global-button {
 ========================
 */
 
+
 /*
 ------------
     General buttons, are used for blending in with reddit but still making it clear they are there for toolbox functionality.
@@ -879,6 +880,26 @@ body.mod-toolbox-rd .tb-bracket-button .tb-icons {
     font-size: 15px;
     display: inline-block;
     vertical-align: top;
+}
+
+/* handle bracket buttons within the hovercard api container */
+
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] {
+    margin: 3px 0 3px 8px;
+    padding: 3px;
+    display: block;
+}
+
+
+body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bracket-button {
+    display: block;
+    width: -moz-max-content;
+    width: -webkit-max-content;
+    width: max-content;
+    margin-bottom: 5px;
+    font-size: 12px;
+    height: 17px;
+    line-height: 17px;
 }
 
 /*

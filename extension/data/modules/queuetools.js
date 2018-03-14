@@ -54,8 +54,30 @@ function queuetools() {
             //expandReports = self.setting('expandReports');
 
         // If the queue creature element is on page it will fade it out first and then remove the element.
-        function fadeOutCreature() {
-            $body.find('#queueCreatureWrapper').fadeOut(200, function() { $(this).remove(); });
+        function createCreature() {
+            // Creature time for real!
+            const $redditQueueCreature = $body.find('div:contains("The queue is clean!")');
+            const gotQueueCreature = $redditQueueCreature.length;
+            if(gotQueueCreature) {
+                const $creatureParent = $redditQueueCreature.parents().eq(0);
+                const $queueCreature = $('<div id="queueCreature"></div>');
+                self.log(queueCreature);
+                if (queueCreature === 'puppy') {
+                    $queueCreature.addClass('tb-puppy');
+                } else if (queueCreature === 'kitteh') {
+                    $queueCreature.addClass('tb-kitteh');
+                } else if (queueCreature === '/r/babyelephantgifs') {
+                    $queueCreature.addClass('tb-begifs');
+                } else if (queueCreature === '/r/spiderbros') {
+                    $queueCreature.addClass('tb-spiders');
+                } else if (queueCreature === 'piggy') {
+                    // https://www.flickr.com/photos/michaelcr/5797087585
+                    $queueCreature.addClass('tb-piggy');
+                }
+
+                $creatureParent.html($queueCreature);
+                //$queueCreature.siblings().hide();
+            }
         }
 
         // Activate on queue pages.
@@ -69,70 +91,14 @@ function queuetools() {
             // Queue creature
             // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
             if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
-                // Well maybe, let's wait a little bit.
-                setTimeout(function () {
-                    // Creature time for real!
-                    const gotQueue = $body.find('.tb-frontend-container').length;
-                    if(!gotQueue) {
 
-                        let $noResults = $body.find('#queueCreatureWrapper');
-                        if(!$noResults.length) {
-                            $noResults = $('<div id="queueCreatureWrapper"><div id="queueCreature"></div></div>').appendTo($body);
-                        }
-                        $noResults.fadeIn('200');
-                        const $queueCreature = $noResults.find('#queueCreature');
-                        self.log(queueCreature);
-                        if (queueCreature === 'puppy') {
-                            $queueCreature.addClass('tb-puppy');
-                        } else if (queueCreature === 'kitteh') {
-                            $queueCreature.addClass('tb-kitteh');
-                        } else if (queueCreature === '/r/babyelephantgifs') {
-                            $queueCreature.addClass('tb-begifs');
-                        } else if (queueCreature === '/r/spiderbros') {
-                            $queueCreature.addClass('tb-spiders');
-                        } else if (queueCreature === 'piggy') {
-                            // https://www.flickr.com/photos/michaelcr/5797087585
-                            $queueCreature.addClass('tb-piggy');
-                        }
-                    } else {
-                        fadeOutCreature();
-                    }
+                // Let's try to replace the imposter creature with our own.
+                createCreature();
+                // To be sure let's wait a little bit and try again.
+                setTimeout(function () {
+                    createCreature();
                 }, 500);
 
-                let qCreatureObserver = new MutationObserver(function (mutations) {
-
-                    mutations.forEach(function (mutation) {
-                        console.log(mutation);
-                        let $target = $(mutation.target);
-
-                        if ($target.find('.tb-frontend-container').length > 0) {
-                            fadeOutCreature();
-                        }
-                        if ($target.is('.tb-frontend-container')) {
-                            fadeOutCreature();
-                        }
-                    });
-                });
-
-                // configuration of the observer:
-                // We specifically want all child elements but nothing else.
-                const qCreatureConfig = {
-                    attributes: false,
-                    childList: true,
-                    characterData: false,
-                    subtree: true
-                };
-
-                const qCreatureTarget = document.querySelector('body');
-                // pass in the target node, as well as the observer options
-                qCreatureObserver.observe(qCreatureTarget, qCreatureConfig);
-
-                // Wait a bit for dom changes to occur and then disconnect it again.
-                setTimeout(function () {
-                    qCreatureObserver.disconnect();
-                }, 10000);
-            } else {
-                fadeOutCreature();
             }
 
         });

@@ -10,22 +10,18 @@
   }
 
 .mod-toolbox-rd .tb-kitteh {
-    display: block;
+    display: inline-block;
     width: 330px;
     height: 351px;
-    margin-left: calc(100vw / 2 - 350px);;
     background-image: url("https://b.thumbs.redditmedia.com/7uBqTsML9Y-sksmfvCrKrHvoUANP6ZCOw9UOVIV6aXQ.png");
     background-repeat: no-repeat;
     background-position: center center;
-    text-indent: -1000px;
-    overflow: hidden;
 }
 
 .mod-toolbox-rd .tb-puppy {
-    display: block;
+    display: inline-block;
     width: 360px;
     height: 460px;
-    margin-left: calc(100vw / 2 - 350px);;
     background-image: url("https://a.thumbs.redditmedia.com/L8eKqhvo2mcjB0E8t87nOlu1_oMoSQ8F8LzqbFHumK8.png");
     background-repeat: no-repeat;
     background-position: center center;
@@ -34,10 +30,9 @@
 }
 
 .mod-toolbox-rd .tb-begifs {
-    display: block;
+    display: inline-block;
     width: 360px;
     height: 460px;
-    margin-left: calc(100vw / 2 - 350px);;
     background-image: url("https://toolbox-team.github.io/reddit-moderator-toolbox/hosted_images/begifs.gif");
     background-repeat: no-repeat;
     background-position: center center;
@@ -46,27 +41,21 @@
 }
 
 .mod-toolbox-rd .tb-spiders {
-    display: block;
+    display: inline-block;
     width: 360px;
     height: 460px;
-    margin-left: calc(100vw / 2 - 350px);;
     background-image: url("https://b.thumbs.redditmedia.com/AgVm8q7yNxjcklDntkpH4hc6UoYrBUcwU8SXcZWgBJA.png");
     background-repeat: no-repeat;
     background-position: center center;
-    text-indent: -1000px;
-    overflow: hidden;
 }
 
 .mod-toolbox-rd .tb-piggy {
-    display: block;
+    display: inline-block;
     width: 360px;
     height: 460px;
-    margin-left: calc(100vw / 2 - 350px);;
     background-image: url("https://b.thumbs.redditmedia.com/FMheFSik2oy58sq7qWASounTkW2H0u0F0gtGorsu3cc.png");
     background-repeat: no-repeat;
     background-position: center center;
-    text-indent: -1000px;
-    overflow: hidden;
 }
 
 .mod-toolbox-rd .tb-begifs:after {

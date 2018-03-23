@@ -321,6 +321,10 @@
             const scrollTop = $overlay.scrollTop();
             positions.topPosition = positions.topPosition + scrollTop;
         }
+        
+		if (positions.topPosition < 0) {
+            positions.topPosition = 5;
+        }
 
         return positions;
     };

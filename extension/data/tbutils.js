@@ -52,15 +52,15 @@ function initwrapper(userDetails, newModSubs) {
          * @var {string} baseDomain
          * @memberof TBUtils
          * */
-        TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'alpha.reddit.com') ? 'https://www.reddit.com' : `https://${window.location.hostname}`);
+        TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com') ? 'https://www.reddit.com' : `https://${window.location.hostname}`);
 
         /**
          * Pretty much as the name suggests
          * @var {string} tempBaseDomain
          * @memberof TBUtils
-         * @todo Once the alpha is no longer alpha switch all instances that use.
+         * @todo Once the redesign is no longer alpha/beta switch all instances that use this.
          * */
-        TBUtils.tempBaseDomain = window.location.hostname === 'alpha.reddit.com' ? 'https://alpha.reddit.com' : 'https://www.reddit.com';
+        TBUtils.tempBaseDomain = window.location.hostname === 'new.reddit.com' ? 'https://new.reddit.com' : 'https://www.reddit.com';
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
             ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
@@ -2491,7 +2491,7 @@ function initwrapper(userDetails, newModSubs) {
                     return;
                 }
 
-                if (TBUtils.domain !== 'alpha' && TBUtils.domain !== 'www') {
+                if (TBUtils.domain !== 'new' && TBUtils.domain !== 'www') {
                     TB.ui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`, TB.ui.FEEDBACK_NEGATIVE);
                     $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
                     return;

@@ -58,7 +58,7 @@ const domain = window.location.hostname.split('.')[0];
 
 function storagewrapper() {
     (function (TBStorage) {
-        // Check if we are logged in and for now if the domain is the alpha test domain
+        // Check if we are logged in and for now if the domain is the redesign test domain
 
         // Disabled for new modmail until we can sort out conflicts with classic Toolboxv4.
         //if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return;
@@ -74,7 +74,7 @@ function storagewrapper() {
 
         $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
 
-        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'alpha' || TBStorage.domain === 'mod' || TBStorage.domain === 'www');
+        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'new' || TBStorage.domain === 'mod' || TBStorage.domain === 'www');
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
         TBStorage.browsers = {

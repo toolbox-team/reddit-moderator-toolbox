@@ -382,7 +382,7 @@ function tbmodule() {
                 }
 
                 // TODO: Change back to www after alpha
-                if (TB.storage.domain !== 'alpha' && TB.storage.domain !== 'www') {
+                if (TB.storage.domain !== 'new' && TB.storage.domain !== 'www') {
                     $.log('invalid export domain');
                     TB.ui.textFeedback('Toolbox can only backup/restore settings from www.reddit.com', TB.ui.FEEDBACK_NEGATIVE);
                     return;

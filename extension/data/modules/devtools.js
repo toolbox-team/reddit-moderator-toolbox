@@ -33,14 +33,12 @@ function devtools() {
             console.log(e);
             const $target = $(e.target);
             $target.append(`
-            <span class="tb-bracket-button tb-show-api-info" data-json="${TBUtils.escapeHTML(JSON.stringify(e.detail, null, '\t'))}">
+            <span class="tb-bracket-button tb-show-api-info">
                 api info
             </span>
             `);
             $target.on('click', '.tb-show-api-info', function(event) {
-                const jsonData = TBUtils.escapeHTML($(this).attr('data-json'));
-                console.log(jsonData);
-                const $pasteContent = $(`<pre class="tb-api-info"><code>${jsonData}</code></pre>`);
+                const $pasteContent = $(`<pre class="tb-api-info"><code>${TBUtils.escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
                 // Prepare for the popup.
                 let leftPosition;
                 if (document.documentElement.clientWidth - event.pageX < 400) {

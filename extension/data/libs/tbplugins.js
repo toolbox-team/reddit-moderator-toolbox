@@ -94,7 +94,7 @@
         function innerHighlight(node, pat, ignore) {
             var skip = 0;
             if (node.nodeType == 3) {
-                var isPatternArray = $.isArray(pat);
+                var isPatternArray = Array.isArray(pat);
                 if (!isPatternArray) {
                     pat = [pat];
                 }
@@ -358,7 +358,7 @@
       var years = days / 365;
 
       function substitute(stringOrFunction, number) {
-        var string = $.isFunction(stringOrFunction) ? stringOrFunction(number, distanceMillis) : stringOrFunction;
+        var string = typeof stringOrFunction === "function" ? stringOrFunction(number, distanceMillis) : stringOrFunction;
         var value = ($l.numbers && $l.numbers[number]) || number;
         return string.replace(/%d/i, value);
       }

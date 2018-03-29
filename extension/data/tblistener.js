@@ -138,8 +138,9 @@
                 return;
             }
 
-            const detailJSON = JSON.stringify(event.detail);
-            target.setAttribute('data-tb-details', detailJSON);
+            const $target = $(target);
+            $target.data('tb-details', event.detail);
+            $target.data('tb-type', event.detail.type);
             target.setAttribute('data-tb-type', event.detail.type);
             target.classList.add('tb-frontend-container');
 

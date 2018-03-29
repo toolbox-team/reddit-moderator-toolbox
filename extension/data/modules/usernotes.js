@@ -146,8 +146,7 @@ function usernotes() {
                 TBUtils.getModSubs(function () {
                     if(TBUtils.modsSub(subreddit)) {
                         attachNoteTag($target, subreddit, author, {
-                            customText: 'Usernotes',
-                            customClass: 'tb-usernote-button-block'
+                            customText: 'Usernotes'
                         });
                         foundSubreddit(subreddit);
                         queueProcessSub(subreddit, $target);
@@ -263,9 +262,7 @@ function usernotes() {
 
             const usernoteDefaultText = options.customText ? options.customText : 'N';
             const $tag = $(`
-            <span title="View and add notes about this user for /r/${subreddit}" class="tb-usernote-button usernote-span-${subreddit} ${options.customClass ? options.customClass : ''}">
-                <a href="javascript:;" id="add-user-tag" class="tb-bracket-button add-user-tag-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" data-default-text="${usernoteDefaultText}">${usernoteDefaultText}</a>
-            </span>
+                <a href="javascript:;" id="add-user-tag" class="tb-bracket-button tb-usernote-button add-usernote-${subreddit}" data-author="${author}" data-subreddit="${subreddit}" data-default-text="${usernoteDefaultText}">${usernoteDefaultText}</a>
             `);
 
             $element.append($tag);
@@ -290,7 +287,7 @@ function usernotes() {
                 }
                 if (!isNotesValidVersion(notes)) {
                 // Remove the option to add notes
-                    $(`.usernote-span-${subreddit}`).remove();
+                    $(`.add-usernote-${subreddit}`).remove();
 
                     // Alert the user
                     var msg = notes.ver > TBUtils.notesMaxSchema ?
@@ -348,11 +345,11 @@ function usernotes() {
 
                 var $usertag;
                 if (TBUtils.isEditUserPage) {
-                    $usertag = $thing.parent().find(`.add-user-tag-${subreddit}`);
+                    $usertag = $thing.parent().find(`.add-usernote-${subreddit}`);
 
                 }
                 else {
-                    $usertag = $thing.find(`.add-user-tag-${subreddit}`);
+                    $usertag = $thing.find(`.add-usernote-${subreddit}`);
 
                 }
 
@@ -602,24 +599,24 @@ function usernotes() {
 
                 // Temp fix for commentAuthor not having the comment id in the front end api info.
                 // TODO: fix this once the api returns this info.
-                if($thing.attr('data-tb-type') === 'commentAuthor') {
+                if($thing.data('tb-type') === 'commentAuthor') {
                     const $thingSibling = $thing.siblings('.tb-frontend-container[data-tb-type="comment"]');
                     if(!$thingSibling.length) {
                         disableLink = true;
                         createUserPopup(subreddit, user, link, disableLink, e);
                         return;
                     }
-                    thingDetails = JSON.parse($thingSibling.attr('data-tb-details'));
+                    thingDetails = $thingSibling.data('tb-details');
                     thingID = thingDetails.data.id;
                 // Assume post for now.
-                } else if($thing.attr('data-tb-type') === 'TBcommentAuthor') {
-                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                } else if($thing.data('tb-type') === 'TBcommentAuthor') {
+                    thingDetails = $thing.data('tb-details');
                     thingID = thingDetails.data.comment.id;
-                } else if($thing.attr('data-tb-type') === 'userHovercard') {
-                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                } else if($thing.data('tb-type') === 'userHovercard') {
+                    thingDetails = $thing.data('tb-details');
                     thingID = thingDetails.data.contextId;
                 } else {
-                    thingDetails = JSON.parse($thing.attr('data-tb-details'));
+                    thingDetails = $thing.data('tb-details');
                     thingID = thingDetails.data.post.id;
                 }
 

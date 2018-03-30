@@ -180,7 +180,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.toolboxVersion = `${manifest.version}${(betaRelease) ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
-        TBUtils.releaseName = 'Alpha Aardvark';
+        TBUtils.releaseName = 'New Narwhal';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;

@@ -132,7 +132,6 @@ function usernotes() {
                 }
             });
 
-
             // event based handling of author elements.
             TB.listener.on('userHovercard', function(e) {
 
@@ -174,7 +173,7 @@ function usernotes() {
 
                 var $tbAttrs = $thing.find('.tb-attr-note');
                 attachNoteTag($tbAttrs, subreddit, author, {
-                    customText: 'attachNoteTag'
+                    customText: 'Usernotes'
                 });
 
                 foundSubreddit(subreddit);

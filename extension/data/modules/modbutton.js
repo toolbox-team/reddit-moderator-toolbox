@@ -85,7 +85,6 @@ function modbutton() {
             }
         });
 
-
         // event based handling of author elements.
         TB.listener.on('userHovercard', function(e) {
 

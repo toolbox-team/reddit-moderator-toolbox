@@ -134,7 +134,7 @@
             const target = event.target.querySelector('[data-name="toolbox"]');
 
             // We already have seen this attribute and do not need duplicates.
-            if(target.hasAttribute('data-tb-details')) {
+            if(target.classList.contains('tb-frontend-container')) {
                 return;
             }
 

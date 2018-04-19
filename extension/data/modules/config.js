@@ -832,7 +832,7 @@ function tbconfig() {
         });
 
         $body.on('click', '#add-usernote-type', function () {
-            appendUsernoteType('', '');
+            appendUsernoteType('', '', 'ALICEBLUE');  //yay, magic strings!
         });
 
         $body.on('keyup', '#tb-config-usernote-type-list .name', function () {

@@ -1,3 +1,51 @@
+// We store notification meta data here for later use.
+let notificationData = {};
+
+// Send notifications
+function notification(title, body, baseDomain, url, modHash, markreadid) {
+    // send the notification.
+    chrome.notifications.create({
+        'type' : 'basic',
+        'iconUrl': chrome.runtime.getURL('data/images/icon48.png'),
+        'title': title,
+        'message': body
+    }, function(notificationID) {
+
+        // Store meta data
+        notificationData[notificationID] = {
+            'url': url,
+            'modHash': modHash,
+            'markreadid': markreadid,
+            'baseDomain': baseDomain
+        };
+    });
+}
+
+// Handle clicking on notifications.
+chrome.notifications.onClicked.addListener(function(notificationId) {
+
+    // Mark as read if needed.
+    if (notificationData[notificationId].markreadid) {
+        $.post(`https://www.reddit.com/api/read_message`, {
+            id: notificationData[notificationId].markreadid,
+            uh: notificationData[notificationId].modHash,
+            api_type: 'json'
+        });
+    }
+
+    // Open up in new tab.
+    chrome.tabs.create({
+        url: notificationData[notificationId].baseDomain + notificationData[notificationId].url
+    });
+    // Notification no longer needed, clear it.
+    chrome.notifications.clear(notificationId);
+});
+
+chrome.notifications.onClosed.addListener(function(notificationId) {
+    // Meta data will not be used anymore. Clear.
+    delete notificationData[notificationId];
+});
+
 function getCookie(tries, callback) {
     chrome.cookies.get({url: 'https://www.reddit.com', name: 'token'}, function(rawCookie) {
 
@@ -31,12 +79,11 @@ function getCookie(tries, callback) {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-
+        console.log(request.action);
         console.log(request);
 
         // Request to reload the extension. Let's do so.
-        if( request.action === 'tb-reload' ) {
-            console.log('reloading');
+        if(request.action === 'tb-reload') {
             chrome.runtime.reload();
             console.log('reloaded');
             sendResponse();
@@ -55,8 +102,6 @@ chrome.runtime.onMessage.addListener(
 
         }
         if(request.action === 'tb-global' ) {
-            console.log('global event');
-
             const message = {
                 action: request.globalEvent,
                 payload: request.payload
@@ -69,6 +114,17 @@ chrome.runtime.onMessage.addListener(
                     }
 
                 }
+            });
+            return true;
+        }
+
+        if(request.action === 'tb-notification') {
+            chrome.notifications.getPermissionLevel(function(permission) {
+                if(permission === 'granted') {
+                    notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
+                }
+
+                sendResponse({permission: permission});
             });
             return true;
         }

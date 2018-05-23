@@ -93,12 +93,6 @@ function notifiermod() {
         'title': 'Interval to check for new items (time in minutes).'
     });
 
-    self.register_setting('wwwNotifications', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Only check for notifications on www.reddit.com (prevents duplicate notifications)'
-    });
-
     /// Private storage settings.
     self.register_setting('unreadMessageCount', {
         'type': 'number',
@@ -158,7 +152,6 @@ function notifiermod() {
 
         let NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
 
-            wwwNotifications = self.setting('wwwNotifications'),
             modNotifications = self.setting('modNotifications'),
             messageNotifications = self.setting('messageNotifications'),
             messageNotificationSound = self.setting('messageNotificationSound'),
@@ -187,7 +180,7 @@ function notifiermod() {
             newModmailCount = self.setting('newModmailCount'),
             newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
-            messageunreadurl = `${TBUtils.tempBaseDomain}/message/inbox/`,
+            messageunreadurl = `/message/inbox/`,
             $body = $('body'),
             activeNewMMcheck = false;
 
@@ -411,18 +404,6 @@ function notifiermod() {
                 return;
             }
 
-            // We still want counts updated, just no notifications shown.
-            // That's why we do this here.
-            if (wwwNotifications && TB.utils.domain !== 'www' && TB.utils.domain !== 'new') { //It's intentional that we don't also check for mod.reddit, here.  That would still cause dup messages.
-                self.log("non-www domain; don't show notifications");
-                updateMessagesCount(unreadMessageCount);
-                updateModqueueCount(modqueueCount);
-                updateUnmodCount(unmoderatedCount);
-                //updateModMailCount(modmailCount);
-                updateNewModMailCount(newModmailCount, newModmailCategoryCount);
-                return;
-            }
-
             newLoad = false;
 
             // We'll use this to determine if we are done with all counters and want to send a message to the background page telling all other tabs to update.
@@ -440,7 +421,7 @@ function notifiermod() {
 
             function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
                 $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(function (jsondata) {
-                    var commenttitle = jsondata[0].data.children[0].data.title;
+                    const commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
                         TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
                     } else if (straightToInbox) {

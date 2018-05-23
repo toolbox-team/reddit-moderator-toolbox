@@ -929,7 +929,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {string} url Url to be opend when clicking the notification
          * @param {string} markreadid When given will call the reddit api to mark the thing as read.
          */
-        TBUtils.notification = function (title, body, url, markreadid) {
+        TBUtils.notification = function (title, body, url, markreadid = false) {
             const timeout = 10000;
 
             const toolboxnotificationenabled = true;
@@ -940,81 +940,24 @@ function initwrapper(userDetails, newModSubs) {
                 return;
             }
 
-            if (!('Notification' in window) || TBUtils.browser === EDGE) {
-            // fallback on a javascript notification
-                $.log('boring old rickety browser (or Edge), falling back on jquery based notifications', false, SHORTNAME);
-                body = body.substring(0, 600);
-                body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
-
-            } else if (Notification.permission === 'granted') {
-
-                const notification = new Notification(title, {
-                    dir: 'auto',
+            chrome.runtime.sendMessage({
+                action: 'tb-notification',
+                details: {
+                    title: title,
                     body: body,
-                    icon: `data:image/png;base64,${TBui.logo64}`
-                });
-                setTimeout(function () {
-                    notification.close();
-                }, timeout);
-
-                notification.onclick = function () {
-                // Open the page
-                    $.log('notification clicked', false, SHORTNAME);
-                    if (typeof markreadid !== 'undefined') {
-                        $.post(`${TBUtils.baseDomain}/api/read_message`, {
-                            id: markreadid,
-                            uh: TBUtils.modhash,
-                            api_type: 'json'
-                        });
-                    }
-
-                    open(url);
-                    // Remove notification
-                    this.close();
-                };
-
-            } else if (Notification.permission !== 'denied') {
-                Notification.requestPermission(function (permission) {
-
-                // Whatever the user answers, we make sure we store the information
-                    if (!('permission' in Notification)) {
-                        Notification.permission = permission;
-                    }
-
-                    // If the user is okay, let's create a notification
-                    if (permission === 'granted') {
-                        const notification = new Notification(title, {
-                            dir: 'auto',
-                            body: body,
-                            icon: `data:image/png;base64,${TBui.logo64}`
-                        });
-                        setTimeout(function () {
-                            notification.close();
-                        }, timeout);
-
-                        notification.onclick = function () {
-                        // Open the page
-                            $.log('notification clicked', false, SHORTNAME);
-                            if (typeof markreadid !== 'undefined') {
-                                $.post(`${TBUtils.baseDomain}/api/read_message`, {
-                                    id: markreadid,
-                                    uh: TBUtils.modhash,
-                                    api_type: 'json'
-                                });
-                            }
-                            open(url);
-                            // Remove notification
-                            this.close();
-                        };
-                    }
-                });
-            } else {
-            // They have the option enabled, but won't grant permissions, so fall back.
-                body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                body = body.substring(0, 600);
-                $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
-            }
+                    baseDomain: TBUtils.tempBaseDomain,
+                    url: url,
+                    modHash: TBUtils.modhash,
+                    markreadid: markreadid ? markreadid : false
+                }
+            }, function(response) {
+                if(response.permission === `denied`) {
+                    // They have the option enabled, but won't grant permissions, so fall back.
+                    body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
+                    body = body.substring(0, 600);
+                    $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                }
+            });
         };
 
         /**

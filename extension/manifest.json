@@ -20,7 +20,8 @@
         "cookies",
         "tabs",
         "storage",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "notifications"
     ],
     "icons": {
         "16": "data/images/icon16.png",

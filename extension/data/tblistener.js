@@ -137,6 +137,11 @@
             const eventType = event.detail.type;
             const target = event.target.querySelector('[data-name="toolbox"]');
 
+            // If there is no target this is not for us.
+            if(!target) {
+                return;
+            }
+
             // We already have seen this attribute and do not need duplicates.
             if(target.classList.contains('tb-frontend-container')) {
                 return;

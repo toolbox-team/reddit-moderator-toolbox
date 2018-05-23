@@ -31,7 +31,7 @@
     "background": {
         "scripts": [
             "data/libs/jquery-3.3.1.min.js",
-            "data/background/chrome.js"
+            "data/background/background.js"
         ],
         "persistent": false
     },

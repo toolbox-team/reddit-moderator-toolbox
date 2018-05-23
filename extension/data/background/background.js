@@ -1,16 +1,27 @@
 // We store notification meta data here for later use.
 let notificationData = {};
 
+if(('MozBoxSizing' in document.body.style) === false && typeof (window.browser) !== 'undefined') {
+    window.chrome = window.browser;
+}
+
+function uuidv4() {
+    return ([1e7] + - 1e3 + - 4e3 + - 8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
 // Send notifications
 function notification(title, body, baseDomain, url, modHash, markreadid) {
     // send the notification.
-    chrome.notifications.create({
+    console.log('send notification');
+    chrome.notifications.create(uuidv4(), {
         'type' : 'basic',
         'iconUrl': chrome.runtime.getURL('data/images/icon48.png'),
         'title': title,
         'message': body
     }, function(notificationID) {
-
+        console.log(notificationID);
         // Store meta data
         notificationData[notificationID] = {
             'url': url,
@@ -119,13 +130,19 @@ chrome.runtime.onMessage.addListener(
         }
 
         if(request.action === 'tb-notification') {
-            chrome.notifications.getPermissionLevel(function(permission) {
-                if(permission === 'granted') {
-                    notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
-                }
+            if (typeof(chrome.notifications.getPermissionLevel) !== 'undefined') {
+                chrome.notifications.getPermissionLevel(function(permission) {
+                    if(permission === 'granted') {
+                        notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
+                    }
+                    sendResponse({permission: permission});
+                });
+            // Firefox being the outlier doesn't support getting the permissionlevel. So we just act as if we do.
+            } else {
+                notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
+                sendResponse({permission: true});
+            }
 
-                sendResponse({permission: permission});
-            });
             return true;
         }
     });

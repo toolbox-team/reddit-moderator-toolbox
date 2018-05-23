@@ -156,7 +156,7 @@ function notifiermod() {
 
     self.init = function () {
 
-        var NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
+        let NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
 
             wwwNotifications = self.setting('wwwNotifications'),
             modNotifications = self.setting('modNotifications'),
@@ -231,18 +231,18 @@ function notifiermod() {
         TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, function () {
             self.log('playing sound');
 
-            var audio = new Audio(NOTIFICATION_SOUND);
+            const audio = new Audio(NOTIFICATION_SOUND);
             audio.play();
         });
 
         function youveGotMail() {
             if (messageNotificationSound) {
-                var audio = new Audio(NOTIFICATION_SOUND);
+                const audio = new Audio(NOTIFICATION_SOUND);
                 audio.play();
             }
         }
         function updateMessagesCount(count) {
-            var $mail = $('#mail'),
+            const $mail = $('#mail'),
                 $mailCount = $('#mailCount'),
                 $mailcount = $('#mailcount'),
                 $tb_mail = $('#tb-mail'),

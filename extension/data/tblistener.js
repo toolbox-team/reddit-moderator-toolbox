@@ -73,15 +73,19 @@
         start() {
             if (!this.started) {
                 const loadedEvent = new CustomEvent('TBListenerLoaded');
-                const readyEvent = new CustomEvent('reddit.ready', { detail: {
-                    name: 'toolbox' }
-                });
+
+                const meta = document.createElement('meta');
+                meta.name = 'jsapi.consumer';
+                meta.content = 'toolbox';
+                document.head.appendChild(meta);
+
+                const readyEvent = new CustomEvent('reddit.ready');
 
                 document.addEventListener('reddit', this.boundFunc, true);
                 document.addEventListener('tbReddit', this.boundFunc, true);
                 setTimeout(function() {
                     document.dispatchEvent(loadedEvent);
-                    document.dispatchEvent(readyEvent);
+                    meta.dispatchEvent(readyEvent);
                 }, 1000);
 
                 this.started = true;

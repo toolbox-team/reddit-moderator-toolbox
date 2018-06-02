@@ -83,10 +83,9 @@
 
                 document.addEventListener('reddit', this.boundFunc, true);
                 document.addEventListener('tbReddit', this.boundFunc, true);
-                setTimeout(function() {
-                    document.dispatchEvent(loadedEvent);
-                    meta.dispatchEvent(readyEvent);
-                }, 1000);
+
+                document.dispatchEvent(loadedEvent);
+                meta.dispatchEvent(readyEvent);
 
                 this.started = true;
             }

@@ -13,6 +13,7 @@ function uuidv4() {
 
 // Send notifications
 function notification(title, body, baseDomain, url, modHash, markreadid) {
+    const notificationTimeout = 6000;
     // send the notification.
     console.log('send notification');
     chrome.notifications.create(uuidv4(), {
@@ -29,32 +30,37 @@ function notification(title, body, baseDomain, url, modHash, markreadid) {
             'markreadid': markreadid,
             'baseDomain': baseDomain
         };
+
+        // Clearing is needed because they are otherwise retained by chrome.
+        // Specifically in larger quanties they will reapear when a new notification comes in.
+        setTimeout(function () {
+            chrome.notifications.clear(notificationID);
+        }, notificationTimeout);
     });
 }
 
 // Handle clicking on notifications.
-chrome.notifications.onClicked.addListener(function(notificationId) {
-
+chrome.notifications.onClicked.addListener(function(notificationID) {
     // Mark as read if needed.
-    if (notificationData[notificationId].markreadid) {
+    if (notificationData[notificationID].markreadid) {
         $.post(`https://www.reddit.com/api/read_message`, {
-            id: notificationData[notificationId].markreadid,
-            uh: notificationData[notificationId].modHash,
+            id: notificationData[notificationID].markreadid,
+            uh: notificationData[notificationID].modHash,
             api_type: 'json'
         });
     }
 
     // Open up in new tab.
     chrome.tabs.create({
-        url: notificationData[notificationId].baseDomain + notificationData[notificationId].url
+        url: notificationData[notificationID].baseDomain + notificationData[notificationID].url
     });
     // Notification no longer needed, clear it.
-    chrome.notifications.clear(notificationId);
+    chrome.notifications.clear(notificationID);
 });
 
-chrome.notifications.onClosed.addListener(function(notificationId) {
+chrome.notifications.onClosed.addListener(function(notificationID) {
     // Meta data will not be used anymore. Clear.
-    delete notificationData[notificationId];
+    delete notificationData[notificationID];
 });
 
 function getCookie(tries, callback) {

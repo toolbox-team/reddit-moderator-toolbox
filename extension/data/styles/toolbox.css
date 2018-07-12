@@ -18,6 +18,10 @@ div#tb-snoo-footer {
     text-decoration: none;
 }
 
+.mod-toolbox-rd .tb-frontend-container[data-tb-type="post"] {
+    display: block;
+    margin-bottom: 3px;
+}
 
 /*
 ========================

@@ -645,7 +645,7 @@ function usernotes() {
                 deleteNote = $(e.target).hasClass('utagger-remove-note'),
                 type = $popup.find('.utagger-type input:checked').val(),
                 link = '';
-            console.log(e.target)
+
             if ($popup.find('.utagger-include-link input').is(':checked')) {
                 link = $unote.attr('data-link');
             }

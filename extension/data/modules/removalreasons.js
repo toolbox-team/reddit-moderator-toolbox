@@ -167,7 +167,7 @@ function removalreasons() {
                 postID = $button.attr('data-id');
                 postSubreddit = $button.attr('data-subreddit');
             } else {
-                const $parent = $button.parents().eq(2);
+                const $parent = $button.closest('.Post');
                 const postDetails = $parent.find('.tb-frontend-container[data-tb-type="post"]').data('tb-details');
                 postID = postDetails.data.id;
                 postSubreddit = postDetails.data.subreddit.name;

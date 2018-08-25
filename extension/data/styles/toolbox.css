@@ -1078,6 +1078,7 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     padding: 3px;
 }
 
+
 .mod-toolbox-rd .tb-submission-buttons,
 .mod-toolbox-rd .tb-comment-buttons {
     font-size: 11px;
@@ -1086,9 +1087,15 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
 }
 
 
+
+.mod-toolbox-rd .tb-actioned-button,
 .mod-toolbox-rd .tb-submission-button,
 .mod-toolbox-rd .tb-comment-button {
     margin-right: 10px;
+}
+
+.mod-toolbox-rd .tb-actioned-button.tb-actioned-error {
+    color: #d10023;
 }
 
 .mod-toolbox-rd .tb-submission-button

@@ -1481,11 +1481,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.approveThing(fullname, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>approved</span>');
+                $this.replaceWith('<span class="tb-actioned-button">approved</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1496,11 +1496,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, false, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>removed</span>');
+                $this.replaceWith('<span class="tb-actioned-button">removed</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1511,11 +1511,26 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, true, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>spammed</span>');
+                $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+            }
+
+        });
+    });
+
+    $body.on('click', '.tb-submission-button-approve', function() {
+        const $this = $(this);
+        const fullname = $this.attr('data-fullname');
+        TBUtils.approveThing(fullname, function (succes, error) {
+            if (succes) {
+                $this.replaceWith('<span class="tb-actioned-button">approved</span>');
+            } else if(error) {
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
+            } else {
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1526,11 +1541,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.lockThread(fullname, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>locked</span>');
+                $this.replaceWith('<span class="tb-actioned-button">locked</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1541,11 +1556,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.lockThread(fullname, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>unlocked</span>');
+                $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1556,11 +1571,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.markOver18(fullname, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>marked nsfw</span>');
+                $this.replaceWith('<span class="tb-actioned-button">marked nsfw</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });
@@ -1571,11 +1586,11 @@
         const fullname = $this.attr('data-fullname');
         TBUtils.unMarkOver18(fullname, function (succes, error) {
             if (succes) {
-                $this.replaceWith('<span>unmarked nsfw</span>');
+                $this.replaceWith('<span class="tb-actioned-button">unmarked nsfw</span>');
             } else if(error) {
-                $this.replaceWith(`<span class="color: red">${error}</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="color: red">something went wrong</span>`);
+                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
 
         });

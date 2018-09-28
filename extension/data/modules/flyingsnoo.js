@@ -3,7 +3,7 @@ function flyingsnoo() {
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
 
-    let self = new TB.Module('Userpage');
+    const self = new TB.Module('Userpage');
     self.shortname = 'Userpage';
 
     ////Default settings
@@ -20,13 +20,13 @@ function flyingsnoo() {
         });
         $snooFooter.click(function () {
 
-            let width = 87,
+            const width = 87,
                 height = 145;
 
             // unlock achievement
             TB.utils.sendEvent(TB.utils.events.TB_FLY_SNOO);
 
-            let floater = $('<div></div>').css({
+            const floater = $('<div></div>').css({
                 height: `${height}px`,
                 width: `${width}px`,
                 background: `url(${chrome.runtime.getURL('data/images/snoo_up.png')})`,
@@ -36,9 +36,9 @@ function flyingsnoo() {
                 zIndex: 999
             }).appendTo('body');
 
-            let documentHeight = $(document).height(),
-                documentWidth = $(document).width(),
-                iterations = 0,
+            const documentHeight = $(document).height(),
+                documentWidth = $(document).width();
+            let iterations = 0,
                 wind = 0,
                 oldTop = floater.position().top,
                 oldLeft = floater.position().left;
@@ -69,7 +69,7 @@ function flyingsnoo() {
             }
 
             function killSnoo() {
-                let newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.0005));
+                const newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.0005));
                 floater.css({
                     'top': `${newTop}px`
                 });
@@ -95,7 +95,7 @@ function flyingsnoo() {
                 floater.data('offsetY', e.offsetY);
 
                 const dragEvent = function (e) {
-                    let offsetX = floater.data('offsetX') || 0,
+                    const offsetX = floater.data('offsetX') || 0,
                         offsetY = floater.data('offsetY') || 0;
                     oldLeft = (e.pageX - offsetX);
                     oldTop = (e.pageY - offsetY);

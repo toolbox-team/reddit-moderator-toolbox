@@ -1,5 +1,5 @@
 function achievements() {
-    let self = new TB.Module('Achievements');
+    const self = new TB.Module('Achievements');
     self.shortname = 'Achievements';
 
     // Default settings
@@ -19,12 +19,12 @@ function achievements() {
     // Saves
     function Manager() {
         let saves = [],
-            saveIndex = 0,
+            saveIndex = 0;
 
-            achievements = [];
+        const achievements = [];
 
         this.init = function () {
-            let save = self.setting('save');
+            const save = self.setting('save');
             if (save.length > 0) {
                 saves = this.decodeSave(save);
             }
@@ -43,7 +43,7 @@ function achievements() {
                 saves.push(0);
             }
 
-            let achievementsBlock = [];
+            const achievementsBlock = [];
             for (let i = 0; i < maxValues.length; i++) {
                 let title = titles[i],
                     maxValue = maxValues[i];
@@ -72,12 +72,12 @@ function achievements() {
             }
             self.log(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
 
-            let old = saves[saveIndex];
+            const old = saves[saveIndex];
             self.log(`  Old value: ${saves[saveIndex]}`);
             saves[saveIndex] += value;
             self.log(`  New value: ${saves[saveIndex]}`);
 
-            let achievementsBlock = achievements[saveIndex];
+            const achievementsBlock = achievements[saveIndex];
             let achievement;
             for (let index = 0; index < achievementsBlock.length; index++) {
                 self.log(`  Checking achievement ${index}`);
@@ -121,7 +121,7 @@ function achievements() {
         // Utilities
 
         this.decodeSave = function (save) {
-            let vals = atob(save).split(';');
+            const vals = atob(save).split(';');
             // Because '2' + 1 = 21
             if (vals && vals.length > 0) {
                 for (let i = 0; i < vals.length; i++) {
@@ -150,7 +150,7 @@ function achievements() {
         this.getUnlockedCount = function () {
             let count = 0;
             for (let saveIndex = 0; saveIndex < achievements.length; saveIndex++) {
-                let achievementsBlock = achievements[saveIndex];
+                const achievementsBlock = achievements[saveIndex];
                 for (let index = 0; index < achievementsBlock.length; index++) {
                     if (this.isUnlocked(saveIndex, index, saves)) {
                         count++;
@@ -165,7 +165,7 @@ function achievements() {
         };
 
         this.isUnlocked = function (saveIndex, index, saves) {
-            let a = this.getAchievement(saveIndex, index);
+            const a = this.getAchievement(saveIndex, index);
             if (!(saves instanceof Array) || a.saveIndex >= saves.length) {
                 return false;
             }
@@ -180,10 +180,10 @@ function achievements() {
 
     // Init module
     self.init = function () {
-        let $body = $('body');
+        const $body = $('body');
 
         // Individual achievement stuff
-        let lastSeen = self.setting('lastSeen');
+        const lastSeen = self.setting('lastSeen');
 
         // Achievement definitions
         self.log('Registering achievements');
@@ -233,8 +233,8 @@ function achievements() {
         // Judas
         self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", function (saveIndex) {
             $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
-                let $this = $(this);
-                let auth = TB.utils.getThingInfo($this).author;
+                const $this = $(this);
+                const auth = TB.utils.getThingInfo($this).author;
 
                 if (TB.utils.tbDevs.indexOf(auth) !== -1) {
                     self.manager.unlock(saveIndex, 1);
@@ -251,7 +251,7 @@ function achievements() {
 
             // If just the button is used.
             $body.on('click', '.pretty-button, .approve-button', function () {
-                let $this = $(this);
+                const $this = $(this);
                 if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
                     self.manager.unlock(saveIndex, 1);
                 }

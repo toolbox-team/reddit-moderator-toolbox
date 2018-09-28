@@ -14,7 +14,8 @@ function banlist() {
     // from http://stackoverflow.com/a/15780907/362042
     // TODO: move to tbutils
     self.getURLParameter = function getURLParameter(url, name) {
-        return (new RegExp(`${name}=` + `(.+?)(&|$)`).exec(url) || [, null])[1];
+        const match = new RegExp(`${name}=(.+?)(&|$)`).exec(url);
+        return match ? match[1] : null;
     };
 
     self.init = function () {

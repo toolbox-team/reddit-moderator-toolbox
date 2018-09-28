@@ -300,17 +300,17 @@ function tbmodule() {
             });
 
             $settingsDialog.on('click', '.buttons .close', function (e) {
-            // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
-            // We also encapsulate the handler to the injected content, so we don't have to worry about selector overlap between multiple open dialogs.
+                // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
+                // We also encapsulate the handler to the injected content, so we don't have to worry about selector overlap between multiple open dialogs.
 
-            // "event.delegateTarget" always refers to the element that .on() is bound to, e.g. $settingsDialog
-            // "this" always refers to the element matched by the selector, e.g. '.buttons .close'
-            // "element.target" always refers to the clicked element, e.g. also '.buttons .close'
+                // "event.delegateTarget" always refers to the element that .on() is bound to, e.g. $settingsDialog
+                // "this" always refers to the element matched by the selector, e.g. '.buttons .close'
+                // "element.target" always refers to the clicked element, e.g. also '.buttons .close'
 
-            // NOTE: "this" is not always the same element as "event.target", e.g. when the clicked element is a descendant of the selector
-            // So, we had '.buttons' for our selector, and clicked on '.close' (a descendant of '.buttons'), then:
-            //  - "this" would be '.buttons' and
-            //  - "element.target" would be '.buttons .close'
+                // NOTE: "this" is not always the same element as "event.target", e.g. when the clicked element is a descendant of the selector
+                // So, we had '.buttons' for our selector, and clicked on '.close' (a descendant of '.buttons'), then:
+                //  - "this" would be '.buttons' and
+                //  - "element.target" would be '.buttons .close'
                 let settingsDialog = e.delegateTarget;
 
                 $(settingsDialog).remove();
@@ -1070,7 +1070,7 @@ body {
     TB.Module.prototype = {
         _shortname: '',
         get shortname() {
-        // return name.trim().toLowerCase().replace(' ', '_');
+            // return name.trim().toLowerCase().replace(' ', '_');
             return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
         },
         set shortname(val) {

@@ -45,7 +45,7 @@ function achievements() {
 
             const achievementsBlock = [];
             for (let i = 0; i < maxValues.length; i++) {
-                let title = titles[i],
+                const title = titles[i],
                     maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
@@ -190,7 +190,7 @@ function achievements() {
 
         // Random awesome
         self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
-            let awesome = 7,
+            const awesome = 7,
                 chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
             self.log(`You rolled a: ${chanceOfBeingAwesome}`);
@@ -203,7 +203,7 @@ function achievements() {
         self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', function (saveIndex) {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
-            let now = TBUtils.getTime(),
+            const now = TBUtils.getTime(),
                 timeSince = now - lastSeen,
                 daysSince = TBUtils.millisecondsToDays(timeSince);
             self.log(`daysSince: ${daysSince}`);

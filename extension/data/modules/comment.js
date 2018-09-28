@@ -1,5 +1,5 @@
 function comments() {
-    var self = new TB.Module('Comments');
+    const self = new TB.Module('Comments');
     self.shortname = 'Comments'; // historical precedent for settings
 
     self.settings['enabled']['default'] = true;
@@ -22,7 +22,7 @@ function comments() {
     const openContextInPopup = self.setting('openContextInPopup');
 
     self.init = function () {
-        let $body = $('body');
+        const $body = $('body');
 
         // Do not open lightbox but go to full comment page.
         if (commentsAsFullPage) {
@@ -55,8 +55,8 @@ function comments() {
 
         $body.on('click', '#tb-flatview-link', function () {
 
-            let flatListing = {}, // This will contain all comments later on.
-                idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
+            const flatListing = {}; // This will contain all comments later on.
+            let idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
             // deconstruct the json we got.
 
@@ -85,7 +85,7 @@ function comments() {
             }
 
             // Variables we need later on to be able to reconstruct comments.
-            let $windowContent = $(`
+            const $windowContent = $(`
             <div id="tb-flatview-search">
             Filter by name: <input type="text" id="tb-flatview-search-name" class="tb-flatview-search-input tb-input" placeholder="start typing...">
             Filter by content: <input type="text" id="tb-flatview-search-content" class="tb-flatview-search-input tb-input" placeholder="start typing...">
@@ -116,22 +116,22 @@ function comments() {
                 $body.css('overflow', 'auto');
 
             });
-            let $flatSearchCount = $body.find('#tb-flatview-search-count');
-            let $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
+            const $flatSearchCount = $body.find('#tb-flatview-search-count');
+            const $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
 
             $body.find('.tb-flatview-search-input').keyup(function () {
                 self.log('typing');
-                var FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
-                var FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
+                const FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
+                const FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
 
                 self.log(FlatViewSearchName);
                 self.log(FlatViewSearchContent);
 
                 $htmlCommentView.find(`.tb-comment`).each(function () {
-                    var $this = $(this);
+                    const $this = $(this);
 
-                    var flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
-                    var flatContent = $this.find('.tb-comment-body .md').text();
+                    const flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
+                    const flatContent = $this.find('.tb-comment-body .md').text();
 
                     if (flatUserName.toUpperCase().indexOf(FlatViewSearchName.toUpperCase()) < 0 || flatContent.toUpperCase().indexOf(FlatViewSearchContent.toUpperCase()) < 0) {
                         $this.hide();
@@ -146,7 +146,7 @@ function comments() {
             TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
             // construct the url from which we grab the comments json.
-            var jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
+            const jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
             $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(function (data) {
@@ -225,7 +225,7 @@ function comments() {
                     const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
-                    let $contextPopup = TB.ui.popup(
+                    const $contextPopup = TB.ui.popup(
                         contextTitle,
                         [
                             {

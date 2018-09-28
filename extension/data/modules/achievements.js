@@ -1,5 +1,5 @@
 function achievements() {
-    var self = new TB.Module('Achievements');
+    let self = new TB.Module('Achievements');
     self.shortname = 'Achievements';
 
     // Default settings
@@ -18,13 +18,13 @@ function achievements() {
 
     // Saves
     function Manager() {
-        var saves = [],
+        let saves = [],
             saveIndex = 0,
 
             achievements = [];
 
         this.init = function () {
-            var save = self.setting('save');
+            let save = self.setting('save');
             if (save.length > 0) {
                 saves = this.decodeSave(save);
             }
@@ -43,9 +43,9 @@ function achievements() {
                 saves.push(0);
             }
 
-            var achievementsBlock = [];
-            for (var i = 0; i < maxValues.length; i++) {
-                var title = titles[i],
+            let achievementsBlock = [];
+            for (let i = 0; i < maxValues.length; i++) {
+                let title = titles[i],
                     maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
@@ -72,18 +72,18 @@ function achievements() {
             }
             self.log(`Unlocking achievement block: index=${saveIndex}, value=${value}`);
 
-            var old = saves[saveIndex];
+            let old = saves[saveIndex];
             self.log(`  Old value: ${saves[saveIndex]}`);
             saves[saveIndex] += value;
             self.log(`  New value: ${saves[saveIndex]}`);
 
-            var achievementsBlock = achievements[saveIndex];
-            for (var index = 0; index < achievementsBlock.length; index++) {
+            let achievementsBlock = achievements[saveIndex];
+            for (let index = 0; index < achievementsBlock.length; index++) {
                 self.log(`  Checking achievement ${index}`);
                 var achievement = achievementsBlock[index];
                 self.log(`    Comparing to max value: ${achievement.maxValue}`);
                 if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
-                    var title = achievement.title;
+                    let title = achievement.title;
 
                     // eh, close enough.
                     // any better solution for links requires re-writing all the rewriting register functions
@@ -106,7 +106,7 @@ function achievements() {
         };
 
         this.save = function () {
-            var save = '';
+            let save = '';
             saves.forEach(function (saveValue, saveIndex) {
                 save += saveValue;
                 if (saveIndex < saves.length - 1) {
@@ -120,10 +120,10 @@ function achievements() {
         // Utilities
 
         this.decodeSave = function (save) {
-            var vals = atob(save).split(';');
+            let vals = atob(save).split(';');
             // Because '2' + 1 = 21
             if (vals && vals.length > 0) {
-                for (var i = 0; i < vals.length; i++) {
+                for (let i = 0; i < vals.length; i++) {
                     vals[i] = parseInt(vals[i]);
                 }
             }
@@ -139,18 +139,18 @@ function achievements() {
         };
 
         this.getAchievementTotal = function () {
-            var total = 0;
-            for (var saveIndex = 0; saveIndex < achievements.length; saveIndex++) {
+            let total = 0;
+            for (let saveIndex = 0; saveIndex < achievements.length; saveIndex++) {
                 total += this.getAchievementCount(saveIndex);
             }
             return total;
         };
 
         this.getUnlockedCount = function () {
-            var count = 0;
-            for (var saveIndex = 0; saveIndex < achievements.length; saveIndex++) {
-                var achievementsBlock = achievements[saveIndex];
-                for (var index = 0; index < achievementsBlock.length; index++) {
+            let count = 0;
+            for (let saveIndex = 0; saveIndex < achievements.length; saveIndex++) {
+                let achievementsBlock = achievements[saveIndex];
+                for (let index = 0; index < achievementsBlock.length; index++) {
                     if (this.isUnlocked(saveIndex, index, saves)) {
                         count++;
                     }
@@ -164,7 +164,7 @@ function achievements() {
         };
 
         this.isUnlocked = function (saveIndex, index, saves) {
-            var a = this.getAchievement(saveIndex, index);
+            let a = this.getAchievement(saveIndex, index);
             if (!(saves instanceof Array) || a.saveIndex >= saves.length) {
                 return false;
             }
@@ -179,17 +179,17 @@ function achievements() {
 
     // Init module
     self.init = function () {
-        var $body = $('body');
+        let $body = $('body');
 
         // Individual achievement stuff
-        var lastSeen = self.setting('lastSeen');
+        let lastSeen = self.setting('lastSeen');
 
         // Achievement definitions
         self.log('Registering achievements');
 
         // Random awesome
         self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
-            var awesome = 7,
+            let awesome = 7,
                 chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
             self.log(`You rolled a: ${chanceOfBeingAwesome}`);
@@ -202,7 +202,7 @@ function achievements() {
         self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', function (saveIndex) {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
-            var now = TBUtils.getTime(),
+            let now = TBUtils.getTime(),
                 timeSince = now - lastSeen,
                 daysSince = TBUtils.millisecondsToDays(timeSince);
             self.log(`daysSince: ${daysSince}`);
@@ -232,8 +232,8 @@ function achievements() {
         // Judas
         self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", function (saveIndex) {
             $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
-                var $this = $(this);
-                var auth = TB.utils.getThingInfo($this).author;
+                let $this = $(this);
+                let auth = TB.utils.getThingInfo($this).author;
 
                 if (TB.utils.tbDevs.indexOf(auth) !== -1) {
                     self.manager.unlock(saveIndex, 1);
@@ -248,9 +248,9 @@ function achievements() {
         // approving stuff
         self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], function (saveIndex) {
 
-        // If just the button is used.
+            // If just the button is used.
             $body.on('click', '.pretty-button, .approve-button', function () {
-                var $this = $(this);
+                let $this = $(this);
                 if ($this.hasClass('positive') || $this.hasClass('approve-button')) {
                     self.manager.unlock(saveIndex, 1);
                 }

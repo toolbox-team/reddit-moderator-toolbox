@@ -78,9 +78,10 @@ function achievements() {
             self.log(`  New value: ${saves[saveIndex]}`);
 
             let achievementsBlock = achievements[saveIndex];
+            let achievement;
             for (let index = 0; index < achievementsBlock.length; index++) {
                 self.log(`  Checking achievement ${index}`);
-                var achievement = achievementsBlock[index];
+                achievement = achievementsBlock[index];
                 self.log(`    Comparing to max value: ${achievement.maxValue}`);
                 if (saves[saveIndex] >= achievement.maxValue && old < achievement.maxValue) {
                     let title = achievement.title;
@@ -89,7 +90,7 @@ function achievements() {
                     // any better solution for links requires re-writing all the rewriting register functions
                     // to support another prop.  If someone want to do that, go for it.
                     try {
-                        title = $(achievement.title).text() ? $(achievement.title).text() : achievement.title;
+                        title = $(achievement.title).text() || achievement.title;
                     } catch(e) {
                         self.log(`error: ${e}`);
                     }

@@ -1,5 +1,5 @@
 function devtools() {
-    var self = new TB.Module('Developer Tools');
+    const self = new TB.Module('Developer Tools');
     self.shortname = 'DevTools';
 
     ////Default settings
@@ -23,7 +23,7 @@ function devtools() {
     });
     // Module init
     self.init = function() {
-        let $body = $('body');
+        const $body = $('body');
 
         const apiHelper = self.setting('apiHelper'),
             commentUItester = self.setting('commentUItester');
@@ -120,8 +120,8 @@ function devtools() {
             });
 
             $body.on('click', '.tb-testCommentUI-button', function () {
-                const $this = $(this);
-                let $siteTable = $body.find('#tb-comment-sitetable');
+                const $this = $(this),
+                    $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
@@ -139,7 +139,7 @@ function devtools() {
                         TBui.tbRedditEvent($comments, 'comment');
                         $('time.timeago').timeago();
                     } else {
-                        let $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
+                        const $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
                         $siteTable.append($comment);
                         TBui.tbRedditEvent($comment, 'comment');
                         $('time.timeago').timeago();
@@ -149,13 +149,13 @@ function devtools() {
             });
 
             $body.on('click', '.tb-testSubmissionUI-button', function () {
-                let $siteTable = $body.find('#tb-comment-sitetable');
+                const $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
                 $.getJSON(inputURL, {raw_json: 1}, function(data) {
                     TBUtils.forEachChunkedDynamic(data.data.children, function(entry) {
                         if(entry.kind === `t3`) {
-                            let $submission = TBui.makeSubmissionEntry(entry);
+                            const $submission = TBui.makeSubmissionEntry(entry);
                             $siteTable.append($submission);
                             $('time.timeago').timeago();
                         }

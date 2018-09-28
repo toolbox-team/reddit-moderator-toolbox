@@ -1,5 +1,5 @@
 function modmacros() {
-    let self = new TB.Module('Mod Macros');
+    const self = new TB.Module('Mod Macros');
     self.shortname = 'ModMacros';
 
     self.settings['enabled']['default'] = true;
@@ -49,7 +49,7 @@ function modmacros() {
 
         function populateSelect(selectClass, subreddit, config) {
             $(selectClass).each(function () {
-                let $select = $(this),
+                const $select = $(this),
                     sub = $select.attr('data-subreddit');
 
                 self.log($select);
@@ -113,26 +113,22 @@ function modmacros() {
         function editMacro(dropdown, info, macro, topLevel) {
         // get some placement variables
 
-            let $usertext = dropdown.closest('.usertext-edit'),
-                comment = unescape(macro.text),
-                remove = macro.remove,
+            const remove = macro.remove,
                 approve = macro.approve,
                 ban = macro.ban,
                 mute = macro.mute,
-                distinguish = macro.distinguish,
+                distinguish = macro.distinguish === undefined ? true : macro.distunguish,
                 lock = macro.lockthread,
                 sticky = macro.sticky,
                 archivemodmail = macro.archivemodmail,
                 highlightmodmail = macro.highlightmodmail,
-                actionList = 'The following actions will be performed:<br>- Your reply will be saved',
                 kind = info.kind;
+            let $usertext = dropdown.closest('.usertext-edit'),
+                comment = unescape(macro.text),
+                actionList = 'The following actions will be performed:<br>- Your reply will be saved';
 
             if (TBUtils.isNewModmail) {
                 $usertext = $body.find('.ThreadViewerReplyForm');
-            }
-            // If it's undefined assume previous default behaviour and always distinguish.
-            if (macro.distinguish === undefined) {
-                distinguish = true;
             }
 
             if (!TB.utils.isModmail && !TB.utils.isNewModmail) {
@@ -232,7 +228,7 @@ function modmacros() {
                     // We split of new modmail from the rest of reddit because... well easier.
                     if (TBUtils.isNewModmail) {
 
-                    // Since we are doing things on the page that need to finish we probably should make that clear.
+                        // Since we are doing things on the page that need to finish we probably should make that clear.
                         TB.ui.longLoadSpinner(true);
 
                         if ($('.ThreadViewer  .icon-mute').closest('.InfoBar__control').hasClass('m-on')) {
@@ -352,11 +348,11 @@ function modmacros() {
 
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
 
-            let $this = $(this),
+            const $this = $(this),
                 sub = $this.closest('select').attr('data-subreddit'),
                 index = $this.val(),
-                topLevel = $this.hasClass('tb-top-macro-select'),
-                info;
+                topLevel = $this.hasClass('tb-top-macro-select');
+            let info;
 
             self.log(`Macro selected: index=${index}`);
             self.log(`  subreddit=${sub}`);

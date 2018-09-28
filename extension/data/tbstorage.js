@@ -149,7 +149,7 @@ function storagewrapper() {
             if (!callback) return;
             settingsToObject(function (sObject) {
 
-            // settings we delete
+                // settings we delete
                 delete sObject['Toolboxv4.Achievements.lastSeen'];
                 delete sObject['Toolboxv4.Achievements.last_seen'];
                 delete sObject['Toolboxv4.Bagels.bagelType'];
@@ -238,14 +238,14 @@ function storagewrapper() {
 
             if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
                 settingsToObject(function (sObject) {
-                    let settingsObject = sObject;
+                    const settingsObject = sObject;
 
                     // save settings
                     chrome.storage.local.set({
                         'tbsettings': sObject
                     }, function () {
 
-                    // now verify them
+                        // now verify them
                         chrome.storage.local.get('tbsettings', function (returnObject) {
                             if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                             && isEquivalent(returnObject.tbsettings, settingsObject)) {
@@ -284,7 +284,7 @@ function storagewrapper() {
         }
 
         function settingsToObject(callback) {
-            let settingsObject = {};
+            const settingsObject = {};
             Object.keys(localStorage)
                 .forEach(function (fullKey) {
                     if (/^(Toolboxv4.)/.test(fullKey)) {

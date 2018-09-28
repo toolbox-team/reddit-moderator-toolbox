@@ -159,16 +159,16 @@
 
             // See if there's any registered listeners listening for eventType
             if (Array.isArray(this.listeners[eventType])) {
-                for (let listener of this.listeners[eventType]) {
+                for (const listener of this.listeners[eventType]) {
                     this.queue.push(listener.bind(target, internalEvent));
                 }
             }
 
             // Check and see if there are any aliases for `eventType` and run those on the queue
             if (Array.isArray(listenerAliases[eventType])) {
-                for (let alias of listenerAliases[eventType]) {
+                for (const alias of listenerAliases[eventType]) {
                     if (Array.isArray(this.listeners[alias])) {
-                        for (let listener of this.listeners[alias]) {
+                        for (const listener of this.listeners[alias]) {
                             this.queue.push(listener.bind(target, internalEvent));
                         }
                     }

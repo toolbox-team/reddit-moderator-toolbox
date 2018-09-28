@@ -18,8 +18,6 @@ node_modules/*
 
 # Not yet ported node_modules
 /extension/data/libs/redditapi.js
-/extension/data/modules/bagel.js
-/extension/data/modules/banlist.js
 /extension/data/modules/betterbuttons.js
 /extension/data/modules/domaintagger.js
 /extension/data/modules/metricstab.js

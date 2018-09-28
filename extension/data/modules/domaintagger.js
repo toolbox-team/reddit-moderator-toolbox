@@ -1,6 +1,6 @@
 function domaintagger() {
 
-    var self = new TB.Module('Domain Tagger');
+    const self = new TB.Module('Domain Tagger');
     self.shortname = 'DTagger';
 
     ////Default settings
@@ -15,7 +15,7 @@ function domaintagger() {
 
     self.init = function() {
     //Get settings
-        var tagType = this.setting('displayType'),
+        const tagType = this.setting('displayType'),
             $body = $('body');
 
         $body.addClass(`tb-dt-type-${tagType}`);
@@ -49,11 +49,11 @@ function domaintagger() {
 
         function run(addButton) {
             self.log(`run called with addButton=${addButton}`);
-            var $things = $('div.thing.link').not('.dt-processed'),
-                subs = {};
+            let $things = $('div.thing.link').not('.dt-processed');
+            const subs = {};
 
             // Mark non-mySubs as processed and remove them from collection
-            $things.filter(function(){
+            $things.filter(function() {
                 return !TBUtils.modsSub(this.dataset['subreddit']);
             }).addClass('dt-processed');
 
@@ -65,7 +65,7 @@ function domaintagger() {
             TBUtils.forEachChunked($things, 25, 250, function(thing) {
                 self.startProfile('build-object-list-inner');
 
-                var $thing = $(thing),
+                const $thing = $(thing),
                     sub = $thing.attr('data-subreddit');
 
                 processThing($thing, addButton);
@@ -98,7 +98,7 @@ function domaintagger() {
             if (!$thing.hasClass('dt-processed')) {
                 $thing.addClass('dt-processed');
                 if (addButton) {
-                    var tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', 'Color tag domains').attr('href', 'javascript:;').text('T');
+                    const tag = $('<a>').addClass('add-domain-tag tb-bracket-button').attr('title', 'Color tag domains').attr('href', 'javascript:;').text('T');
 
                     $thing.find('span.domain').after(tag);
                 }
@@ -122,8 +122,8 @@ function domaintagger() {
                 $domain.attr('data-color', d.color);
 
                 switch (tagType) {
-                case 'domain_background':
-                    var textColor = TBui.getBestTextColor(d.color);
+                case 'domain_background': {
+                    const textColor = TBui.getBestTextColor(d.color);
                     $domain.addClass(`tb-dt-bg-${d.color}`);
                     $domain.css({
                         'background-color': d.color,
@@ -133,6 +133,7 @@ function domaintagger() {
                     });
                     $domain.find('a').css('color', textColor);
                     break;
+                }
                 case 'domain_border':
                     $domain.css({
                         'border': `1px solid ${d.color}`,
@@ -151,8 +152,8 @@ function domaintagger() {
                     });
                     break;
                 case 'title_dot':
-                default:
-                    var $span = $domain.parent().find('.tb-dt-little-dot');
+                default: {
+                    let $span = $domain.parent().find('.tb-dt-little-dot');
                     if ($span.length < 1) {
                         $span = $('<span class="tb-dt-little-dot">&#9679;</span>');
                         $domain.before($span);
@@ -163,13 +164,14 @@ function domaintagger() {
                     });
                     break;
                 }
+                }
             }
 
             self.startProfile('set-tags');
-            var done = false;
+            let done = false;
             TBUtils.forEachChunked(things, 25, 250, function (thing) {
                 self.startProfile('set-tags-inner');
-                var $thing = $(thing),
+                const $thing = $(thing),
                     $entry = $thing.find('.entry'),
                     $domain = $entry.find('span.domain'),
                     domain = getThingDomain($thing),
@@ -200,18 +202,18 @@ function domaintagger() {
         // Button events
 
         $body.on('click', '.add-domain-tag', function (e) {
-            var $this = $(e.target),
+            const $this = $(e.target),
                 $domain = $this.siblings('.domain'),
                 currentColor = TBUtils.colorNameToHex($domain.data('color')),
                 $thing = $this.closest('.thing'),
-                domain = getThingDomain($thing),
+                domain = getThingDomain($thing);
                 //subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
-                subreddit = $thing.data('subreddit');
+            let subreddit = $thing.data('subreddit');
 
             subreddit = TB.utils.cleanSubredditName(subreddit);
 
             function createPopup() {
-                var popupContent = $('<div>').addClass('dt-popup-content').append(
+                const popupContent = $('<div>').addClass('dt-popup-content').append(
                     $('<span>').addClass('dt-popup-color-content').append(
                         $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
                     ).append(
@@ -223,7 +225,7 @@ function domaintagger() {
                     $('<p>').text('Ex: i.imgur.com is not imgur.com')
                 );
 
-                var popupSave = $('<div>').append(
+                const popupSave = $('<div>').append(
                     $('<button>').addClass('save-domain tb-action-button').text('save')
                 ).append(
                     $('<button>').addClass('clear-domain tb-action-button').text('clear')
@@ -240,19 +242,19 @@ function domaintagger() {
                 }], null, 'dtagger-popup');
             }
 
-            var $popup = createPopup().hide();
+            const $popup = createPopup().hide();
 
             // Init color selector
-            var colors = [];
-            for(var c in TBui.standardColors) {
+            const colors = [];
+            for(const c in TBui.standardColors) {
                 if(TBui.standardColors.hasOwnProperty(c)) {
                     colors.push(TBui.standardColors[c]);
                 }
 
             }
-            var colorPalette = [];
-            for(var i = 0; i < colors.length; i += 2) {
-                colorPalette.push([colors[i], colors[i+1]]);
+            const colorPalette = [];
+            for(let i = 0; i < colors.length; i += 2) {
+                colorPalette.push([colors[i], colors[i + 1]]);
             }
 
             // Add to page
@@ -265,15 +267,15 @@ function domaintagger() {
         });
 
         $body.on('click', '.save-domain', function () {
-            var popup = $(this).closest('.dtagger-popup'),
+            const popup = $(this).closest('.dtagger-popup'),
                 subreddit = popup.find('.domain-name').data('subreddit');
 
-            var domainTag = {
+            const domainTag = {
                 name: popup.find('.domain-name').val(),
                 color: popup.find('.domain-color').val()
             };
 
-            var config = TBUtils.config;
+            let config = TBUtils.config;
 
             $(popup).remove();
 
@@ -297,10 +299,10 @@ function domaintagger() {
                 config = resp;
 
                 if (config.domainTags) {
-                    var results = $.grep(config.domainTags, function (d) {
+                    const results = $.grep(config.domainTags, function (d) {
                         if (d.name === domainTag.name) {
-                            var idx = config.domainTags.indexOf(d),
-                                updateType;
+                            const idx = config.domainTags.indexOf(d);
+                            let updateType;
                             if (domainTag.color === 'none') {
                                 config.domainTags.splice(idx, 1);
                                 updateType = 'delete';
@@ -334,9 +336,9 @@ function domaintagger() {
 
         function getThingDomain($thing) {
             self.log('Getting thing domain');
-            var domain = $thing.find('span.domain a').attr('href').toLowerCase();
+            let domain = $thing.find('span.domain a').attr('href').toLowerCase();
             self.log(`  Raw = ${domain}`);
-            var match = /\/domain\/(.+)\//.exec(domain);
+            let match = /\/domain\/(.+)\//.exec(domain);
             if (!match) {
                 match = /(\/r\/.+)\//.exec(domain);
             }

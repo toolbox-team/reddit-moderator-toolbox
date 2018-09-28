@@ -1,5 +1,5 @@
 function betterbuttons() {
-    var self = new TB.Module('Better Buttons');
+    const self = new TB.Module('Better Buttons');
     self.shortname = 'BButtons';
 
     // Default settings
@@ -49,7 +49,7 @@ function betterbuttons() {
     });
 
     // Bread and buttons
-    var $body = $('body');
+    const $body = $('body');
     let newThingRunning = false;
 
     self.initModSave = function initModSave() {
@@ -57,17 +57,17 @@ function betterbuttons() {
         self.log('Adding mod save buttons');
 
         //Watches for changes in the DOM
-        var shouldSticky = false;
-        var commentObserver = new MutationObserver(function (mutations) {
+        let shouldSticky = false;
+        const commentObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 if (mutation.addedNodes) {
-                    for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                        var $item = $(mutation.addedNodes[i]);
+                    for (let i = 0; i < mutation.addedNodes.length; ++i) {
+                        const $item = $(mutation.addedNodes[i]);
                         //Check if the added element is a comment
                         if ($item.is('div.comment')) {
                             self.log('Clicking distinguish button');
                             //Distinguish the comment, stickying if we need to
-                            var things = $item.find('form[action="/post/distinguish"] > .option > a');
+                            const things = $item.find('form[action="/post/distinguish"] > .option > a');
                             if (shouldSticky) {
                                 things.eq(1)[0].click();
                                 shouldSticky = false;
@@ -85,10 +85,10 @@ function betterbuttons() {
         });
 
         // Add the mod save buttons next to each comment save button
-        var $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
+        const $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
 
-        var $saveButton = $usertextButtons.find('.save');
-        var $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
+        const $saveButton = $usertextButtons.find('.save');
+        const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons'),
             $modSaveButton = $('<button>').addClass('save-mod tb-action-button').text('mod save'),
             $stickySaveButton = $('<button>').addClass('save-sticky tb-action-button').text('mod save + sticky');
         if ($tbUsertextButtons.length) {
@@ -96,7 +96,6 @@ function betterbuttons() {
         } else {
             $saveButton.parent().find('.status').before($('<div>').addClass('tb-usertext-buttons').append($modSaveButton, $stickySaveButton));
         }
-
 
         //Add actions to the mod save buttons
         $('body').on('click', 'button.save-mod', function () {
@@ -124,16 +123,14 @@ function betterbuttons() {
 
     self.initDistinguishToggle = function initDistinguishToggle() {
 
-    // Check for top level comments so we can add & sticky to the mix
-        var stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
+        // Check for top level comments so we can add & sticky to the mix
+        const stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
 
         function addSticky() {
             $('.sitetable.nestedlisting>.comment>.entry .buttons .toggle').has('form[action="/post/distinguish"]').each(function() {
-                var $this = $(this);
-                var $parentPost = $this.closest('.thing');
-                var distinguished = getDistinguishState($parentPost);
-
-
+                const $this = $(this);
+                const $parentPost = $this.closest('.thing');
+                const distinguished = getDistinguishState($parentPost);
 
                 if(!$this.closest('.comment').hasClass('tb-sticky-processed') && !distinguished) {
                     $this.after(stickyHtml);
@@ -151,27 +148,24 @@ function betterbuttons() {
 
         //Get a comment's distinguish state
         function getDistinguishState(post) {
-            var author = $(post).find('a.author').first();
+            const author = $(post).find('a.author').first();
             return author.hasClass('moderator');
         }
 
         //Toggle the distinguished state
         function distinguishClicked(e) {
-            var $this = $(this);
-            var $parentPost = $this.closest('.thing');
-            var distinguished = getDistinguishState($parentPost);
+            const $this = $(this);
+            const $parentPost = $this.closest('.thing');
+            const distinguished = getDistinguishState($parentPost);
 
             // Lets ready the buttons we want to click later on.
-            var firstDistinguishButton = $this.find('.option > a')[0],
+            const firstDistinguishButton = $this.find('.option > a')[0],
                 secondDistinguishButton = $this.find('.option > a')[1];
-
-
 
             // User initiated click, this is the distinguish toggle on a top level comment
 
             if (e.hasOwnProperty('originalEvent')) {
                 self.log('Top level comment distinguish has been clicked and it is the real deal!');
-
 
                 // Comment is already distinguished or stickied. So we'll simply undistinguish
                 if (distinguished) {
@@ -207,7 +201,7 @@ function betterbuttons() {
                 // Wait a sec for stuff to load.
                 setTimeout(function () {
                     newThingRunning = false;
-                    var event = new CustomEvent('TBNewThings');
+                    const event = new CustomEvent('TBNewThings');
                     window.dispatchEvent(event);
                 }, 1000);
             }
@@ -216,11 +210,10 @@ function betterbuttons() {
 
         //Toggle the sticky state
         function stickyClicked() {
-            var $siblingDistinguish = $(this).closest('li').prev();
+            const $siblingDistinguish = $(this).closest('li').prev();
 
             // DO NOT TRY TO "FIX" THIS CLICK. It needs the jquery clicky stuff for us to tell that this was a code triggered click.
             $siblingDistinguish.find('form[action="/post/distinguish"]').click();
-
 
         }
 
@@ -232,11 +225,11 @@ function betterbuttons() {
         $body.on('click', '.tb-sticky-comment', stickyClicked);
 
         //Watches for changes in DOM to add distinguish button listeners if needed
-        var commentObserver = new MutationObserver(function (mutations) {
+        const commentObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 if (mutation.addedNodes) {
-                    for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                        var item = mutation.addedNodes[i];
+                    for (let i = 0; i < mutation.addedNodes.length; ++i) {
+                        const item = mutation.addedNodes[i];
                         //Check if the added element is a comment
                         if ($(item).is('div.comment')) {
                             $(item).find('form[action="/post/distinguish"]').first().on('click', distinguishClicked);
@@ -259,7 +252,7 @@ function betterbuttons() {
 
         // Approve
         $body.on('click', '.flat-list .approve-button .togglebutton', function () {
-            var yes = $(this).closest('.approve-button').find('.yes')[0];
+            const yes = $(this).closest('.approve-button').find('.yes')[0];
             if (yes) yes.click();
         // setTimeout(function () {
         //     yes.click();
@@ -267,7 +260,7 @@ function betterbuttons() {
         });
         // Remove and spam
         $body.on('click', '.flat-list .remove-button .togglebutton', function () {
-            var $button = $(this).closest('.remove-button'),
+            const $button = $(this).closest('.remove-button'),
                 yes = $button.find('.yes')[0];
 
             // Don't remove if removal reasons are enabled and the button isn't for spam
@@ -285,7 +278,7 @@ function betterbuttons() {
 
         $body.on('click', '.big-mod-buttons > .pretty-button.neutral', function () {
             self.log('Ignore reports pressed');
-            var $button = $(this).parent().find('> span > .positive'),
+            const $button = $(this).parent().find('> span > .positive'),
                 button = $button[0];
             if (!$button.hasClass('pressed')) {
                 if (button) button.click();
@@ -297,7 +290,7 @@ function betterbuttons() {
         self.log('Adding approve toggle events');
 
         $body.on('click', '.big-mod-buttons > span > .pretty-button.positive', function () {
-            var $button = $(this).closest('.big-mod-buttons').find('> .neutral'),
+            const $button = $(this).closest('.big-mod-buttons').find('> .neutral'),
                 button = $button[0];
             if (!$button.hasClass('pressed')) {
                 if (button) button.click();
@@ -310,14 +303,14 @@ function betterbuttons() {
         $('.thing.link:not(.tb-removebuttons-checked)').each(function () {
             $(this).addClass('tb-removebuttons-checked');
 
-            var thing = TBUtils.getThingInfo(this, true);
+            const thing = TBUtils.getThingInfo(this, true);
 
             if (self.setting('spamRemoved')) {
             // only for subreddits we mod
             // and for comments that have been removed as ham ("remove not spam")
                 if (thing.subreddit && thing.ham) {
                 // and only if there isn't already one
-                    if ($(this).children('.entry').find('.big-mod-buttons .negative').length == 0) {
+                    if ($(this).children('.entry').find('.big-mod-buttons .negative').length === 0) {
                     // lifted straight from the "spam" big mod button
                         $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
                             .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
@@ -332,7 +325,7 @@ function betterbuttons() {
             // and for comments that have been removed as spam ("spam" or "confirm spam")
                 if (thing.subreddit && thing.spam) {
                 // and only if there isn't already one
-                    if ($(this).children('.entry').find('.big-mod-buttons .neutral').length == 0) {
+                    if ($(this).children('.entry').find('.big-mod-buttons .neutral').length === 0) {
                     // lifted straight from the "remove" big mod button
                         $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
                             .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
@@ -345,9 +338,9 @@ function betterbuttons() {
     };
 
     self.initStickyButtons = function initStickyButtons() {
-        var $things = $('.listing-page .content .thing.link.stickied');
+        const $things = $('.listing-page .content .thing.link.stickied');
         $things.each(function() {
-            var $thing = $(this),
+            const $thing = $(this),
                 $buttons = $thing.find('.flat-list');
 
             // Make sure this is a post in a sub we mod by checking for the remove button.
@@ -363,7 +356,7 @@ function betterbuttons() {
         });
 
         $('.thing .sticky-button a').click(function() {
-            var $button = $(this),
+            const $button = $(this),
                 $thing = $button.parents('.thing'),
                 id = $thing.data('fullname');
             TBUtils.unstickyThread(id, function(success, error) {

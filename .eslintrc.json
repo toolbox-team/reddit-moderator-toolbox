@@ -26,6 +26,7 @@
         "prefer-template": "warn",
         "no-useless-escape": "warn",
         "no-var": "warn",
+        "prefer-const": "warn",
         "no-constant-condition": "warn",
         "no-trailing-spaces": "error",
         "space-before-blocks": "error",

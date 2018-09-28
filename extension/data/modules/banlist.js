@@ -1,5 +1,5 @@
 function banlist() {
-    var self = new TB.Module('Ban List');
+    const self = new TB.Module('Ban List');
     self.shortname = 'BanList';
 
     self.settings['enabled']['default'] = true;
@@ -20,21 +20,21 @@ function banlist() {
     self.init = function () {
         if (!TB.utils.isEditUserPage) return;
 
-        var banlist_updating = false,
+        let banlist_updating = false,
             banlist_last_update = 0,
-            last_request = 0,
-            time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
+            last_request = 0;
+        const time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
             $num_bans = $('<span id="ban_count"></span>');
 
         function _get_next_ban_page(after, pages_back) {
 
-        // default parameter value handling
+            // default parameter value handling
             after = typeof after !== 'undefined' ? after : '';
             pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
 
             self.log(`_get_next_ban_page(${after})`);
 
-            var parameters = {'limit': 1000, 'after': after};
+            const parameters = {'limit': 1000, 'after': after};
 
             after = null;
             last_request = Date.now();
@@ -49,25 +49,25 @@ function banlist() {
                     console.log(data);
                     self.log('  success!');
                     self.log(`  ${pages_back} pages back`);
-                    var response_page = $(data);
+                    const response_page = $(data);
                     // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
                     // var $new_banlist = $('.usertable', response_page);
                     self.log($('.usertable table tbody tr', response_page).length);
                     if ($('.usertable table tbody tr', response_page).length > 0) {
                         $('.usertable table tbody tr', response_page).each(function () {
                         // workaround for known bug in listings where "next" button is available on last page
-                            if (this.className == 'notfound') {
+                            if (this.className === 'notfound') {
                                 return;
                             }
 
-                            var t = $(this).find('.user a').text().toLowerCase(); // username
+                            let t = $(this).find('.user a').text().toLowerCase(); // username
                             if ($(this).find('input[name="note"]').length > 0) {
                                 t += ` ${$(this).find('input[name="note"]').val().toLowerCase()}`; // ban note text, if available
                             }
                             $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
                             $(this).addClass('visible');
                         });
-                        var value = $('input#user').val().toLowerCase();
+                        const value = $('input#user').val().toLowerCase();
                         filter_banlist($('.usertable', response_page), value, true);
                         $('.usertable table tbody').append($('.usertable table tbody tr', response_page));
                         // update the results counter
@@ -76,7 +76,7 @@ function banlist() {
                         return;
                     }
 
-                    var after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
+                    const after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
                     self.log(after_url);
                     after = self.getURLParameter(after_url, 'after');
                     self.log(after);
@@ -86,7 +86,7 @@ function banlist() {
                             pages_back++;
                             _get_next_ban_page(after, pages_back);
                         } else {
-                            var sleep = last_request + 2000 - Date.now();
+                            const sleep = last_request + 2000 - Date.now();
                             setTimeout(_get_next_ban_page, sleep, after, pages_back);
                         }
                     } else {
@@ -99,7 +99,7 @@ function banlist() {
                 .fail(function (data) {
                     self.log('  failed');
                     self.log(data.status);
-                    if (data.status == 504) {
+                    if (data.status === 504) {
                     // "504, post some more"
                         this.done(data);
                     } else {
@@ -115,10 +115,10 @@ function banlist() {
 
         function filter_banlist(banlist, value, ignore_last) {
             self.log(`filter(${value})`);
-            var last_value = typeof last_value !== 'undefined' ? last_value : '';
+            let last_value = typeof last_value !== 'undefined' ? last_value : '';
             ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
 
-            if (value == '') {
+            if (value === '') {
                 self.log('empty');
                 // empty search? show all
                 $('tr', banlist).show().addClass('visible');
@@ -142,7 +142,7 @@ function banlist() {
         }
 
         function liveFilter() {
-            var $user = $('#user');
+            const $user = $('#user');
 
             // counter for number of bans
             $num_bans.appendTo($user.parent());
@@ -153,12 +153,11 @@ function banlist() {
 
             //each tr
             $('.usertable tr').each(function () {
-                var $this = $(this);
-                var t = $this.text().toLowerCase(); //all row text
-                var $append = $(`<td class='indexColumn'>${t}</td>`).hide();
+                const $this = $(this);
+                const t = $this.text().toLowerCase(); //all row text
+                const $append = $(`<td class='indexColumn'>${t}</td>`).hide();
                 $this.append($append);
             });
-
 
             function _filter(value) {
                 if (!banlist_updating // don't trigger an update if we're still running
@@ -180,12 +179,12 @@ function banlist() {
             }
 
             // text input trigger
-            var $userInput = $('input#user');
+            const $userInput = $('input#user');
             $userInput.keyup(function () {
                 if ($('.usertable tr').length > 1000) {
                     return;
                 } // don't live filter
-                var value = $(this).val().toLowerCase();
+                const value = $(this).val().toLowerCase();
                 _filter(value);
             });
 
@@ -201,7 +200,7 @@ function banlist() {
         if (self.setting('automatic')) {
             liveFilter();
         } else {
-            var $tb_liveFilter = $('<button class="tb-action-button" type="button" name="tb_liveFilter">Live Filter</button>');
+            const $tb_liveFilter = $('<button class="tb-action-button" type="button" name="tb_liveFilter">Live Filter</button>');
             $tb_liveFilter.insertAfter($('input#user').next());
             $tb_liveFilter.click(function () {
                 liveFilter();

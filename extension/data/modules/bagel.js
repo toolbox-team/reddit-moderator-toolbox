@@ -1,5 +1,5 @@
-function bagels() {
-    var self = new TB.Module('Bagels');
+function bagels() { // eslint-disable-line no-unused-vars
+    const self = new TB.Module('Bagels');
     self.shortname = 'Bagels';
 
     //Default settings

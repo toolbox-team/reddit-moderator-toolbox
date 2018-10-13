@@ -366,9 +366,12 @@ function tbconfig() {
                 actualPage = 'config/automoderator';
                 break;
             }
+
             const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
-                $textArea = $wikiContentArea.find('.edit-wikidata'),
-                $saveButton = $wikiContentArea.find('.save-wiki-data');
+                $wikiFooterArea = $body.find(`.tb-window-footer.${tabname}`);
+
+            const $textArea = $wikiContentArea.find('.edit-wikidata'),
+                $saveButton = $wikiFooterArea.find('.save-wiki-data');
 
             if (TB.storage.getSetting('Syntax', 'enabled', true)) {
                 $body.addClass('mod-syntax');
@@ -462,6 +465,7 @@ function tbconfig() {
                     // Found it, show it.
                     $textArea.val(resp);
                     configEditor.setValue(resp);
+
                     $saveButton.show();
                     $saveButton.attr('page', page);
                 });

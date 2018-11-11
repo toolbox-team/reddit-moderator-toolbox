@@ -15,7 +15,8 @@
         "chrome": true,
         "SnuOwnd": true,
         "pako": true,
-        "tinycolor": true
+        "tinycolor": true,
+        "DOMPurify": true
     },
     "extends": "eslint:recommended",
     "rules": {

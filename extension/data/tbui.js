@@ -4,6 +4,10 @@
     TBui.longLoadArray = [];
     TBui.longLoadArrayNonPersistent = [];
 
+    TBui.sanitize = function(input) {
+        return DOMPurify.sanitize(input);
+    };
+
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
     $body.on('click', '.tb-bracket-button', function(event) {
         event.stopPropagation();

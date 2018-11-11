@@ -130,7 +130,7 @@
 		 *	 xrange(65534, 65535)]
 		 */
 		return (entity_val > 8
-		    && (entity_val !== 11 && entity_val > 12)
+		    && (entity_val !== 11 && entity_val !== 12)
 		    && (entity_val < 14 || entity_val > 31)
 		    && (entity_val < 55296 || entity_val > 57343)
 		    && (entity_val !== 65534 && entity_val !== 65535)
@@ -194,21 +194,21 @@
 	 *
 	 */
 	var HTML_ESCAPE_TABLE = [
-		7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 7, 7, 0, 7, 7, 
-		7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 
-		0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 4, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 6, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 7, 7, 0, 7, 7,
+		7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+		0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 4,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 6, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	];
 
@@ -253,7 +253,7 @@
 	 *
 	 * We asume (lazily) that any RESERVED char that
 	 * appears inside an URL is actually meant to
-	 * have its native function (i.e. as an URL 
+	 * have its native function (i.e. as an URL
 	 * component/separator) and hence needs no escaping.
 	 *
 	 * There are two exceptions: the chacters & (amp)
@@ -266,21 +266,21 @@
 	 *
 	 */
 	var HREF_SAFE = [
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 2, 2, 
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-		0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 
-		0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+		2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 0, 2, 2,
+		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+		0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+		0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	];
 
@@ -307,7 +307,7 @@
 			switch (src[i]) {
 				/* amp appears all the time in URLs, but needs
 				 * HTML-entity escaping to be inside an href */
-				case '&': 
+				case '&':
 					out.s += '&amp;';
 					break;
 
@@ -346,7 +346,7 @@
 
 
 	// function autolink_delim(uint8_t *data, size_t link_end, size_t offset, size_t size)
-	function autolink_delim(data_, link_end, offset, size) {
+	function autolink_delim(data_, link_end, offset, max_rewind, size) {
 		var data = data_.slice(offset)
 		var cclose, copen = 0;
 		var i;
@@ -468,14 +468,13 @@
 		return 0;
 	}
 
-
-	function sd_autolink__url(rewind_p, link, data_, offset, size, flags) {
+	function sd_autolink__url(rewind_p, link, data_, offset, max_rewind, size, flags) {
 		var data = data_.slice(offset);
 		var link_end, rewind = 0, domain_len;
 
 		if (size < 4 || data_[offset+1] != '/' || data_[offset+2] != '/') return 0;
 
-		while (rewind < offset && isalpha(data_[offset-rewind - 1])) rewind++;
+		while (rewind < max_rewind && isalpha(data_[offset-rewind - 1])) rewind++;
 
 		if (!sd_autolink_issafe(data_.substr(offset-rewind, size+rewind))) return 0;
 		link_end = "://".length;
@@ -486,7 +485,7 @@
 		link_end += domain_len;
 		while (link_end < size && !isspace(data_[offset+link_end])) link_end++;
 
-		link_end = autolink_delim(data_, link_end, offset, size);
+		link_end = autolink_delim(data_, link_end, offset, max_rewind, size);
 
 		if (link_end == 0) return 0;
 
@@ -497,18 +496,61 @@
 		return link_end;
 	}
 
-	function sd_autolink__subreddit(rewind_p, link, data_, offset, size) {
+	/*
+	 * Checks that `prefix_char` occurs on a word boundary just before `data`,
+	 * where `data` points to the character to search to the left of, and a word boundary
+	 * is (currently) a whitespace character, punctuation, or the start of the string.
+	 * Returns the length of the prefix.
+	 */
+	function check_reddit_autolink_prefix(data_, offset, max_rewind, size, prefix_char) {
+		var max_lookbehind = offset;
+		var data = new FakeCharPtr(data_, offset);
+
+		/* Make sure this `/` is part of `/?r/` */
+		if (size < 2 || max_rewind < 1 || data.getChar(-1) != prefix_char)
+			return 0;
+
+		/* Not at the start of the buffer, no inlines to the immediate left of the `prefix_char` */
+		if (max_rewind > 1) {
+			var boundary = data.getChar(-2);
+			if (boundary == '/')
+				return 2;
+			/**
+			 * Here's where our lack of unicode-awareness bites us. We don't correctly
+			 * match punctuation / whitespace characters for the boundary, because we
+			 * reject valid cases like "。r/example" (note the fullwidth period.)
+			 *
+			 * A better implementation might try to rewind over bytes with the 8th bit set, try
+			 * to decode them to a valid codepoint, then do a unicode-aware check on the codepoint.
+			 */
+			else if (ispunct(boundary) || isspace(boundary))
+				return 1;
+			else
+				return 0;
+		} else if (max_lookbehind > 2) {
+			/* There's an inline element just left of the `prefix_char`, is it an escaped forward
+			 * slash? bail out so we correctly handle stuff like "\/r/foo". This will also correctly
+			 * allow "\\/r/foo".
+			 */
+			if (data.getChar(-2) == '/' && data.getChar(-3) == '\\')
+				return 0;
+		}
+
+		/* Must be a new-style shortlink with nothing relevant to the left of it. */
+		return 1;
+	}
+
+	function sd_autolink__subreddit(rewind_p, link, data_, offset, max_rewind, size, no_slash) {
 		var data = data_.slice(offset);
-		var link_end;
+		var link_end = 0;
 		var allMinus = false;
 
-		if (size < 3) return 0;
+		var rewind = check_reddit_autolink_prefix(data_, offset, max_rewind, size, 'r');
+		if (!rewind)
+			return 0;
 
-		/* make sure this / is part of /r/ */
-		if (data.indexOf('/r/') != 0) return 0;
-
-		link_end = "/r/".length;
-		if (data.substr(link_end-1, 4).toLowerCase() == "all-") {
+		link_end = "/".length;
+		if (data.substr(link_end, 4).toLowerCase() == "all-") {
 			allMinus = true;
 		}
 		do {
@@ -553,23 +595,28 @@
 			}
 		}
 		/* make the link */
-		link.s += data.slice(0, link_end);
-		rewind_p.p = 0;
+		var sliceStart = offset - rewind;
+		link.s += data_.slice(sliceStart, sliceStart + link_end + rewind);
+
+		no_slash.p = (rewind == 1);
+		rewind_p.p = rewind;
 
 		return link_end;
 	}
 
-	function sd_autolink__username(rewind_p, link, data_, offset, size) {
+	function sd_autolink__username(rewind_p, link, data_, offset, max_rewind, size, no_slash) {
 		var data = data_.slice(offset);
-		var link_end;
+		var link_end = 0;
 
-		if (size < 6) return 0;
+		if (size < 3)
+			return;
 
-		/* make sure this / is part of /u/ */
-		if (data.indexOf('/u/') != 0) return 0;
+		var rewind = check_reddit_autolink_prefix(data_, offset, max_rewind, size, 'u');
+		if (!rewind)
+			return 0;
 
 		/* the first letter of a username must... well, be valid, we don't care otherwise */
-		link_end = "/u/".length;
+		link_end = "/".length;
 		if (!isalnum(data[link_end]) && data[link_end] != '_' && data[link_end] != '-')
 			return 0;
 		link_end += 1;
@@ -582,18 +629,21 @@
 			link_end++;
 
 		/* make the link */
-		link.s += data.slice(0, link_end);
-		rewind_p.p = 0;
+		var sliceStart = offset - rewind;
+		link.s += data_.slice(sliceStart, sliceStart + link_end + rewind);
+
+		no_slash.p = (rewind == 1);
+		rewind_p.p = rewind;
 
 		return link_end;
 	}
 
-	function sd_autolink__email(rewind_p, link, data_, offset, size, flags) {
+	function sd_autolink__email(rewind_p, link, data_, offset, max_rewind, size, flags) {
 		var data = data_.slice(offset);
 		var link_end, rewind;
 		var nb = 0, np = 0;
 
-		for (rewind = 0; rewind < offset; ++rewind) {
+		for (rewind = 0; rewind < max_rewind; ++rewind) {
 			var c = data_[offset-rewind - 1];
 
 			if (c == '\0') break;
@@ -618,7 +668,7 @@
 		if (link_end < 2 || nb != 1 || np == 0) return 0;
 
 		//TODO
-		link_end = autolink_delim(data_, link_end, offset, size);
+		link_end = autolink_delim(data_, link_end, offset, max_rewind, size);
 
 		if (link_end == 0) return 0;
 
@@ -629,11 +679,11 @@
 		return link_end;
 	}
 
-	function sd_autolink__www(rewind_p, link, data_, offset, size, flags) {
+	function sd_autolink__www(rewind_p, link, data_, offset, max_rewind, size, flags) {
 		var data = data_.slice(offset);
 		var link_end;
 
-		if (offset > 0 && !ispunct(data_[offset-1]) && !isspace(data_[offset-1]))
+		if (max_rewind > 0 && !ispunct(data_[offset-1]) && !isspace(data_[offset-1]))
 			return 0;
 
 		// if (size < 4 || memcmp(data, "www.", strlen("www.")) != 0)
@@ -646,7 +696,7 @@
 
 		while (link_end < size && !isspace(data[link_end])) link_end++;
 
-		link_end = autolink_delim(data_, link_end, offset, size);
+		link_end = autolink_delim(data_, link_end, offset, max_rewind, size);
 
 		if (link_end == 0) return 0;
 
@@ -1479,7 +1529,7 @@
 			done = 0;
 			reset = 0;
 			done_attr = 0;
-			
+
 			switch(c) {
 				case '>':
 					done = 1;
@@ -1664,7 +1714,7 @@
 
 	//toc_link(struct buf *ob, const struct buf *link, const struct buf *title, const struct buf *content, void *opaque)
 	function cb_toc_link(out, link, title, content, options) {
-		if (content && content.s) 
+		if (content && content.s)
 			out.s += content.s;
 		return 1;
 	}
@@ -1702,7 +1752,7 @@
 
 	/* char_emphasis • single and double emphasis parsing */
 	//Buffer, md, str, int
-	function char_emphasis(out, md, data_, offset) {
+	function char_emphasis(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var size = data.length;
 		var c = data[0];
@@ -1735,7 +1785,7 @@
 	}
 
 	/* char_codespan - '`' parsing a code span (assuming codespan != 0) */
-	function char_codespan(out, md, data_, offset) {
+	function char_codespan(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var end, nb = 0, i, f_begin, f_end;
 
@@ -1774,9 +1824,9 @@
 	}
 
 	/* char_linebreak - '\n' preceded by two spaces (assuming linebreak != 0) */
-	function char_linebreak(out, md, data_, offset) {
+	function char_linebreak(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
-		if (offset < 2 || data_[offset-1] != ' ' || data_[offset-2] != ' ')
+		if (max_rewind < 2 || data_[offset-1] != ' ' || data_[offset-2] != ' ')
 			return 0;
 
 		/* removing the last space from ob and rendering */
@@ -1788,9 +1838,9 @@
 	}
 
 	/* char_link - '[': parsing a link or an image */
-	function char_link(out, md, data_, offset) {
+	function char_link(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
-		var is_img = (offset && data_[offset - 1] == '!'), level;
+		var is_img = (max_rewind && data_[offset - 1] == '!'), level;
 		var i = 1, txt_e, link_b = 0, link_e = 0, title_b = 0, title_e = 0;
 		//4 bufs
 		var content = null;
@@ -2018,7 +2068,7 @@
 
 
 	/* char_langle_tag - '<' when tags or autolinks are allowed */
-	function char_langle_tag(out, md, data_, offset) {
+	function char_langle_tag(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var altype = {p:MKDA_NOT_AUTOLINK};
 		var end = tag_length(data, altype);
@@ -2044,7 +2094,7 @@
 
 
 	/* char_escape - '\\' backslash escape */
-	function char_escape(out, md, data_, offset) {
+	function char_escape(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var escape_chars = "\\`*_{}[]()#+-.!:|&<>/^~";
 		var work = new Buffer();
@@ -2068,7 +2118,7 @@
 
 	/* char_entity - '&' escaped when it doesn't belong to an entity */
 	//-/* valid entities are assumed to be anything matching &#?[A-Za-z0-9]+; */
-	function char_entity(out, md, data_, offset) {
+	function char_entity(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var end = 1, content_start, content_end;
 		var numeric = false, hex = false, entity_base, entity_val;
@@ -2129,7 +2179,7 @@
 		return end;
 	}
 
-	function char_autolink_url(out, md, data_, offset) {
+	function char_autolink_url(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var link = null;
 		var link_len, rewind = {p: null};
@@ -2139,7 +2189,7 @@
 		link = new Buffer();
 		md.spanStack.push(link);
 
-		if ((link_len = sd_autolink__url(rewind, link, data_, offset, data.length, 0)) > 0) {
+		if ((link_len = sd_autolink__url(rewind, link, data_, offset, max_rewind, data.length, 0)) > 0) {
 			if (rewind.p > 0) out.truncate(out.s.length - rewind.p);
 			md.callbacks.autolink(out, link, MKDA_NORMAL, md.context);
 		}
@@ -2149,7 +2199,7 @@
 	}
 
 
-	function char_autolink_email(out, md, data_, offset) {
+	function char_autolink_email(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var link = null;
 		var link_len, rewind = {p: null};
@@ -2159,7 +2209,7 @@
 		link = new Buffer();
 		md.spanStack.push(link);
 
-		if ((link_len = sd_autolink__email(rewind, link, data_, offset, data.length, 0)) > 0) {
+		if ((link_len = sd_autolink__email(rewind, link, data_, offset, max_rewind, data.length, 0)) > 0) {
 			if (rewind.p > 0) out.truncate(out.s.length - rewind.p);
 			md.callbacks.autolink(out, link, MKDA_EMAIL, md.context);
 		}
@@ -2169,7 +2219,7 @@
 	}
 
 
-	function char_autolink_www(out, md, data_, offset) {
+	function char_autolink_www(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var link = null, link_url = null, link_text = null;
 		var link_len, rewind = {p: null};
@@ -2179,14 +2229,14 @@
 		link = new Buffer();
 		md.spanStack.push(link);
 
-		if ((link_len = sd_autolink__www(rewind, link, data_, offset, data.length, 0)) > 0) {
+		if ((link_len = sd_autolink__www(rewind, link, data_, offset, max_rewind, data.length, 0)) > 0) {
 			link_url = new Buffer();
 			md.spanStack.push(link_url);
 			link_url.s += 'http://';
 			link_url.s += link.s;
 
 			if (rewind.p > 0) out.truncate(out.s.length - rewind.p);
-			
+
 			if (md.callbacks.normal_text) {
 				link_text = new Buffer();
 				md.spanStack.push(link_text);
@@ -2203,30 +2253,47 @@
 		return link_len;
 	}
 
-	function char_autolink_subreddit_or_username(out, md, data_, offset) {
+	function char_autolink_subreddit_or_username(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var link = null;
-		var link_len, rewind = {p: null};
+		var link_len = 0;
+		var rewind = {p: null}, no_slash = {p: null};
 
 		if (!md.callbacks.autolink || md.inLinkBody) return 0;
 
 		link = new Buffer();
 		md.spanStack.push(link);
-		if ((link_len = sd_autolink__subreddit(rewind, link, data_, offset, data.length)) > 0) {
-			//don't slice because the rewind pointer will always be 0
+		link_len = sd_autolink__subreddit(rewind, link, data_, offset, max_rewind, data.length, no_slash);
+		if (link_len === 0)
+			link_len = sd_autolink__username(rewind, link, data_, offset, max_rewind, data.length, no_slash);
+
+		/* Found either a user or subreddit link */
+		if (link_len > 0) {
+			var link_url = new Buffer();
+			md.spanStack.push(link_url);
+
+			if (no_slash.p)
+				link_url.s += "/";
+			link_url.s += link.s;
+
 			if (rewind.p > 0) out.truncate(out.s.length - rewind.p);
-			md.callbacks.autolink(out, link, MKDA_NORMAL, md.context);
-		} else if ((link_len = sd_autolink__username(rewind, link, data_, offset, data.length)) > 0) {
-			//don't slice because the rewind pointer will always be 0
-			if (rewind.p > 0) out.truncate(out.s.length - rewind.p);
-			md.callbacks.autolink(out, link, MKDA_NORMAL, md.context);
+
+			if (md.callbacks.normal_text) {
+				var link_text = new Buffer();
+				md.spanStack.push(link_text);
+				md.callbacks.normal_text(link_text, link, md.context);
+				md.callbacks.link(out, link_url, null, link_text, md.context);
+				md.spanStack.pop();
+			} else {
+				md.callbacks.link(out, link_url, null, link, md.context);
+			}
+			md.spanStack.pop();
 		}
 		md.spanStack.pop();
-
 		return link_len;
 	}
 
-	function char_superscript(out, md, data_, offset) {
+	function char_superscript(out, md, data_, offset, max_rewind) {
 		var data = data_.slice(offset);
 		var size = data.length;
 		var sup_start, sup_len;
@@ -2352,6 +2419,30 @@
 		if (size < 0) throw new RangeError("Size argument is negative");
 		this.s = this.s.slice(0, size);
 	}
+
+	/**
+	 * For when you need a view into a string that behaves like a
+	 * C's mutable `char *`.
+	 */
+	function FakeCharPtr(str, offset) {
+		this.s = str;
+		if (offset >= str.length || offset < 0)
+			throw new RangeError("char * offset out of bounds");
+		this.offset = offset;
+	}
+
+	FakeCharPtr.prototype.getChar = function(idx) {
+		var absIdx = this.offset + idx;
+		if (absIdx >= this.s.length || absIdx < 0)
+			throw new RangeError("Character index out of bounds");
+		return this.s.slice(absIdx, absIdx + 1);
+	}
+
+	FakeCharPtr.prototype.toString = function() {
+		return this.s.slice(this.offset);
+	}
+
+	// TODO: Support more string-like functionality for `FakeCharPtr`s
 
 
 	/**
@@ -2883,10 +2974,10 @@
 		return i + 1;
 	}
 
-	// parse_inline - parses inline markdown elements 
+	// parse_inline - parses inline markdown elements
 	//Buffer, md, String
 	function parse_inline(out, md, data) {
-		var i = 0, end = 0;
+		var i = 0, end = 0, last_special = 0;
 		var action = 0;
 		var work = new Buffer();
 
@@ -2909,12 +3000,12 @@
 			if (end >= data.length) break;
 			i = end;
 
-			end = markdown_char_ptrs[action](out, md, data, i);
+			end = markdown_char_ptrs[action](out, md, data, i, i - last_special);
 			if (!end) /* no action from the callback */
 				end = i + 1;
 			else {
 				i += end;
-				end = i;
+				last_special = end = i;
 			}
 		}
 	}
@@ -3525,7 +3616,7 @@
 		md.spanStack.pop();
 	}
 
-	function parse_table_header(out, md, data, columns) { 
+	function parse_table_header(out, md, data, columns) {
 		var i = 0, col, header_end, under_end;
 
 		var pipes = 0;
@@ -3838,7 +3929,7 @@
 				beg = end;
 			}
 		}
-	
+
 		var out = new Buffer();
 
 		/* second pass: actual rendering */
@@ -3947,3 +4038,4 @@
 		define('snuownd', [], exports);
 	}
 })(typeof(exports)!=='undefined'?exports:typeof(window)!=='undefined'?window.SnuOwnd={}:{});
+

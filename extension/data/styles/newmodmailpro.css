@@ -36,6 +36,7 @@ html.tb-nightmode,
 /* nightmode for firefox. Thanks to /u/tizorres
 */
 
+.tb-nightmode-firefox .ThreadListing__threads,
 .tb-nightmode-firefox body {
     background: #000000
 }
@@ -78,8 +79,8 @@ html.tb-nightmode,
     background-color: #191919;
 }
 
-.tb-nightmode-firefox .ThreadPreviewViewer__pendingoverlay,
-.tb-nightmode-firefox .ThreadPreviewViewer__pending {
+
+.tb-nightmode-firefox .ThreadListing__thread {
     background-color: #191919;
 }
 
@@ -87,12 +88,17 @@ html.tb-nightmode,
 .tb-nightmode-firefox .ThreadPreviewViewer__thread.tb-nightmode-firefox .m-read {
     background-color: #323232;
 }
+
+.tb-nightmode-firefox .ThreadPreview__headerRight,
+.tb-nightmode-firefox .ThreadPreview__headerRight a,
+.tb-nightmode-firefox .ThreadPreview__headerRight div,
 .tb-nightmode-firefox .ThreadPreviewViewerHeader__select {
     color: #9E9E9E;
 }
 .tb-nightmode-firefox .ThreadPreviewViewerHeader__iconLabel {
     color: #9E9E9E;
 }
+
 .tb-nightmode-firefox .ThreadPreviewViewer__thread {
     background-color: #4c4c4c;
 }
@@ -114,13 +120,16 @@ html.tb-nightmode,
 .tb-nightmode-firefox .ThreadTitle__title {
     color: #9E9E9E;
 }
-.tb-nightmode-firefox .Thread__message~.tb-nightmode-firefox .Thread__message,
-.tb-nightmode-firefox .Thread__message~.tb-nightmode-firefox .Thread__modAction,
-.tb-nightmode-firefox .Thread__modAction~.tb-nightmode-firefox .Thread__message,
-.tb-nightmode-firefox .Thread__modAction~.tb-nightmode-firefox .Thread__modAction {
+
+
+.tb-nightmode-firefox .Thread__message ~ .Thread__message,
+.tb-nightmode-firefox .Thread__message ~ .Thread__modAction,
+.tb-nightmode-firefox .Thread__modAction ~ .Thread__message,
+.tb-nightmode-firefox .Thread__modAction ~ .Thread__modAction {
     border-top: 1px solid #353535;
     background: #191919;
 }
+
 .tb-nightmode-firefox .Thread__message {
     background: #191919;
 }
@@ -195,8 +204,37 @@ html.tb-nightmode,
     background: #000;
 }
 
-/* Below is also nightmode but for toolbox specific stuff, exactly the same css we use for res nightmode. */
 
+.tb-nightmode-firefox .Search {
+    border-color: #353535;
+}
+
+
+.tb-nightmode-firefox .Search__inputContainer {
+    background-color: #191919;
+}
+
+.tb-nightmode-firefox .Search__input {
+    color: #cfd0ca;
+}
+
+
+.tb-nightmode-firefox .Search__button {
+    background-color: #949494;
+    color: #eaeaea;
+}
+
+
+.tb-nightmode-firefox .Search.m-no-query.m-focused .Search__button,
+.tb-nightmode-firefox .Search:hover .Search__button {
+    background-color: #6a8293;
+}
+
+/* Below is also nightmode but for toolbox specific stuff, exactly the same css we use for res nightmode. */
+.tb-nightmode-firefox .mod-toolbox #tb-toolbar-mysubs,
+.tb-nightmode-firefox .mod-toolbox #tb-personal-notes-button {
+    background-color: #1a1a1a
+}
 
 .mod-toolbox-rd.tb-nightmode-firefox #tb-my-subreddits {
     background-color: #6E7A86;

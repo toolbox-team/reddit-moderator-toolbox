@@ -861,7 +861,7 @@
 
             // submission basis (author, body, time)
             submissionAuthor = submission.data.author,
-            submissionSelfTextHTML = submission.data.selftext_html, // html string
+            submissionSelfTextHTML = TBui.sanitize(submission.data.selftext_html), // html string
             submissionCreatedUTC = submission.data.created_utc, // unix epoch
             submissionPermalink = submission.data.permalink,
             submissionSubreddit = submission.data.subreddit,
@@ -1136,7 +1136,7 @@
 
             // Comment basis (author, body, time)
             commentAuthor = comment.data.author,
-            commentBodyHTML = comment.data.body_html, // html string
+            commentBodyHTML = TBui.sanitize(comment.data.body_html), // html string
             //commentMarkdownBody = comment.data.body, // markdown string
             //commentCreated = comment.data.created, // unix epoch
             commentCreatedUTC = comment.data.created_utc, // unix epoch

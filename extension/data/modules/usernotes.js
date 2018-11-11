@@ -596,19 +596,7 @@ function usernotes() {
                 let thingID;
                 let thingDetails;
 
-                // Temp fix for commentAuthor not having the comment id in the front end api info.
-                // TODO: fix this once the api returns this info.
-                if($thing.data('tb-type') === 'commentAuthor') {
-                    const $thingSibling = $thing.siblings('.tb-frontend-container[data-tb-type="comment"]');
-                    if(!$thingSibling.length) {
-                        disableLink = true;
-                        createUserPopup(subreddit, user, link, disableLink, e);
-                        return;
-                    }
-                    thingDetails = $thingSibling.data('tb-details');
-                    thingID = thingDetails.data.id;
-                // Assume post for now.
-                } else if($thing.data('tb-type') === 'TBcommentAuthor') {
+                if($thing.data('tb-type') === 'TBcommentAuthor' || $thing.data('tb-type') === 'commentAuthor') {
                     thingDetails = $thing.data('tb-details');
                     thingID = thingDetails.data.comment.id;
                 } else if($thing.data('tb-type') === 'userHovercard') {

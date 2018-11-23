@@ -1612,25 +1612,9 @@ span.rate-limit-explain {
 */
 
 /*
-    The persistent loadbar css, blue in color.
+    Common loader CSS. The persistent version is blue in color.
 */
-.mod-toolbox-rd #tb-loading {
-    left:0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    position: fixed;
-    margin-left: 0;
-    margin-right: 0;
-    width: auto;
-    height: 10px;
-    z-index: 2147483645;
-    background: url("https://toolbox-team.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar.gif") center center fixed;
-}
-
-/*
-    The non-persistent loadbar css, red in color.
-*/
+.mod-toolbox-rd #tb-loading,
 .mod-toolbox-rd #tb-loading-non-persistent {
     left:0;
     right: 0;
@@ -1642,7 +1626,33 @@ span.rate-limit-explain {
     width: auto;
     height: 10px;
     z-index: 2147483645;
-    background: url("https://toolbox-team.github.io/reddit-moderator-toolbox/hosted_images/long_load_bar_non_persistant.gif") center center fixed;
+    color: #1d4b7a;
+    /* currentcolor hack to make the non-persistent color easier */
+    background-image: linear-gradient(to right,
+        currentcolor,
+        currentcolor 30%,
+        white 40%,
+        currentcolor 50%,
+        currentcolor 80%,
+        white 90%,
+        currentcolor);
+    /* background-size hack so we can actually animate the image because apparently you can't otherwise */
+    background-size: 200% 100%;
+    animation: 2s tb-loading linear infinite;
+}
+@keyframes tb-loading {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -100% 0;
+    }
+}
+/*
+    The non-persistent loadbar css, red in color.
+*/
+.mod-toolbox-rd #tb-loading-non-persistent {
+    color: #b14848;
 }
 
 /*

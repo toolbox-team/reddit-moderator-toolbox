@@ -44,6 +44,11 @@ function tbmodule() {
                             continue;
                         }
 
+                        if(!TBUtils.isOldReddit && module.oldReddit) {
+                            $.log(`Module not suitable for new reddit. Skipping ${module.name} module`, false, 'TBinit');
+                            continue;
+                        }
+
                         // lock 'n load
                         if (module.setting('enabled')) {
                             $.log(`Loading ${module.name} module`, false, 'TBinit');

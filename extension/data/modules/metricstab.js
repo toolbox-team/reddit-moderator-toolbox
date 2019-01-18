@@ -99,8 +99,6 @@ function metricstab() {
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        metricstab();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    metricstab();
+});

@@ -285,8 +285,6 @@ function newmodmailpro() {
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        newmodmailpro();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    newmodmailpro();
+});

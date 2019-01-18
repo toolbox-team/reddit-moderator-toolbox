@@ -384,8 +384,6 @@ function modmacros() {
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        modmacros();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    modmacros();
+});

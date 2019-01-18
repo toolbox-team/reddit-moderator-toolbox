@@ -175,7 +175,7 @@ function initwrapper(userDetails, newModSubs) {
         } else {
             TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
             TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
-        }        
+        }
 
         const manifest = chrome.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d).*?"(.*?)"/;

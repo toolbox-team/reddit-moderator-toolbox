@@ -806,9 +806,7 @@ function historybutton() {
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        historybutton();
+window.addEventListener('TBModuleLoaded2', function () {
+    historybutton();
 
-    });
-})();
+});

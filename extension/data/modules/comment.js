@@ -264,8 +264,6 @@ function comments() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        comments();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    comments();
+});

@@ -84,8 +84,6 @@ Info| &nbsp;
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        support();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    support();
+});

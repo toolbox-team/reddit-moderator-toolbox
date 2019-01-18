@@ -177,8 +177,6 @@ function devtools() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        devtools();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    devtools();
+});

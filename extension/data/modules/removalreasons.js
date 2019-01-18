@@ -797,8 +797,6 @@ function removalreasons() {
     TB.register_module(self);
 } // end removalreasons()
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        removalreasons();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    removalreasons();
+});

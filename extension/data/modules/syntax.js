@@ -249,8 +249,6 @@ function syntax() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        syntax();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    syntax();
+});

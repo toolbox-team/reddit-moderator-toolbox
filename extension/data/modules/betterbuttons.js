@@ -402,8 +402,6 @@ function betterbuttons() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        betterbuttons();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    betterbuttons();
+});

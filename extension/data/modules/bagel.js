@@ -19,8 +19,6 @@ function bagels() { // eslint-disable-line no-unused-vars
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        //bagels(); //disabled
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    //bagels(); //disabled
+});

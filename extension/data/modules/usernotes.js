@@ -1505,8 +1505,6 @@ function usernotes() {
     TB.register_module(self);
 } // usernotes() wrapper
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        usernotes();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    usernotes();
+});

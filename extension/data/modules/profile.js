@@ -740,8 +740,6 @@ function profilepro() {
 
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        profilepro();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    profilepro();
+});

@@ -219,8 +219,6 @@ function trouble() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        trouble(); //run
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    trouble(); //run
+});

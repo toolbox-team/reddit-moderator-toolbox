@@ -293,8 +293,6 @@ function queuetools() {
     TB.register_module(self);
 }// queuetools() wrapper
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        queuetools();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    queuetools();
+});

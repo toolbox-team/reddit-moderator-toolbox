@@ -14,7 +14,7 @@ function oldReddit() {
         try {
             element.dispatchEvent(apiEvent);
         } catch(error) {
-            console.log('Could not dispatch event', object)
+            self.log('Could not dispatch event', object);
         }
     }
 
@@ -147,8 +147,6 @@ function oldReddit() {
 
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        oldReddit();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    oldReddit();
+});

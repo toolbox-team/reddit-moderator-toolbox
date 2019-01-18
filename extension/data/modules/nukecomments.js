@@ -255,8 +255,6 @@ function nukecomments() {
     TB.register_module(self);
 } // nukecomments() wrapper
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        nukecomments();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    nukecomments();
+});

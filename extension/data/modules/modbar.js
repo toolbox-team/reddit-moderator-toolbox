@@ -678,8 +678,6 @@ function modbar() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        modbar();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    modbar();
+});

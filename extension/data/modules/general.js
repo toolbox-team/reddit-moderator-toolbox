@@ -22,8 +22,6 @@ function generalSettings() {
 
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        generalSettings();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    generalSettings();
+});

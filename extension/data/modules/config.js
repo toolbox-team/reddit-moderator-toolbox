@@ -1477,8 +1477,6 @@ function tbconfig() {
     TB.register_module(self);
 } // tbconfig() wrapper
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        tbconfig();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    tbconfig();
+});

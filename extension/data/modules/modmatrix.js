@@ -848,8 +848,6 @@ function modmatrix() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        modmatrix();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    modmatrix();
+});

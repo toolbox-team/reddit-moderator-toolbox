@@ -742,8 +742,6 @@ function modbutton() {
     TB.register_module(self);
 }
 
-(function () {
-    window.addEventListener('TBModuleLoaded2', function () {
-        modbutton();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    modbutton();
+});

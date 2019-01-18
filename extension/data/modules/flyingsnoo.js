@@ -135,8 +135,6 @@ function flyingsnoo() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        flyingsnoo();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    flyingsnoo();
+});

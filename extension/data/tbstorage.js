@@ -7,40 +7,40 @@ if (typeof (chrome) === 'undefined' && typeof (window.browser) !== 'undefined') 
     chrome = window.browser;
 }
 //Reset toolbox settings support
-(function () {
+// load storage if we're not on the reset page.
+if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
+    storagewrapper();
+} else {
+    startReset();
+}
 
-    // load storage if we're not on the reset page.
-    if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
-        storagewrapper();
-        return;
-    }
+// Clear all toolbox related localstorage items.
+// After that direct users to a page confirming settings have been reset.
+function clearLocal() {
 
-    // Clear all toolbox related localstorage items.
-    // After that direct users to a page confirming settings have been reset.
-    function clearLocal() {
+    // Settings.
+    Object.keys(localStorage)
+        .forEach(function (key) {
+            if (/^(Toolboxv4.)/.test(key)) {
+                localStorage.removeItem(key);
+            }
+        });
 
-        // Settings.
-        Object.keys(localStorage)
-            .forEach(function (key) {
-                if (/^(Toolboxv4.)/.test(key)) {
-                    localStorage.removeItem(key);
-                }
-            });
+    // Cache.
+    Object.keys(localStorage)
+        .forEach(function (key) {
+            if (/^(TBCachev4.)/.test(key)) {
+                localStorage.removeItem(key);
+            }
+        });
 
-        // Cache.
-        Object.keys(localStorage)
-            .forEach(function (key) {
-                if (/^(TBCachev4.)/.test(key)) {
-                    localStorage.removeItem(key);
-                }
-            });
+    // Wait a sec for stuff to clear.
+    setTimeout(function () {
+        window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
+    }, 1000);
+}
 
-        // Wait a sec for stuff to clear.
-        setTimeout(function () {
-            window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
-        }, 1000);
-    }
-
+function startReset() {
     const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
@@ -60,7 +60,7 @@ if (typeof (chrome) === 'undefined' && typeof (window.browser) !== 'undefined') 
             }, 1000);
         }
     }
-})();
+}
 
 function storagewrapper() {
     (function (TBStorage) {

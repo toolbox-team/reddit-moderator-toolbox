@@ -297,8 +297,6 @@ function personalnotes() {
     TB.register_module(self);
 }
 
-(function() {
-    window.addEventListener('TBModuleLoaded2', function () {
-        personalnotes();
-    });
-})();
+window.addEventListener('TBModuleLoaded2', function () {
+    personalnotes();
+});

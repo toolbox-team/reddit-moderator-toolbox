@@ -1084,12 +1084,10 @@ body {
     };
 }
 
-(function() {
-    window.addEventListener('TBUtilsLoaded2', function () {
-        $.log('TBModule has TBUtils', false, 'TBinit');
-        tbmodule();
+window.addEventListener('TBUtilsLoaded2', function () {
+    $.log('TBModule has TBUtils', false, 'TBinit');
+    tbmodule();
 
-        const event = new CustomEvent('TBModuleLoaded2');
-        window.dispatchEvent(event);
-    });
-})();
+    const event = new CustomEvent('TBModuleLoaded2');
+    window.dispatchEvent(event);
+});

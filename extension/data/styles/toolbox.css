@@ -301,6 +301,7 @@ div#tb-context-menu #tb-context-header {
     text-align: center;
     font-weight: bold;
     padding: 11px !important;
+    line-height: 14px;
     border-bottom: 0;
 }
 

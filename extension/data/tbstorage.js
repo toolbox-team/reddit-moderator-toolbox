@@ -1,5 +1,11 @@
 // This is here because we load even before TBUtils.
 const domain = window.location.hostname.split('.')[0];
+
+// Edge fix
+// TODO: remove after Edge switches to blink engine
+if (typeof (chrome) === 'undefined' && typeof (window.browser) !== 'undefined') {
+    chrome = window.browser;
+}
 //Reset toolbox settings support
 (function () {
 
@@ -58,12 +64,6 @@ const domain = window.location.hostname.split('.')[0];
 
 function storagewrapper() {
     (function (TBStorage) {
-        // Check if we are logged in and for now if the domain is the redesign test domain
-
-        // Disabled for new modmail until we can sort out conflicts with classic Toolboxv4.
-        //if ((!$('body').find('#USER_DROPDOWN_ID').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return;
-        if ((!$('body').find('#USER_DROPDOWN_ID').text() && !$('.BlueBar__account a.BlueBar__username').text() && $('.Header__profile').length === 0) || $('.mod-toolbox-rd').length) return; // not logged in or toolbox is already loaded.
-
         const SHORTNAME = 'TBStorage';
 
         // Type safe keys.
@@ -76,45 +76,17 @@ function storagewrapper() {
 
         localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'new' || TBStorage.domain === 'mod' || TBStorage.domain === 'www');
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
-        TBStorage.browsers = {
-            CHROME: CHROME,
-            FIREFOX: FIREFOX,
-            OPERA: OPERA,
-            EDGE: EDGE,
-            UNKOWN_BROWSER: UNKOWN_BROWSER
-        };
-
-        TBStorage.browser = UNKOWN_BROWSER;
         TBStorage.isLoaded = false;
 
-        // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
-        if (typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style) {
-            TBStorage.browser = FIREFOX;
-        } else if (typeof (window.browser) !== 'undefined') {
-            TBStorage.browser = EDGE;
-            chrome = window.browser;
-        } else if (typeof (chrome) !== 'undefined') {
-            TBStorage.browser = CHROME;
-
-            if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
-                TBStorage.browser = OPERA;
-            }
-        }
-
-        if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
-            chrome.storage.local.get('tbsettings', function (sObject) {
-                if (sObject.tbsettings && sObject.tbsettings !== undefined) {
-                    objectToSettings(sObject.tbsettings, function () {
-                        SendInit();
-                    });
-                } else {
+        chrome.storage.local.get('tbsettings', function (sObject) {
+            if (sObject.tbsettings && sObject.tbsettings !== undefined) {
+                objectToSettings(sObject.tbsettings, function () {
                     SendInit();
-                }
-            });
-        } else {
-            SendInit();
-        }
+                });
+            } else {
+                SendInit();
+            }
+        });
 
         // methods.
         TBStorage.setSetting = function (module, setting, value) {
@@ -236,37 +208,57 @@ function storagewrapper() {
         // Don't re-store the settings after a save on the the refresh that follows.
             localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
-            if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
-                settingsToObject(function (sObject) {
-                    const settingsObject = sObject;
+            settingsToObject(function (sObject) {
+                const settingsObject = sObject;
 
-                    // save settings
-                    chrome.storage.local.set({
-                        'tbsettings': sObject
-                    }, function () {
+                // save settings
+                chrome.storage.local.set({
+                    'tbsettings': sObject
+                }, function () {
 
-                        // now verify them
-                        chrome.storage.local.get('tbsettings', function (returnObject) {
-                            if (returnObject.tbsettings && returnObject.tbsettings !== undefined
-                            && isEquivalent(returnObject.tbsettings, settingsObject)) {
-                                callback(true);
-                            } else {
-                                $.log('Settings could not be verified', false, SHORTNAME);
-                                callback(false);
-                            }
-                        });
+                    // now verify them
+                    chrome.storage.local.get('tbsettings', function (returnObject) {
+                        if (returnObject.tbsettings && returnObject.tbsettings !== undefined
+                        && isEquivalent(returnObject.tbsettings, settingsObject)) {
+                            callback(true);
+                        } else {
+                            $.log('Settings could not be verified', false, SHORTNAME);
+                            callback(false);
+                        }
                     });
-
                 });
 
-            }
+            });
+
         };
 
         function SendInit() {
-            setTimeout(function () {
-                const event = new CustomEvent('TBStorageLoaded2');
-                window.dispatchEvent(event);
-            }, 10);
+            // Check if we are logged in and if we want to activate on old reddit as well.
+            let loggedinRedesign = false,
+                loggedinOld = false;
+
+            const $body = $('body');
+
+            // Check for redesign
+            if (($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) && !$('.mod-toolbox-rd').length) {
+                loggedinRedesign = true;
+            }
+
+            // Check for old reddit
+            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length === 0) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
+                loggedinOld = true;
+            }
+
+            // Check if the oldreddit module is enabled and we also need to activate on old reddit.
+            const oldRedditActive = getSetting('oldreddit', 'enabled', false);
+
+            if((loggedinOld && oldRedditActive) || loggedinRedesign) {
+                $body.addClass('mod-toolbox-rd');
+                setTimeout(function () {
+                    const event = new CustomEvent('TBStorageLoaded2');
+                    window.dispatchEvent(event);
+                }, 10);
+            }
         }
 
         function registerSetting(module, setting) {
@@ -304,14 +296,12 @@ function storagewrapper() {
         // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
             if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
 
-            if (TBStorage.browser === CHROME || TBStorage.browser === EDGE || TBStorage.browser === FIREFOX) {
-            // chrome
-                settingsToObject(function (sObject) {
-                    chrome.storage.local.set({
-                        'tbsettings': sObject
-                    });
+            settingsToObject(function (sObject) {
+                chrome.storage.local.set({
+                    'tbsettings': sObject
                 });
-            }
+            });
+
         }
 
         function objectToSettings(object, callback) {

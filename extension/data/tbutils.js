@@ -2,7 +2,7 @@ function initwrapper(userDetails, newModSubs) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
 
-    // We need these before we can do anything.
+        // We need these before we can do anything.
         TBUtils.userDetails = userDetails;
         TBUtils.modhash = userDetails.data.modhash;
 
@@ -132,6 +132,10 @@ function initwrapper(userDetails, newModSubs) {
                 "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
         // Public variables
+        TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
+        TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
+        TBUtils.isOldReddit = $('#header').length;
+
         if(newModSubs && newModSubs.length > 0) {
             TBUtils.mySubs = [];
             TBUtils.mySubsData = [];
@@ -171,7 +175,7 @@ function initwrapper(userDetails, newModSubs) {
         } else {
             TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
             TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
-        }
+        }        
 
         const manifest = chrome.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d).*?"(.*?)"/;
@@ -205,10 +209,31 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.tbDevs = toolboxDevs;
         TBUtils.betaRelease = betaRelease;
 
+        TBUtils.browsers = {
+            CHROME: CHROME,
+            FIREFOX: FIREFOX,
+            OPERA: OPERA,
+            EDGE: EDGE,
+            UNKOWN_BROWSER: UNKOWN_BROWSER
+        };
+
+        TBUtils.browser = UNKOWN_BROWSER;
+
+        // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
+        if (typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style) {
+            TBUtils.browser = FIREFOX;
+        } else if (typeof (window.browser) !== 'undefined') {
+            TBUtils.browser = EDGE;
+        } else if (typeof (chrome) !== 'undefined') {
+            TBUtils.browser = CHROME;
+
+            if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
+                TBUtils.browser = OPERA;
+            }
+        }
+
         // Stuff from TBStorage
-        TBUtils.browser = TBStorage.browser;
         TBUtils.domain = TBStorage.domain;
-        TBUtils.browsers = TBStorage.browsers;
 
         // Check our post site.  We might want to do some sort or regex fall back here, if it's needed.
         if (TBUtils.isModFakereddit || TBUtils.post_site === undefined || !TBUtils.post_site || invalidPostSites.indexOf(TBUtils.post_site) !== -1) {
@@ -1408,29 +1433,35 @@ function initwrapper(userDetails, newModSubs) {
             // First we check if we are in new modmail thread and for now we take a very simple.
             // Everything we need info for is centered around threads.
             const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            if (TBUtils.isNewModmail) {
+            const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+
             // declare what we will need.
-                let $sender = $(sender);
-                let $body = $('body');
+            let $sender = $(sender);
+            let $body = $('body');
 
-                let subreddit,
-                    permalink,
-                    domain,
-                    id,
-                    body,
-                    title,
-                    kind,
-                    postlink,
-                    banned_by,
-                    spam,
-                    ham,
-                    user,
-                    approved_by = [],
-                    $textBody;
+            let subreddit,
+                permalink,
+                domain,
+                id,
+                postID,
+                body,
+                title,
+                kind,
+                postlink,
+                banned_by,
+                spam,
+                ham,
+                user,
+                approved_by,
+                $textBody,
+                subredditType;
 
+            // If new modmail the method is slightly different.
+            if (TBUtils.isNewModmail) {
+                subredditType = '';
                 // Lack of a better name, can be a thread_message or infobar.
-                let $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
-                let browserUrl = window.location.href;
+                const $threadBase = $($sender.closest('.Thread__message')[0] || $sender.find('.InfoBar')[0] || $sender);
+                const browserUrl = window.location.href;
 
                 const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
 
@@ -1453,61 +1484,125 @@ function initwrapper(userDetails, newModSubs) {
                 ham = false;
                 user = $threadBase.find('.Message__author').text() || $body.find('.InfoBar__username').text();
 
-                // A recent reddit change makes subreddit names sometimes start with "/r/".
-                // Mod mail subreddit names additionally end with "/".
-                // reddit pls, need consistency
-                subreddit = TBUtils.cleanSubredditName(subreddit);
-
-                // Not a mod, reset current sub.
-                if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
-                    subreddit = '';
-                }
-
-                if (user === '[deleted]') {
-                    user = '';
-                }
-
-                // If the permalink is relative, stick the current domain name in.
-                // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0,1) === '/')
-                {
-                    permalink = TBUtils.baseDomain + permalink;
-                }
-
-                if (permalink && permaCommentLinkRegex.test(permalink)) {
-                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
-                }
-
-                let info = {
-                    subreddit: subreddit,
-                    user: user,
-                    author: user,
-                    permalink: permalink,
-                    url: permalink,
-                    domain: domain,
-                    id: id,
-                    body: `> ${body.split('\n').join('\n> ')}`,
-                    raw_body: body,
-                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                    approved_by: approved_by[1],
-                    title: title,
-                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                    kind: kind,
-                    postlink: postlink,
-                    link: postlink,
-                    banned_by: banned_by,
-                    spam: spam,
-                    ham: ham,
-                    rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                    sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                    wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                    mod: TBUtils.logged
-                };
-
-                return info;
             } else {
-                return false;
+                const $entry = $($sender.closest('.entry')[0] || $sender.find('.entry')[0] || $sender);
+                const $thing = $($sender.closest('.thing')[0] || $sender);
+
+                subredditType = $thing.attr('data-subreddit-type');
+                user = $entry.find('.author:first').text() || $thing.find('.author:first').text();
+                subreddit = $thing.data('subreddit') || TBUtils.post_site || $entry.find('.subreddit:first').text() || $thing.find('.subreddit:first').text() || $entry.find('.tagline .head b > a[href^="/r/"]:not(.moderator)').text();
+                permalink = $entry.find('a.bylink').attr('href') || $entry.find('.buttons:first .first a').attr('href') || $thing.find('a.bylink').attr('href') || $thing.find('.buttons:first .first a').attr('href');
+                domain = ($entry.find('span.domain:first').text() || $thing.find('span.domain:first').text()).replace('(', '').replace(')', '');
+                id = $entry.attr('data-fullname') || $thing.attr('data-fullname') || $sender.closest('.usertext').find('input[name=thing_id]').val();
+                $textBody = $entry.find('.usertext-body:first').clone() || $thing.find('.usertext-body:first').clone();
+                $textBody.find('.RESUserTag, .voteWeight, .keyNavAnnotation').remove();
+                body = $textBody.text() || '';
+                body = body.replace(/^\s+|\s+$/g, '');
+
+                $textBody.remove();
+
+                // These need some fall backs, but only removal reasons use them for now.
+                title = $thing.find('a.title').length ? $thing.find('a.title').text() : '';
+                kind = $thing.hasClass('link') ? 'submission' : 'comment';
+                postlink = $thing.find('a.title').attr('href');
+
+                // removed? spam or ham?
+                const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
+
+                banned_by = removal[1] || '';
+                spam = removal[2] == 'spam' || removal[2] == 'confirm spam';
+                ham = removal[2] == 'remove not spam';
+
+                if (TBUtils.isEditUserPage && !user) {
+                    user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
+                }
+
+                // If we still don't have a sub, we're in mod mail, or PMs.
+                if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
+                // Change it to use the parent's title.
+                    title = $sender.find('.subject-text:first').text();
+                    subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
+                    //This is a weird palce to go about this, and the conditions are strange,
+                    //but if we're going to assume we're us, we better make damned well sure that is likely the case.
+                    // if ($entry.find('.remove-button').text() === '') {
+                    // The previous check would mistakenly catch removed modmail messages as the user's messages.
+                    // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
+                    // The '.message-parent' check fixes reddit.com/message/messages/, which contains mod mail and PMs.
+
+                    // There are two users in the tagline, the first one is the user sending the message so we want to target that user.
+                    user = $entry.find('.sender a.author').text();
+                    // If there is only one use present and it says "to" it means that this is not the user sending the message.
+                    if ($entry.find('.sender a.author').length < 1 && $entry.find('.recipient a.author').length > 0) {
+                        user = TBUtils.logged;
+                    }
+                    if (user === '') {
+                        user = TBUtils.logged;
+                        if (!subreddit || subreddit.indexOf('/r/') < 1) {
+                        // Find a better way, I double dog dare ya!
+                            subreddit = $thing.closest('.message-parent').find('.correspondent.reddit.rounded a').text();
+                        }
+                    }
+                }
+                const approved_text = $entry.find('.approval-checkmark').attr('title') || $thing.find('.approval-checkmark').attr('title') || '';
+                approved_by = approved_text.match(/by\s(.+?)\s/) || '';
             }
+
+            // A recent reddit change makes subreddit names sometimes start with "/r/".
+            // Mod mail subreddit names additionally end with "/".
+            // reddit pls, need consistency
+            subreddit = TBUtils.cleanSubredditName(subreddit);
+
+            // Not a mod, reset current sub.
+            if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                subreddit = '';
+            }
+
+            if (user === '[deleted]') {
+                user = '';
+            }
+
+            // If the permalink is relative, stick the current domain name in.
+            // Only do so if a permalink is found.
+            if (permalink && permalink.slice(0,1) === '/')
+            {
+                permalink = TBUtils.baseDomain + permalink;
+            }
+
+            if (permalink && permaCommentLinkRegex.test(permalink)) {
+                const permalinkDetails = permalink.match(permaLinkInfoRegex);
+                postID = `t3_${permalinkDetails[2]}`;
+                permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+            }
+
+            let info = {
+                subreddit: subreddit,
+                subredditType: subredditType,
+                user: user,
+                author: user,
+                permalink: permalink,
+                url: permalink,
+                domain: domain,
+                id: id,
+                postID: postID || '',
+                body: `> ${body.split('\n').join('\n> ')}`,
+                raw_body: body,
+                uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                approved_by: approved_by,
+                title: title,
+                uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                kind: kind,
+                postlink: postlink,
+                link: postlink,
+                banned_by: banned_by,
+                spam: spam,
+                ham: ham,
+                rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                mod: TBUtils.logged
+            };
+
+            return info;
         };
 
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
@@ -2938,6 +3033,44 @@ function initwrapper(userDetails, newModSubs) {
                 }, 2000);
             });
 
+        } else if ($('#header').length) {
+            let newThingRunning = false;
+            // NER, load more comments, and mod frame support.
+            const target = document.querySelector('div.content');
+
+            // create an observer instance
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
+                    if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
+                    $target.hasClass('modactionlisting'))) && !$parentNode.hasClass('morecomments') && !$target.hasClass('flowwit')) return;
+
+                    $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
+                    // It is entirely possible that TBNewThings is fired multiple times.
+                    // That is why we only set a new timeout if there isn't one set already.
+                    if(!newThingRunning) {
+                        newThingRunning = true;
+                        // Wait a sec for stuff to load.
+                        setTimeout(function () {
+                            newThingRunning = false;
+                            const event = new CustomEvent('TBNewThings');
+                            window.dispatchEvent(event);
+                        }, 1000);
+                    }
+                });
+            });
+
+            // configuration of the observer:
+            // We specifically want all child elements but nothing else.
+            const config = {
+                attributes: false,
+                childList: true,
+                characterData: false,
+                subtree: true
+            };
+
+            // pass in the target node, as well as the observer options
+            observer.observe(target, config);
         }
 
         // NER support. todo: finish this.

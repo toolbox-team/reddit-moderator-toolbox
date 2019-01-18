@@ -98,6 +98,7 @@
                 "data/modules/support.js",
                 "data/modules/modbar.js",
                 "data/modules/config.js",
+                "data/modules/oldreddit.js",
                 "data/modules/modbutton.js",
                 "data/modules/general.js",
                 "data/modules/notifier.js",

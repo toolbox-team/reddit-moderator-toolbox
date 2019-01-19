@@ -135,6 +135,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
         TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
         TBUtils.isOldReddit = $('#header').length;
+        TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
 
         if(newModSubs && newModSubs.length > 0) {
             TBUtils.mySubs = [];

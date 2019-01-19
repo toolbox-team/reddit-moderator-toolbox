@@ -1675,6 +1675,7 @@ span.rate-limit-explain {
 .mod-toolbox-rd #tb-loading-stuff .tb-loading-content img,
 .mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content img{
     vertical-align: middle;
+    height: 75px;
 }
 
 .mod-toolbox-rd #tb-loading-stuff .tb-loading-content .tb-loading-text,
@@ -1688,7 +1689,7 @@ span.rate-limit-explain {
     max-width: 500px;
     position: fixed;
     z-index: 2147483647;
-    bottom: 40px;
+    bottom: 50px;
     left: 50%;
     padding: 10px;
     min-width: 150px;

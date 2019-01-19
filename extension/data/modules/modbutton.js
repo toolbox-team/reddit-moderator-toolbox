@@ -67,7 +67,7 @@ function modbutton() {
 
         TB.listener.on('author', function(e) {
             const $target = $(e.target);
-            if ($target.closest('.tb-thing').length || !onlyshowInhover) {
+            if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
 
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;

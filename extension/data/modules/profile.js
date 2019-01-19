@@ -691,7 +691,7 @@ function profilepro() {
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
 
-                if (!$target.closest('.tb-profile-overlay').length && !onlyshowInhover) {
+                if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBUtils.isOldReddit)) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
                     TBUtils.getModSubs(function () {

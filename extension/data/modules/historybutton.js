@@ -72,7 +72,7 @@ function historybutton() {
         } else {
             TB.listener.on('author', function(e) {
                 const $target = $(e.target);
-                if ($target.closest('.tb-thing').length || !onlyshowInhover) {
+                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
                     const author = e.detail.data.author;
                     self.attachHistoryButton($target, author);
                 }

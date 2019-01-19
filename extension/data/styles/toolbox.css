@@ -1498,6 +1498,10 @@ body.mod-toolbox-rd .tb-action-button:active {
     height: 26px !important;
 }
 
+body.mod-toolbox-rd .tb-usertext-buttons .tb-action-button {
+    vertical-align: initial !important
+}
+
 /* Hack to make mod sticky + save button only show up where it's supposed to -
    doing this via JS is hard because Reddit clones the reply field from the top-
    level one, and the button should be visible on top-level comments but not on

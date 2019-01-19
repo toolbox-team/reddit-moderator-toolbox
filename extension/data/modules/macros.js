@@ -71,6 +71,71 @@ function modmacros() {
             });
         }
 
+        if(TBUtils.isOldReddit) {
+            TB.utils.getModSubs(function () {
+                if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
+                    self.log('getting config');
+                    getConfig(TB.utils.post_site, function (success, config) {
+                    // if we're a mod, add macros to top level reply button.
+                        if (success && config.length > 0) {
+
+                            const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
+                            const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
+                                macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
+
+                            if ($tbUsertextButtons.length) {
+                                $tbUsertextButtons.append(macroButtonHtml);
+                            } else {
+                                $usertextButtons.find('.status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
+                            }
+
+                            populateSelect('.tb-top-macro-select', TB.utils.post_site, config);
+                        }
+                    });
+                }
+            });
+
+            // add macro buttons after we click reply, if we're a mod.
+            $body.on('click', 'ul.buttons a', function () {
+                const $this = $(this);
+                if ($this.text() === 'reply') {
+
+                    const $thing = $this.closest('.thing'),
+                        info = TB.utils.getThingInfo($thing, true);
+
+                    // This is because reddit clones the top-level reply box for all reply boxes.
+                    // We need to remove it before adding the new one, because the new one works differently.
+                    // RES' @andytuba is a golden fucking god.
+                    $thing.find('.tb-top-macro-select').remove();
+
+                    // Don't add macro button twice.
+                    $thing.find('.tb-macro-select').remove();
+
+                    // are we a mod?
+                    if (!info.subreddit) return;
+                    self.log(info.subreddit);
+
+                    // if we don't have a config, get it.  If it fails, return.
+                    getConfig(info.subreddit, function (success, config) {
+                    // if we're a mod, add macros to top level reply button.
+                        if (success && config.length > 0) {
+
+                            const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
+                                macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+
+                            if ($tbUsertextButtons.length) {
+                                $tbUsertextButtons.append(macroButtonHtml);
+                            } else {
+                                $thing.find('.usertext-buttons .status').before(`<div class="tb-usertext-buttons">${macroButtonHtml}</div>`);
+                            }
+
+                            populateSelect('.tb-macro-select', info.subreddit, config);
+                        }
+                    });
+                }
+            });
+        }
+
         // Add macro button in new modmail
         function addNewMMMacro() {
             const $thing = $body.find('.InfoBar'),

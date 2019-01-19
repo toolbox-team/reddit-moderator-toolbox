@@ -481,6 +481,11 @@ div#tb-context-menu #tb-context-header {
 
 /* Module settings stuff */
 
+.mod-toolbox-rd .tb-oldReddit-module {
+    color: rgb(70, 89, 109);
+    font-size: 0.8em;
+}
+
 .mod-toolbox-rd  .tb-window-tabs a.tb-module-disabled {
     background-color: #D6D9DD;
     color: #808080;

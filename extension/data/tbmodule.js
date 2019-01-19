@@ -536,6 +536,7 @@ function tbmodule() {
                                 <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
                                     link
                                 </a>&nbsp;
+                                ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
                             </p>
                             <div style="display: none;" class="tb-setting-input tb-setting-input-${name}">
                                 <input type="text" class="tb-input" readonly="readonly" value="[${name}](#?tbsettings=toggle_modules&setting=${name})"><br>
@@ -838,6 +839,10 @@ body {
                             $tab.addClass('tb-module-disabled');
                             $tab.attr('title', 'This module is not active, you can activate it in the "Toggle Modules" tab.');
                             $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>');
+                        }
+
+                        if(module.oldReddit) {
+                            $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                         }
                         $('.tb-settings .tb-window-tabs-wrapper').append($settings);
                         // Add each tab in its place in ABC order, with exceptions

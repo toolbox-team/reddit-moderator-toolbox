@@ -74,7 +74,7 @@ function oldReddit() {
             // Comment
             if(!$jsApiThingPlaceholder.hasClass('.tb-frontend-container')) {
                 const detailObject = {
-                    'type': 'TBcomment',
+                    'type': 'TBcommentOldReddit',
                     'data': {
                         'author': info.author,
                         'post': {

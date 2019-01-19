@@ -9,6 +9,7 @@
         'commentAuthor': ['author'],
         'TBcommentAuthor': ['author'],
         'TBcomment': ['comment'],
+        'TBcommentOldReddit': ['comment'],
         'TBpost': ['post']
     };
 

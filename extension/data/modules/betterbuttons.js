@@ -1,6 +1,7 @@
 function betterbuttons() {
     const self = new TB.Module('Better Buttons');
     self.shortname = 'BButtons';
+    self.oldReddit = true;
 
     // Default settings
     self.settings['enabled']['default'] = true;

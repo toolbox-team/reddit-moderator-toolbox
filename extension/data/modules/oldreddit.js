@@ -120,8 +120,8 @@ function oldReddit() {
         requestAnimationFrame(() => {
             $things.viewportChecker({
                 classToAdd: 'tb-seen',
-                callbackFunction: function(thing, action) {
-                    console.log(action);
+                callbackFunction: function(thing) {
+
                     const $thing = $(thing);
                     const info = TBUtils.getThingInfo($thing);
                     if(info.kind === 'submission' || info.kind === 'comment') {

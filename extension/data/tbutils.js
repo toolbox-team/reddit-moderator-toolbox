@@ -1605,69 +1605,137 @@ function initwrapper(userDetails, newModSubs) {
             return info;
         };
 
+        function findMessage(object, searchID) {
+            let found;
+            switch (object.kind) {
+            case 'Listing':
+                for (let i = 0; i < object.data.children.length; i++) {
+                    const childFound = findMessage(object.data.children[i], searchID);
+                    if(childFound) {
+                        found = childFound;
+                    }
+                }
+                break;
+            case 't4':
+                console.log('t4:', object.data.id);
+                if(object.data.id === searchID) {
+                    found = object;
+                }
+
+                if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
+                    const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
+                    if(childFound) {
+                        found = childFound;
+                    }
+                }
+                break;
+            default:
+                break;
+            }
+            return found;
+        }
+
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
-            const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-            $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
-                const data = response.data;
+            if(id.startsWith('t4_')) {
+                const shortID = id.substr(3);
+                $.get(`${TBUtils.baseDomain}/message/messages/${shortID}.json`, function (response) {
+                    const message = findMessage(response, shortID);
+                    const body = message.data.body,
+                        user = message.data.author,
+                        title = message.data.subject,
+                        subreddit = message.data.subreddit || '',
+                        permalink = `/message/messages/${shortID}`;
 
-                let user = data.children[0].data.author;
-                let body = data.children[0].data.body || '';
-                let permalink = data.children[0].data.permalink;
-                let title = data.children[0].data.title || '';
-                let postlink = data.children[0].data.url || '';
-                // A recent reddit change makes subreddit names sometimes start with "/r/".
-                // Mod mail subreddit names additionally end with "/".
-                // reddit pls, need consistency
-                subreddit = TBUtils.cleanSubredditName(subreddit);
+                    const info = {
+                        subreddit: subreddit,
+                        user: user,
+                        author: user,
+                        permalink: permalink,
+                        url: permalink,
+                        domain: '',
+                        id: id,
+                        body: `> ${body.split('\n').join('\n> ')}`,
+                        raw_body: body,
+                        uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                        approved_by: '',
+                        title: title,
+                        uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                        kind: 'comment',
+                        postlink: '',
+                        link: '',
+                        banned_by: '',
+                        spam: '',
+                        ham: '',
+                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        mod: TBUtils.logged
+                    };
+                    callback(info);
+                });
+            } else {
+                const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
+                    const data = response.data;
 
-                // Not a mod, reset current sub.
-                if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
-                    subreddit = '';
-                }
+                    let user = data.children[0].data.author;
+                    let body = data.children[0].data.body || '';
+                    let permalink = data.children[0].data.permalink;
+                    let title = data.children[0].data.title || '';
+                    let postlink = data.children[0].data.url || '';
+                    // A recent reddit change makes subreddit names sometimes start with "/r/".
+                    // Mod mail subreddit names additionally end with "/".
+                    // reddit pls, need consistency
+                    subreddit = TBUtils.cleanSubredditName(subreddit);
 
-                if (user === '[deleted]') {
-                    user = '';
-                }
+                    // Not a mod, reset current sub.
+                    if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                        subreddit = '';
+                    }
 
-                // If the permalink is relative, stick the current domain name in.
-                // Only do so if a permalink is found.
-                if (permalink && permalink.slice(0,1) === '/')
-                {
-                    permalink = TBUtils.baseDomain + permalink;
-                }
+                    if (user === '[deleted]') {
+                        user = '';
+                    }
 
-                if (permalink && permaCommentLinkRegex.test(permalink)) {
-                    permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
-                }
+                    // If the permalink is relative, stick the current domain name in.
+                    // Only do so if a permalink is found.
+                    if (permalink && permalink.slice(0,1) === '/')
+                    {
+                        permalink = TBUtils.baseDomain + permalink;
+                    }
 
-                let info = {
-                    subreddit: subreddit,
-                    user: user,
-                    author: user,
-                    permalink: permalink,
-                    url: permalink,
-                    domain: data.children[0].data.domain || '',
-                    id: id,
-                    body: `> ${body.split('\n').join('\n> ')}`,
-                    raw_body: body,
-                    uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                    approved_by: data.children[0].data.approved_by,
-                    title: title,
-                    uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                    kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
-                    postlink: postlink,
-                    link: postlink,
-                    banned_by: data.children[0].data.banned_by,
-                    spam: data.children[0].data.spam,
-                    ham: data.children[0].data.removed,
-                    rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                    sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                    wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                    mod: TBUtils.logged
-                };
-                callback(info);
-            });
+                    if (permalink && permaCommentLinkRegex.test(permalink)) {
+                        permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+                    }
 
+                    const info = {
+                        subreddit: subreddit,
+                        user: user,
+                        author: user,
+                        permalink: permalink,
+                        url: permalink,
+                        domain: data.children[0].data.domain || '',
+                        id: id,
+                        body: `> ${body.split('\n').join('\n> ')}`,
+                        raw_body: body,
+                        uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
+                        approved_by: data.children[0].data.approved_by,
+                        title: title,
+                        uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
+                        kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
+                        postlink: postlink,
+                        link: postlink,
+                        banned_by: data.children[0].data.banned_by,
+                        spam: data.children[0].data.spam,
+                        ham: data.children[0].data.removed,
+                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
+                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
+                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        mod: TBUtils.logged
+                    };
+                    callback(info);
+                });
+            }
         };
 
         TBUtils.replaceTokens = function (info, content) {

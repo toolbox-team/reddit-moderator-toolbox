@@ -117,19 +117,21 @@ function oldReddit() {
 
     function thingCrawler() {
         const $things = $('div.content .thing:not(.tb-seen) .entry').closest('.thing');
-        TBUtils.forEachChunkedDynamic($things, function(thing) {
-            const $thing = $(thing);
-            $thing.addClass('tb-seen');
-
-            const info = TBUtils.getThingInfo($thing);
-            if(info.kind === 'submission' || info.kind === 'comment') {
-                requestAnimationFrame(() => {
-                    handleThing($thing, info);
-                });
-            }
-
-        }, {framerate: 40});
-
+        requestAnimationFrame(() => {
+            $things.viewportChecker({
+                classToAdd: 'tb-seen',
+                callbackFunction: function(thing, action) {
+                    console.log(action);
+                    const $thing = $(thing);
+                    const info = TBUtils.getThingInfo($thing);
+                    if(info.kind === 'submission' || info.kind === 'comment') {
+                        requestAnimationFrame(() => {
+                            handleThing($thing, info);
+                        });
+                    }
+                }
+            });
+        });
     }
 
     self.init = function () {

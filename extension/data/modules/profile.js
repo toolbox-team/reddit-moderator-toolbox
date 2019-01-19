@@ -697,7 +697,9 @@ function profilepro() {
                     TBUtils.getModSubs(function () {
                         if(TBUtils.modsSub(subreddit)) {
                             const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
-                            $target.append(profileButton);
+                            requestAnimationFrame(() => {
+                                $target.append(profileButton);
+                            });
                         }
                     });
                 }

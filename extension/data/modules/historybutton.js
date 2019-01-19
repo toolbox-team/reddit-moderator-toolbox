@@ -44,8 +44,9 @@ function historybutton() {
     self.attachHistoryButton = function($target, author, buttonText = 'H') {
 
         const UserButtonHTML = `<a href="javascript:;" class="user-history-button tb-bracket-button" data-author="${author}" title="view & analyze user's submission and comment history">${buttonText}</a>`;
-
-        $target.append(UserButtonHTML);
+        requestAnimationFrame(() => {
+            $target.append(UserButtonHTML);
+        });
     };
     self.run = function () {
         self.log('run');

@@ -8,7 +8,7 @@ function queuetools() {
     self.register_setting('showActionReason', {
         'type': 'boolean',
         'default': true,
-        'title': 'Show previously taken actions next to submissions. Based on the last 100 actions in the subreddit modlog'
+        'title': 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog'
     });
     self.register_setting('expandActionReasonQueue', {
         'type': 'boolean',
@@ -202,7 +202,7 @@ function queuetools() {
                 if(TBUtils.modsSub(subreddit)) {
                     getActions(subreddit, id, function(actions) {
                         if(actions) {
-                            let $actionTable = $(`
+                            const $actionTable = $(`
                             <div class="tb-action-details">
                                 <span class="tb-bracket-button tb-show-action-table">show recent actions</span>
                                 <table class="tb-action-table">
@@ -233,8 +233,11 @@ function queuetools() {
                                 `;
                                 $actionTable.find('.tb-action-table').append(actionHTML);
                             });
-                            $target.append($actionTable);
-                            $actionTable.find('time.timeago').timeago();
+
+                            requestAnimationFrame(() => {
+                                $target.append($actionTable);
+                                $actionTable.find('time.timeago').timeago();
+                            });
                         }
                     });
                 }

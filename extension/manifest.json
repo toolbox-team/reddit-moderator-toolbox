@@ -70,6 +70,7 @@
                 "data/libs/tbplugins.js",
                 "data/libs/snuownd.js",
                 "data/libs/purify.js",
+                "data/libs/jquery.viewportchecker.js",
                 "data/libs/codemirror/codemirror.js",
                 "data/libs/codemirror/addon/closebrackets.js",
                 "data/libs/codemirror/addon/css-hint.js",

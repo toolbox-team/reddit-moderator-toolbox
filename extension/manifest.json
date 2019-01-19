@@ -101,6 +101,7 @@
                 "data/modules/config.js",
                 "data/modules/oldreddit.js",
                 "data/modules/betterbuttons.js",
+                "data/modules/domaintagger.js",
                 "data/modules/syntax.js",
                 "data/modules/modbutton.js",
                 "data/modules/general.js",

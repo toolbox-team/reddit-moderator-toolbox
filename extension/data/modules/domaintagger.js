@@ -2,6 +2,7 @@ function domaintagger() {
 
     const self = new TB.Module('Domain Tagger');
     self.shortname = 'DTagger';
+    self.oldReddit = true;
 
     ////Default settings
     self.settings['enabled']['default'] = true;
@@ -62,7 +63,8 @@ function domaintagger() {
             // Build object lists per subreddit
             self.log('Processing things');
             self.startProfile('build-object-list');
-            TBUtils.forEachChunked($things, 25, 250, function(thing) {
+
+            TBUtils.forEachChunkedDynamic($things, function(thing) {
                 self.startProfile('build-object-list-inner');
 
                 const $thing = $(thing),
@@ -76,18 +78,16 @@ function domaintagger() {
                 subs[sub].push(thing);
 
                 self.endProfile('build-object-list-inner');
-            },
-            // Process subreddit objects' lists
-            function () {
+            }).then(function () {
+                // Process subreddit objects' lists
                 self.endProfile('build-object-list');
 
                 self.log('Processing subreddits');
                 self.log(Object.keys(subs));
 
-                TBUtils.forEachChunked(Object.keys(subs), 25, 250, function (sub) {
+                TBUtils.forEachChunkedDynamic(Object.keys(subs), function (sub) {
                     processSubreddit(sub, subs[sub]);
-                },
-                function () {
+                }).then(function () {
                     self.log('Done processing things');
                     self.printProfiles();
                 });
@@ -169,7 +169,7 @@ function domaintagger() {
 
             self.startProfile('set-tags');
             let done = false;
-            TBUtils.forEachChunked(things, 25, 250, function (thing) {
+            TBUtils.forEachChunkedDynamic(things, function (thing) {
                 self.startProfile('set-tags-inner');
                 const $thing = $(thing),
                     $entry = $thing.find('.entry'),
@@ -193,8 +193,7 @@ function domaintagger() {
                 if(done) {
                     self.endProfile('set-tags');
                 }
-            },
-            function () {
+            }).then(function() {
                 done = true;
             });
         }
@@ -204,7 +203,7 @@ function domaintagger() {
         $body.on('click', '.add-domain-tag', function (e) {
             const $this = $(e.target),
                 $domain = $this.siblings('.domain'),
-                currentColor = TBUtils.colorNameToHex($domain.data('color')),
+                currentColor = TBUtils.colorNameToHex($domain.data('color') || '#cee3f8db'),
                 $thing = $this.closest('.thing'),
                 domain = getThingDomain($thing);
                 //subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());

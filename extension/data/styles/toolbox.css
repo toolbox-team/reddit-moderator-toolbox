@@ -1673,7 +1673,7 @@ span.rate-limit-explain {
 }
 
 .mod-toolbox-rd #tb-loading-stuff .tb-loading-content img,
-.mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content img{
+.mod-toolbox-rd #tb-loading-stuff-non-persistent .tb-loading-content img {
     vertical-align: middle;
     height: 75px;
 }

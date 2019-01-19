@@ -261,7 +261,8 @@ function tbmodule() {
                     <a href="https://www.reddit.com/user/andytuba">/u/andytuba</a> & <a href="https://www.reddit.com/user/erikdesjardins">/u/erikdesjardins</a>
                     <br>for all their amazing help and support of the TB team in resolving complex issues (and really simple ones)<br>
                     <h3>Credits:</h3>
-                    <a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">Silk icon set by Mark James</a><br>
+                    <a href="https://www.reddit.com/user/ShaneH7646">/u/ShaneH7646 for the snoo running gif</a><br>
+                    <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
                     <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>
                     <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>
                     <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>

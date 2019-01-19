@@ -21,5 +21,4 @@ node_modules/*
 /extension/data/modules/metricstab.js
 /extension/data/modules/modmailpro.js
 /extension/data/modules/modmatrix.js
-/extension/data/modules/syntax.js
 /extension/data/modules/trouble.js

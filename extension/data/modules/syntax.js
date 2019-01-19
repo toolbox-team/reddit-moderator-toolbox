@@ -1,8 +1,8 @@
 function syntax() {
 
-
-    var self = new TB.Module('Syntax Highlighter');
+    const self = new TB.Module('Syntax Highlighter');
     self.shortname = 'Syntax';
+    self.oldReddit = true;
 
     self.settings['enabled']['default'] = true;
 
@@ -72,7 +72,7 @@ function syntax() {
 `;
 
     self.init = function () {
-        var $body = $('body'),
+        const $body = $('body'),
             selectedTheme = this.setting('selectedTheme'),
             enableWordWrap = this.setting('enableWordWrap');
 
@@ -81,12 +81,12 @@ function syntax() {
             if (cm.somethingSelected()) {
                 cm.indentSelection('add');
             } else {
-                cm.replaceSelection(cm.getOption('indentWithTabs')? '\t':
+                cm.replaceSelection(cm.getOption('indentWithTabs') ? '\t' :
                     Array(cm.getOption('indentUnit') + 1).join(' '), 'end', '+input');
             }
         }
 
-        var keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
+        const keyboardShortcutsHelper = `<div class="tb-syntax-keyboard">
                                               <b>Keyboard shortcuts</b>
                                                   <ul>
                                                     <li><i>F11:</i> Fullscreen</li>
@@ -103,7 +103,7 @@ function syntax() {
                                               </div>`;
         //  Editor for css.
         if (location.pathname.match(/\/about\/stylesheet\/?/)) {
-            var stylesheetEditor;
+            let stylesheetEditor;
 
             // Class added to apply some specific css.
             $body.addClass('mod-syntax');
@@ -113,7 +113,7 @@ function syntax() {
             $('#theme_selector').val(selectedTheme);
 
             // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#stylesheet_contents').each(function(index, elem){
+            $('#stylesheet_contents').each(function(index, elem) {
 
                 // Editor setup.
                 stylesheetEditor = CodeMirror.fromTextArea(elem, {
@@ -143,12 +143,9 @@ function syntax() {
             });
 
             // In order to make save buttons work we need to hijack  and replace them.
-            var tbSyntaxButtonsHTML = '<div id="tb-syntax-buttons">{{save}} - {{preview}}</div>';
-
-            var tbSyntaxButtons = TB.utils.template(tbSyntaxButtonsHTML, {
-                'save': TB.ui.actionButton('save', 'tb-syntax-button-save'),
-                'preview': TB.ui.actionButton('preview', 'tb-syntax-button-preview')
-            });
+            const tbSyntaxButtons = `<div id="tb-syntax-buttons">
+                ${TB.ui.actionButton('save', 'tb-syntax-button-save')} - ${TB.ui.actionButton('preview', 'tb-syntax-button-preview')}
+            </div>`;
 
             $body.find('.sheets .buttons').before(tbSyntaxButtons);
 
@@ -175,9 +172,9 @@ function syntax() {
         // Here we deal with automod and toolbox pages containing json.
         if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)
             || location.pathname.match(/\/wiki\/edit\/toolbox\/?$/)) {
-            var miscEditor;
-            var $editform = $('#editform');
-            var defaultMode = 'default';
+            let miscEditor;
+            const $editform = $('#editform');
+            let defaultMode = 'default';
 
             if (location.pathname.match(/\/wiki\/(edit|create)\/(config\/)?automoderator(-schedule)?\/?$/)) {
                 defaultMode = 'text/x-yaml';
@@ -197,7 +194,7 @@ function syntax() {
             $('#theme_selector').val(selectedTheme);
 
             // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#wiki_page_content').each(function(index, elem){
+            $('#wiki_page_content').each(function(index, elem) {
 
                 // Editor setup.
                 miscEditor = CodeMirror.fromTextArea(elem, {
@@ -227,7 +224,6 @@ function syntax() {
 
             // In order to make save button work we need to hijack and replace it.
             $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
-
 
             // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
             $body.delegate('.tb-syntax-button-save-wiki', 'click', function() {

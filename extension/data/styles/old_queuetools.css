@@ -1,0 +1,200 @@
+.mod-toolbox-rd .modtools-active {
+    padding-top: 40px !important;
+}
+
+.mod-toolbox-rd .menuarea.modtools {
+    background-color: rgba(237, 241, 245, 0.8);
+    border: 1px solid #B6C9DD;
+    z-index: 500;
+    overflow: visible;
+}
+
+.drop-choices.lightdrop {
+    z-index: 501;
+}
+
+
+#modtab-threshold {
+    width: 20px;
+}
+
+.mod-toolbox-rd.res-nightmode .tb-popup.context-button-popup {
+    background-color: #262626;
+}
+
+
+.mod-toolbox-rd .tb-kitteh-old {
+    display: block;
+    min-width: 330px;
+    min-height: 351px;
+    background-image: url("https://b.thumbs.redditmedia.com/7uBqTsML9Y-sksmfvCrKrHvoUANP6ZCOw9UOVIV6aXQ.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd .tb-puppy-old {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://a.thumbs.redditmedia.com/L8eKqhvo2mcjB0E8t87nOlu1_oMoSQ8F8LzqbFHumK8.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd .tb-begifs-old {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://toolbox-team.github.io/reddit-moderator-toolbox/hosted_images/begifs.gif");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd .tb-spiders-old {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://b.thumbs.redditmedia.com/AgVm8q7yNxjcklDntkpH4hc6UoYrBUcwU8SXcZWgBJA.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd .tb-piggy-old {
+    display: block;
+    min-width: 360px;
+    min-height: 460px;
+    background-image: url("https://b.thumbs.redditmedia.com/FMheFSik2oy58sq7qWASounTkW2H0u0F0gtGorsu3cc.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    text-indent: -1000px;
+    overflow: hidden;
+}
+
+.mod-toolbox-rd .tb-begifs-old:after {
+    content: "baby elephant is pleased!";
+}
+
+
+/* Action reason stuff */
+
+.action-reason {
+    padding: 5px;
+    font-size: 12px;
+    background-color: rgba(255, 255, 255, 0.59);
+}
+
+.action-reason a {
+    font-size: 10px;
+}
+
+
+/* Color borders */
+.comment.tb-subreddit-color {
+    padding-left: 10px;
+}
+
+
+/* queue sort counter */
+
+a.tb-subreddit-item-count {
+    background-color: #D56F18;
+    color: #FFF;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0px 3px 3px 3px;
+    margin: 3px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.subscription-box li {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+a.tb-subreddit-item-count {
+    -ms-flex-order: -1;
+    order: -1;
+}
+
+.mod-toolbox-rd .tb-sort-subs {
+    float: right;
+    margin: 4px;
+    border: 1px solid #B6C9DD;
+    border-left: 2px solid #B6C9DD;
+    padding: 3px;
+    background-color: white;
+    font-size: 13px;
+}
+
+.mod-toolbox-rd .tb-sort-subs:hover {
+    background-color: #E2EEFA;
+}
+
+.mod-toolbox-rd .tb-sort-subs img {
+    margin-bottom: -3px;
+    margin-right: 3px;
+}
+
+
+/* pretty buttons */
+.menuarea.modtools a.pretty-button {
+    border-radius: 0 !important;
+    border-width: 1px 1px 1px 2px;
+    border-color: #778696;
+    border-style: solid;
+    padding: 1px 5px;
+    text-align: center;
+    font-size: inherit;
+}
+
+.menuarea.modtools  .pretty-button.negative {
+    background: none;
+    background-color: #EDBDBE;
+
+}
+.menuarea.modtools  .pretty-button.positive {
+    background: none;
+    background-color: #D1EABF;
+}
+
+.menuarea.modtools  .pretty-button.neutral {
+    background-image: none;
+    background-color: #D5D5D5;
+}
+
+.menuarea.modtools  .pretty-button.negative.pressed {
+    background: none;
+    background-color: #886B6C;
+
+}
+.menuarea.modtools  .pretty-button.positive.pressed {
+    background: none;
+    background-color: #849479;
+}
+
+.menuarea.modtools  .pretty-button.neutral.pressed {
+    background-image: none;
+    background-color: #9E9C9C;
+}
+
+
+/* Highlight for zero-scored posts */
+.tb-zero-highlight {
+    background: #FFF1C4;
+}

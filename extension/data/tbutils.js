@@ -132,10 +132,25 @@ function initwrapper(userDetails, newModSubs) {
                 "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
         // Public variables
+
+        TBUtils.isOldReddit = $('#header').length;
+
         TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
         TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
-        TBUtils.isOldReddit = $('#header').length;
+
+        TBUtils.isModpage = location.pathname.match(/\/about\/(?:reports|modqueue|spam|unmoderated|edited)\/?/);
         TBUtils.isModLogPage = location.pathname.match(/\/about\/(?:log)\/?/);
+        TBUtils.isModQueuePage = location.pathname.match(/\/about\/(?:modqueue)\/?/);
+        TBUtils.isUnmoderatedPage = location.pathname.match(/\/about\/(?:unmoderated)\/?/);
+
+        TBUtils.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
+        TBUtils.isUserPage = location.pathname.match(/\/(?:user)\/?/);
+        TBUtils.isCommentsPage = location.pathname.match(/\?*\/(?:comments)\/?/);
+        TBUtils.isSubCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?/);
+        TBUtils.isSubAllCommentsPage = location.pathname.match(/\/r\/.*?\/(?:comments)\/?$/);
+
+        TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
+        TBUtils.isMod = $('body.moderator').length;
 
         if(newModSubs && newModSubs.length > 0) {
             TBUtils.mySubs = [];

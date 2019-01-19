@@ -266,7 +266,7 @@ function queuetools() {
                 const id = e.detail.data.id;
 
                 // For now only try this on toolbox generated comments due to target placement.
-                if(e.detail.type === 'TBcomment') {
+                if(e.detail.type === 'TBcomment' || e.detail.type === 'TBcommentOldReddit') {
                     makeActionTable($target, subreddit, id);
                     const $actionTable = $target.find('.tb-action-table');
                     $actionTable.show();

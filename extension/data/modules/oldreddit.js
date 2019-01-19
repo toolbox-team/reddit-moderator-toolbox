@@ -22,7 +22,7 @@ function oldReddit() {
         const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
         $jsApiThingPlaceholder.append('<span data-name="toolbox">');
         const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
-        $thing.find('.author:first').after('<span class="tb-jsapi-author-container"></span>');
+        $thing.find('.entry:first .author:first').after('<span class="tb-jsapi-author-container"></span>');
         const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
         $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
         const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];

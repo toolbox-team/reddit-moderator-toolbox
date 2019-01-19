@@ -54,10 +54,10 @@ function removalreasons() {
             return;
         }
 
-        let $body = $('body');
+        const $body = $('body');
 
         // Error texts
-        let STATUS_DEFAULT_TEXT = 'saving...',
+        const STATUS_DEFAULT_TEXT = 'saving...',
             APPROVE_ERROR = 'error, failed to approve post',
             FLAIR_ERROR = 'error, failed to flair post',
             NO_REASON_ERROR = 'error, no reason selected',
@@ -70,15 +70,16 @@ function removalreasons() {
             LOG_POST_ERROR = 'error, failed to create log post';
 
         // Default texts
-        let DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
+        const DEFAULT_SUBJECT = 'Your {kind} was removed from /r/{subreddit}',
             DEFAULT_LOG_TITLE = 'Removed: {kind} by /u/{author} to /r/{subreddit}',
             DEFAULT_BAN_TITLE = '/u/{author} has been banned from /r/{subreddit} for {reason}';
 
         // Cached data
-        let notEnabled = [];
+        const notEnabled = [];
 
         // Settings.
-        let alwaysShow = self.setting('alwaysShow');
+        const alwaysShow = self.setting('alwaysShow'),
+            commentReasons = self.setting('commentReasons');
 
         //    commentReasons = self.setting('commentReasons');
 
@@ -100,7 +101,7 @@ function removalreasons() {
 
                 // If we need to get them from another sub, recurse.
                 if (reasons && reasons.getfrom) {
-                    if(reasons.getfrom == subreddit) {
+                    if(reasons.getfrom === subreddit) {
                         self.log("Warning: 'get from' subreddit same as current subreddit. Don't do that!");
                     }
                     else {
@@ -159,21 +160,39 @@ function removalreasons() {
         });
 
         // Open reason drop-down when we remove something as ham.
-        $('body').on('click', 'button:contains("remove"), .tb-add-removal-reason', function () {
+        $('body').on('click', 'button:contains("remove"), .tb-add-removal-reason, .big-mod-buttons > span > .pretty-button.neutral, .remove-button', function () {
             const $button = $(this);
-            let postID,
-                postSubreddit;
-            if($button.hasClass('tb-add-removal-reason')) {
-                postID = $button.attr('data-id');
-                postSubreddit = $button.attr('data-subreddit');
+            let thingID,
+                thingSubreddit;
+
+            if(TBUtils.isOldReddit) {
+                const $yes = $button.find('.yes')[0],
+                    $thing = $button.closest('.thing');
+
+                if (!commentReasons && ($thing.hasClass('comment') || $thing.hasClass('was-comment'))) {
+                    return;
+                }
+
+                if ($yes) {
+                    $yes.click();
+                }
+
+                thingID = $thing.attr('data-fullname');
+                thingSubreddit = $thing.attr('data-subreddit');
+
             } else {
-                const $parent = $button.closest('.Post');
-                const postDetails = $parent.find('.tb-frontend-container[data-tb-type="post"]').data('tb-details');
-                postID = postDetails.data.id;
-                postSubreddit = postDetails.data.subreddit.name;
+                if($button.hasClass('tb-add-removal-reason')) {
+                    thingID = $button.attr('data-id');
+                    thingSubreddit = $button.attr('data-subreddit');
+                } else {
+                    const $parent = $button.closest('.Post');
+                    const postDetails = $parent.find('.tb-frontend-container[data-tb-type="post"]').data('tb-details');
+                    thingID = postDetails.data.id;
+                    thingSubreddit = postDetails.data.subreddit.name;
+                }
             }
 
-            TBUtils.getApiThingInfo(postID, postSubreddit, false, function(info) {
+            TBUtils.getApiThingInfo(thingID, thingSubreddit, false, function(info) {
                 // Get link/comment attributes
                 const data = {
                     subreddit: info.subreddit,
@@ -199,7 +218,7 @@ function removalreasons() {
 
                 // Set attributes and open reason box if one already exists for this subreddit
                 self.log('Opening popup');
-                let $popup = $(`#reason-popup-${data.subreddit}`);
+                const $popup = $(`#reason-popup-${data.subreddit}`);
                 // If the popup already exists, open it
                 if ($popup.length) {
                 // Click yes on the removal

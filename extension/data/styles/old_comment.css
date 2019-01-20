@@ -1,0 +1,14 @@
+.mod-toolbox-rd #tb-bottombar  #tb-toggle-removed .tb-icons.tb-icons-negative {
+    color: rgb(214, 57, 60);
+
+}
+
+.mod-toolbox-rd #tb-bottombar  #tb-toggle-removed {
+    opacity: 0.8;
+    margin-right: 1em;
+}
+
+
+.mod-toolbox-rd #tb-bottombar  #tb-toggle-removed:hover {
+    opacity: 1;
+}

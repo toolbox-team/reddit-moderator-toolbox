@@ -167,7 +167,7 @@ function modbar() {
         }
 
         const modQueueUrl = TBUtils.tempBaseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
-        let $modBar = $(`
+        const $modBar = $(`
 <div id="tb-bottombar" class="tb-toolbar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
     <a class="tb-toolbar tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
@@ -233,7 +233,7 @@ function modbar() {
 
         }
 
-        let $modbarhid = $(`
+        const $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="tb-toolbar ${compactHide ? 'tb-bottombar-compact' : ''}">
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? 'more_vert' : 'keyboard_arrow_right'}</a>
 </div>
@@ -244,7 +244,14 @@ function modbar() {
 
             $console = $(`
 <div class="tb-debug-window tb-popup">
-    <div class="tb-popup-header"><div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div><span class="buttons"><a class="close" id="tb-debug-hide" href="javascript:;">✕</a></span></div>
+    <div class="tb-popup-header">
+        <div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div>
+        <span class="buttons">
+            <a class="close" id="tb-debug-hide" href="javascript:;">
+                <i class="tb-icons">close</i>
+            </a>
+        </span>
+    </div>
     <div class="tb-popup-content">
         <textarea class="tb-input tb-debug-console" rows="20" cols="20"></textarea>
         <input type="text" class="tb-debug-input tb-input" placeholder="eval() in toolbox scope" />
@@ -305,7 +312,7 @@ function modbar() {
                 `;
 
                 $body.on('click', '#tb-toolbar-mysubs', function () {
-                    let $this = $(this);
+                    const $this = $(this);
                     if (!$this.hasClass('tb-mysubs-activated')) {
                         $this.addClass('tb-mysubs-activated');
                         TB.ui.popup(
@@ -334,7 +341,7 @@ function modbar() {
                     }
 
                     $body.find('#tb-livefilter-input').keyup(function () {
-                        let LiveSearchValue = $(this).val();
+                        const LiveSearchValue = $(this).val();
                         $body.find('#tb-my-subreddits table tr').each(function () {
                             let $this = $(this),
                                 subredditName = $this.attr('data-subreddit');
@@ -375,7 +382,7 @@ function modbar() {
         // Debug mode/console
         if (debugMode) {
             $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>`);
-            let selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
+            const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;
             $('.tb-debug-console').each(function(index, elem) {
@@ -438,7 +445,7 @@ function modbar() {
                 }
 
                 if (lockscroll) {
-                    let bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, 'local').bottom;
+                    const bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, 'local').bottom;
                     debugEditor.scrollTo(null, bottom);
                 // $consoleText.scrollTop($consoleText[0].scrollHeight);
                 }
@@ -447,7 +454,7 @@ function modbar() {
                 if (TB.utils.logModules.length > moduleCount) {
                     moduleCount = TB.utils.logModules.length;
 
-                    let $moduleSelect = $('.module-select');
+                    const $moduleSelect = $('.module-select');
 
                     // clear old list
                     $('.module-select option').remove();
@@ -476,7 +483,7 @@ function modbar() {
         // Append shortcuts
         $.each(shortcuts, function (index, value) {
             // TODO: Separators here should probably use CSS rather than having nested elements and stuff
-            let $shortcut = $(`<a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a>`);
+            const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a>`);
             $shortcut.appendTo('#tb-toolbarshortcuts');
         });
 
@@ -671,7 +678,7 @@ function modbar() {
 
         // change tabs
         $body.on('click', '.tb-window-tabs a:not(.active)', function () {
-            let tab = $(this).attr('data-module');
+            const tab = $(this).attr('data-module');
             switchTab(tab);
         });
     };

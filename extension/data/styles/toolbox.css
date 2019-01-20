@@ -335,6 +335,9 @@ div#tb-context-menu #tb-context-header {
 .mod-toolbox-rd .tb-save-warning {
     background: #f7fafd;
     color: #ef420b;
+    height: 25px;
+    line-height: 25px;
+    margin-bottom: 5px;
 }
 
 .mod-toolbox-rd .tb-settings .tb-window-tabs a {

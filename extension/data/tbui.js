@@ -92,7 +92,7 @@
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        let $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
+        const $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
         if (meta) {
             $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
@@ -109,23 +109,23 @@
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
         }
         else if (tabs.length > 1) {
-            let $tabs = $('<div>').addClass('tb-popup-tabs');
+            const $tabs = $('<div>').addClass('tb-popup-tabs');
             $popup.append($tabs);
 
             for (let i = 0; i < tabs.length; i++) {
-                let tab = tabs[i];
+                const tab = tabs[i];
                 if (tab.id === 'undefined' || !tab.id) {
                     tab.id = tab.title.trim().toLowerCase().replace(/\s/g, '_');
                 }
 
                 // Create tab button
-                let $button = $('<a>').addClass(tab.id).text(tab.title);
+                const $button = $('<a>').addClass(tab.id).text(tab.title);
                 if (tab.tooltip) {
                     $button.attr('title', tab.tooltip);
                 }
 
                 $button.click({tab: tab}, function (e) {
-                    let tab = e.data.tab;
+                    const tab = e.data.tab;
 
                     // hide others
                     $tabs.find('a').removeClass('active');
@@ -145,7 +145,7 @@
 
                 $button.appendTo($tabs);
 
-                let $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
+                const $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
                 $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
                 $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
 
@@ -167,7 +167,7 @@
     };
 
     TBui.drawPosition = function drawPosition(event) {
-        let positions = {
+        const positions = {
             leftPosition: '',
             topPosition : ''
         };
@@ -181,7 +181,7 @@
         }
 
         if (document.documentElement.clientHeight - event.pageY < 200 && location.host === 'mod.reddit.com') {
-            let topPosition = event.pageY - 600;
+            const topPosition = event.pageY - 600;
 
             if (topPosition < 0) {
                 positions.topPosition = 5;
@@ -207,7 +207,7 @@
     TBui.switchOverlayTab = function switchOverlayTab(overlayClass, tabName) {
         const $overlay = $body.find(`.${overlayClass}`);
 
-        let $tab = $overlay.find(`[data-module="${tabName}"]`);
+        const $tab = $overlay.find(`[data-module="${tabName}"]`);
 
         $overlay.find('.tb-window-tabs a').removeClass('active');
         $tab.addClass('active');
@@ -222,13 +222,16 @@
         single_footer = (typeof single_footer !== 'undefined') ? single_footer : false;
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
-        let $overlay = $(`
+        const $overlay = $(`
 <div class="tb-page-overlay ${css_class ? ` ${css_class}` : ``}">
     <div class="tb-window-wrapper">
         <div class="tb-window-header">
             <div class="tb-window-title">${title}</div>
             <div class="buttons">
-                ${buttons}<a class="close" href="javascript:;">✕</a>
+                ${buttons}
+                <a class="close" href="javascript:;">
+                    <i class="tb-icons">close</i>
+                </a>
             </div>
         </div>
     </div>
@@ -253,7 +256,7 @@
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
 
             for (let i = 0; i < tabs.length; i++) {
-                let tab = tabs[i];
+                const tab = tabs[i];
 
                 tab.disabled = (typeof tab.disabled === 'boolean') ? tab.disabled : false;
                 tab.help_page = (typeof tab.help_page !== 'undefined') ? tab.help_page : '';
@@ -265,7 +268,7 @@
                     tab.id = tab.id.replace(/\s/g, '_');
                 }
 
-                let $button = $(`<a${tab.tooltip ? ` title="${tab.tooltip}"` : ''} ${tab.id ? ` data-module="${tab.id}"` : ''} class="${tab.id}" >${tab.title} </a>`);
+                const $button = $(`<a${tab.tooltip ? ` title="${tab.tooltip}"` : ''} ${tab.id ? ` data-module="${tab.id}"` : ''} class="${tab.id}" >${tab.title} </a>`);
 
                 $button.data('help_page', tab.help_page);
 
@@ -276,7 +279,7 @@
 
                 // click handler for tabs
                 $button.click({tab: tab}, function (e) {
-                    let tab = e.data.tab;
+                    const tab = e.data.tab;
 
                     // hide others
                     $overlay.find('.tb-window-tabs a').removeClass('active');
@@ -298,7 +301,7 @@
 
                 $button.appendTo($overlay.find('.tb-window-tabs'));
 
-                let $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
+                const $tab = $(`<div class="tb-window-tab ${tab.id}"></div>`);
                 // $tab.append($('<div class="tb-window-content">' + tab.content + '</div>'));
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
@@ -306,7 +309,7 @@
 
                     $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
-                    let $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
+                    const $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
                     if (i === 0) {
                         $footer.show();
                     } else {
@@ -370,13 +373,13 @@
             $available_list = $select_multiple.find('.available-list');
 
         $select_multiple.on('click', '.remove-item', function (e) {
-            let $select_multiple = $(e.delegateTarget);
+            const $select_multiple = $(e.delegateTarget);
             $select_multiple.find('.selected-list option:selected').remove();
         });
 
         $select_multiple.on('click', '.add-item', function (e) {
-            let $select_multiple = $(e.delegateTarget);
-            let $add_item = $select_multiple.find('.available-list option:selected');
+            const $select_multiple = $(e.delegateTarget);
+            const $add_item = $select_multiple.find('.available-list option:selected');
 
             // Don't add the sub twice.
             let exists = false;
@@ -407,7 +410,7 @@
         let keyLabel = labels[0],
             valueLabel = labels[1];
 
-        let $mapInput = $(`<div>
+        const $mapInput = $(`<div>
             <table class="tb-map-input-table">
                 <thead><tr>
                     <td>${keyLabel}</td>
@@ -418,7 +421,7 @@
             </table>
             <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">add_box</a></div>`);
 
-        let emptyRow = `
+        const emptyRow = `
             <tr class="tb-map-input-tr">
                 <td><input type="text" class="tb-input" name="key"></td>
                 <td><input type="text" class="tb-input" name="value"></td>
@@ -442,7 +445,7 @@
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
             $.each(items, function (key, value) {
-                let $item = $(`
+                const $item = $(`
                 <tr class="tb-map-input-tr">
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
@@ -467,13 +470,13 @@
             $body.find('#tb-feedback-window').remove();
 
             // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-            let feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
+            const feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
 
             // Add the element to the page.
             $body.append(feedbackElement);
 
             //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
-            let $feedbackWindow = $body.find('#tb-feedback-window');
+            const $feedbackWindow = $body.find('#tb-feedback-window');
 
             switch (displayLocation) {
             case TBui.DISPLAY_CENTER: {
@@ -532,7 +535,7 @@
                 $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="https://toolbox-team.github.io/reddit-moderator-toolbox/hosted_images/long_load_spinner.gif" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                 $body.append('<div id="tb-loading"></div>');
 
-                let $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
+                const $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
                 let randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
                     randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
 
@@ -671,7 +674,7 @@
                 });
             }
 
-            let $checkExists = $tbContextMenuList.find(`#${triggerId}`);
+            const $checkExists = $tbContextMenuList.find(`#${triggerId}`);
 
             // Check if an item with the same id is already in the menu. If so we will replace it.
             if($checkExists.length) {
@@ -951,7 +954,7 @@
 
         // Let's figure out what sort of attributes we need to give the OP if any.
         let authorStatus = 'tb-regular';
-        let authorAttributes = [];
+        const authorAttributes = [];
         if(submissionIsSubmitter) {
             authorStatus = 'tb-submitter';
             authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${submissionPermalink}">S</a>`);
@@ -982,7 +985,7 @@
             editedHtml = `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
-        let $buildsubmission = $(`
+        const $buildsubmission = $(`
             <div class="tb-submission tb-thing ${submissionStatus} ${submissionPinned ? 'pinned' : ''}" data-submission-author="${submissionAuthor}" data-post-id="${submissionName}" data-subreddit="${submissionSubreddit}" data-subreddit-type="${submissionSubredditType}">
                 <div class="tb-submission-score ${voteState}">${submissionScore}</div>
                 <a class="tb-submission-thumbnail ${submissionOver18 ? 'nsfw' : ''}" href="${submissionUrl}">
@@ -1017,8 +1020,8 @@
 
         // Now that we have the basic submission build we can go and add details where needed.
         // The two places where we will be adding data specific to the submission are either entry or the button list.
-        let $submissionEntry = $buildsubmission.find('.tb-submission-entry');
-        let $submissionButtonList = $buildsubmission.find('.tb-submission-buttons');
+        const $submissionEntry = $buildsubmission.find('.tb-submission-entry');
+        const $submissionButtonList = $buildsubmission.find('.tb-submission-buttons');
 
         if(submissionStatus !== 'neutral') {
             $submissionEntry.append(`
@@ -1031,7 +1034,7 @@
 
         // Let's see if we need to add reports starting with user reports
         if(submissionUserReports.length && !submissionIgnoreReports) {
-            let $submissionUserReports = $(`
+            const $submissionUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>
             </ul>
@@ -1051,7 +1054,7 @@
             $submissionEntry.append($submissionUserReports);
 
         } else if (submissionIgnoreReports) {
-            let $submissionIgnoredReports = $(`
+            const $submissionIgnoredReports = $(`
             <span class="tb-ignored-user-reports">
                 reports ignored (${submissionUserReports.length})
             </span>
@@ -1063,7 +1066,7 @@
         // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
 
         if(submissionModReports.length) {
-            let $submissionModReports = $(`
+            const $submissionModReports = $(`
                 <ul class="tb-user-reports">
                     <li>mod reports</li>
                 </ul>
@@ -1258,7 +1261,7 @@
 
         // Let's figure out what sort of attributes we need to give the OP if any.
         let authorStatus = 'tb-regular';
-        let authorAttributes = [];
+        const authorAttributes = [];
         if(commentIsSubmitter) {
             authorStatus = 'tb-submitter';
             authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${commentThreadPermalink}">S</a>`);
@@ -1300,7 +1303,7 @@
 
         const commentOptionsJSON = TBUtils.escapeHTML(JSON.stringify(commentOptions));
         // Let's start building our comment.
-        let $buildComment = $(`
+        const $buildComment = $(`
             <div class="tb-thing tb-comment tb-comment-${commentDepthClass}" data-thread-permalink="${commentThreadPermalink}" data-comment-options="${commentOptionsJSON}" data-subreddit="${commentSubreddit}" data-subreddit-type="${commentSubredditType}"  data-comment-id="${commentName}" data-comment-author="${commentAuthor}" data-comment-post-id="${commentLinkId}" >
                 <div class="tb-comment-entry ${commentStatus} ${commentStickied ? 'tb-stickied' : ''} ${commentAuthorFlairCssClass ? `tb-user-flair-${commentAuthorFlairCssClass}` : ''}">
                     ${commentOptions.overviewData ? parentHtml : ''}
@@ -1329,11 +1332,11 @@
 
         // Now that we have the basic comment build we can go and add details where needed.
         // The two places where we will be adding data specific to the comment are either entry or the button list.
-        let $commentEntry = $buildComment.find('.tb-comment-entry');
-        let $commentButtonList = $buildComment.find('.tb-comment-buttons');
+        const $commentEntry = $buildComment.find('.tb-comment-entry');
+        const $commentButtonList = $buildComment.find('.tb-comment-buttons');
 
         // Add some data that is otherwise hidden.
-        let $commentData = $(`
+        const $commentData = $(`
         <div class="tb-comment-data">
             <ul class="tb-comment-details">
                 ${commentControversiality ? `<li> Controversial score: ${commentControversiality}.</li>` : ''}
@@ -1349,7 +1352,7 @@
 
         // Let's see if we need to add reports starting with user reports
         if(commentUserReports.length && !commentIgnoreReports) {
-            let $commentUserReports = $(`
+            const $commentUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>
             </ul>
@@ -1369,7 +1372,7 @@
             $commentEntry.append($commentUserReports);
 
         } else if (commentIgnoreReports) {
-            let $commentIgnoredReports = $(`
+            const $commentIgnoredReports = $(`
             <span class="tb-ignored-user-reports">
                 reports ignored (${commentUserReports.length})
             </span>
@@ -1381,7 +1384,7 @@
         // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
 
         if(commentModReports.length) {
-            let $commentModReports = $(`
+            const $commentModReports = $(`
                 <ul class="tb-user-reports">
                     <li>mod reports</li>
                 </ul>
@@ -1454,13 +1457,13 @@
      * @returns {object} jquery object with the build comment thread.
      */
     TBui.makeCommentThread = function makeCommentThread(jsonInput, commentOptions) {
-        let $commentContainer = $(`<div class="tb-comment-children"></div>`);
+        const $commentContainer = $(`<div class="tb-comment-children"></div>`);
 
         jsonInput.forEach(function(comment) {
             let $childComments;
 
             if(comment.kind === 't1') {
-                let $comment = TBui.makeSingleComment(comment, commentOptions);
+                const $comment = TBui.makeSingleComment(comment, commentOptions);
                 if(comment.data.replies) {
                     $childComments = makeCommentThread(comment.data.replies.data.children, commentOptions);
                     $comment.append($childComments);
@@ -1625,7 +1628,7 @@
         const threadPermalink = $thisComment.attr('data-thread-permalink');
         const commentOptionsData = $thisComment.attr('data-comment-options');
 
-        let commentOptions = JSON.parse(commentOptionsData);
+        const commentOptions = JSON.parse(commentOptionsData);
         // This is to make sure comment coloring still is correct.
         commentOptions.commentDepthPlus = true;
         let processCount = 0;

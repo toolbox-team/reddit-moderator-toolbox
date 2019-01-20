@@ -41,12 +41,6 @@ div#tb-snoo-footer {
 }
 
 
-.mod-toolbox-rd .tb-window-header {
-    font-size: 14px;
-}
-
-
-
 
 /*
 ========================
@@ -300,8 +294,9 @@ div#tb-context-menu #tb-context-header {
     background-color: #CEE3F8;
     text-align: center;
     font-weight: bold;
-    padding: 11px !important;
-    line-height: 14px;
+    font-size: 14px;
+    padding: 0 11px !important;
+    line-height: 36px;
     border-bottom: 0;
 }
 
@@ -517,7 +512,6 @@ div#tb-context-menu #tb-context-header {
     right: 0 !important;
     top: 0 !important;
     background-color: #C7D6E6;
-    line-height: 26px;
     border: 0;
     margin-left: 1px;
 }
@@ -1898,21 +1892,23 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 }
 
 .mod-toolbox-rd .tb-window-header .buttons {
-    display: inline-block;
+    display: flex;
     position: absolute;
     right: 0;
     top: 0;
 }
 .mod-toolbox-rd .tb-window-header .buttons a {
-    display: inline-block;
+    display: flex;
     background-color: #C7D6E6;
     border-left: 0;
     height: 36px;
-    line-height: 36px;
     width: 36px;
     font-size: small;
     margin-left: 1px;
     text-align: center;
+    /* center inner icons */
+    justify-content: center;
+    align-items: center;
 }
 
 .mod-toolbox-rd .tb-page-overlay a.close:hover,

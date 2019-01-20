@@ -245,13 +245,14 @@ function storagewrapper() {
             }
 
             // Check for old reddit
-            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length === 0) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
+            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
                 loggedinOld = true;
             }
 
             // Check if the oldreddit module is enabled and we also need to activate on old reddit.
             const oldRedditActive = getSetting('oldreddit', 'enabled', false);
 
+            console.log('logged in old, ', (loggedinOld && oldRedditActive));
             if((loggedinOld && oldRedditActive) || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(function () {

@@ -33,10 +33,11 @@
     margin-bottom: 2px;
 }
 .mod-toolbox-rd #tb-new-personal-note-div {
+    box-sizing: content-box;
     position: absolute;
     bottom: 0;
     width: 165px;
-    height: 70px;
+    height: 75px;
     padding: 5px;
     background: #C7D6E6;
     box-shadow: 0 -1px #FFF;

@@ -203,7 +203,16 @@
         if (display) {
             // Building and inserting sticky note
             $('.tb-sticky-queue').prepend('<div class="tb-sticky border-' + position + '" id="' + uniqID + '"></div>');
-            $('#' + uniqID).append('<div rel="' + uniqID + '" class="tb-sticky-header"><div rel="' + uniqID + '" class="tb-sticky-title">' + title + '</div><div class="tb-sticky-button" rel="' + uniqID + '" title="Close"><a class="tb-sticky-close" href="javascript:;" rel="' + uniqID + '" title="Close">✕</a></div></div>');
+            $('#' + uniqID).append(`
+                <div rel="${uniqID}" class="tb-sticky-header">
+                    <div rel="${uniqID}" class="tb-sticky-title">${title}</div>
+                    <div class="tb-sticky-button" rel="${uniqID}" title="Close">
+                        <a class="tb-sticky-close" href="javascript:;" rel="${uniqID}" title="Close">
+                            <i class="tb-icons">close</i>
+                        </a>
+                    </div>
+                </div>
+            `);
             $('#' + uniqID).append('<div class="tb-sticky-note" rel="' + uniqID + '">' + note + '</div>');
 
             // Smoother animation

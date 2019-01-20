@@ -506,16 +506,6 @@ div#tb-context-menu #tb-context-header {
 ------------
 */
 
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0 !important;
-    top: 0 !important;
-    background-color: #C7D6E6;
-    border: 0;
-    margin-left: 1px;
-}
-
 .mod-toolbox-rd .tb-popup {
     max-width: 1000px;
     padding: 0 !important;
@@ -532,45 +522,40 @@ div#tb-context-menu #tb-context-header {
     left: 0;
     text-align: left;
     position: relative;
-    height: 20px;
-    line-height: 20px;
-    display: block;
+    height: 26px;
+    line-height: 26px;
+    display: flex;
     background-color: #CEE3F8;
     font-weight: bold;
     box-sizing: content-box;
     font-size: small;
     border: 0;
-    padding: 3px;
+    padding: 0;
 }
 .mod-toolbox-rd .tb-popup-header .tb-popup-title {
     position: relative;
     display: inline-block;
     box-sizing: border-box;
     text-align: center;
-    width: 100%;
-    padding: 0px 33px 0px 5px;
+    flex-grow: 1;
+    padding: 0;
 }
-
 
 .mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0 !important;
-    top: 0 !important;
+    display: flex;
+}
+
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a {
     background-color: #C7D6E6;
-    line-height: 26px;
-    border: 0;
-    margin-left: 1px;
+    width: 36px;
+    flex: 0 0 36px;
+    /* centering inner icon */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons:hover {
+.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a:hover {
     background-color: #9FBAD6;
-}
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a.close {
-    padding: 0px 11px;
-    display: inline-block;
-    height: 100%;
 }
 
 .mod-toolbox-rd .tb-popup-tabs {

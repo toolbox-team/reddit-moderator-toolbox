@@ -327,6 +327,16 @@ div#tb-context-menu #tb-context-header {
     padding: 7px !important;
 }
 
+.mod-toolbox-rd .tb-window-footer.tb-footer-save-warning {
+    height: 60px;
+}
+
+
+.mod-toolbox-rd .tb-save-warning {
+    background: #f7fafd;
+    color: #ef420b;
+}
+
 .mod-toolbox-rd .tb-settings .tb-window-tabs a {
     box-sizing: border-box !important;
     width: 100%;

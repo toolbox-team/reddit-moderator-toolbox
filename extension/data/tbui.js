@@ -13,7 +13,11 @@
         event.stopPropagation();
     });
 
-    const subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
+    let subredditColorSalt;
+
+    window.addEventListener('TBStorageLoaded2', function () {
+        subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
+    });
 
     // Icons NOTE: string line length is ALWAYS 152 chars
 

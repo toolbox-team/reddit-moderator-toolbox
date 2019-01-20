@@ -787,11 +787,6 @@ function queuetoolsOld() {
                 }
             });
 
-            // Call History Button module init if it's not already enabled
-            if (!TB.storage.setSetting('HButton', 'enabled', true)) {
-                TB.modules.HButton.init();
-            }
-
             //Process new things loaded by RES or flowwit.
             function processNewThings(things) {
             // Expand reports on the new page, we leave the ones the user might already has collapsed alone.

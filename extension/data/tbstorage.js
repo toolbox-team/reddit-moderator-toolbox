@@ -17,15 +17,6 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 // Clear all toolbox related localstorage items.
 // After that direct users to a page confirming settings have been reset.
 function clearLocal() {
-
-    // Settings.
-    Object.keys(localStorage)
-        .forEach(function (key) {
-            if (/^(Toolboxv4.)/.test(key)) {
-                localStorage.removeItem(key);
-            }
-        });
-
     // Cache.
     Object.keys(localStorage)
         .forEach(function (key) {
@@ -52,9 +43,8 @@ function startReset() {
                 }, 1000);
             });
 
-        // Donno, fuck it.
+        // Shouldn't happen as they don't have storage if this happens. But... you never know..
         } else {
-            // Wait a sec for stuff to clear.
             setTimeout(function () {
                 clearLocal();
             }, 1000);
@@ -66,31 +56,39 @@ function storagewrapper() {
     (function (TBStorage) {
         const SHORTNAME = 'TBStorage';
 
-        // Type safe keys.
-        TBStorage.SAFE_STORE_KEY = 'Toolboxv4.Storage.safeToStore';
-
         TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); //always use local storage.
+
+        let TBsettingsObject;
         TBStorage.domain = window.location.hostname.split('.')[0];
 
         $.log(`Domain: ${TBStorage.domain}`, false, SHORTNAME);
-
-        localStorage[TBStorage.SAFE_STORE_KEY] = (TBStorage.domain === 'new' || TBStorage.domain === 'mod' || TBStorage.domain === 'www');
 
         TBStorage.isLoaded = false;
 
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
-                objectToSettings(sObject.tbsettings, function () {
-                    SendInit();
-                });
+                TBsettingsObject = sObject.tbsettings;
+                SendInit();
             } else {
+                TBsettingsObject = {};
                 SendInit();
             }
+
+            // Listen for updated settings and update the settings object.
+            chrome.runtime.onMessage.addListener(function(message) {
+                if(message.action === 'tb-settings-update') {
+                    TBsettingsObject = message.payload.tbsettings;
+                    const $body = $('body');
+                    $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
+                    $('body').find('.tb-personal-settings .tb-save').before('<div class="tb-save-warning">Settings have been saved in a different browser tab! Saving from this window will overwrite those settings.</div>');
+                }
+            });
+
         });
 
         // methods.
-        TBStorage.setSetting = function (module, setting, value) {
-            return setSetting(module, setting, value, true);
+        TBStorage.setSetting = function (module, setting, value, syncSetting = true) {
+            return setSetting(module, setting, value, syncSetting);
         };
 
         TBStorage.getSetting = function (module, setting, defaultVal) {
@@ -205,8 +203,6 @@ function storagewrapper() {
         });
 
         TBStorage.verifiedSettingsSave = function (callback) {
-        // Don't re-store the settings after a save on the the refresh that follows.
-            localStorage.removeItem(TBStorage.SAFE_STORE_KEY);
 
             settingsToObject(function (sObject) {
                 const settingsObject = sObject;
@@ -220,6 +216,13 @@ function storagewrapper() {
                     chrome.storage.local.get('tbsettings', function (returnObject) {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                         && isEquivalent(returnObject.tbsettings, settingsObject)) {
+
+                            // Succes, tell other browser tabs with toolbox that there are new settings.
+                            chrome.runtime.sendMessage({
+                                action: 'tb-global',
+                                globalEvent: 'tb-settings-update',
+                                payload: returnObject
+                            });
                             callback(true);
                         } else {
                             $.log('Settings could not be verified', false, SHORTNAME);
@@ -252,7 +255,6 @@ function storagewrapper() {
             // Check if the oldreddit module is enabled and we also need to activate on old reddit.
             const oldRedditActive = getSetting('oldreddit', 'enabled', false);
 
-            console.log('logged in old, ', (loggedinOld && oldRedditActive));
             if((loggedinOld && oldRedditActive) || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(function () {
@@ -270,50 +272,22 @@ function storagewrapper() {
 
             if ($.inArray(keyName, TBStorage.settings) === -1) {
                 TBStorage.settings.push(keyName);
-
-                // Always save to localStorage.
-                localStorage['Toolboxv4.Storage.settings'] = JSON.stringify(TBStorage.settings.sort());
             }
         }
 
         function settingsToObject(callback) {
-            const settingsObject = {};
-            Object.keys(localStorage)
-                .forEach(function (fullKey) {
-                    if (/^(Toolboxv4.)/.test(fullKey)) {
-                        if (fullKey === TBStorage.SAFE_STORE_KEY) return;
-                        const key = fullKey.split('.');
-                        const setting = getSetting(key[1], key[2], null);
-                        //console.log(fullKey);
-                        if (setting !== undefined) {
-                            settingsObject[fullKey] = setting;
-                        }
-                    }
-                });
+
+            // We make a deep clone of the settings object so it can safely be used and manipulated for things anonymized exports.
+            const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
             callback(settingsObject);
         }
 
         function saveSettingsToBrowser() {
-        // Never write back from subdomains.  This can cause a bit of syncing issue, but resolves reset issues.
-            if (!JSON.parse((localStorage[TBStorage.SAFE_STORE_KEY]) || 'false')) return;
-
             settingsToObject(function (sObject) {
                 chrome.storage.local.set({
                     'tbsettings': sObject
                 });
             });
-
-        }
-
-        function objectToSettings(object, callback) {
-        //console.log(object);
-            $.each(object, function (fullKey, value) {
-                const key = fullKey.split('.');
-                //console.log(key[1] + '.' + key[2] + ': ' + value, true);
-                setSetting(key[1], key[2], value, false);
-            });
-
-            callback();
         }
 
         function getSetting(module, setting, defaultVal) {
@@ -322,16 +296,11 @@ function storagewrapper() {
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
             let result;
-            if (localStorage[storageKey] === undefined) {
+
+            if (TBsettingsObject[storageKey] === undefined) {
                 return defaultVal;
             } else {
-                const storageString = localStorage[storageKey];
-                try {
-                    result = JSON.parse(storageString);
-                } catch (e) {
-                    $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
-                    result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
-                }
+                result = TBsettingsObject[storageKey];
 
                 // send back the default if, somehow, someone stored `null`
                 // NOTE: never, EVER store `null`!
@@ -348,10 +317,11 @@ function storagewrapper() {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
-            localStorage[storageKey] = JSON.stringify(value);
-
+            TBsettingsObject[storageKey] = value;
             // try to save our settings.
-            if (syncSettings) saveSettingsToBrowser();
+            if (syncSettings) {
+                saveSettingsToBrowser();
+            }
 
             return getSetting(module, setting);
         }

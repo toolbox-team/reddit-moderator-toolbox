@@ -259,7 +259,7 @@ function initwrapper(userDetails, newModSubs) {
         // Do settings echo before anything else.  If it fails, exit toolbox.
         const ret = TBStorage.setSetting(SETTINGS_NAME, 'echoTest', ECHO);
         if (ret !== ECHO) {
-            alert('toolbox can not save settings to localstorage\n\ntoolbox will now exit');
+            alert('toolbox can not save settings\n\ntoolbox will now exit');
             return;
         }
 
@@ -330,12 +330,6 @@ function initwrapper(userDetails, newModSubs) {
         if (pusheditems.length > 250) {
             pusheditems.splice(150, (pusheditems.length - 150));
             TBStorage.setSetting('Notifier', 'modqueuePushed', pusheditems);
-        }
-
-        const repliedModmail = TBStorage.getSetting('ModMail', 'replied', []);
-        if (repliedModmail.length > 250) {
-            pusheditems.splice(150, (repliedModmail.length - 150));
-            TBStorage.setSetting('ModMail', 'replied', repliedModmail);
         }
 
         if (seenNotes.length > 250) {
@@ -2589,7 +2583,7 @@ function initwrapper(userDetails, newModSubs) {
 
         // Import export methods
         TBUtils.exportSettings = function (subreddit, callback) {
-            let settingsObject = {};
+            const settingsObject = {};
             $(TBStorage.settings).each(function () {
                 if (this === 'Storage.settings') return; // don't backup the setting registry.
 
@@ -2628,7 +2622,7 @@ function initwrapper(userDetails, newModSubs) {
                 $.each(resp, function (fullKey, value) {
                     let key = fullKey.split('.');
 
-                    TBStorage.setSetting(key[0], key[1], value);
+                    TBStorage.setSetting(key[0], key[1], value, false);
                 });
 
                 callback();

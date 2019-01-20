@@ -341,17 +341,17 @@ function tbmodule() {
                     TB.storage.setSetting('Utils', 'settingSub', sub);
                 }
 
-                TB.storage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'));
-                TB.storage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'));
-                TB.storage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'));
-                TB.storage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'));
-                TB.storage.setSetting('Utils', 'skipLocalConsole', $('#browserConsole').prop('checked'));
+                TB.storage.setSetting('Utils', 'debugMode', $('#debugMode').prop('checked'), false);
+                TB.storage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
+                TB.storage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
+                TB.storage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
+                TB.storage.setSetting('Utils', 'skipLocalConsole', $('#browserConsole').prop('checked'), false);
 
                 self.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
 
                 // save cache settings.
-                TB.storage.setSetting('Utils', 'longLength', $('input[name=longLength]').val());
-                TB.storage.setSetting('Utils', 'shortLength', $('input[name=shortLength]').val());
+                TB.storage.setSetting('Utils', 'longLength', $('input[name=longLength]').val(), false);
+                TB.storage.setSetting('Utils', 'shortLength', $('input[name=shortLength]').val(), false);
 
                 if ($('#clearcache').prop('checked')) {
                     TBUtils.clearCache();
@@ -387,13 +387,6 @@ function tbmodule() {
                     return;
                 }
 
-                // TODO: Change back to www after alpha
-                if (TB.storage.domain !== 'new' && TB.storage.domain !== 'www') {
-                    $.log('invalid export domain');
-                    TB.ui.textFeedback('Toolbox can only backup/restore settings from www.reddit.com', TB.ui.FEEDBACK_NEGATIVE);
-                    return;
-                }
-
                 // Just to be safe.
                 sub = TB.utils.cleanSubredditName(sub);
 
@@ -404,7 +397,16 @@ function tbmodule() {
                     TBUtils.importSettings(sub, function () {
                         self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
                         TBUtils.clearCache();
-                        window.location.reload();
+                        TB.storage.verifiedSettingsSave(function (succ) {
+                            if (succ) {
+                                TB.ui.textFeedback('Settings imported and verified', TB.ui.FEEDBACK_POSITIVE);
+                                setTimeout(function () {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                TB.ui.textFeedback('Imported settings could not be verified', TB.ui.FEEDBACK_NEGATIVE);
+                            }
+                        });
                     });
                 }
                 else {
@@ -952,8 +954,7 @@ body {
                                 value = JSON.parse($this.find('textarea').val());
                                 break;
                             }
-
-                            module.setting($this.data('setting'), value);
+                            module.setting($this.data('setting'), value, false);
                         });
                     });
                 }());
@@ -989,11 +990,11 @@ body {
             });
 
         // PUBLIC: settings interface
-        this.setting = function setting(name, value) {
+        this.setting = function setting(name, value, syncSetting = true) {
         // are we setting or getting?
             if (typeof value !== 'undefined') {
             // setting
-                return TB.storage.setSetting(this.shortname, name, value);
+                return TB.storage.setSetting(this.shortname, name, value, syncSetting);
             } else {
             // getting
             // do we have a default?

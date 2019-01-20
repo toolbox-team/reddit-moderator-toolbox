@@ -96,14 +96,16 @@
         if (meta) {
             $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
-        $popup.append($('<div>').addClass('tb-popup-header').append(
-            $('<div>').addClass('tb-popup-title').append(title)
-        ).append(
-            $('<div>').addClass('buttons').append(
-                $('<a>').addClass('close').attr('href', 'javascript:;').text('✕')
-            )
-        )
-        );
+        $popup.append(`
+            <div class="tb-popup-header">
+                <div class="tb-popup-title">${title}</div>
+                <div class="buttons">
+                    <a class="close" href="javascript:;">
+                        <i class="tb-icons">close</i>
+                    </a>
+                </div>
+            </div>
+        `);
         if (tabs.length === 1) {
             $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));

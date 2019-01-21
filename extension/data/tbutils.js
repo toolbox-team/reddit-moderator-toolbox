@@ -2607,12 +2607,6 @@ function initwrapper(userDetails, newModSubs) {
                     return;
                 }
 
-                if (TBUtils.domain !== 'new' && TBUtils.domain !== 'www') {
-                    TB.ui.textFeedback(`Cannot import from ${TBUtils.domain}.reddit.com.`, TB.ui.FEEDBACK_NEGATIVE);
-                    $.log(`Cannot import from ${TBUtils.domain}.reddit.com.`, false, SHORTNAME);
-                    return;
-                }
-
                 if (resp['Utils.lastversion'] < 300) {
                     TBui.textFeedback('Cannot import from a toolbox version under 3.0');
                     $.log('Cannot import from a toolbox version under 3.0', false, SHORTNAME);

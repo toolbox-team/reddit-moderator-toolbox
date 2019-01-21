@@ -4,4 +4,5 @@ body.mod-toolbox-rd .tb-action-button.tb-insert-debug {
     height: 26px !important;
     margin: 5px 5px 10px 0 !important;
     cursor: pointer;
+    line-height: normal !important;
 }

@@ -28,7 +28,6 @@ function oldReddit() {
         const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
         if(!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
-            console.log('empty', $thing);
             return;
         }
 
@@ -120,8 +119,8 @@ function oldReddit() {
         requestAnimationFrame(() => {
             $things.viewportChecker({
                 classToAdd: 'tb-seen',
+                offset: -100,
                 callbackFunction: function(thing) {
-
                     const $thing = $(thing);
                     const info = TBUtils.getThingInfo($thing);
                     if(info.kind === 'submission' || info.kind === 'comment') {
@@ -131,19 +130,20 @@ function oldReddit() {
                     }
                 }
             });
+
         });
     }
 
     self.init = function () {
         // Looks like we are on old reddit. Activate!
         if(TBUtils.isOldReddit) {
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 thingCrawler();
 
                 window.addEventListener('TBNewThings', function () {
                     thingCrawler();
                 });
-            });
+            }, 500);
         }
     };
 

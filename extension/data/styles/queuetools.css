@@ -72,12 +72,15 @@
     color: rgb(105, 105, 105);
     margin: 5px 0;
     display: none;
- }
+}
+
+.mod-toolbox-rd .tb-action-table td {
+    font-size: 13px;
+}
 
 
 
-
- .mod-toolbox-rd.tb-show-actions .tb-action-table {
+.mod-toolbox-rd.tb-show-actions .tb-action-table {
     display: table;
 }
 

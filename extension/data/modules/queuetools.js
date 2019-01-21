@@ -202,9 +202,10 @@ function queuetools() {
                 if(TBUtils.modsSub(subreddit)) {
                     getActions(subreddit, id, function(actions) {
                         if(actions) {
+                            const show = $('body').hasClass('tb-show-actions');
                             const $actionTable = $(`
                             <div class="tb-action-details">
-                                <span class="tb-bracket-button tb-show-action-table">show recent actions</span>
+                                <span class="tb-bracket-button tb-show-action-table">${show ? 'hide' : 'show'} recent actions</span>
                                 <table class="tb-action-table">
                                     <tr>
                                         <th>mod</th>

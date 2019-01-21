@@ -8,7 +8,7 @@ function modmatrix() {
     self.settings['betamode'] = false;
 
     self.version = 2.0;
-    self.limit = 300;
+    self.limit = 500;
     self.after = null;
     self.subredditUrl = null;
     self.subredditName = null;

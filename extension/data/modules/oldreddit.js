@@ -52,7 +52,7 @@ function oldReddit() {
             if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
 
                 const detailObject = {
-                    'type': 'postAuthor',
+                    'type': 'TBpostAuthor',
                     'data': {
                         'author': info.author,
                         'post': {

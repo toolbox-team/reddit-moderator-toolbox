@@ -4,10 +4,12 @@
      * for example.
      * @type {Object.<string, Array<string>>}
      */
+
     const listenerAliases = {
         'postAuthor': ['author'],
         'commentAuthor': ['author'],
         'TBcommentAuthor': ['author'],
+        'TBpostAuthor': ['author'],
         'TBcomment': ['comment'],
         'TBcommentOldReddit': ['comment'],
         'TBpost': ['post']

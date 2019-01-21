@@ -47,7 +47,6 @@ function commentsOld() {
         //
         // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
         let removedCounter = 0;
-        const $body = $('body');
 
         $('.comments-page .thing.comment.spam > .entry').each(function () {
             $(this).addClass('tb-comment-spam');

@@ -18,6 +18,12 @@ function comments() {
         'title': 'Add a link to comments where appropiate to open the context in a popup on page.'
     });
 
+    self.register_setting('highlighted', {
+        'type': 'list',
+        'default': [],
+        'title': 'Highlight keywords. Keywords should entered separated by a comma without spaces.'
+    });
+
     const commentsAsFullPage = self.setting('commentsAsFullPage');
     const openContextInPopup = self.setting('openContextInPopup');
 
@@ -37,8 +43,37 @@ function comments() {
             });
         }
 
-        // Add flat view link.
+        if (self.setting('highlighted').length) {
+            const highlighted = self.setting('highlighted');
 
+            TB.listener.on('comment', function(e) {
+                const $target = $(e.target);
+                $target.closest('.Comment, .tb-comment, .entry').find('p').highlight(highlighted);
+
+            });
+
+            $body.on('click', '[aria-label="Expand content"], .expando-button', function() {
+                const $this = $(this);
+                console.log($this);
+                setTimeout(() => {
+                    console.log($this);
+                    $this.closest('.scrollerItem, .entry').find('p').highlight(highlighted);
+                }, 200);
+
+            });
+
+            window.addEventListener('TBNewPage', function (event) {
+                const pageType = event.detail.pageType;
+
+                if(pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
+                    $body.find('div[data-test-id="post-content"], .usertext-body').find('p').highlight(highlighted);
+
+                }
+
+            });
+        }
+
+        // Add flat view link.
         window.addEventListener('TBNewPage', function (event) {
             if(event.detail.pageType === 'subredditCommentsPage') {
                 TBui.contextTrigger('tb-flatview-link', {

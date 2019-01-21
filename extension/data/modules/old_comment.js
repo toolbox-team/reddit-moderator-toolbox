@@ -26,17 +26,6 @@ function commentsOld() {
         'default': false,
         'title': 'Show remove (not spam) button on comments removed as spam.'
     });
-    self.register_setting('highlighted', {
-        'type': 'list',
-        'default': [],
-        'title': 'Highlight keywords, keywords should entered separated by a comma without spaces.'
-    });
-    self.register_setting('highlightTitles', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': true,
-        'title': 'Also highlight titles of submissions.'
-    });
     self.register_setting('showHideOld', {
         'type': 'boolean',
         'default': true,
@@ -138,15 +127,6 @@ function commentsOld() {
             });
         }
 
-        if (self.setting('highlighted').length > 0) {
-            const highlighted = self.setting('highlighted');
-
-            $body.find('.md p').highlight(highlighted);
-
-            if (self.setting('highlightTitles')) {
-                $body.find('a.title').highlight(highlighted);
-            }
-        }
     }
 
     self.init = function () {

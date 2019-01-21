@@ -56,6 +56,10 @@ function modmacros() {
                 self.log(`${sub} ${subreddit}`);
 
                 if (sub === subreddit) {
+                    if($select.hasClass('tb-populated')) {
+                        return;
+                    }
+                    $select.addClass('tb-populated');
                     $(config).each(function (idx, item) {
                         $($select)
                             .append($('<option>', {
@@ -166,6 +170,63 @@ function modmacros() {
             }
         }, 1000);
 
+        $('body').on('click', 'button:contains("Reply")', function() {
+            const $this = $(this);
+            const $comment = $this.closest('.Comment');
+            const commentDetails = $comment.find('.tb-frontend-container[data-tb-type="comment"]').data('tb-details');
+            const subreddit = commentDetails.data.subreddit.name;
+            const thingID = commentDetails.data.id;
+
+            TBUtils.getModSubs(function () {
+                if(TBUtils.modsSub(subreddit)) {
+                    getConfig(subreddit, function (success, config) {
+                        // if we're a mod, add macros to top level reply button.
+                        if (success && config.length > 0) {
+                            const $macro = $(`
+                                    <select class="tb-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="${thingID}">
+                                        <option value=${MACROS}>macros</option>
+                                    </select>
+                            `).appendTo($comment);
+                            $comment.on('click', 'button[type="reset"], button[type="submit"]', () => {
+                                $macro.remove();
+                            });
+                            populateSelect('.tb-macro-select', subreddit, config);
+                        }
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('TBNewPage', function (event) {
+
+            if(event.detail.pageType === 'subredditCommentsPage') {
+                const subreddit = event.detail.pageDetails.subreddit;
+
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        getConfig(subreddit, function (success, config) {
+                            // if we're a mod, add macros to top level reply button.
+                            if (success && config.length > 0) {
+                                $body.find('span:contains("Comment as")').closest('div').after(`
+                                    <select class="tb-top-macro-select tb-action-button" data-subreddit="${subreddit}" data-thingID="t3_${event.detail.pageDetails.submissionID}">
+                                        <option value=${MACROS}>macros</option>
+                                    </select>
+                                    `);
+                                populateSelect('.tb-top-macro-select', subreddit, config);
+                            }
+                        });
+                    } else {
+                        // Remove all macros
+                        $body.find('.tb-macro-select').remove();
+                    }
+                });
+            } else {
+                // Remove all macros
+                $body.find('.tb-macro-select').remove();
+            }
+
+        });
+
         // NER support.
         window.addEventListener('TBNewThings', function () {
             if(TBUtils.isNewModmail) {
@@ -192,6 +253,13 @@ function modmacros() {
                 comment = unescape(macro.text),
                 actionList = 'The following actions will be performed:<br>- Your reply will be saved';
 
+            if(!$usertext.length) {
+                $usertext = dropdown.closest('.Comment');
+            }
+
+            if(!$usertext.length) {
+                $usertext = dropdown.closest('div');
+            }
             if (TBUtils.isNewModmail) {
                 $usertext = $body.find('.ThreadViewerReplyForm');
             }
@@ -415,6 +483,7 @@ function modmacros() {
 
             const $this = $(this),
                 sub = $this.closest('select').attr('data-subreddit'),
+                thingID = $this.closest('select').attr('data-thingID'),
                 index = $this.val(),
                 topLevel = $this.hasClass('tb-top-macro-select');
             let info;
@@ -438,9 +507,17 @@ function modmacros() {
                 if (success && config.length > 0) {
                     const macro = config[index];
 
-                    // add unique id to the dropdown
-                    $this.attr('id', `macro-dropdown-${info.id}`);
-                    editMacro($this, info, macro, topLevel);
+                    if(thingID) {
+                        TBUtils.getApiThingInfo(thingID, sub, false, function(thinginfo) {
+                            $this.attr('id', `macro-dropdown-${thinginfo.id}`);
+                            editMacro($this, thinginfo, macro, topLevel);
+                        });
+                    } else {
+                        // add unique id to the dropdown
+                        $this.attr('id', `macro-dropdown-${info.id}`);
+                        editMacro($this, info, macro, topLevel);
+                    }
+
                 }
             });
         });

@@ -1653,8 +1653,13 @@ function initwrapper(userDetails, newModSubs) {
                     const body = message.data.body,
                         user = message.data.author,
                         title = message.data.subject,
-                        subreddit = message.data.subreddit || '',
                         permalink = `/message/messages/${shortID}`;
+
+                    let subreddit = message.data.subreddit || '';
+
+                    if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                        subreddit = '';
+                    }
 
                     const info = {
                         subreddit: subreddit,
@@ -1681,6 +1686,7 @@ function initwrapper(userDetails, newModSubs) {
                         wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
                         mod: TBUtils.logged
                     };
+
                     callback(info);
                 });
             } else {
@@ -1716,6 +1722,10 @@ function initwrapper(userDetails, newModSubs) {
 
                     if (permalink && permaCommentLinkRegex.test(permalink)) {
                         permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
+                    }
+
+                    if (modCheck && $.inArray(subreddit, TBUtils.mySubs) === -1) {
+                        subreddit = '';
                     }
 
                     const info = {

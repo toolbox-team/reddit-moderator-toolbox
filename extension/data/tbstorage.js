@@ -73,20 +73,30 @@ function storagewrapper() {
                 TBsettingsObject = {};
                 SendInit();
             }
-
+            console.log(TBsettingsObject);
             // Listen for updated settings and update the settings object.
             chrome.runtime.onMessage.addListener(function(message) {
+
+                // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
                 if(message.action === 'tb-settings-update') {
                     TBsettingsObject = message.payload.tbsettings;
                     const $body = $('body');
                     $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
                     $('body').find('.tb-personal-settings .tb-save').before('<div class="tb-save-warning">Settings have been saved in a different browser tab! Saving from this window will overwrite those settings.</div>');
                 }
+
+                // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
+                if(message.action === 'tb-single-setting-update') {
+                    TBsettingsObject[message.payload.key] = message.payload.value;
+                }
             });
 
         });
 
         // methods.
+
+        // SyncSetting is responsible for saving the setting from the local object to extension storage.
+        // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
         TBStorage.setSetting = function (module, setting, value, syncSetting = true) {
             return setSetting(module, setting, value, syncSetting);
         };
@@ -313,7 +323,9 @@ function storagewrapper() {
             }
         }
 
-        function setSetting(module, setting, value, syncSettings) {
+        // SyncSetting is responsible for saving the setting from the local object to extension storage.
+        // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
+        function setSetting(module, setting, value, syncSettings = true) {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
@@ -321,6 +333,16 @@ function storagewrapper() {
             // try to save our settings.
             if (syncSettings) {
                 saveSettingsToBrowser();
+
+                // Communicate the new setting to other open tabs.
+                chrome.runtime.sendMessage({
+                    action: 'tb-global',
+                    globalEvent: 'tb-single-setting-update',
+                    payload: {
+                        key: storageKey,
+                        value: value
+                    }
+                });
             }
 
             return getSetting(module, setting);

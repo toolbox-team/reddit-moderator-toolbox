@@ -506,7 +506,7 @@ function modbutton() {
                 subreddits = [],
                 user = $popup.find('.user').text();
 
-            let banMessage = banMessage = $popup.find('textarea.ban-message').val();
+            let banMessage = $popup.find('textarea.ban-message').val();
             banMessage = createBanReason(banMessage);
 
             self.setting('lastAction', actionName);

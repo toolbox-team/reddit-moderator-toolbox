@@ -2912,7 +2912,6 @@ function initwrapper(userDetails, newModSubs) {
         const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
-
         // reddit regex matches.
         const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
         const subredditFrontpageReg = /^\/r\/([^/]*?)\/?(hot|new|rising|controversial)?\/?$/;

@@ -134,6 +134,7 @@ function initwrapper(userDetails, newModSubs) {
         // Public variables
 
         TBUtils.isOldReddit = $('#header').length;
+        TBUtils.isEmbedded = $('body').hasClass('embedded-page');
 
         TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
         TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
@@ -2911,6 +2912,7 @@ function initwrapper(userDetails, newModSubs) {
         const newMMconversationReg = /^\/mail\/(all|new|inprogress|archived|highlighted|mod|notifications)\/?([^/]*)\/?$/;
         const newMMcreate = /^\/mail\/create\/?$/;
 
+
         // reddit regex matches.
         const redditFrontpageReg = /^\/?(hot|new|rising|controversial)?\/?$/;
         const subredditFrontpageReg = /^\/r\/([^/]*?)\/?(hot|new|rising|controversial)?\/?$/;
@@ -2919,6 +2921,7 @@ function initwrapper(userDetails, newModSubs) {
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
         const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
         const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
+        const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
 
         // This function after being first called will watch for pushstate changes.
         // Once a change is detected it will abstract all the context information from url, update TBUtils variables and emit all information in an event.
@@ -3025,6 +3028,19 @@ function initwrapper(userDetails, newModSubs) {
                             'user': matchDetails[1],
                             'listing': listing
                         };
+                    } else if(userModMessage.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(userModMessage);
+                        if(matchDetails[1] === 'moderator') {
+                            contextObject.pageType = 'oldModmail';
+                            contextObject.pageDetails = {
+                                'page': matchDetails[2] || 'inbox'
+                            };
+                        } else {
+                            contextObject.pageType = 'message';
+                            contextObject.pageDetails = {
+                                'type': matchDetails[1]
+                            };
+                        }
                     // "Unknown" pageType.
                     } else {
                         contextObject.pageType = 'unknown';

@@ -149,6 +149,7 @@ function notifiermod() {
     });
 
     self.init = function () {
+        if(TBUtils.isEmbedded) return;
 
         let NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
 

@@ -21,6 +21,7 @@ function personalnotes() {
     });
 
     self.init = function() {
+        if(TBUtils.isEmbedded) return;
         const notewiki = self.setting('noteWiki').toLowerCase(),
             popupHeight = self.setting('popupHeight'),
             monospace = self.setting('monospace');

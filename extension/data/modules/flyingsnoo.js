@@ -12,12 +12,14 @@ function flyingsnoo() {
 
     self.init = function () {
         if (TBUtils.isNewModmail) return;
-        const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo('#tb-footer-block');
+        const $footerblock = $('body').find('#tb-footer-block')
+        const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo($footerblock);
         $snooFooter.css({
             'background-image': `url(${chrome.runtime.getURL('data/images/balloon.png')})`,
             'background-repeat': 'no-repeat'
 
         });
+
         $snooFooter.click(function () {
 
             const width = 87,

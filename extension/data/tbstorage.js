@@ -261,7 +261,7 @@ function storagewrapper() {
             }
 
             // Check for old reddit
-            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
+            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
                 loggedinOld = true;
             }
 

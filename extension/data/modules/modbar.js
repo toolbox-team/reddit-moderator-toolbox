@@ -70,12 +70,26 @@ function modbar() {
     });
 
     self.init = function() {
-        if (!TBUtils.logged || TBUtils.isToolbarPage) return;
-
         let $body = $('body'),
             moduleCount = 0,
             DEFAULT_MODULE = 'DEFAULT_MODULE',
             currentModule = DEFAULT_MODULE;
+
+        // Footer element below the page so toolbox never should be in the way.
+        // Doing it like this because it means we don't have to mess with reddit css
+        const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
+
+        if (!TBUtils.logged || TBUtils.isEmbedded) return;
+
+        // This prevents some weird scrollbar behavior on new reddit iframe embeds.
+        window.addEventListener('TBNewPage', function (event) {
+            const pageType = event.detail.pageType;
+            if(pageType === 'oldModmail' || 'message') {
+                $footerblock.hide();
+            } else {
+                $footerblock.show();
+            }
+        });
 
         //
         // preload some generic variables
@@ -139,10 +153,6 @@ function modbar() {
             newModmailUrl = `${newModmailBaseUrl}notifications`;
 
         }
-
-        // Footer element below the page so toolbox never should be in the way.
-        // Doing it like this because it means we don't have to mess with reddit css
-        $body.append('<div id="tb-footer-block">');
 
         // Custom CSS for devmode/testing
         if (customCSS) {

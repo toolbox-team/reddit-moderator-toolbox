@@ -132,7 +132,6 @@
                 "data/modules/nukecomments.js",
                 "data/modules/profile.js",
                 "data/modules/flyingsnoo.js",
-                "data/modules/old_queuetools.js",
                 "data/modules/queuetools.js",
                 "data/modules/oldreddit.js",
                 "data/tbmoduleinit.js"

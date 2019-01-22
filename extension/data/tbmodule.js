@@ -102,21 +102,8 @@ function tbmodule() {
             }
 
             /// Template for 'general settings'.
-            const dispalyNone = 'display: none;';
+            const displayNone = 'display: none;';
             let settingContent = '';
-
-            const settingTemplate = `
-        <p id="tb-toolbox-{{settingName}}" style="{{display}}">
-            {{content}}&nbsp;
-            <a data-setting="{{settingName}}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-{{settingName}} tb-icons">
-                link
-            </a>&nbsp;
-        </p>
-        <div style="display: none;" class="tb-setting-input tb-setting-input-{{settingName}}">
-            <input type="text" class="tb-input" readonly="readonly" value="[{{settingName}}](#?tbsettings=toolbox&setting={{settingName}})"><br>
-            <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting={{settingName}}">
-        </div>
-        `;
 
             const settings = [
                 {
@@ -139,12 +126,12 @@ function tbmodule() {
                 {
                     settingName: 'debugmode',
                     content: `<label><input type="checkbox" id="debugMode" ${(debugMode) ? 'checked' : ''}> Enable debug mode</label>`,
-                    display: (advancedMode) ? '' : dispalyNone
+                    display: (advancedMode) ? '' : displayNone
                 },
                 {
                     settingName: 'browserconsole',
                     content: `<label><input type="checkbox" id="browserConsole" ${(browserConsole) ? 'checked' : ''}> Use browser's console</label>`,
-                    display: (debugMode) ? '' : dispalyNone
+                    display: (debugMode) ? '' : displayNone
                 },
                 {
                     settingName: 'betamode',
@@ -160,13 +147,13 @@ function tbmodule() {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
                         <input type="text" class="tb-input" name="longLength" value="${longLength}">`,
-                    display: (advancedMode) ? '' : dispalyNone
+                    display: (advancedMode) ? '' : displayNone
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>
                       <input type="text" class="tb-input" name="shortLength" value="${shortLength}">`,
-                    display: (advancedMode) ? '' : dispalyNone
+                    display: (advancedMode) ? '' : displayNone
                 },
                 {
                     settingName: 'clearcache',
@@ -181,11 +168,22 @@ function tbmodule() {
             ];
 
             $.each(settings, function () {
-                settingContent += TB.utils.template(settingTemplate, {
-                    'settingName': this.settingName,
-                    'content': this.content,
-                    'display': this.display
-                });
+                const settingName = this.settingName,
+                    content = this.content,
+                    display = this.display;
+
+                settingContent = `${settingContent}
+                <p id="tb-toolbox-${settingName}" style="${display}">
+                    ${content}&nbsp;
+                    <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
+                        link
+                    </a>&nbsp;
+                </p>
+                <div style="display: none;" class="tb-setting-input tb-setting-input-${settingName}">
+                    <input type="text" class="tb-input" readonly="readonly" value="[${settingName}](#?tbsettings=toolbox&setting=${settingName})"><br>
+                    <input type="text" class="tb-input" readonly="readonly" value="https://www.reddit.com/#?tbsettings=toolbox&setting=${settingName}">
+                </div>
+                `;
             });
 
             $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
@@ -510,14 +508,21 @@ function tbmodule() {
                     let moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
                         moduleIsEnabled = false;
                     const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.shortname.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
-                        $settings = $(`<div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;"><div class="tb-window-content"></div></div>`);
+                        $settings = $(`
+                            <div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;">
+                                <div class="tb-window-content">
+                                    <div class="tb-settings"></div>
+                                    <div class="tb-oldreddit-settings" style="display: none;">
+                                        <h1>Settings below only affect things on old reddit</h1>
+                                    </div>
+                                </div>
+                            </div>`);
 
                     $tab.data('module', module.shortname);
                     $tab.data('help_page', module.shortname);
 
                     const $body = $('body');
                     const execAfterInject = [];
-
                     for (let j = 0; j < module.settingsList.length; j++) {
                         const setting = module.settingsList[j],
                             options = module.settings[setting];
@@ -834,7 +839,14 @@ body {
                             });
                         }
 
-                        $settings.find('.tb-window-content').append($setting);
+                        if(options.oldReddit) {
+                            const $oldRedditSettings = $settings.find('.tb-window-content .tb-oldreddit-settings');
+                            $oldRedditSettings.append($setting);
+                            $oldRedditSettings.show();
+                        } else {
+                            $settings.find('.tb-window-content .tb-settings').append($setting);
+                        }
+
                     }
 
                     // if ($settings.find('input').length > 0) {
@@ -988,7 +1000,7 @@ body {
                 'default': false,
                 'betamode': false, // optional
                 'hidden': false, // optional
-                'title': `Enable ${this.name}`
+                'title': `Enable ${this.name}`,
             });
 
         // PUBLIC: settings interface

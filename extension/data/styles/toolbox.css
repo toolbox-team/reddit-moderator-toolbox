@@ -33,10 +33,12 @@ div#tb-snoo-footer {
 */
 
 /* Let's use verdana for toolbox stuff. Can't get used to the reddit font */
-
 .mod-toolbox-rd.mod-toolbox-extra .tb-popup,
-.mod-toolbox-rd.mod-toolbox-extra  .tb-page-overlay {
-    font-family: verdana,arial,helvetica,sans-serif;
+.mod-toolbox-rd.mod-toolbox-extra .tb-page-overlay,
+.mod-toolbox-rd #tb-bottombar,
+.mod-toolbox-rd #tb-context-menu,
+.mod-toolbox-rd .tb-input {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px !important;
 }
 

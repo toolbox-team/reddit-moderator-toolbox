@@ -16,7 +16,8 @@
         "SnuOwnd": true,
         "pako": true,
         "tinycolor": true,
-        "DOMPurify": true
+        "DOMPurify": true,
+        "profileResults": true
     },
     "extends": "eslint:recommended",
     "rules": {

@@ -54,6 +54,9 @@ function startReset() {
 
 function storagewrapper() {
     (function (TBStorage) {
+
+        profileResults('storageStart', performance.now());
+
         const SHORTNAME = 'TBStorage';
 
         TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); //always use local storage.
@@ -268,6 +271,7 @@ function storagewrapper() {
             if((loggedinOld && oldRedditActive) || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(function () {
+                    profileResults('storageLoaded', performance.now());
                     const event = new CustomEvent('TBStorageLoaded2');
                     window.dispatchEvent(event);
                 }, 10);

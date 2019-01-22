@@ -15,6 +15,7 @@ function tbmodule() {
         },
 
         init: function tbInit() {
+            profileResults('tbInit', performance.now());
             initLoop();
 
             function initLoop() {
@@ -59,6 +60,7 @@ function tbmodule() {
 
                     // Start the event listener once everything else is initialized
                     TB.listener.start();
+                    profileResults('tbInitDone', performance.now());
 
                 }, 50);
             }
@@ -1092,9 +1094,12 @@ body {
 }
 
 window.addEventListener('TBUtilsLoaded2', function () {
+    profileResults('moduleStart', performance.now());
+
     $.log('TBModule has TBUtils', false, 'TBinit');
     tbmodule();
-
+    profileResults('moduleLoaded', performance.now());
     const event = new CustomEvent('TBModuleLoaded2');
     window.dispatchEvent(event);
+
 });

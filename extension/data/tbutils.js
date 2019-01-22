@@ -3293,6 +3293,7 @@ function initwrapper(userDetails, newModSubs) {
         });
     }
     window.addEventListener('TBStorageLoaded2', function () {
+        profileResults('utilsStart', performance.now());
         getUserDetails(function(userDetails) {
             if(userDetails.error) {
                 console.log('Error: ', userDetails.error);
@@ -3303,14 +3304,18 @@ function initwrapper(userDetails, newModSubs) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, function(subs) {
                     initwrapper(userDetails, subs);
+                    profileResults('utilsLoaded', performance.now());
                     const event = new CustomEvent('TBUtilsLoaded2');
                     window.dispatchEvent(event);
+
                 });
 
             } else {
                 initwrapper(userDetails);
+                profileResults('utilsLoaded', performance.now());
                 const event = new CustomEvent('TBUtilsLoaded2');
                 window.dispatchEvent(event);
+
             }
         });
     });

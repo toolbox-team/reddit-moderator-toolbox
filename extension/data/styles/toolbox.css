@@ -180,6 +180,7 @@ div#tb-context-menu #tb-context-header {
     font-weight: bold;
     padding: 5px;
     display: block;
+    line-height: normal;
 }
 
 

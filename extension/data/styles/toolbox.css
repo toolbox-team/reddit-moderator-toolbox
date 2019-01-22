@@ -109,7 +109,7 @@ html body.mod-toolbox-rd .tb-icons-align-middle {
 
 /*
 ------------
-    give input fields a border as reddit strips them.
+    Consistent styling for inputs
 ------------
 */
 
@@ -125,16 +125,12 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     border-color: #9fbad7;
 }
 
-/* This fixes the placeholder text being clipped off in firefox */
-body.mod-toolbox-rd.mod-toolbox-extra .tb-input[type="number"] {
-    line-height: 1.4;
-}
-
 /*
 ------------
-    context menu,
+    Context menu
 ------------
 */
+/* TODO: this could be CSS only tbh */
 .mod-toolbox-rd #tb-context-menu-list .tb-icons {
     padding-right: 2px;
     margin-right: 2px;
@@ -168,10 +164,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input[type="number"] {
     display: flex;
 }
 
-.mod-toolbox-rd #tb-context-menu:hover {
-    background-image: none;
-}
-
 .mod-toolbox-rd #tb-context-menu-wrap {
     display: none;
 }
@@ -182,7 +174,6 @@ div#tb-context-menu #tb-context-header {
     display: block;
     line-height: normal;
 }
-
 
 .mod-toolbox-rd #tb-context-menu table {
     width: 100%;
@@ -212,6 +203,7 @@ div#tb-context-menu #tb-context-header {
 ------------
     Overlay windows.
     TODO: Clean up css and remove duplicate code.
+    TODO: Merge code shared between overlays, windows, and notifications(?).
 ------------
 */
 

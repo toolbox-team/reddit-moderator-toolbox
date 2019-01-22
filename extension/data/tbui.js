@@ -205,7 +205,7 @@
 
         if($overlay.length) {
             const scrollTop = $overlay.scrollTop();
-            positions.topPosition = positions.topPosition + scrollTop;
+            positions.topPosition = event.clientY + scrollTop;
         }
 
         if (positions.topPosition < 0) {

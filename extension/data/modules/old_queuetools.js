@@ -8,7 +8,8 @@ function queuetoolsOld() {
     self.register_setting('highlightNegativePosts', {
         'type': 'boolean',
         'default': false,
-        'title': 'Highlight posts with a score of 0.'
+        'title': 'Highlight posts with a score of 0.',
+        'oldReddit': true
     });
 
     self.register_setting('hideActionedItems', {
@@ -123,10 +124,10 @@ function queuetoolsOld() {
     });
 
     self.init = function () {
-        var $body = $('body');
+        const $body = $('body');
 
         // Cached data
-        var highlightNegativePosts = self.setting('highlightNegativePosts'),
+        const highlightNegativePosts = self.setting('highlightNegativePosts'),
             hideActionedItems = self.setting('hideActionedItems'),
             showAutomodActionReason = self.setting('showAutomodActionReason'),
             linkToQueues = self.setting('linkToQueues'),
@@ -140,7 +141,7 @@ function queuetoolsOld() {
             groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
         // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
-        var QUEUE_URL = '';
+        let QUEUE_URL = '';
 
         if (linkToQueues) {
             if (TBUtils.isModQueuePage) {
@@ -168,7 +169,7 @@ function queuetoolsOld() {
             });
         }
 
-        var $noResults = $body.find('p#noresults');
+        const $noResults = $body.find('p#noresults');
         if (TBUtils.isModpage && queueCreature !== 'i_have_no_soul' && $noResults.length > 0) {
             self.log(queueCreature);
             if (queueCreature === 'puppy') {
@@ -186,14 +187,14 @@ function queuetoolsOld() {
         }
 
         function colorSubreddits() {
-            var $this = $(this),
+            const $this = $(this),
                 subredditName = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
 
             $this.addClass('color-processed');
 
             if ($.inArray(subredditName, TB.utils.mySubs) < 0) return;
 
-            var colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
+            const colorForSub = TBUtils.stringToColor(subredditName + subredditColorSalt);
             $this.attr('style', `border-left: solid 3px ${colorForSub} !important`);
             $this.addClass('tb-subreddit-color');
         }
@@ -218,23 +219,23 @@ function queuetoolsOld() {
                 // First prevent the link from being actually opened.
                 event.preventDefault();
 
-                var $this = $(this);
+                const $this = $(this);
                 // Grab the url.
-                var contextUrl = $this.attr('href');
+                let contextUrl = $this.attr('href');
                 if (contextUrl.indexOf('.reddit.com') < 0) {
                     contextUrl = TBUtils.baseDomain + contextUrl;
                 }
                 // Grab the subreddit.
-                var contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);
-                var contextSubreddit = contextThingInfo.subreddit,
+                const contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);
+                const contextSubreddit = contextThingInfo.subreddit,
                     contextUser = contextThingInfo.user;
 
                 // Get the entire context page.
                 $.get(contextUrl).done(function(result) {
                 // Put it into a jquery object and grab the comments.
-                    var $result = $(result).find('.sitetable.nestedlisting');
+                    const $result = $(result).find('.sitetable.nestedlisting');
                     // Put it into a nice container.
-                    var $pasteContent = $('<div class="tb-context-comment">').append($result);
+                    let $pasteContent = $('<div class="tb-context-comment">').append($result);
 
                     // Doing all this makes the urls absolute to the current page, we need to fix that so they point to the correct sub.
                     $pasteContent = $pasteContent.html(function(idx, oldHtml) {
@@ -242,7 +243,7 @@ function queuetoolsOld() {
                     });
 
                     // Prepare for the popup.
-                    var leftPosition;
+                    let leftPosition;
                     if (document.documentElement.clientWidth - event.pageX < 400) {
                         leftPosition = event.pageX - 600;
                     } else {
@@ -250,10 +251,10 @@ function queuetoolsOld() {
                     }
 
                     // Title is probably also nice.
-                    var contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
+                    const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
 
                     // Build the context popup and once that is done append it to the body.
-                    var $contextPopup = TB.ui.popup(
+                    const $contextPopup = TB.ui.popup(
                         contextTitle,
                         [
                             {
@@ -292,9 +293,9 @@ function queuetoolsOld() {
 
         // Negative post highlighting
         function highlightBadPosts() {
-            var $this = $(this);
+            const $this = $(this);
             $this.addClass('highlight-processed');
-            var score = $this.find('.likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes').html();
+            let score = $this.find('.likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes').html();
             score = /\d+/.test(score) ? parseInt(score) : 1; // If the score is still hidden, we'll assume it's fine
             if (score > 0) return;
             $this.addClass('tb-zero-highlight');
@@ -319,10 +320,10 @@ function queuetoolsOld() {
         });
 
         if (showReportReasons && TBUtils.isCommentsPage) {
-            var $ignoreReports = $('[data-event-action="unignorereports"]:first');
+            const $ignoreReports = $('[data-event-action="unignorereports"]:first');
             if ($ignoreReports.length > 0) {
-                var $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
-                    showing = false,
+                let showing = false;
+                const $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
                     reportHTML = `
                             <ul class="report-reasons rounded" style="display: none">
                                 <li class="report-reason-title">user reports:</li>
@@ -340,7 +341,7 @@ function queuetoolsOld() {
                         if (success) {
                             self.log(reports.user_reports);
                             self.log(reports.mod_reports);
-                            var $reportReasons = $('.report-reasons');
+                            const $reportReasons = $('.report-reasons');
 
                             reports.user_reports.forEach(function (report) {
                                 $reportReasons.append(`<li class="report-reason" title="spam">${report[1]}: ${report[0]}</li>`);
@@ -354,18 +355,19 @@ function queuetoolsOld() {
 
         // Add modtools buttons to page.
         function addModtools() {
-            var numberRX = /-?\d+/,
+            let listingOrder = self.setting('reportsOrder'),
+                allSelected = false,
+                sortAscending = self.setting('reportsAscending');
+
+            const numberRX = /-?\d+/,
                 reportsThreshold = self.setting('reportsThreshold'),
-                listingOrder = self.setting('reportsOrder'),
-                sortAscending = self.setting('reportsAscending'),
                 viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
                 viewingreports = !!location.pathname.match(/\/about\/reports/),
-                allSelected = false,
                 expandReports = self.setting('expandReports'),
                 EXPAND_TITLE = 'expand reports',
                 COLLAPSE_TITLE = 'collapse reports';
 
-            if (viewingspam && listingOrder == 'reports') {
+            if (viewingspam && listingOrder === 'reports') {
                 listingOrder = 'removed';
             }
 
@@ -377,12 +379,12 @@ function queuetoolsOld() {
                 if (!TBUtils.isModpage && !TBUtils.isSubCommentsPage) {
                     TBUtils.getModSubs(function () {
                         $('.thing').each(function () {
-                            var $thing = $(this),
+                            const $thing = $(this),
                                 $sub = $thing.find('.subreddit');
 
                             // Remove if the sub isn't moderated
                             if($sub.length > 0) {
-                                var sub = TB.utils.cleanSubredditName($sub.text());
+                                const sub = TB.utils.cleanSubredditName($sub.text());
                                 if ($.inArray(sub, TBUtils.mySubs) === -1) {
                                     $thing.remove();
                                 }
@@ -465,11 +467,11 @@ function queuetoolsOld() {
             $('.buttons .pretty-button').attr('tabindex', '2');
 
             //add class to processed threads.
-            var $things = $('.thing');
+            const $things = $('.thing');
             $things.addClass('mte-processed');
 
             if (expandReports) {
-                var $toggleReports = $('.toggle-reports');
+                const $toggleReports = $('.toggle-reports');
                 $toggleReports.addClass('expanded');
                 $toggleReports.text(COLLAPSE_TITLE);
 
@@ -484,7 +486,7 @@ function queuetoolsOld() {
             //});
 
             // Fix the position of the modtools. We do it like this so we can support custom css
-            var $modtoolsMenu = $body.find('.menuarea.modtools'),
+            const $modtoolsMenu = $body.find('.menuarea.modtools'),
                 offset = $modtoolsMenu.offset(),
                 offsetTop = offset.top,
                 rightPosition = $('.side').outerWidth() + 10;
@@ -520,7 +522,7 @@ function queuetoolsOld() {
 
             //// Button actions ////
             // Select thing when clicked
-            var noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON', 'IMG'];
+            const noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON', 'IMG'];
             $body.on('click', '.thing .entry', function (e) {
                 if (noAction.indexOf(e.target.nodeName) + 1) return;
 
@@ -540,9 +542,9 @@ function queuetoolsOld() {
 
             // Change sort order
             $('.sortorder-options a').click(function () {
-                var $sortOrder = $('.sortorder'),
+                const $sortOrder = $('.sortorder'),
                     order = $(this).text(),
-                    toggleAsc = (order == $sortOrder.text());
+                    toggleAsc = (order === $sortOrder.text());
 
                 if (toggleAsc) sortAscending = !sortAscending;
 
@@ -569,8 +571,8 @@ function queuetoolsOld() {
 
             // Select/deselect certain things
             $('.select-options a').click(function () {
-                var things = $('.thing:visible'),
-                    selector;
+                const things = $('.thing:visible');
+                let selector;
 
                 switch (this.type) {
                 case 'banned':
@@ -637,7 +639,7 @@ function queuetoolsOld() {
 
             // Expand reports on click.
             $('.toggle-reports').click(function () {
-                var $this = $(this);
+                const $this = $(this);
 
                 if ($this.hasClass('expanded')) {
                     $this.removeClass('expanded');
@@ -652,12 +654,12 @@ function queuetoolsOld() {
 
             // Mass spam/remove/approve
             $('.pretty-button.action').click(function () {
-                var approve = this.type == 'positive',
-                    spam = !approve && (this.type == 'negative');
+                const approve = this.type === 'positive',
+                    spam = !approve && (this.type === 'negative');
 
                 // Apply action
-                var $actioned = $('.thing:visible > input:checked').parent().each(function () {
-                    var id = $(this).attr('data-fullname');
+                const $actioned = $('.thing:visible > input:checked').parent().each(function () {
+                    const id = $(this).attr('data-fullname');
 
                     if (approve) {
                         TBUtils.approveThing(id, function (success) {
@@ -691,7 +693,7 @@ function queuetoolsOld() {
 
             // Uncheck anything we've taken an action, if it's checked.
             $body.on('click', '.pretty-button', function () {
-                var $this = $(this),
+                const $this = $(this),
                     $thing = $this.closest('.thing');
 
                 $thing.find('input[type=checkbox]').prop('checked', false);
@@ -717,7 +719,7 @@ function queuetoolsOld() {
             $('#modtab-threshold').keypress(function (e) {
                 e.preventDefault();
 
-                var threshold = +String.fromCharCode(e.which);
+                const threshold = +String.fromCharCode(e.which);
                 if (isNaN(threshold)) return;
 
                 $(this).val(threshold);
@@ -726,7 +728,7 @@ function queuetoolsOld() {
             });
 
             function setThreshold(things) {
-                var threshold = self.setting('reportsThreshold');
+                const threshold = self.setting('reportsThreshold');
                 things.show().find('.reported-stamp').text(function (_, str) {
                     if (str.match(/\d+/) < threshold)
                         $(this).closest('.thing').hide();
@@ -736,8 +738,8 @@ function queuetoolsOld() {
             setThreshold($things);
 
             function replaceSubLinks() {
-                var $this = $(this).find('a.subreddit');
-                var href = $this.attr('href') + QUEUE_URL;
+                const $this = $(this).find('a.subreddit');
+                const href = $this.attr('href') + QUEUE_URL;
                 $this.attr('href', href);
             }
 
@@ -748,14 +750,14 @@ function queuetoolsOld() {
             // NER support.
             window.addEventListener('TBNewThings', function () {
                 self.log('proc new things');
-                var things = $('.thing').not('.mte-processed');
+                const things = $('.thing').not('.mte-processed');
 
                 processNewThings(things);
 
             });
 
             // Toggle all expando boxes
-            var expandosOpen = false;
+            let expandosOpen = false;
             $('.open-expandos').on('click', function () {
 
                 if (!expandosOpen) {
@@ -763,7 +765,7 @@ function queuetoolsOld() {
 
                     $('.open-expandos').text('[-]');
                     $('.expando-button.collapsed').each(function (index) {
-                        var $button = $(this),
+                        const $button = $(this),
                             $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                         setTimeout(function () {
@@ -777,7 +779,7 @@ function queuetoolsOld() {
 
                     $('.open-expandos').text('[+]');
                     $('.expando-button.expanded').each(function () {
-                        var $button = $(this),
+                        const $button = $(this),
                             $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                         $button.click();
@@ -808,9 +810,9 @@ function queuetoolsOld() {
             }
 
             // Remove rate limit for expandos,removing,approving
-            var rate_limit = window.rate_limit;
+            const rate_limit = window.rate_limit;
             window.rate_limit = function (action) {
-                if (action == 'expando' || action == 'remove' || action == 'approve') return !1;
+                if (action === 'expando' || action === 'remove' || action === 'approve') return !1;
                 return rate_limit(action);
             };
 
@@ -820,7 +822,7 @@ function queuetoolsOld() {
             }
 
             $body.on('click', '.tb-sort-subs', function () {
-                var prefix = '', page = '';
+                let prefix = '', page = '';
                 if (TBUtils.isUnmoderatedPage) {
                     self.log('sorting unmod');
                     prefix = 'umq-';
@@ -836,14 +838,14 @@ function queuetoolsOld() {
                 self.log('sorting queue sidebar');
                 $('.tb-sort-subs').remove(); // don't allow sorting twice.
 
-                var now = TB.utils.getTime(),
+                const now = TB.utils.getTime(),
                     //delay = 0,
                     modSubs = [];
 
                 TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
                 TB.utils.forEachChunked($('.subscription-box a.title'), 20, 100, function (elem) {
-                    var $elem = $(elem),
+                    const $elem = $(elem),
                         sr = $elem.text(),
                         data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
 
@@ -858,7 +860,7 @@ function queuetoolsOld() {
 
                     function updateModqueueCount(sr) {
                         $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(function (d) {
-                            var items = d.data.children.length;
+                            const items = d.data.children.length;
                             self.log(`  subreddit: ${sr} items: ${items}`);
                             TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
                             $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
@@ -873,7 +875,7 @@ function queuetoolsOld() {
                 });
 
                 function sortSubreddits() {
-                    var subs = $('.subscription-box li').sort(function (a, b) {
+                    const subs = $('.subscription-box li').sort(function (a, b) {
                         return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
                     });
                     $('.subscription-box').empty().append(subs);
@@ -882,31 +884,34 @@ function queuetoolsOld() {
 
             // This method is evil and breaks shit if it's called too early.
             function sortThings(order, asc) {
-                var A, B;
-                var $sitetable = $('#siteTable');
-                var things = $('#siteTable .thing').sort(function (a, b) {
+                let A, B;
+                const $sitetable = $('#siteTable');
+                const things = $('#siteTable .thing').sort(function (a, b) {
                     (asc) ? (A = a, B = b) : (A = b, B = a);
 
-                    var $A = $(A),
+                    const $A = $(A),
                         $B = $(B);
                     switch (order) {
                     case 'age':
-                        var timeA = new Date($A.find('time.live-timestamp:first').attr('datetime')).getTime(),
+                    {
+                        const timeA = new Date($A.find('time.live-timestamp:first').attr('datetime')).getTime(),
                             timeB = new Date($B.find('time.live-timestamp:first').attr('datetime')).getTime();
                         return timeA - timeB;
-
+                    }
                     case 'edited':
-                        var $aEditElement = $A.find('time.edited-timestamp:first').length ? $A.find('time.edited-timestamp:first') : $A.find('time.live-timestamp:first'),
+                    {
+                        const $aEditElement = $A.find('time.edited-timestamp:first').length ? $A.find('time.edited-timestamp:first') : $A.find('time.live-timestamp:first'),
                             $bEditElement = $B.find('time.edited-timestamp:first').length ? $B.find('time.edited-timestamp:first') : $B.find('time.live-timestamp:first');
-                        var timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
+                        const timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
                             timeEditB = new Date($bEditElement.attr('datetime')).getTime();
                         return timeEditA - timeEditB;
-
+                    }
                     case 'removed':
-                        var $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
+                    {
+                        const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
                             $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
 
-                        var timeRemoveA,
+                        let timeRemoveA,
                             timeRemoveB;
 
                         if($aRemoveElement.hasClass('live-timestamp')) {
@@ -923,18 +928,24 @@ function queuetoolsOld() {
                             timeRemoveB = timeRemoveB.replace('removed at ', '');
                         }
 
-                        var timeStampRemoveA = new Date(timeRemoveA).getTime(),
+                        const timeStampRemoveA = new Date(timeRemoveA).getTime(),
                             timeStampRemoveB = new Date(timeRemoveB).getTime();
 
                         return timeStampRemoveA - timeStampRemoveB;
+                    }
                     case 'score':
-                        var scoreA = $A.find('.score:visible').text().match(numberRX),
+                    {
+                        const scoreA = $A.find('.score:visible').text().match(numberRX),
                             scoreB = $B.find('.score:visible').text().match(numberRX);
                         return scoreA - scoreB;
+                    }
                     case 'reports':
-                        var reportsA = $A.find('.reported-stamp').text().match(numberRX),
+                    {
+                        const reportsA = $A.find('.reported-stamp').text().match(numberRX),
                             reportsB = $B.find('.reported-stamp').text().match(numberRX);
                         return reportsA - reportsB;
+                    }
+
                     }
                 });
                 $sitetable.find('.thing').remove();
@@ -952,7 +963,7 @@ function queuetoolsOld() {
             // thread. this function is a bit of a mess
             // TODO: fix that
             function groupThings () {
-                var threadGroups = {},
+                const threadGroups = {},
                     threadIDs = []; // because who needs Object.keys() anyway
 
                 // Sorting leaves behind the extra wrappers, so clean them up
@@ -960,8 +971,8 @@ function queuetoolsOld() {
 
                 // Save a copy of each link/comment and record its parent thread ID
                 $('.sitetable .thing').each(function () {
-                    var $thing = $(this),
-                        threadID;
+                    const $thing = $(this);
+                    let threadID;
                     if ($thing.hasClass('comment')) {
                     // Find ID of the parent submission from title URL
                         threadID = $thing.find('.flat-list.buttons .first a').attr('href').match(/\/comments\/([a-z0-9]+)\//)[1];
@@ -973,7 +984,7 @@ function queuetoolsOld() {
                     // Only record thread IDs once each
                     if (threadIDs.indexOf(threadID) < 0) threadIDs.push(threadID);
                     // Store the element itself so we can move it around later
-                    if (threadGroups[threadID] == null) threadGroups[threadID] = [];
+                    if (!threadGroups[threadID]) threadGroups[threadID] = [];
                     threadGroups[threadID].push($thing);
                 });
 
@@ -984,7 +995,7 @@ function queuetoolsOld() {
                 $.each(threadIDs, function (index, id) {
                     // Each wrapper will contain all the things associated with
                     // a single submission, including the submission itself
-                    var $wrapper = $('<div>').addClass('tb-comment-group').attr('data-id', id);
+                    const $wrapper = $('<div>').addClass('tb-comment-group').attr('data-id', id);
                     $('#siteTable').append($wrapper);
                     // Loop through each thing associated with the submission
                     $.each(threadGroups[id], function (index) {
@@ -1010,13 +1021,13 @@ function queuetoolsOld() {
         // Highlight trigger words, do the same for reports
 
         // Regex is used in multiple functions
-        var regexMatchFinder = /\[(.*?)\]/g;
-        var highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
+        const regexMatchFinder = /\[(.*?)\]/g;
+        const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
         function getAutomodActionReason(sub) {
             self.log(sub);
             $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
                 $.each(json.data.children, function (i, value) {
-                    var actionReasonText = value.data.details,
+                    const actionReasonText = value.data.details,
                         targetFullName = value.data.target_fullname;
 
                     $body.find(`.thing[data-fullname="${targetFullName}"]>.entry`).after(`<div class="action-reason">
@@ -1028,7 +1039,8 @@ Action reason: ${value.data.details}
 " target="_blank">ask for a second opinion in modmail</a> </div>`);
 
                     if(highlightAutomodMatches) {
-                        var matches, matchesArray = [];
+                        let matches;
+                        const matchesArray = [];
                         while ((matches = regexMatchFinder.exec(actionReasonText))) {
                             matchesArray.push(matches[1]);
                         }
@@ -1051,7 +1063,7 @@ Action reason: ${value.data.details}
         }
 
         if(TBUtils.isMod && TBUtils.isCommentsPage && showAutomodActionReason && $('.thing.spam').length) {
-            var currentSubreddit = $('.side .titlebox h1.redditname a').text();
+            const currentSubreddit = $('.side .titlebox h1.redditname a').text();
 
             getAutomodActionReason(currentSubreddit);
         }
@@ -1059,13 +1071,14 @@ Action reason: ${value.data.details}
         function highlightedMatches() {
             $('.report-reasons .mod-report').each(function() {
 
-                var $this = $(this);
+                const $this = $(this);
                 if (!$this.hasClass('hl-processed')) {
                     $this.addClass('hl-processed');
-                    var reportText = $this.text();
+                    const reportText = $this.text();
                     if(reportText.indexOf('AutoModerator:') >= 0) {
 
-                        var matches, matchesArray = [];
+                        let matches;
+                        const matchesArray = [];
                         while ((matches = regexMatchFinder.exec(reportText))) {
                             matchesArray.push(matches[1]);
                         }
@@ -1089,14 +1102,14 @@ Action reason: ${value.data.details}
         }
 
         if (TBUtils.isModpage && showAutomodActionReason) {
-            var queueSubs = [];
+            const queueSubs = [];
 
             self.log('getting automod action reasons');
 
             $('#siteTable .thing').each(function() {
-                var $this = $(this);
-                var subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
-                var removedBy = $this.find('.flat-list li[title^="removed at"]').text();
+                const $this = $(this);
+                const subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
+                const removedBy = $this.find('.flat-list li[title^="removed at"]').text();
 
                 self.log(`  subreddit: ${subreddit}`);
                 self.log(`  removedby: ${removedBy}`);
@@ -1110,18 +1123,18 @@ Action reason: ${value.data.details}
             self.log('queuesubs:');
             self.log(queueSubs);
 
-            for (var i = 0; i < queueSubs.length; i++) {
-                var sub = queueSubs[i];
+            for (let i = 0; i < queueSubs.length; i++) {
+                const sub = queueSubs[i];
 
                 getAutomodActionReason(sub);
             }
         }
 
         // Let's make bot approved posts stand out!
-        var checkmarkLength = self.setting('botCheckmark').length;
+        let checkmarkLength = self.setting('botCheckmark').length;
         if (TBUtils.isMod && checkmarkLength > 0) {
 
-            var baseCss;
+            let baseCss;
             checkmarkLength = checkmarkLength - 1;
             $.each(self.setting('botCheckmark'), function (i, val) {
 

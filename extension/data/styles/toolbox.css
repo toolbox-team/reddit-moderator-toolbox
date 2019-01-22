@@ -1966,6 +1966,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border: 1px solid;
     -webkit-rtl-ordering: logical;
     -webkit-user-select: text;
+    flex-direction: column;
     -webkit-flex-direction: column;
     cursor: auto;
     padding: 2px !important;
@@ -2329,9 +2330,6 @@ div.sticky {
 .mod-toolbox-rd.res-nightmode .mod-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
-}
-
-.mod-toolbox-rd.res-nightmode .mod-popup .status {
 }
 
 .mod-toolbox-rd.res-nightmode .mod-popup .add-sub-link {

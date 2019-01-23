@@ -438,10 +438,10 @@ function queuetools() {
         <span>
             <a href="javascript:;" class="tb-general-button invert inoffensive" accesskey="I" title="invert selection">invert</a>
             <a href="javascript:;" class="tb-general-button open-expandos inoffensive" title="toggle all expando boxes">[+]</a>
-            <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop ">
+            <div class="tb-dropdown lightdrop">
                 <a href="javascript:;" class="tb-general-button inoffensive select"> [select...]</a>
             </div>
-            <div class="drop-choices lightdrop select-options">
+            <div class="tb-drop-choices lightdrop select-options">
                 ${viewingreports ? `` : `<a class="choice inoffensive" href="javascript:;" type="banned">shadow-banned</a>
                 <a class="choice inoffensive" href="javascript:;" type="filtered">spam-filtered</a>
                 ${viewingspam ? `` : `<a class="choice inoffensive" href="javascript:;" type="reported">has-reports</a>`}`}
@@ -470,10 +470,10 @@ function queuetools() {
         </span>
         <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" value="${reportsThreshold}" /></a></span>
         <span class="dropdown-title lightdrop" style="float:right"> sort:
-            <div onmouseover="hover_open_menu(this)" onclick="open_menu(this)" class="dropdown lightdrop ">
+            <div class="tb-dropdown lightdrop">
                 <span class="selected sortorder">${listingOrder}</span>
             </div>
-            <div class="drop-choices lightdrop sortorder-options">
+            <div class="tb-drop-choices lightdrop sortorder-options">
                     <a class="choice" href="javascript:;">age</a>
                     <a class="choice" href="javascript:;">edited</a>
                     <a class="choice" href="javascript:;">removed</a>
@@ -483,12 +483,20 @@ function queuetools() {
         </span>
     </div>`);
 
-            //Check if the tab menu exists and create it if it doesn't
-            //var tabmenu = $('#header-bottom-left .tabmenu');
-            //if (tabmenu.length == 0)
-            //    tabmenu = $('#header-bottom-left').append('<ul class="tabmenu"></ul>');
-            // $('.tabmenu').append(viewingspam ? '' : '<li></li>');
+            $body.on('click', '.tb-dropdown:not(.active)', function(e) {
+                e.stopPropagation();
+                const $element = $(e.currentTarget);
+                $element.addClass('active');
+                $element.siblings('.tb-drop-choices').not('.inuse').css('top', `${e.offsetHeight}px`).each(function() {
+                    $(this).css('left', `${$element.position().left}px`).css('top', `${$element.height() + $element.position().top}px`);
+                }).addClass('inuse');
+            });
 
+            $body.on('click', () => {
+                $body.find('.tb-dropdown.active').removeClass(`active`);
+                $body.find('.tb-drop-choices.inuse').removeClass(`inuse`);
+            });
+            //Check if the tab menu exists and create it if it doesn't
             $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
             $('.buttons .pretty-button').attr('tabindex', '2');
 

@@ -9,9 +9,7 @@
     overflow: visible;
 }
 
-.drop-choices.lightdrop {
-    z-index: 501;
-}
+
 
 
 #modtab-threshold {
@@ -197,4 +195,58 @@ a.tb-subreddit-item-count {
 /* Highlight for zero-scored posts */
 .tb-zero-highlight {
     background: #FFF1C4;
+}
+
+
+.tb-drop-choices.lightdrop {
+    z-index: 501;
+}
+
+.tb-dropdown {
+    cursor: default;
+    display: inline;
+    position: relative
+}
+
+.tb-drop-choices.inuse {
+    display: block
+}
+
+.tb-drop-choices {
+    position: absolute;
+    left: 0px;
+    border: 1px solid gray;
+    z-index: 100;
+    background-color: white;
+    white-space: nowrap;
+    line-height: normal;
+    margin-top: 1px;
+    display: none
+}
+
+.tb-drop-choices a.choice {
+    cursor: pointer;
+    padding: 2px 3px 1px 3px;
+    display: block
+}
+
+.tb-drop-choices a.choice:hover {
+    background-color: #c7def7
+}
+
+.tb-drop-choices a.choice.selected {
+    display: none
+}
+
+.tb-dropdown.lightdrop .selected {
+    position: relative;
+    background: none no-repeat scroll center right;
+    background-image: url("https://www.redditstatic.com/droparrowgray.gif");
+    padding-right: 21px;
+    text-decoration: underline;
+    color: gray
+}
+
+.tb-drop-choices.lightdrop {
+    margin-top: 2px
 }

@@ -3061,16 +3061,16 @@ function initwrapper(userDetails, newModSubs) {
         // Watch for new things and send out events based on that.
         if(TBUtils.isNewModmail) {
 
-        // For new modmail we do things a bit different.
-        // We only listen for dom changes after a user interaction.
-        // Resulting in this event being fired less and less wasted requests.
+            // For new modmail we do things a bit different.
+            // We only listen for dom changes after a user interaction.
+            // Resulting in this event being fired less and less wasted requests.
             let newThingRunning = false;
 
             document.body.addEventListener('click', function() {
-                let newMMtarget = document.querySelector('body');
+                const newMMtarget = document.querySelector('body');
 
                 // create an observer instance
-                let newMMobserver = new MutationObserver(function (mutations) {
+                const newMMobserver = new MutationObserver(function (mutations) {
 
                     let doAddTbModmailSidebar = false;
                     let doTBNewThings = false;

@@ -412,10 +412,12 @@ div#tb-context-menu #tb-context-header {
     border-bottom: 1px dotted #E0E0E0;
 }
 
-.mod-toolbox-rd .tb-window-content input[type="text"] {
-    width: 94%;
+.mod-toolbox-rd .tb-window-content .tb-input[type="text"],
+.mod-toolbox-rd .tb-window-content textarea.tb-input {
+    width: calc(100% - 16px); /* 16px = margin + border + padding */
 }
 
+/* TODO: what's this for? */
 .mod-toolbox-rd .tb-mark-unread {
     width: 100%;
     cursor: pointer;
@@ -424,33 +426,17 @@ div#tb-context-menu #tb-context-header {
     font-size: 200%;
     font-weight: bold;
 }
-
 .mod-toolbox-rd .tb-mark-unread:hover {
     text-decoration: underline;
 }
 
-.mod-toolbox-rd .tb-window-content-shortcuts-table td {
-    width: 50%;
-    padding: 3px;
-}
-
-.mod-toolbox-rd .tb-window-content-shortcuts-table td input {
-    width: 98%;
-}
-
-.mod-toolbox-rd .tb-window-content-shortcuts-td-remove {
-    width: 25px;
-}
-
+/* Settings tables */
+.mod-toolbox-rd .tb-window-content-shortcuts-table td,
 .mod-toolbox-rd .tb-map-input-table td {
     width: 50%;
     padding: 3px;
 }
-
-.mod-toolbox-rd .tb-map-input-table td input {
-    width: 98%;
-}
-
+.mod-toolbox-rd .tb-window-content-shortcuts-td-remove,
 .mod-toolbox-rd .tb-map-input-td-remove {
     width: 25px;
 }

@@ -283,19 +283,6 @@ div#tb-context-menu #tb-context-header {
     color: #000 !important;
 }
 
-.mod-toolbox-rd .tb-window-header {
-    right: 0;
-    left: 0;
-    display: block;
-    background-color: #CEE3F8;
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 0 11px !important;
-    line-height: 36px;
-    border-bottom: 0;
-}
-
 .mod-toolbox-rd .tb-window-tabs {
     border-bottom: solid 1px #B6C9DD;
     background-color: #C7D6E6;
@@ -498,48 +485,6 @@ div#tb-context-menu #tb-context-header {
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     position: absolute;
     z-index: 2147483645 !important;
-}
-
-
-.mod-toolbox-rd .tb-popup-header {
-    right: 0;
-    left: 0;
-    text-align: left;
-    position: relative;
-    height: 26px;
-    line-height: 26px;
-    display: flex;
-    background-color: #CEE3F8;
-    font-weight: bold;
-    box-sizing: content-box;
-    font-size: small;
-    border: 0;
-    padding: 0;
-}
-.mod-toolbox-rd .tb-popup-header .tb-popup-title {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    text-align: center;
-    flex-grow: 1;
-    padding: 0;
-}
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
-    display: flex;
-}
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a {
-    background-color: #C7D6E6;
-    width: 36px;
-    flex: 0 0 36px;
-    /* centering inner icon */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a:hover {
-    background-color: #9FBAD6;
 }
 
 .mod-toolbox-rd .tb-popup-tabs {
@@ -1858,31 +1803,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
 
 .mod-toolbox-rd .tb-window-tabs a {
     cursor: pointer;
-}
-
-.mod-toolbox-rd .tb-window-header .buttons {
-    display: flex;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.mod-toolbox-rd .tb-window-header .buttons a {
-    display: flex;
-    background-color: #C7D6E6;
-    border-left: 0;
-    height: 36px;
-    width: 36px;
-    font-size: small;
-    margin-left: 1px;
-    text-align: center;
-    /* center inner icons */
-    justify-content: center;
-    align-items: center;
-}
-
-.mod-toolbox-rd .tb-page-overlay a.close:hover,
-.mod-toolbox-rd .tb-page-overlay a.tb-help-main:hover {
-    background-color: #9FBAD6;
 }
 
 .mod-toolbox-rd #tb-removal-reasons-list,

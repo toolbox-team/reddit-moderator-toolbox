@@ -5,7 +5,7 @@
     TBui.longLoadArrayNonPersistent = [];
 
     TBui.purify = function(input) {
-        return DOMPurify.sanitize(input);
+        return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
     };
 
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox

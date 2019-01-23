@@ -211,6 +211,7 @@ function notifiermod() {
             self.setting('modmailCount', 0);
 
             $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).done(function (json) {
+                TBui.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
 
                     var unreadmessageid = value.data.name;
@@ -422,6 +423,7 @@ function notifiermod() {
 
             function getcommentitle(unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
                 $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(function (jsondata) {
+                    TBui.purifyObject(jsondata);
                     const commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
                         TBUtils.notification(`Reply from: ${unreadauthor} in:  ${unreadsubreddit}: ${commenttitle.substr(0, 20)}\u2026`, $(unreadbody_html).text(), '/message/unread/');
@@ -435,6 +437,7 @@ function notifiermod() {
 
             // getting unread messages
             $.getJSON(`${TBUtils.baseDomain}/message/unread.json`).done(function (json) {
+                TBui.purifyObject(json);
                 var count = json.data.children.length || 0;
                 self.setting('unreadMessageCount', count);
                 updateMessagesCount(count);
@@ -556,6 +559,7 @@ function notifiermod() {
             // wrapper around $.getJSON so it can be part of a loop
             function procesmqcomments(mqlinkid, mqreportauthor, mqidname) {
                 $.getJSON(TBUtils.baseDomain + mqlinkid).done(function (jsondata) {
+                    TBui.purifyObject(jsondata);
                     var infopermalink = jsondata.data.children[0].data.permalink,
                         infotitle = jsondata.data.children[0].data.title,
                         infosubreddit = jsondata.data.children[0].data.subreddit;
@@ -573,6 +577,7 @@ function notifiermod() {
             }
 
             $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(function (json) {
+                TBui.purifyObject(json);
                 var count = json.data.children.length || 0;
                 updateModqueueCount(count);
 
@@ -685,6 +690,7 @@ function notifiermod() {
                 }
 
                 $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(function (json) {
+                    TBui.purifyObject(json);
                     var count = json.data.children.length || 0;
 
                     if (unmoderatedNotifications && count > unmoderatedCount) {

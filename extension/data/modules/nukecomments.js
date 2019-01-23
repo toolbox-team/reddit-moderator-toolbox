@@ -78,7 +78,7 @@ function nukecomments() {
                 });
 
             $.getJSON(fetchURL, {raw_json: 1}).done(function (data) {
-
+                TBui.purifyObject(data);
                 parseComments(data[1].data.children[0], postID, subreddit, function() {
                     TB.ui.longLoadSpinner(false);
                     $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
@@ -87,11 +87,11 @@ function nukecomments() {
                     // Distinguished chain
                     const distinguishedCommentsLength = distinguishedComments.length;
 
-                    $popup.find('.tb-nuke-details').html(`
+                    $popup.find('.tb-nuke-details').html(TBui.purify(`
                     <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
                     <p>${distinguishedCommentsLength} distinguished comments found.</p>
                     <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ` checked="checked"` : ``}>Ignore distinguished comments from mods and admins</label></p>
-                    `);
+                    `));
                     $popup.find('.tb-execute-nuke').show();
 
                 });
@@ -210,6 +210,7 @@ function nukecomments() {
                     const fetchUrl = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
                     $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
+                        TBui.purifyObject(data);
                         parseComments(data[1].data.children[0], postID, subreddit, function() {
                             processCount++;
 

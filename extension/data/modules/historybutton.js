@@ -308,6 +308,7 @@ function historybutton() {
         const $contentBox = self.fetched[author].popup;
 
         $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).done(function (d) {
+            TBui.purifyObject(d);
             const joinedDate = new Date(d.data.created_utc * 1000),
                 redditorTime = TBUtils.niceDateDiff(joinedDate);
 
@@ -403,14 +404,15 @@ function historybutton() {
             $error.html('unable to load userdata</br>shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).done(function (d) {
-        //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
+            TBui.purifyObject(d);
+            //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
             if ($.isEmptyObject(d.data.children)) {
 
                 if (user.counters.submissions > 0) {
-                    $submissionCount.html(`${user.counters.submissions}+`);
+                    $submissionCount.html(TBui.purify(`${user.counters.submissions}+`));
                 }
                 else {
-                    $submissionCount.html(user.counters.submissions);
+                    $submissionCount.html(TBui.purify(user.counters.submissions));
                 }
 
                 //If the error elements can be seen it is because there are no submissions
@@ -428,13 +430,13 @@ function historybutton() {
             user.counters.submissions += d.data.children.length;
             //There's still more subsmissions to load, so we're going to run again
             if (after) {
-                $submissionCount.html(`Loading... (${user.counters.submissions})`);
+                $submissionCount.html(TBui.purify(`Loading... (${user.counters.submissions})`));
                 self.populateSubmissionHistory(after, author);
             }
             //All of the submissions have been loaded at this point
             else {
                 user.gettingUserData = false;
-                $submissionCount.html(user.counters.submissions);
+                $submissionCount.html(TBui.purify(user.counters.submissions));
             }
 
             TB.ui.longLoadNonPersistent(false);
@@ -699,6 +701,7 @@ function historybutton() {
             $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
         }).done(function (d) {
+            TBui.purifyObject(d);
             $.each(d.data.children, function (index, value) {
                 const data = value.data;
 
@@ -738,8 +741,8 @@ function historybutton() {
             });
             const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
 
-            $commentCount.html(user.counters.comments);
-            $commentCountOp.html(`${user.counters.commentsOP} (${percentageOP}%)`);
+            $commentCount.html(TBui.purify(user.counters.comments));
+            $commentCountOp.html(TBui.purify(`${user.counters.commentsOP} (${percentageOP}%)`));
 
             TB.ui.longLoadNonPersistent(false);
         });

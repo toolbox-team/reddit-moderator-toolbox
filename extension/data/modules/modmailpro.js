@@ -336,7 +336,7 @@ function modmailpro() {
 
                     setView(ALL);
                     $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
-                    $('.unread-count').html(`<b>${newCount}</b> - new mod mail thread${newCount == 1 ? '' : 's'}`);
+                    $('.unread-count').html(TBui.purify(`<b>${newCount}</b> - new mod mail thread${newCount == 1 ? '' : 's'}`));
                     $(entries).click();
                 }
                 // Otherwise setup the view
@@ -671,7 +671,7 @@ function modmailpro() {
 
                 self.endProfile('highlight-new-internal');
             }, function complete() {
-                $('.unread-count').html(`<b>${newCount}</b> - new message${newCount == 1 ? '' : 's'}`);
+                $('.unread-count').html(TBui.purify(`<b>${newCount}</b> - new message${newCount == 1 ? '' : 's'}`));
 
                 self.endProfile('highlight-new');
             }, function start() {

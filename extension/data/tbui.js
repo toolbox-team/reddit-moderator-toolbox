@@ -8,6 +8,38 @@
         return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
     };
 
+    function purifyObject(input) {
+        for (const key in input) {
+            if(input.hasOwnProperty(key)) {
+                const itemType = typeof input[key];
+                switch(itemType) {
+                case 'object':
+                    purifyObject(input[key]);
+                    break;
+                case 'string':
+                    input[key] = TBui.purify(input[key]);
+                    break;
+                case 'function':
+                    // If we are dealing with an actual function something is really wrong and we'll overwrite it.
+                    input[key] = 'function';
+                    break;
+                case 'number':
+                case 'boolean':
+                case 'undefined':
+                    // Do nothing with these as they are supposed to be safe.
+                    break;
+                default:
+                    // If we end here we are dealing with a type we don't expect to begin with. Begone!
+                    input[key] = `unknown item type ${itemType}`;
+                }
+            }
+        }
+    }
+
+    TBui.purifyObject = function(input) {
+        purifyObject(input);
+    };
+
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
     $body.on('click', '.tb-bracket-button', function(event) {
         event.stopPropagation();
@@ -478,7 +510,7 @@
             $body.find('#tb-feedback-window').remove();
 
             // build up the html, not that the class used is directly passed from the function allowing for easy addition of other kinds.
-            let feedbackElement = `<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`;
+            let feedbackElement = TBui.purify(`<div id="tb-feedback-window" class="${feedbackKind}"><span class="tb-feedback-text">${feedbackText}</span></div>`);
 
             // Add the element to the page.
             $body.append(feedbackElement);
@@ -867,6 +899,7 @@
      */
 
     TBui.makeSubmissionEntry = function makeSubmissionEntry(submission, submissionOptions) {
+        TBui.purifyObject(submission);
         // Misc
         const canModsubmission = submission.data.can_mod_post,
 
@@ -1142,6 +1175,7 @@
      */
 
     TBui.makeSingleComment = function makeSingleComment(comment, commentOptions = {}) {
+        TBui.purifyObject(comment);
         // Misc
         const canModComment = comment.data.can_mod_post,
 
@@ -1646,6 +1680,7 @@
             console.log(fetchUrl);
             // Lets get the comments.
             $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
+                TBui.purifyObject(data);
                 const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                 window.requestAnimationFrame(function() {
                     $thisMoreComments.before($comments.html());

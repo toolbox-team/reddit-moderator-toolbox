@@ -968,7 +968,7 @@ function usernotes() {
 
                 $body.find('.note').each(function (key, thing) {
                     let wrapper = $(this).closest('.tb-un-note-details').show();
-                    if (contentsSearchValue.test($(thing).html().toUpperCase())) {
+                    if (contentsSearchValue.test($(thing).text().toUpperCase())) {
                         wrapper.show();
                         wrapper.closest('.tb-un-user').show();
                     } else {

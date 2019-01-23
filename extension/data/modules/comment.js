@@ -185,6 +185,7 @@ function comments() {
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
             $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(function (data) {
+                TBui.purifyObject(data);
                 // put the json through our deconstructor.
                 data[1].isreply = false;
                 parseComments(data[1]);
@@ -264,7 +265,7 @@ function comments() {
 
                 // Get the context
                 $.getJSON(contextUrl, {raw_json: 1}).done(function(data) {
-
+                    TBui.purifyObject(data);
                     const commentOptions = {
                         'parentLink' : true,
                         'contextLink' : true,

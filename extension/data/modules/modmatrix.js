@@ -216,6 +216,7 @@ function modmatrix() {
 
             for (let i = 0; i < subredditNames.length; i++) {
                 $.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`, function (moderatorData) {
+                    TBui.purifyObject(moderatorData);
                     for (let j = 0; j < moderatorData.data.children.length; j++) {
                         $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
                     }
@@ -417,6 +418,7 @@ function modmatrix() {
             self.processData(this.dataCache[cacheKey], callback);
         } else {
             $.getJSON(url, requestData, function (response) {
+                TBui.purifyObject(response);
                 self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
                 var data = response.data;
                 self.processData(data, callback);
@@ -587,7 +589,7 @@ function modmatrix() {
         if (finished && self.firstEntry != null && self.lastEntry != null) {
             var lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
             var firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
-            $('#mod-matrix-statistics').html(`showing <strong>${self.total} actions</strong> between <strong title="${lastEntryDate}">${lastEntryDate.toDateString().toLowerCase()}</strong> and <strong title="${firstEntryDate}">${firstEntryDate.toDateString().toLowerCase()}</strong> ${errored ? "(<span style='color:red'>error occured</span>)" : ''} | <a id="exporttocsv">export table to CSV</a>`);
+            $('#mod-matrix-statistics').html(TBui.purify(`showing <strong>${self.total} actions</strong> between <strong title="${lastEntryDate}">${lastEntryDate.toDateString().toLowerCase()}</strong> and <strong title="${firstEntryDate}">${firstEntryDate.toDateString().toLowerCase()}</strong> ${errored ? "(<span style='color:red'>error occured</span>)" : ''} | <a id="exporttocsv">export table to CSV</a>`));
             $('#exporttocsv').click(self.exportToCSV).attr({
                 'download': `${self.subredditName}-modlog.csv`,
                 target: '_blank'
@@ -725,6 +727,7 @@ function modmatrix() {
             $.getJSON(modlogUrl, {
                 raw_json : 1
             }).done(function(result) {
+                TBui.purifyObject(result);
                 lastAfter = result.data.after;
                 const $modActions = $('.modactionlisting');
                 result.data.children.forEach(function(child) {

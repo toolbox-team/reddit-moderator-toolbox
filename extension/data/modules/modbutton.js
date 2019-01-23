@@ -352,6 +352,7 @@ function modbutton() {
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
                 $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
+                    TBui.purifyObject(data);
                     const banned = data.data.children;
                     for (let i = 0; i < banned.length; i++) {
                         if (banned[i].name.toLowerCase() === user.toLowerCase()) {
@@ -371,6 +372,7 @@ function modbutton() {
                                 type: 'banuser',
                                 limit: '1000'
                             }, function (data) {
+                                TBui.purifyObject(data);
                                 const logged = data.data.children;
                                 for (let i = 0; i < logged.length; i++) {
                                     if (logged[i].data.target_fullname === user_fullname) {
@@ -711,7 +713,7 @@ function modbutton() {
 
             $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, function (resp) {
                 if (!resp || !resp.users || resp.users.length < 1) return;
-
+                TBui.purifyObject(resp);
                 $textinput.val(resp.users[0].flair_text);
                 $classinput.val(resp.users[0].flair_css_class);
             });

@@ -779,7 +779,7 @@ body {
                                     }
 
                                     const $a = $('<div>').attr('class', `achievement ${aClass}`);
-                                    $a.append($('<p>').attr('class', 'title').html(aTitle));
+                                    $a.append($('<p>').attr('class', 'title').html(TBui.purify(aTitle)));
                                     $a.append($('<p>').attr('class', 'description').text(aDescr));
                                     $list.append($a);
                                 }

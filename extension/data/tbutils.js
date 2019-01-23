@@ -1346,6 +1346,7 @@ function initwrapper(userDetails, newModSubs) {
 
             function getSubs(URL) {
                 $.getJSON(TBUtils.baseDomain + URL, function (json) {
+                    TBui.purifyObject(json);
                     getSubsResult(json.data.children, json.data.after);
                 });
             }
@@ -1650,6 +1651,7 @@ function initwrapper(userDetails, newModSubs) {
             if(id.startsWith('t4_')) {
                 const shortID = id.substr(3);
                 $.get(`${TBUtils.baseDomain}/message/messages/${shortID}.json`, function (response) {
+                    TBui.purifyObject(response);
                     const message = findMessage(response, shortID);
                     const body = message.data.body,
                         user = message.data.author,
@@ -1693,6 +1695,7 @@ function initwrapper(userDetails, newModSubs) {
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
                 $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
+                    TBui.purifyObject(response);
                     const data = response.data;
 
                     let user = data.children[0].data.author;
@@ -2179,6 +2182,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.getBanState = function (subreddit, user, callback) {
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
+                TBui.purifyObject(data);
                 const banned = data.data.children;
 
                 // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -2532,6 +2536,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
+                    TBui.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
@@ -2546,6 +2551,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
+                    TBui.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response.data.children[0].data.created_utc);
                 })
@@ -2560,6 +2566,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
+                    TBui.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
@@ -2575,6 +2582,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
+                    TBui.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         const data = response[0].data.children[0].data;
 
@@ -2665,7 +2673,6 @@ function initwrapper(userDetails, newModSubs) {
 
             $.get(URL, function (resp) {
                 if (!resp) callback(null);
-
                 resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
                 let $sitetable = $(resp).find('#siteTable');
                 $sitetable.find('.nextprev').remove();
@@ -2731,64 +2738,6 @@ function initwrapper(userDetails, newModSubs) {
                 });
             }
 
-        };
-
-        TBUtils.getReasonsFromCSS = function (sub, callback) {
-
-        // If not, build a new one, getting the XML from the stylesheet
-            $.get(`${TBUtils.baseDomain}/r/${sub}/about/stylesheet.json`).done(function (response) {
-                if (!response.data) {
-                    callback(false);
-                    return;
-                }
-
-                // See if this subreddit is configured for leaving reasons using <removalreasons2>
-                let match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-                    .replace(/&lt;/g, '<')
-                    .replace(/&gt;/g, '>')
-                    .match(/<removereasons2>.+<\/removereasons2>/i);
-
-                // Try falling back to <removalreasons>
-                if (!match) {
-                    match = response.data.stylesheet.replace(/\n+|\s+/g, ' ')
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .match(/<removereasons>.+<\/removereasons>/i);
-                }
-
-                // Neither can be found.
-                if (!match) {
-                    callback(false);
-                    return;
-                }
-
-                // Create valid XML from parsed string and convert it to a JSON object.
-                let XML = $(match[0]);
-                let reasons = [];
-
-                XML.find('reason').each(function () {
-                    let reason = {
-                        text: escape(this.innerHTML)
-                    };
-                    reasons.push(reason);
-                });
-
-                let oldReasons = {
-                    pmsubject: XML.find('pmsubject').text() || '',
-                    logreason: XML.find('logreason').text() || '',
-                    header: escape(XML.find('header').text() || ''),
-                    footer: escape(XML.find('footer').text() || ''),
-                    logsub: XML.find('logsub').text() || '',
-                    logtitle: XML.find('logtitle').text() || '',
-                    bantitle: XML.find('bantitle').text() || '',
-                    getfrom: XML.find('getfrom').text() || '',
-                    reasons: reasons
-                };
-
-                callback(oldReasons);
-            }).fail(function () {
-                callback(false);
-            });
         };
 
         TBUtils.hasNoConfig = function (sub) {
@@ -2863,7 +2812,7 @@ function initwrapper(userDetails, newModSubs) {
 
         function getToolboxDevs() {
             $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(function (resp) {
-
+                TBui.purifyObject(resp);
                 let children = resp.data.children,
                     devs = [];
 
@@ -3261,6 +3210,7 @@ function initwrapper(userDetails, newModSubs) {
             'after': after,
             'limit': 100
         }, function (json) {
+            TBui.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
             if(json.data.after) {
@@ -3290,6 +3240,7 @@ function initwrapper(userDetails, newModSubs) {
     function getUserDetails(callback) {
 
         $.getJSON('https://www.reddit.com/api/me.json', function (json) {
+            TBui.purifyObject(json);
             console.log(json);
             callback(json);
         }).fail(function(jqxhr, textStatus, error) {

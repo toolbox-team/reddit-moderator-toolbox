@@ -202,7 +202,7 @@ function queuetools() {
         function highlightBadPosts() {
             const $this = $(this);
             $this.addClass('highlight-processed');
-            let score = $this.find('.likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes').html();
+            let score = $this.find('.likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes').text();
             score = /\d+/.test(score) ? parseInt(score) : 1; // If the score is still hidden, we'll assume it's fine
             if (score > 0) return;
             $this.addClass('tb-zero-highlight');
@@ -775,6 +775,7 @@ function queuetools() {
 
                     function updateModqueueCount(sr) {
                         $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(function (d) {
+                            TBui.purifyObject(d);
                             const items = d.data.children.length;
                             self.log(`  subreddit: ${sr} items: ${items}`);
                             TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
@@ -941,6 +942,7 @@ function queuetools() {
         function getAutomodActionReason(sub) {
             self.log(sub);
             $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
+                TBui.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
                     const actionReasonText = value.data.details,
                         targetFullName = value.data.target_fullname;
@@ -1160,6 +1162,7 @@ Action reason: ${value.data.details}
          */
         function getModlog(subreddit, callback) {
             $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {limit: 500}).done(function (json) {
+                TBui.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
                     const fullName = value.data.target_fullname;
                     const actionID = value.data.id;

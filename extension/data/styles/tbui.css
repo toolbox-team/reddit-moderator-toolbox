@@ -1,23 +1,19 @@
 /*
 =======================
 
-Window/Dialog Common
+Window/Popup Common
 
 =======================
 */
 
 /* Headers */
+/* TODO: generic classname that windows/popups can share? */
 .mod-toolbox-rd .tb-window-header,
 .mod-toolbox-rd .tb-popup-header {
     display: flex;
-    right: 0;
-    left: 0;
     background-color: #CEE3F8;
-    text-align: center;
-    font-weight: bold;
     font-size: 14px;
     line-height: 26px;
-    border-bottom: 0;
 }
 .mod-toolbox-rd .tb-window-header {
     /* Windows get bigger headers */
@@ -28,9 +24,8 @@ Window/Dialog Common
 
 .mod-toolbox-rd .tb-window-title,
 .mod-toolbox-rd .tb-popup-title {
-    position: relative;
-    box-sizing: border-box;
     text-align: center;
+    font-weight: bold;
     flex-grow: 1;
     padding: 0;
 }
@@ -38,15 +33,13 @@ Window/Dialog Common
 .mod-toolbox-rd .tb-window-header .buttons,
 .mod-toolbox-rd .tb-popup-header .buttons {
     display: flex;
-    align-items: stretch;
 }
+
 .mod-toolbox-rd .tb-window-header .buttons a,
 .mod-toolbox-rd .tb-popup-header .buttons a {
     display: flex;
     background-color: #C7D6E6;
-    border-left: 0;
     width: 36px;
-    font-size: small;
     margin-left: 1px;
     text-align: center;
     /* center inner icons */

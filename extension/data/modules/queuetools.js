@@ -126,14 +126,6 @@ function queuetools() {
         'oldReddit': true
     });
 
-    self.register_setting('openContextInPopup', {
-        'type': 'boolean',
-        'default': true,
-        'beta': false,
-        'title': 'Open context links in a toolbox popup. Allows for quickly viewing the context of something without leaving the queue page.',
-        'oldReddit': true
-    });
-
     self.register_setting('directProfileToLegacy', {
         'type': 'boolean',
         'default': false,
@@ -162,7 +154,6 @@ function queuetools() {
             queueCreature = self.setting('queueCreature'),
             showReportReasons = self.setting('showReportReasons'),
             highlightAutomodMatches = self.setting('highlightAutomodMatches'),
-            openContextInPopup = self.setting('openContextInPopup'),
             directProfileToLegacy = self.setting('directProfileToLegacy'),
             groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
@@ -231,91 +222,6 @@ function queuetools() {
                 $('.thing').each(colorSubreddits);
             }
         });
-
-        // Show context for comments in a popup rather than people having to open a tab.
-        if ((TBUtils.isModpage || TBUtils.isSubAllCommentsPage || TBUtils.isUserPage) && openContextInPopup) {
-            self.log('openContextInPopup enabled.');
-            $body.on('click', 'a.bylink[data-event-action="context"]', function(event) {
-                self.log('Context button clicked.');
-                // If Ctrl or Cmd are held, the user's trying to open the link in a new tab; we should let them
-                if (event.ctrlKey || event.metaKey) {
-                    return self.log('Ctrl or Cmd held, not doing anything.');
-                }
-
-                // First prevent the link from being actually opened.
-                event.preventDefault();
-
-                const $this = $(this);
-                // Grab the url.
-                let contextUrl = $this.attr('href');
-                if (contextUrl.indexOf('.reddit.com') < 0) {
-                    contextUrl = TBUtils.baseDomain + contextUrl;
-                }
-                // Grab the subreddit.
-                const contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);
-                const contextSubreddit = contextThingInfo.subreddit,
-                    contextUser = contextThingInfo.user;
-
-                // Get the entire context page.
-                $.get(contextUrl).done(function(result) {
-                // Put it into a jquery object and grab the comments.
-                    const $result = $(result).find('.sitetable.nestedlisting');
-                    // Put it into a nice container.
-                    let $pasteContent = $('<div class="tb-context-comment">').append($result);
-
-                    // Doing all this makes the urls absolute to the current page, we need to fix that so they point to the correct sub.
-                    $pasteContent = $pasteContent.html(function(idx, oldHtml) {
-                        return oldHtml.replace(/\/r\/mod\//, `/r/${contextSubreddit}/`);
-                    });
-
-                    // Prepare for the popup.
-                    let leftPosition;
-                    if (document.documentElement.clientWidth - event.pageX < 400) {
-                        leftPosition = event.pageX - 600;
-                    } else {
-                        leftPosition = event.pageX - 50;
-                    }
-
-                    // Title is probably also nice.
-                    const contextTitle = `Context for /u/${contextUser} in /r/${contextSubreddit}`;
-
-                    // Build the context popup and once that is done append it to the body.
-                    const $contextPopup = TB.ui.popup(
-                        contextTitle,
-                        [
-                            {
-                                title: 'Context tab',
-                                tooltip: 'Tab with context for comment.',
-                                content: $pasteContent,
-                                footer: ''
-                            }
-                        ],
-                        '',
-                        'context-button-popup',
-                        {
-                            draggable: true
-                        }
-                    ).appendTo('#siteTable')
-                        .css({
-                            left: leftPosition,
-                            top: event.pageY - 10,
-                            display: 'block'
-                        });
-
-                    // Close the popup
-                    $contextPopup.on('click', '.close', function () {
-                        $contextPopup.remove();
-                    });
-
-                    // Reports do not expand properly when put in a popup. This fixes them.
-                    $contextPopup.on('click', '.reported-stamp', function () {
-                        $(this).siblings('.report-reasons').toggle();
-                    });
-
-                });
-
-            });
-        }
 
         // Negative post highlighting
         function highlightBadPosts() {

@@ -220,6 +220,25 @@ function comments() {
             });
         });
         if (openContextInPopup) {
+
+            // Add context button to the queue in old reddit
+            if(TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage)) {
+                TB.listener.on('comment', function(e) {
+                    const $target = $(e.target);
+                    const data = e.detail.data;
+                    const commentName = data.id;
+                    const postID = data.post.id.substring(3);
+                    const commentID = data.id.substring(3);
+                    const commentPermalink = `/r/${data.subreddit.name}/comments/${postID}/-/${commentID}/`;
+                    const $contextLink = $(`
+                        <li>
+                            <a class="tb-comment-button tb-comment-context-popup" href="javascript:;" data-comment-id="${commentName}" data-context-json-url="${commentPermalink}.json?context=3">context-popup</a>
+                        </li>`);
+
+                    $target.closest('.entry').find('.flat-list.buttons a.bylink[data-event-action="context"]').closest('li').after($contextLink);
+                });
+            }
+
             self.log('openContextInPopup enabled.');
 
             $body.on('click', '.tb-comment-context-popup', function(event) {

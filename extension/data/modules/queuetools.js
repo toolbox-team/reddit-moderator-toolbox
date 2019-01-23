@@ -126,12 +126,6 @@ function queuetools() {
         'oldReddit': true
     });
 
-    self.register_setting('directProfileToLegacy', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Open legacy user overview when clicking on profile links.',
-        'oldReddit': true
-    });
     self.register_setting('groupCommentsOnModPage', {
         'type': 'boolean',
         'default': false,
@@ -154,7 +148,6 @@ function queuetools() {
             queueCreature = self.setting('queueCreature'),
             showReportReasons = self.setting('showReportReasons'),
             highlightAutomodMatches = self.setting('highlightAutomodMatches'),
-            directProfileToLegacy = self.setting('directProfileToLegacy'),
             groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
         // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
@@ -166,24 +159,6 @@ function queuetools() {
             } else if (TBUtils.isUnmoderatedPage) {
                 QUEUE_URL = 'about/unmoderated/';
             }
-        }
-        if(directProfileToLegacy) {
-            $body.on('click', 'a', function(event) {
-                const userProfileRegex = /(?:\.reddit\.com)?\/(?:user|u)\/[^/]*?\/?$/;
-                const thisHref = $(this).attr('href');
-
-                // If the url matches and we are not on an old style profile already.
-                if(userProfileRegex.test(thisHref) && !userProfileRegex.test(window.location.href)) {
-                    event.preventDefault();
-                    const lastChar = thisHref.substr(-1);
-                    const newHref = `${thisHref}${lastChar === `/` ? `` : `/`}overview`;
-                    if (event.ctrlKey || event.metaKey) {
-                        window.open(newHref,'_blank');
-                    } else {
-                        window.location.href = newHref;
-                    }
-                }
-            });
         }
 
         const $noResults = $body.find('p#noresults');

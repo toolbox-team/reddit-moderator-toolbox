@@ -17,7 +17,17 @@
                     purifyObject(input[key]);
                     break;
                 case 'string':
-                    input[key] = TBui.purify(input[key]);
+                    // Let's see if we are dealing with json.
+                    // We want to handle json properly otherwise the purify process will mess up things.
+                    try {
+                        const jsonObject = JSON.parse(input[key]);
+                        purifyObject(jsonObject);
+                        input[key] = JSON.stringify(jsonObject);
+
+                    } catch(e) {
+                        // Not json, simply purify
+                        input[key] = TBui.purify(input[key]);
+                    }
                     break;
                 case 'function':
                     // If we are dealing with an actual function something is really wrong and we'll overwrite it.

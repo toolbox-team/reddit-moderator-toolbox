@@ -48,7 +48,8 @@ function comments() {
 
             TB.listener.on('comment', function(e) {
                 const $target = $(e.target);
-                $target.closest('.Comment, .tb-comment, .entry').find('p').highlight(highlighted);
+                $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
+                $target.closest('.Comment').find('p').highlight(highlighted);
 
             });
 
@@ -57,7 +58,8 @@ function comments() {
                 console.log($this);
                 setTimeout(() => {
                     console.log($this);
-                    $this.closest('.scrollerItem, .entry').find('p').highlight(highlighted);
+                    $this.closest('.scrollerItem').find('p').highlight(highlighted);
+                    $this.closest('.entry').find('.md').highlight(highlighted);
                 }, 200);
 
             });

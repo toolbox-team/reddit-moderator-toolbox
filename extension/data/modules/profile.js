@@ -168,7 +168,7 @@ function profilepro() {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
-                    TBui.purifyObject(data);
+                    TBStorage.purifyObject(data);
                     let $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
@@ -206,7 +206,7 @@ function profilepro() {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
-                    TBui.purifyObject(data);
+                    TBStorage.purifyObject(data);
                     let $userModSubs = $(`<div class="tb-user-modsubs">
                         <h3> ${data.data.length} Moderated subreddits </h3>
                     </div>`).appendTo($sidebar);
@@ -270,7 +270,7 @@ function profilepro() {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
             const inputURL = `${TBUtils.baseDomain}/user/${user}/about.json`;
             $.getJSON(inputURL).done(function (data) {
-                TBui.purifyObject(data);
+                TBStorage.purifyObject(data);
                 const userThumbnail = data.data.icon_img,
                     userCreated = data.data.created_utc,
                     verifiedMail = data.data.has_verified_email,
@@ -315,7 +315,7 @@ function profilepro() {
                 'limit': 100,
                 't': 'all'
             }).done(function (data) {
-                TBui.purifyObject(data);
+                TBStorage.purifyObject(data);
                 $.each(data.data.children, function (i, value) {
                     let hit = false;
                     let subredditMatch = false;
@@ -600,7 +600,7 @@ function profilepro() {
                 sort: sort,
                 'limit': 25
             }, function(data) {
-                TBui.purifyObject(data);
+                TBStorage.purifyObject(data);
                 let after = false;
                 if (data.data.after) {
                     after = data.data.after;

@@ -126,7 +126,7 @@ function devtools() {
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
                 $.getJSON(inputURL, {raw_json: 1}, function(data) {
-                    TBui.purifyObject(data);
+                    TBStorage.purifyObject(data);
                     const commentOptions = {
                         'parentLink' : true,
                         'contextLink' : true,
@@ -153,7 +153,7 @@ function devtools() {
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
                 $.getJSON(inputURL, {raw_json: 1}, function(data) {
-                    TBui.purifyObject(data);
+                    TBStorage.purifyObject(data);
                     TBUtils.forEachChunkedDynamic(data.data.children, function(entry) {
                         if(entry.kind === `t3`) {
                             const $submission = TBui.makeSubmissionEntry(entry);

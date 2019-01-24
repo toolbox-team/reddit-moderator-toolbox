@@ -71,12 +71,16 @@ function storagewrapper() {
         chrome.storage.local.get('tbsettings', function (sObject) {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 TBsettingsObject = sObject.tbsettings;
+
+                // Paranoid, malicious settings might be stored.
+                purifyObject(TBsettingsObject);
+
                 SendInit();
             } else {
                 TBsettingsObject = {};
                 SendInit();
             }
-            console.log(TBsettingsObject);
+
             // Listen for updated settings and update the settings object.
             chrome.runtime.onMessage.addListener(function(message) {
 
@@ -121,11 +125,16 @@ function storagewrapper() {
             saveSettingsToBrowser();
         };
 
-        TBStorage.getSettingsObject = function(callback) {
-            if (!callback) return;
-            settingsToObject(function (sObject) {
-                callback(sObject);
-            });
+        TBStorage.purify = function(input) {
+            return purify(input);
+        };
+
+        TBStorage.purifyObject = function(input) {
+            purifyObject(input);
+        };
+
+        TBStorage.setSetting = function (module, setting, value, syncSetting = true) {
+            return setSetting(module, setting, value, syncSetting);
         };
 
         TBStorage.getAnonymizedSettingsObject = function(callback) {
@@ -278,6 +287,10 @@ function storagewrapper() {
             }
         }
 
+        function purify(input) {
+            return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
+        }
+
         function registerSetting(module, setting) {
         // First parse out any of the ones we never want to save.
             if (module === undefined || module === 'cache') return;
@@ -289,10 +302,91 @@ function storagewrapper() {
             }
         }
 
+        function purifyObject(input) {
+            for (const key in input) {
+                if(input.hasOwnProperty(key)) {
+                    const itemType = typeof input[key];
+                    switch(itemType) {
+                    case 'object':
+                        purifyObject(input[key]);
+                        break;
+                    case 'string':
+                        // Let's see if we are dealing with json.
+                        // We want to handle json properly otherwise the purify process will mess up things.
+                        try {
+                            const jsonObject = JSON.parse(input[key]);
+                            purifyObject(jsonObject);
+                            input[key] = JSON.stringify(jsonObject);
+
+                        } catch(e) {
+                            // Not json, simply purify
+                            input[key] = TBStorage.purify(input[key]);
+                        }
+                        break;
+                    case 'function':
+                        // If we are dealing with an actual function something is really wrong and we'll overwrite it.
+                        input[key] = 'function';
+                        break;
+                    case 'number':
+                    case 'boolean':
+                    case 'undefined':
+                        // Do nothing with these as they are supposed to be safe.
+                        break;
+                    default:
+                        // If we end here we are dealing with a type we don't expect to begin with. Begone!
+                        input[key] = `unknown item type ${itemType}`;
+                    }
+                }
+            }
+        }
+
+        function purifyThing(input) {
+            let output;
+            const itemType = typeof input;
+            switch(itemType) {
+            case 'object':
+                purifyObject(input);
+                output = input;
+                break;
+            case 'string':
+                // Let's see if we are dealing with json.
+                // We want to handle json properly otherwise the purify process will mess up things.
+                try {
+                    const jsonObject = JSON.parse(input);
+                    purifyObject(jsonObject);
+                    output = JSON.stringify(jsonObject);
+
+                } catch(e) {
+                    // Not json, simply purify
+                    output = purify(input);
+                }
+                break;
+            case 'function':
+                // If we are dealing with an actual function something is really wrong and we'll overwrite it.
+                output = 'function';
+                break;
+            case 'number':
+            case 'boolean':
+            case 'undefined':
+                // Do nothing with these as they are supposed to be safe.
+                output = input;
+                break;
+            default:
+                // If we end here we are dealing with a type we don't expect to begin with. Begone!
+                output = `unknown item type ${itemType}`;
+            }
+
+            return output;
+        }
+
         function settingsToObject(callback) {
 
-            // We make a deep clone of the settings object so it can safely be used and manipulated for things anonymized exports.
+            // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
             const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
+
+            // We are paranoid, so we are going to purify the object first.s
+            purifyObject(settingsObject);
+
             callback(settingsObject);
         }
 
@@ -323,7 +417,10 @@ function storagewrapper() {
                 ) {
                     result = defaultVal;
                 }
-                return result;
+
+                // Again, being extra paranoid here but let's sanitize.
+                const sanitzedResult = purifyThing(result);
+                return sanitzedResult;
             }
         }
 
@@ -333,7 +430,10 @@ function storagewrapper() {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
-            TBsettingsObject[storageKey] = value;
+            // Sanitize the setting
+            const sanitzedValue = purifyThing(value);
+
+            TBsettingsObject[storageKey] = sanitzedValue;
             // try to save our settings.
             if (syncSettings) {
                 saveSettingsToBrowser();
@@ -344,7 +444,7 @@ function storagewrapper() {
                     globalEvent: 'tb-single-setting-update',
                     payload: {
                         key: storageKey,
-                        value: value
+                        value: sanitzedValue
                     }
                 });
             }

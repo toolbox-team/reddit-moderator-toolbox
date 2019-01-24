@@ -296,6 +296,7 @@ function domaintagger() {
 
                 // if we got this far, we have valid JSON
                 config = resp;
+                TBStorage.purifyObject(config);
 
                 if (config.domainTags) {
                     const results = $.grep(config.domainTags, function (d) {

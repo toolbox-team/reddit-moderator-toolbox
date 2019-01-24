@@ -297,7 +297,7 @@ function tbconfig() {
                     showConfig(subreddit, config);
                 } else {
                     config = resp;
-
+                    TBStorage.purifyObject(config);
                     showConfig(subreddit, config);
                 }
             });
@@ -329,7 +329,7 @@ function tbconfig() {
                         $error.show();
 
                         const saveError = err.responseJSON.special_errors[0];
-                        $error.find('.errorMessage').html(TBui.purify(saveError));
+                        $error.find('.errorMessage').html(TBStorage.purify(saveError));
 
                         TB.ui.textFeedback('Config not saved!', TB.ui.FEEDBACK_NEGATIVE);
                     } else {
@@ -820,6 +820,7 @@ function tbconfig() {
                         }
 
                         config = resp;
+                        TBStorage.purifyObject(config);
                         populateUsernoteTypes();
                     });
                 }
@@ -975,6 +976,7 @@ function tbconfig() {
                         }
 
                         config = resp;
+                        TBStorage.purifyObject(config);
                         removalReasonsContent();
                     });
                 } else {
@@ -1046,7 +1048,7 @@ function tbconfig() {
             }
 
             const $removalReasonLabel = $removalContent.find('.removal-reason-label');
-            $removalReasonLabel.html(TBui.purify(`<span><h3 class="removal-title">${TBUtils.htmlEncode(reasonTitle)}</h3>${label}</span>`));
+            $removalReasonLabel.html(TBStorage.purify(`<span><h3 class="removal-title">${TBUtils.htmlEncode(reasonTitle)}</h3>${label}</span>`));
 
             $removalReasonLabel.show();
             $removalContent.find('.removal-reason-edit').hide();
@@ -1145,6 +1147,7 @@ function tbconfig() {
                     }
 
                     config = resp;
+                    TBStorage.purifyObject(config);
                     removalReasonsEditContent();
                 });
             } else {
@@ -1230,6 +1233,7 @@ function tbconfig() {
                         }
 
                         config = resp;
+                        TBStorage.purifyObject(config);
                         modMacrosContent();
                     });
                 } else {
@@ -1330,7 +1334,7 @@ function tbconfig() {
             }
 
             const $modMacroLabel = $macroContent.find('.mod-macro-label');
-            $modMacroLabel.html(TBui.purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
+            $modMacroLabel.html(TBStorage.purify(`<span><h3 class="macro-title">${macroTitle}</h3>${label}</span>`));
 
             $modMacroLabel.show();
             $macroContent.find('.mod-macro-edit').hide();
@@ -1450,7 +1454,7 @@ function tbconfig() {
         $body.on('click', '.domain_tags .import', function () {
 
             $.getJSON(`${TBUtils.baseDomain}/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`, function (json) {
-                TBui.purifyObject(json);
+                TBStorage.purifyObject(json);
                 if (json.data.content_md) {
                     const tags = JSON.parse(json.data.content_md).domainTags;
                     if (tags) {

@@ -1177,6 +1177,7 @@ function usernotes() {
                 return;
             }
 
+            TBStorage.purifyObject(resp);
             // Success
             self.log('We have notes!');
             let notes = convertNotes(resp, subreddit);

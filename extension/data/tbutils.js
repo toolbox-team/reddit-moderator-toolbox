@@ -259,6 +259,7 @@ function initwrapper(userDetails, newModSubs) {
 
         // Do settings echo before anything else.  If it fails, exit toolbox.
         const ret = TBStorage.setSetting(SETTINGS_NAME, 'echoTest', ECHO);
+        console.log(ret, ECHO);
         if (ret !== ECHO) {
             alert('toolbox can not save settings\n\ntoolbox will now exit');
             return;
@@ -1346,7 +1347,7 @@ function initwrapper(userDetails, newModSubs) {
 
             function getSubs(URL) {
                 $.getJSON(TBUtils.baseDomain + URL, function (json) {
-                    TBui.purifyObject(json);
+                    TBStorage.purifyObject(json);
                     getSubsResult(json.data.children, json.data.after);
                 });
             }
@@ -1651,7 +1652,7 @@ function initwrapper(userDetails, newModSubs) {
             if(id.startsWith('t4_')) {
                 const shortID = id.substr(3);
                 $.get(`${TBUtils.baseDomain}/message/messages/${shortID}.json`, function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     const message = findMessage(response, shortID);
                     const body = message.data.body,
                         user = message.data.author,
@@ -1695,7 +1696,7 @@ function initwrapper(userDetails, newModSubs) {
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
                 $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     const data = response.data;
 
                     let user = data.children[0].data.author;
@@ -2182,7 +2183,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.getBanState = function (subreddit, user, callback) {
             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
-                TBui.purifyObject(data);
+                TBStorage.purifyObject(data);
                 const banned = data.data.children;
 
                 // If it's over or under exactly one item they are not banned or that is not their full name.
@@ -2536,7 +2537,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
@@ -2551,7 +2552,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response.data.children[0].data.created_utc);
                 })
@@ -2566,7 +2567,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined')
                         callback(true, response);
                 })
@@ -2582,7 +2583,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash
             })
                 .done(function (response) {
-                    TBui.purifyObject(response);
+                    TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         const data = response[0].data.children[0].data;
 
@@ -2625,7 +2626,7 @@ function initwrapper(userDetails, newModSubs) {
                     $.log('Error loading wiki page', false, SHORTNAME);
                     return;
                 }
-
+                TBStorage.purifyObject(resp);
                 if (resp['Utils.lastversion'] < 300) {
                     TBui.textFeedback('Cannot import from a toolbox version under 3.0');
                     $.log('Cannot import from a toolbox version under 3.0', false, SHORTNAME);
@@ -2768,6 +2769,7 @@ function initwrapper(userDetails, newModSubs) {
                     }
                     // It works!
                     else {
+                        TBStorage.purifyObject(resp);
                         TBUtils.configCache[sub] = resp;
                         callback(resp, sub);
                     }
@@ -2812,7 +2814,7 @@ function initwrapper(userDetails, newModSubs) {
 
         function getToolboxDevs() {
             $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(function (resp) {
-                TBui.purifyObject(resp);
+                TBStorage.purifyObject(resp);
                 let children = resp.data.children,
                     devs = [];
 
@@ -3146,7 +3148,7 @@ function initwrapper(userDetails, newModSubs) {
         (function getNotes() {
             TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
-
+                TBStorage.purifyObject(resp);
                 // Custom FF nag for updates.
                 if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser === FIREFOX && TBUtils.isExtension) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
@@ -3168,7 +3170,10 @@ function initwrapper(userDetails, newModSubs) {
 
             if (betaRelease) {
                 TBUtils.readFromWiki('tb_redesign', 'tbnotes', true, function (resp) {
-                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
+                    if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
+                        return;
+                    }
+                    TBStorage.purifyObject(resp);
                     $(resp.notes).each(function () {
                         TBUtils.showNote(this);
                     });
@@ -3183,7 +3188,7 @@ function initwrapper(userDetails, newModSubs) {
                         TBUtils.devModeLock = true;
                         return;
                     }
-
+                    TBStorage.purifyObject(resp);
                     $(resp.notes).each(function () {
                         TBUtils.showNote(this);
                     });
@@ -3210,7 +3215,7 @@ function initwrapper(userDetails, newModSubs) {
             'after': after,
             'limit': 100
         }, function (json) {
-            TBui.purifyObject(json);
+            TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
             if(json.data.after) {
@@ -3240,7 +3245,7 @@ function initwrapper(userDetails, newModSubs) {
     function getUserDetails(callback) {
 
         $.getJSON('https://www.reddit.com/api/me.json', function (json) {
-            TBui.purifyObject(json);
+            TBStorage.purifyObject(json);
             console.log(json);
             callback(json);
         }).fail(function(jqxhr, textStatus, error) {

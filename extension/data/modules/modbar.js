@@ -553,7 +553,7 @@ function modbar() {
             if(!$modBarHidTooltip.length) {
                 $modBarHidTooltip = $('<div id="tb-modbar-hide-tooltip"></div>').appendTo($body);
             }
-            $modBarHidTooltip.html(TBui.purify(hoverContent));
+            $modBarHidTooltip.html(TBStorage.purify(hoverContent));
             $modBarHidTooltip.fadeIn(200);
         }).mouseleave(function() {
             $modBarHidTooltip.fadeOut(200);

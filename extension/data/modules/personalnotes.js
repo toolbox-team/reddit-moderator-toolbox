@@ -181,7 +181,6 @@ function personalnotes() {
                         // Lets get a list of notes!
                         $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
                             .done(function (json) {
-                                TBui.purifyObject(json);
                                 notesArray = [];
                                 let notesList,
                                     count = json.data.length || 0;

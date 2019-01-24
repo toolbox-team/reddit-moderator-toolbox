@@ -126,6 +126,8 @@ function removalreasons() {
                     return;
                 }
 
+                TBStorage.purifyObject(resp);
+
                 // We have a valid config, cache it.
                 TBUtils.configCache[subreddit] = resp;
                 reasons = resp.removalReasons;

@@ -232,7 +232,7 @@ function queuetoolsOld() {
 
                 // Get the entire context page.
                 $.get(contextUrl).done(function(result) {
-                    TBui.purifyObject(result);
+                    TBStorage.purifyObject(result);
                     // Put it into a jquery object and grab the comments.
                     const $result = $(result).find('.sitetable.nestedlisting');
                     // Put it into a nice container.
@@ -861,7 +861,7 @@ function queuetoolsOld() {
 
                     function updateModqueueCount(sr) {
                         $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(function (d) {
-                            TBui.purifyObject(d);
+                            TBStorage.purifyObject(d);
                             const items = d.data.children.length;
                             self.log(`  subreddit: ${sr} items: ${items}`);
                             TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
@@ -1028,7 +1028,7 @@ function queuetoolsOld() {
         function getAutomodActionReason(sub) {
             self.log(sub);
             $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
-                TBui.purifyObject(json);
+                TBStorage.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
                     const actionReasonText = value.data.details,
                         targetFullName = value.data.target_fullname;

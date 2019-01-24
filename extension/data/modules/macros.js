@@ -30,8 +30,9 @@ function modmacros() {
                         TBUtils.noConfig.push(sub);
                         callback(false);
                     }
+                    TBStorage.purifyObject(resp);
 
-                    // We likely have a god config, but maybe not domain tags.
+                    // We likely have a good config, but maybe not domain tags.
                     TBUtils.configCache[sub] = resp;
                     callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
                 });

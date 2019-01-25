@@ -64,11 +64,36 @@ Window/Popup Common
 }
 
 /* Content */
-.mod-toolbox-rd .tb-window-content,
+.mod-toolbox-rd .tb-window-wrapper,
 .mod-toolbox-rd .tb-popup-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
 }
 .mod-toolbox-rd .tb-popup-content {
     overflow: auto;
     padding: 5px !important;
+}
+
+/* Window things */
+.mod-toolbox-rd .tb-window-tabs {
+    border-bottom: solid 1px #B6C9DD;
+    background-color: #C7D6E6;
+    font-size: 11px !important;
+}
+
+.mod-toolbox-rd .tb-settings .tb-window-tabs {
+    display: inline-block;
+    width: 135px;
+    height: 100%;
+    border-bottom: 0;
+}
+
+.mod-toolbox-rd .tb-window-tabs a {
+    background-color: #C7D6E6;
+    display: inline-block;
+    padding: 7px;
+    box-sizing: border-box !important;
+    width: 100%;
+}
+.mod-toolbox-rd .tb-window-tabs a + a {
+    border-top: 1px solid #FFF;
 }

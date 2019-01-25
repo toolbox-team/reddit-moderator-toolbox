@@ -283,36 +283,6 @@ div#tb-context-menu #tb-context-header {
     color: #000 !important;
 }
 
-.mod-toolbox-rd .tb-window-tabs {
-    border-bottom: solid 1px #B6C9DD;
-    background-color: #C7D6E6;
-    font-size: 11px !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs {
-    display: inline-block;
-    width: 135px;
-    height: 100%;
-    border-bottom: 0;
-}
-
-.mod-toolbox-rd .tb-window-tabs a {
-    background-color: #C7D6E6;
-    display: inline-block;
-    padding: 10px !important;
-    line-height: 1;
-}
-
-.mod-toolbox-rd .tb-personal-settings .tb-window-tabs a {
-    padding: 7px !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs a {
-    box-sizing: border-box !important;
-    width: 100%;
-    border-bottom: solid 1px #FFF;
-}
-
 .mod-toolbox-rd .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
     border-bottom: 0;
 }

@@ -1,10 +1,4 @@
-/*
-=======================
-
-Window/Popup Common
-
-=======================
-*/
+/** Window/Popup Common **/
 
 /* Box sizing reset for custom sub CSS */
 .mod-toolbox-rd .tb-window,
@@ -31,6 +25,7 @@ Window/Popup Common
     /* Windows get bigger headers */
     line-height: 36px;
     /* They also have the title in the absolute center */
+    /* TODO: not all windows have two buttons */
     padding-left: 74px; /* size of the two buttons */
 }
 
@@ -63,7 +58,7 @@ Window/Popup Common
     background-color: #9FBAD6;
 }
 
-/* Content */
+/* Content resets */
 .mod-toolbox-rd .tb-window-wrapper,
 .mod-toolbox-rd .tb-popup-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
@@ -73,18 +68,13 @@ Window/Popup Common
     padding: 5px !important;
 }
 
-/* Window things */
-.mod-toolbox-rd .tb-window-tabs {
-    border-bottom: solid 1px #B6C9DD;
-    background-color: #C7D6E6;
-    font-size: 11px !important;
-}
+/** Window-specific stuff **/
 
-.mod-toolbox-rd .tb-settings .tb-window-tabs {
+/* Window tabs */
+.mod-toolbox-rd .tb-window-tabs {
     display: inline-block;
     width: 135px;
     height: 100%;
-    border-bottom: 0;
 }
 
 .mod-toolbox-rd .tb-window-tabs a {
@@ -93,7 +83,41 @@ Window/Popup Common
     padding: 7px;
     box-sizing: border-box !important;
     width: 100%;
+    color: #000;
 }
+.mod-toolbox-rd .tb-window-tabs a.active,
+.mod-toolbox-rd .tb-window-tabs a:hover {
+    background-color: #9FBAD6;
+    color: #000;
+}
+
 .mod-toolbox-rd .tb-window-tabs a + a {
     border-top: 1px solid #FFF;
+}
+
+/* Window content tabs */
+.mod-toolbox-rd .tb-window-tabs-wrapper { /* Bad name - this element wraps the tab content */
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% - 135px);
+}
+
+/* TODO: why? */
+.mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover {
+    color: #000 !important;
+}
+
+/* Window footer */
+/* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
+.mod-toolbox-rd .tb-window-footer {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    background-color: #CEE3F8;
+    text-align: center;
+    border-top: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    box-sizing: content-box;
 }

@@ -51,28 +51,10 @@
     width: 597px;
 }
 
-
-/* changing tabs around */
-
-.mod-toolbox-rd .tb-config .tb-window-tabs {
-    display: inline-block;
-    width: 135px;
-    height: 100%;
-    border-bottom: 0;
-}
-
-.mod-toolbox-rd .tb-config .tb-window-tabs-wrapper {
-    display: inline-block;
-    vertical-align: top;
-    width: calc(100% - 135px);
-}
-
 /* removal reasons sorting */
-
 tr.removal-reason:first-of-type a.tb-sort-up {
     visibility: hidden;
 }
-
 tr.removal-reason:last-of-type a.tb-sort-down {
     visibility: hidden;
 }

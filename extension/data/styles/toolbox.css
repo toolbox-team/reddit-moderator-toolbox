@@ -277,16 +277,6 @@ div#tb-context-menu #tb-context-header {
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
-.mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover,
-.mod-toolbox-rd .tb-window-tabs a.active,
-.mod-toolbox-rd .tb-window-tabs a:hover {
-    color: #000 !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
-    border-bottom: 0;
-}
-
 .mod-toolbox-rd .tb-window-spacer {
     background-color: #8d9caa;
     display: inline-block;
@@ -295,23 +285,12 @@ div#tb-context-menu #tb-context-header {
     line-height: 34px;
 }
 
-.mod-toolbox-rd .tb-window-tabs a.active,
-.mod-toolbox-rd .tb-window-tabs a:hover {
-    background-color: #9FBAD6;
-}
-
 .mod-toolbox-rd .tb-window-content:not([class^="CodeMirror"]) {
     overflow: auto;
     left: 0;
     right: 0;
     padding: 5px !important;
     font-size: 12px !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs-wrapper {
-    display: inline-block;
-    vertical-align: top;
-    width: calc(100% - 135px);
 }
 
 .mod-toolbox-rd .tb-window-content input {
@@ -330,21 +309,6 @@ div#tb-context-menu #tb-context-header {
 
 .mod-toolbox-rd .tb-window-content  input.tb-setting-input {
     font-style: italic;
-}
-
-
-/* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
-.mod-toolbox-rd .tb-window-footer {
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    display: block;
-    background-color: #CEE3F8;
-    text-align: center;
-    border-top: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-sizing: content-box;
 }
 
 
@@ -418,12 +382,12 @@ div#tb-context-menu #tb-context-header {
 
 /* Module settings stuff */
 
-.mod-toolbox-rd  .tb-window-tabs a.tb-module-disabled {
+.mod-toolbox-rd .tb-window-tabs .tb-module-disabled {
     background-color: #D6D9DD;
     color: #808080;
 }
 
-.mod-toolbox-rd .tb-window-tab span.tb-module-disabled {
+.mod-toolbox-rd .tb-window-tab .tb-module-disabled {
     font-size: 14px;
     display: block;
     padding: 4px;

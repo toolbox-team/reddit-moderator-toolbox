@@ -48,43 +48,44 @@ function historybutton() {
             $target.append(UserButtonHTML);
         });
     };
-    self.run = function () {
-        self.log('run');
+
+    self.attachToModmail = function() {
         const $body = $('body');
+        $body.find('.Thread__message').not('.tb-history').each(function () {
+            const $this = $(this);
+            if ($this.find('.tb-attr').length === 0) {
+                $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
+            }
+            const $tbAttrs = $this.find('.tb-attr');
+            const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user's submission and comment history">H</a></span>`;
+            $tbAttrs.append(UserButtonHTMLnewMM);
+        });
+
+        const userButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user's submission and comment history">User History</a></span></span>`;
+
+        const $sidebar = $body.find('.ThreadViewer__infobar');
+
+        $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
+    };
+
+    self.runJsAPI = function () {
+        self.log('run');
+
         const onlyshowInhover = self.setting('onlyshowInhover');
-        if ($body.find('.ThreadViewer').length > 0) {
+        TB.listener.on('author', function(e) {
+            console.log('author', e);
+            const $target = $(e.target);
+            if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
+                const author = e.detail.data.author;
+                self.attachHistoryButton($target, author);
+            }
+        });
 
-            $body.find('.Thread__message').not('.tb-history').each(function () {
-                const $this = $(this);
-                if ($this.find('.tb-attr').length === 0) {
-                    $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
-                }
-                const $tbAttrs = $this.find('.tb-attr');
-                const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user's submission and comment history">H</a></span>`;
-                $tbAttrs.append(UserButtonHTMLnewMM);
-            });
-
-            const userButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user's submission and comment history">User History</a></span></span>`;
-
-            const $sidebar = $body.find('.ThreadViewer__infobar');
-
-            $sidebar.find('.tb-recents').not('.tb-history').addClass('tb-history').append(userButtonHTMLside);
-
-        } else {
-            TB.listener.on('author', function(e) {
-                const $target = $(e.target);
-                if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
-                    const author = e.detail.data.author;
-                    self.attachHistoryButton($target, author);
-                }
-            });
-
-            TB.listener.on('userHovercard', function(e) {
-                const $target = $(e.target);
-                const author = e.detail.data.user.username;
-                self.attachHistoryButton($target, author, 'User History');
-            });
-        }
+        TB.listener.on('userHovercard', function(e) {
+            const $target = $(e.target);
+            const author = e.detail.data.user.username;
+            self.attachHistoryButton($target, author, 'User History');
+        });
 
     };
 
@@ -101,16 +102,16 @@ function historybutton() {
 
                 if (TBUtils.isNewModmail) {
                     setTimeout(function () {
-                        self.run();
+                        self.attachToModmail();
                     }, 750);
                 } else {
                     self.log(`not new modmail`);
-                    self.run();
+                    self.runJsAPI();
                 }
 
                 // NER support.
                 window.addEventListener('TBNewThings', function () {
-                    self.run();
+                    self.attachToModmail();
                 });
 
                 $body.on('click', '.user-history-button', function (event) {

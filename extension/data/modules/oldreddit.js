@@ -32,7 +32,7 @@ function oldReddit() {
         }
 
         if(info.kind === 'submission') {
-            if(!$jsApiThingPlaceholder.hasClass('.tb-frontend-container')) {
+            if(!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
                     'type': 'TBpost',
@@ -49,7 +49,7 @@ function oldReddit() {
                 dispatchApiEvent(jsApiThingPlaceholder, detailObject);
             }
             // We don't want to send events for things already handled.
-            if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
+            if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
                     'type': 'TBpostAuthor',
@@ -71,7 +71,7 @@ function oldReddit() {
 
         if(info.kind === 'comment') {
             // Comment
-            if(!$jsApiThingPlaceholder.hasClass('.tb-frontend-container')) {
+            if(!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
                 const detailObject = {
                     'type': 'TBcommentOldReddit',
                     'data': {
@@ -91,7 +91,7 @@ function oldReddit() {
             }
             // Author
             // We don't want to send events for things already handled.
-            if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
+            if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
                     'type': 'TBcommentAuthor',

@@ -755,7 +755,7 @@
                     subredditType = $element.attr('data-subreddit-type');
 
                 // Comment
-                if(!$jsApiPlaceholderComment.hasClass('.tb-frontend-container')) {
+                if(!$jsApiPlaceholderComment.hasClass('tb-frontend-container')) {
                     const detailObject = {
                         'type': 'TBcomment',
                         'data': {
@@ -775,7 +775,7 @@
                 }
                 // Author
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
+                if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
                         'type': 'TBcommentAuthor',
@@ -815,7 +815,7 @@
                     subredditName = $element.attr('data-subreddit'),
                     subredditType = $element.attr('data-subreddit-type');
 
-                if(!$jsApiPlaceholderSubmission.hasClass('.tb-frontend-container')) {
+                if(!$jsApiPlaceholderSubmission.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
                         'type': 'TBpost',
@@ -833,7 +833,7 @@
                     jsApiPlaceholderSubmission.dispatchEvent(tbRedditEventSubmission);
                 }
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholderAuthor.hasClass('.tb-frontend-container')) {
+                if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
                         'type': 'TBpostAuthor',

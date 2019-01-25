@@ -225,7 +225,7 @@ function comments() {
         if (openContextInPopup) {
 
             // Add context button to the queue in old reddit
-            if(TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage)) {
+            if(TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage || TBUtils.isSubCommentsPage)) {
                 TB.listener.on('comment', function(e) {
                     const $target = $(e.target);
                     const data = e.detail.data;

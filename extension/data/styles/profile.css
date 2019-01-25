@@ -70,9 +70,10 @@
     padding-left: 16px;
 }
 
-.mod-toolbox-rd .tb-window-tabs-wrapper {
+.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs-wrapper {
     display: inline-block;
-    width: calc(100% - 250px);
+    /* Need to leave room for the profile sidebar */
+    width: calc(100% - 250px - 135px);
 }
 
 .mod-toolbox-rd .tb-profile-sidebar {

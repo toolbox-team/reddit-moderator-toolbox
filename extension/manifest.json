@@ -79,6 +79,7 @@
             ],
             "css": [
                 "data/styles/toolbox.css",
+                "data/styles/tbui.css",
                 "data/styles/devtools.css",
                 "data/styles/support.css",
                 "data/styles/comment.css",

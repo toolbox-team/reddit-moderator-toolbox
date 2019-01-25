@@ -164,6 +164,9 @@
     /* font-size: 11px; */
     color: #696969;
     text-align: center;
+    margin: -5px;
+    padding: 5px;
+
 }
 .mod-toolbox-rd .subreddits-you-mod-popup .tb-popup-footer {
     height: 10px;
@@ -171,6 +174,7 @@
 .mod-toolbox-rd #tb-my-subreddit-list {
     font-size: 11px;
     text-align: left;
+    margin: 5px 0;
 }
 .mod-toolbox-rd #tb-my-subreddit-list tr {
     display: flex;
@@ -363,6 +367,7 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
 /* not really sure if it belongs here, but about tab styling */
 .mod-toolbox-rd  .tb-window-tab.about .tb-window-content {
     text-align: center;
+    line-height: normal;
 }
 
 .mod-toolbox-rd  table.tb-about-credits {
@@ -380,15 +385,20 @@ a[href*="#?tbsettings"]:not(.tb-no-gustavobc):after {
     padding: 2px;
 }
 
-.mod-toolbox-rd  .tb-window-tab.about h1#tb-random-about-quote {
+.mod-toolbox-rd .tb-window-tab.about h1#tb-random-about-quote {
     font-style: italic;
     font-family: non-serif;
-    font-size: 25px
+    font-size: 25px;
+    line-height: normal;
+    margin: 10px 0;
 }
 
-.mod-toolbox-rd  .tb-window-tab.about h3{
+.mod-toolbox-rd .tb-window-tab.about h3 {
     margin-top: 10px;
     margin-bottom: 4px;
     border-top: solid 1px #DCDCDC;
     padding-top: 5px;
+    line-height: normal;
+    font-size: 110%;
+    font-weight: bold;
 }

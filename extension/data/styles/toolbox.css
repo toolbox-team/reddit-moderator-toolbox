@@ -33,18 +33,14 @@ div#tb-snoo-footer {
 */
 
 /* Let's use verdana for toolbox stuff. Can't get used to the reddit font */
-
 .mod-toolbox-rd.mod-toolbox-extra .tb-popup,
-.mod-toolbox-rd.mod-toolbox-extra  .tb-page-overlay {
-    font-family: verdana,arial,helvetica,sans-serif;
+.mod-toolbox-rd.mod-toolbox-extra .tb-page-overlay,
+.mod-toolbox-rd #tb-bottombar,
+.mod-toolbox-rd #tb-context-menu,
+.mod-toolbox-rd .tb-input {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px !important;
 }
-
-
-.mod-toolbox-rd .tb-window-header {
-    font-size: 14px;
-}
-
 
 
 
@@ -113,7 +109,7 @@ html body.mod-toolbox-rd .tb-icons-align-middle {
 
 /*
 ------------
-    give input fields a border as reddit strips them.
+    Consistent styling for inputs
 ------------
 */
 
@@ -121,6 +117,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input {
     border: solid 1px #c7d6e7;
     font-size: 1em;
     padding: 5px;
+    line-height: 1.4;
 }
 
 body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
@@ -128,16 +125,12 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     border-color: #9fbad7;
 }
 
-/* This fixes the placeholder text being clipped off in firefox */
-body.mod-toolbox-rd.mod-toolbox-extra .tb-input[type="number"] {
-    line-height: 1.4;
-}
-
 /*
 ------------
-    context menu,
+    Context menu
 ------------
 */
+/* TODO: this could be CSS only tbh */
 .mod-toolbox-rd #tb-context-menu-list .tb-icons {
     padding-right: 2px;
     margin-right: 2px;
@@ -171,10 +164,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input[type="number"] {
     display: flex;
 }
 
-.mod-toolbox-rd #tb-context-menu:hover {
-    background-image: none;
-}
-
 .mod-toolbox-rd #tb-context-menu-wrap {
     display: none;
 }
@@ -183,8 +172,8 @@ div#tb-context-menu #tb-context-header {
     font-weight: bold;
     padding: 5px;
     display: block;
+    line-height: normal;
 }
-
 
 .mod-toolbox-rd #tb-context-menu table {
     width: 100%;
@@ -214,6 +203,7 @@ div#tb-context-menu #tb-context-header {
 ------------
     Overlay windows.
     TODO: Clean up css and remove duplicate code.
+    TODO: Merge code shared between overlays, windows, and notifications(?).
 ------------
 */
 
@@ -287,50 +277,10 @@ div#tb-context-menu #tb-context-header {
     box-shadow: 0 1px 3px 1px rgba(214, 214, 214, 0.47);
 }
 
-.mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover,
-.mod-toolbox-rd .tb-window-tabs a.active,
-.mod-toolbox-rd .tb-window-tabs a:hover {
-    color: #000 !important;
-}
-
-.mod-toolbox-rd .tb-window-header {
-    right: 0;
-    left: 0;
-    display: block;
-    background-color: #CEE3F8;
-    text-align: center;
-    font-weight: bold;
-    padding: 11px !important;
-    border-bottom: 0;
-}
-
-.mod-toolbox-rd .tb-window-tabs {
-    border-bottom: solid 1px #B6C9DD;
-    background-color: #C7D6E6;
-    font-size: 11px !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs {
-    display: inline-block;
-    width: 135px;
-    height: 100%;
-    border-bottom: 0;
-}
-
-.mod-toolbox-rd .tb-window-tabs a {
-    background-color: #C7D6E6;
-    display: inline-block;
-    padding: 10px !important;
-}
-
-.mod-toolbox-rd .tb-personal-settings .tb-window-tabs a {
-    padding: 7px !important;
-}
 
 .mod-toolbox-rd .tb-window-footer.tb-footer-save-warning {
     height: 60px;
 }
-
 
 .mod-toolbox-rd .tb-save-warning {
     background: #f7fafd;
@@ -338,16 +288,6 @@ div#tb-context-menu #tb-context-header {
     height: 25px;
     line-height: 25px;
     margin-bottom: 5px;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs a {
-    box-sizing: border-box !important;
-    width: 100%;
-    border-bottom: solid 1px #FFF;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs a:nth-last-of-type(1) {
-    border-bottom: 0;
 }
 
 .mod-toolbox-rd .tb-window-spacer {
@@ -358,23 +298,12 @@ div#tb-context-menu #tb-context-header {
     line-height: 34px;
 }
 
-.mod-toolbox-rd .tb-window-tabs a.active,
-.mod-toolbox-rd .tb-window-tabs a:hover {
-    background-color: #9FBAD6;
-}
-
 .mod-toolbox-rd .tb-window-content:not([class^="CodeMirror"]) {
     overflow: auto;
     left: 0;
     right: 0;
     padding: 5px !important;
     font-size: 12px !important;
-}
-
-.mod-toolbox-rd .tb-settings .tb-window-tabs-wrapper {
-    display: inline-block;
-    vertical-align: top;
-    width: calc(100% - 135px);
 }
 
 .mod-toolbox-rd .tb-window-content input {
@@ -393,20 +322,6 @@ div#tb-context-menu #tb-context-header {
 
 .mod-toolbox-rd .tb-window-content  input.tb-setting-input {
     font-style: italic;
-}
-
-
-/* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
-.mod-toolbox-rd .tb-window-footer {
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    display: block;
-    background-color: #CEE3F8;
-    text-align: center;
-    border-top: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
 }
 
 
@@ -431,10 +346,12 @@ div#tb-context-menu #tb-context-header {
     border-bottom: 1px dotted #E0E0E0;
 }
 
-.mod-toolbox-rd .tb-window-content input[type="text"] {
-    width: 94%;
+.mod-toolbox-rd .tb-window-content .tb-input[type="text"],
+.mod-toolbox-rd .tb-window-content textarea.tb-input {
+    width: calc(100% - 16px); /* 16px = margin + border + padding */
 }
 
+/* TODO: what's this for? */
 .mod-toolbox-rd .tb-mark-unread {
     width: 100%;
     cursor: pointer;
@@ -443,33 +360,17 @@ div#tb-context-menu #tb-context-header {
     font-size: 200%;
     font-weight: bold;
 }
-
 .mod-toolbox-rd .tb-mark-unread:hover {
     text-decoration: underline;
 }
 
-.mod-toolbox-rd .tb-window-content-shortcuts-table td {
-    width: 50%;
-    padding: 3px;
-}
-
-.mod-toolbox-rd .tb-window-content-shortcuts-table td input {
-    width: 98%;
-}
-
-.mod-toolbox-rd .tb-window-content-shortcuts-td-remove {
-    width: 25px;
-}
-
+/* Settings tables */
+.mod-toolbox-rd .tb-window-content-shortcuts-table td,
 .mod-toolbox-rd .tb-map-input-table td {
     width: 50%;
     padding: 3px;
 }
-
-.mod-toolbox-rd .tb-map-input-table td input {
-    width: 98%;
-}
-
+.mod-toolbox-rd .tb-window-content-shortcuts-td-remove,
 .mod-toolbox-rd .tb-map-input-td-remove {
     width: 25px;
 }
@@ -499,12 +400,12 @@ div#tb-context-menu #tb-context-header {
     font-size: 0.8em;
 }
 
-.mod-toolbox-rd  .tb-window-tabs a.tb-module-disabled {
+.mod-toolbox-rd .tb-window-tabs .tb-module-disabled {
     background-color: #D6D9DD;
     color: #808080;
 }
 
-.mod-toolbox-rd .tb-window-tab span.tb-module-disabled {
+.mod-toolbox-rd .tb-window-tab .tb-module-disabled {
     font-size: 14px;
     display: block;
     padding: 4px;
@@ -528,17 +429,6 @@ div#tb-context-menu #tb-context-header {
 ------------
 */
 
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0 !important;
-    top: 0 !important;
-    background-color: #C7D6E6;
-    line-height: 26px;
-    border: 0;
-    margin-left: 1px;
-}
-
 .mod-toolbox-rd .tb-popup {
     max-width: 1000px;
     padding: 0 !important;
@@ -547,53 +437,6 @@ div#tb-context-menu #tb-context-header {
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
     position: absolute;
     z-index: 2147483645 !important;
-}
-
-
-.mod-toolbox-rd .tb-popup-header {
-    right: 0;
-    left: 0;
-    text-align: left;
-    position: relative;
-    height: 20px;
-    line-height: 20px;
-    display: block;
-    background-color: #CEE3F8;
-    font-weight: bold;
-    box-sizing: content-box;
-    font-size: small;
-    border: 0;
-    padding: 3px;
-}
-.mod-toolbox-rd .tb-popup-header .tb-popup-title {
-    position: relative;
-    display: inline-block;
-    box-sizing: border-box;
-    text-align: center;
-    width: 100%;
-    padding: 0px 33px 0px 5px;
-}
-
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0 !important;
-    top: 0 !important;
-    background-color: #C7D6E6;
-    line-height: 26px;
-    border: 0;
-    margin-left: 1px;
-}
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons:hover {
-    background-color: #9FBAD6;
-}
-
-.mod-toolbox-rd .tb-popup .tb-popup-header .buttons a.close {
-    padding: 0px 11px;
-    display: inline-block;
-    height: 100%;
 }
 
 .mod-toolbox-rd .tb-popup-tabs {
@@ -617,13 +460,6 @@ div#tb-context-menu #tb-context-header {
 .mod-toolbox-rd .tb-popup-tabs a:not(:first-child):hover,
 .mod-toolbox-rd .tb-popup-tabs a:not(:first-child).active {
     box-shadow: -1px 0 #9FBAD6;
-}
-
-.mod-toolbox-rd .tb-popup-content {
-    overflow: auto;
-    left: 0;
-    right: 0;
-    padding: 5px !important;
 }
 
 .mod-toolbox-rd .mod-popup .other-subs {
@@ -1919,29 +1755,6 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     cursor: pointer;
 }
 
-.mod-toolbox-rd .tb-window-header .buttons {
-    display: inline-block;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.mod-toolbox-rd .tb-window-header .buttons a {
-    display: inline-block;
-    background-color: #C7D6E6;
-    border-left: 0;
-    height: 36px;
-    line-height: 36px;
-    width: 36px;
-    font-size: small;
-    margin-left: 1px;
-    text-align: center;
-}
-
-.mod-toolbox-rd .tb-page-overlay a.close:hover,
-.mod-toolbox-rd .tb-page-overlay a.tb-help-main:hover {
-    background-color: #9FBAD6;
-}
-
 .mod-toolbox-rd #tb-removal-reasons-list,
 .mod-toolbox-rd #tb-mod-macros-list {
     border-top: solid 2px gray;
@@ -2009,6 +1822,7 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     border: 1px solid;
     -webkit-rtl-ordering: logical;
     -webkit-user-select: text;
+    flex-direction: column;
     -webkit-flex-direction: column;
     cursor: auto;
     padding: 2px !important;
@@ -2049,6 +1863,11 @@ Icons in the sidebar
 ========================
 */
 
+
+/* You're killing me, new Reddit... */
+.tb-window-wrapper b {
+    font-weight: bold;
+}
 
 /*
 ------------
@@ -2367,9 +2186,6 @@ div.sticky {
 .mod-toolbox-rd.res-nightmode .mod-popup-footer {
     background-color: #6e7a86;
     border-top: solid 1px #39526b;
-}
-
-.mod-toolbox-rd.res-nightmode .mod-popup .status {
 }
 
 .mod-toolbox-rd.res-nightmode .mod-popup .add-sub-link {

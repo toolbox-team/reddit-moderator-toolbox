@@ -292,7 +292,7 @@ function tbmodule() {
                 // tabs
                 settingsTabs,
                 // extra header buttons TODO: make this generic
-                '<a class="tb-help-main" href="javascript:;" currentpage="" title="Help">?</a>',
+                '<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">help_outline</i></a>',
                 // overlay main class
                 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
                 // optional, overriding single footer

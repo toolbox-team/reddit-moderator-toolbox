@@ -83,14 +83,12 @@
     padding: 7px;
     box-sizing: border-box !important;
     width: 100%;
-    color: #000;
+    font-size: 11px;
 }
 .mod-toolbox-rd .tb-window-tabs a.active,
 .mod-toolbox-rd .tb-window-tabs a:hover {
     background-color: #9FBAD6;
-    color: #000;
 }
-
 .mod-toolbox-rd .tb-window-tabs a + a {
     border-top: 1px solid #FFF;
 }

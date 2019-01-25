@@ -6,6 +6,18 @@ Window/Popup Common
 =======================
 */
 
+/* Box sizing reset for custom sub CSS */
+.mod-toolbox-rd .tb-window,
+.mod-toolbox-rd .tb-window *,
+.mod-toolbox-rd .tb-window *::before,
+.mod-toolbox-rd .tb-window *::after,
+.mod-toolbox-rd .tb-popup,
+.mod-toolbox-rd .tb-popup *,
+.mod-toolbox-rd .tb-popup *::before,
+.mod-toolbox-rd .tb-popup *::after {
+    box-sizing: content-box;
+}
+
 /* Headers */
 /* TODO: generic classname that windows/popups can share? */
 .mod-toolbox-rd .tb-window-header,
@@ -49,4 +61,14 @@ Window/Popup Common
 .mod-toolbox-rd .tb-window-header .buttons a:hover,
 .mod-toolbox-rd .tb-popup-header .buttons a:hover {
     background-color: #9FBAD6;
+}
+
+/* Content */
+.mod-toolbox-rd .tb-window-content,
+.mod-toolbox-rd .tb-popup-content {
+    line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
+}
+.mod-toolbox-rd .tb-popup-content {
+    overflow: auto;
+    padding: 5px !important;
 }

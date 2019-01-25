@@ -510,13 +510,6 @@ div#tb-context-menu #tb-context-header {
     box-shadow: -1px 0 #9FBAD6;
 }
 
-.mod-toolbox-rd .tb-popup-content {
-    overflow: auto;
-    left: 0;
-    right: 0;
-    padding: 5px !important;
-}
-
 .mod-toolbox-rd .mod-popup .other-subs {
     padding: 5px;
 }

@@ -124,7 +124,6 @@
                 "data/modules/notifier.js",
                 "data/modules/usernotes.js",
                 "data/modules/comment.js",
-                "data/modules/old_comment.js",
                 "data/modules/newmodmailpro.js",
                 "data/modules/macros.js",
                 "data/modules/personalnotes.js",

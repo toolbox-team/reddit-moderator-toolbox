@@ -125,6 +125,7 @@
                 "data/modules/usernotes.js",
                 "data/modules/comment.js",
                 "data/modules/newmodmailpro.js",
+                "data/modules/modmailpro.js",
                 "data/modules/macros.js",
                 "data/modules/personalnotes.js",
                 "data/modules/historybutton.js",

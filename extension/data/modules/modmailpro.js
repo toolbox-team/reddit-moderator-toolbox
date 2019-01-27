@@ -1,6 +1,7 @@
 function modmailpro() {
     var self = new TB.Module('Mod Mail Pro');
     self.shortname = 'ModMail';
+    self.oldReddit = true;
 
     ////Default settings
     self.settings['enabled']['default'] = true;
@@ -247,7 +248,6 @@ function modmailpro() {
 
         $menuList.after($mmpMenu);
         self.endProfile('menu-gen');
-
 
         initialize();
 
@@ -935,7 +935,6 @@ function modmailpro() {
         });
     };
 
-
     self.autoLoad = function() {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
         if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
@@ -992,7 +991,6 @@ function modmailpro() {
             });
         }
     };
-
 
     self.mailDropDowns = function() {
         var COMPOSE = 'compose-message',

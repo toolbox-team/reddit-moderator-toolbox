@@ -1,6 +1,7 @@
 function trouble() {
     var self = new TB.Module('Trouble Shooter');
     self.shortname = 'Trouble';
+    self.oldReddit = true;
 
     //Default settings
     self.settings['enabled']['default'] = false;
@@ -69,7 +70,7 @@ function trouble() {
 
         if(!TBUtils.isCommentsPage) return;
 
-        if($body.hasClass('listing-page')){
+        if($body.hasClass('listing-page')) {
             $sitetable = $('.content').children('.sitetable');
         } else {
             $sitetable = $('.commentarea').children('.sitetable');
@@ -77,13 +78,13 @@ function trouble() {
 
         $sitetable.before($buttons);
 
-        if(auto){
+        if(auto) {
             start();
         } else {
             $buttons.append($init_btn);
         }
 
-        function start(){
+        function start() {
 
             $init_btn.remove();
 
@@ -95,8 +96,8 @@ function trouble() {
             $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
 
-            if(sortOnMoreChildren){
-                $('.commentarea').on('click', '.morecomments', function(){
+            if(sortOnMoreChildren) {
+                $('.commentarea').on('click', '.morecomments', function() {
                     if(self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
                 });
             }
@@ -121,21 +122,21 @@ function trouble() {
             markProcessedThings();
         }
 
-        function highlightComments($things){
+        function highlightComments($things) {
             var controversial = new RegExp(/\bcontroversial\b/);
 
             $things.find('.numchildren').each(numChildren);
 
             $things.find('.score.unvoted').each(score);
 
-            if(highlightControversy){
-                $things.filter(function(){ return controversial.test(this.className); })
+            if(highlightControversy) {
+                $things.filter(function() { return controversial.test(this.className); })
                     .children('.entry').addClass('tb-controversy')
                     .parents('.thing').addClass('tb-controversy');
             }
         }
 
-        function score(){
+        function score() {
             var $this = $(this),
                 $thing = $this.closest('.thing'),
                 neg_thresh = neg_thresh_pref;
@@ -144,26 +145,26 @@ function trouble() {
             if(RegExp(`\/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) --neg_thresh;
 
             //highlighting here to avoid another .each() iteration
-            if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ){
+            if( ($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh ) {
                 $thing.addClass('tb-neg tb-ncontroversy')
                     .parents('.thing').addClass('tb-ncontroversy');
             }
         }
 
-        function numChildren(){
+        function numChildren() {
             var $this = $(this);
 
             $this.closest('.thing')[0].dataset.nchildren = $this.text().match(/\d+/)[0];
         }
 
-        function sortChildren(){
+        function sortChildren() {
 
             self.sorted = true;
 
             sortMe.call($(this).closest('.sitetable, .commentarea, .content').children('.sitetable'));
         }
 
-        function fixFlatNER($this){
+        function fixFlatNER($this) {
             var $NERs = $this.find('.linklisting');
             if(!$NERs.length) return;
 
@@ -171,14 +172,14 @@ function trouble() {
             $('.NERPageMarker, .clearleft + .clearleft').remove();
         }
 
-        function sortMe(){
+        function sortMe() {
             var $this = $(this),
                 $things;
 
             fixFlatNER($this);
 
             $things = $this.children('.thing').not('.morechildren')
-                .sort(function(a, b){
+                .sort(function(a, b) {
                     return (b.dataset.nchildren - a.dataset.nchildren);
                 });
 
@@ -189,19 +190,19 @@ function trouble() {
             $things.children('.child').children('.sitetable').each(sortMe);
         }
 
-        function collapseThing(){
+        function collapseThing() {
             $(this).addClass('collapsed').children('.entry').find('.expand').text('[+]');
         }
 
-        function uncollapseThing(){
+        function uncollapseThing() {
             $(this).removeClass('collapsed').children('.entry').find('.expand').text('[–]');
         }
 
-        function markProcessedThings(){
+        function markProcessedThings() {
             $('.thing').not('.tb-pc-proc').addClass('tb-pc-proc');
         }
 
-        function collapseNonDrama(){
+        function collapseNonDrama() {
 
             $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
 

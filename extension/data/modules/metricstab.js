@@ -1,15 +1,15 @@
 function metricstab() {
-    var self = new TB.Module('Metrics Tab');
+    const self = new TB.Module('Metrics Tab');
     self.shortname = 'Metrics';
     self.oldReddit = true;
 
     self.settings['enabled']['default'] = true;
 
     self.getSectionFromUrl = function getSectionFromUrl(url) {
-        var regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^\/]+)(\/|$)/g);
-        var matches = regex.exec(url);
+        const regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^/]+)(\/|$)/g);
+        const matches = regex.exec(url);
 
-        if (matches != null) {
+        if (matches) {
             return {section: matches[3], subSection: matches[4]};
         } else {
             return null;
@@ -17,14 +17,14 @@ function metricstab() {
     };
 
     self.init = function () {
-        var page = this.getSectionFromUrl(window.location.href),
+        const page = this.getSectionFromUrl(window.location.href),
             $body = $('body');
 
-        if (page == null) {
+        if (!page) {
             return false;
         }
 
-        var metrics = {
+        const metrics = {
             user: {
                 'Redective': 'https://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
                 'Hivemind': 'https://www.hivemind.cc/rank/u/{subSection}',
@@ -40,35 +40,31 @@ function metricstab() {
             }
         };
 
-        var header = document.getElementById('header-bottom-left');
-        var tabList = header.getElementsByTagName('ul')[0];
-
-        if (tabList == null) {
+        const $tabList = $('#header-bottom-left ul');
+        if (!$tabList.length) {
             return false;
         }
         $body.append('<div id="tb-metrics-expand-list" style="display: none;"><ul></ul></div>');
 
-        var $tabList = $(tabList),
-            $metricsDropDown = $body.find('#tb-metrics-expand-list ul');
+        const $metricsDropDown = $body.find('#tb-metrics-expand-list ul');
 
         $tabList.css('overflow', 'visible');
 
-        var $listItem = $("<li class='tb-metrics'><a href='javascript:;'>metrics</a></li>"),
+        const $listItem = $("<li class='tb-metrics'><a href='javascript:;'>metrics</a></li>"),
             $tbMetricsList = $body.find('#tb-metrics-expand-list');
 
+        $tabList.append($listItem);
 
-        $(tabList).append($listItem);
-
-        var links = metrics[page.section];
-        for (var i in links) {
-            var url = links[i];
+        const links = metrics[page.section];
+        for (const i in links) {
+            let url = links[i];
             url = url.replace(/\{subSection\}/g, page.subSection);
             $metricsDropDown.append(`<li><a href="${url}" target="_blank">${i}</a></li>`);
         }
 
         $listItem.on('click', function () {
             self.log('metrics tab opened');
-            var offset = $(this).offset(),
+            const offset = $(this).offset(),
                 offsetLeft = offset.left,
                 offsetTop = (offset.top + 20);
 

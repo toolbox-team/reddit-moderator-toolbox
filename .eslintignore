@@ -18,5 +18,4 @@ node_modules/*
 
 # Not yet ported node_modules
 /extension/data/libs/redditapi.js
-/extension/data/modules/metricstab.js
 /extension/data/modules/modmailpro.js

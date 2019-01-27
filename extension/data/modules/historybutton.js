@@ -38,8 +38,8 @@ function historybutton() {
     });
 
     /**
- * Attach an [H] button to all users
- */
+     * Attach an [H] button to all users
+     */
 
     self.attachHistoryButton = function($target, author, buttonText = 'H') {
 
@@ -86,11 +86,29 @@ function historybutton() {
             self.attachHistoryButton($target, author, 'User History');
         });
 
+        window.addEventListener('TBNewPage', function (event) {
+            if(event.detail.pageType === 'userProfile') {
+                const user = event.detail.pageDetails.user;
+
+                TBui.contextTrigger('tb-user-history', {
+                    addTrigger: true,
+                    triggerText: `user history`,
+                    triggerIcon: 'history',
+                    title: `Show history for /u/${user}`,
+                    dataAttributes: {
+                        author: user
+                    }
+                });
+
+            } else {
+                TBui.contextTrigger('tb-user-profile', { addTrigger: false });
+            }
+        });
     };
 
     /**
- * Initiate the module
- */
+    * Initiate the module
+    **/
     self.init = function () {
         self.log(`init`);
         const $body = $('body');
@@ -113,7 +131,7 @@ function historybutton() {
                     self.attachToModmail();
                 });
 
-                $body.on('click', '.user-history-button', function (event) {
+                $body.on('click', '.user-history-button, #tb-user-history', function (event) {
                     const $this = $(this);
                     const $target = $(event.currentTarget);
                     let author;
@@ -127,6 +145,11 @@ function historybutton() {
 
                     } else {
                         author = $target.attr('data-author');
+                    }
+
+                    if($target.attr('id') === 'tb-user-history') {
+                        event.pageY = event.pageY - 600;
+                        event.pageX = event.pageX + 200;
                     }
 
                     const positions = TBui.drawPosition(event);
@@ -312,8 +335,11 @@ function historybutton() {
             const joinedDate = new Date(d.data.created_utc * 1000),
                 redditorTime = TBUtils.niceDateDiff(joinedDate);
 
-            $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
-            $contentBox.find('.redditorTime').text(`redditor for ${redditorTime}`);
+            requestAnimationFrame(() => {
+                $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
+                $contentBox.find('.redditorTime').text(`redditor for ${redditorTime}`);
+            });
+
         });
     };
 
@@ -408,15 +434,17 @@ function historybutton() {
             //This is another exit point of the script. Hits this code after loading 1000 submissions for a user
             if ($.isEmptyObject(d.data.children)) {
 
-                if (user.counters.submissions > 0) {
-                    $submissionCount.html(TBStorage.purify(`${user.counters.submissions}+`));
-                }
-                else {
-                    $submissionCount.html(TBStorage.purify(user.counters.submissions));
-                }
+                requestAnimationFrame(() => {
+                    if (user.counters.submissions > 0) {
+                        $submissionCount.html(TBStorage.purify(`${user.counters.submissions}+`));
+                    }
+                    else {
+                        $submissionCount.html(TBStorage.purify(user.counters.submissions));
+                    }
 
-                //If the error elements can be seen it is because there are no submissions
-                $error.html('no submissions');
+                    //If the error elements can be seen it is because there are no submissions
+                    $error.html('no submissions');
+                });
 
                 user.gettingUserData = false;
 
@@ -528,12 +556,14 @@ function historybutton() {
                 if (match) url = `/r/${match[1]}/search?q=%28and+author%3A${author}+is_self%3A1+%29&restrict_sr=on&sort=new&syntax=cloudsearch&feature=legacy_search`;
 
                 //Append domain to the table
-                $domainTable.append(
-                    `<tr style="background-color:${bgcolor}">
-                    <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted from '${domain}'">${domain}</a></td>
-                    <td class="count-td">${domainCount}</td>
-                    <td class="percentage-td">${percentage}%</td>
-                </tr>`);
+                requestAnimationFrame(() => {
+                    $domainTable.append(
+                        `<tr style="background-color:${bgcolor}">
+                        <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted from '${domain}'">${domain}</a></td>
+                        <td class="count-td">${domainCount}</td>
+                        <td class="percentage-td">${percentage}%</td>
+                    </tr>`);
+                });
 
                 //Append the first 20 domains to the report comment
                 if (index < 20) commentBody += `\n[${domain}](${url})|${domainCount}|${percentage}%`;
@@ -567,13 +597,15 @@ function historybutton() {
                     url = `/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`,
                     percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
-                $subredditTable.append(
-                    `<tr>
-                    <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted to /r/${subreddit}/">${subreddit}</a></td>
-                    <td class="count-td">${subredditCount}</td>
-                    <td class="percentage-td">${percentage}%</td>
-                    <td class="karma-td">${subredditKarma}</td>
-                </tr>`);
+                requestAnimationFrame(() => {
+                    $subredditTable.append(
+                        `<tr>
+                        <td class="url-td"><a target="_blank" href="${url}" title="view links ${author} recently submitted to /r/${subreddit}/">${subreddit}</a></td>
+                        <td class="count-td">${subredditCount}</td>
+                        <td class="percentage-td">${percentage}%</td>
+                        <td class="karma-td">${subredditKarma}</td>
+                    </tr>`);
+                });
 
                 if (index < 20) commentBody += `\n[${subreddit}](${url})|${subredditCount}|${percentage}%`;
 
@@ -612,14 +644,16 @@ function historybutton() {
                     bgcolor = (percentage >= 20) ? TB.ui.standardColors.softred : TB.ui.standardColors.softyellow;
                 }
 
-                $accountTable.append(
-                    `<tr style="background-color:${bgcolor}">
-                    <td class="url-td">
-                        <a href="${account.url}" target="_blank">${account.name}</a> - <a href="${account.provider_url}" target="_blank">${account.provider}</a>
-                    </td>
-                    <td class="count-td">${account.count}</td>
-                    <td class="percentage-td">${percentage}%</td>
-                </tr>`);
+                requestAnimationFrame(() => {
+                    $accountTable.append(
+                        `<tr style="background-color:${bgcolor}">
+                        <td class="url-td">
+                            <a href="${account.url}" target="_blank">${account.name}</a> - <a href="${account.provider_url}" target="_blank">${account.provider}</a>
+                        </td>
+                        <td class="count-td">${account.count}</td>
+                        <td class="percentage-td">${percentage}%</td>
+                    </tr>`);
+                });
             });
         }
         /**
@@ -734,10 +768,12 @@ function historybutton() {
                 const count = user.subreddits.comments[value].count,
                     percentage = Math.round(count / user.counters.comments * 100);
 
-                $commentTable.append(
-                    `<tr>
-                    <td>${value}</td><td>${count}</td><td>${percentage}</td>
-                </tr>`);
+                requestAnimationFrame(() => {
+                    $commentTable.append(
+                        `<tr>
+                        <td>${value}</td><td>${count}</td><td>${percentage}</td>
+                    </tr>`);
+                });
             });
             const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
 

@@ -948,6 +948,7 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     margin-right: 10px;
 }
 
+.mod-toolbox-rd .tb-replacement .tb-thing-button
 .mod-toolbox-rd .tb-replacement .tb-actioned-button,
 .mod-toolbox-rd .tb-replacement .tb-submission-button,
 .mod-toolbox-rd .tb-replacement .tb-comment-button {
@@ -1141,7 +1142,7 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     border: dashed 2px #a03030;
 }
 
-
+body.mod-toolbox-rd a.tb-big-button.tb-comment-button-remove,
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-remove,
 body.mod-toolbox-rd a.tb-big-button.tb-submission-button-remove,
 body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-remove,
@@ -1154,6 +1155,7 @@ body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-remove {
 }
 
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-spam,
+body.mod-toolbox-rd a.tb-big-button.tb-comment-button-spam,
 body.mod-toolbox-rd a.tb-big-button.tb-submission-button-spam,
 body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-spam,
 body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-spam {
@@ -1163,7 +1165,7 @@ body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-spam {
     background: rgb(237, 189, 190);
 }
 
-
+body.mod-toolbox-rd a.tb-big-button.tb-comment-button-approve,
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-approve,
 body.mod-toolbox-rd a.tb-big-button.tb-submission-button-approve ,
 body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-approve,

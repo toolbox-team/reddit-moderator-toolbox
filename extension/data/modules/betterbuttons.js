@@ -301,8 +301,10 @@ function betterbuttons() {
 
     self.initAddRemoveButtons = function initRemoveButtons() {
     // only need to iterate if at least one of the options is enabled
-        $('.thing.link:not(.tb-removebuttons-checked)').each(function () {
-            $(this).addClass('tb-removebuttons-checked');
+        const $things = $('.thing.link:not(.tb-removebuttons-checked)');
+        TBUtils.forEachChunkedDynamic($things, function(item) {
+            const $thing = $(item);
+            $thing.addClass('tb-removebuttons-checked');
 
             const thing = TBUtils.getThingInfo(this, true);
 
@@ -311,12 +313,11 @@ function betterbuttons() {
             // and for comments that have been removed as ham ("remove not spam")
                 if (thing.subreddit && thing.ham) {
                 // and only if there isn't already one
-                    if ($(this).children('.entry').find('.big-mod-buttons .negative').length === 0) {
-                    // lifted straight from the "spam" big mod button
-                        $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
-                            .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                        $('<span class="status-msg spammed">spammed</span>')
-                            .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                    if ($thing.children('.entry').find('.big-mod-buttons .negative').length === 0) {
+                        if ($thing.children('.entry').find('.big-mod-buttons .negative').length === 0) {
+                            $(`<li class="tb-replacement"><a class="tb-comment-button tb-big-button tb-thing-button-spam" data-fullname="${thing.id}" href="javascript:void(0)">spam</a></li>`)
+                                .insertBefore($thing.children('.entry').find('.big-mod-buttons'));
+                        }
                     }
                 }
             }
@@ -326,12 +327,9 @@ function betterbuttons() {
             // and for comments that have been removed as spam ("spam" or "confirm spam")
                 if (thing.subreddit && thing.spam) {
                 // and only if there isn't already one
-                    if ($(this).children('.entry').find('.big-mod-buttons .neutral').length === 0) {
-                    // lifted straight from the "remove" big mod button
-                        $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
-                            .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                        $('<span class="status-msg removed">removed</span>')
-                            .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
+                    if ($thing.children('.entry').find('.big-mod-buttons .neutral').length === 0) {
+                        $(`<li class="tb-replacement"><a class="tb-comment-button tb-big-button tb-thing-button-remove" data-fullname="${thing.id}" href="javascript:void(0)">remove</a></li>`)
+                            .insertBefore($thing.children('.entry').find('.big-mod-buttons'));
                     }
                 }
             }

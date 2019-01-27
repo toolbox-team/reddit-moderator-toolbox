@@ -1494,7 +1494,7 @@
 
     // handling of comment & submisstion actions.
     // TODO make this into command pattern
-    $body.on('click', '.tb-comment-button-approve', function() {
+    $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.approveThing(fullname, function (succes, error) {
@@ -1509,7 +1509,7 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove', function() {
+    $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove, .tb-thing-button-remove', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, false, function (succes, error) {
@@ -1524,27 +1524,12 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam', function() {
+    $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam, .tb-thing-button-spam', function() {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, true, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
-            } else if(error) {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
-            } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
-            }
-
-        });
-    });
-
-    $body.on('click', '.tb-submission-button-approve', function() {
-        const $this = $(this);
-        const fullname = $this.attr('data-fullname');
-        TBUtils.approveThing(fullname, function (succes, error) {
-            if (succes) {
-                $this.replaceWith('<span class="tb-actioned-button">approved</span>');
             } else if(error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {

@@ -1,6 +1,7 @@
 function metricstab() {
     var self = new TB.Module('Metrics Tab');
     self.shortname = 'Metrics';
+    self.oldReddit = true;
 
     self.settings['enabled']['default'] = true;
 
@@ -25,27 +26,17 @@ function metricstab() {
 
         var metrics = {
             user: {
-            //'Observatory': 'http://0bservat0ry.com/reddit/u/{subSection}.html', //Currently offline
-                'MetaReddit': 'http://metareddit.com/stalk?user={subSection}',
-                'Redective': 'http://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
-                'Hivemind': 'http://www.hivemind.cc/rank/u/{subSection}',
-                'Karmawhores': 'http://www.karmawhores.net/user/{subSection}',
-                //'Karmalb': 'http://www.karmalb.com/user/{subSection}', //Currently offline
-                'Karmastats': 'http://reddit.dataoverload.de/karmastats/#{subSection}',
-                'RateRedditors': 'http://rateredditors.com/{subSection}',
-                'SnoopSnoo': 'http://www.snoopsnoo.com/u/{subSection}',
-                'RedditInvestigator': 'http://www.redditinvestigator.com/{subSection}',
-                'redditgraphs': 'http://www.roadtolarissa.com/redditgraphs/?{subSection}&PieChart&Number&Submissions'
-            //'RedditInsight': 'http://www.redditinsight.com/#trackuser', // donno if we want to add ones that don't propagate the user name.
+                'Redective': 'https://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
+                'Hivemind': 'https://www.hivemind.cc/rank/u/{subSection}',
+                'RateRedditors': 'https://rateredditors.com/{subSection}',
+                'SnoopSnoo': 'https://www.snoopsnoo.com/u/{subSection}',
+                'redditgraphs': 'https://www.roadtolarissa.com/redditgraphs/?{subSection}&PieChart&Number&Submissions'
             },
 
             r: {
-            //'Observatory': 'http://0bservat0ry.com/reddit/r/{subSection}.html', // Currently offline
-                'MetaReddit': 'http://metareddit.com/r/{subSection}',
-                'Redective': 'http://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
-                'Hivemind': 'http://www.hivemind.cc/rank/r/{subSection}',
-                'RedditMetrics': 'http://redditmetrics.com/r/{subSection}',
-                'ExploreReddit': 'http://paulrosenzweig.com/explore-reddit/r/{subSection}'
+                'Redective': 'https://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
+                'Hivemind': 'https://www.hivemind.cc/rank/r/{subSection}',
+                'ExploreReddit': 'https://paulrosenzweig.com/explore-reddit/r/{subSection}'
             }
         };
 

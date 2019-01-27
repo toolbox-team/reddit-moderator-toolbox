@@ -592,7 +592,7 @@
                 }
                 </style>`);
 
-                $('.footer-parent').append('<div id="tb-loading-non-persistent"></div>');
+                $body.append('<div id="tb-loading-non-persistent"></div>');
 
                 TBui.longLoadArrayNonPersistent.push('load');
 

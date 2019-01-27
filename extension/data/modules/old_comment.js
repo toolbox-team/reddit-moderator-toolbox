@@ -33,103 +33,97 @@ function commentsOld() {
         'title': 'Show button to hide old comments.'
     });
 
-    //
-    // preload some generic variables
-    //
-    self.hideRemoved = self.setting('hideRemoved'),
-    self.approveComments = self.setting('approveComments'),
-    self.spamRemoved = self.setting('spamRemoved'),
-    self.hamSpammed = self.setting('hamSpammed');
-
-    function run() {
-        //
-        //  Do stuff with removed comments
-        //
-        // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
-        let removedCounter = 0;
-
-        $('.comments-page .thing.comment.spam > .entry').each(function () {
-            $(this).addClass('tb-comment-spam');
-            removedCounter = removedCounter + 1;
-        });
-
-        self.log(removedCounter);
-
-        if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
-            const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
-            if (removedCounter == 1) {
-                $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]`);
-            } else if (removedCounter > 1) {
-                $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]`);
-            }
-        } else if (removedCounter == 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[1]</a>`);
-        } else if (removedCounter > 1) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[${removedCounter.toString()}]</a>`);
-        }
-
-        if (self.hideRemoved) {
-            $('.tb-comment-spam').hide();
-            $('.action-reason').hide();
-        }
-
-        if (self.approveComments || self.spamRemoved || self.hamSpammed) {
-        // only need to iterate if at least one of the options is enabled
-            $('.thing.comment:not(.tb-comments-checked)').each(function () {
-                $(this).addClass('tb-comments-checked');
-
-                const thing = TBUtils.getThingInfo(this, true);
-
-                if (self.approveComments) {
-                // only for subreddits we mod
-                // and for comments that haven't already been approved
-                    if (thing.subreddit && !thing.approved_by) {
-                    // and only if there isn't already one
-                        if ($(this).children('.entry').find('.buttons .positive').length == 0) {
-                        // lifted straight from the "remove" link button
-                            $('<li><form class="toggle approve-button" action="#" method="get"><input type="hidden" name="executed" value="approved"><span class="option main active"><a href="#" class="togglebutton" onclick="return toggle(this)">approve</a></span><span class="option error">are you sure?  <a href="javascript:void(0)" class="yes" onclick="change_state(this, &quot;approve&quot;, null, undefined, null)">yes</a> / <a href="javascript:void(0)" class="no" onclick="return toggle(this)">no</a></span></form></li>')
-                                .insertAfter($(this).children('.entry').find('input[value="removed"]').closest('li'));
-                        }
-                    }
-                }
-
-                if (self.spamRemoved) {
-                // only for subreddits we mod
-                // and for comments that have been removed as ham ("remove not spam")
-                    if (thing.subreddit && thing.ham) {
-                    // and only if there isn't already one
-                        if ($(this).children('.entry').find('.big-mod-buttons .negative').length == 0) {
-                        // lifted straight from the "spam" big mod button
-                            $('<a class="pretty-button negative" href="#" onclick="return big_mod_action($(this), -2)">spam</a>')
-                                .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                            $('<span class="status-msg spammed">spammed</span>')
-                                .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
-                        }
-                    }
-                }
-
-                if (self.hamSpammed) {
-                // only for subreddits we mod
-                // and for comments that have been removed as spam ("spam" or "confirm spam")
-                    if (thing.subreddit && thing.spam) {
-                    // and only if there isn't already one
-                        if ($(this).children('.entry').find('.big-mod-buttons .neutral').length == 0) {
-                        // lifted straight from the "remove" big mod button
-                            $('<a class="pretty-button neutral" href="#" onclick="return big_mod_action($(this), -1)">remove</a>')
-                                .insertBefore($(this).children('.entry').find('.big-mod-buttons .positive'));
-                            $('<span class="status-msg removed">removed</span>')
-                                .insertBefore($(this).children('.entry').find('.big-mod-buttons .status-msg'));
-                        }
-                    }
-                }
-
-            });
-        }
-
-    }
-
     self.init = function () {
         const $body = $('body');
+        //
+        // preload some generic variables
+        //
+        self.hideRemoved = self.setting('hideRemoved'),
+        self.approveComments = self.setting('approveComments'),
+        self.spamRemoved = self.setting('spamRemoved'),
+        self.hamSpammed = self.setting('hamSpammed');
+
+        function run() {
+            //
+            //  Do stuff with removed comments
+            //
+            // Show a removed comments counter when visiting a comment page on a sub where you are moderator. When hiding of removed comments is enabled this doubles as a toggle for that.
+            let removedCounter = 0;
+
+            $('.comments-page .thing.comment.spam > .entry').each(function () {
+                $(this).addClass('tb-comment-spam');
+                removedCounter = removedCounter + 1;
+            });
+
+            self.log(removedCounter);
+
+            if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
+                const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
+                if (removedCounter == 1) {
+                    $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]`);
+                } else if (removedCounter > 1) {
+                    $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]`);
+                }
+            } else if (removedCounter == 1) {
+                $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[1]</a>`);
+            } else if (removedCounter > 1) {
+                $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[${removedCounter.toString()}]</a>`);
+            }
+
+            if (self.hideRemoved) {
+                $('.tb-comment-spam').hide();
+                $('.action-reason').hide();
+            }
+
+            if (self.approveComments || self.spamRemoved || self.hamSpammed) {
+            // only need to iterate if at least one of the options is enabled
+                const $things = $('.thing.comment:not(.tb-comments-checked)');
+                TBUtils.forEachChunkedDynamic($things, function(item) {
+                    const $thing = $(item);
+                    $thing.addClass('tb-comments-checked');
+
+                    const thing = TBUtils.getThingInfo($thing, true);
+
+                    if (self.approveComments) {
+                    // only for subreddits we mod
+                    // and for comments that haven't already been approved
+                        if (thing.subreddit && !thing.approved_by) {
+                        // and only if there isn't already one
+                            if ($thing.children('.entry').find('.buttons .positive').length === 0) {
+                                $(`<li class="tb-replacement"><a class="tb-comment-button tb-comment-button-approve" data-fullname="${thing.id}" href="javascript:void(0)">approve</a></li>`)
+                                    .insertAfter($thing.children('.entry').find('input[value="removed"]').closest('li'));
+                            }
+                        }
+                    }
+
+                    if (self.spamRemoved) {
+                    // only for subreddits we mod
+                    // and for comments that have been removed as ham ("remove not spam")
+                        if (thing.subreddit && thing.ham) {
+                        // and only if there isn't already one
+                            if ($thing.children('.entry').find('.big-mod-buttons .negative').length === 0) {
+                                $(`<li class="tb-replacement"><a class="tb-comment-button tb-big-button tb-comment-button-spam" data-fullname="${thing.id}" href="javascript:void(0)">spam</a></li>`)
+                                    .insertBefore($thing.children('.entry').find('.big-mod-buttons'));
+                            }
+                        }
+                    }
+
+                    if (self.hamSpammed) {
+                    // only for subreddits we mod
+                    // and for comments that have been removed as spam ("spam" or "confirm spam")
+                        if (thing.subreddit && thing.spam) {
+                        // and only if there isn't already one
+                            if ($thing.children('.entry').find('.big-mod-buttons .neutral').length === 0) {
+                                $(`<li class="tb-replacement"><a class="tb-comment-button tb-big-button tb-comment-button-remove" data-fullname="${thing.id}" href="javascript:void(0)">remove</a></li>`)
+                                    .insertBefore($thing.children('.entry').find('.big-mod-buttons'));
+                            }
+                        }
+                    }
+
+                });
+            }
+
+        }
 
         // Perform comment actions on pages where you are mod and which are not modmail.
         if (TBUtils.isMod && !TBUtils.isModmail) {

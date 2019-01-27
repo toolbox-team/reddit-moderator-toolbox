@@ -3,7 +3,7 @@ function newmodmailpro() {
     self.shortname = 'NewModMail';
 
     ////Default settings
-    self.settings['enabled']['default'] = false;
+    self.settings['enabled']['default'] = true;
     self.config['betamode'] = false;
 
     self.register_setting('modmaillink', {

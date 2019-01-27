@@ -39,7 +39,7 @@ if(location.host === 'mod.reddit.com') {
     sessionStorage.setItem('v4active', 'true');
 } else {
     chrome.storage.local.get('tbsettings', function (sObject) {
-        if(sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
+        if(sObject.tbsettings && sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
             sessionStorage.setItem('v4active', 'true');
         } else {
             sessionStorage.removeItem('v4active');

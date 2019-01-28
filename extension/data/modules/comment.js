@@ -274,27 +274,39 @@ function comments() {
 
             TB.listener.on('comment', function(e) {
                 const $target = $(e.target);
-                $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
-                $target.closest('.Comment').find('p').highlight(highlighted);
+                const subreddit = e.detail.data.subreddit.name;
+                TBUtils.getModSubs(function () {
+                    if(TBUtils.modsSub(subreddit)) {
+                        console.log('okay...', subreddit);
+                        $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
+                        $target.closest('.Comment').find('p').highlight(highlighted);
+                    }
+                });
 
             });
 
-            $body.on('click', '[aria-label="Expand content"], .expando-button', function() {
+            $body.on('click', '.expando-button', function() {
                 const $this = $(this);
-                console.log($this);
-                setTimeout(() => {
-                    console.log($this);
-                    $this.closest('.scrollerItem').find('p').highlight(highlighted);
-                    $this.closest('.entry').find('.md').highlight(highlighted);
-                }, 200);
-
+                const $thing = $this.closest('.thing');
+                const thingInfo = TBUtils.getThingInfo($thing, true);
+                if(thingInfo.subreddit) {
+                    setTimeout(() => {
+                        $thing.find('.md').highlight(highlighted);
+                    }, 200);
+                }
             });
 
             window.addEventListener('TBNewPage', function (event) {
                 const pageType = event.detail.pageType;
 
                 if(pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
-                    $body.find('div[data-test-id="post-content"], .usertext-body').find('p').highlight(highlighted);
+                    const subreddit = event.detail.subreddit;
+                    TBUtils.getModSubs(function () {
+                        if(TBUtils.modsSub(subreddit)) {
+
+                            $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
+                        }
+                    });
 
                 }
 

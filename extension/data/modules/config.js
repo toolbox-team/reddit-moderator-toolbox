@@ -1069,8 +1069,25 @@ function tbconfig() {
                     return;
                 }
                 postToWiki('toolbox', config, `delete reason #${reasonsNum + 1}`, true);
+                const $removalReasonList = $this.closest('#tb-removal-reasons-list');
 
+                // Remove reason from DOM
                 $this.closest('.removal-reason').remove();
+
+                // Renumber remaining reasons.
+                let reasonKey = 0;
+                $removalReasonList.find('tr.removal-reason').each(function() {
+
+                    const $this = $(this);
+
+                    const currentKey = $this.attr('data-reason');
+                    const subreddit = $this.attr('subreddit');
+                    $this.find(`[data-reason="${currentKey}"]`).attr('data-reason', reasonKey);
+                    $this.attr('data-reason', reasonKey);
+                    $this.find('.removal-reason-label').attr('data-for', `reason-${subreddit}-${reasonKey}`);
+
+                    reasonKey++;
+                });
             }
         });
 
@@ -1355,7 +1372,25 @@ function tbconfig() {
                 }
                 postToWiki('toolbox', config, `delete macro #${macroNum + 1}`, true);
 
+                const $macroList = $this.closest('#tb-mod-macros-list');
+
+                // Remove macro from DOM
                 $this.closest('.mod-macro').remove();
+
+                // Renumber remaining macros.
+                let macroKey = 0;
+                $macroList.find('tr.mod-macro').each(function() {
+
+                    const $this = $(this);
+
+                    const currentKey = $this.attr('data-macro');
+                    const subreddit = $this.attr('subreddit');
+                    $this.find(`[data-macro="${currentKey}"]`).attr('data-macro', macroKey);
+                    $this.attr('data-macro', macroKey);
+                    $this.find('.mod-macro-label').attr('data-for', `macro-${subreddit}-${macroKey}`);
+
+                    macroKey++;
+                });
             }
 
         });

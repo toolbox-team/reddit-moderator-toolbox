@@ -142,12 +142,6 @@
     border-top: 0;
 }
 .mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs-wrapper {
-    /*
-     * In the case of the profile overlay, this gets overwritten, but when it's
-     * made into a generic classname, we'll want the content to take up the
-     * whole width of the window. So right now this does nothing but it'll be
-     * necessary in a future commit and I'm putting it here now so I don't
-     * forget.
-     */
+    /* No tabs on the left, so content gets full width */
     width: 100%;
 }

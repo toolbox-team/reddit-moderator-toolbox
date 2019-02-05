@@ -70,20 +70,17 @@
     padding-left: 16px;
 }
 
+/* In addition to the tabbed content, we have a sidebar for user info */
 .mod-toolbox-rd .tb-profile-overlay .tb-window-tabs-wrapper {
     display: inline-block;
-    /* Need to leave room for the profile sidebar */
-    width: calc(100% - 250px - 135px);
+    width: calc(100% - 235px);
 }
-
 .mod-toolbox-rd .tb-profile-sidebar {
     display: inline-block;
-    box-sizing: border-box;
-    width: 235px;
-    padding: 5px;
+    width: 225px;
     vertical-align: top;
-    border-left: solid 3px white;
-    margin: 5px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .mod-toolbox-rd .tb-profile-overlay .tb-window-wrapper {
@@ -164,5 +161,3 @@
     color: #555555;
     font-size: 10px;
 }
-
-

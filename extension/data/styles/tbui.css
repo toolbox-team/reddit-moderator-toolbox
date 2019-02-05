@@ -18,7 +18,6 @@
 .mod-toolbox-rd .tb-popup-header {
     display: flex;
     background-color: #CEE3F8;
-    font-size: 12px; /* TODO: necessary? */
     line-height: 26px;
 }
 .mod-toolbox-rd .tb-window-header {
@@ -97,10 +96,11 @@
     border-top: 1px solid #FFF;
 }
 
-/* Window content tabs */
+/* Window tab content */
 .mod-toolbox-rd .tb-window-tabs-wrapper { /* Bad name - this element wraps the tab content */
     display: inline-block;
     vertical-align: top;
+    /* Leave space for the tabs on the left */
     width: calc(100% - 135px);
 }
 
@@ -122,4 +122,25 @@
     padding-top: 5px;
     padding-bottom: 5px;
     box-sizing: content-box;
+}
+
+/* Horizontal tabs for stuff like the profile */
+/* TODO: make this a generic classname */
+.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs {
+    display: flex;
+    flex-direction: row;
+}
+.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs a + a {
+    border-top: 0;
+    border-left: 1px solid #FFF;
+}
+.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs-wrapper {
+    /*
+     * In the case of the profile overlay, this gets overwritten, but when it's
+     * made into a generic classname, we'll want the content to take up the
+     * whole width of the window. So right now this does nothing but it'll be
+     * necessary in a future commit and I'm putting it here now so I don't
+     * forget.
+     */
+    width: 100%;
 }

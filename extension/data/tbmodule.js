@@ -470,7 +470,8 @@ function tbmodule() {
         },
 
         injectSettings: function injectSettings() {
-            this.moduleList.forEach(module => {
+            this.moduleList.forEach(moduleName => {
+                const module = this.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
                 // if (!TB.setting('betamode') && module.setting('betamode')) {

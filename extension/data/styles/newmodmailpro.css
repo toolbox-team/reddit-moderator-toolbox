@@ -548,8 +548,9 @@ div.sticky {
 /* misc fixes.
 */
 
+/* Give room for the modbar since this is a full-height layout */
 .mod-toolbox-rd.tb-new-modmail.tb-modbar-shown .App {
-    bottom: 20px;
+    bottom: 31px;
 }
 
 .mod-toolbox-rd.tb-new-modmail .tb-settings .tb-window-tabs {

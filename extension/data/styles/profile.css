@@ -79,8 +79,8 @@
     display: inline-block;
     width: 225px;
     vertical-align: top;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    margin: 10px;
+    margin-left: 0;
 }
 
 .mod-toolbox-rd .tb-profile-overlay .tb-window-wrapper {

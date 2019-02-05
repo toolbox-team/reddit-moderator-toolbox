@@ -82,10 +82,9 @@
 
 .mod-toolbox-rd .tb-window-tabs a {
     background-color: #C7D6E6;
-    display: inline-block;
+    display: block;
     padding: 7px;
     box-sizing: border-box !important;
-    width: 100%;
     font-size: 11px;
 }
 .mod-toolbox-rd .tb-window-tabs a.active,
@@ -125,16 +124,24 @@
 }
 
 /* Horizontal tabs for stuff like the profile */
-/* TODO: make this a generic classname */
-.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs {
+.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs {
     display: flex;
+    width: 100%;
     flex-direction: row;
+    background: #c7d6e6;
+    /*
+     * just to be safe, though if the tabs need multiple lines you should
+     * probably not be using horizontal tabs
+     */
+    flex-wrap: wrap;
 }
-.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs a + a {
+.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a {
+    border-right: solid 1px #FFF;
+}
+.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs a + a {
     border-top: 0;
-    border-left: 1px solid #FFF;
 }
-.mod-toolbox-rd .tb-profile-overlay .tb-window-tabs-wrapper {
+.mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs-wrapper {
     /*
      * In the case of the profile overlay, this gets overwritten, but when it's
      * made into a generic classname, we'll want the content to take up the

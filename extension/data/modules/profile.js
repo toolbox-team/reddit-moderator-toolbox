@@ -114,7 +114,7 @@ function profilepro() {
         }
 
         function addToSiteTable(data, $siteTable, after, callback) {
-            let commentOptions = {
+            const commentOptions = {
                 'parentLink' : true,
                 'contextLink' : true,
                 'contextPopup' : true,
@@ -122,7 +122,7 @@ function profilepro() {
                 'overviewData': true
             };
 
-            let submissionOptions = {};
+            const submissionOptions = {};
 
             if(subredditColor) {
                 commentOptions.subredditColor = true;
@@ -130,7 +130,7 @@ function profilepro() {
             }
             TBUtils.forEachChunkedDynamic(data, function(entry) {
                 if(entry.kind === `t1`) {
-                    let $comment = TBui.makeSingleComment(entry, commentOptions);
+                    const $comment = TBui.makeSingleComment(entry, commentOptions);
                     if(entry.highlight) {
                         $comment.find('.md p').highlight(entry.highlight, '', true);
                     }
@@ -139,7 +139,7 @@ function profilepro() {
                 }
 
                 if(entry.kind === `t3`) {
-                    let $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
+                    const $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
                     if(entry.highlight) {
                         $submission.find('.tb-title, .md').highlight(entry.highlight, '', true);
                     }
@@ -169,7 +169,7 @@ function profilepro() {
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
-                    let $userTrophies = $(`<div class="tb-user-trophies">
+                    const $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
                     $.each(data.data.trophies, function (i, trophy) {
@@ -207,12 +207,12 @@ function profilepro() {
             $.getJSON(inputURL).done(function (data) {
                 if(Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
-                    let $userModSubs = $(`<div class="tb-user-modsubs">
+                    const $userModSubs = $(`<div class="tb-user-modsubs">
                         <h3> ${data.data.length} Moderated subreddits </h3>
                     </div>`).appendTo($sidebar);
 
-                    let $moderatedSubListVisible = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($userModSubs);
-                    let $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
+                    const $moderatedSubListVisible = $('<ul class="tb-user-modsubs-ul"></ul>').appendTo($userModSubs);
+                    const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
                     let subCount = 0;
 
                     TBUtils.forEachChunkedDynamic(data.data, function(subreddit) {
@@ -300,7 +300,7 @@ function profilepro() {
 
         function searchProfile(user, type, sortMethod, $siteTable, options, after, match, callback) {
             let hits = match || false;
-            let results = [];
+            const results = [];
             const subredditPattern = options.subredditPattern || false;
             const searchPattern = options.searchPattern || false;
 
@@ -395,7 +395,7 @@ function profilepro() {
             $siteTable.removeClass('tb-sitetable-processed');
             $siteTable.empty();
 
-            let searchOptions = {};
+            const searchOptions = {};
             if (subredditsearch) {
                 searchOptions.subredditPattern = new RegExp(`^${regExpEscape(subredditsearch)}$`, 'i');
             }
@@ -461,12 +461,12 @@ function profilepro() {
                 if (!$body.find('#tb-search-suggest').is(':visible')) {
                     $body.find('#tb-search-suggest').show();
                 }
-                let liveSearchValue = $(this).val();
+                const liveSearchValue = $(this).val();
                 liveSearch(liveSearchValue);
             });
 
             $body.find('.tb-subredditsearch').keyup(function () {
-                let liveSearchValue = $(this).val();
+                const liveSearchValue = $(this).val();
                 liveSearch(liveSearchValue);
             });
 
@@ -525,7 +525,7 @@ function profilepro() {
                         }
                     ],
                     [], // extra header buttons
-                    'tb-profile-overlay', // class
+                    'tb-profile-overlay tb-overlay-horizontal-tabs', // class
                     false, // single overriding footer
                     {
                         user: user
@@ -542,8 +542,8 @@ function profilepro() {
                 });
 
             }
-            let $siteTable = $overlay.find(`.tb-sitetable-${type}`);
-            let $options = $overlay.find(`.tb-profile-options-${type}`);
+            const $siteTable = $overlay.find(`.tb-sitetable-${type}`);
+            const $options = $overlay.find(`.tb-profile-options-${type}`);
 
             $siteTable.attr({
                 'data-user' : user,
@@ -732,7 +732,7 @@ function profilepro() {
                 listing = $this.attr('data-listing'),
                 subreddit = $this.attr('data-subreddit');
 
-            let options = {
+            const options = {
                 sort: 'new',
                 renew: false
             };

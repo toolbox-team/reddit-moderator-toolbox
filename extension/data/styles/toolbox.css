@@ -867,11 +867,13 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     float: left;
     color: #808080;
     background: #d8d8d8;
-    padding: 5px;
-    height: 15px;
-    width: 15px;
+    height: 25px;
+    width: 25px;
     margin: 3px;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .mod-toolbox-rd .tb-self-expando-button:hover {

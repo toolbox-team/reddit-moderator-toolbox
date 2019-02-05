@@ -1008,7 +1008,7 @@
                             (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
                         </span>
                     </div>
-                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button">+</div>' : ``}
+                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ``}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
@@ -1656,14 +1656,16 @@
 
     $body.on('click', '.tb-self-expando-button', function() {
         const $this = $(this);
-        const thisState = $this.text();
+        const thisState = $this.attr('data-state') || 'collapsed';
         const $selfText = $this.closest('.tb-submission').find('.tb-self-expando');
         $selfText.toggle();
 
-        if(thisState === '+') {
-            $this.text('-');
+        if (thisState === 'collapsed') {
+            $this.html('<i class="tb-icons">remove</i>');
+            $this.attr('data-state', 'expanded');
         } else {
-            $this.text('+');
+            $this.html('<i class="tb-icons">add</i>');
+            $this.attr('data-state', 'collapsed');
         }
     });
 

@@ -553,18 +553,6 @@ div.sticky {
     bottom: 31px;
 }
 
-.mod-toolbox-rd.tb-new-modmail .tb-settings .tb-window-tabs {
-    display: inline-block;
-    width: 135px;
-    height: inherit;
-    border-bottom: 0px;
-}
-
-.mod-toolbox-rd.tb-new-modmail .tb-settings a {
-    text-decoration: none;
-}
-
-
 /* END OF NEW MODMAIL CSS
 -------------------------
 */

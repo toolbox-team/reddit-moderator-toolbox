@@ -9,6 +9,9 @@
     overflow: visible;
 }
 
+.mod-toolbox-rd .drop-choices.lightdrop {
+    z-index: 600;
+}
 
 
 

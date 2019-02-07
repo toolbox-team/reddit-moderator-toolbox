@@ -1,5 +1,5 @@
 function newmodmailpro() {
-    let self = new TB.Module('New Mod Mail Pro');
+    const self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
 
     ////Default settings
@@ -53,7 +53,7 @@ function newmodmailpro() {
         searchString = searchString.toLowerCase();
         $threadPreviewerThreads.find('.ThreadPreviewViewer__thread:not(.tb-searched)').each(function() {
 
-            let $this = $(this);
+            const $this = $(this);
             // Again, let's not bother.
             const previewText = $this.text().toLowerCase();
 
@@ -77,9 +77,9 @@ function newmodmailpro() {
         // If the stop button has not been pressed we will do another loop.
         if(activeSearch) {
             // Get the current scroll position.
-            let scrollTop = $threadPreviewerThreads.scrollTop();
+            const scrollTop = $threadPreviewerThreads.scrollTop();
             // Add 300
-            let scrollDistance = scrollTop + 300;
+            const scrollDistance = scrollTop + 300;
             // And scroll a bit down so we trigger new previews to load.
             $threadPreviewerThreads.scrollTop(scrollDistance);
 
@@ -96,7 +96,7 @@ function newmodmailpro() {
         if(locationHref === 'https://mod.reddit.com/mail/archived') {
             // Prepare the search input bits.
             const $searchHeaderDiv = $('<div id="tb-search-header"><input type="text" id="tb-search-value"> <button class="tb-action-button" id="tb-search-start">Search</button><button class="tb-action-button tb-button-hidden" id="tb-search-stop">Stop search</button>');
-            let $selectAfter = $body.find('.ThreadPreviewViewerHeader__select');
+            const $selectAfter = $body.find('.ThreadPreviewViewerHeader__select');
             $selectAfter.after($searchHeaderDiv);
 
             // Prepare the DIV which will show the results and add it to the body.
@@ -182,7 +182,7 @@ function newmodmailpro() {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', function(event) {
 
                 // Get all mod replies and see if they are something we need to warn the user about.
-                let $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
+                const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
                 const replyTypeMyself = $body.find('.FancySelect__valueText').text() === 'Reply as myself';
 
                 // if it finds this the last mod that replied did so with "as subreddit".

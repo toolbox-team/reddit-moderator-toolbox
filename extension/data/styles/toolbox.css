@@ -1400,8 +1400,7 @@ body.mod-toolbox-rd .tb-action-button:hover {
 /* link colors (for those themes that change all the link colors */
 body.mod-toolbox-rd .tb-page-overlay a:not(.tb-action-button):not(.tb-icons),
 body.mod-toolbox-rd .tb-popup a:not(.tb-action-button):not(.tb-icons),
-body.mod-toolbox-rd .tb-toolbar a:not(.tb-action-button):not(.tb-icons)
-{
+body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-icons) {
     color: #369;
 }
 
@@ -1991,7 +1990,7 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
 .res-nightmode .mod-toolbox-rd #reason-popup-toolbox,
 .res-nightmode .mod-toolbox-rd .tb-popup,
-.res-nightmode .mod-toolbox-rd #tb-bottombar.tb-toolbar,
+.res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
 .res-nightmode .mod-toolbox-rd .tb-bracket-button,
 .res-nightmode .mod-toolbox-rd > *:not(.tb-page-overlay):not(.tb-popup):not(#reason-popup-toolbox) .tb-action-button,
@@ -2003,4 +2002,3 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     filter: invert(90%)hue-rotate(180deg);
     color: #2f2f2f
 }
-

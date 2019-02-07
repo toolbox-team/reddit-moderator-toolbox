@@ -84,7 +84,7 @@ function modbar() {
         // This prevents some weird scrollbar behavior on new reddit iframe embeds.
         window.addEventListener('TBNewPage', function (event) {
             const pageType = event.detail.pageType;
-            if(pageType === 'oldModmail' || 'message') {
+            if(pageType === 'oldModmail' || pageType === 'message') {
                 $footerblock.hide();
             } else {
                 $footerblock.show();
@@ -353,7 +353,7 @@ function modbar() {
                     $body.find('#tb-livefilter-input').keyup(function () {
                         const LiveSearchValue = $(this).val();
                         $body.find('#tb-my-subreddits table tr').each(function () {
-                            let $this = $(this),
+                            const $this = $(this),
                                 subredditName = $this.attr('data-subreddit');
 
                             if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
@@ -438,7 +438,7 @@ function modbar() {
 
                 // filter log by module.
                 else {
-                    let search = `[${currentModule}]`,
+                    const search = `[${currentModule}]`,
                         moduleLog = [];
 
                     // hack-y substring search for arrays.
@@ -627,7 +627,7 @@ function modbar() {
         // check for passed settings.
         function switchTab(module) {
 
-            let $this = $body.find(`[data-module="${module}"]`),
+            const $this = $body.find(`[data-module="${module}"]`),
                 $tb_help_mains = $('.tb-help-main');
 
             // achievement support

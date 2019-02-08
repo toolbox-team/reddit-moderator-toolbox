@@ -111,3 +111,17 @@ body.mod-toolbox-rd.mod-toolbox-rd-new-modmail .tb-history-button {
 .mod-toolbox-rd .tb-history-disclaimer strong{
     font-weight: bold;
 }
+
+/* Highlight for the current subreddit */
+.mod-toolbox-rd .tb-history-row-current-subreddit,
+.mod-toolbox-rd .tb-history-row-current-subreddit .url-td {
+    background: #EEE;
+    font-weight: bold;
+}
+/* Colors for severity levels */
+.mod-toolbox-rd .tb-history-row-warning {
+    background: #FFFC7F;/* TBui.standardColors.softyellow */
+}
+.mod-toolbox-rd .tb-history-row-danger {
+    background: #ED4337; /* TBui.standardColors.softred */
+}

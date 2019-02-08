@@ -131,16 +131,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 ------------
 */
 /* TODO: this could be CSS only tbh */
-.mod-toolbox-rd #tb-context-menu-list .tb-icons {
-    padding-right: 2px;
-    margin-right: 2px;
-}
-
-#tb-context-menu-list td a,
-#tb-context-menu-list td span {
-    font-size: 12px;
-}
-
 .mod-toolbox-rd #tb-context-menu {
     align-items: center;
     min-height: 30px;
@@ -159,27 +149,30 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     background-repeat: no-repeat;
     background-position-y: 3px;
 }
-
 .mod-toolbox-rd #tb-context-menu.show-tb-context {
     display: flex;
 }
-
-.mod-toolbox-rd #tb-context-menu-wrap {
-    display: none;
-}
-
-div#tb-context-menu #tb-context-header {
+.mod-toolbox-rd #tb-context-menu #tb-context-header {
     font-weight: bold;
     padding: 5px;
     display: block;
     line-height: normal;
 }
-
-.mod-toolbox-rd #tb-context-menu table {
+.mod-toolbox-rd #tb-context-menu-wrap {
+    display: none;
+}
+.mod-toolbox-rd #tb-context-menu-list {
     width: 100%;
 }
-
-.mod-toolbox-rd #tb-context-menu table td {
+.mod-toolbox-rd #tb-context-menu-list tr {
+    background: rgba(247, 250, 253, 1);
+    border-top: 1px solid #CCD1D7;
+    border-right: 1px solid #CCD1D7;
+}
+.mod-toolbox-rd #tb-context-menu-list tr:hover {
+    background-color: rgba(174, 212, 250, 0.5);
+}
+.mod-toolbox-rd #tb-context-menu-list td {
     display: flex;
     align-items: center;
     padding-right: 10px;
@@ -188,15 +181,13 @@ div#tb-context-menu #tb-context-header {
     padding-bottom: 2px;
     cursor: pointer;
 }
-
-.mod-toolbox-rd #tb-context-menu tr {
-    background: rgba(247, 250, 253, 1);
-    border-top: 1px solid #CCD1D7;
-    border-right: 1px solid #CCD1D7;
+.mod-toolbox-rd #tb-context-menu-list td a,
+.mod-toolbox-rd #tb-context-menu-list td span {
+    font-size: 12px;
 }
-
-.mod-toolbox-rd #tb-context-menu tr:hover {
-    background-color: rgba(174, 212, 250, 0.5);
+.mod-toolbox-rd #tb-context-menu-list .tb-icons {
+    padding-right: 2px;
+    margin-right: 2px;
 }
 
 /*

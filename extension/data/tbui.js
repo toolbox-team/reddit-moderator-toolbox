@@ -646,22 +646,21 @@
         if (!$tbContextMenu.length) {
             // Toolbox context action menu.
             $tbContextMenu = $(`
-            <div id="tb-context-menu">
-                <div id="tb-context-menu-wrap">
-                    <div id="tb-context-header"> Toolbox context menu </div>
-                    <table id="tb-context-menu-list">
-                    </table >
+                <div id="tb-context-menu">
+                    <div id="tb-context-menu-wrap">
+                        <div id="tb-context-header">Toolbox context menu</div>
+                        <ul id="tb-context-menu-list"></ul>
+                    </div>
+                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right</i>
                 </div>
-                <i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right</i>
-            </div>
             `).appendTo($body);
         }
         const $tbContextMenuList = $body.find('#tb-context-menu-list');
         // We are adding a menu item.
-        if(addTrigger) {
+        if (addTrigger) {
             const triggerText = options.triggerText;
             let triggerIcon = 'label';
-            if(options.triggerIcon) {
+            if (options.triggerIcon) {
                 triggerIcon = options.triggerIcon;
             }
 
@@ -671,13 +670,18 @@
             }
 
             // Check if there are currently items in the menu.
-            const currentLength = $tbContextMenuList.find('tr').length;
+            const lengthBeforeAdd = $tbContextMenuList.find('li').length;
 
             // Build the new menu item.
-            const $newMenuItem = $(`<tr id="${triggerId}"><td href="javascript:void(0)" title="${title}"><i class="tb-icons">${triggerIcon}</i><span>${triggerText}<span></td></tr>`);
+            const $newMenuItem = $(`
+                <li id="${triggerId}" title="${title}">
+                    <i class="tb-icons">${triggerIcon}</i>
+                    <span>${triggerText}<span>
+                </li>
+            `);
 
             // Add data attributes if needed.
-            if(options.dataAttributes) {
+            if (options.dataAttributes) {
                 $.each(options.dataAttributes, function(name, value) {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
@@ -686,7 +690,7 @@
             const $checkExists = $tbContextMenuList.find(`#${triggerId}`);
 
             // Check if an item with the same id is already in the menu. If so we will replace it.
-            if($checkExists.length) {
+            if ($checkExists.length) {
                 $checkExists.replaceWith($newMenuItem);
             } else {
                 // Add the item to the menu.
@@ -694,32 +698,22 @@
 
                 // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
                 // The alternative would be to always show the entire menu.
-                $tbContextMenu.trigger('mouseover');
+                $tbContextMenu.addClass('hover');
                 clearTimeout(contextTimeout);
                 contextTimeout = setTimeout(function() {
-                    $tbContextMenu.trigger('mouseleave');
+                    $tbContextMenu.removeClass('hover');
                 }, 1000);
             }
 
             // If the menu was empty it was hidden and we need to show it.
-            if(!currentLength.length > 0) {
+            if (!lengthBeforeAdd) {
                 $tbContextMenu.addClass('show-tb-context');
             }
-
-            const $contextMenuWrap = $tbContextMenu.find('#tb-context-menu-wrap');
-            $tbContextMenu.mouseenter(function() {
-                $contextMenuWrap.fadeIn(200);
-            }).mouseleave(function() {
-                $contextMenuWrap.fadeOut(200);
-
-            });
-
-        // We are removing a menu item.
         } else {
-            // Remove the menu item.
+            // We are removing a menu item.
             $tbContextMenuList.find(`#${triggerId}`).remove();
             // Check the new menu length
-            const newLength = $tbContextMenuList.find('tr').length;
+            const newLength = $tbContextMenuList.find('li').length;
             // If there is nothing to show anymore we hide the menu.
             if(newLength < 1) {
                 $tbContextMenu.removeClass('show-tb-context');
@@ -1631,7 +1625,6 @@
         TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
         commentIDs.forEach(function(id) {
             const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
-            console.log(fetchUrl);
             // Lets get the comments.
             $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
                 TBStorage.purifyObject(data);

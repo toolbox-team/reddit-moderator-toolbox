@@ -349,7 +349,7 @@
     };
 
     TBui.selectSingular = function selectSingular(choices, selected) {
-        let $selector = $(`
+        const $selector = $(`
         <div class="select-single">
             <select class="selector tb-action-button"></select>
         </div>`),
@@ -372,7 +372,7 @@
         available = (available instanceof Array) ? available : [];
         selected = (selected instanceof Array) ? selected : [];
 
-        let $select_multiple = $(`
+        const $select_multiple = $(`
         <div class="select-multiple">
             <select class="selected-list left tb-action-button"></select>&nbsp;<button class="remove-item right tb-action-button">remove</button>&nbsp;
             <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;
@@ -416,7 +416,7 @@
     };
 
     TBui.mapInput = function (labels, items) {
-        let keyLabel = labels[0],
+        const keyLabel = labels[0],
             valueLabel = labels[1];
 
         const $mapInput = $(`<div>
@@ -544,8 +544,8 @@
                 $body.append(`<div id="tb-loading-stuff"><span class="tb-loading-content"><img src="${chrome.runtime.getURL('data/images/snoo_running.gif')}" alt="loading"> <span class="tb-loading-text">${TBUtils.RandomFeedback}</span></span></div>`);
                 $body.append('<div id="tb-loading"></div>');
 
-                const $randomFeedbackWindow = $('body').find('#tb-loading-stuff');
-                let randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
+                const $randomFeedbackWindow = $('body').find('#tb-loading-stuff'),
+                    randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
                     randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
 
                 $randomFeedbackWindow.css({

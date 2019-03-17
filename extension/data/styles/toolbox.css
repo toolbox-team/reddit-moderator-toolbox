@@ -1446,6 +1446,9 @@ body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-icons) {
 .mod-toolbox-rd .tb-highlight-action-reason {
     background-color: #ffd016;
 }
+.mod-toolbox.res-nightmode .tb-highlight-action-reason {
+    background-color:
+}
 
 /*
 ------------

@@ -798,7 +798,8 @@ function historybutton() {
                     `);
                 });
             });
-            const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100);
+            // `|| 0` to handle NaN
+            const percentageOP = Math.round(user.counters.commentsOP / user.counters.comments * 100) || 0;
 
             $commentCount.html(TBStorage.purify(user.counters.comments));
             $commentCountOp.html(TBStorage.purify(`${user.counters.commentsOP} (${percentageOP}%)`));

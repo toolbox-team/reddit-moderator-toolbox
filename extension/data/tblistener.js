@@ -1,4 +1,4 @@
-(function() {
+(function () {
     /**
      * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,
      * for example.
@@ -6,13 +6,13 @@
      */
 
     const listenerAliases = {
-        'postAuthor': ['author'],
-        'commentAuthor': ['author'],
-        'TBcommentAuthor': ['author'],
-        'TBpostAuthor': ['author'],
-        'TBcomment': ['comment'],
-        'TBcommentOldReddit': ['comment'],
-        'TBpost': ['post']
+        postAuthor: ['author'],
+        commentAuthor: ['author'],
+        TBcommentAuthor: ['author'],
+        TBpostAuthor: ['author'],
+        TBcomment: ['comment'],
+        TBcommentOldReddit: ['comment'],
+        TBpost: ['post']
     };
 
     /**
@@ -23,7 +23,7 @@
      *
      * @private
      */
-    function runTasks(tasks) {
+    function runTasks (tasks) {
         $.log('run tasks', false, 'TBListener');
         let task;
         while ((task = tasks.shift())) {
@@ -38,7 +38,7 @@
      * @param  {*} item
      * @return {Boolean}
      */
-    function remove(array, item) {
+    function remove (array, item) {
         const index = array.indexOf(item);
         return !!~index && !!array.splice(index, 1);
     }
@@ -47,7 +47,7 @@
         /**
          * Create a new instance of TBListener. Nothing happens yet until TBListener.start() has been called
          */
-        constructor() {
+        constructor () {
             // Simple array holding callbacks waiting to be handled.
             // If you want to put something in here directly, make sure to call scheduleFlush()
             this.queue = [];
@@ -73,7 +73,7 @@
          *
          * A `TBListenerLoaded` event is fired when everything is ready.
          */
-        start() {
+        start () {
             if (!this.started) {
                 const loadedEvent = new CustomEvent('TBListenerLoaded');
 
@@ -97,7 +97,7 @@
         /**
          * Unregisters this instance's event listener
          */
-        stop() {
+        stop () {
             if (this.started) {
                 document.removeEventListener('reddit', this.boundFunc);
                 document.removeEventListener('tbReddit', this.boundFunc);
@@ -111,7 +111,7 @@
          * @param {string} Name of event
          * @param {TBListener~listenerCallback} Callback
          */
-        on(event, callback) {
+        on (event, callback) {
             if (!this.listeners[event]) {
                 this.listeners[event] = [];
             }
@@ -135,17 +135,17 @@
          * @param {CustomEvent}
          * @private
          */
-        listener(event) {
+        listener (event) {
             const eventType = event.detail.type;
             const target = event.target.querySelector('[data-name="toolbox"]');
 
             // If there is no target this is not for us.
-            if(!target) {
+            if (!target) {
                 return;
             }
 
             // We already have seen this attribute and do not need duplicates.
-            if(target.classList.contains('tb-frontend-container')) {
+            if (target.classList.contains('tb-frontend-container')) {
                 return;
             }
 
@@ -194,7 +194,7 @@
          * @return {Boolean} success
          * @public
          */
-        clear(task) {
+        clear (task) {
             return remove(this.queue, task);
         }
 
@@ -204,7 +204,7 @@
          *
          * @private
          */
-        scheduleFlush() {
+        scheduleFlush () {
             if (!this.scheduled) {
                 this.scheduled = true;
                 requestAnimationFrame(this.flush.bind(this));
@@ -220,7 +220,7 @@
          *
          * @private
          */
-        flush() {
+        flush () {
             const queue = this.queue;
             let error;
 

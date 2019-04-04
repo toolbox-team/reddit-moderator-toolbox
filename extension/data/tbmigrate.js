@@ -5,8 +5,8 @@ const start = performance.now();
 let previousName = 'start';
 let previous = start;
 
-function profileResults(name, number) {
-    if(name === 'start') {
+function profileResults (name, number) {
+    if (name === 'start') {
         console.log('   ');
         console.log('performance start:', number);
         console.log('--------------------------');
@@ -35,17 +35,17 @@ function profileResults(name, number) {
 
 profileResults('start', start);
 
-if(location.host === 'mod.reddit.com') {
+if (location.host === 'mod.reddit.com') {
     sessionStorage.setItem('v4active', 'true');
 } else {
     chrome.storage.local.get('tbsettings', function (sObject) {
-        if(sObject.tbsettings && sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
+        if (sObject.tbsettings && sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
             sessionStorage.setItem('v4active', 'true');
         } else {
             sessionStorage.removeItem('v4active');
         }
     });
 }
-window.addEventListener('unload', function() {
+window.addEventListener('unload', function () {
     sessionStorage.removeItem('v4active');
 });

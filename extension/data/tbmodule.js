@@ -1,4 +1,4 @@
-function tbmodule() {
+function tbmodule () {
     TB = {
         utils: TBUtils,
         ui: TBui,
@@ -9,17 +9,17 @@ function tbmodule() {
         modules: {},
         moduleList: [],
 
-        register_module: function register_module(module) {
+        register_module (module) {
             this.moduleList.push(module.shortname);
             this.modules[module.shortname] = module;
         },
 
-        init: function tbInit() {
+        init: function tbInit () {
             profileResults('tbInit', performance.now());
             initLoop();
 
-            function initLoop() {
-                setTimeout(function init() {
+            function initLoop () {
+                setTimeout(function () {
 
                     $.log('TBModule has TBStorage, loading modules', false, 'TBinit');
                     // call every module's init() method on page load
@@ -45,7 +45,7 @@ function tbmodule() {
                             continue;
                         }
 
-                        if(!TBUtils.isOldReddit && module.oldReddit) {
+                        if (!TBUtils.isOldReddit && module.oldReddit) {
                             $.log(`Module not suitable for new reddit. Skipping ${module.name} module`, false, 'TBinit');
                             continue;
                         }
@@ -66,28 +66,28 @@ function tbmodule() {
             }
         },
 
-        showSettings: function showSettings() {
+        showSettings () {
             const self = this,
-                $body = $('body');
+                  $body = $('body');
 
             //
             // preload some generic variables
             //
             const debugMode = TBUtils.debugMode,
-                betaMode = TBUtils.betaMode,
-                devMode = TBUtils.devMode,
-                advancedMode = TBUtils.advancedMode,
+                  betaMode = TBUtils.betaMode,
+                  devMode = TBUtils.devMode,
+                  advancedMode = TBUtils.advancedMode,
 
-                settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-                browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
-                shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
-                longLength = TB.storage.getSetting('Utils', 'longLength', 45),
+                  settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
+                  browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
+                  shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
+                  longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
-                // last export stuff
-                lastExport = self.modules['Modbar'].setting('lastExport'),
-                showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
-                lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
-                lastExportLabel = (lastExport === 0) ? 'Never' : `${lastExportDays} days ago`;
+                  // last export stuff
+                  lastExport = self.modules['Modbar'].setting('lastExport'),
+                  showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
+                  lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
+                  lastExportLabel = (lastExport === 0) ? 'Never' : `${lastExportDays} days ago`;
 
             let lastExportState = '';
 
@@ -101,7 +101,7 @@ function tbmodule() {
                 lastExportState = 'happy';
             }
 
-            /// Template for 'general settings'.
+            // Template for 'general settings'.
             const displayNone = 'display: none;';
             let settingContent = '';
 
@@ -169,8 +169,8 @@ function tbmodule() {
 
             $.each(settings, function () {
                 const settingName = this.settingName,
-                    content = this.content,
-                    display = this.display;
+                      content = this.content,
+                      display = this.display;
 
                 settingContent = `${settingContent}
                 <p id="tb-toolbox-${settingName}" style="${display}">
@@ -188,16 +188,16 @@ function tbmodule() {
 
             $body.on('click', '.tb-gen-setting-link, .tb-module-setting-link', function () {
                 const $this = $(this),
-                    tbSet = $this.attr('data-setting'),
-                    $inputSetting = $(`.tb-setting-input-${tbSet}`);
+                      tbSet = $this.attr('data-setting'),
+                      $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
-                if($inputSetting.is(':visible')) {
+                if ($inputSetting.is(':visible')) {
                     $this.css('opacity', '0.5');
                     $inputSetting.hide();
 
                 } else {
                     $this.css('opacity', '1');
-                    $inputSetting.show(function() {
+                    $inputSetting.show(function () {
                         $(this).find('input:first-child').select();
                     });
                 }
@@ -321,7 +321,7 @@ function tbmodule() {
 
                 $(settingsDialog).remove();
                 // Settings can go on top of other overlays.
-                if(!$('body').find('.tb-page-overlay').length) {
+                if (!$('body').find('.tb-page-overlay').length) {
                     $('body').css('overflow', 'auto');
                 }
 
@@ -329,9 +329,9 @@ function tbmodule() {
 
             $settingsDialog.on('click', '.tb-save, .tb-save-reload', function (e) {
                 const settingsDialog = e.delegateTarget,
-                    reload = $(e.target).hasClass('tb-save-reload');
+                      reload = $(e.target).hasClass('tb-save-reload');
 
-                //save export sub
+                // save export sub
                 let sub = $('input[name=settingssub]').val();
                 if (sub) {
                 // Just to be safe.
@@ -359,7 +359,7 @@ function tbmodule() {
 
                 $(settingsDialog).remove();
                 // Settings can go on top of other overlays.
-                if(!$('body').find('.tb-page-overlay').length) {
+                if (!$('body').find('.tb-page-overlay').length) {
                     $('body').css('overflow', 'auto');
                 }
 
@@ -469,7 +469,7 @@ function tbmodule() {
             this.injectSettings();
         },
 
-        injectSettings: function injectSettings() {
+        injectSettings () {
             this.moduleList.forEach(moduleName => {
                 const module = this.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled
@@ -498,7 +498,7 @@ function tbmodule() {
                 let moduleHasSettingTab = false, // we set this to true later, if there's a visible setting
                     moduleIsEnabled = false;
                 const $tab = $(`<a href="javascript:;" class="tb-window-content-${module.shortname.toLowerCase()}" data-module="${module.shortname.toLowerCase()}">${module.name}</a>`),
-                    $settings = $(`
+                      $settings = $(`
                             <div class="tb-window-tab ${module.shortname.toLowerCase()}" style="display: none;">
                                 <div class="tb-window-content">
                                     <div class="tb-settings"></div>
@@ -506,7 +506,8 @@ function tbmodule() {
                                         <h1>Settings below only affect things on old reddit</h1>
                                     </div>
                                 </div>
-                            </div>`);
+                            </div>
+                      `);
 
                 $tab.data('module', module.shortname);
                 $tab.data('help_page', module.shortname);
@@ -515,7 +516,7 @@ function tbmodule() {
                 const execAfterInject = [];
                 for (let j = 0; j < module.settingsList.length; j++) {
                     const setting = module.settingsList[j],
-                        options = module.settings[setting];
+                          options = module.settings[setting];
                     let $setting;
 
                     // "enabled" will eventually be special, but for now it just shows up like any other setting
@@ -630,7 +631,7 @@ function tbmodule() {
                     {
                         const json = JSON.stringify(module.setting(setting), null, 0);
                         $setting.append(`${title}:<br />`);
-                        $setting.append($('<textarea class="tb-input" rows="3" cols="80">').val(json)); //No matter shat I do, I can't get JSON to work with an input.
+                        $setting.append($('<textarea class="tb-input" rows="3" cols="80">').val(json)); // No matter shat I do, I can't get JSON to work with an input.
                         break;
                     }
                     case 'code':
@@ -694,7 +695,7 @@ body {
                             $body.addClass('mod-syntax');
                             let editorSettings;
                             const enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
-                            $(`#${module.shortname}_syntax_theme_css`).each(function(index, elem) {
+                            $(`#${module.shortname}_syntax_theme_css`).each(function (index, elem) {
 
                                 // Editor setup.
                                 editorSettings = CodeMirror.fromTextArea(elem, {
@@ -705,10 +706,10 @@ body {
                                     extraKeys: {
                                         'Ctrl-Alt-F': 'findPersistent',
                                         'Ctrl-Space': 'autocomplete',
-                                        'F11': function(cm) {
+                                        'F11' (cm) {
                                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                                         },
-                                        'Esc': function(cm) {
+                                        'Esc' (cm) {
                                             if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
                                         }
                                     },
@@ -716,10 +717,10 @@ body {
                                 });
                             });
 
-                            TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, function() {
-                                setTimeout(function() {
+                            TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, function () {
+                                setTimeout(function () {
                                     editorSettings.refresh();
-                                },5);
+                                }, 5);
                             });
 
                             $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
@@ -739,7 +740,7 @@ body {
                         $.log('----------', false, 'TBModule');
                         $.log('GENERATING ACHIEVEMENT PAGE', false, 'TBModule');
                         const total = module.manager.getAchievementTotal(),
-                            unlocked = module.manager.getUnlockedCount();
+                              unlocked = module.manager.getUnlockedCount();
 
                         $.log(`  total=${total}`, false, 'TBModule');
                         $.log(`  unlocked=${unlocked}`, false, 'TBModule');
@@ -753,7 +754,7 @@ body {
                         save = module.manager.decodeSave(save);
 
                         const $list = $('<div>').attr('class', 'achievements-list');
-                        for(let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
+                        for (let saveIndex = 0; saveIndex < module.manager.getAchievementBlockCount(); saveIndex++) {
                             $.log(`  saveIndex: ${saveIndex}`, false, 'TBModule');
                             for (let index = 0; index < module.manager.getAchievementCount(saveIndex); index++) {
                                 $.log(`  index: ${index}`, false, 'TBModule');
@@ -788,13 +789,13 @@ body {
                         break;
                     }
                     }
-                    if(!noWrap) {
+                    if (!noWrap) {
                         const moduleName = module.shortname.toLowerCase(),
-                            settingName = setting.toLowerCase(),
-                            linkClass = `tb-setting-link-${settingName}`,
-                            inputClass = `tb-setting-input-${settingName}`,
-                            redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
-                            internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
+                              settingName = setting.toLowerCase(),
+                              linkClass = `tb-setting-link-${settingName}`,
+                              inputClass = `tb-setting-input-${settingName}`,
+                              redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
+                              internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
                         $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
                         } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">link</a>` +
@@ -810,26 +811,24 @@ body {
                         // TODO: somebody document this
                         $body.on('click', `.${linkClass}`, function () {
                             const $this = $(this),
-                                tbSet = $this.attr('data-setting');
+                                  tbSet = $this.attr('data-setting');
 
                             const $inputSetting = $(`.tb-setting-input-${tbSet}`);
 
-                            if($inputSetting.is(':visible')) {
+                            if ($inputSetting.is(':visible')) {
                                 $inputSetting.hide();
                                 $this.css('opacity', '0.5');
 
                             } else {
                                 $this.css('opacity', '1');
-
-                                $inputSetting.show(function() {
-
+                                $inputSetting.show(function () {
                                     $(this).select();
                                 });
                             }
                         });
                     }
 
-                    if(options.oldReddit) {
+                    if (options.oldReddit) {
                         const $oldRedditSettings = $settings.find('.tb-window-content .tb-oldreddit-settings');
                         $oldRedditSettings.append($setting);
                         $oldRedditSettings.show();
@@ -848,7 +847,7 @@ body {
                         $settings.prepend('<span class="tb-module-disabled">This module is not active, you can activate it in the "Toggle Modules" tab.</span>');
                     }
 
-                    if(module.oldReddit) {
+                    if (module.oldReddit) {
                         $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                     }
                     $('.tb-settings .tb-window-tabs-wrapper').append($settings);
@@ -941,7 +940,7 @@ body {
                             value = {};
                             $.each($this.find('.tb-map-input-table tbody tr'), function () {
                                 const key = escape($(this).find('input[name=key]').val()).trim(),
-                                    val = escape($(this).find('input[name=value]').val()).trim();
+                                      val = escape($(this).find('input[name=value]').val()).trim();
 
                                 if (key !== '' || val !== '') {
                                     value[key] = val;
@@ -966,34 +965,34 @@ body {
     };
 
     // Prototype for all toolbox modules
-    TB.Module = function Module(name) {
+    TB.Module = function Module (name) {
     // PUBLIC: Module Metadata
         this.name = name;
 
         this.config = {
-            'betamode': false,
-            'devmode': false
+            betamode: false,
+            devmode: false
         };
 
         this.settings = {};
         this.settingsList = [];
 
-        this.register_setting = function register_setting(name, setting) {
+        this.register_setting = function register_setting (name, setting) {
             this.settingsList.push(name);
             this.settings[name] = setting;
         };
 
         this.register_setting(
             'enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
-                'type': 'boolean',
-                'default': false,
-                'betamode': false, // optional
-                'hidden': false, // optional
-                'title': `Enable ${this.name}`,
+                type: 'boolean',
+                default: false,
+                betamode: false, // optional
+                hidden: false, // optional
+                title: `Enable ${this.name}`,
             });
 
         // PUBLIC: settings interface
-        this.setting = function setting(name, value, syncSetting = true) {
+        this.setting = function (name, value, syncSetting = true) {
         // are we setting or getting?
             if (typeof value !== 'undefined') {
             // setting
@@ -1022,7 +1021,7 @@ body {
         // Profiling
 
         const profile = new Map(),
-            startTimes = new Map();
+              startTimes = new Map();
 
         this.startProfile = function (key) {
             if (!TB.utils.debugMode)
@@ -1060,11 +1059,11 @@ body {
             return profile;
         };
 
-        this.getProfile = function(key) {
+        this.getProfile = function (key) {
             return profile.get(key);
         };
 
-        this.printProfiles = function() {
+        this.printProfiles = function () {
             this.log(`Profiling results: ${this.name}`);
             this.log('--------------------------');
             const loopthis = this;
@@ -1077,18 +1076,18 @@ body {
         };
 
         // PUBLIC: placeholder init(), just in case
-        this.init = function init() {
+        this.init = function init () {
         // pass
         };
     };
 
     TB.Module.prototype = {
         _shortname: '',
-        get shortname() {
+        get shortname () {
             // return name.trim().toLowerCase().replace(' ', '_');
             return this._shortname.length > 0 ? this._shortname : this.name.trim().replace(/\s/g, '');
         },
-        set shortname(val) {
+        set shortname (val) {
             this._shortname = val;
         }
     };

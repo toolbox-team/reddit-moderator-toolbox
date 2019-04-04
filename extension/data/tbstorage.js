@@ -6,7 +6,7 @@ const domain = window.location.hostname.split('.')[0];
 if (typeof (chrome) === 'undefined' && typeof (window.browser) !== 'undefined') {
     chrome = window.browser;
 }
-//Reset toolbox settings support
+// Reset toolbox settings support
 // load storage if we're not on the reset page.
 if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {
     storagewrapper();
@@ -16,7 +16,7 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 
 // Clear all toolbox related localstorage items.
 // After that direct users to a page confirming settings have been reset.
-function clearLocal() {
+function clearLocal () {
     // Cache.
     Object.keys(localStorage)
         .forEach(function (key) {
@@ -31,7 +31,7 @@ function clearLocal() {
     }, 1000);
 }
 
-function startReset() {
+function startReset () {
     const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
@@ -52,14 +52,14 @@ function startReset() {
     }
 }
 
-function storagewrapper() {
+function storagewrapper () {
     (function (TBStorage) {
 
         profileResults('storageStart', performance.now());
 
         const SHORTNAME = 'TBStorage';
 
-        TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); //always use local storage.
+        TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); // always use local storage.
 
         let TBsettingsObject;
         TBStorage.domain = window.location.hostname.split('.')[0];
@@ -82,10 +82,10 @@ function storagewrapper() {
             }
 
             // Listen for updated settings and update the settings object.
-            chrome.runtime.onMessage.addListener(function(message) {
+            chrome.runtime.onMessage.addListener(function (message) {
 
                 // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
-                if(message.action === 'tb-settings-update') {
+                if (message.action === 'tb-settings-update') {
                     TBsettingsObject = message.payload.tbsettings;
                     const $body = $('body');
                     $body.find('.tb-window-footer').addClass('tb-footer-save-warning');
@@ -93,7 +93,7 @@ function storagewrapper() {
                 }
 
                 // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
-                if(message.action === 'tb-single-setting-update') {
+                if (message.action === 'tb-single-setting-update') {
                     TBsettingsObject[message.payload.key] = message.payload.value;
                 }
             });
@@ -125,11 +125,11 @@ function storagewrapper() {
             saveSettingsToBrowser();
         };
 
-        TBStorage.purify = function(input) {
+        TBStorage.purify = function (input) {
             return purify(input);
         };
 
-        TBStorage.purifyObject = function(input) {
+        TBStorage.purifyObject = function (input) {
             purifyObject(input);
         };
 
@@ -137,7 +137,7 @@ function storagewrapper() {
             return setSetting(module, setting, value, syncSetting);
         };
 
-        TBStorage.getAnonymizedSettingsObject = function(callback) {
+        TBStorage.getAnonymizedSettingsObject = function (callback) {
             if (!callback) return;
             settingsToObject(function (sObject) {
 
@@ -189,11 +189,11 @@ function storagewrapper() {
 
                 callback(sObject);
 
-                function undefindedOrLength(setting) {
+                function undefindedOrLength (setting) {
                     return (setting === undefined) ? 0 : setting.length;
                 }
 
-                function undefindedOrTrue(setting) {
+                function undefindedOrTrue (setting) {
                     if (!setting || setting === undefined) return false;
                     if (setting.length > 0) return true;
                 }
@@ -220,7 +220,7 @@ function storagewrapper() {
         };
 
         // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
-        $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', function() {
+        $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', function () {
             TBStorage.clearCache();
         });
 
@@ -231,7 +231,7 @@ function storagewrapper() {
 
                 // save settings
                 chrome.storage.local.set({
-                    'tbsettings': sObject
+                    tbsettings: sObject
                 }, function () {
 
                     // now verify them
@@ -257,7 +257,7 @@ function storagewrapper() {
 
         };
 
-        function SendInit() {
+        function SendInit () {
             // Check if we are logged in and if we want to activate on old reddit as well.
             let loggedinRedesign = false,
                 loggedinOld = false;
@@ -277,7 +277,7 @@ function storagewrapper() {
             // Check if the oldreddit module is enabled and we also need to activate on old reddit.
             const oldRedditActive = getSetting('oldreddit', 'enabled', false);
 
-            if((loggedinOld && oldRedditActive) || loggedinRedesign) {
+            if ((loggedinOld && oldRedditActive) || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(function () {
                     profileResults('storageLoaded', performance.now());
@@ -287,11 +287,11 @@ function storagewrapper() {
             }
         }
 
-        function purify(input) {
+        function purify (input) {
             return DOMPurify.sanitize(input, {SAFE_FOR_JQUERY: true});
         }
 
-        function registerSetting(module, setting) {
+        function registerSetting (module, setting) {
         // First parse out any of the ones we never want to save.
             if (module === undefined || module === 'cache') return;
 
@@ -302,11 +302,11 @@ function storagewrapper() {
             }
         }
 
-        function purifyObject(input) {
+        function purifyObject (input) {
             for (const key in input) {
-                if(input.hasOwnProperty(key)) {
+                if (input.hasOwnProperty(key)) {
                     const itemType = typeof input[key];
-                    switch(itemType) {
+                    switch (itemType) {
                     case 'object':
                         purifyObject(input[key]);
                         break;
@@ -318,7 +318,7 @@ function storagewrapper() {
                             purifyObject(jsonObject);
                             input[key] = JSON.stringify(jsonObject);
 
-                        } catch(e) {
+                        } catch (e) {
                             // Not json, simply purify
                             input[key] = TBStorage.purify(input[key]);
                         }
@@ -340,10 +340,10 @@ function storagewrapper() {
             }
         }
 
-        function purifyThing(input) {
+        function purifyThing (input) {
             let output;
             const itemType = typeof input;
-            switch(itemType) {
+            switch (itemType) {
             case 'object':
                 purifyObject(input);
                 output = input;
@@ -356,7 +356,7 @@ function storagewrapper() {
                     purifyObject(jsonObject);
                     output = JSON.stringify(jsonObject);
 
-                } catch(e) {
+                } catch (e) {
                     // Not json, simply purify
                     output = purify(input);
                 }
@@ -379,7 +379,7 @@ function storagewrapper() {
             return output;
         }
 
-        function settingsToObject(callback) {
+        function settingsToObject (callback) {
 
             // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
             const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
@@ -390,15 +390,15 @@ function storagewrapper() {
             callback(settingsObject);
         }
 
-        function saveSettingsToBrowser() {
+        function saveSettingsToBrowser () {
             settingsToObject(function (sObject) {
                 chrome.storage.local.set({
-                    'tbsettings': sObject
+                    tbsettings: sObject
                 });
             });
         }
 
-        function getSetting(module, setting, defaultVal) {
+        function getSetting (module, setting, defaultVal) {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
@@ -426,7 +426,7 @@ function storagewrapper() {
 
         // SyncSetting is responsible for saving the setting from the local object to extension storage.
         // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
-        function setSetting(module, setting, value, syncSettings = true) {
+        function setSetting (module, setting, value, syncSettings = true) {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
@@ -452,7 +452,7 @@ function storagewrapper() {
             return getSetting(module, setting);
         }
 
-        function getCache(module, setting, defaultVal) {
+        function getCache (module, setting, defaultVal) {
             const storageKey = `TBCachev4.${module}.${setting}`;
 
             defaultVal = (defaultVal !== undefined) ? defaultVal : null;
@@ -479,7 +479,7 @@ function storagewrapper() {
             }
         }
 
-        function setCache(module, setting, value) {
+        function setCache (module, setting, value) {
             const storageKey = `TBCachev4.${module}.${setting}`;
 
             localStorage[storageKey] = JSON.stringify(value);
@@ -489,10 +489,10 @@ function storagewrapper() {
 
         // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html
         // added recursive object checks - al
-        function isEquivalent(a, b) {
+        function isEquivalent (a, b) {
         // Create arrays of property names
             const aProps = Object.getOwnPropertyNames(a),
-                bProps = Object.getOwnPropertyNames(b);
+                  bProps = Object.getOwnPropertyNames(b);
 
             // If number of properties is different,
             // objects are not equivalent
@@ -504,7 +504,7 @@ function storagewrapper() {
             for (let i = 0; i < aProps.length; i++) {
                 const propName = aProps[i];
                 const propA = a[propName],
-                    propB = b[propName];
+                      propB = b[propName];
 
                 // If values of same property are not equal,
                 // objects are not equivalent

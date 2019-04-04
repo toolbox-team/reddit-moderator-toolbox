@@ -46,7 +46,8 @@
             "warn",
             4,
             {
-                "VariableDeclarator": "first"
+                "VariableDeclarator": "first",
+                "SwitchCase": 0
             }
         ],
         "linebreak-style": [

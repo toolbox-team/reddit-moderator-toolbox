@@ -5,7 +5,7 @@
     TBui.longLoadArrayNonPersistent = [];
 
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
-    $body.on('click', '.tb-bracket-button', function(event) {
+    $body.on('click', '.tb-bracket-button', function (event) {
         event.stopPropagation();
     });
 
@@ -59,16 +59,16 @@
     // }
 
     TBui.standardColors = {
-        'red': '#FF0000',
-        'softred': '#ED4337',
-        'green': '#347235',
-        'lightgreen': '#00F51E',
-        'blue': '#0082FF',
-        'magenta': '#DC00C8',
-        'cyan': '#00F0F0',
-        'yellow': '#EAC117',
-        'softyellow': '#FFFC7F',
-        'black': '#000000'
+        red: '#FF0000',
+        softred: '#ED4337',
+        green: '#347235',
+        lightgreen: '#00F51E',
+        blue: '#0082FF',
+        magenta: '#DC00C8',
+        cyan: '#00F0F0',
+        yellow: '#EAC117',
+        softyellow: '#FFFC7F',
+        black: '#000000'
     };
 
     TBui.FEEDBACK_NEUTRAL = 'neutral';
@@ -79,16 +79,16 @@
     TBui.DISPLAY_BOTTOM = 'bottom';
     TBui.DISPLAY_CURSOR = 'cursor';
 
-    TBui.button = function button(text, classes) {
+    TBui.button = function button (text, classes) {
         return `<a href="javascript:;" class="tb-general-button ${classes}">${text}</a>`;
     };
 
-    TBui.actionButton = function button(text, classes) {
+    TBui.actionButton = function button (text, classes) {
         return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
 
     // Popup HTML generator
-    TBui.popup = function popup(title, tabs, meta, css_class, opts) {
+    TBui.popup = function popup (title, tabs, meta, css_class, opts) {
         const defaults = {
             draggable: true
         };
@@ -133,7 +133,7 @@
                     $button.attr('title', tab.tooltip);
                 }
 
-                $button.click({tab: tab}, function (e) {
+                $button.click({tab}, function (e) {
                     const tab = e.data.tab;
 
                     // hide others
@@ -169,16 +169,16 @@
             }
         }
 
-        if(options.draggable)
+        if (options.draggable)
             $popup.drag($popup.find('.tb-popup-title'));
 
         return $popup;
     };
 
-    TBui.drawPosition = function drawPosition(event) {
+    TBui.drawPosition = function drawPosition (event) {
         const positions = {
             leftPosition: '',
-            topPosition : ''
+            topPosition: ''
         };
 
         const $overlay = $(event.target).closest('.tb-page-overlay');
@@ -201,7 +201,7 @@
             positions.topPosition = event.pageY - 50;
         }
 
-        if($overlay.length) {
+        if ($overlay.length) {
             const scrollTop = $overlay.scrollTop();
             positions.topPosition = event.clientY + scrollTop;
         }
@@ -213,7 +213,7 @@
         return positions;
     };
 
-    TBui.switchOverlayTab = function switchOverlayTab(overlayClass, tabName) {
+    TBui.switchOverlayTab = function switchOverlayTab (overlayClass, tabName) {
         const $overlay = $body.find(`.${overlayClass}`);
 
         const $tab = $overlay.find(`[data-module="${tabName}"]`);
@@ -225,7 +225,7 @@
         $(`.tb-window-wrapper .tb-window-tab.${tabName}`).show();
     };
     // Window Overlay HTML generator
-    TBui.overlay = function overlay(title, tabs, buttons, css_class, single_footer, details) {
+    TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details) {
         buttons = (typeof buttons !== 'undefined') ? buttons : '';
         css_class = (typeof css_class !== 'undefined') ? css_class : '';
         single_footer = (typeof single_footer !== 'undefined') ? single_footer : false;
@@ -246,9 +246,9 @@
     </div>
 </div>`);
 
-        if(details) {
+        if (details) {
 
-            $.each(details, function(key, value) {
+            $.each(details, function (key, value) {
                 $overlay.attr(`data-${key}`, value);
             });
         }
@@ -259,7 +259,7 @@
 
         if (tabs.length === 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append( (single_footer ? single_footer : tabs[0].footer) ));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append((single_footer ? single_footer : tabs[0].footer)));
         } else if (tabs.length > 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
@@ -287,7 +287,7 @@
                 }
 
                 // click handler for tabs
-                $button.click({tab: tab}, function (e) {
+                $button.click({tab}, function (e) {
                     const tab = e.data.tab;
 
                     // hide others
@@ -348,38 +348,39 @@
         return $overlay;
     };
 
-    TBui.selectSingular = function selectSingular(choices, selected) {
+    TBui.selectSingular = function selectSingular (choices, selected) {
         const $selector = $(`
         <div class="select-single">
             <select class="selector tb-action-button"></select>
         </div>`),
-            $selector_list = $selector.find('.selector');
+              $selector_list = $selector.find('.selector');
 
-        //Add values to select
+        // Add values to select
 
-        $.each(choices, function (i , keyValue) {
+        $.each(choices, function (i, keyValue) {
             const value = keyValue.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
 
-        //Set selected value
+        // Set selected value
         $selector_list.val(selected).prop('selected', true);
 
         return $selector;
     };
 
-    TBui.selectMultiple = function selectMultiple(available, selected) {
+    TBui.selectMultiple = function selectMultiple (available, selected) {
         available = (available instanceof Array) ? available : [];
         selected = (selected instanceof Array) ? selected : [];
 
         const $select_multiple = $(`
-        <div class="select-multiple">
-            <select class="selected-list left tb-action-button"></select>&nbsp;<button class="remove-item right tb-action-button">remove</button>&nbsp;
-            <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;
-            <div style="clear:both"></div>
-        </div>`),
-            $selected_list = $select_multiple.find('.selected-list'),
-            $available_list = $select_multiple.find('.available-list');
+                  <div class="select-multiple">
+                      <select class="selected-list left tb-action-button"></select>&nbsp;<button class="remove-item right tb-action-button">remove</button>&nbsp;
+                      <select class="available-list left tb-action-button"></select>&nbsp;<button class="add-item right tb-action-button">add</button>&nbsp;
+                      <div style="clear:both"></div>
+                  </div>
+              `),
+              $selected_list = $select_multiple.find('.selected-list'),
+              $available_list = $select_multiple.find('.available-list');
 
         $select_multiple.on('click', '.remove-item', function (e) {
             const $select_multiple = $(e.delegateTarget);
@@ -417,7 +418,7 @@
 
     TBui.mapInput = function (labels, items) {
         const keyLabel = labels[0],
-            valueLabel = labels[1];
+              valueLabel = labels[1];
 
         const $mapInput = $(`<div>
             <table class="tb-map-input-table">
@@ -484,13 +485,13 @@
             // Add the element to the page.
             $body.append(feedbackElement);
 
-            //center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
+            // center it nicely, yes this needs to be done like this if you want to make sure it is in the middle of the page where the user is currently looking.
             const $feedbackWindow = $body.find('#tb-feedback-window');
 
             switch (displayLocation) {
             case TBui.DISPLAY_CENTER: {
                 const feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
-                    feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
+                      feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
 
                 $feedbackWindow.css({
                     'margin-left': `-${feedbackLeftMargin}px`,
@@ -500,10 +501,10 @@
                 break;
             case TBui.DISPLAY_BOTTOM: {
                 $feedbackWindow.css({
-                    'left': '5px',
-                    'bottom': '40px',
-                    'top': 'auto',
-                    'position': 'fixed'
+                    left: '5px',
+                    bottom: '40px',
+                    top: 'auto',
+                    position: 'fixed'
                 });
             }
                 break;
@@ -511,12 +512,12 @@
 
                 $(document).mousemove(function (e) {
                     const posX = e.pageX,
-                        posY = e.pageY;
+                          posY = e.pageY;
 
                     $feedbackWindow.css({
                         left: posX - $feedbackWindow.width() + 155,
                         top: posY - $feedbackWindow.height() - 15,
-                        'position': 'fixed'
+                        position: 'fixed'
                     });
                 });
             }
@@ -545,8 +546,8 @@
                 $body.append('<div id="tb-loading"></div>');
 
                 const $randomFeedbackWindow = $('body').find('#tb-loading-stuff'),
-                    randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
-                    randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
+                      randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
+                      randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
 
                 $randomFeedbackWindow.css({
                     'margin-left': `-${randomFeedbackLeftMargin}px`,
@@ -638,7 +639,7 @@
      * @param {object} options.dataAttributes Any data attribute that might be needed. Object keys will be used as the attribute name and value as value.
      */
     let contextTimeout;
-    TBui.contextTrigger = function contextTrigger(triggerId, options) {
+    TBui.contextTrigger = function contextTrigger (triggerId, options) {
 
         const addTrigger = options.addTrigger;
         // These elements we will need in the future.
@@ -682,7 +683,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                $.each(options.dataAttributes, function(name, value) {
+                $.each(options.dataAttributes, function (name, value) {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }
@@ -700,7 +701,7 @@
                 // The alternative would be to always show the entire menu.
                 $tbContextMenu.addClass('hover');
                 clearTimeout(contextTimeout);
-                contextTimeout = setTimeout(function() {
+                contextTimeout = setTimeout(function () {
                     $tbContextMenu.removeClass('hover');
                 }, 1000);
             }
@@ -715,7 +716,7 @@
             // Check the new menu length
             const newLength = $tbContextMenuList.find('li').length;
             // If there is nothing to show anymore we hide the menu.
-            if(newLength < 1) {
+            if (newLength < 1) {
                 $tbContextMenu.removeClass('show-tb-context');
             }
 
@@ -730,11 +731,11 @@
      * @param {object} $elements jquery object containing the e
      * @param {string} types comma seperated list of type of elements the events need to be send for.
      */
-    TBui.tbRedditEvent = function tbRedditEvent($elements, types) {
+    TBui.tbRedditEvent = function tbRedditEvent ($elements, types) {
         const typesArray = types.split(',');
-        if(typesArray.includes('comment')) {
+        if (typesArray.includes('comment')) {
             const $comments = $elements.find('.tb-comment');
-            TBUtils.forEachChunkedDynamic($comments, function(value) {
+            TBUtils.forEachChunkedDynamic($comments, function (value) {
                 const $element = $(value);
                 const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
                 $jsApiPlaceholderComment.append('<span data-name="toolbox">');
@@ -743,24 +744,24 @@
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
                 $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
                 const commentAuthor = $element.attr('data-comment-author'),
-                    postID = $element.attr('data-comment-post-id'),
-                    commentID = $element.attr('data-comment-id'),
-                    subredditName = $element.attr('data-subreddit'),
-                    subredditType = $element.attr('data-subreddit-type');
+                      postID = $element.attr('data-comment-post-id'),
+                      commentID = $element.attr('data-comment-id'),
+                      subredditName = $element.attr('data-subreddit'),
+                      subredditType = $element.attr('data-subreddit-type');
 
                 // Comment
-                if(!$jsApiPlaceholderComment.hasClass('tb-frontend-container')) {
+                if (!$jsApiPlaceholderComment.hasClass('tb-frontend-container')) {
                     const detailObject = {
-                        'type': 'TBcomment',
-                        'data': {
-                            'author': commentAuthor,
-                            'post': {
-                                'id': postID
+                        type: 'TBcomment',
+                        data: {
+                            author: commentAuthor,
+                            post: {
+                                id: postID
                             },
-                            'id': commentID,
-                            'subreddit': {
-                                'name': subredditName,
-                                'type': subredditType
+                            id: commentID,
+                            subreddit: {
+                                name: subredditName,
+                                type: subredditType
                             }
                         }
                     };
@@ -769,21 +770,21 @@
                 }
                 // Author
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
-                        'type': 'TBcommentAuthor',
-                        'data': {
-                            'author': commentAuthor,
-                            'post': {
-                                'id': postID
+                        type: 'TBcommentAuthor',
+                        data: {
+                            author: commentAuthor,
+                            post: {
+                                id: postID
                             },
-                            'comment': {
-                                'id': commentID
+                            comment: {
+                                id: commentID
                             },
-                            'subreddit': {
-                                'name': subredditName,
-                                'type': subredditType
+                            subreddit: {
+                                name: subredditName,
+                                type: subredditType
                             }
                         }
                     };
@@ -793,9 +794,9 @@
 
             }, {framerate: 40});
         }
-        if(typesArray.includes('submission')) {
+        if (typesArray.includes('submission')) {
             const $submissions = $elements.find('.tb-submission');
-            TBUtils.forEachChunkedDynamic($submissions, function(value) {
+            TBUtils.forEachChunkedDynamic($submissions, function (value) {
                 const $element = $(value);
                 const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
                 $jsApiPlaceholderSubmission.append('<span data-name="toolbox">');
@@ -805,20 +806,20 @@
                 const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
                 const submissionAuthor = $element.attr('data-submission-author'),
-                    postID = $element.attr('data-post-id'),
-                    subredditName = $element.attr('data-subreddit'),
-                    subredditType = $element.attr('data-subreddit-type');
+                      postID = $element.attr('data-post-id'),
+                      subredditName = $element.attr('data-subreddit'),
+                      subredditType = $element.attr('data-subreddit-type');
 
-                if(!$jsApiPlaceholderSubmission.hasClass('tb-frontend-container')) {
+                if (!$jsApiPlaceholderSubmission.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
-                        'type': 'TBpost',
-                        'data': {
-                            'author': submissionAuthor,
-                            'id': postID,
-                            'subreddit': {
-                                'name': subredditName,
-                                'type': subredditType
+                        type: 'TBpost',
+                        data: {
+                            author: submissionAuthor,
+                            id: postID,
+                            subreddit: {
+                                name: subredditName,
+                                type: subredditType
                             }
                         }
                     };
@@ -827,18 +828,18 @@
                     jsApiPlaceholderSubmission.dispatchEvent(tbRedditEventSubmission);
                 }
                 // We don't want to send events for things already handled.
-                if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                     const detailObject = {
-                        'type': 'TBpostAuthor',
-                        'data': {
-                            'author': submissionAuthor,
-                            'post': {
-                                'id': postID
+                        type: 'TBpostAuthor',
+                        data: {
+                            author: submissionAuthor,
+                            post: {
+                                id: postID
                             },
-                            'subreddit': {
-                                'name': subredditName,
-                                'type': subredditType
+                            subreddit: {
+                                name: subredditName,
+                                type: subredditType
                             }
                         }
                     };
@@ -861,63 +862,63 @@
      * @returns {object} jquery object with the build submission.
      */
 
-    TBui.makeSubmissionEntry = function makeSubmissionEntry(submission, submissionOptions) {
+    TBui.makeSubmissionEntry = function makeSubmissionEntry (submission, submissionOptions) {
         TBStorage.purifyObject(submission);
         // Misc
         const canModsubmission = submission.data.can_mod_post,
 
-            // submission basis (author, body, time)
-            submissionAuthor = submission.data.author,
-            submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
-            submissionCreatedUTC = submission.data.created_utc, // unix epoch
-            submissionPermalink = submission.data.permalink,
-            submissionSubreddit = submission.data.subreddit,
-            submissionSubredditType = submission.data.subreddit_type,
-            submissionName = submission.data.name,
-            submissionUrl = submission.data.url,
-            submissionTitle = submission.data.title,
-            submissionThumbnail = submission.data.thumbnail,
-            submissionDomain = submission.data.domain,
+              // submission basis (author, body, time)
+              submissionAuthor = submission.data.author,
+              submissionSelfTextHTML = TBStorage.purify(submission.data.selftext_html), // html string
+              submissionCreatedUTC = submission.data.created_utc, // unix epoch
+              submissionPermalink = submission.data.permalink,
+              submissionSubreddit = submission.data.subreddit,
+              submissionSubredditType = submission.data.subreddit_type,
+              submissionName = submission.data.name,
+              submissionUrl = submission.data.url,
+              submissionTitle = submission.data.title,
+              submissionThumbnail = submission.data.thumbnail,
+              submissionDomain = submission.data.domain,
 
-            // submission details
-            submissionScore = submission.data.score, // integer
-            submissionLikes = submission.data.likes, // boolean or null
-            submissionIsSelf = submission.data.is_self,
-            submissionEdited = submission.data.edited,
-            submissionGilded = submission.data.gilded,
-            submissionPinned = submission.data.pinned,
-            submissionLocked = submission.data.locked,
-            submissionOver18 = submission.data.over_18,
-            submissionNumComments = submission.data.num_comments,
-            submissionUserReports = submission.data.user_reports, // array with reports by users
+              // submission details
+              submissionScore = submission.data.score, // integer
+              submissionLikes = submission.data.likes, // boolean or null
+              submissionIsSelf = submission.data.is_self,
+              submissionEdited = submission.data.edited,
+              submissionGilded = submission.data.gilded,
+              submissionPinned = submission.data.pinned,
+              submissionLocked = submission.data.locked,
+              submissionOver18 = submission.data.over_18,
+              submissionNumComments = submission.data.num_comments,
+              submissionUserReports = submission.data.user_reports, // array with reports by users
 
-            // submission details - mod related
-            submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
-            submissionModReports = submission.data.mod_reports, // array with reports by mods
+              // submission details - mod related
+              submissionDistinguished = submission.data.distinguished, // string containing "moderator" or "admin"
+              submissionModReports = submission.data.mod_reports, // array with reports by mods
 
-            // Author details
-            submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
+              // Author details
+              submissionIsSubmitter = submission.data.is_submitter, // boolean - is OP
 
-            // submission status - mod action
-            submissionApproved = submission.data.approved, // boolean
-            submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
-            submissionApprovedBy = submission.data.approved_by, // unix epoch
-            submissionSpam = submission.data.spam, // boolean
-            submissionRemoved = submission.data.removed, // boolean
-            submissionBannedAtUTC = submission.data.banned_at_utc, // unix epoch
-            submissionBannedBy = submission.data.banned_by, // Mod that removed the submission
-            submissionIgnoreReports = submission.data.ignore_reports, // boolean
-            submissionBanNote = submission.data.ban_note;
+              // submission status - mod action
+              submissionApproved = submission.data.approved, // boolean
+              submissionApprovedAtUTC = submission.data.approved_at_utc, // unix epoch
+              submissionApprovedBy = submission.data.approved_by, // unix epoch
+              submissionSpam = submission.data.spam, // boolean
+              submissionRemoved = submission.data.removed, // boolean
+              submissionBannedAtUTC = submission.data.banned_at_utc, // unix epoch
+              submissionBannedBy = submission.data.banned_by, // Mod that removed the submission
+              submissionIgnoreReports = submission.data.ignore_reports, // boolean
+              submissionBanNote = submission.data.ban_note;
 
         // Format the submission datetime nicely
         const submissionReadableCreatedUTC = TBUtils.timeConverterRead(submissionCreatedUTC),
-            createdTimeAgo = TBUtils.timeConverterISO(submissionCreatedUTC);
+              createdTimeAgo = TBUtils.timeConverterISO(submissionCreatedUTC);
 
         // vote status
         let voteState = 'neutral';
-        if(submissionLikes !== null && !submissionLikes) {
+        if (submissionLikes !== null && !submissionLikes) {
             voteState = 'disliked';
-        } else if(submissionLikes) {
+        } else if (submissionLikes) {
             voteState = 'liked';
         }
         // Let's figure out what the current state is of the submission (approved, removed, spammed or neutral)
@@ -927,7 +928,7 @@
             submissionStatusBy,
             submissionActionByOn;
 
-        if(submissionSpam) {
+        if (submissionSpam) {
             submissionStatus = 'spammed';
             submissionStatusUTC = submissionBannedAtUTC;
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
@@ -959,15 +960,15 @@
         // Let's figure out what sort of attributes we need to give the OP if any.
         let authorStatus = 'tb-regular';
         const authorAttributes = [];
-        if(submissionIsSubmitter) {
+        if (submissionIsSubmitter) {
             authorStatus = 'tb-submitter';
             authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${submissionPermalink}">S</a>`);
         }
         if (submissionDistinguished) {
             authorStatus = `tb-${submissionDistinguished}`;
-            if(submissionDistinguished === 'admin') {
+            if (submissionDistinguished === 'admin') {
                 authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
-            } else if(submissionDistinguished === 'moderator') {
+            } else if (submissionDistinguished === 'moderator') {
                 authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="/r/${submissionSubreddit}/about/moderators">M</a>`);
             } else {
                 authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${submissionDistinguished}">${submissionDistinguished}</a>`);
@@ -975,9 +976,9 @@
         }
 
         let commentsButtonText = 'comment';
-        if(submissionNumComments === 1) {
+        if (submissionNumComments === 1) {
             commentsButtonText = '1 comment';
-        } else if(submissionNumComments > 1) {
+        } else if (submissionNumComments > 1) {
             commentsButtonText = `${submissionNumComments} comments`;
         }
 
@@ -985,7 +986,7 @@
         let editedHtml;
         if (submissionEdited) {
             const submissionReadableEdited = TBUtils.timeConverterRead(submissionEdited),
-                editedTimeAgo = TBUtils.timeConverterISO(submissionEdited);
+                  editedTimeAgo = TBUtils.timeConverterISO(submissionEdited);
             editedHtml = `<span class="tb-submission-edited">*last edited <time title="${submissionReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
@@ -1027,7 +1028,7 @@
         const $submissionEntry = $buildsubmission.find('.tb-submission-entry');
         const $submissionButtonList = $buildsubmission.find('.tb-submission-buttons');
 
-        if(submissionStatus !== 'neutral') {
+        if (submissionStatus !== 'neutral') {
             $submissionEntry.append(`
             <div class="tb-submission-data">
                 <ul class="tb-submission-details">
@@ -1037,14 +1038,14 @@
         }
 
         // Let's see if we need to add reports starting with user reports
-        if(submissionUserReports.length && !submissionIgnoreReports) {
+        if (submissionUserReports.length && !submissionIgnoreReports) {
             const $submissionUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>
             </ul>
             `);
 
-            submissionUserReports.forEach(function(report) {
+            submissionUserReports.forEach(function (report) {
                 const userReport = `
                 <li class="tb-user-report">
                     <strong>
@@ -1069,14 +1070,14 @@
         // Now we do the same for mod reports.
         // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
 
-        if(submissionModReports.length) {
+        if (submissionModReports.length) {
             const $submissionModReports = $(`
                 <ul class="tb-user-reports">
                     <li>mod reports</li>
                 </ul>
             `);
 
-            submissionModReports.forEach(function(report) {
+            submissionModReports.forEach(function (report) {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1091,13 +1092,13 @@
 
         }
 
-        if(submissionOver18) {
+        if (submissionOver18) {
             $(`<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>`).prependTo($submissionButtonList);
         }
 
         // Now add mod action buttons if applicable.
         if (canModsubmission) {
-            if(submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
+            if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
                 $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
 
             }
@@ -1120,7 +1121,7 @@
             }
         }
         $buildsubmission.find('p').addClass('tb-comment-p');
-        if(submissionOptions && submissionOptions.subredditColor) {
+        if (submissionOptions && submissionOptions.subredditColor) {
             const subColor = TBUtils.stringToColor(submissionSubreddit + subredditColorSalt);
             $buildsubmission.css(`border-left`, `solid 3px ${subColor}`);
         }
@@ -1137,69 +1138,69 @@
      * @returns {object} jquery object with the build comment.
      */
 
-    TBui.makeSingleComment = function makeSingleComment(comment, commentOptions = {}) {
+    TBui.makeSingleComment = function makeSingleComment (comment, commentOptions = {}) {
         TBStorage.purifyObject(comment);
         // Misc
         const canModComment = comment.data.can_mod_post,
 
-            // Comment basis (author, body, time)
-            commentAuthor = comment.data.author,
-            commentBodyHTML = TBStorage.purify(comment.data.body_html), // html string
-            //commentMarkdownBody = comment.data.body, // markdown string
-            //commentCreated = comment.data.created, // unix epoch
-            commentCreatedUTC = comment.data.created_utc, // unix epoch
-            commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
-            commentLinkId = comment.data.link_id, // parent submission ID
-            //commentId = comment.data.id, // comment ID
-            commentName = comment.data.name, // fullname t1_<comment ID>
-            commentParentId = comment.data.parent_id,
-            commentPermalink = comment.data.permalink,
-            commentSubreddit = comment.data.subreddit,
-            //commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
-            commentSubredditType = comment.data.subreddit_type,
-            //commentReplies = comment.data.replies, // object with replies
+              // Comment basis (author, body, time)
+              commentAuthor = comment.data.author,
+              commentBodyHTML = TBStorage.purify(comment.data.body_html), // html string
+              // commentMarkdownBody = comment.data.body, // markdown string
+              // commentCreated = comment.data.created, // unix epoch
+              commentCreatedUTC = comment.data.created_utc, // unix epoch
+              commentDepth = commentOptions.commentDepthPlus ? comment.data.depth + 1 : comment.data.depth, // integer
+              commentLinkId = comment.data.link_id, // parent submission ID
+              // commentId = comment.data.id, // comment ID
+              commentName = comment.data.name, // fullname t1_<comment ID>
+              commentParentId = comment.data.parent_id,
+              commentPermalink = comment.data.permalink,
+              commentSubreddit = comment.data.subreddit,
+              // commentSubredditNamePrefixed = comment.data.subreddit_name_prefixed,
+              commentSubredditType = comment.data.subreddit_type,
+            // commentReplies = comment.data.replies, // object with replies
 
-            // Comment details
-            //commentScoreHidden = comment.data.score_hidden, // boolean
-            commentScore = comment.data.score, // integer
-            commentControversiality = comment.data.controversiality, // integer
-            commentEdited = comment.data.edited,
-            commentGilded = comment.data.gilded,
-            //commentNumReports = comment.data.num_reports,
-            commentUserReports = comment.data.user_reports, // array with reports by users
+              // Comment details
+              // commentScoreHidden = comment.data.score_hidden, // boolean
+              commentScore = comment.data.score, // integer
+              commentControversiality = comment.data.controversiality, // integer
+              commentEdited = comment.data.edited,
+              commentGilded = comment.data.gilded,
+              // commentNumReports = comment.data.num_reports,
+              commentUserReports = comment.data.user_reports, // array with reports by users
 
-            // Comment details - mod related
-            commentStickied = comment.data.stickied, // boolean
-            commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
-            commentModReports = comment.data.mod_reports, // array with reports by mods
+              // Comment details - mod related
+              commentStickied = comment.data.stickied, // boolean
+              commentDistinguished = comment.data.distinguished, // string containing "moderator" or "admin"
+              commentModReports = comment.data.mod_reports, // array with reports by mods
 
-            // Author details
-            commentAuthorFlairCssClass = comment.data.author_flair_css_class,
-            commentAuthorFlairText = comment.data.author_flair_text,
-            commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
+              // Author details
+              commentAuthorFlairCssClass = comment.data.author_flair_css_class,
+              commentAuthorFlairText = comment.data.author_flair_text,
+              commentIsSubmitter = comment.data.is_submitter, // boolean - is OP
 
-            // Comment status - mod action
-            commentApproved = comment.data.approved, // boolean
-            commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
-            commentApprovedBy = comment.data.approved_by, // unix epoch
-            commentSpam = comment.data.spam, // boolean
-            commentRemoved = comment.data.removed, // boolean
-            commentBannedAtUTC = comment.data.banned_at_utc, // unix epoch
-            commentBannedBy = comment.data.banned_by, // Mod that removed the comment
-            commentIgnoreReports = comment.data.ignore_reports, // boolean
+              // Comment status - mod action
+              commentApproved = comment.data.approved, // boolean
+              commentApprovedAtUTC = comment.data.approved_at_utc, // unix epoch
+              commentApprovedBy = comment.data.approved_by, // unix epoch
+              commentSpam = comment.data.spam, // boolean
+              commentRemoved = comment.data.removed, // boolean
+              commentBannedAtUTC = comment.data.banned_at_utc, // unix epoch
+              commentBannedBy = comment.data.banned_by, // Mod that removed the comment
+              commentIgnoreReports = comment.data.ignore_reports, // boolean
 
-            // Comment status - other
-            //commentArchived = comment.data.archived,
-            //commentCollapsed = comment.data.collapsed,
-            //commentCollapsedReason = comment.data.collapsed_reason,
-            commentBanNote = comment.data.ban_note;
+              // Comment status - other
+              // commentArchived = comment.data.archived,
+              // commentCollapsed = comment.data.collapsed,
+              // commentCollapsedReason = comment.data.collapsed_reason,
+              commentBanNote = comment.data.ban_note;
 
         // Do we have overview data?
         let parentHtml;
-        if(commentOptions.overviewData) {
+        if (commentOptions.overviewData) {
             const linkUrl = comment.data.link_url,
-                linkTitle = comment.data.link_title,
-                linkAuthor = comment.data.link_author;
+                  linkTitle = comment.data.link_title,
+                  linkAuthor = comment.data.link_author;
 
             parentHtml = `
             <div class="tb-parent">
@@ -1211,19 +1212,19 @@
 
         // Format the comment datetime nicely
         const commentReadableCreatedUTC = TBUtils.timeConverterRead(commentCreatedUTC),
-            createdTimeAgo = TBUtils.timeConverterISO(commentCreatedUTC);
+              createdTimeAgo = TBUtils.timeConverterISO(commentCreatedUTC);
 
         // If we want the permalink of the parent thread we simply remove the comment id from the comment permalink..
         const commentThreadPermalink = TBUtils.removeLastDirectoryPartOf(commentPermalink);
 
         // Build a parentlink
         // Also determine if we are dealing with a top level comment.
-        //let commentIsTopLevel = false;
-        const commentParentKind = commentParentId.substring(0,2);
+        // let commentIsTopLevel = false;
+        const commentParentKind = commentParentId.substring(0, 2);
         let commentParentLink;
-        if(commentParentKind === 't1') {
+        if (commentParentKind === 't1') {
             commentParentLink = commentThreadPermalink + commentParentId.substring(3);
-            //commentIsTopLevel = true;
+            // commentIsTopLevel = true;
         } else {
             commentParentLink = commentThreadPermalink;
         }
@@ -1235,7 +1236,7 @@
             commentStatusBy,
             commentActionByOn;
 
-        if(commentSpam) {
+        if (commentSpam) {
             commentStatus = 'spammed';
             commentStatusUTC = commentBannedAtUTC;
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
@@ -1267,15 +1268,15 @@
         // Let's figure out what sort of attributes we need to give the OP if any.
         let authorStatus = 'tb-regular';
         const authorAttributes = [];
-        if(commentIsSubmitter) {
+        if (commentIsSubmitter) {
             authorStatus = 'tb-submitter';
             authorAttributes.push(`<a class="tb-submitter" title="submitter" href="${commentThreadPermalink}">S</a>`);
         }
         if (commentDistinguished) {
             authorStatus = `tb-${commentDistinguished}`;
-            if(commentDistinguished === 'admin') {
+            if (commentDistinguished === 'admin') {
                 authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
-            } else if(commentDistinguished === 'moderator') {
+            } else if (commentDistinguished === 'moderator') {
                 authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="/r/${commentSubreddit}/about/moderators">M</a>`);
             } else {
                 authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${commentDistinguished}">${commentDistinguished}</a>`);
@@ -1284,7 +1285,7 @@
 
         // Nicely format if we are talking about point or points
         let commentScoreText;
-        if (commentScore > 1 || commentScore < -1 ) {
+        if (commentScore > 1 || commentScore < -1) {
             commentScoreText = `${commentScore} points`;
         } else {
             commentScoreText = `${commentScore} point`;
@@ -1294,13 +1295,13 @@
         let editedHtml;
         if (commentEdited) {
             const commentReadableEdited = TBUtils.timeConverterRead(commentEdited),
-                editedTimeAgo = TBUtils.timeConverterISO(commentEdited);
+                  editedTimeAgo = TBUtils.timeConverterISO(commentEdited);
             editedHtml = `<span class="tb-comment-edited">*last edited <time title="${commentReadableEdited}" datetime="${editedTimeAgo}" class="tb-live-timestamp timeago">${editedTimeAgo}</time></span>`;
         }
 
         let commentDepthClass;
 
-        if(commentOptions.noOddEven) {
+        if (commentOptions.noOddEven) {
             commentDepthClass = commentDepth;
         } else {
             commentDepthClass = TBUtils.isOdd(commentDepth) ? 'odd' : 'even';
@@ -1347,23 +1348,23 @@
                 ${commentControversiality ? `<li> Controversial score: ${commentControversiality}.</li>` : ''}
              </ul>
         </div>`);
-        if(commentStatus !== 'neutral') {
+        if (commentStatus !== 'neutral') {
             $commentData.find('.tb-comment-details').append(`<li class="tb-status-${commentStatus}">${commentStatus} ${commentActionByOn ? commentActionByOn : ''}.</li>`);
         }
 
-        if($commentData.find('li').length) {
+        if ($commentData.find('li').length) {
             $commentEntry.append($commentData);
         }
 
         // Let's see if we need to add reports starting with user reports
-        if(commentUserReports.length && !commentIgnoreReports) {
+        if (commentUserReports.length && !commentIgnoreReports) {
             const $commentUserReports = $(`
             <ul class="tb-user-reports">
                 <li>user reports</li>
             </ul>
             `);
 
-            commentUserReports.forEach(function(report) {
+            commentUserReports.forEach(function (report) {
                 const userReport = `
                 <li class="tb-comment-user-report">
                     <strong>
@@ -1388,14 +1389,14 @@
         // Now we do the same for mod reports.
         // Not sure how ignoring reports works in this context so better to be safe than sorry and just show them.
 
-        if(commentModReports.length) {
+        if (commentModReports.length) {
             const $commentModReports = $(`
                 <ul class="tb-user-reports">
                     <li>mod reports</li>
                 </ul>
             `);
 
-            commentModReports.forEach(function(report) {
+            commentModReports.forEach(function (report) {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1433,7 +1434,7 @@
 
         // Now add mod action buttons if applicable.
         if (canModComment) {
-            if(commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
+            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
                 $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
 
             }
@@ -1445,7 +1446,7 @@
         }
         $buildComment.find('p').addClass('tb-comment-p');
 
-        if(commentOptions.subredditColor) {
+        if (commentOptions.subredditColor) {
             const subColor = TBUtils.stringToColor(commentSubreddit + subredditColorSalt);
             $buildComment.css(`border-left`, `solid 3px ${subColor}`);
         }
@@ -1461,20 +1462,20 @@
      * @param {object} commentOptions object denoting what needs to included. Object can contain 'parentLink', 'contextLink' and 'fullCommentsLink' as boolean.
      * @returns {object} jquery object with the build comment thread.
      */
-    TBui.makeCommentThread = function makeCommentThread(jsonInput, commentOptions) {
+    TBui.makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {
         const $commentContainer = $(`<div class="tb-comment-children"></div>`);
 
-        jsonInput.forEach(function(comment) {
+        jsonInput.forEach(function (comment) {
             let $childComments;
 
-            if(comment.kind === 't1') {
+            if (comment.kind === 't1') {
                 const $comment = TBui.makeSingleComment(comment, commentOptions);
-                if(comment.data.replies) {
+                if (comment.data.replies) {
                     $childComments = makeCommentThread(comment.data.replies.data.children, commentOptions);
                     $comment.append($childComments);
                 }
                 $commentContainer.append($comment);
-            } else if(comment.kind === 'more') {
+            } else if (comment.kind === 'more') {
                 const count = comment.data.count;
                 const commentIDs = comment.data.children.toString();
 
@@ -1488,13 +1489,13 @@
 
     // handling of comment & submisstion actions.
     // TODO make this into command pattern
-    $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function() {
+    $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.approveThing(fullname, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">approved</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1503,13 +1504,13 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove, .tb-thing-button-remove', function() {
+    $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove, .tb-thing-button-remove', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, false, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">removed</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1518,13 +1519,13 @@
         });
     });
 
-    $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam, .tb-thing-button-spam', function() {
+    $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam, .tb-thing-button-spam', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.removeThing(fullname, true, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1533,13 +1534,13 @@
         });
     });
 
-    $body.on('click', '.tb-submission-button-lock', function() {
+    $body.on('click', '.tb-submission-button-lock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.lockThread(fullname, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">locked</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1548,13 +1549,13 @@
         });
     });
 
-    $body.on('click', '.tb-submission-button-unlock', function() {
+    $body.on('click', '.tb-submission-button-unlock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.lockThread(fullname, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1563,13 +1564,13 @@
         });
     });
 
-    $body.on('click', '.tb-submission-button-nsfw', function() {
+    $body.on('click', '.tb-submission-button-nsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.markOver18(fullname, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">marked nsfw</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1578,13 +1579,13 @@
         });
     });
 
-    $body.on('click', '.tb-submission-button-unsfw', function() {
+    $body.on('click', '.tb-submission-button-unsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
         TBUtils.unMarkOver18(fullname, function (succes, error) {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">unmarked nsfw</span>');
-            } else if(error) {
+            } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
@@ -1593,7 +1594,7 @@
         });
     });
 
-    $body.on('click', '.tb-comment-toggle', function() {
+    $body.on('click', '.tb-comment-toggle', function () {
         const $this = $(this);
         const thisState = $this.text();
         const $comment = $this.closest('.tb-comment');
@@ -1602,14 +1603,14 @@
         $comment.find('.tb-comment-buttons').first().toggle();
         $comment.find('.tb-comment-details').first().toggle();
 
-        if(thisState === '[–]') {
+        if (thisState === '[–]') {
             $this.text('[+]');
         } else {
             $this.text('[–]');
         }
     });
 
-    $body.on('click', '.tb-load-more-comments', function() {
+    $body.on('click', '.tb-load-more-comments', function () {
         const $this = $(this);
         const $thisMoreComments = $this.closest('.tb-more-comments');
         const commentIDs = $this.attr('data-ids').split(',');
@@ -1623,20 +1624,20 @@
         commentOptions.commentDepthPlus = true;
         let processCount = 0;
         TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
-        commentIDs.forEach(function(id) {
+        commentIDs.forEach(function (id) {
             const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
             // Lets get the comments.
             $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
                 TBStorage.purifyObject(data);
                 const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
-                window.requestAnimationFrame(function() {
+                window.requestAnimationFrame(function () {
                     $thisMoreComments.before($comments.html());
                 });
 
                 TBui.tbRedditEvent($comments, 'comment');
 
                 processCount = processCount + 1;
-                if(processCount === commentIDcount) {
+                if (processCount === commentIDcount) {
                     $thisMoreComments.remove();
                     $('time.timeago').timeago();
                     TB.ui.longLoadSpinner(false);
@@ -1647,7 +1648,7 @@
 
     });
 
-    $body.on('click', '.tb-self-expando-button', function() {
+    $body.on('click', '.tb-self-expando-button', function () {
         const $this = $(this);
         const thisState = $this.attr('data-state') || 'collapsed';
         const $selfText = $this.closest('.tb-submission').find('.tb-self-expando');
@@ -1665,7 +1666,7 @@
     // Utilities
 
     TBui.getBestTextColor = function (bgColor) {
-        if(!TBui.getBestTextColor.cache[bgColor]) {
+        if (!TBui.getBestTextColor.cache[bgColor]) {
             const textColors = ['black', 'white'];
             TBui.getBestTextColor.cache[bgColor] = tinycolor.mostReadable(bgColor, textColors).toHexString();
         }

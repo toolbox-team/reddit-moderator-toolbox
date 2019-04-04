@@ -143,6 +143,10 @@
             "property"
         ],
         "comma-spacing": "error",
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
         "keyword-spacing": "error"
     }
 }

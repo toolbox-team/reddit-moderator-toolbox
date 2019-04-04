@@ -1,25 +1,25 @@
-function tbconfig() {
+function tbconfig () {
     const self = new TB.Module('toolbox Config');
     self.shortname = 'TBConfig'; // for backwards compatibility
 
-    //Default settings
+    // Default settings
     self.settings['enabled']['default'] = true;
 
-    self.init = function() {
-        //if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
+    self.init = function () {
+        // if (!(TBUtils.post_site && TBUtils.isMod) && !TBUtils.isModpage) {
         //    return;
-        //}
+        // }
 
         // Set up some base variables
         const $body = $('body'),
-            unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
+              unManager = TB.storage.getSetting('UserNotes', 'unManagerLink', true);
         let config = TBUtils.config,
             sortReasons = [],
             subreddit;
 
         // With the following function we will create the UI when we need it.
         // Create the window overlay.
-        function showConfig(subredditConfig, configData) {
+        function showConfig (subredditConfig, configData) {
 
             TB.ui.overlay(
                 `toolbox Configuration - /r/${subredditConfig}`,
@@ -37,7 +37,7 @@ function tbconfig() {
 
                 </span>
                 `,
-                        footer: ''
+                        footer: '',
                     },
                     {
                         title: 'edit toolbox config',
@@ -47,7 +47,7 @@ function tbconfig() {
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">'
+                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_toolbox_config" type="button" style="display:none" value="Save Page to Wiki">',
                     },
                     {
                         title: 'edit user notes',
@@ -58,7 +58,7 @@ function tbconfig() {
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">'
+                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_user_notes" type="button" style="display:none" value="Save Page to Wiki">',
                     },
                     {
                         title: 'edit user note types',
@@ -74,7 +74,7 @@ function tbconfig() {
                             <tbody id="tb-config-usernote-type-list"></tbody>
                         </table><a class="tb-general-button" href="javascript:;" id="add-usernote-type">Add user note type</a><a class="tb-general-button" data-module="usernotes" href="javascript:;" id="tb-config-help">help</a>
                     </div>`,
-                        footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass('tb-action-button').prop('value', 'Save user note types')
+                        footer: $('<input>').prop('type', 'button').attr('id', 'save-usernote-types').addClass('tb-action-button').prop('value', 'Save user note types'),
                     },
                     {
                         title: 'edit automoderator config',
@@ -87,7 +87,7 @@ function tbconfig() {
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>
                 <br>
                 <input type="text" class="tb-input" name="edit-wikidata-note" placeholder="wiki page revision reason (optional)" />`,
-                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">'
+                        footer: '<input class="save-wiki-data tb-action-button" data-tabname="edit_automoderator_config" type="button" style="display:none" value="Save Page to Wiki">',
                     },
                     {
                         title: 'removal reasons settings',
@@ -145,7 +145,7 @@ function tbconfig() {
                     </td>
                     </tr><tr>
                 </table>`,
-                        footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">'
+                        footer: '<input class="save-removal-settings tb-action-button" type="button" value="Save removal reasons settings">',
                     },
                     {
                         title: 'edit removal reasons',
@@ -164,7 +164,7 @@ function tbconfig() {
                 <table id="tb-removal-reasons-list">
                 </table>
                 `,
-                        footer: ''
+                        footer: '',
                     },
                     {
                         title: 'sort removal reasons',
@@ -180,7 +180,7 @@ function tbconfig() {
                 <table id="tb-removal-sort-list">
                 </table>
                 `,
-                        footer: '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">'
+                        footer: '<input class="save-removal-sorting tb-action-button" type="button" value="Save removal reasons order">',
                     },
                     {
                         title: 'edit mod macros',
@@ -206,13 +206,13 @@ function tbconfig() {
                 <table id="tb-mod-macros-list">
                 </table>
                 `,
-                        footer: ''
+                        footer: '',
                     },
                     {
                         title: 'domain tags',
                         tooltip: 'basic domain tags stuff.',
                         content: '<p>import tags from /r/:&nbsp;<input class="importfrom tb-input" type="text"/></input> (note: you need to mod wiki in this sub and the import sub.)</p>',
-                        footer: '<input class="import tb-action-button" type="button" value="import" />'
+                        footer: '<input class="import tb-action-button" type="button" value="import" />',
                     },
                     {
                         title: 'ban macro',
@@ -233,8 +233,8 @@ function tbconfig() {
                     </td>
                     </tr>
                 </table>`,
-                        footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">'
-                    }
+                        footer: '<input class="save-ban-macro tb-action-button" type="button" value="Save ban macro">',
+                    },
                 ],
                 [], // extra header buttons
                 'tb-config', // class
@@ -259,26 +259,26 @@ function tbconfig() {
 
         window.addEventListener('TBNewPage', function (event) {
 
-            if(event.detail.pageDetails.subreddit) {
+            if (event.detail.pageDetails.subreddit) {
                 const subreddit = event.detail.pageDetails.subreddit;
 
                 TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
+                    if (TBUtils.modsSub(subreddit)) {
                         TBui.contextTrigger('tb-config-link', {
                             addTrigger: true,
                             triggerText: `/r/${subreddit} config`,
                             triggerIcon: 'build',
-                            title:`toolbox configuration for /r/${subreddit}`,
+                            title: `toolbox configuration for /r/${subreddit}`,
                             dataAttributes: {
-                                subreddit: subreddit
-                            }
+                                subreddit,
+                            },
                         });
                     } else {
-                        TBui.contextTrigger('tb-config-link', { addTrigger: false });
+                        TBui.contextTrigger('tb-config-link', {addTrigger: false});
                     }
                 });
             } else {
-                TBui.contextTrigger('tb-config-link', { addTrigger: false });
+                TBui.contextTrigger('tb-config-link', {addTrigger: false});
             }
 
         });
@@ -316,10 +316,10 @@ function tbconfig() {
         // now we can play around!
 
         // Considering that this is a config page we want to be able to save whatever we do. This function takes care of that.
-        function postToWiki(page, data, reason, isJSON, updateAM) {
+        function postToWiki (page, data, reason, isJSON, updateAM) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done(succ, err) {
+            TBUtils.postToWiki(page, subreddit, data, reason, isJSON, updateAM, function done (succ, err) {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
 
@@ -348,7 +348,7 @@ function tbconfig() {
         }
 
         // This function fetches all data for the wiki tabs.
-        function wikiTabContent(tabname) {
+        function wikiTabContent (tabname) {
 
             let page;
             let actualPage;
@@ -368,10 +368,10 @@ function tbconfig() {
             }
 
             const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
-                $wikiFooterArea = $body.find(`.tb-window-footer.${tabname}`);
+                  $wikiFooterArea = $body.find(`.tb-window-footer.${tabname}`);
 
             const $textArea = $wikiContentArea.find('.edit-wikidata'),
-                $saveButton = $wikiFooterArea.find('.save-wiki-data');
+                  $saveButton = $wikiFooterArea.find('.save-wiki-data');
 
             if (TB.storage.getSetting('Syntax', 'enabled', true)) {
                 $body.addClass('mod-syntax');
@@ -401,9 +401,9 @@ function tbconfig() {
                                                 </ul>
                                               </div>`;
 
-                $textArea.each(function(index, elem) {
+                $textArea.each(function (index, elem) {
                 // This makes sure codemirror behaves and uses spaces instead of tabs.
-                    function betterTab(cm) {
+                    function betterTab (cm) {
                         if (cm.somethingSelected()) {
                             cm.indentSelection('add');
                         } else {
@@ -421,18 +421,18 @@ function tbconfig() {
                         indentUnit: 4,
                         extraKeys: {
                             'Ctrl-Alt-F': 'findPersistent',
-                            'F11': function(cm) {
+                            'F11' (cm) {
                                 cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                             },
-                            'Esc': function(cm) {
+                            'Esc' (cm) {
                                 if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
                             },
                             'Tab': betterTab,
-                            'Shift-Tab': function (cm) {
+                            'Shift-Tab' (cm) {
                                 cm.indentSelection('subtract');
-                            }
+                            },
                         },
-                        lineWrapping: enableWordWrap
+                        lineWrapping: enableWordWrap,
                     });
 
                     $body.find('.CodeMirror.CodeMirror-wrap').prepend(keyboardShortcutsHelper);
@@ -496,15 +496,15 @@ function tbconfig() {
                 });
             }
 
-            function humanizeUsernotes(notes) {
-                if(notes.ver >= 6) {
+            function humanizeUsernotes (notes) {
+                if (notes.ver >= 6) {
                     return decompressBlob(notes);
                 }
                 else {
                     return notes;
                 }
 
-                function decompressBlob(notes) {
+                function decompressBlob (notes) {
                     const decompressed = TBUtils.zlibInflate(notes.blob);
 
                     // Update notes with actual notes
@@ -515,7 +515,7 @@ function tbconfig() {
             }
         }
 
-        function populateUsernoteTypes() {
+        function populateUsernoteTypes () {
             let colors;
             if (config.usernoteColors && config.usernoteColors.length > 0) {
                 colors = config.usernoteColors;
@@ -531,7 +531,7 @@ function tbconfig() {
             });
         }
 
-        function appendUsernoteType(key, text, color, $list) {
+        function appendUsernoteType (key, text, color, $list) {
             const safeColor = TBUtils.colorNameToHex(color);
             if (!$list) {
                 $list = $('#tb-config-usernote-type-list');
@@ -547,14 +547,14 @@ function tbconfig() {
                 </td>
                 <td class="usernote-error error"></td>
 		    </tr>
-            ` );
+            `);
             $list.append($thing);
 
             return $list;
         }
 
         // With this function we'll fetch the removal reasons for editing
-        function removalReasonsContent() {
+        function removalReasonsContent () {
 
             if (config.removalReasons && config.removalReasons.reasons.length > 0) {
 
@@ -571,9 +571,9 @@ function tbconfig() {
                     }
 
                     const removalReasonText = unescape(config.removalReasons.reasons[i].text) || '',
-                        removalReasonTitle = config.removalReasons.reasons[i].title || '',
-                        removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
-                        removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
+                          removalReasonTitle = config.removalReasons.reasons[i].title || '',
+                          removalReasonFlairText = config.removalReasons.reasons[i].flairText || '',
+                          removalReasonFlairCSS = config.removalReasons.reasons[i].flairCSS || '';
 
                     const removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
@@ -595,14 +595,14 @@ function tbconfig() {
                 </tr>`;
 
                     const removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
-                        'i': i,
-                        'subreddit': subreddit,
+                        i,
+                        subreddit,
                         'i++': (i++),
-                        'label': label,
+                        label,
                         'removalReasonText': TBUtils.escapeHTML(removalReasonText),
-                        'removalReasonTitle': removalReasonTitle,
-                        'removalReasonFlairText': removalReasonFlairText,
-                        'removalReasonFlairCSS': removalReasonFlairCSS,
+                        removalReasonTitle,
+                        removalReasonFlairText,
+                        removalReasonFlairCSS,
                     });
 
                     const $removalReasonsList = $body.find('.edit_removal_reasons #tb-removal-reasons-list');
@@ -615,7 +615,7 @@ function tbconfig() {
         }
 
         // With this function we'll fetch the removal reasons for editing
-        function removalReasonsEditContent() {
+        function removalReasonsEditContent () {
 
             if (config.removalReasons && config.removalReasons.reasons.length > 0) {
             // Copy the reasons to a new array without reference to the old one.
@@ -655,7 +655,7 @@ function tbconfig() {
         }
         // Mod macros are also nice to have!
 
-        function modMacrosContent() {
+        function modMacrosContent () {
             if (config.modMacros && config.modMacros.length > 0) {
 
                 $(config.modMacros).each(function (i, item) {
@@ -699,11 +699,11 @@ function tbconfig() {
                 </tr>`;
 
                     const modMacroTemplateHTML = TBUtils.template(modMacroTemplate, {
-                        'i': i,
-                        'subreddit': subreddit,
-                        'label': label,
-                        'modMacroText': modMacroText,
-                        'modMacroTitle': modMacroTitle,
+                        i,
+                        subreddit,
+                        label,
+                        modMacroText,
+                        modMacroTitle,
                     });
 
                     const $removalReasonsList = $body.find('.edit_mod_macros #tb-mod-macros-list');
@@ -755,7 +755,7 @@ function tbconfig() {
         // Wiki tab save button is clicked.
         $body.on('click', '.save-wiki-data', function () {
             const $this = $(this),
-                tabname = $this.attr('data-tabname');
+                  tabname = $this.attr('data-tabname');
             let page,
                 actualPage;
 
@@ -776,10 +776,10 @@ function tbconfig() {
             }
 
             const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
-                textArea = $wikiContentArea.find('.edit-wikidata'),
-                text = $(textArea).val(),
-                editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val() || `updated ${page} configuration`,
-                updateAM = (page === 'automoderator');
+                  textArea = $wikiContentArea.find('.edit-wikidata'),
+                  text = $(textArea).val(),
+                  editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val() || `updated ${page} configuration`,
+                  updateAM = (page === 'automoderator');
             // save the data, and blank the text area.
             // also, yes some of the pages are in JSON, but they aren't JSON objects,
             // so they don't need to be re-strinified.
@@ -798,7 +798,7 @@ function tbconfig() {
                 logtitle: $('.logtitle').val(),
                 bantitle: $('.bantitle').val(),
                 getfrom: $('.getfrom').val(),
-                reasons: config.removalReasons.reasons || []
+                reasons: config.removalReasons.reasons || [],
             };
 
             postToWiki('toolbox', config, 'updated removal reason settings', true);
@@ -838,9 +838,9 @@ function tbconfig() {
 
         $body.on('keyup', '#tb-config-usernote-type-list .name', function () {
             const $this = $(this),
-                name = $this.val(),
-                $key = $this.parents('.usernote-type').find('.key'),
-                keyEdited = $key.data('edited');
+                  name = $this.val(),
+                  $key = $this.parents('.usernote-type').find('.key'),
+                  keyEdited = $key.data('edited');
             let key = $key.val();
             if (!keyEdited && name) {
                 key = name.toLowerCase().replace(/ /g, '_').replace(/[^\w-]/g, '').replace(/([-_])\1+/g, '$1');
@@ -850,7 +850,7 @@ function tbconfig() {
 
         $body.on('keyup', '#tb-config-usernote-type-list .key', function () {
             const $this = $(this),
-                edited = $this.data('edited');
+                  edited = $this.data('edited');
             if (!edited) {
                 $this.attr('data-edited', true);
             }
@@ -862,7 +862,7 @@ function tbconfig() {
 
         $body.on('click', '.up-usernote-type', function () {
             const $row = $(this).closest('tr'),
-                $prev = $row.prev();
+                  $prev = $row.prev();
 
             if ($prev && $prev.length > 0) {
                 $row.fadeOut(100, function () {
@@ -875,7 +875,7 @@ function tbconfig() {
 
         $body.on('click', '.down-usernote-type', function () {
             const $row = $(this).closest('tr'),
-                $next = $row.next();
+                  $next = $row.next();
 
             if ($next && $next.length > 0) {
                 $row.fadeOut(100, function () {
@@ -900,11 +900,11 @@ function tbconfig() {
             const seenKeys = [];
             $rows.each(function () {
                 const $row = $(this),
-                    $error = $row.find('.usernote-error'),
-                    $key = $row.find('.key'),
-                    key = $key.val(),
-                    $text = $row.find('.name'),
-                    text = $text.val();
+                      $error = $row.find('.usernote-error'),
+                      $key = $row.find('.key'),
+                      key = $key.val(),
+                      $text = $row.find('.name'),
+                      text = $text.val();
 
                 // Empty fields
                 if (!text || !key) {
@@ -945,15 +945,15 @@ function tbconfig() {
             config.usernoteColors = [];
             $rows.each(function () {
                 const $row = $(this),
-                    key = $row.find('.key').val(),
-                    text = $row.find('.name').val(),
-                    color = $row.find('.color').val();
+                      key = $row.find('.key').val(),
+                      text = $row.find('.name').val(),
+                      color = $row.find('.color').val();
                 self.log(`  key=${key}, text="${text}", color=${color}`);
 
                 config.usernoteColors.push({
-                    key: key,
-                    text: text,
-                    color: color
+                    key,
+                    text,
+                    color,
                 });
             });
 
@@ -1000,8 +1000,8 @@ function tbconfig() {
         // cancel
         $body.on('click', '.removal-reason-edit .cancel-edit-reason', function () {
             const $this = $(this),
-                $removalContent = $this.closest('td.removal-reasons-content'),
-                reasonsNum = $removalContent.attr('data-reason');
+                  $removalContent = $this.closest('td.removal-reasons-content'),
+                  reasonsNum = $removalContent.attr('data-reason');
 
             $removalContent.find('.edit-area').val(unescape(config.removalReasons.reasons[reasonsNum].text) || '<span style="color: #cecece">(no macro)</span>');
             $removalContent.find('input[name=removal-title]').val(config.removalReasons.reasons[reasonsNum].title || '');
@@ -1016,12 +1016,12 @@ function tbconfig() {
         // save
         $body.on('click', '.removal-reason-edit .save-edit-reason', function () {
             const $this = $(this),
-                $removalContent = $this.closest('td.removal-reasons-content'),
-                reasonsNum = $removalContent.attr('data-reason'),
-                reasonText = $removalContent.find('.edit-area').val(),
-                reasonTitle = $removalContent.find('input[name=removal-title]').val(),
-                reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
-                reasonFlairCSS = $removalContent.find('input[name=flair-css]').val();
+                  $removalContent = $this.closest('td.removal-reasons-content'),
+                  reasonsNum = $removalContent.attr('data-reason'),
+                  reasonText = $removalContent.find('.edit-area').val(),
+                  reasonTitle = $removalContent.find('input[name=removal-title]').val(),
+                  reasonFlairText = $removalContent.find('input[name=flair-text]').val(),
+                  reasonFlairCSS = $removalContent.find('input[name=flair-css]').val();
             let editNote = $removalContent.find('input[name=edit-note]').val();
 
             if (!editNote) {
@@ -1064,7 +1064,7 @@ function tbconfig() {
 
                 if (reasonsNum) {
                     config.removalReasons.reasons.splice(reasonsNum, 1);
-                //config.removalReasons.reasons[reasonsNum].remove();
+                // config.removalReasons.reasons[reasonsNum].remove();
                 } else {
                     return;
                 }
@@ -1076,7 +1076,7 @@ function tbconfig() {
 
                 // Renumber remaining reasons.
                 let reasonKey = 0;
-                $removalReasonList.find('tr.removal-reason').each(function() {
+                $removalReasonList.find('tr.removal-reason').each(function () {
 
                     const $this = $(this);
 
@@ -1100,15 +1100,15 @@ function tbconfig() {
         // Save new reason
         $body.on('click', '#tb-add-removal-reason-form .save-new-reason', function () {
             const reasonText = $body.find('#tb-add-removal-reason-form .edit-area').val(),
-                reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
-                reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
-                reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
+                  reasonTitle = $body.find('#tb-add-removal-reason-form input[name=removal-title]').val(),
+                  reasonFlairText = $body.find('#tb-add-removal-reason-form input[name=flair-text]').val(),
+                  reasonFlairCSS = $body.find('#tb-add-removal-reason-form input[name=flair-css]').val();
             let editNote = $body.find('#tb-add-removal-reason-form input[name=edit-note]').val();
 
             editNote = `create new reason${editNote ? `, ${editNote}` : ''}`;
 
             const reason = {
-                text: escape(reasonText)
+                text: escape(reasonText),
             };
 
             reason.flairText = reasonFlairText;
@@ -1117,7 +1117,7 @@ function tbconfig() {
 
             if (!config.removalReasons) {
                 config.removalReasons = {
-                    reasons: []
+                    reasons: [],
                 };
             }
             else if (config.removalReasons.reasons === undefined) {
@@ -1177,7 +1177,7 @@ function tbconfig() {
 
         $body.on('click', '.tb-sort-up', function () {
             const $row = $(this).closest('tr'),
-                $prev = $row.prev();
+                  $prev = $row.prev();
 
             if ($prev && $prev.length > 0) {
             // Get the keys for the reasons that will be moved.
@@ -1200,7 +1200,7 @@ function tbconfig() {
 
         $body.on('click', '.tb-sort-down ', function () {
             const $row = $(this).closest('tr'),
-                $next = $row.next();
+                  $next = $row.next();
 
             if ($next && $next.length > 0) {
             // Get the keys for the reasons that will be moved.
@@ -1274,9 +1274,9 @@ function tbconfig() {
         // cancel
         $body.on('click', '.mod-macro-edit .cancel-edit-macro', function () {
             const $this = $(this),
-                $macroContent = $this.closest('td.mod-macros-content'),
-                macroNum = $macroContent.attr('data-macro'),
-                macro = config.modMacros[macroNum];
+                  $macroContent = $this.closest('td.mod-macros-content'),
+                  macroNum = $macroContent.attr('data-macro'),
+                  macro = config.modMacros[macroNum];
 
             $macroContent.find('.edit-area').val(unescape(macro.text) || '<span style="color: #cecece">(no macro)</span>');
             $macroContent.find('input[name=macro-title]').val(macro.title || '');
@@ -1298,20 +1298,20 @@ function tbconfig() {
         // save
         $body.on('click', '.mod-macro-edit .save-edit-macro', function () {
             const $this = $(this),
-                $macroContent = $this.closest('td.mod-macros-content'),
-                macroNum = $macroContent.attr('data-macro'),
-                macroText = $macroContent.find('.edit-area').val(),
-                macroTitle = $macroContent.find('input[name=macro-title]').val(),
-                distinguish = $macroContent.find('#distinguish').prop('checked'),
-                banuser = $macroContent.find('#banuser').prop('checked'),
-                muteuser = $macroContent.find('#muteuser').prop('checked'),
-                removeitem = $macroContent.find('#removeitem').prop('checked'),
-                approveitem = $macroContent.find('#approveitem').prop('checked'),
-                lockthread = $macroContent.find('#lockthread').prop('checked'),
-                sticky = $macroContent.find('#sticky').prop('checked'),
-                archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
-                highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
-                macro = config.modMacros[macroNum];
+                  $macroContent = $this.closest('td.mod-macros-content'),
+                  macroNum = $macroContent.attr('data-macro'),
+                  macroText = $macroContent.find('.edit-area').val(),
+                  macroTitle = $macroContent.find('input[name=macro-title]').val(),
+                  distinguish = $macroContent.find('#distinguish').prop('checked'),
+                  banuser = $macroContent.find('#banuser').prop('checked'),
+                  muteuser = $macroContent.find('#muteuser').prop('checked'),
+                  removeitem = $macroContent.find('#removeitem').prop('checked'),
+                  approveitem = $macroContent.find('#approveitem').prop('checked'),
+                  lockthread = $macroContent.find('#lockthread').prop('checked'),
+                  sticky = $macroContent.find('#sticky').prop('checked'),
+                  archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
+                  highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
+                  macro = config.modMacros[macroNum];
             let editNote = $macroContent.find('input[name=edit-note]').val();
 
             if (macroTitle.length < 1) {
@@ -1379,7 +1379,7 @@ function tbconfig() {
 
                 // Renumber remaining macros.
                 let macroKey = 0;
-                $macroList.find('tr.mod-macro').each(function() {
+                $macroList.find('tr.mod-macro').each(function () {
 
                     const $this = $(this);
 
@@ -1405,16 +1405,16 @@ function tbconfig() {
         // Save new macro
         $body.on('click', '#tb-add-mod-macro-form .save-new-macro', function () {
             const macroText = $body.find('#tb-add-mod-macro-form .edit-area').val(),
-                macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
-                distinguish = $body.find('#distinguish').prop('checked'),
-                banuser = $body.find('#banuser').prop('checked'),
-                muteuser = $body.find('#muteuser').prop('checked'),
-                removeitem = $body.find('#removeitem').prop('checked'),
-                approveitem = $body.find('#approveitem').prop('checked'),
-                lockthread = $body.find('#lockthread').prop('checked'),
-                sticky = $body.find('#sticky').prop('checked'),
-                archivemodmail = $body.find('#archivemodmail').prop('checked'),
-                highlightmodmail = $body.find('#highlightmodmail').prop('checked');
+                  macroTitle = $body.find('#tb-add-mod-macro-form input[name=macro-title]').val(),
+                  distinguish = $body.find('#distinguish').prop('checked'),
+                  banuser = $body.find('#banuser').prop('checked'),
+                  muteuser = $body.find('#muteuser').prop('checked'),
+                  removeitem = $body.find('#removeitem').prop('checked'),
+                  approveitem = $body.find('#approveitem').prop('checked'),
+                  lockthread = $body.find('#lockthread').prop('checked'),
+                  sticky = $body.find('#sticky').prop('checked'),
+                  archivemodmail = $body.find('#archivemodmail').prop('checked'),
+                  highlightmodmail = $body.find('#highlightmodmail').prop('checked');
             let editNote = $body.find('#tb-add-mod-macro-form input[name=edit-note]').val();
 
             if (macroTitle.length < 1) {
@@ -1425,7 +1425,7 @@ function tbconfig() {
             editNote = `create new macro ${editNote ? `, ${editNote}` : ''}`;
 
             const macro = {
-                text: escape(macroText)
+                text: escape(macroText),
             };
 
             macro.title = macroTitle;

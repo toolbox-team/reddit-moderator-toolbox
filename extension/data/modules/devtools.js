@@ -1,35 +1,35 @@
-function devtools() {
+function devtools () {
     const self = new TB.Module('Developer Tools');
     self.shortname = 'DevTools';
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = true;
 
     self.config['betamode'] = false;
     self.config['devmode'] = true;
 
     self.register_setting('apiHelper', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Show api button next for each element received from front-end api'
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Show api button next for each element received from front-end api',
     });
 
     self.register_setting('commentUItester', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Add a button to the context menu that opens an overlay to test the TBui comment constructors.'
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Add a button to the context menu that opens an overlay to test the TBui comment constructors.',
     });
     // Module init
-    self.init = function() {
+    self.init = function () {
         const $body = $('body');
 
         const apiHelper = self.setting('apiHelper'),
-            commentUItester = self.setting('commentUItester');
+              commentUItester = self.setting('commentUItester');
 
         // Function that handles
-        function modifyDiv(e) {
+        function modifyDiv (e) {
             console.log(e);
             const $target = $(e.target);
             $target.append(`
@@ -37,7 +37,7 @@ function devtools() {
                 api info
             </span>
             `);
-            $target.on('click', '.tb-show-api-info', function(event) {
+            $target.on('click', '.tb-show-api-info', function (event) {
                 const $pasteContent = $(`<pre class="tb-api-info"><code>${TBUtils.escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
                 // Prepare for the popup.
                 let leftPosition;
@@ -55,19 +55,19 @@ function devtools() {
                             title: 'Context tab',
                             tooltip: 'Tab with context for comment.',
                             content: $pasteContent.show(),
-                            footer: ''
-                        }
+                            footer: '',
+                        },
                     ],
                     '',
                     'context-button-popup',
                     {
-                        draggable: true
+                        draggable: true,
                     }
                 ).appendTo($('body'))
                     .css({
                         left: leftPosition,
                         top: event.pageY - 10,
-                        display: 'block'
+                        display: 'block',
                     });
 
                 // Close the popup
@@ -77,19 +77,19 @@ function devtools() {
             });
         }
 
-        if(apiHelper) {
+        if (apiHelper) {
             TB.listener.debugFunc = modifyDiv;
         }
 
-        if(commentUItester) {
+        if (commentUItester) {
             TBui.contextTrigger(`tb-testCommentUI-link`, {
                 addTrigger: true,
                 triggerText: `Show ze overlay!`,
-                triggerIcon: 'view_array'
+                triggerIcon: 'view_array',
             });
         }
 
-        $body.on('click', '#tb-testCommentUI-link', function() {
+        $body.on('click', '#tb-testCommentUI-link', function () {
             TB.ui.overlay(
                 `Comment UI tester`,
                 [
@@ -104,8 +104,8 @@ function devtools() {
                                 <button class="tb-action-button tb-testCommentUI-button fetch-thread">fetch thread</button>
                                 <button class="tb-action-button tb-testSubmissionUI-button fetch-listing">fetch submission listing</button>
                         `,
-                        footer: ''
-                    }
+                        footer: '',
+                    },
                 ],
                 [], // extra header buttons
                 'tb-comment-ui-test', // class
@@ -121,19 +121,19 @@ function devtools() {
 
             $body.on('click', '.tb-testCommentUI-button', function () {
                 const $this = $(this),
-                    $siteTable = $body.find('#tb-comment-sitetable');
+                      $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, function(data) {
+                $.getJSON(inputURL, {raw_json: 1}, function (data) {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
-                        'parentLink' : true,
-                        'contextLink' : true,
-                        'fullCommentsLink' : true
+                        parentLink: true,
+                        contextLink: true,
+                        fullCommentsLink: true,
                     };
 
-                    if($this.hasClass('fetch-thread')) {
+                    if ($this.hasClass('fetch-thread')) {
                         const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                         $siteTable.append($comments);
                         TBui.tbRedditEvent($comments, 'comment');
@@ -152,16 +152,16 @@ function devtools() {
                 const $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, function(data) {
+                $.getJSON(inputURL, {raw_json: 1}, function (data) {
                     TBStorage.purifyObject(data);
-                    TBUtils.forEachChunkedDynamic(data.data.children, function(entry) {
-                        if(entry.kind === `t3`) {
+                    TBUtils.forEachChunkedDynamic(data.data.children, function (entry) {
+                        if (entry.kind === `t3`) {
                             const $submission = TBui.makeSubmissionEntry(entry);
                             $siteTable.append($submission);
                             $('time.timeago').timeago();
                         }
 
-                    }).then(function() {
+                    }).then(function () {
                         setTimeout(function () {
                             TBui.tbRedditEvent($siteTable, 'comment');
                             TB.ui.longLoadSpinner(false);

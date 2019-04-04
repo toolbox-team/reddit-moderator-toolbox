@@ -1,41 +1,41 @@
-function newmodmailpro() {
+function newmodmailpro () {
     const self = new TB.Module('New Mod Mail Pro');
     self.shortname = 'NewModMail';
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = true;
     self.config['betamode'] = false;
 
     self.register_setting('modmaillink', {
-        'type': 'selector',
-        'values': ['All modmail', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
-        'default': 'all_modmail',
-        'title': 'Change the modmail link to open a different modmail view by default.'
+        type: 'selector',
+        values: ['All modmail', 'New', 'In Progress', 'Archived', 'Highlighted', 'Mod Discussions', 'Notifications'],
+        default: 'all_modmail',
+        title: 'Change the modmail link to open a different modmail view by default.',
     });
 
     self.register_setting('openmailtab', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Open modmail in a new tab.'
+        type: 'boolean',
+        default: true,
+        title: 'Open modmail in a new tab.',
     });
 
     self.register_setting('lastreplytypecheck', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. '
+        type: 'boolean',
+        default: true,
+        title: 'Warns you if you reply as yourself but the last reply type is a private mod note or a "as subreddit" reply. ',
     });
 
     self.register_setting('modmailnightmode', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Open modmail in nightmode'
+        type: 'boolean',
+        default: false,
+        title: 'Open modmail in nightmode',
     });
 
     self.register_setting('searcharchive', {
-        'type': 'boolean',
-        'default': false,
-        'beta': true,
-        'title': 'Add rudimentary search functionality to the archive page. This will only be able to search the preview text.'
+        type: 'boolean',
+        default: false,
+        beta: true,
+        title: 'Add rudimentary search functionality to the archive page. This will only be able to search the preview text.',
     });
 
     let activeSearch = false,
@@ -44,21 +44,21 @@ function newmodmailpro() {
     const $body = $('body');
 
     // Function to search through archive.
-    function searchAndScroll(searchString, $threadPreviewerThreads, $searchResults, count) {
+    function searchAndScroll (searchString, $threadPreviewerThreads, $searchResults, count) {
         // Debugging so we can see if this is running.
         self.log(`searchAndScroll: ${count}`);
         count++;
 
         // Let's not bother with case sensitive searching.
         searchString = searchString.toLowerCase();
-        $threadPreviewerThreads.find('.ThreadPreviewViewer__thread:not(.tb-searched)').each(function() {
+        $threadPreviewerThreads.find('.ThreadPreviewViewer__thread:not(.tb-searched)').each(function () {
 
             const $this = $(this);
             // Again, let's not bother.
             const previewText = $this.text().toLowerCase();
 
             // We have a match! Let's hangle it.
-            if(previewText.includes(searchString)) {
+            if (previewText.includes(searchString)) {
                 // Clone the preview bit (react doesn't like it when we just move it)
                 const $thisClone = $this.clone();
 
@@ -75,7 +75,7 @@ function newmodmailpro() {
         });
 
         // If the stop button has not been pressed we will do another loop.
-        if(activeSearch) {
+        if (activeSearch) {
             // Get the current scroll position.
             const scrollTop = $threadPreviewerThreads.scrollTop();
             // Add 300
@@ -84,16 +84,16 @@ function newmodmailpro() {
             $threadPreviewerThreads.scrollTop(scrollDistance);
 
             // Now wait a bit so we are sure they are loaded and then activate another loop of this function.
-            setTimeout(function() {
+            setTimeout(function () {
                 searchAndScroll(searchString, $threadPreviewerThreads, $searchResults, count);
             }, 1000);
         }
     }
 
     // Activate search functionality or deactivate it when appropriate.
-    function addSearch(locationHref) {
+    function addSearch (locationHref) {
         // Activate search functionality when the correct location is given.
-        if(locationHref === 'https://mod.reddit.com/mail/archived') {
+        if (locationHref === 'https://mod.reddit.com/mail/archived') {
             // Prepare the search input bits.
             const $searchHeaderDiv = $('<div id="tb-search-header"><input type="text" id="tb-search-value"> <button class="tb-action-button" id="tb-search-start">Search</button><button class="tb-action-button tb-button-hidden" id="tb-search-stop">Stop search</button>');
             const $selectAfter = $body.find('.ThreadPreviewViewerHeader__select');
@@ -110,7 +110,7 @@ function newmodmailpro() {
             searchAdded = true;
 
             // Start search button is clicked, let's start searching!
-            $body.on('click', '#tb-search-start', function() {
+            $body.on('click', '#tb-search-start', function () {
                 // Hide the button.
                 $(this).addClass('tb-button-hidden');
                 // Show the stop button. (search will keep running)/
@@ -138,7 +138,7 @@ function newmodmailpro() {
             });
 
             // Searching continues all the time until you hit the stop button.
-            $body.on('click', '#tb-search-stop', function() {
+            $body.on('click', '#tb-search-stop', function () {
                 $(this).addClass('tb-button-hidden');
                 $body.find('#tb-search-start').removeClass('tb-button-hidden');
                 TB.ui.longLoadSpinner(false);
@@ -146,7 +146,7 @@ function newmodmailpro() {
             });
 
             // We can't use react functionality so instead we make the thing do an actual page load when a preview thingy is clicked.
-            $searchResults.on('click', '.ThreadPreviewViewer__thread:not(a)', function() {
+            $searchResults.on('click', '.ThreadPreviewViewer__thread:not(a)', function () {
                 const $this = $(this);
                 const permaLink = $this.find('.ThreadPreview__headerRight a').attr('href');
                 TB.ui.longLoadSpinner(false);
@@ -154,15 +154,15 @@ function newmodmailpro() {
             });
 
             // Just making sure you can still click on urls visible in the preview.
-            $searchResults.on('click', 'a', function(event) {
+            $searchResults.on('click', 'a', function (event) {
                 event.stopPropagation();
             });
 
         // If search was already added we can assume we are moving away from the archive page and that we need to clean up.
-        } else if(searchAdded) {
+        } else if (searchAdded) {
             $body.find('#tb-search-header').remove();
             $body.find('#tb-search-result').remove();
-            if(activeSearch) {
+            if (activeSearch) {
                 TB.ui.longLoadSpinner(false);
             }
         }
@@ -175,11 +175,11 @@ function newmodmailpro() {
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
-            lastReplyTypeCheck = self.setting('lastreplytypecheck'),
-            searchArchive = self.setting('searcharchive');
+              lastReplyTypeCheck = self.setting('lastreplytypecheck'),
+              searchArchive = self.setting('searcharchive');
 
         if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
-            $body.on('click', '.ThreadViewerReplyForm__replyButton', function(event) {
+            $body.on('click', '.ThreadViewerReplyForm__replyButton', function (event) {
 
                 // Get all mod replies and see if they are something we need to warn the user about.
                 const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
@@ -215,7 +215,7 @@ function newmodmailpro() {
 
             // Now enable toolbox nightmode.
             // Firefox can't do simple nightmode so we do it like this
-            if(TBUtils.browser === 'firefox') {
+            if (TBUtils.browser === 'firefox') {
                 $('html').addClass('tb-nightmode-firefox');
                 $('body').addClass('tb-nightmode-firefox');
             } else {
@@ -224,7 +224,7 @@ function newmodmailpro() {
         }
 
         // Let's add search if needed.
-        if(searchArchive) {
+        if (searchArchive) {
             addSearch(location.href);
             window.addEventListener('TBNewPage', function (event) {
                 addSearch(event.detail.locationHref);
@@ -238,11 +238,11 @@ function newmodmailpro() {
 
         // ready some variables.
         const modmailLink = self.setting('modmaillink'),
-            openMailTab = self.setting('openmailtab');
+              openMailTab = self.setting('openmailtab');
 
         // Let's mess around with the link to modmail.
         const $newModmailLinkElement = $('#new_modmail'),
-            newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+              newModmailBaseUrl = 'https://mod.reddit.com/mail/';
 
         // Open modmail in a new tab if the option is selected
         if (openMailTab) {
@@ -250,7 +250,7 @@ function newmodmailpro() {
         }
 
         // let's replace urls.
-        switch(modmailLink) {
+        switch (modmailLink) {
         case 'all_modmail':
             $newModmailLinkElement.attr('href', `${newModmailBaseUrl}all`);
 

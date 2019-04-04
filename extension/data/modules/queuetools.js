@@ -1,46 +1,46 @@
 /** @module QueueTools */
-function queuetools() {
+function queuetools () {
     const self = new TB.Module('Queue Tools');
     self.shortname = 'QueueTools';
 
     self.settings['enabled']['default'] = true;
 
     self.register_setting('showActionReason', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog'
+        type: 'boolean',
+        default: true,
+        title: 'Show previously taken actions next to submissions. Based on the last 500 actions in the subreddit modlog',
     });
     self.register_setting('expandActionReasonQueue', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Automatically expand the mod action table in queues'
+        type: 'boolean',
+        default: true,
+        title: 'Automatically expand the mod action table in queues',
     });
 
     self.register_setting('expandReports', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Automatically expand reports on mod pages.'
+        type: 'boolean',
+        default: false,
+        title: 'Automatically expand reports on mod pages.',
     });
 
     self.register_setting('queueCreature', {
-        'type': 'selector',
-        'values': ['kitteh', 'puppy', '/r/babyelephantgifs','/r/spiderbros', 'piggy','i have no soul'],
-        'default': 'kitteh',
-        'title': 'Queue Creature'
+        type: 'selector',
+        values: ['kitteh', 'puppy', '/r/babyelephantgifs', '/r/spiderbros', 'piggy', 'i have no soul'],
+        default: 'kitteh',
+        title: 'Queue Creature',
     });
 
     self.register_setting('subredditColor', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Add a border to items in the queue with color unique to the subreddit name.'
+        type: 'boolean',
+        default: false,
+        title: 'Add a border to items in the queue with color unique to the subreddit name.',
     });
 
     self.register_setting('subredditColorSalt', {
-        'type': 'text',
-        'default': 'PJSalt',
-        'title': 'Text to randomly change the subreddit color',
-        'advanced': true,
-        'hidden': !self.setting('subredditColor')
+        type: 'text',
+        default: 'PJSalt',
+        title: 'Text to randomly change the subreddit color',
+        advanced: true,
+        hidden: !self.setting('subredditColor'),
     });
 
     //
@@ -48,91 +48,91 @@ function queuetools() {
     //
 
     self.register_setting('highlightNegativePosts', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Highlight posts with a score of 0.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Highlight posts with a score of 0.',
+        oldReddit: true,
     });
 
     self.register_setting('hideActionedItems', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Hide items after mod action.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Hide items after mod action.',
+        oldReddit: true,
     });
 
     self.register_setting('showAutomodActionReason', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Show the action reason from automoderator below submissions and comments.',
-        'oldReddit': true
+        type: 'boolean',
+        default: true,
+        title: 'Show the action reason from automoderator below submissions and comments.',
+        oldReddit: true,
     });
 
     self.register_setting('linkToQueues', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Link to subreddit queue on mod pages.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Link to subreddit queue on mod pages.',
+        oldReddit: true,
     });
 
     self.register_setting('reportsOrder', {
-        'type': 'selector',
-        'advanced': true,
-        'values': ['age', 'edited', 'removed', 'score', 'reports'],
-        'default': 'age',
-        'title': 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
-        'oldReddit': true
+        type: 'selector',
+        advanced: true,
+        values: ['age', 'edited', 'removed', 'score', 'reports'],
+        default: 'age',
+        title: 'Sort by. Note that "edited" and "removed" includes the post time if there is no edit or removal time.',
+        oldReddit: true,
     });
 
     self.register_setting('reportsThreshold', {
-        'type': 'number',
-        'advanced': true,
-        'min': 0,
-        'max': null,
-        'step': 1,
-        'default': 1,
-        'title': 'Reports threshold.',
-        'oldReddit': true
+        type: 'number',
+        advanced: true,
+        min: 0,
+        max: null,
+        step: 1,
+        default: 1,
+        title: 'Reports threshold.',
+        oldReddit: true,
     });
 
     self.register_setting('reportsAscending', {
-        'type': 'boolean',
-        'advanced': true,
-        'default': false,
-        'title': 'Sort ascending.',
-        'oldReddit': true
+        type: 'boolean',
+        advanced: true,
+        default: false,
+        title: 'Sort ascending.',
+        oldReddit: true,
     });
 
     self.register_setting('botCheckmark', {
-        'type': 'list',
-        'default': ['AutoModerator'],
-        'title': `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
-        'oldReddit': true
+        type: 'list',
+        default: ['AutoModerator'],
+        title: `Make bot approved checkmarks have a different look <img src="data:image/png;base64,${TBui.iconBot}">. Bot names should be entered separated by a comma without spaces and are case sensitive.`,
+        oldReddit: true,
     });
 
     self.register_setting('showReportReasons', {
-        'type': 'boolean',
-        'default': false,
-        'beta': true,
-        'title': 'Add button to show reports on posts with ignored reports.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        beta: true,
+        title: 'Add button to show reports on posts with ignored reports.',
+        oldReddit: true,
     });
 
     self.register_setting('highlightAutomodMatches', {
-        'type': 'boolean',
-        'default': true,
-        'beta': false,
-        'title': 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
-        'oldReddit': true
+        type: 'boolean',
+        default: true,
+        beta: false,
+        title: 'Highlight words in Automoderator report and action reasons which are enclosed in []. Can be used to highlight automod regex matches.',
+        oldReddit: true,
     });
 
     self.register_setting('groupCommentsOnModPage', {
-        'type': 'boolean',
-        'default': false,
-        'beta': true,
-        'advanced': true,
-        'title': 'Group comments by their parent submission when viewing mod listings.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        beta: true,
+        advanced: true,
+        title: 'Group comments by their parent submission when viewing mod listings.',
+        oldReddit: true,
     });
 
     self.queuetoolsOld = function () {
@@ -140,15 +140,15 @@ function queuetools() {
 
         // Cached data
         const highlightNegativePosts = self.setting('highlightNegativePosts'),
-            hideActionedItems = self.setting('hideActionedItems'),
-            showAutomodActionReason = self.setting('showAutomodActionReason'),
-            linkToQueues = self.setting('linkToQueues'),
-            subredditColor = self.setting('subredditColor'),
-            subredditColorSalt = self.setting('subredditColorSalt'),
-            queueCreature = self.setting('queueCreature'),
-            showReportReasons = self.setting('showReportReasons'),
-            highlightAutomodMatches = self.setting('highlightAutomodMatches'),
-            groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
+              hideActionedItems = self.setting('hideActionedItems'),
+              showAutomodActionReason = self.setting('showAutomodActionReason'),
+              linkToQueues = self.setting('linkToQueues'),
+              subredditColor = self.setting('subredditColor'),
+              subredditColorSalt = self.setting('subredditColorSalt'),
+              queueCreature = self.setting('queueCreature'),
+              showReportReasons = self.setting('showReportReasons'),
+              highlightAutomodMatches = self.setting('highlightAutomodMatches'),
+              groupCommentsOnModPage = self.setting('groupCommentsOnModPage');
 
         // var SPAM_REPORT_SUB = 'spam', QUEUE_URL = '';
         let QUEUE_URL = '';
@@ -178,9 +178,9 @@ function queuetools() {
             }
         }
 
-        function colorSubreddits() {
+        function colorSubreddits () {
             const $this = $(this),
-                subredditName = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
+                  subredditName = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
 
             $this.addClass('color-processed');
 
@@ -199,7 +199,7 @@ function queuetools() {
         });
 
         // Negative post highlighting
-        function highlightBadPosts() {
+        function highlightBadPosts () {
             const $this = $(this);
             $this.addClass('highlight-processed');
             let score = $this.find('.likes .score.likes, .unvoted .score.unvoted, .dislikes .score.dislikes').text();
@@ -231,7 +231,7 @@ function queuetools() {
             if ($ignoreReports.length > 0) {
                 let showing = false;
                 const $showReasons = $('<li class="rounded reported-stamp stamp has-reasons access-required tb-show-reasons" title="click to show report reasons" >reports</li>'),
-                    reportHTML = `
+                      reportHTML = `
                             <ul class="report-reasons rounded" style="display: none">
                                 <li class="report-reason-title">user reports:</li>
                             </ul>`;
@@ -261,18 +261,18 @@ function queuetools() {
         }
 
         // Add modtools buttons to page.
-        function addModtools() {
+        function addModtools () {
             let listingOrder = self.setting('reportsOrder'),
                 allSelected = false,
                 sortAscending = self.setting('reportsAscending');
 
             const numberRX = /-?\d+/,
-                reportsThreshold = self.setting('reportsThreshold'),
-                viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
-                viewingreports = !!location.pathname.match(/\/about\/reports/),
-                expandReports = self.setting('expandReports'),
-                EXPAND_TITLE = 'expand reports',
-                COLLAPSE_TITLE = 'collapse reports';
+                  reportsThreshold = self.setting('reportsThreshold'),
+                  viewingspam = !!location.pathname.match(/\/about\/(spam|trials)/),
+                  viewingreports = !!location.pathname.match(/\/about\/reports/),
+                  expandReports = self.setting('expandReports'),
+                  EXPAND_TITLE = 'expand reports',
+                  COLLAPSE_TITLE = 'collapse reports';
 
             if (viewingspam && listingOrder === 'reports') {
                 listingOrder = 'removed';
@@ -282,22 +282,22 @@ function queuetools() {
             $('#siteTable_promoted,#siteTable_organic,.rank').remove();
 
             // remove stuff we can't moderate (in non-mod queues only)
-            function removeUnmoddable() {
+            function removeUnmoddable () {
                 if (!TBUtils.isModpage && !TBUtils.isSubCommentsPage) {
                     TBUtils.getModSubs(function () {
                         $('.thing').each(function () {
                             const $thing = $(this),
-                                $sub = $thing.find('.subreddit');
+                                  $sub = $thing.find('.subreddit');
 
                             // Remove if the sub isn't moderated
-                            if($sub.length > 0) {
+                            if ($sub.length > 0) {
                                 const sub = TB.utils.cleanSubredditName($sub.text());
                                 if ($.inArray(sub, TBUtils.mySubs) === -1) {
                                     $thing.remove();
                                 }
                             }
                             // Always remove things like sponsored links (can't mod those)
-                            else if($thing.find('.parent').text().endsWith('[promoted post]')) {
+                            else if ($thing.find('.parent').text().endsWith('[promoted post]')) {
                                 $thing.remove();
                             }
                         });
@@ -364,11 +364,11 @@ function queuetools() {
         </span>
     </div>`);
 
-            $body.on('click', '.tb-dropdown:not(.active)', function(e) {
+            $body.on('click', '.tb-dropdown:not(.active)', function (e) {
                 e.stopPropagation();
                 const $element = $(e.currentTarget);
                 $element.addClass('active');
-                $element.siblings('.tb-drop-choices').not('.inuse').css('top', `${e.offsetHeight}px`).each(function() {
+                $element.siblings('.tb-drop-choices').not('.inuse').css('top', `${e.offsetHeight}px`).each(function () {
                     $(this).css('left', `${$element.position().left}px`).css('top', `${$element.height() + $element.position().top}px`);
                 }).addClass('inuse');
             });
@@ -377,11 +377,11 @@ function queuetools() {
                 $body.find('.tb-dropdown.active').removeClass(`active`);
                 $body.find('.tb-drop-choices.inuse').removeClass(`inuse`);
             });
-            //Check if the tab menu exists and create it if it doesn't
+            // Check if the tab menu exists and create it if it doesn't
             $('.thing.link, .thing.comment').prepend('<input type="checkbox" tabindex="1" style="margin:5px;float:left;" />');
             $('.buttons .pretty-button').attr('tabindex', '2');
 
-            //add class to processed threads.
+            // add class to processed threads.
             const $things = $('.thing');
             $things.addClass('mte-processed');
 
@@ -395,16 +395,16 @@ function queuetools() {
 
             // Add context & history stuff TODO: Figure out what the hell this did. History has been moved to historybutton though.
 
-            //$body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
-            //$('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
+            // $body.append('<div class="pretty-button inline-content" style="z-index:9999;display:none;position:absolute;line-height:12px;min-width:100px"/>');
+            // $('#siteTable .comment .flat-list.buttons:has( a:contains("parent"))').each(function () {
             //   $(this).prepend('<li><a class="context" href="' + $(this).find('.first .bylink').attr('href') + '?context=2">context</a></li>');
-            //});
+            // });
 
             // Fix the position of the modtools. We do it like this so we can support custom css
             const $modtoolsMenu = $body.find('.menuarea.modtools'),
-                offset = $modtoolsMenu.offset(),
-                offsetTop = offset.top,
-                rightPosition = $('.side').outerWidth() + 10;
+                  offset = $modtoolsMenu.offset(),
+                  offsetTop = offset.top,
+                  rightPosition = $('.side').outerWidth() + 10;
 
             $modtoolsMenu.css({
                 'margin-right': `${rightPosition}px`,
@@ -412,30 +412,30 @@ function queuetools() {
                 'left': '0',
                 'margin-top': '0',
                 'position': 'relative',
-                'padding-top': '9px'
+                'padding-top': '9px',
             });
 
             $(window).scroll(function () {
                 if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-sub')) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 20}px`
+                        top: `${($(window).scrollTop()) - offsetTop + 20}px`,
                     });
                 } else if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-header')) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 72}px`
+                        top: `${($(window).scrollTop()) - offsetTop + 72}px`,
                     });
                 } else if ($(window).scrollTop() > offsetTop) {
                     $modtoolsMenu.css({
-                        'top': `${($(window).scrollTop()) - offsetTop + 5}px`
+                        top: `${($(window).scrollTop()) - offsetTop + 5}px`,
                     });
                 } else {
                     $modtoolsMenu.css({
-                        'top': 'inherit'
+                        top: 'inherit',
                     });
                 }
             });
 
-            //// Button actions ////
+            // // Button actions ////
             // Select thing when clicked
             const noAction = ['A', 'INPUT', 'TEXTAREA', 'BUTTON', 'IMG'];
             $body.on('click', '.thing .entry', function (e) {
@@ -458,8 +458,8 @@ function queuetools() {
             // Change sort order
             $('.sortorder-options a').click(function () {
                 const $sortOrder = $('.sortorder'),
-                    order = $(this).text(),
-                    toggleAsc = (order === $sortOrder.text());
+                      order = $(this).text(),
+                      toggleAsc = (order === $sortOrder.text());
 
                 if (toggleAsc) sortAscending = !sortAscending;
 
@@ -570,7 +570,7 @@ function queuetools() {
             // Mass spam/remove/approve
             $('.pretty-button.action').click(function () {
                 const approve = this.type === 'positive',
-                    spam = !approve && (this.type === 'negative');
+                      spam = !approve && (this.type === 'negative');
 
                 // Apply action
                 const $actioned = $('.thing:visible > input:checked').parent().each(function () {
@@ -586,7 +586,7 @@ function queuetools() {
                     else {
                         TBUtils.removeThing(id, spam, function (success) {
                             self.log(success);
-                        //Insert useful error handling here (or not)
+                        // Insert useful error handling here (or not)
                         });
                     }
                 });
@@ -609,7 +609,7 @@ function queuetools() {
             // Uncheck anything we've taken an action, if it's checked.
             $body.on('click', '.pretty-button', function () {
                 const $this = $(this),
-                    $thing = $this.closest('.thing');
+                      $thing = $this.closest('.thing');
 
                 $thing.find('input[type=checkbox]').prop('checked', false);
                 if (hideActionedItems) {
@@ -642,7 +642,7 @@ function queuetools() {
                 setThreshold($things);
             });
 
-            function setThreshold(things) {
+            function setThreshold (things) {
                 const threshold = self.setting('reportsThreshold');
                 things.show().find('.reported-stamp').text(function (_, str) {
                     if (str.match(/\d+/) < threshold)
@@ -652,7 +652,7 @@ function queuetools() {
 
             setThreshold($things);
 
-            function replaceSubLinks() {
+            function replaceSubLinks () {
                 const $this = $(this).find('a.subreddit');
                 const href = $this.attr('href') + QUEUE_URL;
                 $this.attr('href', href);
@@ -681,7 +681,7 @@ function queuetools() {
                     $('.open-expandos').text('[-]');
                     $('.expando-button.collapsed').each(function (index) {
                         const $button = $(this),
-                            $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                              $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                         setTimeout(function () {
                             $button.click();
@@ -695,7 +695,7 @@ function queuetools() {
                     $('.open-expandos').text('[+]');
                     $('.expando-button.expanded').each(function () {
                         const $button = $(this),
-                            $checkBox = $button.closest('.thing').find('input[type=checkbox]');
+                              $checkBox = $button.closest('.thing').find('input[type=checkbox]');
 
                         $button.click();
                         $checkBox.prop('checked', false);
@@ -704,13 +704,13 @@ function queuetools() {
                 }
             });
 
-            //Process new things loaded by RES or flowwit.
-            function processNewThings(things) {
+            // Process new things loaded by RES or flowwit.
+            function processNewThings (things) {
             // Expand reports on the new page, we leave the ones the user might already has collapsed alone.
                 if (expandReports) {
                     $(things).find('.reported-stamp').siblings('.report-reasons').show();
                 }
-                //add class to processed threads.
+                // add class to processed threads.
                 $(things).addClass('mte-processed');
 
                 $(things).prepend(`<input type="checkbox" tabindex="2" style="margin:5px;float:left;"${allSelected ? ' checked' : ''} />`).find('.collapsed:visible a.expand:contains("[+]")').click().end().find('.userattrs').end().find('.userattrs').filter('.comment').find('.flat-list.buttons:has( a:contains("parent"))').each(function () {
@@ -754,15 +754,15 @@ function queuetools() {
                 $('.tb-sort-subs').remove(); // don't allow sorting twice.
 
                 const now = TB.utils.getTime(),
-                    //delay = 0,
-                    modSubs = [];
+                    // delay = 0,
+                      modSubs = [];
 
                 TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
                 TB.utils.forEachChunked($('.subscription-box a.title'), 20, 100, function (elem) {
                     const $elem = $(elem),
-                        sr = $elem.text(),
-                        data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
+                          sr = $elem.text(),
+                          data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
 
                     modSubs.push(sr);
                     TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
@@ -773,7 +773,7 @@ function queuetools() {
                         updateModqueueCount(sr);
                     }
 
-                    function updateModqueueCount(sr) {
+                    function updateModqueueCount (sr) {
                         $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(function (d) {
                             TBStorage.purifyObject(d);
                             const items = d.data.children.length;
@@ -790,7 +790,7 @@ function queuetools() {
                     TB.ui.longLoadNonPersistent(false, 'Sorting sidebar...', TB.ui.FEEDBACK_NEUTRAL);
                 });
 
-                function sortSubreddits() {
+                function sortSubreddits () {
                     const subs = $('.subscription-box li').sort(function (a, b) {
                         return b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1;
                     });
@@ -799,45 +799,45 @@ function queuetools() {
             });
 
             // This method is evil and breaks shit if it's called too early.
-            function sortThings(order, asc) {
+            function sortThings (order, asc) {
                 let A, B;
                 const $sitetable = $('#siteTable');
                 const things = $('#siteTable .thing').sort(function (a, b) {
                     (asc) ? (A = a, B = b) : (A = b, B = a);
 
                     const $A = $(A),
-                        $B = $(B);
+                          $B = $(B);
                     switch (order) {
                     case 'age':
                     {
                         const timeA = new Date($A.find('time.live-timestamp:first').attr('datetime')).getTime(),
-                            timeB = new Date($B.find('time.live-timestamp:first').attr('datetime')).getTime();
+                              timeB = new Date($B.find('time.live-timestamp:first').attr('datetime')).getTime();
                         return timeA - timeB;
                     }
                     case 'edited':
                     {
                         const $aEditElement = $A.find('time.edited-timestamp:first').length ? $A.find('time.edited-timestamp:first') : $A.find('time.live-timestamp:first'),
-                            $bEditElement = $B.find('time.edited-timestamp:first').length ? $B.find('time.edited-timestamp:first') : $B.find('time.live-timestamp:first');
+                              $bEditElement = $B.find('time.edited-timestamp:first').length ? $B.find('time.edited-timestamp:first') : $B.find('time.live-timestamp:first');
                         const timeEditA = new Date($aEditElement.attr('datetime')).getTime(),
-                            timeEditB = new Date($bEditElement.attr('datetime')).getTime();
+                              timeEditB = new Date($bEditElement.attr('datetime')).getTime();
                         return timeEditA - timeEditB;
                     }
                     case 'removed':
                     {
                         const $aRemoveElement = $A.find('li[title^="removed at"]').length ? $A.find('li[title^="removed at"]') : $A.find('time.live-timestamp:first'),
-                            $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
+                              $bRemoveElement = $B.find('li[title^="removed at"]').length ? $B.find('li[title^="removed at"]') : $B.find('time.live-timestamp:first');
 
                         let timeRemoveA,
                             timeRemoveB;
 
-                        if($aRemoveElement.hasClass('live-timestamp')) {
+                        if ($aRemoveElement.hasClass('live-timestamp')) {
                             timeRemoveA = $aRemoveElement.attr('datetime');
                         } else {
                             timeRemoveA = $aRemoveElement.attr('title');
                             timeRemoveA = timeRemoveA.replace('removed at ', '');
                         }
 
-                        if($bRemoveElement.hasClass('live-timestamp')) {
+                        if ($bRemoveElement.hasClass('live-timestamp')) {
                             timeRemoveB = $bRemoveElement.attr('datetime');
                         } else {
                             timeRemoveB = $bRemoveElement.attr('title');
@@ -845,20 +845,20 @@ function queuetools() {
                         }
 
                         const timeStampRemoveA = new Date(timeRemoveA).getTime(),
-                            timeStampRemoveB = new Date(timeRemoveB).getTime();
+                              timeStampRemoveB = new Date(timeRemoveB).getTime();
 
                         return timeStampRemoveA - timeStampRemoveB;
                     }
                     case 'score':
                     {
                         const scoreA = $A.find('.score:visible').text().match(numberRX),
-                            scoreB = $B.find('.score:visible').text().match(numberRX);
+                              scoreB = $B.find('.score:visible').text().match(numberRX);
                         return scoreA - scoreB;
                     }
                     case 'reports':
                     {
                         const reportsA = $A.find('.reported-stamp').text().match(numberRX),
-                            reportsB = $B.find('.reported-stamp').text().match(numberRX);
+                              reportsB = $B.find('.reported-stamp').text().match(numberRX);
                         return reportsA - reportsB;
                     }
 
@@ -880,7 +880,7 @@ function queuetools() {
             // TODO: fix that
             function groupThings () {
                 const threadGroups = {},
-                    threadIDs = []; // because who needs Object.keys() anyway
+                      threadIDs = []; // because who needs Object.keys() anyway
 
                 // Sorting leaves behind the extra wrappers, so clean them up
                 $('.sitetable .tb-comment-group').remove();
@@ -939,13 +939,13 @@ function queuetools() {
         // Regex is used in multiple functions
         const regexMatchFinder = /\[(.*?)\]/g;
         const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
-        function getAutomodActionReason(sub) {
+        function getAutomodActionReason (sub) {
             self.log(sub);
             $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(function (json) {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
                     const actionReasonText = value.data.details,
-                        targetFullName = value.data.target_fullname;
+                          targetFullName = value.data.target_fullname;
 
                     $body.find(`.thing[data-fullname="${targetFullName}"]>.entry`).after(`<div class="action-reason">
 <b>Automod action:</b> ${actionReasonText}
@@ -955,7 +955,7 @@ Url: ${value.data.target_permalink} %0A %0A
 Action reason: ${value.data.details}
 " target="_blank">ask for a second opinion in modmail</a> </div>`);
 
-                    if(highlightAutomodMatches) {
+                    if (highlightAutomodMatches) {
                         let matches;
                         const matchesArray = [];
                         while ((matches = regexMatchFinder.exec(actionReasonText))) {
@@ -965,7 +965,7 @@ Action reason: ${value.data.details}
                         // We want the two highlight methods to play nice.
                         // If the general one is enabled we switch it of for a second to first apply the match and then the general one again
 
-                        if(highlightEnabled.length > 0) {
+                        if (highlightEnabled.length > 0) {
                             $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).removeHighlight();
                             $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(matchesArray, '', true);
                             $body.find(`.thing[data-fullname="${targetFullName}"] .md p`).highlight(highlightEnabled);
@@ -979,20 +979,20 @@ Action reason: ${value.data.details}
             });
         }
 
-        if(TBUtils.isMod && TBUtils.isCommentsPage && showAutomodActionReason && $('.thing.spam').length) {
+        if (TBUtils.isMod && TBUtils.isCommentsPage && showAutomodActionReason && $('.thing.spam').length) {
             const currentSubreddit = $('.side .titlebox h1.redditname a').text();
 
             getAutomodActionReason(currentSubreddit);
         }
 
-        function highlightedMatches() {
-            $('.report-reasons .mod-report').each(function() {
+        function highlightedMatches () {
+            $('.report-reasons .mod-report').each(function () {
 
                 const $this = $(this);
                 if (!$this.hasClass('hl-processed')) {
                     $this.addClass('hl-processed');
                     const reportText = $this.text();
-                    if(reportText.indexOf('AutoModerator:') >= 0) {
+                    if (reportText.indexOf('AutoModerator:') >= 0) {
 
                         let matches;
                         const matchesArray = [];
@@ -1000,7 +1000,7 @@ Action reason: ${value.data.details}
                             matchesArray.push(matches[1]);
                         }
 
-                        if(highlightEnabled.length > 0) {
+                        if (highlightEnabled.length > 0) {
                             $this.closest('.thing').find('.md p').removeHighlight();
                             $this.closest('.thing').find('.md p').highlight(matchesArray, '', true);
                             $this.closest('.thing').find('.md p').highlight(highlightEnabled);
@@ -1023,7 +1023,7 @@ Action reason: ${value.data.details}
 
             self.log('getting automod action reasons');
 
-            $('#siteTable .thing').each(function() {
+            $('#siteTable .thing').each(function () {
                 const $this = $(this);
                 const subreddit = TB.utils.cleanSubredditName($this.find('a.subreddit').text());
                 const removedBy = $this.find('.flat-list li[title^="removed at"]').text();
@@ -1031,7 +1031,7 @@ Action reason: ${value.data.details}
                 self.log(`  subreddit: ${subreddit}`);
                 self.log(`  removedby: ${removedBy}`);
 
-                if($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
+                if ($.inArray(subreddit, queueSubs) === -1 && removedBy === '[ removed by AutoModerator (remove not spam) ]') {
                     queueSubs.push(subreddit);
                 }
 
@@ -1084,24 +1084,24 @@ Action reason: ${value.data.details}
 
     self.init = function () {
 
-        if(TBUtils.isOldReddit) {
+        if (TBUtils.isOldReddit) {
             self.queuetoolsOld();
         }
-        let $body = $('body');
-        let modlogCache = {};
+        const $body = $('body');
+        const modlogCache = {};
 
         // Cached data
         const showActionReason = self.setting('showActionReason'),
-            expandActionReasonQueue = self.setting('expandActionReasonQueue'),
-            queueCreature = self.setting('queueCreature');
-            //expandReports = self.setting('expandReports');
+              expandActionReasonQueue = self.setting('expandActionReasonQueue'),
+              queueCreature = self.setting('queueCreature');
+        // expandReports = self.setting('expandReports');
 
         // If the queue creature element is on page it will fade it out first and then remove the element.
-        function createCreature() {
+        function createCreature () {
             // Creature time for real!
             const $redditQueueCreature = $body.find('div:contains("The queue is clean!")');
             const gotQueueCreature = $redditQueueCreature.length;
-            if(gotQueueCreature) {
+            if (gotQueueCreature) {
                 const $creatureParent = $redditQueueCreature.parents().eq(0);
                 const $queueCreature = $('<div id="queueCreature"></div>');
                 self.log(queueCreature);
@@ -1119,13 +1119,13 @@ Action reason: ${value.data.details}
                 }
 
                 $creatureParent.html($queueCreature);
-                //$queueCreature.siblings().hide();
+                // $queueCreature.siblings().hide();
             }
         }
 
         // Activate on queue pages.
         window.addEventListener('TBNewPage', function (event) {
-            if(expandActionReasonQueue && event.detail.pageType === 'queueListing') {
+            if (expandActionReasonQueue && event.detail.pageType === 'queueListing') {
                 $body.addClass('tb-show-actions');
             } else {
                 $body.removeClass('tb-show-actions');
@@ -1133,7 +1133,7 @@ Action reason: ${value.data.details}
 
             // Queue creature
             // TODO: host the images somewhere else as at some point we probably cannot use images stored for old css
-            if(event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
+            if (event.detail.pageType === 'queueListing' && queueCreature !== 'i_have_no_soul') {
 
                 // Let's try to replace the imposter creature with our own.
                 createCreature();
@@ -1160,16 +1160,16 @@ Action reason: ${value.data.details}
          * @param {string} subreddit - the subreddit for which the modlog needs to be fetched
          * @param {getModlogCallback} callback - callback that handles further modlog interactions
          */
-        function getModlog(subreddit, callback) {
+        function getModlog (subreddit, callback) {
             $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {limit: 500}).done(function (json) {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, function (i, value) {
                     const fullName = value.data.target_fullname;
                     const actionID = value.data.id;
-                    if(!fullName) {
+                    if (!fullName) {
                         return;
                     }
-                    if(!modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+                    if (!modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
                         modlogCache[subreddit].actions[fullName] = {};
                     }
                     modlogCache[subreddit].actions[fullName][actionID] = value.data;
@@ -1187,8 +1187,8 @@ Action reason: ${value.data.details}
          * @param {string} fullName Thing (post/comment) fullName
          * @returns {(false|object)} Either false or an object with actions
          */
-        function checkForActions(subreddit, fullName) {
-            if(modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
+        function checkForActions (subreddit, fullName) {
+            if (modlogCache[subreddit].actions.hasOwnProperty(fullName)) {
                 return modlogCache[subreddit].actions[fullName];
             } else {
                 return false;
@@ -1210,29 +1210,29 @@ Action reason: ${value.data.details}
          * @param {string} fullName - thing (post/comment) fullName
          * @param {getActionsCallback} callback - callback that handles further modlog interactions
          */
-        function getActions(subreddit, fullName, callback) {
+        function getActions (subreddit, fullName, callback) {
             self.log(subreddit);
             const dateNow = Date.now();
 
             // check if we even have data
-            if(!modlogCache.hasOwnProperty(subreddit)) {
+            if (!modlogCache.hasOwnProperty(subreddit)) {
                 modlogCache[subreddit] = {
                     actions: {},
                     activeFetch: true,
-                    lastFetch: dateNow
+                    lastFetch: dateNow,
                 };
 
-                getModlog(subreddit, function() {
+                getModlog(subreddit, function () {
                     callback(checkForActions(subreddit, fullName));
                 });
 
             // If we do have data but it is being refreshed we wait and try again.
             } else if (modlogCache.hasOwnProperty(subreddit) && modlogCache[subreddit].activeFetch) {
-                setTimeout(function() {
+                setTimeout(function () {
                     getActions(subreddit, fullName, callback);
                 }, 100);
             } else if ((dateNow - modlogCache[subreddit].lastFetch) > 300000) {
-                getModlog(subreddit, function() {
+                getModlog(subreddit, function () {
                     callback(checkForActions(subreddit, fullName));
                 });
             } else {
@@ -1241,11 +1241,11 @@ Action reason: ${value.data.details}
 
         }
 
-        function makeActionTable($target, subreddit, id) {
+        function makeActionTable ($target, subreddit, id) {
             TBUtils.getModSubs(function () {
-                if(TBUtils.modsSub(subreddit)) {
-                    getActions(subreddit, id, function(actions) {
-                        if(actions) {
+                if (TBUtils.modsSub(subreddit)) {
+                    getActions(subreddit, id, function (actions) {
+                        if (actions) {
                             const show = $('body').hasClass('tb-show-actions');
                             const $actionTable = $(`
                             <div class="tb-action-details">
@@ -1290,28 +1290,28 @@ Action reason: ${value.data.details}
 
         }
         // Show history of actions near posts.
-        if(showActionReason) {
+        if (showActionReason) {
 
-            TB.listener.on('post', function(e) {
+            TB.listener.on('post', function (e) {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
                 makeActionTable($target, subreddit, id);
 
-                if(e.detail.type === 'TBpost') {
+                if (e.detail.type === 'TBpost') {
                     const $actionTable = $target.find('.tb-action-table');
                     $actionTable.show();
                     $target.find('.tb-show-action-table').hide();
                 }
             });
 
-            TB.listener.on('comment', function(e) {
+            TB.listener.on('comment', function (e) {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const id = e.detail.data.id;
 
                 // For now only try this on toolbox generated comments due to target placement.
-                if(e.detail.type === 'TBcomment' || e.detail.type === 'TBcommentOldReddit') {
+                if (e.detail.type === 'TBcomment' || e.detail.type === 'TBcommentOldReddit') {
                     makeActionTable($target, subreddit, id);
                     const $actionTable = $target.find('.tb-action-table');
                     $actionTable.show();
@@ -1321,10 +1321,10 @@ Action reason: ${value.data.details}
 
             });
 
-            $body.on('click', '.tb-show-action-table', function() {
+            $body.on('click', '.tb-show-action-table', function () {
                 const $this = $(this);
                 const $actionTable = $this.closest('.tb-action-details').find('.tb-action-table');
-                if($actionTable.is(':visible')) {
+                if ($actionTable.is(':visible')) {
                     $actionTable.hide();
                     $this.text('show recent actions');
                 } else {

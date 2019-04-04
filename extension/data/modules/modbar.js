@@ -1,4 +1,4 @@
-function modbar() {
+function modbar () {
     const self = new TB.Module('Modbar');
     self.shortname = 'Modbar';
 
@@ -8,68 +8,68 @@ function modbar() {
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
     self.register_setting('compactHide', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Use compact mode for modbar'
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Use compact mode for modbar',
     });
     self.register_setting('unmoderatedOn', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Show icon for unmoderated'
+        type: 'boolean',
+        default: true,
+        title: 'Show icon for unmoderated',
     });
     self.register_setting('enableModSubs', {
-        'type': 'boolean',
-        'default': true,
-        'title': 'Show Moderated Subreddits in the modbar'
+        type: 'boolean',
+        default: true,
+        title: 'Show Moderated Subreddits in the modbar',
     });
     self.register_setting('shortcuts', {
-        'type': 'map',
-        'default': {},
-        'labels': ['name', 'url'],
-        'title': 'Shortcuts',
-        'hidden': false
+        type: 'map',
+        default: {},
+        labels: ['name', 'url'],
+        title: 'Shortcuts',
+        hidden: false,
     });
 
     // private (hidden) settings.
     self.register_setting('modbarHidden', {
-        'type': 'boolean',
-        'default': false,
-        'hidden': true
+        type: 'boolean',
+        default: false,
+        hidden: true,
     });
     self.register_setting('consoleShowing', {
-        'type': 'boolean',
-        'default': false,
-        'hidden': true
+        type: 'boolean',
+        default: false,
+        hidden: true,
     });
     self.register_setting('lockScroll', {
-        'type': 'boolean',
-        'default': false,
-        'hidden': true
+        type: 'boolean',
+        default: false,
+        hidden: true,
     });
     self.register_setting('customCSS', {
-        'type': 'code',
-        'default': '',
-        'hidden': true
+        type: 'code',
+        default: '',
+        hidden: true,
     });
     self.register_setting('lastExport', {
-        'type': 'number',
-        'default': 0,
-        'hidden': true
+        type: 'number',
+        default: 0,
+        hidden: true,
     });
     self.register_setting('showExportReminder', {
-        'type': 'boolean',
-        'default': true,
-        'hidden': true
+        type: 'boolean',
+        default: true,
+        hidden: true,
     });
 
     self.register_setting('subredditColorSalt', {
-        'type': 'text',
-        'default': TB.storage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt'),
-        'hidden': true
+        type: 'text',
+        default: TB.storage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt'),
+        hidden: true,
     });
 
-    self.init = function() {
+    self.init = function () {
         let $body = $('body'),
             moduleCount = 0,
             DEFAULT_MODULE = 'DEFAULT_MODULE',
@@ -84,7 +84,7 @@ function modbar() {
         // This prevents some weird scrollbar behavior on new reddit iframe embeds.
         window.addEventListener('TBNewPage', function (event) {
             const pageType = event.detail.pageType;
-            if(pageType === 'oldModmail' || pageType === 'message') {
+            if (pageType === 'oldModmail' || pageType === 'message') {
                 $footerblock.hide();
             } else {
                 $footerblock.show();
@@ -124,7 +124,7 @@ function modbar() {
             newModmailBaseUrl = 'https://mod.reddit.com/mail/',
             newModmailUrl;
 
-        switch(modmailLink) {
+        switch (modmailLink) {
         case 'all_modmail':
             newModmailUrl = `${newModmailBaseUrl}all`;
 
@@ -223,11 +223,11 @@ function modbar() {
 </div>
 `);
         let hoverTimeout;
-        $modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function() {
+        $modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function () {
             clearTimeout(hoverTimeout);
             $modBar.find('#tb-new-modmail-tooltip').show();
-        }, function() {
-            hoverTimeout = setTimeout(function() {
+        }, function () {
+            hoverTimeout = setTimeout(function () {
                 $modBar.find('#tb-new-modmail-tooltip').hide(100);
             }, 1000);
         });
@@ -333,15 +333,15 @@ function modbar() {
                                     id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
                                     tooltip: 'Subreddits you moderate',
                                     content: modSubsPopupContent,
-                                    footer: ''
-                                }
+                                    footer: '',
+                                },
                             ],
                             '',
                             'subreddits-you-mod-popup' // class
                         ).appendTo('body').css({
-                            'position': 'fixed',
-                            'bottom': '41px',
-                            'left': '20px'
+                            position: 'fixed',
+                            bottom: '41px',
+                            left: '20px',
                         });
                         // Focus the filter bar for convenience
                         $('#tb-livefilter-input').focus();
@@ -354,7 +354,7 @@ function modbar() {
                         const LiveSearchValue = $(this).val();
                         $body.find('#tb-my-subreddits table tr').each(function () {
                             const $this = $(this),
-                                subredditName = $this.attr('data-subreddit');
+                                  subredditName = $this.attr('data-subreddit');
 
                             if (subredditName.toUpperCase().indexOf(LiveSearchValue.toUpperCase()) < 0) {
                                 $this.hide();
@@ -395,7 +395,7 @@ function modbar() {
             const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;
-            $('.tb-debug-console').each(function(index, elem) {
+            $('.tb-debug-console').each(function (index, elem) {
             // This makes sure codemirror behaves and uses spaces instead of tabs.
             // Editor setup.
                 debugEditor = CodeMirror.fromTextArea(elem, {
@@ -408,14 +408,14 @@ function modbar() {
                     viewportMargin: Infinity,
                     extraKeys: {
                         'Ctrl-Alt-F': 'findPersistent',
-                        'F11': function(cm) {
+                        'F11' (cm) {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
-                        'Esc': function(cm) {
+                        'Esc' (cm) {
                             if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
-                        }
+                        },
                     },
-                    lineWrapping: true
+                    lineWrapping: true,
                 });
 
             });
@@ -439,7 +439,7 @@ function modbar() {
                 // filter log by module.
                 else {
                     const search = `[${currentModule}]`,
-                        moduleLog = [];
+                          moduleLog = [];
 
                     // hack-y substring search for arrays.
                     for (let i = 0; i < TB.utils.log.length; i++) {
@@ -471,14 +471,14 @@ function modbar() {
 
                     // re-add default option
                     $moduleSelect.append($('<option>', {
-                        value: DEFAULT_MODULE
+                        value: DEFAULT_MODULE,
                     }).text('all modules'));
 
                     $(TB.utils.logModules).each(function () {
                         $moduleSelect.append($('<option>', {
-                            value: this
+                            value: this,
                         }).text(this));
-                    }).promise().done( function() {
+                    }).promise().done(function () {
                         $moduleSelect.val(currentModule);
                     });
                 }
@@ -505,7 +505,7 @@ function modbar() {
             modbarHidden = true;
         }
 
-        function toggleMenuBar(hidden) {
+        function toggleMenuBar (hidden) {
             if (hidden) {
                 $modBar.hide();
                 $modbarhid.show();
@@ -529,7 +529,7 @@ function modbar() {
 
         // Show counts on hover
         let $modBarHidTooltip = $body.find('#tb-modbar-hide-tooltip');
-        $modbarhid.mouseenter(function() {
+        $modbarhid.mouseenter(function () {
             if (!notifierEnabled || compactHide) return;
 
             const hoverContent = `
@@ -557,16 +557,16 @@ function modbar() {
                 </table>
             `;
 
-            if(!$modBarHidTooltip.length) {
+            if (!$modBarHidTooltip.length) {
                 $modBarHidTooltip = $('<div id="tb-modbar-hide-tooltip"></div>').appendTo($body);
             }
             $modBarHidTooltip.html(TBStorage.purify(hoverContent));
             $modBarHidTooltip.fadeIn(200);
-        }).mouseleave(function() {
+        }).mouseleave(function () {
             $modBarHidTooltip.fadeOut(200);
         });
 
-        /// Console stuff
+        // / Console stuff
         // Show/hide console
         if (debugMode) {
             $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
@@ -614,7 +614,7 @@ function modbar() {
             });
         }
 
-        /// End console stuff
+        // / End console stuff
 
         // Open the settings
         $body.on('click', '.tb-toolbar-new-settings', function () {
@@ -625,10 +625,10 @@ function modbar() {
         });
 
         // check for passed settings.
-        function switchTab(module) {
+        function switchTab (module) {
 
             const $this = $body.find(`[data-module="${module}"]`),
-                $tb_help_mains = $('.tb-help-main');
+                  $tb_help_mains = $('.tb-help-main');
 
             // achievement support
             if (module === 'about') {
@@ -650,7 +650,7 @@ function modbar() {
             $(`.tb-personal-settings .tb-window-wrapper .tb-window-tab.${module}`).show();
         }
 
-        function checkHash() {
+        function checkHash () {
             if (window.location.hash) {
                 let module = TB.utils.getHashParameter('tbsettings'),
                     setting = TB.utils.getHashParameter('setting');

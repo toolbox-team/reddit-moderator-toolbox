@@ -1,4 +1,4 @@
-function support() {
+function support () {
     const self = new TB.Module('Support Module');
     self.shortname = 'support';
 
@@ -7,8 +7,8 @@ function support() {
     // How about you don't disable support?  No other module should ever do this. Well except for modbar.
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
-    self.init = function() {
-        let $body = $('body');
+    self.init = function () {
+        const $body = $('body');
         const debugTemplate = `
 
 ---
@@ -29,40 +29,40 @@ Info| &nbsp;
 
         const debugInfo = TBUtils.debugInformation();
         const submissionAddition = TBUtils.template(debugTemplate, {
-            'toolboxVersion': debugInfo.toolboxVersion,
-            'browserName':  debugInfo.browser ,
-            'browserVersion': debugInfo.browserVersion,
-            'platformInfo': debugInfo.platformInformation,
-            'betaMode': debugInfo.betaMode,
-            'debugMode': debugInfo.debugMode,
-            'compactMode': debugInfo.compactMode,
-            'advancedSettings': debugInfo.advancedSettings,
-            'cookiesEnabled': debugInfo.cookiesEnabled
+            toolboxVersion: debugInfo.toolboxVersion,
+            browserName: debugInfo.browser,
+            browserVersion: debugInfo.browserVersion,
+            platformInfo: debugInfo.platformInformation,
+            betaMode: debugInfo.betaMode,
+            debugMode: debugInfo.debugMode,
+            compactMode: debugInfo.compactMode,
+            advancedSettings: debugInfo.advancedSettings,
+            cookiesEnabled: debugInfo.cookiesEnabled,
         });
 
         // If we are on the submit page we add debug information when a user makes a post.
-        if(location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
+        if (location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
 
-            let $submissionTextArea = $('.usertext-edit.md-container textarea');
+            const $submissionTextArea = $('.usertext-edit.md-container textarea');
 
-            $body.on('click', '.submit.content .btn[name="submit"]', function() {
+            $body.on('click', '.submit.content .btn[name="submit"]', function () {
             // First we stop the action on the button for a bit.
-            //event.preventDefault();
-                let submissionText = $submissionTextArea.val();
+            // event.preventDefault();
+                const submissionText = $submissionTextArea.val();
 
                 $submissionTextArea.val(submissionText + submissionAddition);
             });
         }
 
         // If we are in the comment section we offer a button to insert the info.
-        if(location.pathname.match(/\/r\/toolbox\/comments\/?/) || location.pathname.match(/\/r\/tb_dev\/comments\/?/)) {
-            let $usertextButtons = $body.find('.usertext-edit .usertext-buttons');
+        if (location.pathname.match(/\/r\/toolbox\/comments\/?/) || location.pathname.match(/\/r\/tb_dev\/comments\/?/)) {
+            const $usertextButtons = $body.find('.usertext-edit .usertext-buttons');
 
-            let $saveButton = $usertextButtons.find('.save');
-            let $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
+            const $saveButton = $usertextButtons.find('.save');
+            const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
 
             // This needs to be a div otherwise reddit thinks a save button is clicked.
-            let $debugInsertButton = $(`<div class="tb-action-button tb-insert-debug">Insert debug info</div>`);
+            const $debugInsertButton = $(`<div class="tb-action-button tb-insert-debug">Insert debug info</div>`);
             if ($tbUsertextButtons.length) {
                 $tbUsertextButtons.before($debugInsertButton);
             } else {
@@ -71,8 +71,8 @@ Info| &nbsp;
 
             $('body').on('click', 'div.tb-insert-debug', function () {
                 self.log('Insert debug clicked!');
-                let $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
-                let currentComment = $commentTextArea.val();
+                const $commentTextArea = $(this).closest('.usertext-edit.md-container').find('.md textarea');
+                const currentComment = $commentTextArea.val();
 
                 $commentTextArea.val(currentComment + submissionAddition);
 

@@ -1,4 +1,4 @@
-function modmacros() {
+function modmacros () {
     const self = new TB.Module('Mod Macros');
     self.shortname = 'ModMacros';
 
@@ -6,9 +6,9 @@ function modmacros() {
 
     self.init = function () {
         const $body = $('body'),
-            MACROS = 'TB-MACROS';
+              MACROS = 'TB-MACROS';
 
-        function getConfig(sub, callback) {
+        function getConfig (sub, callback) {
             if (TBUtils.noConfig.indexOf(sub) !== -1) {
                 self.log('TBUtils.noConfig.indexOf(sub) != -1');
                 callback(false);
@@ -38,7 +38,7 @@ function modmacros() {
                 });
             }
 
-            function checkConfig(config) {
+            function checkConfig (config) {
                 if (!config.modMacros || config.modMacros.length < 1) {
                     self.log('!config.modMacros || config.modMacros.length < 1');
                     return false;
@@ -48,23 +48,23 @@ function modmacros() {
             }
         }
 
-        function populateSelect(selectClass, subreddit, config) {
+        function populateSelect (selectClass, subreddit, config) {
             $(selectClass).each(function () {
                 const $select = $(this),
-                    sub = $select.attr('data-subreddit');
+                      sub = $select.attr('data-subreddit');
 
                 self.log($select);
                 self.log(`${sub} ${subreddit}`);
 
                 if (sub === subreddit) {
-                    if($select.hasClass('tb-populated')) {
+                    if ($select.hasClass('tb-populated')) {
                         return;
                     }
                     $select.addClass('tb-populated');
                     $(config).each(function (idx, item) {
                         $($select)
                             .append($('<option>', {
-                                value: idx
+                                value: idx,
                             })
                                 .text(item.title));
                     });
@@ -76,7 +76,7 @@ function modmacros() {
             });
         }
 
-        if(TBUtils.isOldReddit) {
+        if (TBUtils.isOldReddit) {
             TB.utils.getModSubs(function () {
                 if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
                     self.log('getting config');
@@ -86,7 +86,7 @@ function modmacros() {
 
                             const $usertextButtons = $('.commentarea>.usertext .usertext-buttons');
                             const $tbUsertextButtons = $usertextButtons.find('.tb-usertext-buttons'),
-                                macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
+                                  macroButtonHtml = `<select class="tb-top-macro-select tb-action-button" data-subreddit="${TB.utils.post_site}"><option value=${MACROS}>macros</option></select>`;
 
                             if ($tbUsertextButtons.length) {
                                 $tbUsertextButtons.append(macroButtonHtml);
@@ -106,7 +106,7 @@ function modmacros() {
                 if ($this.text() === 'reply') {
 
                     const $thing = $this.closest('.thing'),
-                        info = TB.utils.getThingInfo($thing, true);
+                          info = TB.utils.getThingInfo($thing, true);
 
                     // This is because reddit clones the top-level reply box for all reply boxes.
                     // We need to remove it before adding the new one, because the new one works differently.
@@ -126,7 +126,7 @@ function modmacros() {
                         if (success && config.length > 0) {
 
                             const $tbUsertextButtons = $thing.find('.usertext-buttons .tb-usertext-buttons'),
-                                macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
+                                  macroButtonHtml = `<select class="tb-macro-select tb-action-button" data-subreddit="${info.subreddit}"><option value=${MACROS}>macros</option></select>`;
 
                             if ($tbUsertextButtons.length) {
                                 $tbUsertextButtons.append(macroButtonHtml);
@@ -142,9 +142,9 @@ function modmacros() {
         }
 
         // Add macro button in new modmail
-        function addNewMMMacro() {
+        function addNewMMMacro () {
             const $thing = $body.find('.InfoBar'),
-                info = TB.utils.getThingInfo($thing, true);
+                  info = TB.utils.getThingInfo($thing, true);
 
             // Don't add macro button twice.
             if ($body.find('.tb-usertext-buttons').length) return;
@@ -166,13 +166,13 @@ function modmacros() {
             });
         }
         setTimeout(function () {
-            if(TBUtils.isNewMMThread) {
+            if (TBUtils.isNewMMThread) {
                 addNewMMMacro();
             }
         }, 1000);
 
-        if(!TBUtils.isNewModmail && !TBUtils.isOldReddit) {
-            $('body').on('click', 'button:contains("Reply")', function() {
+        if (!TBUtils.isNewModmail && !TBUtils.isOldReddit) {
+            $('body').on('click', 'button:contains("Reply")', function () {
                 const $this = $(this);
                 const $comment = $this.closest('.Comment');
                 const commentDetails = $comment.find('.tb-frontend-container[data-tb-type="comment"]').data('tb-details');
@@ -180,7 +180,7 @@ function modmacros() {
                 const thingID = commentDetails.data.id;
 
                 TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
+                    if (TBUtils.modsSub(subreddit)) {
                         getConfig(subreddit, function (success, config) {
                             // if we're a mod, add macros to top level reply button.
                             if (success && config.length > 0) {
@@ -202,11 +202,11 @@ function modmacros() {
 
         window.addEventListener('TBNewPage', function (event) {
 
-            if(event.detail.pageType === 'subredditCommentsPage') {
+            if (event.detail.pageType === 'subredditCommentsPage') {
                 const subreddit = event.detail.pageDetails.subreddit;
 
                 TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
+                    if (TBUtils.modsSub(subreddit)) {
                         getConfig(subreddit, function (success, config) {
                             // if we're a mod, add macros to top level reply button.
                             if (success && config.length > 0) {
@@ -232,35 +232,35 @@ function modmacros() {
 
         // NER support.
         window.addEventListener('TBNewThings', function () {
-            if(TBUtils.isNewModmail) {
+            if (TBUtils.isNewModmail) {
                 setTimeout(function () {
                     addNewMMMacro();
                 }, 1000);
             }
         });
 
-        function editMacro(dropdown, info, macro, topLevel) {
+        function editMacro (dropdown, info, macro, topLevel) {
         // get some placement variables
 
             const remove = macro.remove,
-                approve = macro.approve,
-                ban = macro.ban,
-                mute = macro.mute,
-                distinguish = macro.distinguish === undefined ? true : macro.distunguish,
-                lock = macro.lockthread,
-                sticky = macro.sticky,
-                archivemodmail = macro.archivemodmail,
-                highlightmodmail = macro.highlightmodmail,
-                kind = info.kind;
+                  approve = macro.approve,
+                  ban = macro.ban,
+                  mute = macro.mute,
+                  distinguish = macro.distinguish === undefined ? true : macro.distunguish,
+                  lock = macro.lockthread,
+                  sticky = macro.sticky,
+                  archivemodmail = macro.archivemodmail,
+                  highlightmodmail = macro.highlightmodmail,
+                  kind = info.kind;
             let $usertext = dropdown.closest('.usertext-edit'),
                 comment = unescape(macro.text),
                 actionList = 'The following actions will be performed:<br>- Your reply will be saved';
 
-            if(!$usertext.length) {
+            if (!$usertext.length) {
                 $usertext = dropdown.closest('.Comment');
             }
 
-            if(!$usertext.length) {
+            if (!$usertext.length) {
                 $usertext = dropdown.closest('div');
             }
             if (TBUtils.isNewModmail) {
@@ -312,11 +312,11 @@ function modmacros() {
             comment = TB.utils.replaceTokens(info, comment);
 
             const offset = $usertext.offset(),
-                offsetLeft = offset.left,
-                offsetTop = offset.top,
-                minHeight = $usertext.outerHeight(),
-                editMinWidth = $usertext.outerWidth(),
-                editMinHeight = minHeight - 74;
+                  offsetLeft = offset.left,
+                  offsetTop = offset.top,
+                  minHeight = $usertext.outerHeight(),
+                  editMinWidth = $usertext.outerWidth(),
+                  editMinHeight = minHeight - 74;
 
             const title = dropdown.find('option:selected').text();
             self.log(title);
@@ -329,8 +329,8 @@ function modmacros() {
                         tooltip: `Mod Macro:${title}`,
                         content: `<textarea class="tb-input macro-edit-area" data-response-id="${info.id}">${comment}</textarea><br>
                                     <span>${actionList}</span>`,
-                        footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`
-                    }
+                        footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
+                    },
                 ],
                 '',
                 'macro-popup', // class
@@ -341,7 +341,7 @@ function modmacros() {
                     'left': `${offsetLeft}px`,
                     'top': `${offsetTop}px`,
                     'min-height': `${minHeight}px`,
-                    display: 'block'
+                    'display': 'block',
                 });
 
             if (TBUtils.isNewModmail) {
@@ -349,13 +349,13 @@ function modmacros() {
             }
             $macroPopup.find('.macro-edit-area').css({
                 'min-height': `${editMinHeight}px`,
-                'min-width': `${editMinWidth}px`
+                'min-width': `${editMinWidth}px`,
             });
 
             $macroPopup.on('click', `.macro-send-${info.id}`, function () {
                 const $currentMacroPopup = $(this).closest('.macro-popup'),
-                    $selectElement = $body.find(`#macro-dropdown-${info.id}`),
-                    editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
+                      $selectElement = $body.find(`#macro-dropdown-${info.id}`),
+                      editedcomment = $currentMacroPopup.find('.macro-edit-area').val();
 
                 if ($selectElement.val() !== MACROS) {
                     self.log('Replying with:');
@@ -474,8 +474,8 @@ function modmacros() {
         $body.on('click', '.macro-popup .close', function () {
 
             const $currentMacroPopup = $(this).closest('.macro-popup'),
-                infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
-                $selectElement = $body.find(`#macro-dropdown-${infoId}`);
+                  infoId = $currentMacroPopup.find('.macro-edit-area').attr('data-response-id'),
+                  $selectElement = $body.find(`#macro-dropdown-${infoId}`);
 
             $selectElement.val(MACROS);
             $currentMacroPopup.remove();
@@ -485,10 +485,10 @@ function modmacros() {
         $body.on('change', '.tb-top-macro-select, .tb-macro-select', function () {
 
             const $this = $(this),
-                sub = $this.closest('select').attr('data-subreddit'),
-                thingID = $this.closest('select').attr('data-thingID'),
-                index = $this.val(),
-                topLevel = $this.hasClass('tb-top-macro-select');
+                  sub = $this.closest('select').attr('data-subreddit'),
+                  thingID = $this.closest('select').attr('data-thingID'),
+                  index = $this.val(),
+                  topLevel = $this.hasClass('tb-top-macro-select');
             let info;
 
             self.log(`Macro selected: index=${index}`);
@@ -510,8 +510,8 @@ function modmacros() {
                 if (success && config.length > 0) {
                     const macro = config[index];
 
-                    if(thingID) {
-                        TBUtils.getApiThingInfo(thingID, sub, false, function(thinginfo) {
+                    if (thingID) {
+                        TBUtils.getApiThingInfo(thingID, sub, false, function (thinginfo) {
                             $this.attr('id', `macro-dropdown-${thinginfo.id}`);
                             editMacro($this, thinginfo, macro, topLevel);
                         });

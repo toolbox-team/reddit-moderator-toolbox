@@ -1,4 +1,4 @@
-function achievements() {
+function achievements () {
     const self = new TB.Module('Achievements');
     self.shortname = 'Achievements';
 
@@ -6,18 +6,18 @@ function achievements() {
     self.settings['enabled']['default'] = true;
 
     self.register_setting('save', {
-        'type': 'achievement_save',
-        'default': ''
+        type: 'achievement_save',
+        default: '',
     });
 
     self.register_setting('lastSeen', {
-        'type': 'number',
-        'default': TBUtils.getTime(),
-        'hidden': true
+        type: 'number',
+        default: TBUtils.getTime(),
+        hidden: true,
     });
 
     // Saves
-    function Manager() {
+    function Manager () {
         let saves = [],
             saveIndex = 0;
 
@@ -46,7 +46,7 @@ function achievements() {
             const achievementsBlock = [];
             for (let i = 0; i < maxValues.length; i++) {
                 const title = titles[i],
-                    maxValue = maxValues[i];
+                      maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
                 if (TB.utils.devMode) self.log(`  name=${title}`); // spoilers
@@ -54,10 +54,10 @@ function achievements() {
                 self.log(`  saveIndex=${saveIndex}`);
 
                 achievementsBlock.push({
-                    title: title,
+                    title,
                     descr: description.format(maxValue),
-                    maxValue: maxValue,
-                    saveIndex: saveIndex
+                    maxValue,
+                    saveIndex,
                 });
             }
             achievements.push(achievementsBlock);
@@ -91,7 +91,7 @@ function achievements() {
                     // to support another prop.  If someone want to do that, go for it.
                     try {
                         title = $(achievement.title).text() || achievement.title;
-                    } catch(e) {
+                    } catch (e) {
                         self.log(`error: ${e}`);
                     }
 
@@ -191,7 +191,7 @@ function achievements() {
         // Random awesome
         self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
             const awesome = 7,
-                chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
+                  chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
             self.log(`You rolled a: ${chanceOfBeingAwesome}`);
             if (awesome === chanceOfBeingAwesome) {
@@ -204,19 +204,19 @@ function achievements() {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
             const now = TBUtils.getTime(),
-                timeSince = now - lastSeen,
-                daysSince = TBUtils.millisecondsToDays(timeSince);
+                  timeSince = now - lastSeen,
+                  daysSince = TBUtils.millisecondsToDays(timeSince);
             self.log(`daysSince: ${daysSince}`);
 
             if (daysSince >= 7) {
-            //self.log("you've got an award!");
+            // self.log("you've got an award!");
                 self.manager.unlock(saveIndex);
             }
 
             self.setting('lastSeen', now);
         });
 
-        //toolbox Loves You: Look at the about page
+        // toolbox Loves You: Look at the about page
         self.manager.register('<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">toolbox loves you</a>', 'Looked at the about page. <3', function (saveIndex) {
             TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
                 self.manager.unlock(saveIndex);
@@ -240,9 +240,9 @@ function achievements() {
                     self.manager.unlock(saveIndex, 1);
                 }
             // TODO: wait for 'yes' click.
-            //$body.on('click', '.yes', function(){
+            // $body.on('click', '.yes', function(){
             //  self.log('yes clicked');
-            //});
+            // });
             });
         });
 
@@ -271,7 +271,7 @@ function achievements() {
         });
 
         // Empty queue
-        self.manager.registerSeries(['kitteh get!', 'puppy power!','<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], function (saveIndex) {
+        self.manager.registerSeries(['kitteh get!', 'puppy power!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], function (saveIndex) {
             if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }

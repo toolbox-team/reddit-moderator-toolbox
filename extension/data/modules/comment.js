@@ -1,61 +1,61 @@
-function comments() {
+function comments () {
     const self = new TB.Module('Comments');
     self.shortname = 'Comments'; // historical precedent for settings
 
     self.settings['enabled']['default'] = true;
 
     self.register_setting('commentsAsFullPage', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': false,
-        'title': 'Always open comments as new page (instead of lightbox).'
+        type: 'boolean',
+        default: false,
+        advanced: false,
+        title: 'Always open comments as new page (instead of lightbox).',
     });
 
     self.register_setting('openContextInPopup', {
-        'type': 'boolean',
-        'default': true,
-        'beta': false,
-        'title': 'Add a link to comments where appropiate to open the context in a popup on page.'
+        type: 'boolean',
+        default: true,
+        beta: false,
+        title: 'Add a link to comments where appropiate to open the context in a popup on page.',
     });
 
     self.register_setting('highlighted', {
-        'type': 'list',
-        'default': [],
-        'title': 'Highlight keywords. Keywords should entered separated by a comma without spaces.'
+        type: 'list',
+        default: [],
+        title: 'Highlight keywords. Keywords should entered separated by a comma without spaces.',
     });
 
     // Settings for old reddit only
     self.register_setting('hideRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Hide removed comments by default.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Hide removed comments by default.',
+        oldReddit: true,
     });
     self.register_setting('approveComments', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show approve button on all comments.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Show approve button on all comments.',
+        oldReddit: true,
     });
     self.register_setting('spamRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show spam button on comments removed as ham.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Show spam button on comments removed as ham.',
+        oldReddit: true,
     });
     self.register_setting('hamSpammed', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show remove (not spam) button on comments removed as spam.',
-        'oldReddit': true
+        type: 'boolean',
+        default: false,
+        title: 'Show remove (not spam) button on comments removed as spam.',
+        oldReddit: true,
     });
     self.register_setting('showHideOld', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': false,
-        'title': 'Show button to hide old comments.',
-        'oldReddit': true
+        type: 'boolean',
+        default: true,
+        advanced: false,
+        title: 'Show button to hide old comments.',
+        oldReddit: true,
     });
 
     self.initOldReddit = function () {
@@ -68,7 +68,7 @@ function comments() {
         self.spamRemoved = self.setting('spamRemoved'),
         self.hamSpammed = self.setting('hamSpammed');
 
-        function run() {
+        function run () {
             //
             //  Do stuff with removed comments
             //
@@ -103,7 +103,7 @@ function comments() {
             if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
                 const $things = $('.thing.comment:not(.tb-comments-checked)');
-                TBUtils.forEachChunkedDynamic($things, function(item) {
+                TBUtils.forEachChunkedDynamic($things, function (item) {
                     const $thing = $(item);
                     $thing.addClass('tb-comments-checked');
 
@@ -178,9 +178,9 @@ function comments() {
         }
 
         let hidden = false;
-        function addHideModButton() {
+        function addHideModButton () {
 
-        // hide mod comments option.
+            // hide mod comments option.
             if (TB.utils.isUserPage) {
                 const $modActions = $('.moderator, [data-subreddit="spam"]');
                 if ($modActions.length > 0) {
@@ -213,19 +213,19 @@ function comments() {
         // hide old comments
         if (self.setting('showHideOld')) {
             const NO_HIGHLIGHTING = 'no highlighting',
-                $commentvisits = $('#comment-visits');
+                  $commentvisits = $('#comment-visits');
 
             $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
 
             $body.on('click', '.tb-hide-old', function () {
                 self.log('hiding old comments');
-                $('.entry').show(); //reset before hiding.
+                $('.entry').show(); // reset before hiding.
                 $('.old-expand').removeClass('old-expand'); // new old expands
 
                 // this likely isn't language safe.
-                if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING) return;
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) return;
 
-                $('.thing:not(.new-comment,.link)').each(function() {
+                $('.thing:not(.new-comment,.link)').each(function () {
                     const $this = $(this);
                     $this.toggleClass('old-expand');
 
@@ -237,10 +237,10 @@ function comments() {
                 $(this).removeClass('old-expand').children().show();
             });
 
-            $body.on( 'change', '#comment-visits', function () {
+            $body.on('change', '#comment-visits', function () {
                 const $hideOld = $('.tb-hide-old');
                 $hideOld.text('hide old');
-                if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING) {
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
                     $hideOld.text('show all');
                 }
             });
@@ -253,16 +253,16 @@ function comments() {
     self.init = function () {
         const $body = $('body');
 
-        if(TBUtils.isOldReddit) {
+        if (TBUtils.isOldReddit) {
             self.initOldReddit();
         }
         // Do not open lightbox but go to full comment page.
         if (commentsAsFullPage) {
-            $body.on('click', 'a', function(event) {
+            $body.on('click', 'a', function (event) {
                 const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
                 const $this = $(this);
                 const thisHref = $this.attr('href');
-                if(subredditCommentsPageReg.test(thisHref)) {
+                if (subredditCommentsPageReg.test(thisHref)) {
                     event.preventDefault();
                     window.location.href = thisHref;
                 }
@@ -272,11 +272,11 @@ function comments() {
         if (self.setting('highlighted').length) {
             const highlighted = self.setting('highlighted');
 
-            TB.listener.on('comment', function(e) {
+            TB.listener.on('comment', function (e) {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 TBUtils.getModSubs(function () {
-                    if(TBUtils.modsSub(subreddit)) {
+                    if (TBUtils.modsSub(subreddit)) {
                         console.log('okay...', subreddit);
                         $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                         $target.closest('.Comment').find('p').highlight(highlighted);
@@ -285,11 +285,11 @@ function comments() {
 
             });
 
-            $body.on('click', '.expando-button', function() {
+            $body.on('click', '.expando-button', function () {
                 const $this = $(this);
                 const $thing = $this.closest('.thing');
                 const thingInfo = TBUtils.getThingInfo($thing, true);
-                if(thingInfo.subreddit) {
+                if (thingInfo.subreddit) {
                     setTimeout(() => {
                         $thing.find('.md').highlight(highlighted);
                     }, 200);
@@ -299,10 +299,10 @@ function comments() {
             window.addEventListener('TBNewPage', function (event) {
                 const pageType = event.detail.pageType;
 
-                if(pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
+                if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                     const subreddit = event.detail.subreddit;
                     TBUtils.getModSubs(function () {
-                        if(TBUtils.modsSub(subreddit)) {
+                        if (TBUtils.modsSub(subreddit)) {
 
                             $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                         }
@@ -315,15 +315,15 @@ function comments() {
 
         // Add flat view link.
         window.addEventListener('TBNewPage', function (event) {
-            if(event.detail.pageType === 'subredditCommentsPage') {
+            if (event.detail.pageType === 'subredditCommentsPage') {
                 TBui.contextTrigger('tb-flatview-link', {
                     addTrigger: true,
                     title: 'View comments for this thread in chronological flat view.',
                     triggerText: `comment flat view`,
-                    triggerIcon: 'list'
+                    triggerIcon: 'list',
                 });
             } else {
-                TBui.contextTrigger('tb-flatview-link', { addTrigger: false });
+                TBui.contextTrigger('tb-flatview-link', {addTrigger: false});
             }
 
         });
@@ -335,7 +335,7 @@ function comments() {
 
             // deconstruct the json we got.
 
-            function parseComments(object) {
+            function parseComments (object) {
                 switch (object.kind) {
 
                 case 'Listing':
@@ -376,8 +376,8 @@ function comments() {
                         title: 'Flatview',
                         tooltip: 'commentFlatview.',
                         content: $windowContent,
-                        footer: ''
-                    }
+                        footer: '',
+                    },
                 ],
                 [], // extra header buttons
                 'tb-flat-view', // class
@@ -432,15 +432,15 @@ function comments() {
                 // and get back a nice flat listing of ids
                 idListing = TBUtils.saneSortAs(idListing);
                 const commentOptions = {
-                    'parentLink' : true,
-                    'contextLink' : true,
-                    'fullCommentsLink' : true,
-                    'noOddEven': true,
-                    'contextPopup': openContextInPopup
+                    parentLink: true,
+                    contextLink: true,
+                    fullCommentsLink: true,
+                    noOddEven: true,
+                    contextPopup: openContextInPopup,
                 };
                 let count = 0;
                 // from each id in the idlisting we construct a new comment.
-                TBUtils.forEachChunkedDynamic(idListing, function(value) {
+                TBUtils.forEachChunkedDynamic(idListing, function (value) {
                     count++;
                     const msg = `Building comment ${count}/${idListing.length}`;
                     TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
@@ -448,7 +448,7 @@ function comments() {
                     $comment.find('time.timeago').timeago();
                     $htmlCommentView.append($comment);
 
-                }).then(function() {
+                }).then(function () {
                     $flatSearchCount.text(count);
                     setTimeout(function () {
                         TBui.tbRedditEvent($htmlCommentView, 'comment');
@@ -463,8 +463,8 @@ function comments() {
         if (openContextInPopup) {
 
             // Add context button to the queue in old reddit
-            if(TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage || TBUtils.isSubCommentsPage)) {
-                TB.listener.on('comment', function(e) {
+            if (TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage || TBUtils.isSubCommentsPage)) {
+                TB.listener.on('comment', function (e) {
                     const $target = $(e.target);
                     const data = e.detail.data;
                     const commentName = data.id;
@@ -482,7 +482,7 @@ function comments() {
 
             self.log('openContextInPopup enabled.');
 
-            $body.on('click', '.tb-comment-context-popup', function(event) {
+            $body.on('click', '.tb-comment-context-popup', function (event) {
                 self.log('Context button clicked.');
 
                 const $this = $(this);
@@ -504,12 +504,12 @@ function comments() {
                 }
 
                 // Get the context
-                $.getJSON(contextUrl, {raw_json: 1}).done(function(data) {
+                $.getJSON(contextUrl, {raw_json: 1}).done(function (data) {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
-                        'parentLink' : true,
-                        'contextLink' : true,
-                        'fullCommentsLink' : true
+                        parentLink: true,
+                        contextLink: true,
+                        fullCommentsLink: true,
                     };
 
                     const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
@@ -527,19 +527,19 @@ function comments() {
                                 title: 'Context tab',
                                 tooltip: 'Tab with context for comment.',
                                 content: $comments,
-                                footer: ''
-                            }
+                                footer: '',
+                            },
                         ],
                         '',
                         'context-button-popup',
                         {
-                            draggable: true
+                            draggable: true,
                         }
                     ).appendTo($appendTo)
                         .css({
                             left: positions.leftPosition,
                             top: positions.topPosition,
-                            display: 'block'
+                            display: 'block',
                         });
                     TBui.tbRedditEvent($comments, 'comment');
                     $('time.timeago').timeago();

@@ -1,4 +1,4 @@
-function generalSettings() {
+function generalSettings () {
     const self = new TB.Module('General Settings');
 
     self.shortname = 'GenSettings';
@@ -8,13 +8,13 @@ function generalSettings() {
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
     self.register_setting('onlyshowInhover', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': false,
-        'title': 'Only show user related buttons (mod, history, usernotes) in the hover card'
+        type: 'boolean',
+        default: true,
+        advanced: false,
+        title: 'Only show user related buttons (mod, history, usernotes) in the hover card',
     });
 
-    self.init = function() {
+    self.init = function () {
         self.log('general reporting for duty!');
     };
 

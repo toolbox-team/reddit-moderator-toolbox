@@ -1,4 +1,4 @@
-function commentsOld() {
+function commentsOld () {
     const self = new TB.Module('Comments Old');
     self.shortname = 'CommentsOld'; // historical precedent for settings
     self.oldReddit = true;
@@ -6,31 +6,31 @@ function commentsOld() {
     self.settings['enabled']['default'] = true;
 
     self.register_setting('hideRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Hide removed comments by default.'
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Hide removed comments by default.',
     });
     self.register_setting('approveComments', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show approve button on all comments.'
+        type: 'boolean',
+        default: false,
+        title: 'Show approve button on all comments.',
     });
     self.register_setting('spamRemoved', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show spam button on comments removed as ham.'
+        type: 'boolean',
+        default: false,
+        title: 'Show spam button on comments removed as ham.',
     });
     self.register_setting('hamSpammed', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Show remove (not spam) button on comments removed as spam.'
+        type: 'boolean',
+        default: false,
+        title: 'Show remove (not spam) button on comments removed as spam.',
     });
     self.register_setting('showHideOld', {
-        'type': 'boolean',
-        'default': true,
-        'advanced': false,
-        'title': 'Show button to hide old comments.'
+        type: 'boolean',
+        default: true,
+        advanced: false,
+        title: 'Show button to hide old comments.',
     });
 
     self.init = function () {
@@ -43,7 +43,7 @@ function commentsOld() {
         self.spamRemoved = self.setting('spamRemoved'),
         self.hamSpammed = self.setting('hamSpammed');
 
-        function run() {
+        function run () {
             //
             //  Do stuff with removed comments
             //
@@ -78,7 +78,7 @@ function commentsOld() {
             if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
                 const $things = $('.thing.comment:not(.tb-comments-checked)');
-                TBUtils.forEachChunkedDynamic($things, function(item) {
+                TBUtils.forEachChunkedDynamic($things, function (item) {
                     const $thing = $(item);
                     $thing.addClass('tb-comments-checked');
 
@@ -153,9 +153,9 @@ function commentsOld() {
         }
 
         let hidden = false;
-        function addHideModButton() {
+        function addHideModButton () {
 
-        // hide mod comments option.
+            // hide mod comments option.
             if (TB.utils.isUserPage) {
                 const $modActions = $('.moderator, [data-subreddit="spam"]');
                 if ($modActions.length > 0) {
@@ -188,19 +188,19 @@ function commentsOld() {
         // hide old comments
         if (self.setting('showHideOld')) {
             const NO_HIGHLIGHTING = 'no highlighting',
-                $commentvisits = $('#comment-visits');
+                  $commentvisits = $('#comment-visits');
 
             $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
 
             $body.on('click', '.tb-hide-old', function () {
                 self.log('hiding old comments');
-                $('.entry').show(); //reset before hiding.
+                $('.entry').show(); // reset before hiding.
                 $('.old-expand').removeClass('old-expand'); // new old expands
 
                 // this likely isn't language safe.
-                if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING) return;
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) return;
 
-                $('.thing:not(.new-comment,.link)').each(function() {
+                $('.thing:not(.new-comment,.link)').each(function () {
                     const $this = $(this);
                     $this.toggleClass('old-expand');
 
@@ -212,10 +212,10 @@ function commentsOld() {
                 $(this).removeClass('old-expand').children().show();
             });
 
-            $body.on( 'change', '#comment-visits', function () {
+            $body.on('change', '#comment-visits', function () {
                 const $hideOld = $('.tb-hide-old');
                 $hideOld.text('hide old');
-                if ($commentvisits.find('option:selected' ).text() === NO_HIGHLIGHTING) {
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
                     $hideOld.text('show all');
                 }
             });

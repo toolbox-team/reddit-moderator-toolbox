@@ -1,19 +1,19 @@
-function banlist() {
+function banlist () {
     const self = new TB.Module('Ban List');
     self.shortname = 'BanList';
 
     self.settings['enabled']['default'] = true;
 
     self.register_setting('automatic', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Automatically pre-load the whole ban list for live filtering.'
+        type: 'boolean',
+        default: false,
+        title: 'Automatically pre-load the whole ban list for live filtering.',
     });
 
     // extracts a url parameter value from a URL string
     // from http://stackoverflow.com/a/15780907/362042
     // TODO: move to tbutils
-    self.getURLParameter = function getURLParameter(url, name) {
+    self.getURLParameter = function getURLParameter (url, name) {
         const match = new RegExp(`${name}=(.+?)(&|$)`).exec(url);
         return match ? match[1] : null;
     };
@@ -25,9 +25,9 @@ function banlist() {
             banlist_last_update = 0,
             last_request = 0;
         const time_to_update = 1000 * 60 * 5, // in milliseconds (last value is minutes)
-            $num_bans = $('<span id="ban_count"></span>');
+              $num_bans = $('<span id="ban_count"></span>');
 
-        function _get_next_ban_page(after, pages_back) {
+        function _get_next_ban_page (after, pages_back) {
 
             // default parameter value handling
             after = typeof after !== 'undefined' ? after : '';
@@ -35,13 +35,12 @@ function banlist() {
 
             self.log(`_get_next_ban_page(${after})`);
 
-            const parameters = {'limit': 1000, 'after': after};
+            const parameters = {limit: 1000, after};
 
             after = null;
             last_request = Date.now();
             console.log('hello');
-            $.ajax({
-                url: document.location.href,
+            $.ajax({url: document.location.href,
                 data: parameters,
                 type: 'get',
                 dataType: 'html',
@@ -114,7 +113,7 @@ function banlist() {
 
         }
 
-        function filter_banlist(banlist, value, ignore_last) {
+        function filter_banlist (banlist, value, ignore_last) {
             self.log(`filter(${value})`);
             let last_value = typeof last_value !== 'undefined' ? last_value : '';
             ignore_last = typeof ignore_last !== 'undefined' ? ignore_last : false;
@@ -142,7 +141,7 @@ function banlist() {
             last_value = value;
         }
 
-        function liveFilter() {
+        function liveFilter () {
             const $user = $('#user');
 
             // counter for number of bans
@@ -152,15 +151,15 @@ function banlist() {
 
             $('.usertable').addClass('filtered');
 
-            //each tr
+            // each tr
             $('.usertable tr').each(function () {
                 const $this = $(this);
-                const t = $this.text().toLowerCase(); //all row text
+                const t = $this.text().toLowerCase(); // all row text
                 const $append = $(`<td class='indexColumn'>${t}</td>`).hide();
                 $this.append($append);
             });
 
-            function _filter(value) {
+            function _filter (value) {
                 if (!banlist_updating // don't trigger an update if we're still running
                 && (banlist_last_update === 0 // catch the first run, before last_update has been set
                 || (banlist_last_update + time_to_update) <= Date.now())

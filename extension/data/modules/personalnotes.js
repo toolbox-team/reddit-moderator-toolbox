@@ -1,30 +1,30 @@
-function personalnotes() {
-    let self = new TB.Module('Personal Notes');
+function personalnotes () {
+    const self = new TB.Module('Personal Notes');
     self.shortname = 'PNotes';
 
     self.settings['enabled']['default'] = false;
 
     self.register_setting('noteWiki', {
-        'type': 'subreddit',
-        'default': '',
-        'title': 'Subreddit you want to use to store your personal notes.'
+        type: 'subreddit',
+        default: '',
+        title: 'Subreddit you want to use to store your personal notes.',
     });
     self.register_setting('popupHeight', {
-        'type': 'number',
-        'default': 300,
-        'title': 'Default height, in pixels, for the text editor'
+        type: 'number',
+        default: 300,
+        title: 'Default height, in pixels, for the text editor',
     });
     self.register_setting('monospace', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Use a monospace font in the text editor'
+        type: 'boolean',
+        default: false,
+        title: 'Use a monospace font in the text editor',
     });
 
-    self.init = function() {
-        if(TBUtils.isEmbedded) return;
+    self.init = function () {
+        if (TBUtils.isEmbedded) return;
         const notewiki = self.setting('noteWiki').toLowerCase(),
-            popupHeight = self.setting('popupHeight'),
-            monospace = self.setting('monospace');
+              popupHeight = self.setting('popupHeight'),
+              monospace = self.setting('monospace');
         let $body = $('body'),
             notesArray = [],
             notesPopupContent;
@@ -42,7 +42,7 @@ function personalnotes() {
         `;
 
         // Here we create the popup containing all relevant information
-        function createPersonalNotesPopup(notesPopupContent) {
+        function createPersonalNotesPopup (notesPopupContent) {
             TB.ui.popup(
                 'Personal notes',
                 [
@@ -51,8 +51,8 @@ function personalnotes() {
                         id: 'personal-notes', // reddit has things with class .role, so it's easier to do this than target CSS
                         tooltip: 'Edit macro',
                         content: notesPopupContent,
-                        footer: '<input type="button" class="tb-action-button" id="save-personal-note" value="save note">'
-                    }
+                        footer: '<input type="button" class="tb-action-button" id="save-personal-note" value="save note">',
+                    },
                 ],
                 '',
                 'personal-notes-popup' // class
@@ -63,10 +63,10 @@ function personalnotes() {
 
         // Let's load a note!
 
-        function loadNoteWiki(wikiPage) {
+        function loadNoteWiki (wikiPage) {
             $body.find('#tb-personal-notes-landing').remove();
 
-            let $editArea = $body.find('#tb-personal-notes-editarea');
+            const $editArea = $body.find('#tb-personal-notes-editarea');
             $editArea.val('loading stuff...').attr('disabled', true);
             $editArea.css('display', 'block');
 
@@ -87,7 +87,7 @@ function personalnotes() {
 
                 // Found it, show it.
                 $editArea.val(resp).attr('disabled', false);
-                let $saveButton = $body.find('#save-personal-note');
+                const $saveButton = $body.find('#save-personal-note');
 
                 $saveButton.attr('data-note', wikiPage);
                 $saveButton.show();
@@ -95,10 +95,10 @@ function personalnotes() {
             });
         }
 
-        function saveNoteWiki(page, subreddit, data, reason, newnote) {
+        function saveNoteWiki (page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, function done(succ, err) {
+            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, function done (succ, err) {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
                     self.log(err.responseText);
@@ -113,7 +113,7 @@ function personalnotes() {
                         if (!$body.find('#tb-personal-notes-ul').length) {
                             $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul>`);
                         }
-                        let $noteItem = $(TBUtils.template(noteListTemplate, {name: page}));
+                        const $noteItem = $(TBUtils.template(noteListTemplate, {name: page}));
                         $noteItem.toggleClass('tb-personal-notes-active', true);
                         $body.find('#tb-personal-notes-ul').append($noteItem);
 
@@ -128,7 +128,7 @@ function personalnotes() {
 
         // Since we have a button we can click on it!
         $body.on('click', '#tb-personal-notes-button', function () {
-            let $this = $(this);
+            const $this = $(this);
 
             // Making sure the ui is only created once.
             if (!$this.hasClass('tb-notes-activated')) {
@@ -136,8 +136,8 @@ function personalnotes() {
                 // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
                 TBUtils.getModSubs(function () {
 
-                // We can't expect people to get the capitalizing right.
-                    let mySubsLowerCase = [];
+                    // We can't expect people to get the capitalizing right.
+                    const mySubsLowerCase = [];
                     $(TBUtils.mySubs).each(function () {
                         mySubsLowerCase.push(this.toLowerCase());
                     });
@@ -153,8 +153,8 @@ function personalnotes() {
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
 
-                    // build a template, we only need to insert one variable but this is cleaner and more feature proof.
-                        let notesPopupContentTemplate = `
+                        // build a template, we only need to insert one variable but this is cleaner and more feature proof.
+                        const notesPopupContentTemplate = `
                     <table style="height:${popupHeight}px;"><tr>
                         <td id="tb-personal-notes-listing">
                             <div id="tb-personal-notes-list">
@@ -210,7 +210,7 @@ function personalnotes() {
                                 }
 
                                 notesPopupContent = TBUtils.template(notesPopupContentTemplate, {
-                                    'notesList': notesList
+                                    notesList,
                                 });
                                 createPersonalNotesPopup(notesPopupContent);
                             })
@@ -230,8 +230,8 @@ function personalnotes() {
 
         // When clicking a wiki page.
         $body.on('click', '.personal-notes-popup .tb-personal-note-link', function () {
-            let $this = $(this),
-                wikiPage = $this.data('wiki');
+            const $this = $(this),
+                  wikiPage = $this.data('wiki');
             // $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
             $body.find('#tb-personal-notes-ul').find('li').removeClass('tb-personal-notes-active');
             // $this.addClass('tb-personal-notes-active');
@@ -242,7 +242,7 @@ function personalnotes() {
 
         // When clicking the delete button
         $body.on('click', '.tb-personal-note-delete', function () {
-            let $this = $(this);
+            const $this = $(this);
             const page = $this.data('wiki');
 
             const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
@@ -251,7 +251,7 @@ function personalnotes() {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
-                    uh: TBUtils.modhash
+                    uh: TBUtils.modhash,
                 })
 
                     .fail(function () {
@@ -282,10 +282,10 @@ function personalnotes() {
         // when clicking 'save note'
 
         $body.on('click', '.personal-notes-popup #save-personal-note', function () {
-            let $this = $(this);
+            const $this = $(this);
             const page = $this.attr('data-note'),
-                data = $body.find('#tb-personal-notes-editarea').val(),
-                reason = 'Saving personal toolbox note';
+                  data = $body.find('#tb-personal-notes-editarea').val(),
+                  reason = 'Saving personal toolbox note';
             saveNoteWiki(page, notewiki, data, reason, false);
         });
 

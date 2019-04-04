@@ -1,4 +1,4 @@
-function modbutton() {
+function modbutton () {
 
     const self = new TB.Module('Mod Button');
     self.shortname = 'ModButton';
@@ -6,45 +6,45 @@ function modbutton() {
     self.settings['enabled']['default'] = true;
 
     self.register_setting('savedSubs', {
-        'type': 'sublist',
-        'default': [],
-        'title': 'Saved subs (for quick access)'
+        type: 'sublist',
+        default: [],
+        title: 'Saved subs (for quick access)',
     });
 
     self.register_setting('rememberLastAction', {
-        'type': 'boolean',
-        'default': false,
-        'title': 'Remember last action'
+        type: 'boolean',
+        default: false,
+        title: 'Remember last action',
     });
     self.register_setting('globalButton', {
-        'type': 'boolean',
-        'default': false,
-        'advanced': true,
-        'title': 'Enable Global Action button'
+        type: 'boolean',
+        default: false,
+        advanced: true,
+        title: 'Enable Global Action button',
     });
     self.register_setting('excludeGlobal', {
-        'type': 'sublist',
-        'default': [],
-        'advanced': true,
-        'title': 'Exclude subs from Global Actions',
-        'hidden': !self.setting('globalButton')
+        type: 'sublist',
+        default: [],
+        advanced: true,
+        title: 'Exclude subs from Global Actions',
+        hidden: !self.setting('globalButton'),
     });
 
     self.register_setting('onlyshowInhover', {
-        'type': 'boolean',
-        'default': TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
-        'hidden': true
+        type: 'boolean',
+        default: TB.storage.getSetting('GenSettings', 'onlyshowInhover', true),
+        hidden: true,
     });
 
     // private storage
     self.register_setting('lastAction', {
-        'type': 'text',
-        'default': 'ban',
-        'hidden': true
+        type: 'text',
+        default: 'ban',
+        hidden: true,
     });
 
     const $body = $('body'),
-        titleText = 'Perform various mod actions on this user';
+          titleText = 'Perform various mod actions on this user';
 
     // need this for RES NER support
     self.run = function () {
@@ -65,7 +65,7 @@ function modbutton() {
         }
         const onlyshowInhover = self.setting('onlyshowInhover');
 
-        TB.listener.on('author', function(e) {
+        TB.listener.on('author', function (e) {
             const $target = $(e.target);
             if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
 
@@ -73,9 +73,9 @@ function modbutton() {
                 const author = e.detail.data.author;
 
                 let parentID;
-                if(e.detail.data.comment) {
+                if (e.detail.data.comment) {
                     parentID = e.detail.data.comment.id;
-                } else if(e.detail.data.post) {
+                } else if (e.detail.data.post) {
                     parentID = e.detail.data.post.id;
                 } else {
                     parentID = 'unknown';
@@ -87,7 +87,7 @@ function modbutton() {
         });
 
         // event based handling of author elements.
-        TB.listener.on('userHovercard', function(e) {
+        TB.listener.on('userHovercard', function (e) {
 
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
@@ -107,7 +107,7 @@ function modbutton() {
     // Refresh the settings tab and role tab sub dropdowns and saved subs tabls
     //
         const $popups = $body.find('.mod-popup'),
-            $savedSubsLists = $popups.find('.saved-subs');
+              $savedSubsLists = $popups.find('.saved-subs');
 
         // clear out the current stuff
         $savedSubsLists.html('');
@@ -116,8 +116,8 @@ function modbutton() {
         // and to the saved subs savedSubsList on the role tab
         $popups.each(function () {
             const $popup = $(this),
-                $savedSubsList = $popup.find('.saved-subs'),
-                currentSub = $popup.find('.subreddit').text();
+                  $savedSubsList = $popup.find('.saved-subs'),
+                  currentSub = $popup.find('.subreddit').text();
 
             // repopulate the saved sub dropdowns with all the subs we mod
             $popup.find('.edit-subreddits .savedSubs').remove();
@@ -138,7 +138,7 @@ function modbutton() {
         $.each(TB.utils.mySubs, function (i, subreddit) {
             $popups.find(`select.${self.OTHER}`)
                 .append($('<option>', {
-                    value: subreddit
+                    value: subreddit,
                 })
                     .text(subreddit));
         });
@@ -158,15 +158,15 @@ function modbutton() {
         self.savedSubs = self.setting('savedSubs');
 
         const rememberLastAction = self.setting('rememberLastAction'),
-            showglobal = self.setting('globalButton'),
-            excludeGlobal = self.setting('excludeGlobal');
+              showglobal = self.setting('globalButton'),
+              excludeGlobal = self.setting('excludeGlobal');
 
         self.savedSubs = TB.utils.saneSort(self.savedSubs);
 
         TB.utils.getModSubs(function () {
         // it's Go Time™!
 
-        // Unless it is new modmail...
+            // Unless it is new modmail...
             if (TBUtils.isNewModmail) {
                 setTimeout(function () {
                     self.run();
@@ -181,8 +181,8 @@ function modbutton() {
             self.run();
         });
 
-        function openModPopup(event, info) {
-            const benbutton = event.target; //huehuehue
+        function openModPopup (event, info) {
+            const benbutton = event.target; // huehuehue
             const $benbutton = $(benbutton);
             $benbutton.text('loading...');
             self.log('displaying mod button popup');
@@ -190,10 +190,10 @@ function modbutton() {
             const lastaction = self.setting('lastAction');
 
             const subreddit = info.subreddit,
-                user = info.user,
-                thing_id = info.id;
+                  user = info.user,
+                  thing_id = info.id;
 
-            //$.log('modbutton ' + subreddit, true);
+            // $.log('modbutton ' + subreddit, true);
 
             // no user?
             if (!user) {
@@ -252,7 +252,7 @@ function modbutton() {
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
                 <button class="save tb-action-button">${self.saveButton}</button>
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`,
                     },
                     {
                         title: 'User Flair',
@@ -262,7 +262,7 @@ function modbutton() {
                     <p style="clear:both;" class="mod-popup-flair-input"><label for="flair-class" class="mod-popup-flair-label">Class:</label><input id="flair-class" class="flair-class tb-input" type="text"></input></p>`,
                         footer: `
                 <span class="status error left"></span>
-                <button class="flair-save tb-action-button">Save Flair</button>`
+                <button class="flair-save tb-action-button">Save Flair</button>`,
                     },
                     {
                         title: 'Send Message',
@@ -274,8 +274,8 @@ function modbutton() {
                     `,
                         footer: `
                 <span class="status error left"></span>
-                <button class="message-send tb-action-button">Send Message</button>`
-                    }
+                <button class="message-send tb-action-button">Send Message</button>`,
+                    },
                 ],
                 `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
                 'mod-popup' // class
@@ -283,7 +283,7 @@ function modbutton() {
                 .css({
                     left: positions.leftPosition,
                     top: positions.topPosition,
-                    display: 'block'
+                    display: 'block',
                 });
             const $actionSelect = $popup.find('.mod-action');
 
@@ -351,7 +351,7 @@ function modbutton() {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
-                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, function (data) {
                     TBStorage.purifyObject(data);
                     const banned = data.data.children;
                     for (let i = 0; i < banned.length; i++) {
@@ -370,7 +370,7 @@ function modbutton() {
                             // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
                             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
                                 type: 'banuser',
-                                limit: '1000'
+                                limit: '1000',
                             }, function (data) {
                                 TBStorage.purifyObject(data);
                                 const logged = data.data.children;
@@ -419,9 +419,9 @@ function modbutton() {
             // show/hide ban reason text feild.
             $actionSelect.change(function () {
                 const $banNote = $popup.find('.ban-note'),
-                    $banMessage = $popup.find('textarea.ban-message'),
-                    $banDuration = $popup.find('.ban-duration'),
-                    $banIncludeTime = $popup.find('.ban-span-include-time');
+                      $banMessage = $popup.find('textarea.ban-message'),
+                      $banDuration = $popup.find('.ban-duration'),
+                      $banIncludeTime = $popup.find('.ban-span-include-time');
                 if ($(this).val() === 'ban') {
                     $banNote.show();
                     $banMessage.show();
@@ -441,7 +441,7 @@ function modbutton() {
 
         // Mod button clicked
         $body.on('click', '.global-mod-button', function (event) {
-            const benbutton = event.target; //huehuehue
+            const benbutton = event.target; // huehuehue
             const $benbutton = $(benbutton);
 
             if (TBUtils.isNewModmail) {
@@ -453,18 +453,18 @@ function modbutton() {
                 const id = $benbutton.attr('data-parentID');
                 const author = $benbutton.attr('data-author');
 
-                if(id === 'unknown') {
+                if (id === 'unknown') {
                     const info = {
-                        subreddit: subreddit,
+                        subreddit,
                         user: author,
-                        author: author,
+                        author,
                         permalink: location.href,
                         url: location.href,
                         domain: '',
-                        id: id,
+                        id,
                         body: `>`,
                         raw_body: '',
-                        uri_body:'',
+                        uri_body: '',
                         approved_by: '',
                         title: '',
                         uri_title: '',
@@ -477,11 +477,11 @@ function modbutton() {
                         rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
                         sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
                         wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                        mod: TBUtils.logged
+                        mod: TBUtils.logged,
                     };
                     openModPopup(event, info);
                 } else {
-                    TB.utils.getApiThingInfo(id, subreddit, true, function(info) {
+                    TB.utils.getApiThingInfo(id, subreddit, true, function (info) {
                         openModPopup(event, info);
                     });
                 }
@@ -496,17 +496,17 @@ function modbutton() {
         $body.on('click', '.mod-popup .save, .global-button', function () {
 
             const $button = $(this),
-                $popup = $button.parents('.mod-popup'),
-                $selected = $popup.find('.mod-action :selected'),
-                api = $selected.attr('data-api'),
-                action = $selected.attr('data-action'),
-                actionName = $selected.val(),
-                settingState = api === 'friend',
-                $status = $popup.find('.status'),
-                banReason = $popup.find('.ban-note').val(),
-                banDuration = $popup.find('.ban-duration').val(),
-                subreddits = [],
-                user = $popup.find('.user').text();
+                  $popup = $button.parents('.mod-popup'),
+                  $selected = $popup.find('.mod-action :selected'),
+                  api = $selected.attr('data-api'),
+                  action = $selected.attr('data-action'),
+                  actionName = $selected.val(),
+                  settingState = api === 'friend',
+                  $status = $popup.find('.status'),
+                  banReason = $popup.find('.ban-note').val(),
+                  banDuration = $popup.find('.ban-duration').val(),
+                  subreddits = [],
+                  user = $popup.find('.user').text();
 
             let banMessage = $popup.find('textarea.ban-message').val();
             banMessage = createBanReason(banMessage);
@@ -518,7 +518,7 @@ function modbutton() {
 
             if (!$(this).hasClass('global-button')) {
 
-            // Get dem ban subs.
+                // Get dem ban subs.
                 $popup.find('.action-sub:checkbox:checked').each(function () {
                     let subname = $(this).val();
                     if (subname !== self.OTHER) {
@@ -563,7 +563,7 @@ function modbutton() {
                 }
             }
 
-            function createBanReason(message) {
+            function createBanReason (message) {
                 let reason = '';
 
                 // Add message if exists
@@ -574,7 +574,7 @@ function modbutton() {
                 return TBUtils.stringFormat(reason, message);
             }
 
-            function completeCheck(failedSubs) {
+            function completeCheck (failedSubs) {
                 const failed = failedSubs.length;
                 self.log(`${failed} subs failed`);
                 if (failed > 0) {
@@ -592,11 +592,11 @@ function modbutton() {
                 else {
                     self.log('complete');
                     $('.mod-popup').remove();
-                //TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
+                // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
                 }
             }
 
-            function massAction(subs) {
+            function massAction (subs) {
                 const failedSubs = [];
 
                 TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
@@ -661,11 +661,11 @@ function modbutton() {
                 message;
             TB.ui.longLoadSpinner(true);
             const $popup = $(this).parents('.mod-popup'),
-                user = $popup.find('.user').text(),
-                subreddit = $popup.find('.subreddit').text(),
-                $callbackSpan = $popup.find('.send_message #subreddit-message-callback'),
-                $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
-                $subredditMessage = $popup.find('.send_message .subreddit-message');
+                  user = $popup.find('.user').text(),
+                  subreddit = $popup.find('.subreddit').text(),
+                  $callbackSpan = $popup.find('.send_message #subreddit-message-callback'),
+                  $subredditMessageSubject = $popup.find('.send_message .subreddit-message-subject'),
+                  $subredditMessage = $popup.find('.send_message .subreddit-message');
 
             if (!$subredditMessageSubject.val() || !$subredditMessage.val()) {
                 $callbackSpan.text('You forgot a subject or message');
@@ -703,10 +703,10 @@ function modbutton() {
         // Flair ALL THE THINGS
         $body.on('click', '.tb-popup-tabs .user_flair', function () {
             const $popup = $(this).parents('.mod-popup'),
-                user = $popup.find('.user').text(),
-                subreddit = $popup.find('.subreddit').text(),
-                $textinput = $popup.find('.flair-text'),
-                $classinput = $popup.find('.flair-class');
+                  user = $popup.find('.user').text(),
+                  subreddit = $popup.find('.subreddit').text(),
+                  $textinput = $popup.find('.flair-text'),
+                  $classinput = $popup.find('.flair-class');
 
             if (!user || !subreddit)
                 return;
@@ -722,11 +722,11 @@ function modbutton() {
         // Edit save button clicked.
         $body.on('click', '.flair-save', function () {
             const $popup = $(this).parents('.mod-popup'),
-                $status = $popup.find('.status'),
-                user = $popup.find('.user').text(),
-                subreddit = $popup.find('.subreddit').text(),
-                text = $popup.find('.flair-text').val(),
-                css_class = $popup.find('.flair-class').val();
+                  $status = $popup.find('.status'),
+                  user = $popup.find('.user').text(),
+                  subreddit = $popup.find('.subreddit').text(),
+                  text = $popup.find('.flair-text').val(),
+                  css_class = $popup.find('.flair-class').val();
 
             TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 

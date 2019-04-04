@@ -1,4 +1,4 @@
-function flyingsnoo() {
+function flyingsnoo () {
 // @name       Flying Snoo
 // @namespace  http://reddit.com/user/LowSociety
 // @copyright  2014+, LowSociety
@@ -6,7 +6,7 @@ function flyingsnoo() {
     const self = new TB.Module('Userpage');
     self.shortname = 'Userpage';
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = true;
     self.settings['enabled']['hidden'] = true; // it's an easter egg.
 
@@ -16,14 +16,14 @@ function flyingsnoo() {
         const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo($footerblock);
         $snooFooter.css({
             'background-image': `url(${chrome.runtime.getURL('data/images/balloon.png')})`,
-            'background-repeat': 'no-repeat'
+            'background-repeat': 'no-repeat',
 
         });
 
         $snooFooter.click(function () {
 
             const width = 87,
-                height = 145;
+                  height = 145;
 
             // unlock achievement
             TB.utils.sendEvent(TB.utils.events.TB_FLY_SNOO);
@@ -35,11 +35,11 @@ function flyingsnoo() {
                 position: 'absolute',
                 top: `${$(this).offset().top}px`,
                 left: `${($(window).width() * 0.49) - (width / 2)}px`,
-                zIndex: 999
+                zIndex: 999,
             }).appendTo('body');
 
             const documentHeight = $(document).height(),
-                documentWidth = $(document).width();
+                  documentWidth = $(document).width();
             let iterations = 0,
                 wind = 0,
                 oldTop = floater.position().top,
@@ -47,7 +47,7 @@ function flyingsnoo() {
 
             let keepFlying = false;
 
-            function startFlying() {
+            function startFlying () {
                 const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.0002)));
 
                 if (iterations % 50 === 0) {
@@ -58,7 +58,7 @@ function flyingsnoo() {
 
                 floater.css({
                     top: `${newTop}px`,
-                    left: `${newLeft}px`
+                    left: `${newLeft}px`,
                 });
 
                 iterations++;
@@ -70,15 +70,15 @@ function flyingsnoo() {
 
             }
 
-            function killSnoo() {
+            function killSnoo () {
                 const newTop = oldTop + Math.max(50, Math.min(10, oldTop * 0.0005));
                 floater.css({
-                    'top': `${newTop}px`
+                    top: `${newTop}px`,
                 });
                 oldTop = newTop;
                 if (oldTop + height >= documentHeight) {
                     floater.css({
-                        'top': `${documentHeight - height - 40}px`
+                        top: `${documentHeight - height - 40}px`,
                     });
                     floater.css('background', `url(${chrome.runtime.getURL('data/images/snoo_splat.png')})`);
 
@@ -98,12 +98,12 @@ function flyingsnoo() {
 
                 const dragEvent = function (e) {
                     const offsetX = floater.data('offsetX') || 0,
-                        offsetY = floater.data('offsetY') || 0;
+                          offsetY = floater.data('offsetY') || 0;
                     oldLeft = (e.pageX - offsetX);
                     oldTop = (e.pageY - offsetY);
                     floater.css({
-                        'left': `${oldLeft}px`,
-                        'top': `${oldTop}px`
+                        left: `${oldLeft}px`,
+                        top: `${oldTop}px`,
                     });
                 };
 

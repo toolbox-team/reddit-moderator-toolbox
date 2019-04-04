@@ -1,11 +1,11 @@
-function metricstab() {
+function metricstab () {
     const self = new TB.Module('Metrics Tab');
     self.shortname = 'Metrics';
     self.oldReddit = true;
 
     self.settings['enabled']['default'] = true;
 
-    self.getSectionFromUrl = function getSectionFromUrl(url) {
+    self.getSectionFromUrl = function getSectionFromUrl (url) {
         const regex = new RegExp(/^(http|https):\/\/([a-z]+\.)?reddit\.com\/(user|r)\/([^/]+)(\/|$)/g);
         const matches = regex.exec(url);
 
@@ -18,7 +18,7 @@ function metricstab() {
 
     self.init = function () {
         const page = this.getSectionFromUrl(window.location.href),
-            $body = $('body');
+              $body = $('body');
 
         if (!page) {
             return false;
@@ -26,18 +26,18 @@ function metricstab() {
 
         const metrics = {
             user: {
-                'Redective': 'https://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
-                'Hivemind': 'https://www.hivemind.cc/rank/u/{subSection}',
-                'RateRedditors': 'https://rateredditors.com/{subSection}',
-                'SnoopSnoo': 'https://www.snoopsnoo.com/u/{subSection}',
-                'redditgraphs': 'https://www.roadtolarissa.com/redditgraphs/?{subSection}&PieChart&Number&Submissions'
+                Redective: 'https://www.redective.com/?r=e&a=search&s=user&t=redective&q={subSection}',
+                Hivemind: 'https://www.hivemind.cc/rank/u/{subSection}',
+                RateRedditors: 'https://rateredditors.com/{subSection}',
+                SnoopSnoo: 'https://www.snoopsnoo.com/u/{subSection}',
+                redditgraphs: 'https://www.roadtolarissa.com/redditgraphs/?{subSection}&PieChart&Number&Submissions',
             },
 
             r: {
-                'Redective': 'https://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
-                'Hivemind': 'https://www.hivemind.cc/rank/r/{subSection}',
-                'ExploreReddit': 'https://paulrosenzweig.com/explore-reddit/r/{subSection}'
-            }
+                Redective: 'https://www.redective.com/?r=e&a=search&s=subreddit&t=redective&q={subSection}',
+                Hivemind: 'https://www.hivemind.cc/rank/r/{subSection}',
+                ExploreReddit: 'https://paulrosenzweig.com/explore-reddit/r/{subSection}',
+            },
         };
 
         const $tabList = $('#header-bottom-left ul');
@@ -51,7 +51,7 @@ function metricstab() {
         $tabList.css('overflow', 'visible');
 
         const $listItem = $("<li class='tb-metrics'><a href='javascript:;'>metrics</a></li>"),
-            $tbMetricsList = $body.find('#tb-metrics-expand-list');
+              $tbMetricsList = $body.find('#tb-metrics-expand-list');
 
         $tabList.append($listItem);
 
@@ -65,12 +65,12 @@ function metricstab() {
         $listItem.on('click', function () {
             self.log('metrics tab opened');
             const offset = $(this).offset(),
-                offsetLeft = offset.left,
-                offsetTop = (offset.top + 20);
+                  offsetLeft = offset.left,
+                  offsetTop = (offset.top + 20);
 
             $body.find('#tb-metrics-expand-list').css({
-                'left': `${offsetLeft}px`,
-                'top': `${offsetTop}px`
+                left: `${offsetLeft}px`,
+                top: `${offsetTop}px`,
             });
             $tbMetricsList.toggle();
         });

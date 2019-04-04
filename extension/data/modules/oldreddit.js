@@ -1,24 +1,24 @@
-function oldReddit() {
+function oldReddit () {
     const self = new TB.Module('Old reddit');
     self.shortname = 'oldreddit';
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = false;
 
     self.config['betamode'] = true;
 
     TB.register_module(self);
 
-    function dispatchApiEvent(element, object) {
+    function dispatchApiEvent (element, object) {
         const apiEvent = new CustomEvent('tbReddit', {detail: object});
         try {
             element.dispatchEvent(apiEvent);
-        } catch(error) {
+        } catch (error) {
             self.log('Could not dispatch event', object);
         }
     }
 
-    function handleThing($thing, info) {
+    function handleThing ($thing, info) {
         const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
         $jsApiThingPlaceholder.append('<span data-name="toolbox">');
         const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
@@ -27,108 +27,108 @@ function oldReddit() {
         $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
         const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
-        if(!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
+        if (!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
             return;
         }
 
-        if(info.kind === 'submission') {
-            if(!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
+        if (info.kind === 'submission') {
+            if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
-                    'type': 'TBpost',
-                    'data': {
-                        'author': info.author,
-                        'id': info.id,
-                        'subreddit': {
-                            'name': info.subreddit,
-                            'type': info.subredditType
-                        }
-                    }
+                    type: 'TBpost',
+                    data: {
+                        author: info.author,
+                        id: info.id,
+                        subreddit: {
+                            name: info.subreddit,
+                            type: info.subredditType,
+                        },
+                    },
                 };
 
                 dispatchApiEvent(jsApiThingPlaceholder, detailObject);
             }
             // We don't want to send events for things already handled.
-            if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+            if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
-                    'type': 'TBpostAuthor',
-                    'data': {
-                        'author': info.author,
-                        'post': {
-                            'id': info.id
+                    type: 'TBpostAuthor',
+                    data: {
+                        author: info.author,
+                        post: {
+                            id: info.id,
                         },
-                        'subreddit': {
-                            'name': info.subreddit,
-                            'type': info.subredditType
-                        }
-                    }
+                        subreddit: {
+                            name: info.subreddit,
+                            type: info.subredditType,
+                        },
+                    },
                 };
 
                 dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
             }
         }
 
-        if(info.kind === 'comment') {
+        if (info.kind === 'comment') {
             // Comment
-            if(!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
+            if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
                 const detailObject = {
-                    'type': 'TBcommentOldReddit',
-                    'data': {
-                        'author': info.author,
-                        'post': {
-                            'id': info.postID
+                    type: 'TBcommentOldReddit',
+                    data: {
+                        author: info.author,
+                        post: {
+                            id: info.postID,
                         },
-                        'id': info.id,
-                        'subreddit': {
-                            'name': info.subreddit,
-                            'type': info.subredditType
-                        }
-                    }
+                        id: info.id,
+                        subreddit: {
+                            name: info.subreddit,
+                            type: info.subredditType,
+                        },
+                    },
                 };
 
                 dispatchApiEvent(jsApiThingPlaceholder, detailObject);
             }
             // Author
             // We don't want to send events for things already handled.
-            if(!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+            if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
 
                 const detailObject = {
-                    'type': 'TBcommentAuthor',
-                    'data': {
-                        'author': info.author,
-                        'post': {
-                            'id': info.postID
+                    type: 'TBcommentAuthor',
+                    data: {
+                        author: info.author,
+                        post: {
+                            id: info.postID,
                         },
-                        'comment': {
-                            'id': info.id
+                        comment: {
+                            id: info.id,
                         },
-                        'subreddit': {
-                            'name': info.subreddit,
-                            'type': info.subredditType
-                        }
-                    }
+                        subreddit: {
+                            name: info.subreddit,
+                            type: info.subredditType,
+                        },
+                    },
                 };
                 dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
             }
         }
     }
 
-    function thingCrawler() {
+    function thingCrawler () {
         const $things = $('div.content .thing:not(.tb-seen) .entry').closest('.thing');
         requestAnimationFrame(() => {
             $things.viewportChecker({
                 classToAdd: 'tb-seen',
                 offset: -100,
-                callbackFunction: function(thing) {
+                callbackFunction (thing) {
                     const $thing = $(thing);
                     const info = TBUtils.getThingInfo($thing);
-                    if(info.kind === 'submission' || info.kind === 'comment') {
+                    if (info.kind === 'submission' || info.kind === 'comment') {
                         requestAnimationFrame(() => {
                             handleThing($thing, info);
                         });
                     }
-                }
+                },
             });
 
         });
@@ -136,7 +136,7 @@ function oldReddit() {
 
     self.init = function () {
         // Looks like we are on old reddit. Activate!
-        if(TBUtils.isOldReddit) {
+        if (TBUtils.isOldReddit) {
             setTimeout(() => {
                 thingCrawler();
 

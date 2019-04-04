@@ -1,23 +1,23 @@
-function domaintagger() {
+function domaintagger () {
 
     const self = new TB.Module('Domain Tagger');
     self.shortname = 'DTagger';
     self.oldReddit = true;
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = true;
 
     self.register_setting('displayType', {
-        'type': 'selector',
-        'values': ['Title dot', 'Post border', 'Post title', 'Domain background', 'Domain border'],
-        'default': 'title_dot',
-        'title': 'Tag location'
+        type: 'selector',
+        values: ['Title dot', 'Post border', 'Post title', 'Domain background', 'Domain border'],
+        default: 'title_dot',
+        title: 'Tag location',
     });
 
-    self.init = function() {
-    //Get settings
+    self.init = function () {
+    // Get settings
         const tagType = this.setting('displayType'),
-            $body = $('body');
+              $body = $('body');
 
         $body.addClass(`tb-dt-type-${tagType}`);
 
@@ -27,10 +27,10 @@ function domaintagger() {
             run(true);
         });
 
-        function postToWiki(sub, json, reason) {
+        function postToWiki (sub, json, reason) {
             TBUtils.configCache[sub] = json;
 
-            TBUtils.postToWiki('toolbox', sub, json, reason, true, false, function done(succ, err) {
+            TBUtils.postToWiki('toolbox', sub, json, reason, true, false, function done (succ, err) {
                 if (succ) {
                     $('div.thing.link.dt-processed').removeClass('dt-processed');
                     run(false);
@@ -48,13 +48,13 @@ function domaintagger() {
 
         // Main stuff
 
-        function run(addButton) {
+        function run (addButton) {
             self.log(`run called with addButton=${addButton}`);
             let $things = $('div.thing.link').not('.dt-processed');
             const subs = {};
 
             // Mark non-mySubs as processed and remove them from collection
-            $things.filter(function() {
+            $things.filter(function () {
                 return !TBUtils.modsSub(this.dataset['subreddit']);
             }).addClass('dt-processed');
 
@@ -64,11 +64,11 @@ function domaintagger() {
             self.log('Processing things');
             self.startProfile('build-object-list');
 
-            TBUtils.forEachChunkedDynamic($things, function(thing) {
+            TBUtils.forEachChunkedDynamic($things, function (thing) {
                 self.startProfile('build-object-list-inner');
 
                 const $thing = $(thing),
-                    sub = $thing.attr('data-subreddit');
+                      sub = $thing.attr('data-subreddit');
 
                 processThing($thing, addButton);
 
@@ -94,7 +94,7 @@ function domaintagger() {
             });
         }
 
-        function processThing($thing, addButton) {
+        function processThing ($thing, addButton) {
             if (!$thing.hasClass('dt-processed')) {
                 $thing.addClass('dt-processed');
                 if (addButton) {
@@ -105,7 +105,7 @@ function domaintagger() {
             }
         }
 
-        function processSubreddit(sub, things) {
+        function processSubreddit (sub, things) {
             self.log(`  Processing subreddit: /r/${sub}`);
             TBUtils.getConfig(sub, function (config) {
                 self.log(`    Config retrieved for /r/${sub}`);
@@ -115,10 +115,10 @@ function domaintagger() {
             });
         }
 
-        function setTags(domainTags, things) {
+        function setTags (domainTags, things) {
             self.log('    Setting tags');
 
-            function applyTag($domain, d, $entry) {
+            function applyTag ($domain, d, $entry) {
                 $domain.attr('data-color', d.color);
 
                 switch (tagType) {
@@ -129,7 +129,7 @@ function domaintagger() {
                         'background-color': d.color,
                         'padding': '0 1px 1px',
                         'border-radius': '3px',
-                        'color': textColor
+                        'color': textColor,
                     });
                     $domain.find('a').css('color', textColor);
                     break;
@@ -138,17 +138,17 @@ function domaintagger() {
                     $domain.css({
                         'border': `1px solid ${d.color}`,
                         'padding': '0 1px',
-                        'border-radius': '3px'
+                        'border-radius': '3px',
                     });
                     break;
                 case 'post_title':
                     $entry.find('a.title').css({
-                        'color': d.color
+                        color: d.color,
                     });
                     break;
                 case 'post_border':
                     $entry.css({
-                        'border': `3px solid${d.color}`
+                        border: `3px solid${d.color}`,
                     });
                     break;
                 case 'title_dot':
@@ -160,7 +160,7 @@ function domaintagger() {
                     }
 
                     $span.css({
-                        'color': d.color
+                        color: d.color,
                     });
                     break;
                 }
@@ -172,11 +172,11 @@ function domaintagger() {
             TBUtils.forEachChunkedDynamic(things, function (thing) {
                 self.startProfile('set-tags-inner');
                 const $thing = $(thing),
-                    $entry = $thing.find('.entry'),
-                    $domain = $entry.find('span.domain'),
-                    domain = getThingDomain($thing),
-                    thingID = $thing.attr('data-fullname'),
-                    tagged = [];
+                      $entry = $thing.find('.entry'),
+                      $domain = $entry.find('span.domain'),
+                      domain = getThingDomain($thing),
+                      thingID = $thing.attr('data-fullname'),
+                      tagged = [];
 
                 $.each(domainTags, function (i, d) {
                 // Check if the domain ends with a tagged domain (to allow for subdomains)
@@ -190,10 +190,10 @@ function domaintagger() {
                     }
                 });
                 self.endProfile('set-tags-inner');
-                if(done) {
+                if (done) {
                     self.endProfile('set-tags');
                 }
-            }).then(function() {
+            }).then(function () {
                 done = true;
             });
         }
@@ -202,16 +202,16 @@ function domaintagger() {
 
         $body.on('click', '.add-domain-tag', function (e) {
             const $this = $(e.target),
-                $domain = $this.siblings('.domain'),
-                currentColor = TBUtils.colorNameToHex($domain.data('color') || '#cee3f8db'),
-                $thing = $this.closest('.thing'),
-                domain = getThingDomain($thing);
-                //subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
+                  $domain = $this.siblings('.domain'),
+                  currentColor = TBUtils.colorNameToHex($domain.data('color') || '#cee3f8db'),
+                  $thing = $this.closest('.thing'),
+                  domain = getThingDomain($thing);
+            // subreddit = ($thing.find('a.subreddit').text() || $('.titlebox h1.redditname a').text());
             let subreddit = $thing.data('subreddit');
 
             subreddit = TB.utils.cleanSubredditName(subreddit);
 
-            function createPopup() {
+            function createPopup () {
                 const popupContent = $('<div>').addClass('dt-popup-content').append(
                     $('<span>').addClass('dt-popup-color-content').append(
                         $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
@@ -237,7 +237,7 @@ function domaintagger() {
                     help_text: '',
                     help_url: '',
                     content: popupContent,
-                    footer: popupSave
+                    footer: popupSave,
                 }], null, 'dtagger-popup');
             }
 
@@ -245,14 +245,14 @@ function domaintagger() {
 
             // Init color selector
             const colors = [];
-            for(const c in TBui.standardColors) {
-                if(TBui.standardColors.hasOwnProperty(c)) {
+            for (const c in TBui.standardColors) {
+                if (TBui.standardColors.hasOwnProperty(c)) {
                     colors.push(TBui.standardColors[c]);
                 }
 
             }
             const colorPalette = [];
-            for(let i = 0; i < colors.length; i += 2) {
+            for (let i = 0; i < colors.length; i += 2) {
                 colorPalette.push([colors[i], colors[i + 1]]);
             }
 
@@ -260,18 +260,18 @@ function domaintagger() {
             $popup.appendTo('body');
             $popup.css({
                 left: e.pageX - 50,
-                top: e.pageY - 10
+                top: e.pageY - 10,
             });
             $popup.show();
         });
 
         $body.on('click', '.save-domain', function () {
             const popup = $(this).closest('.dtagger-popup'),
-                subreddit = popup.find('.domain-name').data('subreddit');
+                  subreddit = popup.find('.domain-name').data('subreddit');
 
             const domainTag = {
                 name: popup.find('.domain-name').val(),
-                color: popup.find('.domain-color').val()
+                color: popup.find('.domain-color').val(),
             };
 
             let config = TBUtils.config;
@@ -334,7 +334,7 @@ function domaintagger() {
 
         // Utilities
 
-        function getThingDomain($thing) {
+        function getThingDomain ($thing) {
             self.log('Getting thing domain');
             let domain = $thing.find('span.domain a').attr('href').toLowerCase();
             self.log(`  Raw = ${domain}`);

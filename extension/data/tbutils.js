@@ -1,4 +1,4 @@
-function initwrapper(userDetails, newModSubs) {
+function initwrapper (userDetails, newModSubs) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
 
@@ -10,13 +10,13 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.post_site = $('.redditname:not(.pagename) a:first').html(); // This may need to be changed to regex, if this is unreliable.
 
-        if(window.location.hostname === 'mod.reddit.com') {
+        if (window.location.hostname === 'mod.reddit.com') {
             $('body').addClass('mod-toolbox-new-modmail');
         }
 
         // new profiles have some weird css going on. This remedies the weirdness...
         window.addEventListener('TBNewPage', function (event) {
-            if(event.detail.pageType === 'userProfile') {
+            if (event.detail.pageType === 'userProfile') {
                 $('body').addClass('mod-toolbox-profile');
             } else {
                 $('body').removeClass('mod-toolbox-profile');
@@ -32,10 +32,10 @@ function initwrapper(userDetails, newModSubs) {
          * @memberof TBUtils
          * @returns {Promise} Returns the token through a promise object
          */
-        TBUtils.oauthToken = function oauthToken() {
+        TBUtils.oauthToken = function oauthToken () {
             return new Promise(function (resolve) {
                 chrome.runtime.sendMessage({action: 'oauthToken'}, resolve);
-            }).then(function(response) {
+            }).then(function (response) {
                 const responseObject = JSON.parse(response.oauthToken);
                 if (!responseObject.ERROR) {
 
@@ -63,9 +63,9 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.tempBaseDomain = window.location.hostname === 'new.reddit.com' ? 'https://new.reddit.com' : 'https://www.reddit.com';
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
-            ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
+              ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
-        //Private variables
+        // Private variables
         let modMineURL = '/subreddits/mine/moderator.json?limit=100',
             now = new Date().getTime(),
 
@@ -81,7 +81,7 @@ function initwrapper(userDetails, newModSubs) {
             newLogin = (cacheName !== TBUtils.logged),
             getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
             getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-            betaRelease = true, /// DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+            betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
             gettingModSubs = false,
             getModSubsCallbacks = [],
             invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -153,7 +153,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.isModFakereddit = location.pathname.match(/^\/r\/mod\b/) || location.pathname.match(/^\/me\/f\/mod\b/);
         TBUtils.isMod = $('body.moderator').length;
 
-        if(newModSubs && newModSubs.length > 0) {
+        if (newModSubs && newModSubs.length > 0) {
             TBUtils.mySubs = [];
             TBUtils.mySubsData = [];
             $(newModSubs).each(function () {
@@ -171,12 +171,12 @@ function initwrapper(userDetails, newModSubs) {
 
                 if (!isinthere) {
                     const subredditData = {
-                        'subreddit': sub,
-                        'subscribers': this.data.subscribers,
-                        'over18': this.data.over18,
-                        'created_utc': this.data.created_utc,
-                        'subreddit_type': this.data.subreddit_type,
-                        'submission_type': this.data.submission_type
+                        subreddit: sub,
+                        subscribers: this.data.subscribers,
+                        over18: this.data.over18,
+                        created_utc: this.data.created_utc,
+                        subreddit_type: this.data.subreddit_type,
+                        submission_type: this.data.submission_type,
                     };
 
                     TBUtils.mySubsData.push(subredditData);
@@ -197,7 +197,7 @@ function initwrapper(userDetails, newModSubs) {
         const manifest = chrome.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
-        const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2,'0')}${matchVersion[3].padStart(2,'0')}`;
+        const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`;
 
         TBUtils.toolboxVersion = `${manifest.version}${(betaRelease) ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
@@ -227,11 +227,11 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.betaRelease = betaRelease;
 
         TBUtils.browsers = {
-            CHROME: CHROME,
-            FIREFOX: FIREFOX,
-            OPERA: OPERA,
-            EDGE: EDGE,
-            UNKOWN_BROWSER: UNKOWN_BROWSER
+            CHROME,
+            FIREFOX,
+            OPERA,
+            EDGE,
+            UNKOWN_BROWSER,
         };
 
         TBUtils.browser = UNKOWN_BROWSER;
@@ -347,12 +347,12 @@ function initwrapper(userDetails, newModSubs) {
         // First run changes.
         if (TBUtils.shortVersion > lastVersion) {
 
-        // These need to happen for every version change
+            // These need to happen for every version change
             TBUtils.firstRun = true; // for use by other modules.
-            TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBUtils.shortVersion); //set last version to this version.
-            getToolboxDevs(); //always repopulate tb devs for each version change
+            TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBUtils.shortVersion); // set last version to this version.
+            getToolboxDevs(); // always repopulate tb devs for each version change
 
-            //** This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
+            //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
             // Start: version changes.
             /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
@@ -368,8 +368,8 @@ function initwrapper(userDetails, newModSubs) {
             }
 
             // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
-            //TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
-            //TBStorage.setSetting('Notifier', 'modmailCount', 0);
+            // TBStorage.setSetting('Notifier', 'lastSeenModmail', now); // don't spam 100 new mod mails on first install.
+            // TBStorage.setSetting('Notifier', 'modmailCount', 0);
             TBStorage.setSetting(SETTINGS_NAME, 'debugMode', false);
             TBStorage.setSetting(SETTINGS_NAME, 'betaMode', false);
             TBUtils.debugMode = false;
@@ -382,7 +382,7 @@ function initwrapper(userDetails, newModSubs) {
             removalReasons: '',
             modMacros: '',
             usernoteColors: '',
-            banMacros: ''
+            banMacros: '',
         };
 
         TBUtils.events = {
@@ -392,7 +392,7 @@ function initwrapper(userDetails, newModSubs) {
             TB_KILL_SNOO: 'TB_KILL_SNOO',
             TB_SAMPLE_SOUND: 'TB_SAMPLE_SOUND',
             TB_SYNTAX_SETTINGS: 'TB_SYNTAX_SETTINGS',
-            TB_UPDATE_COUNTERS: 'TB_UPDATE_COUNTERS'
+            TB_UPDATE_COUNTERS: 'TB_UPDATE_COUNTERS',
         };
 
         TBUtils.defaultUsernoteTypes = [
@@ -402,15 +402,15 @@ function initwrapper(userDetails, newModSubs) {
             {key: 'abusewarn', color: 'orange', text: 'Abuse Warning'},
             {key: 'ban', color: 'red', text: 'Ban'},
             {key: 'permban', color: 'darkred', text: 'Permanent Ban'},
-            {key: 'botban', color: 'black', text: 'Bot Ban'}
+            {key: 'botban', color: 'black', text: 'Bot Ban'},
         ];
 
         // Methods and stuff
 
         if (!String.prototype.format) {
-            String.prototype.format = function() {
+            String.prototype.format = function () {
                 const args = arguments;
-                return this.replace(/{(\d+)}/g, function(match, number) {
+                return this.replace(/{(\d+)}/g, function (match, number) {
                     return typeof args[number] !== 'undefined' ? args[number] : match;
                 });
             };
@@ -436,11 +436,11 @@ function initwrapper(userDetails, newModSubs) {
          * @memberof TBUtils
          * @returns {TBUtils.debugObject} Object with debug information
          */
-        TBUtils.debugInformation = function debugInformation() {
+        TBUtils.debugInformation = function debugInformation () {
         // Using console log so we are more likely to get this information if toolbox is failing.
             console.log('debug information for browser');
-            let debugObject = {
-                toolboxVersion : TBUtils.toolboxVersion,
+            const debugObject = {
+                toolboxVersion: TBUtils.toolboxVersion,
                 browser: '',
                 browserVersion: '',
                 platformInformation: '',
@@ -448,7 +448,7 @@ function initwrapper(userDetails, newModSubs) {
                 debugMode: TBUtils.debugMode,
                 compactMode: TBStorage.getSetting('Modbar', 'compactHide', false),
                 advancedSettings: TBUtils.advancedMode,
-                cookiesEnabled: navigator.cookieEnabled
+                cookiesEnabled: navigator.cookieEnabled,
             };
 
             const browserUserAgent = navigator.userAgent;
@@ -487,7 +487,7 @@ function initwrapper(userDetails, newModSubs) {
             case FIREFOX: {
                 const firefoxRegex = new RegExp(/\((.*?)\).*Firefox\/([0-9.]*?)$/);
                 const firefoxDerivativeRegex = new RegExp(/\((.*?)\).*(Firefox\/[0-9.].*?)$/);
-                if(firefoxRegex.test(browserUserAgent)) {
+                if (firefoxRegex.test(browserUserAgent)) {
                     browserMatchedInfo = browserUserAgent.match(firefoxRegex);
                     debugObject.browser = 'Firefox';
                     debugObject.browserVersion = browserMatchedInfo[2];
@@ -525,7 +525,7 @@ function initwrapper(userDetails, newModSubs) {
                 break;
             }
             default: {
-            // This should really never happen, but just in case I left it in.
+                // This should really never happen, but just in case I left it in.
                 debugObject.browser = 'Error in browser detection';
                 debugObject.browserVersion = 'Unknown';
                 debugObject.platformInformation = browserUserAgent;
@@ -542,13 +542,13 @@ function initwrapper(userDetails, newModSubs) {
          * @memberof TBUtils
          * @returns {array} List of toolbox devs
          */
-        TBUtils.getToolboxDevs = function getToolboxDevs() {
+        TBUtils.getToolboxDevs = function getToolboxDevs () {
             getToolboxDevs();
         };
 
         TBUtils.sendEvent = function (tbuEvent) {
             $.log(`Sending event: ${tbuEvent}`, false, SHORTNAME);
-            window.dispatchEvent( new CustomEvent(tbuEvent) );
+            window.dispatchEvent(new CustomEvent(tbuEvent));
         };
 
         TBUtils.catchEvent = function (tbuEvent, callback) {
@@ -567,8 +567,8 @@ function initwrapper(userDetails, newModSubs) {
          * @param {integer} new_index
          * @returns {array} New array with moved items
          */
-        TBUtils.moveArrayItem = function moveArrayItem(array, old_index, new_index) {
-            if ( array.length === 0 ) {
+        TBUtils.moveArrayItem = function moveArrayItem (array, old_index, new_index) {
+            if (array.length === 0) {
                 return array;
             }
             while (old_index < 0) {
@@ -594,7 +594,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {string} html input html
          * @returns {string} HTML string with escaped entities
          */
-        TBUtils.escapeHTML = function(html)
+        TBUtils.escapeHTML = function (html)
         {
             const entityMap = {
                 '&': '&amp;',
@@ -602,7 +602,7 @@ function initwrapper(userDetails, newModSubs) {
                 '>': '&gt;',
                 '"': '&quot;',
                 "'": '&#39;',
-                '/': '&#x2F;'
+                '/': '&#x2F;',
             };
 
             return String(html).replace(/[&<>"'/]/g, function (s) {
@@ -617,7 +617,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {string} html input html
          * @returns {string} HTML string with unescaped entities
          */
-        TBUtils.unescapeHTML = function(html)
+        TBUtils.unescapeHTML = function (html)
         {
             const entityMap = {
                 '&amp;': '&',
@@ -625,7 +625,7 @@ function initwrapper(userDetails, newModSubs) {
                 '&gt;': '>',
                 '&quot;': '"',
                 '&#39;': "'",
-                '&#x2F;' : '/'
+                '&#x2F;': '/',
             };
 
             return String(html).replace(/[&<>"'/]/g, function (s) {
@@ -639,7 +639,7 @@ function initwrapper(userDetails, newModSubs) {
          * @memberof TBUtils
          * @returns {integer} time value in milliseconds
          */
-        TBUtils.getTime = function() {
+        TBUtils.getTime = function () {
             return new Date().getTime();
         };
 
@@ -650,7 +650,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {integer} maxInt Max integer
          * @returns {integer} random number
          */
-        TBUtils.getRandomNumber = function(maxInt) {
+        TBUtils.getRandomNumber = function (maxInt) {
             return Math.floor((Math.random() * maxInt) + 1);
         };
 
@@ -721,7 +721,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {Date} newdate
          * @returns {string} Formatted date difference
          */
-        TBUtils.niceDateDiff = function(origdate, newdate) {
+        TBUtils.niceDateDiff = function (origdate, newdate) {
             // Enter the month, day, and year below you want to use as
             // the starting point for the date calculation
             if (!newdate) {
@@ -864,11 +864,11 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.title_to_url = function (title) {
             const max_length = 50;
 
-            title = title.replace(/\s+/g, '_'); //remove whitespace
-            title = title.replace(/\W+/g, ''); //remove non-printables
-            title = title.replace(/_+/g, '_'); //remove double underscores
-            title = title.replace(/^_+|_+$/g, ''); //remove trailing underscores
-            title = title.toLowerCase(); //lowercase the title
+            title = title.replace(/\s+/g, '_'); // remove whitespace
+            title = title.replace(/\W+/g, ''); // remove non-printables
+            title = title.replace(/_+/g, '_'); // remove double underscores
+            title = title.replace(/^_+|_+$/g, ''); // remove trailing underscores
+            title = title.toLowerCase(); // lowercase the title
 
             if (title.length > max_length) {
                 title = title.substr(0, max_length);
@@ -901,7 +901,7 @@ function initwrapper(userDetails, newModSubs) {
          * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
          */
         TBUtils.alert = function (message, callback, showClose) {
-            let $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
+            const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
                 $noteDiv.append(`<i class="note-close tb-icons" title="Close">close</i>`);
             }
@@ -920,9 +920,9 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.showNote = function (note) {
             if (!note.id || !note.text) return;
 
-            function show() {
+            function show () {
                 if ($.inArray(note.id, seenNotes) === -1) {
-                //TBStorage.setSetting(SETTINGS_NAME, 'noteLastShown', now);
+                // TBStorage.setSetting(SETTINGS_NAME, 'noteLastShown', now);
 
                     TBUtils.alert(note.text, function (resp) {
                         seenNotes.push(note.id);
@@ -932,7 +932,7 @@ function initwrapper(userDetails, newModSubs) {
                 }
             }
 
-            //platform check.
+            // platform check.
             switch (note.platform) {
             case 'firefox':
                 if (TBUtils.browser === FIREFOX && TBUtils.isExtension) show();
@@ -973,26 +973,26 @@ function initwrapper(userDetails, newModSubs) {
 
             // check if notifications are enabled. When they are not we simply abort the function.
             if (toolboxnotificationenabled === false) {
-            //console.log('notifications disabled, stopping function');
+            // console.log('notifications disabled, stopping function');
                 return;
             }
 
             chrome.runtime.sendMessage({
                 action: 'tb-notification',
                 details: {
-                    title: title,
-                    body: body,
+                    title,
+                    body,
                     baseDomain: TBUtils.tempBaseDomain,
-                    url: url,
+                    url,
                     modHash: TBUtils.modhash,
-                    markreadid: markreadid ? markreadid : false
-                }
-            }, function(response) {
-                if(response.permission === `denied`) {
+                    markreadid: markreadid ? markreadid : false,
+                },
+            }, function (response) {
+                if (response.permission === `denied`) {
                     // They have the option enabled, but won't grant permissions, so fall back.
                     body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
                     body = body.substring(0, 600);
-                    $.sticky(`<p>${body}</p>`, title, url, {'autoclose': timeout, 'markreadid': markreadid});
+                    $.sticky(`<p>${body}</p>`, title, url, {autoclose: timeout, markreadid});
                 }
             });
         };
@@ -1006,14 +1006,14 @@ function initwrapper(userDetails, newModSubs) {
          */
         TBUtils.humaniseDays = function (days) {
             let str = '';
-            let values = {
+            const values = {
                 ' year': 365,
                 ' month': 30,
                 ' week': 7,
-                ' day': 1
+                ' day': 1,
             };
 
-            for (let x in values) {
+            for (const x in values) {
                 const amount = Math.floor(days / values[x]);
 
                 if (amount >= 1) {
@@ -1025,9 +1025,9 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         /** @todo properly describe what this does */
-        TBUtils.stringFormat = function(format) {
+        TBUtils.stringFormat = function (format) {
             const args = Array.prototype.slice.call(arguments, 1);
-            return format.replace(/{(\d+)}/g, function(match, number) {
+            return format.replace(/{(\d+)}/g, function (match, number) {
                 return typeof args[number] !== 'undefined' ? args[number] : match;
             });
         };
@@ -1039,7 +1039,7 @@ function initwrapper(userDetails, newModSubs) {
          * @param {array} arr input array
          * @param {string} prop property name
          */
-        function sortBy(arr, prop) {
+        function sortBy (arr, prop) {
             return arr.sort(function (a, b) {
                 if (a[prop] < b[prop]) return 1;
                 if (a[prop] > b[prop]) return -1;
@@ -1059,7 +1059,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.getHead = function (url, doneCallback) {
             $.ajax({
                 type: 'HEAD',
-                url: TBUtils.baseDomain + url
+                url: TBUtils.baseDomain + url,
             })
                 .done(function (data, status, jqxhr) {
                 // data isn't needed; just the tip
@@ -1073,7 +1073,7 @@ function initwrapper(userDetails, newModSubs) {
          * @memberof TBUtils
          * @param {array} arr input array
          */
-        function saneSort(arr) {
+        function saneSort (arr) {
             return arr.sort(function (a, b) {
                 if (a.toLowerCase() < b.toLowerCase()) return -1;
                 if (a.toLowerCase() > b.toLowerCase()) return 1;
@@ -1117,162 +1117,162 @@ function initwrapper(userDetails, newModSubs) {
          * @param {string} color input color
          * @returns {string} if a match is found the HEX color, otherwise the input string.
          */
-        TBUtils.colorNameToHex = function(color) {
+        TBUtils.colorNameToHex = function (color) {
             const colorUPPERCASE = color.toUpperCase();
             let returnValue;
 
             const htmlColors = {
-                'ALICEBLUE' : '#F0F8FF',
-                'ANTIQUEWHITE' : '#FAEBD7',
-                'AQUA' : '#00FFFF',
-                'AQUAMARINE' : '#7FFFD4',
-                'AZURE' : '#F0FFFF',
-                'BEIGE' : '#F5F5DC',
-                'BISQUE' : '#FFE4C4',
-                'BLACK' : '#000000',
-                'BLANCHEDALMOND' : '#FFEBCD',
-                'BLUE' : '#0000FF',
-                'BLUEVIOLET' : '#8A2BE2',
-                'BROWN' : '#A52A2A',
-                'BURLYWOOD' : '#DEB887',
-                'CADETBLUE' : '#5F9EA0',
-                'CHARTREUSE' : '#7FFF00',
-                'CHOCOLATE' : '#D2691E',
-                'CORAL' : '#FF7F50',
-                'CORNFLOWERBLUE' : '#6495ED',
-                'CORNSILK' : '#FFF8DC',
-                'CRIMSON' : '#DC143C',
-                'CYAN' : '#00FFFF',
-                'DARKBLUE' : '#00008B',
-                'DARKCYAN' : '#008B8B',
-                'DARKGOLDENROD' : '#B8860B',
-                'DARKGRAY' : '#A9A9A9',
-                'DARKGREY' : '#A9A9A9',
-                'DARKGREEN' : '#006400',
-                'DARKKHAKI' : '#BDB76B',
-                'DARKMAGENTA' : '#8B008B',
-                'DARKOLIVEGREEN' : '#556B2F',
-                'DARKORANGE' : '#FF8C00',
-                'DARKORCHID' : '#9932CC',
-                'DARKRED' : '#8B0000',
-                'DARKSALMON' : '#E9967A',
-                'DARKSEAGREEN' : '#8FBC8F',
-                'DARKSLATEBLUE' : '#483D8B',
-                'DARKSLATEGRAY' : '#2F4F4F',
-                'DARKSLATEGREY' : '#2F4F4F',
-                'DARKTURQUOISE' : '#00CED1',
-                'DARKVIOLET' : '#9400D3',
-                'DEEPPINK' : '#FF1493',
-                'DEEPSKYBLUE' : '#00BFFF',
-                'DIMGRAY' : '#696969',
-                'DIMGREY' : '#696969',
-                'DODGERBLUE' : '#1E90FF',
-                'FIREBRICK' : '#B22222',
-                'FLORALWHITE' : '#FFFAF0',
-                'FORESTGREEN' : '#228B22',
-                'FUCHSIA' : '#FF00FF',
-                'GAINSBORO' : '#DCDCDC',
-                'GHOSTWHITE' : '#F8F8FF',
-                'GOLD' : '#FFD700',
-                'GOLDENROD' : '#DAA520',
-                'GRAY' : '#808080',
-                'GREY' : '#808080',
-                'GREEN' : '#008000',
-                'GREENYELLOW' : '#ADFF2F',
-                'HONEYDEW' : '#F0FFF0',
-                'HOTPINK' : '#FF69B4',
-                'INDIANRED ' : '#CD5C5C',
-                'INDIGO ' : '#4B0082',
-                'IVORY' : '#FFFFF0',
-                'KHAKI' : '#F0E68C',
-                'LAVENDER' : '#E6E6FA',
-                'LAVENDERBLUSH' : '#FFF0F5',
-                'LAWNGREEN' : '#7CFC00',
-                'LEMONCHIFFON' : '#FFFACD',
-                'LIGHTBLUE' : '#ADD8E6',
-                'LIGHTCORAL' : '#F08080',
-                'LIGHTCYAN' : '#E0FFFF',
-                'LIGHTGOLDENRODYELLOW' : '#FAFAD2',
-                'LIGHTGRAY' : '#D3D3D3',
-                'LIGHTGREY' : '#D3D3D3',
-                'LIGHTGREEN' : '#90EE90',
-                'LIGHTPINK' : '#FFB6C1',
-                'LIGHTSALMON' : '#FFA07A',
-                'LIGHTSEAGREEN' : '#20B2AA',
-                'LIGHTSKYBLUE' : '#87CEFA',
-                'LIGHTSLATEGRAY' : '#778899',
-                'LIGHTSLATEGREY' : '#778899',
-                'LIGHTSTEELBLUE' : '#B0C4DE',
-                'LIGHTYELLOW' : '#FFFFE0',
-                'LIME' : '#00FF00',
-                'LIMEGREEN' : '#32CD32',
-                'LINEN' : '#FAF0E6',
-                'MAGENTA' : '#FF00FF',
-                'MAROON' : '#800000',
-                'MEDIUMAQUAMARINE' : '#66CDAA',
-                'MEDIUMBLUE' : '#0000CD',
-                'MEDIUMORCHID' : '#BA55D3',
-                'MEDIUMPURPLE' : '#9370DB',
-                'MEDIUMSEAGREEN' : '#3CB371',
-                'MEDIUMSLATEBLUE' : '#7B68EE',
-                'MEDIUMSPRINGGREEN' : '#00FA9A',
-                'MEDIUMTURQUOISE' : '#48D1CC',
-                'MEDIUMVIOLETRED' : '#C71585',
-                'MIDNIGHTBLUE' : '#191970',
-                'MINTCREAM' : '#F5FFFA',
-                'MISTYROSE' : '#FFE4E1',
-                'MOCCASIN' : '#FFE4B5',
-                'NAVAJOWHITE' : '#FFDEAD',
-                'NAVY' : '#000080',
-                'OLDLACE' : '#FDF5E6',
-                'OLIVE' : '#808000',
-                'OLIVEDRAB' : '#6B8E23',
-                'ORANGE' : '#FFA500',
-                'ORANGERED' : '#FF4500',
-                'ORCHID' : '#DA70D6',
-                'PALEGOLDENROD' : '#EEE8AA',
-                'PALEGREEN' : '#98FB98',
-                'PALETURQUOISE' : '#AFEEEE',
-                'PALEVIOLETRED' : '#DB7093',
-                'PAPAYAWHIP' : '#FFEFD5',
-                'PEACHPUFF' : '#FFDAB9',
-                'PERU' : '#CD853F',
-                'PINK' : '#FFC0CB',
-                'PLUM' : '#DDA0DD',
-                'POWDERBLUE' : '#B0E0E6',
-                'PURPLE' : '#800080',
-                'REBECCAPURPLE' : '#663399',
-                'RED' : '#FF0000',
-                'ROSYBROWN' : '#BC8F8F',
-                'ROYALBLUE' : '#4169E1',
-                'SADDLEBROWN' : '#8B4513',
-                'SALMON' : '#FA8072',
-                'SANDYBROWN' : '#F4A460',
-                'SEAGREEN' : '#2E8B57',
-                'SEASHELL' : '#FFF5EE',
-                'SIENNA' : '#A0522D',
-                'SILVER' : '#C0C0C0',
-                'SKYBLUE' : '#87CEEB',
-                'SLATEBLUE' : '#6A5ACD',
-                'SLATEGRAY' : '#708090',
-                'SLATEGREY' : '#708090',
-                'SNOW' : '#FFFAFA',
-                'SPRINGGREEN' : '#00FF7F',
-                'STEELBLUE' : '#4682B4',
-                'TAN' : '#D2B48C',
-                'TEAL' : '#008080',
-                'THISTLE' : '#D8BFD8',
-                'TOMATO' : '#FF6347',
-                'TURQUOISE' : '#40E0D0',
-                'VIOLET' : '#EE82EE',
-                'WHEAT' : '#F5DEB3',
-                'WHITE' : '#FFFFFF',
-                'WHITESMOKE' : '#F5F5F5',
-                'YELLOW' : '#FFFF00',
-                'YELLOWGREEN' : '#9ACD32'
+                'ALICEBLUE': '#F0F8FF',
+                'ANTIQUEWHITE': '#FAEBD7',
+                'AQUA': '#00FFFF',
+                'AQUAMARINE': '#7FFFD4',
+                'AZURE': '#F0FFFF',
+                'BEIGE': '#F5F5DC',
+                'BISQUE': '#FFE4C4',
+                'BLACK': '#000000',
+                'BLANCHEDALMOND': '#FFEBCD',
+                'BLUE': '#0000FF',
+                'BLUEVIOLET': '#8A2BE2',
+                'BROWN': '#A52A2A',
+                'BURLYWOOD': '#DEB887',
+                'CADETBLUE': '#5F9EA0',
+                'CHARTREUSE': '#7FFF00',
+                'CHOCOLATE': '#D2691E',
+                'CORAL': '#FF7F50',
+                'CORNFLOWERBLUE': '#6495ED',
+                'CORNSILK': '#FFF8DC',
+                'CRIMSON': '#DC143C',
+                'CYAN': '#00FFFF',
+                'DARKBLUE': '#00008B',
+                'DARKCYAN': '#008B8B',
+                'DARKGOLDENROD': '#B8860B',
+                'DARKGRAY': '#A9A9A9',
+                'DARKGREY': '#A9A9A9',
+                'DARKGREEN': '#006400',
+                'DARKKHAKI': '#BDB76B',
+                'DARKMAGENTA': '#8B008B',
+                'DARKOLIVEGREEN': '#556B2F',
+                'DARKORANGE': '#FF8C00',
+                'DARKORCHID': '#9932CC',
+                'DARKRED': '#8B0000',
+                'DARKSALMON': '#E9967A',
+                'DARKSEAGREEN': '#8FBC8F',
+                'DARKSLATEBLUE': '#483D8B',
+                'DARKSLATEGRAY': '#2F4F4F',
+                'DARKSLATEGREY': '#2F4F4F',
+                'DARKTURQUOISE': '#00CED1',
+                'DARKVIOLET': '#9400D3',
+                'DEEPPINK': '#FF1493',
+                'DEEPSKYBLUE': '#00BFFF',
+                'DIMGRAY': '#696969',
+                'DIMGREY': '#696969',
+                'DODGERBLUE': '#1E90FF',
+                'FIREBRICK': '#B22222',
+                'FLORALWHITE': '#FFFAF0',
+                'FORESTGREEN': '#228B22',
+                'FUCHSIA': '#FF00FF',
+                'GAINSBORO': '#DCDCDC',
+                'GHOSTWHITE': '#F8F8FF',
+                'GOLD': '#FFD700',
+                'GOLDENROD': '#DAA520',
+                'GRAY': '#808080',
+                'GREY': '#808080',
+                'GREEN': '#008000',
+                'GREENYELLOW': '#ADFF2F',
+                'HONEYDEW': '#F0FFF0',
+                'HOTPINK': '#FF69B4',
+                'INDIANRED ': '#CD5C5C',
+                'INDIGO ': '#4B0082',
+                'IVORY': '#FFFFF0',
+                'KHAKI': '#F0E68C',
+                'LAVENDER': '#E6E6FA',
+                'LAVENDERBLUSH': '#FFF0F5',
+                'LAWNGREEN': '#7CFC00',
+                'LEMONCHIFFON': '#FFFACD',
+                'LIGHTBLUE': '#ADD8E6',
+                'LIGHTCORAL': '#F08080',
+                'LIGHTCYAN': '#E0FFFF',
+                'LIGHTGOLDENRODYELLOW': '#FAFAD2',
+                'LIGHTGRAY': '#D3D3D3',
+                'LIGHTGREY': '#D3D3D3',
+                'LIGHTGREEN': '#90EE90',
+                'LIGHTPINK': '#FFB6C1',
+                'LIGHTSALMON': '#FFA07A',
+                'LIGHTSEAGREEN': '#20B2AA',
+                'LIGHTSKYBLUE': '#87CEFA',
+                'LIGHTSLATEGRAY': '#778899',
+                'LIGHTSLATEGREY': '#778899',
+                'LIGHTSTEELBLUE': '#B0C4DE',
+                'LIGHTYELLOW': '#FFFFE0',
+                'LIME': '#00FF00',
+                'LIMEGREEN': '#32CD32',
+                'LINEN': '#FAF0E6',
+                'MAGENTA': '#FF00FF',
+                'MAROON': '#800000',
+                'MEDIUMAQUAMARINE': '#66CDAA',
+                'MEDIUMBLUE': '#0000CD',
+                'MEDIUMORCHID': '#BA55D3',
+                'MEDIUMPURPLE': '#9370DB',
+                'MEDIUMSEAGREEN': '#3CB371',
+                'MEDIUMSLATEBLUE': '#7B68EE',
+                'MEDIUMSPRINGGREEN': '#00FA9A',
+                'MEDIUMTURQUOISE': '#48D1CC',
+                'MEDIUMVIOLETRED': '#C71585',
+                'MIDNIGHTBLUE': '#191970',
+                'MINTCREAM': '#F5FFFA',
+                'MISTYROSE': '#FFE4E1',
+                'MOCCASIN': '#FFE4B5',
+                'NAVAJOWHITE': '#FFDEAD',
+                'NAVY': '#000080',
+                'OLDLACE': '#FDF5E6',
+                'OLIVE': '#808000',
+                'OLIVEDRAB': '#6B8E23',
+                'ORANGE': '#FFA500',
+                'ORANGERED': '#FF4500',
+                'ORCHID': '#DA70D6',
+                'PALEGOLDENROD': '#EEE8AA',
+                'PALEGREEN': '#98FB98',
+                'PALETURQUOISE': '#AFEEEE',
+                'PALEVIOLETRED': '#DB7093',
+                'PAPAYAWHIP': '#FFEFD5',
+                'PEACHPUFF': '#FFDAB9',
+                'PERU': '#CD853F',
+                'PINK': '#FFC0CB',
+                'PLUM': '#DDA0DD',
+                'POWDERBLUE': '#B0E0E6',
+                'PURPLE': '#800080',
+                'REBECCAPURPLE': '#663399',
+                'RED': '#FF0000',
+                'ROSYBROWN': '#BC8F8F',
+                'ROYALBLUE': '#4169E1',
+                'SADDLEBROWN': '#8B4513',
+                'SALMON': '#FA8072',
+                'SANDYBROWN': '#F4A460',
+                'SEAGREEN': '#2E8B57',
+                'SEASHELL': '#FFF5EE',
+                'SIENNA': '#A0522D',
+                'SILVER': '#C0C0C0',
+                'SKYBLUE': '#87CEEB',
+                'SLATEBLUE': '#6A5ACD',
+                'SLATEGRAY': '#708090',
+                'SLATEGREY': '#708090',
+                'SNOW': '#FFFAFA',
+                'SPRINGGREEN': '#00FF7F',
+                'STEELBLUE': '#4682B4',
+                'TAN': '#D2B48C',
+                'TEAL': '#008080',
+                'THISTLE': '#D8BFD8',
+                'TOMATO': '#FF6347',
+                'TURQUOISE': '#40E0D0',
+                'VIOLET': '#EE82EE',
+                'WHEAT': '#F5DEB3',
+                'WHITE': '#FFFFFF',
+                'WHITESMOKE': '#F5F5F5',
+                'YELLOW': '#FFFF00',
+                'YELLOWGREEN': '#9ACD32',
             };
 
-            if(htmlColors.hasOwnProperty(colorUPPERCASE)) {
+            if (htmlColors.hasOwnProperty(colorUPPERCASE)) {
                 returnValue = htmlColors[colorUPPERCASE];
             } else {
                 returnValue = color;
@@ -1289,7 +1289,7 @@ function initwrapper(userDetails, newModSubs) {
          */
         TBUtils.removeLastDirectoryPartOf = function (url) {
             const urlNoSlash = url.replace(/\/$/, '');
-            let array = urlNoSlash.split('/');
+            const array = urlNoSlash.split('/');
             array.pop();
             const returnValue = `${array.join('/')}/`;
             return returnValue;
@@ -1345,7 +1345,7 @@ function initwrapper(userDetails, newModSubs) {
                 callback();
             }
 
-            function getSubs(URL) {
+            function getSubs (URL) {
                 $.getJSON(TBUtils.baseDomain + URL, function (json) {
                     TBStorage.purifyObject(json);
                     getSubsResult(json.data.children, json.data.after);
@@ -1353,7 +1353,7 @@ function initwrapper(userDetails, newModSubs) {
             }
 
             // Callback because reddits/mod/mine is paginated.
-            function getSubsResult(subs, after) {
+            function getSubsResult (subs, after) {
                 $(subs).each(function () {
                     const sub = this.data.display_name.trim();
                     if ($.inArray(sub, TBUtils.mySubs) === -1) {
@@ -1369,12 +1369,12 @@ function initwrapper(userDetails, newModSubs) {
 
                     if (!isinthere) {
                         const subredditData = {
-                            'subreddit': sub,
-                            'subscribers': this.data.subscribers,
-                            'over18': this.data.over18,
-                            'created_utc': this.data.created_utc,
-                            'subreddit_type': this.data.subreddit_type,
-                            'submission_type': this.data.submission_type
+                            subreddit: sub,
+                            subscribers: this.data.subscribers,
+                            over18: this.data.over18,
+                            created_utc: this.data.created_utc,
+                            subreddit_type: this.data.subreddit_type,
+                            submission_type: this.data.submission_type,
                         };
 
                         TBUtils.mySubsData.push(subredditData);
@@ -1406,11 +1406,11 @@ function initwrapper(userDetails, newModSubs) {
             }
         };
 
-        TBUtils.modSubCheck = function(callback) {
+        TBUtils.modSubCheck = function (callback) {
             TBUtils.getModSubs(function () {
                 const subCount = TBUtils.mySubsData.length;
                 let subscriberCount = 0;
-                TBUtils.mySubsData.forEach(function(subreddit) {
+                TBUtils.mySubsData.forEach(function (subreddit) {
                     subscriberCount += subreddit.subscribers;
                 });
                 subscriberCount -= subCount;
@@ -1427,14 +1427,14 @@ function initwrapper(userDetails, newModSubs) {
             return $.inArray(subreddit, TBUtils.mySubs) > -1;
         };
 
-        TBUtils.getHashParameter = function(ParameterKey)
+        TBUtils.getHashParameter = function (ParameterKey)
         {
-            let hash = window.location.hash.substring(1);
-            let params = hash.split('&');
+            const hash = window.location.hash.substring(1);
+            const params = hash.split('&');
             for (let i = 0; i < params.length; i++)
             {
-                let keyval = params[i].split('='),
-                    key = keyval[0].replace('?','');
+                const keyval = params[i].split('='),
+                      key = keyval[0].replace('?', '');
                 if (key === ParameterKey)
                 {
                     return keyval[1];
@@ -1449,8 +1449,8 @@ function initwrapper(userDetails, newModSubs) {
             const permaLinkInfoRegex = /\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
 
             // declare what we will need.
-            let $sender = $(sender);
-            let $body = $('body');
+            const $sender = $(sender);
+            const $body = $('body');
 
             let subreddit,
                 permalink,
@@ -1535,8 +1535,8 @@ function initwrapper(userDetails, newModSubs) {
                 // Change it to use the parent's title.
                     title = $sender.find('.subject-text:first').text();
                     subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
-                    //This is a weird palce to go about this, and the conditions are strange,
-                    //but if we're going to assume we're us, we better make damned well sure that is likely the case.
+                    // This is a weird palce to go about this, and the conditions are strange,
+                    // but if we're going to assume we're us, we better make damned well sure that is likely the case.
                     // if ($entry.find('.remove-button').text() === '') {
                     // The previous check would mistakenly catch removed modmail messages as the user's messages.
                     // This check should be safe, since the only time we get no username in modmail is the user's own message. -dakta
@@ -1576,7 +1576,7 @@ function initwrapper(userDetails, newModSubs) {
 
             // If the permalink is relative, stick the current domain name in.
             // Only do so if a permalink is found.
-            if (permalink && permalink.slice(0,1) === '/')
+            if (permalink && permalink.slice(0, 1) === '/')
             {
                 permalink = TBUtils.baseDomain + permalink;
             }
@@ -1587,57 +1587,57 @@ function initwrapper(userDetails, newModSubs) {
                 permalink = permalink.replace(permaCommentLinkRegex, '$1-$3');
             }
 
-            let info = {
-                subreddit: subreddit,
-                subredditType: subredditType,
-                user: user,
+            const info = {
+                subreddit,
+                subredditType,
+                user,
                 author: user,
-                permalink: permalink,
+                permalink,
                 url: permalink,
-                domain: domain,
-                id: id,
+                domain,
+                id,
                 postID: postID || '',
                 body: `> ${body.split('\n').join('\n> ')}`,
                 raw_body: body,
                 uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
-                approved_by: approved_by,
-                title: title,
+                approved_by,
+                title,
                 uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
-                kind: kind,
-                postlink: postlink,
+                kind,
+                postlink,
                 link: postlink,
-                banned_by: banned_by,
-                spam: spam,
-                ham: ham,
+                banned_by,
+                spam,
+                ham,
                 rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
                 sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
                 wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                mod: TBUtils.logged
+                mod: TBUtils.logged,
             };
 
             return info;
         };
 
-        function findMessage(object, searchID) {
+        function findMessage (object, searchID) {
             let found;
             switch (object.kind) {
             case 'Listing':
                 for (let i = 0; i < object.data.children.length; i++) {
                     const childFound = findMessage(object.data.children[i], searchID);
-                    if(childFound) {
+                    if (childFound) {
                         found = childFound;
                     }
                 }
                 break;
             case 't4':
                 console.log('t4:', object.data.id);
-                if(object.data.id === searchID) {
+                if (object.data.id === searchID) {
                     found = object;
                 }
 
                 if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
                     const childFound = findMessage(object.data.replies, searchID); // we need to go deeper.
-                    if(childFound) {
+                    if (childFound) {
                         found = childFound;
                     }
                 }
@@ -1649,15 +1649,15 @@ function initwrapper(userDetails, newModSubs) {
         }
 
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
-            if(id.startsWith('t4_')) {
+            if (id.startsWith('t4_')) {
                 const shortID = id.substr(3);
                 $.get(`${TBUtils.baseDomain}/message/messages/${shortID}.json`, function (response) {
                     TBStorage.purifyObject(response);
                     const message = findMessage(response, shortID);
                     const body = message.data.body,
-                        user = message.data.author,
-                        title = message.data.subject,
-                        permalink = `/message/messages/${shortID}`;
+                          user = message.data.author,
+                          title = message.data.subject,
+                          permalink = `/message/messages/${shortID}`;
 
                     let subreddit = message.data.subreddit || '';
 
@@ -1666,18 +1666,18 @@ function initwrapper(userDetails, newModSubs) {
                     }
 
                     const info = {
-                        subreddit: subreddit,
-                        user: user,
+                        subreddit,
+                        user,
                         author: user,
-                        permalink: permalink,
+                        permalink,
                         url: permalink,
                         domain: '',
-                        id: id,
+                        id,
                         body: `> ${body.split('\n').join('\n> ')}`,
                         raw_body: body,
                         uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
                         approved_by: '',
-                        title: title,
+                        title,
                         uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
                         kind: 'comment',
                         postlink: '',
@@ -1688,22 +1688,22 @@ function initwrapper(userDetails, newModSubs) {
                         rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
                         sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
                         wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                        mod: TBUtils.logged
+                        mod: TBUtils.logged,
                     };
 
                     callback(info);
                 });
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-                $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id: id}, function (response) {
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id}, function (response) {
                     TBStorage.purifyObject(response);
                     const data = response.data;
 
                     let user = data.children[0].data.author;
-                    let body = data.children[0].data.body || '';
+                    const body = data.children[0].data.body || '';
                     let permalink = data.children[0].data.permalink;
-                    let title = data.children[0].data.title || '';
-                    let postlink = data.children[0].data.url || '';
+                    const title = data.children[0].data.title || '';
+                    const postlink = data.children[0].data.url || '';
                     // A recent reddit change makes subreddit names sometimes start with "/r/".
                     // Mod mail subreddit names additionally end with "/".
                     // reddit pls, need consistency
@@ -1720,7 +1720,7 @@ function initwrapper(userDetails, newModSubs) {
 
                     // If the permalink is relative, stick the current domain name in.
                     // Only do so if a permalink is found.
-                    if (permalink && permalink.slice(0,1) === '/')
+                    if (permalink && permalink.slice(0, 1) === '/')
                     {
                         permalink = TBUtils.baseDomain + permalink;
                     }
@@ -1734,21 +1734,21 @@ function initwrapper(userDetails, newModSubs) {
                     }
 
                     const info = {
-                        subreddit: subreddit,
-                        user: user,
+                        subreddit,
+                        user,
                         author: user,
-                        permalink: permalink,
+                        permalink,
                         url: permalink,
                         domain: data.children[0].data.domain || '',
-                        id: id,
+                        id,
                         body: `> ${body.split('\n').join('\n> ')}`,
                         raw_body: body,
                         uri_body: encodeURIComponent(body).replace(/\)/g, '\\)'),
                         approved_by: data.children[0].data.approved_by,
-                        title: title,
+                        title,
                         uri_title: encodeURIComponent(title).replace(/\)/g, '\\)'),
                         kind: data.children[0].kind === 't3' ? 'submission' : 'comment',
-                        postlink: postlink,
+                        postlink,
                         link: postlink,
                         banned_by: data.children[0].data.banned_by,
                         spam: data.children[0].data.spam,
@@ -1756,7 +1756,7 @@ function initwrapper(userDetails, newModSubs) {
                         rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
                         sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
                         wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
-                        mod: TBUtils.logged
+                        mod: TBUtils.logged,
                     };
                     callback(info);
                 });
@@ -1765,7 +1765,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.replaceTokens = function (info, content) {
             $.log(info, false, SHORTNAME);
-            for (let i in info) {
+            for (const i in info) {
                 const pattern = new RegExp(`{${i}}`, 'mig');
                 content = content.replace(pattern, info[i]);
             }
@@ -1781,7 +1781,7 @@ function initwrapper(userDetails, newModSubs) {
             if (call === null) finish();
             let counter = 0;
 
-            function doChunk() {
+            function doChunk () {
                 if (counter === 0 && start) {
                     start();
                 }
@@ -1799,7 +1799,7 @@ function initwrapper(userDetails, newModSubs) {
 
             window.setTimeout(doChunk, delay);
 
-            function finish() {
+            function finish () {
                 return complete ? complete() : false;
             }
         };
@@ -1819,7 +1819,7 @@ function initwrapper(userDetails, newModSubs) {
                 chunkSize = length;
             }
 
-            function doChunk() {
+            function doChunk () {
                 if (counter === 0 && start) {
                     start();
                 }
@@ -1835,7 +1835,7 @@ function initwrapper(userDetails, newModSubs) {
                 }
             }
 
-            function timer(count, $body, ratelimitRemaining) {
+            function timer (count, $body, ratelimitRemaining) {
                 count = count - 1;
                 if (count <= 0) {
                     $body.find('#ratelimit-counter').empty();
@@ -1854,13 +1854,13 @@ function initwrapper(userDetails, newModSubs) {
                 return count;
             }
 
-            function getRatelimit() {
-            //return doChunk();
+            function getRatelimit () {
+            // return doChunk();
                 TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
                     function (status, jqxhr) {
-                        let $body = $('body'),
-                            ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
-                            ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+                        const $body = $('body'),
+                              ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
+                              ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                         $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                         if (!$body.find('#ratelimit-counter').length) {
@@ -1872,7 +1872,7 @@ function initwrapper(userDetails, newModSubs) {
                             let count = parseInt(ratelimitReset),
                                 counter = 0;
 
-                            counter = setInterval(function() {
+                            counter = setInterval(function () {
                                 count = timer(count, $body, ratelimitRemaining);
                                 if (count <= 0) {
                                     clearInterval(counter);
@@ -1888,42 +1888,42 @@ function initwrapper(userDetails, newModSubs) {
 
             getRatelimit();
 
-            function finish() {
+            function finish () {
                 return complete ? complete() : false;
             }
         };
 
-        TBUtils.forEachChunkedDynamic = function(array, process, options) {
-            if(typeof process !== 'function') return;
+        TBUtils.forEachChunkedDynamic = function (array, process, options) {
+            if (typeof process !== 'function') return;
             let arr = Array.from(array),
                 start,
                 stop,
                 fr,
                 started = false,
                 opt = Object.assign({
-                    size: 25, //starting size
-                    framerate: 30, //target framerate
-                    nerf: 0.9, //Be careful with this one
+                    size: 25, // starting size
+                    framerate: 30, // target framerate
+                    nerf: 0.9, // Be careful with this one
                 }, options),
                 size = opt.size,
                 nerf = opt.nerf,
                 framerate = opt.framerate,
 
-                now = function() { return window.performance.now(); },
+                now = function () { return window.performance.now(); },
 
                 again = (typeof window.requestAnimationFrame === 'function') ?
-                    function(callback) { window.requestAnimationFrame(callback); } :
-                    function(callback) { setTimeout(callback, 1000 / opt.framerate); },
+                    function (callback) { window.requestAnimationFrame(callback); } :
+                    function (callback) { setTimeout(callback, 1000 / opt.framerate); },
 
-                optimize = function() {
+                optimize = function () {
                     stop = now();
                     fr = 1000 / (stop - start);
                     size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
                     return (start = stop);
                 };
 
-            return new Promise(function(resolve) {
-                let doChunk = function() {
+            return new Promise(function (resolve) {
+                const doChunk = function () {
                     if (started) {
                         optimize();
                     } else {
@@ -1932,11 +1932,11 @@ function initwrapper(userDetails, newModSubs) {
 
                     arr.splice(0, size).forEach(process);
 
-                    if (arr.length) return again( doChunk );
+                    if (arr.length) return again(doChunk);
                     return resolve(array);
                 };
                 start = now();
-                again( doChunk );
+                again(doChunk);
             });
         };
 
@@ -1966,25 +1966,25 @@ function initwrapper(userDetails, newModSubs) {
         //     console.log(error)
         // });
 
-        TBUtils.apiOauthPOST = function apiOauthPost(endpoint, data) {
+        TBUtils.apiOauthPOST = function apiOauthPost (endpoint, data) {
             // let's fetch the token we need first.
-            return TBUtils.oauthToken().then(function(token) {
+            return TBUtils.oauthToken().then(function (token) {
                 return $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'POST',
-                    data: data,
-                    beforeSend: function(xhr) {xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).then(function(data, textStatus, jqXHR) {
+                    data,
+                    beforeSend (xhr) {xhr.setRequestHeader('Authorization', `bearer ${token}`);},
+                }).then(function (data, textStatus, jqXHR) {
                     return {
-                        data: data,
-                        textStatus: textStatus,
-                        jqXHR: jqXHR
+                        data,
+                        textStatus,
+                        jqXHR,
                     };
-                }, function(jqXHR, textStatus, errorThrown) {
+                }, function (jqXHR, textStatus, errorThrown) {
                     throw {
-                        jqXHR: jqXHR,
-                        textStatus: textStatus,
-                        errorThrown: errorThrown
+                        jqXHR,
+                        textStatus,
+                        errorThrown,
                     };
 
                 });
@@ -1992,25 +1992,25 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         // Generic promise based POST request. Can be used to construct all api calls involving post.
-        TBUtils.apiOauthGET = function apiOauthGET(endpoint, data) {
+        TBUtils.apiOauthGET = function apiOauthGET (endpoint, data) {
             // let's fetch the token we need first.
-            return TBUtils.oauthToken().then(function(token) {
+            return TBUtils.oauthToken().then(function (token) {
                 return $.ajax({
                     url: `https://oauth.reddit.com/${endpoint}`,
                     type: 'GET',
-                    data: data,
-                    beforeSend: function(xhr) {xhr.setRequestHeader('Authorization', `bearer ${token}`);},
-                }).then(function(data, textStatus, jqXHR) {
+                    data,
+                    beforeSend (xhr) {xhr.setRequestHeader('Authorization', `bearer ${token}`);},
+                }).then(function (data, textStatus, jqXHR) {
                     return {
-                        data: data,
-                        textStatus: textStatus,
-                        jqXHR: jqXHR
+                        data,
+                        textStatus,
+                        jqXHR,
                     };
-                }, function(jqXHR, textStatus, errorThrown) {
+                }, function (jqXHR, textStatus, errorThrown) {
                     throw {
-                        jqXHR: jqXHR,
-                        textStatus: textStatus,
-                        errorThrown: errorThrown
+                        jqXHR,
+                        textStatus,
+                        errorThrown,
                     };
 
                 });
@@ -2021,27 +2021,27 @@ function initwrapper(userDetails, newModSubs) {
         //
         // Reddit 'legacy' API stuff. Still very much in use.
         //
-        TBUtils.getRatelimit = function getRatelimit(callback) {
+        TBUtils.getRatelimit = function getRatelimit (callback) {
             TBUtils.getHead('/r/toolbox/wiki/ratelimit.json',
                 function (status, jqxhr) {
                     const ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
-                        ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+                          ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
                     $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                     if (typeof callback !== 'undefined') {
                         callback({
-                            'ratelimitRemaining': ratelimitRemaining,
-                            'ratelimitReset': ratelimitReset
+                            ratelimitRemaining,
+                            ratelimitReset,
                         });
                     }
                 });
         };
 
-        TBUtils.setWikiPrivate = function setWikiPrivate(page, subreddit, failAlert) {
+        TBUtils.setWikiPrivate = function setWikiPrivate (page, subreddit, failAlert) {
             setWikiPrivate(subreddit, page, failAlert);
         };
 
-        TBUtils.postToWiki = function postToWiki(page, subreddit, data, reason, isJSON, updateAM, callback) {
+        TBUtils.postToWiki = function postToWiki (page, subreddit, data, reason, isJSON, updateAM, callback) {
             if (reason) {
                 reason = `"${reason}" via toolbox`;
             } else {
@@ -2050,7 +2050,7 @@ function initwrapper(userDetails, newModSubs) {
 
             if (isJSON) {
             // Not indenting saves precious bytes.
-            //data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
+            // data = JSON.stringify(data, undefined, TBUtils.debugMode ? 2 : undefined);
                 data = JSON.stringify(data);
             }
 
@@ -2063,12 +2063,12 @@ function initwrapper(userDetails, newModSubs) {
 
             $.post(`${TBUtils.baseDomain}/r/${subreddit}/api/wiki/edit`, {
                 content: data,
-                page: page,
-                reason: reason,
-                uh: TBUtils.modhash
+                page,
+                reason,
+                uh: TBUtils.modhash,
             })
 
-                .fail(function postToWiki_error(jqXHR) {
+                .fail(function postToWiki_error (jqXHR) {
                     $.log(jqXHR.responseText, false, SHORTNAME);
                     callback(false, jqXHR);
                 })
@@ -2084,12 +2084,12 @@ function initwrapper(userDetails, newModSubs) {
 
                     setTimeout(function () {
 
-                    // Set page access to 'mod only'.
+                        // Set page access to 'mod only'.
                         $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
-                            page: page,
-                            listed: true, //hrm, may need to make this a config setting.
+                            page,
+                            listed: true, // hrm, may need to make this a config setting.
                             permlevel: 2,
-                            uh: TBUtils.modhash
+                            uh: TBUtils.modhash,
                         })
 
                         // Super extra double-secret secure, just to be safe.
@@ -2117,14 +2117,14 @@ function initwrapper(userDetails, newModSubs) {
         // We need to demangle the JSON ourselves, so we have to go about it this way :(
             $.ajax(`${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`, {
                 dataType: 'json',
-                dataFilter: function (data) {
-                //TODO: right now a lot of functions implicitly rely on reddit
-                //returning escaped JSON to operate safely. add this back in once
-                //everything's been audited.
+                dataFilter (data) {
+                // TODO: right now a lot of functions implicitly rely on reddit
+                // returning escaped JSON to operate safely. add this back in once
+                // everything's been audited.
 
-                //return TBUtils.unescapeJSON(data);
+                    // return TBUtils.unescapeJSON(data);
                     return data;
-                }
+                },
             })
                 .done(function (json) {
                     const wikiData = json.data.content_md;
@@ -2182,7 +2182,7 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         TBUtils.getBanState = function (subreddit, user, callback) {
-            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user: user}, function (data) {
+            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, function (data) {
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
 
@@ -2199,10 +2199,10 @@ function initwrapper(userDetails, newModSubs) {
             $.post(`${TBUtils.baseDomain}/api/flair`, {
                 api_type: 'json',
                 link: postLink,
-                text: text,
+                text,
                 css_class: cssClass,
                 r: subreddit,
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2219,9 +2219,9 @@ function initwrapper(userDetails, newModSubs) {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
-                text: text,
+                text,
                 css_class: cssClass,
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2253,7 +2253,7 @@ function initwrapper(userDetails, newModSubs) {
                 r: subreddit,
                 note: trimmedBanReason,
                 ban_message: trimmedBanMessage,
-                duration: banDuration
+                duration: banDuration,
             })
                 .done(function (response) {
                     if (typeof callback !== 'undefined')
@@ -2271,7 +2271,7 @@ function initwrapper(userDetails, newModSubs) {
                 uh: TBUtils.modhash,
                 type: action,
                 name: user,
-                r: subreddit
+                r: subreddit,
             })
                 .done(function (response) {
                     if (typeof callback !== 'undefined')
@@ -2285,9 +2285,9 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.distinguishThing = function (id, sticky, callback) {
             $.post(`${TBUtils.baseDomain}/api/distinguish/yes`, {
-                id: id,
-                sticky: sticky,
-                uh: TBUtils.modhash
+                id,
+                sticky,
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2301,8 +2301,8 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.approveThing = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/approve`, {
-                id: id,
-                uh: TBUtils.modhash
+                id,
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2317,8 +2317,8 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.removeThing = function (id, spam, callback) {
             $.post(`${TBUtils.baseDomain}/api/remove`, {
                 uh: TBUtils.modhash,
-                id: id,
-                spam: spam
+                id,
+                spam,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2332,8 +2332,8 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.markOver18 = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/marknsfw`, {
-                id: id,
-                uh: TBUtils.modhash
+                id,
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2348,7 +2348,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.unMarkOver18 = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/unmarknsfw`, {
                 uh: TBUtils.modhash,
-                id: id
+                id,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2362,8 +2362,8 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.lockThread = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/lock`, {
-                id: id,
-                uh: TBUtils.modhash
+                id,
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2378,7 +2378,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.unlockThread = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/unlock`, {
                 uh: TBUtils.modhash,
-                id: id
+                id,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2390,15 +2390,15 @@ function initwrapper(userDetails, newModSubs) {
                 });
         };
 
-        TBUtils.stickyThread = function(id, callback, state) {
+        TBUtils.stickyThread = function (id, callback, state) {
             if (state === undefined) {
                 state = true;
             }
 
             $.post(`${TBUtils.baseDomain}/api/set_subreddit_sticky`, {
-                id: id,
-                state: state,
-                uh: TBUtils.modhash
+                id,
+                state,
+                uh: TBUtils.modhash,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2410,16 +2410,16 @@ function initwrapper(userDetails, newModSubs) {
                 });
         };
 
-        TBUtils.unstickyThread = function(id, callback) {
+        TBUtils.unstickyThread = function (id, callback) {
             TBUtils.stickyThread(id, callback, false);
         };
 
         TBUtils.postComment = function (parent, text, callback) {
             $.post(`${TBUtils.baseDomain}/api/comment`, {
-                parent: parent,
+                parent,
                 uh: TBUtils.modhash,
-                text: text,
-                api_type: 'json'
+                text,
+                api_type: 'json',
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
@@ -2448,10 +2448,10 @@ function initwrapper(userDetails, newModSubs) {
                 resubmit: 'true',
                 url: link,
                 uh: TBUtils.modhash,
-                title: title,
+                title,
                 sr: subreddit,
-                sendreplies: 'true', //this is the default on reddit.com, so it should be our default.
-                api_type: 'json'
+                sendreplies: 'true', // this is the default on reddit.com, so it should be our default.
+                api_type: 'json',
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
@@ -2481,7 +2481,7 @@ function initwrapper(userDetails, newModSubs) {
                 text: message,
                 to: user,
                 uh: TBUtils.modhash,
-                api_type: 'json'
+                api_type: 'json',
             })
                 .done(function (response) {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
@@ -2506,10 +2506,10 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.sendPM = function (to, subject, message, callback) {
             $.post(`${TBUtils.baseDomain}/api/compose`, {
-                to: to,
+                to,
                 uh: TBUtils.modhash,
-                subject: subject,
-                text: message
+                subject,
+                text: message,
             })
                 .done(function () {
                     if (typeof callback !== 'undefined')
@@ -2524,8 +2524,8 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.markMessageRead = function (id, callback) {
             $.post(`${TBUtils.baseDomain}/api/read_message`, {
                 api_type: 'json',
-                id: id,
-                uh: TBUtils.modhash
+                id,
+                uh: TBUtils.modhash,
             }).done(function () {
                 if (typeof callback !== 'undefined')
                     callback(true);
@@ -2534,7 +2534,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.aboutUser = function (user, callback) {
             $.get(`${TBUtils.baseDomain}/user/${user}/about.json`, {
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function (response) {
                     TBStorage.purifyObject(response);
@@ -2547,9 +2547,9 @@ function initwrapper(userDetails, newModSubs) {
                 });
         };
 
-        TBUtils.getLastActive = function(user, callback) {
+        TBUtils.getLastActive = function (user, callback) {
             $.get(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function (response) {
                     TBStorage.purifyObject(response);
@@ -2564,7 +2564,7 @@ function initwrapper(userDetails, newModSubs) {
 
         TBUtils.getRules = function (sub, callback) {
             $.get(`${TBUtils.baseDomain}/r/${sub}/about/rules.json`, {
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function (response) {
                     TBStorage.purifyObject(response);
@@ -2580,7 +2580,7 @@ function initwrapper(userDetails, newModSubs) {
         TBUtils.getReportReasons = function (postURL, callback) {
             $.log('getting reports', false, SHORTNAME);
             $.get(`${TBUtils.baseDomain + postURL}.json?limit=1`, {
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
                 .done(function (response) {
                     TBStorage.purifyObject(response);
@@ -2591,7 +2591,7 @@ function initwrapper(userDetails, newModSubs) {
 
                         callback(true, {
                             user_reports: data.user_reports,
-                            mod_reports: data.mod_reports
+                            mod_reports: data.mod_reports,
                         });
                     }
                 })
@@ -2607,8 +2607,8 @@ function initwrapper(userDetails, newModSubs) {
             $(TBStorage.settings).each(function () {
                 if (this === 'Storage.settings') return; // don't backup the setting registry.
 
-                let key = this.split('.'),
-                    setting = TBStorage.getSetting(key[0], key[1], null);
+                const key = this.split('.'),
+                      setting = TBStorage.getSetting(key[0], key[1], null);
 
                 if (setting !== null && setting !== undefined) { // DO NOT, EVER save null (or undefined, but we shouldn't ever get that)
                     settingsObject[this] = setting;
@@ -2634,7 +2634,7 @@ function initwrapper(userDetails, newModSubs) {
                 }
 
                 $.each(resp, function (fullKey, value) {
-                    let key = fullKey.split('.');
+                    const key = fullKey.split('.');
 
                     TBStorage.setSetting(key[0], key[1], value, false);
                 });
@@ -2648,7 +2648,7 @@ function initwrapper(userDetails, newModSubs) {
             return string.replace(/['"]/g, '');
         };
 
-        TBUtils.stringToColor = function stringToColor(str) {
+        TBUtils.stringToColor = function stringToColor (str) {
             // str to hash
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -2675,7 +2675,7 @@ function initwrapper(userDetails, newModSubs) {
             $.get(URL, function (resp) {
                 if (!resp) callback(null);
                 resp = resp.replace(/<script(.|\s)*?\/script>/g, '');
-                let $sitetable = $(resp).find('#siteTable');
+                const $sitetable = $(resp).find('#siteTable');
                 $sitetable.find('.nextprev').remove();
 
                 if ($sitetable) {
@@ -2689,8 +2689,8 @@ function initwrapper(userDetails, newModSubs) {
 
         // easy way to simulate the php html encode and decode functions
         TBUtils.htmlEncode = function (value) {
-        //create a in-memory div, set it's inner text(which jQuery automatically encodes)
-        //then grab the encoded contents back out.  The div never exists on the page.
+        // create a in-memory div, set it's inner text(which jQuery automatically encodes)
+        // then grab the encoded contents back out.  The div never exists on the page.
             return $('<div/>').text(value).html();
         };
 
@@ -2702,14 +2702,14 @@ function initwrapper(userDetails, newModSubs) {
         // Expand base64
             stringThing = atob(stringThing);
             // zlib time!
-            let inflate = new pako.Inflate({to:'string'});
+            const inflate = new pako.Inflate({to: 'string'});
             inflate.push(stringThing);
             return inflate.result;
         };
 
         TBUtils.zlibDeflate = function (objThing) {
         // zlib time!
-            let deflate = new pako.Deflate({to:'string'});
+            const deflate = new pako.Deflate({to: 'string'});
             deflate.push(objThing, true);
             objThing = deflate.result;
             // Collapse to base64
@@ -2732,10 +2732,10 @@ function initwrapper(userDetails, newModSubs) {
 
             TBStorage.clearCache();
 
-            if(!calledFromBackground) {
+            if (!calledFromBackground) {
                 chrome.runtime.sendMessage({
                     action: 'tb-global',
-                    globalEvent: 'clearCache'
+                    globalEvent: 'clearCache',
                 });
             }
 
@@ -2749,7 +2749,7 @@ function initwrapper(userDetails, newModSubs) {
             return TBUtils.configCache[sub] !== undefined;
         };
 
-        TBUtils.getConfig = function(sub, callback) {
+        TBUtils.getConfig = function (sub, callback) {
             if (TBUtils.hasNoConfig(sub)) {
                 callback(false, sub);
             }
@@ -2778,14 +2778,14 @@ function initwrapper(userDetails, newModSubs) {
         };
 
         // Listen to background page communication and act based on that.
-        chrome.runtime.onMessage.addListener(function(message) {
+        chrome.runtime.onMessage.addListener(function (message) {
             switch (message.action) {
             case 'clearCache': {
                 TBUtils.clearCache(true);
                 break;
             }
             default: {
-                const event = new CustomEvent(message.action, {detail: message.payload });
+                const event = new CustomEvent(message.action, {detail: message.payload});
                 window.dispatchEvent(event);
             }
 
@@ -2793,12 +2793,12 @@ function initwrapper(userDetails, newModSubs) {
         });
 
         // private functions
-        function setWikiPrivate(subreddit, page, failAlert) {
+        function setWikiPrivate (subreddit, page, failAlert) {
             $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
-                page: page,
-                listed: true, //hrm, may need to make this a config setting.
+                page,
+                listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
-                uh: TBUtils.modhash
+                uh: TBUtils.modhash,
             })
             // Super extra double-secret secure, just to be safe.
                 .fail(function () {
@@ -2812,11 +2812,11 @@ function initwrapper(userDetails, newModSubs) {
                 });
         }
 
-        function getToolboxDevs() {
+        function getToolboxDevs () {
             $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(function (resp) {
                 TBStorage.purifyObject(resp);
-                let children = resp.data.children,
-                    devs = [];
+                const children = resp.data.children,
+                      devs = [];
 
                 $.each(children, function (index, child) {
                     devs.push(child.name);
@@ -2836,7 +2836,7 @@ function initwrapper(userDetails, newModSubs) {
                     'noeatnosleep',
                     'Garethp',
                     'WorseThanHipster',
-                    'geo1088'
+                    'geo1088',
                 ];
                 TBUtils.tbDevs = devs;
                 TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
@@ -2845,9 +2845,9 @@ function initwrapper(userDetails, newModSubs) {
 
         // Prep new modmail for toolbox stuff.
         // We wait a short while because new modmail is sneaky sneaky loading things after the dom is ready.
-        function addTbModmailSidebar() {
+        function addTbModmailSidebar () {
             setTimeout(function () {
-                let $body = $('body');
+                const $body = $('body');
                 if (TBUtils.isNewModmail && $body.find('.ThreadViewer').length > 0 && $body.find('.tb-recents').length === 0) {
                     $body.find('.ThreadViewer__infobar').append('<div class="InfoBar__recents tb-recents"><div class="InfoBar__recentsTitle">Toolbox functions:</div></div>');
                 }
@@ -2879,35 +2879,35 @@ function initwrapper(userDetails, newModSubs) {
         // NewModmail: listings, conversations, create
         // reddit frontpage: sorting
         // subreddits: listing including sorting, submissions, submissions with permalink
-        function watchPushState() {
+        function watchPushState () {
             const samePage = locationHref === location.href;
             if (!samePage) {
                 const oldHref = locationHref;
                 locationHref = location.href;
 
-                let contextObject = {
-                    'oldHref' : oldHref,
-                    'locationHref' : locationHref,
-                    'pageType' : '',
-                    'pageDetails' : {}
+                const contextObject = {
+                    oldHref,
+                    locationHref,
+                    pageType: '',
+                    pageDetails: {},
                 };
 
                 // new modmail
-                if(location.host === 'mod.reddit.com') {
+                if (location.host === 'mod.reddit.com') {
 
                     if (newMMlistingReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(newMMlistingReg);
                         contextObject.pageType = 'modmailListing';
                         contextObject.pageDetails = {
-                            'listingType': matchDetails[1]
+                            listingType: matchDetails[1],
                         };
 
                     } else if (newMMconversationReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(newMMconversationReg);
                         contextObject.pageType = 'modmailListing';
                         contextObject.pageDetails = {
-                            'conversationType' : matchDetails[1],
-                            'conversationID' : matchDetails[2]
+                            conversationType: matchDetails[1],
+                            conversationID: matchDetails[2],
                         };
 
                     } else if (newMMcreate.test(location.pathname)) {
@@ -2922,45 +2922,45 @@ function initwrapper(userDetails, newModSubs) {
                         const matchDetails = location.pathname.match(redditFrontpageReg);
                         contextObject.pageType = 'frontpage';
                         contextObject.pageDetails = {
-                            'sortType': matchDetails[1] || 'hot'
+                            sortType: matchDetails[1] || 'hot',
                         };
                     } else if (subredditFrontpageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(subredditFrontpageReg);
                         contextObject.pageType = 'subredditFrontpage';
                         contextObject.pageDetails = {
-                            'subreddit': matchDetails[1],
-                            'sortType': matchDetails[2] || 'hot'
+                            subreddit: matchDetails[1],
+                            sortType: matchDetails[2] || 'hot',
                         };
                     } else if (subredditCommentListingReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(subredditCommentListingReg);
                         contextObject.pageType = 'subredditCommentListing';
                         contextObject.pageDetails = {
-                            'subreddit': matchDetails[1]
+                            subreddit: matchDetails[1],
                         };
                     } else if (subredditCommentsPageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(subredditCommentsPageReg);
                         contextObject.pageType = 'subredditCommentsPage';
                         contextObject.pageDetails = {
-                            'subreddit': matchDetails[1],
-                            'submissionID': matchDetails[2],
-                            'linkSafeTitle': matchDetails[3]
+                            subreddit: matchDetails[1],
+                            submissionID: matchDetails[2],
+                            linkSafeTitle: matchDetails[3],
                         };
                     } else if (subredditPermalinkCommentsPageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(subredditPermalinkCommentsPageReg);
                         contextObject.pageType = 'subredditCommentPermalink';
                         contextObject.pageDetails = {
-                            'subreddit': matchDetails[1],
-                            'submissionID': matchDetails[2],
-                            'linkSafeTitle': matchDetails[3],
-                            'commentID': matchDetails[4]
+                            subreddit: matchDetails[1],
+                            submissionID: matchDetails[2],
+                            linkSafeTitle: matchDetails[3],
+                            commentID: matchDetails[4],
                         };
 
                     } else if (queuePageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(queuePageReg);
                         contextObject.pageType = 'queueListing';
                         contextObject.pageDetails = {
-                            'subreddit': matchDetails[1],
-                            'queueType': matchDetails[2]
+                            subreddit: matchDetails[1],
+                            queueType: matchDetails[2],
                         };
                     } else if (userProfile.test(location.pathname)) {
                         const matchDetails = location.pathname.match(userProfile);
@@ -2975,20 +2975,20 @@ function initwrapper(userDetails, newModSubs) {
                         }
                         contextObject.pageType = 'userProfile';
                         contextObject.pageDetails = {
-                            'user': matchDetails[1],
-                            'listing': listing
+                            user: matchDetails[1],
+                            listing,
                         };
-                    } else if(userModMessage.test(location.pathname)) {
+                    } else if (userModMessage.test(location.pathname)) {
                         const matchDetails = location.pathname.match(userModMessage);
-                        if(matchDetails[1] === 'moderator') {
+                        if (matchDetails[1] === 'moderator') {
                             contextObject.pageType = 'oldModmail';
                             contextObject.pageDetails = {
-                                'page': matchDetails[2] || 'inbox'
+                                page: matchDetails[2] || 'inbox',
                             };
                         } else {
                             contextObject.pageType = 'message';
                             contextObject.pageDetails = {
-                                'type': matchDetails[1]
+                                type: matchDetails[1],
                             };
                         }
                     // "Unknown" pageType.
@@ -3000,8 +3000,8 @@ function initwrapper(userDetails, newModSubs) {
                 TBUtils.pageDetails = contextObject;
 
                 // The timeout is there because locationHref can change before react is done rendering.
-                setTimeout(function() {
-                    window.dispatchEvent(new CustomEvent('TBNewPage', { detail : contextObject }));
+                setTimeout(function () {
+                    window.dispatchEvent(new CustomEvent('TBNewPage', {detail: contextObject}));
                 }, 500);
 
             }
@@ -3010,14 +3010,14 @@ function initwrapper(userDetails, newModSubs) {
 
         watchPushState();
         // Watch for new things and send out events based on that.
-        if(TBUtils.isNewModmail) {
+        if (TBUtils.isNewModmail) {
 
             // For new modmail we do things a bit different.
             // We only listen for dom changes after a user interaction.
             // Resulting in this event being fired less and less wasted requests.
             let newThingRunning = false;
 
-            document.body.addEventListener('click', function() {
+            document.body.addEventListener('click', function () {
                 const newMMtarget = document.querySelector('body');
 
                 // create an observer instance
@@ -3027,7 +3027,7 @@ function initwrapper(userDetails, newModSubs) {
                     let doTBNewThings = false;
 
                     mutations.forEach(function (mutation) {
-                        let $target = $(mutation.target);
+                        const $target = $(mutation.target);
 
                         if ($target.find('.ThreadViewer__infobar').length > 0) {
                             doAddTbModmailSidebar = true;
@@ -3050,7 +3050,7 @@ function initwrapper(userDetails, newModSubs) {
 
                         // It is entirely possible that TBNewThings is fired multiple times.
                         // That is why we only set a new timeout if there isn't one set already.
-                        if(!newThingRunning) {
+                        if (!newThingRunning) {
                             newThingRunning = true;
                             // Wait a sec for stuff to load.
                             setTimeout(function () {
@@ -3068,7 +3068,7 @@ function initwrapper(userDetails, newModSubs) {
                     attributes: false,
                     childList: true,
                     characterData: false,
-                    subtree: true
+                    subtree: true,
                 };
 
                 // pass in the target node, as well as the observer options
@@ -3096,7 +3096,7 @@ function initwrapper(userDetails, newModSubs) {
                     $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
                     // It is entirely possible that TBNewThings is fired multiple times.
                     // That is why we only set a new timeout if there isn't one set already.
-                    if(!newThingRunning) {
+                    if (!newThingRunning) {
                         newThingRunning = true;
                         // Wait a sec for stuff to load.
                         setTimeout(function () {
@@ -3114,7 +3114,7 @@ function initwrapper(userDetails, newModSubs) {
                 attributes: false,
                 childList: true,
                 characterData: false,
-                subtree: true
+                subtree: true,
             };
 
             // pass in the target node, as well as the observer options
@@ -3122,9 +3122,9 @@ function initwrapper(userDetails, newModSubs) {
         }
 
         // NER support. todo: finish this.
-        //window.addEventListener("neverEndingLoad", function () {
+        // window.addEventListener("neverEndingLoad", function () {
         //    $.log('NER! NER! NER! NER!');
-        //});
+        // });
 
         window.onbeforeunload = function () {
         // TBUI now handles the long load array.
@@ -3141,11 +3141,11 @@ function initwrapper(userDetails, newModSubs) {
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
 
         // Just in case.
-        //TBStorage.unloading();
+        // TBStorage.unloading();
         };
 
         // get toolbox news
-        (function getNotes() {
+        (function getNotes () {
             TBUtils.readFromWiki('toolbox', 'tbnotes', true, function (resp) {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) return;
                 TBStorage.purifyObject(resp);
@@ -3154,7 +3154,7 @@ function initwrapper(userDetails, newModSubs) {
                     TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', function (clicked) {
                         if (clicked) window.open(`http://toolbox-team.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
                     });
-                    return; //don't spam the user with notes until they have the current version.
+                    return; // don't spam the user with notes until they have the current version.
                 }
 
                 if (TBUtils.debugMode && resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
@@ -3180,7 +3180,7 @@ function initwrapper(userDetails, newModSubs) {
                 });
             }
 
-            //check dev sub, if debugMode
+            // check dev sub, if debugMode
             if (TBUtils.debugMode) {
                 TBUtils.readFromWiki('tb_dev', 'tbnotes', true, function (resp) {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
@@ -3198,7 +3198,7 @@ function initwrapper(userDetails, newModSubs) {
 
         // get rate limit
         if (TBUtils.debugMode) {
-            (function getRateLimit() {
+            (function getRateLimit () {
                 TBUtils.getRatelimit();
             })();
         }
@@ -3208,29 +3208,29 @@ function initwrapper(userDetails, newModSubs) {
 
 (function () {
     // wait for storage
-    function getModSubs(after, callback) {
+    function getModSubs (after, callback) {
 
         let modSubs = [];
-        $.getJSON('https://www.reddit.com/subreddits/mine/moderator.json',{
-            'after': after,
-            'limit': 100
+        $.getJSON('https://www.reddit.com/subreddits/mine/moderator.json', {
+            after,
+            limit: 100,
         }, function (json) {
             TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
-            if(json.data.after) {
-                getModSubs(json.data.after, function(subs) {
+            if (json.data.after) {
+                getModSubs(json.data.after, function (subs) {
                     return callback(modSubs.concat(subs));
                 });
             } else {
                 return callback(modSubs);
             }
-        }).fail(function(jqxhr, textStatus, error) {
+        }).fail(function (jqxhr, textStatus, error) {
             console.log(`getModSubs failed (${jqxhr.status}), ${textStatus}: ${error}`);
             console.log(jqxhr);
             if (jqxhr.status === 504) {
                 console.log('504 Timeout retrying request');
-                getModSubs(after, function(subs) {
+                getModSubs(after, function (subs) {
                     return callback(modSubs.concat(subs));
                 });
 
@@ -3242,38 +3242,38 @@ function initwrapper(userDetails, newModSubs) {
         });
     }
 
-    function getUserDetails(callback) {
+    function getUserDetails (callback) {
 
         $.getJSON('https://www.reddit.com/api/me.json', function (json) {
             TBStorage.purifyObject(json);
             console.log(json);
             callback(json);
-        }).fail(function(jqxhr, textStatus, error) {
+        }).fail(function (jqxhr, textStatus, error) {
             console.log(`getUserDetails failed (${jqxhr.status}), ${textStatus}: ${error}`);
             console.log(jqxhr);
             if (jqxhr.status === 504) {
                 console.log('504 Timeout retrying request');
-                getUserDetails(function(details) {
+                getUserDetails(function (details) {
                     return callback(details);
                 });
 
             }
             else {
-                return callback({error : error});
+                return callback({error});
             }
         });
     }
     window.addEventListener('TBStorageLoaded2', function () {
         profileResults('utilsStart', performance.now());
-        getUserDetails(function(userDetails) {
-            if(userDetails.error) {
+        getUserDetails(function (userDetails) {
+            if (userDetails.error) {
                 console.log('Error: ', userDetails.error);
                 return;
             }
-            let modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
+            const modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
             if (modSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
-                getModSubs(null, function(subs) {
+                getModSubs(null, function (subs) {
                     initwrapper(userDetails, subs);
                     profileResults('utilsLoaded', performance.now());
                     const event = new CustomEvent('TBUtilsLoaded2');

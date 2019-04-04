@@ -68,7 +68,7 @@
         cyan: '#00F0F0',
         yellow: '#EAC117',
         softyellow: '#FFFC7F',
-        black: '#000000'
+        black: '#000000',
     };
 
     TBui.FEEDBACK_NEUTRAL = 'neutral';
@@ -90,7 +90,7 @@
     // Popup HTML generator
     TBui.popup = function popup (title, tabs, meta, css_class, opts) {
         const defaults = {
-            draggable: true
+            draggable: true,
         };
 
         const options = $.extend(defaults, opts);
@@ -178,7 +178,7 @@
     TBui.drawPosition = function drawPosition (event) {
         const positions = {
             leftPosition: '',
-            topPosition: ''
+            topPosition: '',
         };
 
         const $overlay = $(event.target).closest('.tb-page-overlay');
@@ -495,7 +495,7 @@
 
                 $feedbackWindow.css({
                     'margin-left': `-${feedbackLeftMargin}px`,
-                    'margin-top': `-${feedbackTopMargin}px`
+                    'margin-top': `-${feedbackTopMargin}px`,
                 });
             }
                 break;
@@ -504,7 +504,7 @@
                     left: '5px',
                     bottom: '40px',
                     top: 'auto',
-                    position: 'fixed'
+                    position: 'fixed',
                 });
             }
                 break;
@@ -517,7 +517,7 @@
                     $feedbackWindow.css({
                         left: posX - $feedbackWindow.width() + 155,
                         top: posY - $feedbackWindow.height() - 15,
-                        position: 'fixed'
+                        position: 'fixed',
                     });
                 });
             }
@@ -551,7 +551,7 @@
 
                 $randomFeedbackWindow.css({
                     'margin-left': `-${randomFeedbackLeftMargin}px`,
-                    'margin-top': `-${randomFeedbackTopMargin}px`
+                    'margin-top': `-${randomFeedbackTopMargin}px`,
                 });
 
                 TBui.longLoadArray.push('load');
@@ -756,14 +756,14 @@
                         data: {
                             author: commentAuthor,
                             post: {
-                                id: postID
+                                id: postID,
                             },
                             id: commentID,
                             subreddit: {
                                 name: subredditName,
-                                type: subredditType
-                            }
-                        }
+                                type: subredditType,
+                            },
+                        },
                     };
                     const tbRedditEventComment = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderComment.dispatchEvent(tbRedditEventComment);
@@ -777,16 +777,16 @@
                         data: {
                             author: commentAuthor,
                             post: {
-                                id: postID
+                                id: postID,
                             },
                             comment: {
-                                id: commentID
+                                id: commentID,
                             },
                             subreddit: {
                                 name: subredditName,
-                                type: subredditType
-                            }
-                        }
+                                type: subredditType,
+                            },
+                        },
                     };
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
@@ -819,9 +819,9 @@
                             id: postID,
                             subreddit: {
                                 name: subredditName,
-                                type: subredditType
-                            }
-                        }
+                                type: subredditType,
+                            },
+                        },
                     };
 
                     const tbRedditEventSubmission = new CustomEvent('tbReddit', {detail: detailObject});
@@ -835,13 +835,13 @@
                         data: {
                             author: submissionAuthor,
                             post: {
-                                id: postID
+                                id: postID,
                             },
                             subreddit: {
                                 name: subredditName,
-                                type: subredditType
-                            }
-                        }
+                                type: subredditType,
+                            },
+                        },
                     };
 
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});

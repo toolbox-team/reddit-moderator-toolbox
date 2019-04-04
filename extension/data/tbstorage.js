@@ -231,7 +231,7 @@ function storagewrapper () {
 
                 // save settings
                 chrome.storage.local.set({
-                    tbsettings: sObject
+                    tbsettings: sObject,
                 }, function () {
 
                     // now verify them
@@ -243,7 +243,7 @@ function storagewrapper () {
                             chrome.runtime.sendMessage({
                                 action: 'tb-global',
                                 globalEvent: 'tb-settings-update',
-                                payload: returnObject
+                                payload: returnObject,
                             });
                             callback(true);
                         } else {
@@ -393,7 +393,7 @@ function storagewrapper () {
         function saveSettingsToBrowser () {
             settingsToObject(function (sObject) {
                 chrome.storage.local.set({
-                    tbsettings: sObject
+                    tbsettings: sObject,
                 });
             });
         }
@@ -444,8 +444,8 @@ function storagewrapper () {
                     globalEvent: 'tb-single-setting-update',
                     payload: {
                         key: storageKey,
-                        value: sanitzedValue
-                    }
+                        value: sanitzedValue,
+                    },
                 });
             }
 

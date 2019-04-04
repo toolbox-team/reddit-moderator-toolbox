@@ -12,7 +12,7 @@
         TBpostAuthor: ['author'],
         TBcomment: ['comment'],
         TBcommentOldReddit: ['comment'],
-        TBpost: ['post']
+        TBpost: ['post'],
     };
 
     /**

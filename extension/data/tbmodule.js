@@ -116,55 +116,55 @@ function tbmodule () {
                         <b> Important:</b> This will reload the page without saving!
                         <label class="backup-warning ${lastExportState}">Last backup: <b>${lastExportLabel}</b></label>
                         `,
-                    display: ''
+                    display: '',
                 },
                 {
                     settingName: 'showexportreminder',
                     content: `<label><input type="checkbox" id="showExportReminder" ${(showExportReminder) ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
-                    display: ''
+                    display: '',
                 },
                 {
                     settingName: 'debugmode',
                     content: `<label><input type="checkbox" id="debugMode" ${(debugMode) ? 'checked' : ''}> Enable debug mode</label>`,
-                    display: (advancedMode) ? '' : displayNone
+                    display: (advancedMode) ? '' : displayNone,
                 },
                 {
                     settingName: 'browserconsole',
                     content: `<label><input type="checkbox" id="browserConsole" ${(browserConsole) ? 'checked' : ''}> Use browser's console</label>`,
-                    display: (debugMode) ? '' : displayNone
+                    display: (debugMode) ? '' : displayNone,
                 },
                 {
                     settingName: 'betamode',
                     content: `<label><input type="checkbox" id="betaMode" ${(betaMode) ? 'checked' : ''}> Enable beta features</label>`,
-                    display: ''
+                    display: '',
                 },
                 {
                     settingName: 'advancedmode',
                     content: `<label><input type="checkbox" id="advancedMode" ${(advancedMode) ? 'checked' : ''}> Show advanced settings</label>`,
-                    display: ''
+                    display: '',
                 },
                 {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
                         <input type="text" class="tb-input" name="longLength" value="${longLength}">`,
-                    display: (advancedMode) ? '' : displayNone
+                    display: (advancedMode) ? '' : displayNone,
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>
                       <input type="text" class="tb-input" name="shortLength" value="${shortLength}">`,
-                    display: (advancedMode) ? '' : displayNone
+                    display: (advancedMode) ? '' : displayNone,
                 },
                 {
                     settingName: 'clearcache',
                     content: '<label><input type="checkbox" id="clearcache"> Clear cache on save. (NB: please close all other reddit tabs before clearing your cache.)</label>',
-                    display: ''
+                    display: '',
                 },
                 {
                     settingName: 'showsettings',
                     content: '<input type="button" id="showRawSettings" class="tb-action-button" value="Show Settings" />',
-                    display: ''
-                }
+                    display: '',
+                },
             ];
 
             $.each(settings, function () {
@@ -209,13 +209,13 @@ function tbmodule () {
                     tooltip: 'Edit toolbox general settings',
                     help_page: 'toolbox',
                     id: 'toolbox',
-                    content: settingContent
+                    content: settingContent,
                 },
                 {
                     title: 'Toggle Modules',
                     tooltip: 'Enable/disable individual modules',
                     help_page: 'toggle-modules',
-                    content: '' // this gets propagated magically
+                    content: '', // this gets propagated magically
                 },
                 {
                     title: 'About',
@@ -279,8 +279,8 @@ function tbmodule () {
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
                     <p ${(debugMode && !TB.utils.devModeLock) ? ` ` : `style="display:none;" `}>
                         <label><input type="checkbox" id="devMode" ${(devMode) ? `checked` : ``}> DEVMODE: DON'T EVER ENABLE THIS!</label>
-                    </p>`
-                }
+                    </p>`,
+                },
             ];
 
             // This was a clever idea, but for now it's easier to inject them
@@ -431,8 +431,8 @@ function tbmodule () {
                 </br>
                 </span>
                 `,
-                            footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">'
-                        }
+                            footer: '<input class="anonymize-settings tb-action-button" type="button" value="Anonymize Settings">',
+                        },
                     ],
                     '', // meta
                     'tb-raw-settings'
@@ -711,9 +711,9 @@ body {
                                         },
                                         'Esc' (cm) {
                                             if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
-                                        }
+                                        },
                                     },
-                                    lineWrapping: enableWordWrap
+                                    lineWrapping: enableWordWrap,
                                 });
                             });
 
@@ -961,7 +961,7 @@ body {
                     });
                 });
             });
-        }
+        },
     };
 
     // Prototype for all toolbox modules
@@ -971,7 +971,7 @@ body {
 
         this.config = {
             betamode: false,
-            devmode: false
+            devmode: false,
         };
 
         this.settings = {};
@@ -1089,7 +1089,7 @@ body {
         },
         set shortname (val) {
             this._shortname = val;
-        }
+        },
     };
 }
 

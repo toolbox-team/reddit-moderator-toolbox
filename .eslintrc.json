@@ -1,4 +1,7 @@
 {
+    "parserOptions": {
+        "ecmaVersion": 2017
+    },
     "env": {
         "browser": true,
         "jquery": true,
@@ -13,6 +16,7 @@
         "TBStorage": true,
         "redditapi": true,
         "chrome": true,
+        "safari": true,
         "SnuOwnd": true,
         "pako": true,
         "tinycolor": true,
@@ -22,16 +26,11 @@
     "extends": "eslint:recommended",
     "rules": {
         "no-console": 0,
-        "eqeqeq": "warn",
         "no-multi-spaces": "error",
         "no-inner-declarations": "warn",
         "prefer-template": "warn",
         "no-useless-escape": "warn",
-        "no-var": "warn",
-        "prefer-const": "warn",
         "no-constant-condition": "warn",
-        "no-trailing-spaces": "error",
-        "space-before-blocks": "error",
         "space-infix-ops": "error",
         "no-multiple-empty-lines": [
             "error",
@@ -45,7 +44,10 @@
         ],
         "indent": [
             "warn",
-            4
+            4,
+            {
+                "VariableDeclarator": "first"
+            }
         ],
         "linebreak-style": [
             "error",
@@ -62,6 +64,84 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "eqeqeq": [
+            "error",
+            "always",
+            {
+                "null": "ignore"
+            }
+        ],
+		"spaced-comment": [
+			"error",
+			"always"
+		],
+		"space-before-blocks": [
+			"error",
+			"always"
+		],
+		"space-in-parens": [
+			"error",
+			"never"
+		],
+		"space-before-function-paren": [
+			"error",
+			"always"
+		],
+		"no-mixed-spaces-and-tabs": "error",
+        "no-trailing-spaces": "error",
+        "no-var": "error",
+        "prefer-const": "warn",
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
+        "arrow-body-style": [
+            "error",
+            "as-needed"
+        ],
+        "array-bracket-newline": [
+            "error",
+            "consistent"
+        ],
+        "array-bracket-spacing": [
+            "error",
+            "never"
+        ],
+        "array-element-newline": [
+            "error",
+            "consistent"
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "consistent": true
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "never"
+        ],
+        "object-property-newline": [
+            "error",
+            {
+                "allowAllPropertiesOnSameLine": true
+            }
+        ],
+        "object-shorthand": [
+            "error",
+            "always"
+        ],
+        "quote-props": [
+            "error",
+            "consistent-as-needed"
+        ],
+        "key-spacing": "error",
+        "dot-location": [
+            "error",
+            "property"
+        ],
+        "comma-spacing": "error",
+        "keyword-spacing": "error"
     }
 }

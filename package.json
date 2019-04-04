@@ -22,6 +22,7 @@
     "yargs": "^4.3.2"
   },
   "dependencies": {
+    "eslint": "^5.16.0",
     "yargs": "^4.8.1"
   }
 }

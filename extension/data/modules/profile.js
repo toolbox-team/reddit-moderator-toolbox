@@ -378,10 +378,10 @@ function profilepro () {
 
             const typeListing = $siteTable.attr('data-listing');
 
-            let subredditsearch = $this.find('.tb-subredditsearch').val(),
-                usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
-                contentsearch = $this.find('.tb-contentsearch').val(),
-                useSort = $this.find('.tb-search-sort').is(':checked');
+            let subredditsearch = $this.find('.tb-subredditsearch').val();
+            const usersearch = $this.closest('.tb-page-overlay').attr('data-user'),
+                  contentsearch = $this.find('.tb-contentsearch').val(),
+                  useSort = $this.find('.tb-search-sort').is(':checked');
 
             let sortMethod = 'new';
 

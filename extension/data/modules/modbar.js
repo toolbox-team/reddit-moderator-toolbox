@@ -70,9 +70,9 @@ function modbar () {
     });
 
     self.init = function () {
-        let $body = $('body'),
-            moduleCount = 0,
-            DEFAULT_MODULE = 'DEFAULT_MODULE',
+        const $body = $('body'),
+              DEFAULT_MODULE = 'DEFAULT_MODULE';
+        let moduleCount = 0,
             currentModule = DEFAULT_MODULE;
 
         // Footer element below the page so toolbox never should be in the way.
@@ -94,35 +94,36 @@ function modbar () {
         //
         // preload some generic variables
         //
-        let shortcuts = self.setting('shortcuts'),
-            modbarHidden = self.setting('modbarHidden'),
-            compactHide = self.setting('compactHide'),
-            unmoderatedOn = self.setting('unmoderatedOn'),
+        const shortcuts = self.setting('shortcuts'),
+              compactHide = self.setting('compactHide'),
+              unmoderatedOn = self.setting('unmoderatedOn'),
+              enableModSubs = self.setting('enableModSubs'),
+              customCSS = self.setting('customCSS'),
+
+              debugMode = TBUtils.debugMode,
+
+              modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
+              unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
+              unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadMessageCount', 0),
+              modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
+              unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
+              modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
+              newModmailCount = TB.storage.getSetting('Notifier', 'newModmailCount', 0),
+              notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
+              modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
+
+              modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
+              unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
+
+        let modbarHidden = self.setting('modbarHidden'),
             consoleShowing = self.setting('consoleShowing'),
-            lockscroll = self.setting('lockScroll'),
-            enableModSubs = self.setting('enableModSubs'),
-            customCSS = self.setting('customCSS'),
-
-            debugMode = TBUtils.debugMode,
-
-            modSubreddits = TB.storage.getSetting('Notifier', 'modSubreddits', 'mod'),
-            unmoderatedSubreddits = TB.storage.getSetting('Notifier', 'unmoderatedSubreddits', 'mod'),
-            unreadMessageCount = TB.storage.getSetting('Notifier', 'unreadMessageCount', 0),
-            modqueueCount = TB.storage.getSetting('Notifier', 'modqueueCount', 0),
-            unmoderatedCount = TB.storage.getSetting('Notifier', 'unmoderatedCount', 0),
-            modmailCount = TB.storage.getSetting('Notifier', 'modmailCount', 0),
-            newModmailCount = TB.storage.getSetting('Notifier', 'newModmailCount', 0),
-            notifierEnabled = TB.storage.getSetting('Notifier', 'enabled', true),
-            modmailCustomLimit = TB.storage.getSetting('ModMail', 'customLimit', 0),
-
-            modSubredditsFMod = TB.storage.getSetting('Notifier', 'modSubredditsFMod', false),
-            unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
+            lockscroll = self.setting('lockScroll');
 
         // Ready some details for new modmail linking
-        let modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
-            openMailTab = TB.storage.getSetting('NewModMail', 'openmailtab', false),
-            newModmailBaseUrl = 'https://mod.reddit.com/mail/',
-            newModmailUrl;
+        const modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
+              openMailTab = TB.storage.getSetting('NewModMail', 'openmailtab', false),
+              newModmailBaseUrl = 'https://mod.reddit.com/mail/';
+        let newModmailUrl;
 
         switch (modmailLink) {
         case 'all_modmail':
@@ -287,9 +288,9 @@ function modbar () {
             $body.find('#tb-bottombar-contentleft').prepend('<a href="javascript:void(0)" class="tb-modbar-button" id="tb-toolbar-mysubs" style="display: none">Moderated Subreddits</a> ');
 
             let subList = '',
-                livefilterCount,
-                subredditColorSalt = self.setting('subredditColorSalt'),
-                configEnabled = TB.storage.getSetting('TBConfig', 'enabled', false);
+                livefilterCount;
+            const configEnabled = TB.storage.getSetting('TBConfig', 'enabled', false),
+                  subredditColorSalt = self.setting('subredditColorSalt');
             TBUtils.getModSubs(function () {
                 self.log('got mod subs');
                 self.log(TBUtils.mySubs.length);
@@ -428,7 +429,7 @@ function modbar () {
                     return;
                 }
 
-                if (currentModule == DEFAULT_MODULE) {
+                if (currentModule === DEFAULT_MODULE) {
                     if (logLength < TBUtils.log.length) {
                         debugEditor.setValue(TBUtils.log.join('\n'));
                         logLength = TBUtils.log.length;
@@ -601,7 +602,7 @@ function modbar () {
 
             // Run console input
             $('.tb-debug-input').keyup(function (e) {
-                if (e.keyCode == 13) {
+                if (e.keyCode === 13) {
                     self.log(eval($(this).val()));
                     $(this).val(''); // clear line
                 }
@@ -664,8 +665,8 @@ function modbar () {
 
                     if (setting) {
                         setting = setting.toLowerCase();
-                        let id = `#tb-${module}-${setting}`,
-                            highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
+                        const id = `#tb-${module}-${setting}`;
+                        let highlightedCSS = `${id} p {background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;
 
                         // this next line is to deal with legacy settings
                         highlightedCSS += `${id}{background-color: ${TB.ui.standardColors.softyellow}; display: block !important;}`;

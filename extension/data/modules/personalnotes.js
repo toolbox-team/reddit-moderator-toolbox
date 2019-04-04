@@ -24,9 +24,9 @@ function personalnotes () {
         if (TBUtils.isEmbedded) return;
         const notewiki = self.setting('noteWiki').toLowerCase(),
               popupHeight = self.setting('popupHeight'),
-              monospace = self.setting('monospace');
-        let $body = $('body'),
-            notesArray = [],
+              monospace = self.setting('monospace'),
+              $body = $('body');
+        let notesArray = [],
             notesPopupContent;
 
         // Template HTML for each item in the note list
@@ -182,8 +182,8 @@ function personalnotes () {
                         $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
                             .done(function (json) {
                                 notesArray = [];
-                                let notesList,
-                                    count = json.data.length || 0;
+                                let notesList;
+                                const count = json.data.length || 0;
 
                                 if (count === 0) {
                                     notesList = '<span id="tb-personal-notes-nonotes">No notes found.</span>';

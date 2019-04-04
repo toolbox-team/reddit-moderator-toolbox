@@ -78,7 +78,7 @@ function modmacros () {
 
         if (TBUtils.isOldReddit) {
             TB.utils.getModSubs(function () {
-                if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) != -1) {
+                if (TB.utils.post_site && $.inArray(TB.utils.post_site, TB.utils.mySubs) !== -1) {
                     self.log('getting config');
                     getConfig(TB.utils.post_site, function (success, config) {
                     // if we're a mod, add macros to top level reply button.

@@ -87,7 +87,7 @@ function removalreasons () {
         function getRemovalReasons (subreddit, callback) {
 
             // Nothing to do if no toolbox config
-            if (TBUtils.noConfig.indexOf(subreddit) != -1) {
+            if (TBUtils.noConfig.indexOf(subreddit) !== -1) {
                 callback(false);
                 return;
             }
@@ -366,23 +366,23 @@ function removalreasons () {
                     <div id="buttons">
                     <ul>
                         <li>
-                            <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType == `reply` ? ` checked="1"` : ``} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                            <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === `reply` ? ` checked="1"` : ``} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
                             <ul>
                                 <li>
                                     <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? `checked` : ``}${data.kind === `submission` ? `` : ` disabled`}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                             </ul>
                         </li><li>
-                            <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType == `pm` ? ` checked="1"` : ``} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                            <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === `pm` ? ` checked="1"` : ``} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
                             <ul>
                                 <li>
                                     <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? `checked ` : ``} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
                                 </li>
                             </ul>
                         </li><li>
-                            <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType == `both` ? ` checked="1"` : ``} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                            <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === `both` ? ` checked="1"` : ``} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
                         </li><li style="display:${selectNoneDisplay}"> /
-                            <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType == `none` ? ` checked="1"` : ``} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                            <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === `none` ? ` checked="1"` : ``} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li><li>
                             <input class="action-lock" type="checkbox"${actionLock ? `checked` : ``}${data.kind === `submission` ? `` : ` disabled`}/><label for="action-lock">Lock the removed thread.</label>
                         </li>
@@ -540,35 +540,35 @@ function removalreasons () {
 
         // 'save' button clicked
         $body.on('click', '.reason-popup .save', function () {
-            const popup = $(this).parents('.reason-popup');
-            let notifyBy = popup.find('.reason-type:checked').val(),
-                notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
-                notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
-                actionLock = popup.find('.action-lock').prop('checked') && !popup.find('.action-lock').prop('disabled'),
-                checked = popup.find('.reason-check:checked'),
-                status = popup.find('.status'),
-                attrs = popup.find('attrs'),
-                subject = attrs.attr('subject'),
-                logTitle = attrs.attr('logTitle'),
-                header = TBUtils.htmlDecode(attrs.attr('header')),
-                footer = TBUtils.htmlDecode(attrs.attr('footer')),
-                logReason = popup.find('#log-reason-input').val(),
-                data = {
-                    subreddit: '',
-                    fullname: '',
-                    author: '',
-                    title: '',
-                    kind: '',
-                    mod: '',
-                    url: '',
-                    link: '',
-                    domain: '',
-                    logSub: '',
-                    body: '',
-                    raw_body: '',
-                    uri_body: '',
-                    uri_title: '',
-                };
+            const popup = $(this).parents('.reason-popup'),
+                  notifyBy = popup.find('.reason-type:checked').val(),
+                  notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
+                  notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
+                  actionLock = popup.find('.action-lock').prop('checked') && !popup.find('.action-lock').prop('disabled'),
+                  checked = popup.find('.reason-check:checked'),
+                  status = popup.find('.status'),
+                  attrs = popup.find('attrs'),
+                  header = TBUtils.htmlDecode(attrs.attr('header')),
+                  footer = TBUtils.htmlDecode(attrs.attr('footer')),
+                  logReason = popup.find('#log-reason-input').val(),
+                  data = {
+                      subreddit: '',
+                      fullname: '',
+                      author: '',
+                      title: '',
+                      kind: '',
+                      mod: '',
+                      url: '',
+                      link: '',
+                      domain: '',
+                      logSub: '',
+                      body: '',
+                      raw_body: '',
+                      uri_body: '',
+                      uri_title: '',
+                  };
+            let subject = attrs.attr('subject'),
+                logTitle = attrs.attr('logTitle');
 
             // Update status
             status.text(STATUS_DEFAULT_TEXT);
@@ -614,7 +614,7 @@ function removalreasons () {
             markdownReasons.forEach(function (markdownReason) {
                 $(`<div>${markdownReason}</div>`).contents().each(function () {
                 // If an element, check for conversions
-                    if (this.nodeType == Node.ELEMENT_NODE) {
+                    if (this.nodeType === Node.ELEMENT_NODE) {
                         switch (this.tagName.toLowerCase()) {
                         // Convert breaks to lots of newlines
                         case 'br':
@@ -630,7 +630,7 @@ function removalreasons () {
                         }
                     }
                     // If a text node, get content
-                    else if (this.nodeType == Node.TEXT_NODE) {
+                    else if (this.nodeType === Node.TEXT_NODE) {
                         reason += this.textContent;
                     }
                 });
@@ -664,7 +664,7 @@ function removalreasons () {
             // Flair post if required
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
-            if ((flairText != '' || flairCSS != '') && data.kind != 'comment') {
+            if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
                 TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, function (successful) {
                     if (!successful)
                         status.text(FLAIR_ERROR);
@@ -714,7 +714,7 @@ function removalreasons () {
             function sendRemovalMessage (logLink) {
             // If there is no message to send, don't send one.
                 if (reasonlength < 1) {
-                    if ((flairText != '' || flairCSS != '') && data.kind != 'comment') {
+                    if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
                     // We'll flair only flair, we are done here.
                         return removePopup(popup);
                     } else {
@@ -723,7 +723,7 @@ function removalreasons () {
                 }
 
                 // Check if a valid notification type is selected
-                if ((!notifyBy && !notifyAsSub) || (logLink == null && notifyBy == 'none')) {
+                if ((!notifyBy && !notifyAsSub) || (logLink == null && notifyBy === 'none')) {
                     popup.find('#buttons').addClass('error-highlight');
                     return status.text(NO_REPLY_TYPE_ERROR);
                 }
@@ -732,8 +732,8 @@ function removalreasons () {
                 if (typeof logLink !== 'undefined')
                     reason = reason.replace('{loglink}', logLink);
 
-                const notifyByPM = notifyBy == 'pm' || notifyBy == 'both',
-                      notifyByReply = notifyBy == 'reply' || notifyBy == 'both';
+                const notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
+                      notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
 
                 // Reply to submission/comment
                 if (notifyByReply) {

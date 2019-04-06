@@ -41,11 +41,13 @@ function banlist () {
             after = null;
             last_request = Date.now();
             console.log('hello');
-            $.ajax({url: document.location.href,
+            $.ajax({
+                url: document.location.href,
                 data: parameters,
                 type: 'get',
                 dataType: 'html',
-                async: true})
+                async: true,
+            })
                 .done(data => {
                     console.log(data);
                     self.log('  success!');

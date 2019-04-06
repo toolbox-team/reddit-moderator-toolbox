@@ -26,26 +26,6 @@ function initwrapper (userDetails, newModSubs) {
         // We fetch the data on page load but we don't access the variable directly.
 
         /**
-         * Fetches the new modmail token
-         * @function oauthToken
-         * @memberof TBUtils
-         * @returns {Promise} Returns the token through a promise object
-         */
-        TBUtils.oauthToken = function oauthToken () {
-            return new Promise(resolve => {
-                chrome.runtime.sendMessage({action: 'oauthToken'}, resolve);
-            }).then(response => {
-                const responseObject = JSON.parse(response.oauthToken);
-                if (!responseObject.ERROR) {
-                    return responseObject.accessToken;
-                } else {
-                    $.log(`ERROR: ${responseObject.ERROR}`, false, SHORTNAME);
-                    throw new Error(`ERROR:${responseObject.ERROR}`);
-                }
-            });
-        };
-
-        /**
          * If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain. Used because some browsers do not like relative urls in extensions
          * @var {string} baseDomain
          * @memberof TBUtils
@@ -1994,50 +1974,41 @@ function initwrapper (userDetails, newModSubs) {
         //     console.log(error)
         // });
 
-        TBUtils.apiOauthPOST = function apiOauthPost (endpoint, data) {
-            // let's fetch the token we need first.
-            return TBUtils.oauthToken().then(token => $.ajax({
-                url: `https://oauth.reddit.com/${endpoint}`,
-                type: 'POST',
-                data,
-                beforeSend (xhr) {
-                    xhr.setRequestHeader('Authorization', `bearer ${token}`);
-                },
-            }).then((data, textStatus, jqXHR) => ({
-                data,
-                textStatus,
-                jqXHR,
-            }), (jqXHR, textStatus, errorThrown) => {
-                throw {
-                    jqXHR,
-                    textStatus,
-                    errorThrown,
-                };
-            }));
+        /**
+         * Sends an authenticated request against the OAuth API from the
+         * background page.
+         * @param {string} method An HTTP verb
+         * @param {string} endpoint The path to request
+         * @param {any} data Data passed through to the AJAX `data` option
+         */
+        TBUtils.apiOauthRequest = function apiOauthRequest (method, endpoint, data) {
+            return new Promise((resolve, reject) => {
+                // let's fetch the token we need first.
+                chrome.runtime.sendMessage({
+                    action: 'tb-oauth-request',
+                    url: `https://oauth.reddit.com/${endpoint}`,
+                    method,
+                    data,
+                }, response => {
+                    if (response.errorThrown !== undefined) {
+                        reject(response);
+                    } else {
+                        resolve(response);
+                    }
+                });
+            });
         };
-
-        // Generic promise based POST request. Can be used to construct all api calls involving post.
-        TBUtils.apiOauthGET = function apiOauthGET (endpoint, data) {
-            // let's fetch the token we need first.
-            return TBUtils.oauthToken().then(token => $.ajax({
-                url: `https://oauth.reddit.com/${endpoint}`,
-                type: 'GET',
-                data,
-                beforeSend (xhr) {
-                    xhr.setRequestHeader('Authorization', `bearer ${token}`);
-                },
-            }).then((data, textStatus, jqXHR) => ({
-                data,
-                textStatus,
-                jqXHR,
-            }), (jqXHR, textStatus, errorThrown) => {
-                throw {
-                    jqXHR,
-                    textStatus,
-                    errorThrown,
-                };
-            }));
-        };
+        /**
+         * Sends an authenticated POST request against the OAuth API.
+         * @param {string} endpoint The path to request
+         * @param {any} data Data passed through to the AJAX `data` option
+         */
+        TBUtils.apiOauthPOST = TBUtils.apiOauthRequest.bind(null, 'POST');
+        /**
+         * Sends an authenticated GET request against the OAuth API.
+         * @param {string} endpoint The path to request
+         */
+        TBUtils.apiOauthGET = TBUtils.apiOauthRequest.bind(null, 'GET');
 
         //
         // Reddit 'legacy' API stuff. Still very much in use.
@@ -3291,29 +3262,34 @@ function initwrapper (userDetails, newModSubs) {
         });
     }
 
-    function getUserDetails (callback) {
-        $.getJSON('https://www.reddit.com/api/me.json', json => {
-            TBStorage.purifyObject(json);
-            console.log(json);
-            callback(json);
-        }).fail((jqxhr, textStatus, error) => {
-            console.log(`getUserDetails failed (${jqxhr.status}), ${textStatus}: ${error}`);
-            console.log(jqxhr);
-            if (jqxhr.status === 504) {
-                console.log('504 Timeout retrying request');
-                getUserDetails(details => callback(details));
-            } else {
-                return callback({error});
-            }
+    function getUserDetails () {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({
+                action: 'tb-request',
+                url: 'https://www.reddit.com/api/me.json',
+            }, response => {
+                const {errorThrown, data, jqXHR, textStatus} = response;
+                if (errorThrown) {
+                    console.log(`getUserDetails failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
+                    console.log(jqXHR);
+                    if (jqXHR.status === 504) {
+                        console.log('504 Timeout retrying request');
+                        getUserDetails(details => resolve(details));
+                    } else {
+                        return reject(errorThrown);
+                    }
+                } else {
+                    TBStorage.purifyObject(data);
+                    console.log(data);
+                    resolve(data);
+                }
+            });
         });
     }
-    window.addEventListener('TBStorageLoaded2', () => {
+    window.addEventListener('TBStorageLoaded2', async () => {
         profileResults('utilsStart', performance.now());
-        getUserDetails(userDetails => {
-            if (userDetails.error) {
-                console.log('Error: ', userDetails.error);
-                return;
-            }
+        try {
+            const userDetails = await getUserDetails();
             const modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
             if (modSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
@@ -3329,6 +3305,8 @@ function initwrapper (userDetails, newModSubs) {
                 const event = new CustomEvent('TBUtilsLoaded2');
                 window.dispatchEvent(event);
             }
-        });
+        } catch (error) {
+            console.log(`Error: ${error}`);
+        }
     });
 })();

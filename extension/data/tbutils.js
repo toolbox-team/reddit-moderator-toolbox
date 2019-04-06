@@ -1942,7 +1942,7 @@ function initwrapper (userDetails, newModSubs) {
          * @param {object} options The options for the AJAX request
          * @param {string} options.method The HTTP method to use for the request
          * @param {string} options.url The full URL to request
-         * @param {any} options.data Data sent to the server with the request
+         * @param {object} options.data Query parameters as an object
          * @param {boolean?} options.sendOAuthToken If true, the `Authorization`
          * header will be set with the OAuth access token for the logged-in user
          */
@@ -1963,11 +1963,20 @@ function initwrapper (userDetails, newModSubs) {
         });
 
         /**
+         * Performs a GET request and promises only the body of the request,
+         * with an API similar to `$.getJSON()`.
+         * @param {string} url The full URL to request
+         * @param {object} data Query parameters as an object
+         */
+        TBUtils.getJSON = (url, data) => TBUtils.sendRequest({method: 'GET', url, data}).then(response => response.data);
+
+        /**
          * Perform a HEAD request.
          * @param {string} endpoint The endpoint to hit (base domain is added)
          * @param {callback} doneCallback
          * @returns {callback}
          * @TODO Implement with promises (consumers need to be updated)
+         * @TODO "get head" is a confusing name
          */
         TBUtils.getHead = (endpoint, doneCallback) => {
             TBUtils.sendRequest({
@@ -1984,7 +1993,7 @@ function initwrapper (userDetails, newModSubs) {
          * background page.
          * @param {string} method An HTTP verb
          * @param {string} endpoint The path to request
-         * @param {any} data Data passed through to the AJAX `data` option
+         * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthRequest = (method, endpoint, data) => TBUtils.sendRequest({
             url: `https://oauth.reddit.com/${endpoint}`,
@@ -1995,12 +2004,13 @@ function initwrapper (userDetails, newModSubs) {
         /**
          * Sends an authenticated POST request against the OAuth API.
          * @param {string} endpoint The path to request
-         * @param {any} data Data passed through to the AJAX `data` option
+         * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthPOST = TBUtils.apiOauthRequest.bind(null, 'POST');
         /**
          * Sends an authenticated GET request against the OAuth API.
          * @param {string} endpoint The path to request
+         * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthGET = TBUtils.apiOauthRequest.bind(null, 'GET');
 

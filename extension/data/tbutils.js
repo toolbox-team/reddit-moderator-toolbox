@@ -1312,7 +1312,7 @@ function initwrapper (userDetails, newModSubs) {
             }
 
             function getSubs (URL) {
-                $.getJSON(TBUtils.baseDomain + URL, json => {
+                TBUtils.getJSON(TBUtils.baseDomain + URL).then(json => {
                     TBStorage.purifyObject(json);
                     getSubsResult(json.data.children, json.data.after);
                 });
@@ -1611,7 +1611,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
             if (id.startsWith('t4_')) {
                 const shortID = id.substr(3);
-                $.get(`${TBUtils.baseDomain}/message/messages/${shortID}.json`, response => {
+                TBUtils.getJSON(`${TBUtils.baseDomain}/message/messages/${shortID}.json`).then(response => {
                     TBStorage.purifyObject(response);
                     const message = findMessage(response, shortID);
                     const body = message.data.body,
@@ -1655,7 +1655,7 @@ function initwrapper (userDetails, newModSubs) {
                 });
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-                $.get(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id}, response => {
+                TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id}).then(response => {
                     TBStorage.purifyObject(response);
                     const data = response.data;
 
@@ -1963,12 +1963,17 @@ function initwrapper (userDetails, newModSubs) {
         });
 
         /**
-         * Performs a GET request and promises only the body of the request,
-         * with an API similar to `$.getJSON()`.
+         * Performs a GET request and promises the body of the request, or the
+         * full request object on error. Maintains an API similar to
+         * `$.getJSON()`.
          * @param {string} url The full URL to request
          * @param {object} data Query parameters as an object
          */
-        TBUtils.getJSON = (url, data) => TBUtils.sendRequest({method: 'GET', url, data}).then(response => response.data);
+        TBUtils.getJSON = (url, data) => TBUtils.sendRequest({method: 'GET', url, data})
+            .then(response => response.data)
+            .catch(response => {
+                throw response.errorThrown;
+            });
 
         /**
          * Perform a HEAD request.
@@ -2160,7 +2165,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getBanState = function (subreddit, user, callback) {
-            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, data => {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}).then(data => {
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
 
@@ -2547,16 +2552,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.aboutUser = function (user, callback) {
-            $.get(`${TBUtils.baseDomain}/user/${user}/about.json`, {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/user/${user}/about.json`, {
                 uh: TBUtils.modhash,
             })
-                .done(response => {
+                .then(response => {
                     TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error.responseText);
                     }
@@ -2564,16 +2569,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getLastActive = function (user, callback) {
-            $.get(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
                 uh: TBUtils.modhash,
             })
-                .done(response => {
+                .then(response => {
                     TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         callback(true, response.data.children[0].data.created_utc);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error.responseText);
                     }
@@ -2581,16 +2586,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getRules = function (sub, callback) {
-            $.get(`${TBUtils.baseDomain}/r/${sub}/about/rules.json`, {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/rules.json`, {
                 uh: TBUtils.modhash,
             })
-                .done(response => {
+                .then(response => {
                     TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error.responseText);
                     }
@@ -2599,10 +2604,10 @@ function initwrapper (userDetails, newModSubs) {
 
         TBUtils.getReportReasons = function (postURL, callback) {
             $.log('getting reports', false, SHORTNAME);
-            $.get(`${TBUtils.baseDomain + postURL}.json?limit=1`, {
+            TBUtils.getJSON(`${TBUtils.baseDomain + postURL}.json?limit=1`, {
                 uh: TBUtils.modhash,
             })
-                .done(response => {
+                .then(response => {
                     TBStorage.purifyObject(response);
                     if (typeof callback !== 'undefined') {
                         const data = response[0].data.children[0].data;
@@ -2617,7 +2622,7 @@ function initwrapper (userDetails, newModSubs) {
                         });
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error.responseText);
                     }
@@ -2699,7 +2704,7 @@ function initwrapper (userDetails, newModSubs) {
                 callback(null);
             }
 
-            $.get(URL, resp => {
+            TBUtils.getJSON(URL).then(resp => {
                 if (!resp) {
                     callback(null);
                 }
@@ -2835,7 +2840,7 @@ function initwrapper (userDetails, newModSubs) {
         }
 
         function getToolboxDevs () {
-            $.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).done(resp => {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).then(resp => {
                 TBStorage.purifyObject(resp);
                 const children = resp.data.children,
                       devs = [];
@@ -2845,7 +2850,7 @@ function initwrapper (userDetails, newModSubs) {
                 });
                 TBUtils.tbDevs = devs;
                 TBStorage.setSetting(SETTINGS_NAME, 'tbDevs', devs);
-            }).fail(() => {
+            }).catch(() => {
                 const devs = [
                     'agentlame',
                     'creesch',
@@ -3226,10 +3231,10 @@ function initwrapper (userDetails, newModSubs) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        $.getJSON('https://www.reddit.com/subreddits/mine/moderator.json', {
+        TBUtils.getJSON('https://www.reddit.com/subreddits/mine/moderator.json', {
             after,
             limit: 100,
-        }, json => {
+        }).then(json => {
             TBStorage.purifyObject(json);
             modSubs = modSubs.concat(json.data.children);
 
@@ -3238,7 +3243,7 @@ function initwrapper (userDetails, newModSubs) {
             } else {
                 return callback(modSubs);
             }
-        }).fail((jqxhr, textStatus, error) => {
+        }).catch((jqxhr, textStatus, error) => {
             console.log(`getModSubs failed (${jqxhr.status}), ${textStatus}: ${error}`);
             console.log(jqxhr);
             if (jqxhr.status === 504) {

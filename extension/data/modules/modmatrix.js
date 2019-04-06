@@ -1,9 +1,9 @@
-function modmatrix() {
-    var self = new TB.Module('Mod Log Matrix');
+function modmatrix () {
+    const self = new TB.Module('Mod Log Matrix');
     self.shortname = 'ModMatrix'; // backwards compatibility
     self.oldReddit = true;
 
-    ////Default settings
+    // //Default settings
     self.settings['enabled']['default'] = true;
     self.settings['betamode'] = false;
 
@@ -27,26 +27,26 @@ function modmatrix() {
     self.run = function () {
         this.addButton();
 
-        var subredditUrl = this.getSubredditUrl();
-        if (subredditUrl.charAt(subredditUrl.length - 1) != '/')
+        let subredditUrl = this.getSubredditUrl();
+        if (subredditUrl.charAt(subredditUrl.length - 1) !== '/')
             subredditUrl += '/';
         this.subredditUrl = subredditUrl;
 
-        var regex = new RegExp(/reddit\.com\/r\/([^\/]+)\//g);
-        var matches = regex.exec(subredditUrl);
+        const regex = new RegExp(/reddit\.com\/r\/([^/]+)\//g);
+        const matches = regex.exec(subredditUrl);
 
         if (matches != null) {
             this.subredditName = matches[1];
         }
 
-        if (location.hash != null && location.hash == '#matrix')
+        if (location.hash != null && location.hash === '#matrix')
             self.renderMatrix();
     };
 
     self.addButton = function () {
 
-    // The reason for the <span> is in case the user has both report matrix AND report gen: http://i.imgur.com/Izbm6Rh.png,
-    // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
+        // The reason for the <span> is in case the user has both report matrix AND report gen: http://i.imgur.com/Izbm6Rh.png,
+        // the reason the &nbsp; is before and after is becase we don't know which script will load first.  Not a great solution, but it works.
         $('.menuarea').append(`
 <div class="spacer">
 <a class="reddit-moderationlog tb-general-button" href="#matrix" >toggle moderation log matrix</a>&nbsp
@@ -62,21 +62,21 @@ function modmatrix() {
 
     self.currentSorting = {
         index: null,
-        direction: 1
+        direction: 1,
     };
 
     self.sort = function (index, direction) {
-        var rows = $('#mod-matrix tbody tr');
+        const rows = $('#mod-matrix tbody tr');
 
-        direction = direction != null ? direction : (index == this.currentSorting.index ? this.currentSorting.direction * -1 : index === 0 ? -1 : 1);
+        direction = direction != null ? direction : (index === this.currentSorting.index ? this.currentSorting.direction * -1 : index === 0 ? -1 : 1);
 
-        var newArray = [];
+        const newArray = [];
 
         rows.each(function () {
             newArray.push(this);
         });
 
-        function tdValue(td) {
+        function tdValue (td) {
             if (index === 0)
                 return $.text(td).toLowerCase();
             else
@@ -84,25 +84,25 @@ function modmatrix() {
         }
 
         newArray.sort(function (a, b) {
-            var aValue = tdValue($(a).find('td').get(index));
-            var bValue = tdValue($(b).find('td').get(index));
+            const aValue = tdValue($(a).find('td').get(index));
+            const bValue = tdValue($(b).find('td').get(index));
 
-            if (aValue == bValue)
+            if (aValue === bValue)
                 return 0;
             else
                 return aValue > bValue ? direction * -1 : direction;
         });
 
-        this.currentSorting = {index: index, direction: direction};
+        this.currentSorting = {index, direction};
         $('#mod-matrix tbody').html('').append($(newArray));
 
-        var header = $('#mod-matrix thead');
+        const header = $('#mod-matrix thead');
         header.find('.sorting-icon').remove();
-        $(header.find('th').get(index)).append(`<img src="data:image/png;base64,${direction == -1 ? self.upSortingIcon : self.downSortingIcon}" alt="" class="sorting-icon" />`);
+        $(header.find('th').get(index)).append(`<img src="data:image/png;base64,${direction === -1 ? self.upSortingIcon : self.downSortingIcon}" alt="" class="sorting-icon" />`);
     };
 
     self.renderMatrix = function () {
-        var siteTable = $('#siteTable');
+        const siteTable = $('#siteTable');
 
         $('.drop-choices.lightdrop a').each(function () {
             $(this).attr('href', `${$(this).attr('href')}#matrix`);
@@ -110,23 +110,23 @@ function modmatrix() {
 
         this.resetData();
 
-        var previousContent = siteTable.children();
+        let previousContent = siteTable.children();
         // Hide next/prev (if RES, not an issue).
         previousContent = previousContent.add('.content > .nextprev');
         previousContent.hide();
 
-        var wrapper = $('<div></div>').attr('id', 'mod-matrix-wrapper');
+        const wrapper = $('<div></div>').attr('id', 'mod-matrix-wrapper');
         siteTable.append(wrapper);
 
         // Create table
-        var matrix = $('<table></table>').addClass('generic-table mod-matrix').attr('id', 'mod-matrix');
+        const matrix = $('<table></table>').addClass('generic-table mod-matrix').attr('id', 'mod-matrix');
 
-        var header = $('<tr></tr>').wrap('<thead></thead>');
+        const header = $('<tr></tr>').wrap('<thead></thead>');
         header.append('<th></th>');
-        var footer = $('<tr class="totals"></tr>').wrap('<tfoot></tfoot>');
+        const footer = $('<tr class="totals"></tr>').wrap('<tfoot></tfoot>');
         footer.append('<td>Total</td>');
 
-        for (let subredditAction in this.subredditActions) {
+        for (const subredditAction in this.subredditActions) {
             header.append(`<th class="action-cell action-${subredditAction}"><a class="modactions ${subredditAction}" title="${this.subredditActions[subredditAction].title}"></a></th>`);
             footer.append(`<td class="action-cell action-${subredditAction}"><a target="_blank" title="Total ${this.subredditActions[subredditAction].title}" href="${this.subredditUrl}about/log?type=${subredditAction}" class="action-number">0</span></td>`);
         }
@@ -135,7 +135,7 @@ function modmatrix() {
         footer.append('<td class="action-total"><span class="action-number">0</span></td>');
         footer.append('<td class="action-percentage"></td>');
 
-        var body = $('<tbody></tbody>');
+        const body = $('<tbody></tbody>');
 
         header.parent().appendTo(matrix);
         footer.parent().appendTo(matrix);
@@ -148,7 +148,7 @@ function modmatrix() {
 <table><tr><td>between:</td><td><input type="date" name="from" /> and <input type="date" name="to" /></td></table>
 </form></div>`);
 
-        var modMatrixSettings = $('#mod-matrix-settings');
+        const modMatrixSettings = $('#mod-matrix-settings');
 
         $('.reddit-moderationlog').off('click').click(function () {
             self.getActions();
@@ -165,26 +165,26 @@ function modmatrix() {
             return false;
         });
 
-        var fromDate = new Date();
+        const fromDate = new Date();
         fromDate.setDate(fromDate.getDate() - 6);
-        var toDate = new Date();
-        var minDate = new Date();
+        const toDate = new Date();
+        const minDate = new Date();
         minDate.setDate(toDate.getDate() - 90);
 
         modMatrixSettings.find('input[name=from]').val(fromDate.toJSON().slice(0, 10));
-        //modMatrixSettings.find("input[name=from],#mod-matrix-settings input[name=to]").attr("min", minDate.toJSON().slice(0,10));
+        // modMatrixSettings.find("input[name=from],#mod-matrix-settings input[name=to]").attr("min", minDate.toJSON().slice(0,10));
         modMatrixSettings.find('input[name=to]').val(toDate.toJSON().slice(0, 10));
         modMatrixSettings.find('input[name=from],#mod-matrix-settings input[name=to]').attr('max', toDate.toJSON().slice(0, 10));
 
         // Moderator filter
-        var modFilterRow = $('<tr><td>moderators:</td></tr>');
-        var modFilterCell = $('<div></div>').wrap('<td></td>').hide().attr('id', 'modfilter');
+        const modFilterRow = $('<tr><td>moderators:</td></tr>');
+        const modFilterCell = $('<div></div>').wrap('<td></td>').hide().attr('id', 'modfilter');
         modFilterCell.append('<div><input type="checkbox" value="" id="modmatrixmodfilter-all" checked="checked" /><label for="modmatrixmodfilter-all">All</label></div>');
-        for (let moderator in this.subredditModerators) {
+        for (const moderator in this.subredditModerators) {
             modFilterCell.append(`<div style="padding-left: 10px;"><input class="mod-filter" type="checkbox" value="${moderator}" id="modmatrixmodfilter-${moderator}" /><label for="modmatrixmodfilter-${moderator}">${moderator}</label></div>`);
         }
         modMatrixSettings.find('table').append(modFilterRow);
-        var addButton = $('<a></a>').text('show moderator filter').insertBefore(modFilterCell);
+        const addButton = $('<a></a>').text('show moderator filter').insertBefore(modFilterCell);
         modFilterCell.parent().appendTo(modFilterRow);
         $('#modmatrixmodfilter-all').change(function () {
             if (this.checked) {
@@ -211,8 +211,8 @@ function modmatrix() {
         });
 
         // Unless we're on /r/mod or a /m/ulti, we want to check the mod filters for _active_ mods. These do not include shadow banned and deleted users
-        if (this.subredditName && this.subredditName != 'mod' && !TBUtils.isModLogPage) {
-            var subredditNames = this.subredditName.split('+');
+        if (this.subredditName && this.subredditName !== 'mod' && !TBUtils.isModLogPage) {
+            const subredditNames = this.subredditName.split('+');
 
             for (let i = 0; i < subredditNames.length; i++) {
                 $.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`, function (moderatorData) {
@@ -230,15 +230,15 @@ function modmatrix() {
         }
 
         // Action filter
-        var actionFilterRow = $('<tr><td>actions:</td></tr>');
-        var actionFilterCell = $('<div></div>').wrap('<td></td>').hide();
+        const actionFilterRow = $('<tr><td>actions:</td></tr>');
+        const actionFilterCell = $('<div></div>').wrap('<td></td>').hide();
         actionFilterCell.append('<div><input type="checkbox" value="" id="modmatrixactionfilter-all" checked="checked" /><label for="modmatrixactionfilter-all">All</label></div>');
         // I want these sorted alphabetically
-        var actions = $.map(this.subredditActions, function (value) {
+        const actions = $.map(this.subredditActions, function (value) {
             return value;
         });
         actions.sort(function (a, b) {
-            if (a.title == b.title) {
+            if (a.title === b.title) {
                 return 0;
             } else if (a.title < b.title) {
                 return -1;
@@ -247,11 +247,11 @@ function modmatrix() {
             }
         });
         for (let i = 0; i < actions.length; i++) {
-            var action = actions[i];
+            const action = actions[i];
             actionFilterCell.append(`<div style="padding-left: 10px;"><input class="action-filter" type="checkbox" value="${action.className}" id="modmatrixactionfilter-${action.className}" checked="checked" /><label for="modmatrixmodfilter-${action.className}">${action.title}</label></div>`);
         }
         modMatrixSettings.find('table').append(actionFilterRow);
-        var addButton2 = $('<a></a>').text('show action filter').insertBefore(actionFilterCell);
+        const addButton2 = $('<a></a>').text('show action filter').insertBefore(actionFilterCell);
         actionFilterCell.parent().appendTo(actionFilterRow);
         $('#modmatrixactionfilter-all').change(function () {
             if (this.checked) {
@@ -303,7 +303,7 @@ function modmatrix() {
 
         $('#mod-matrix-settings form').append('<input type="submit" value="generate" />');
 
-        for (let moderator in this.subredditModerators) {
+        for (const moderator in this.subredditModerators) {
             this.createModeratorRow(moderator);
         }
 
@@ -322,13 +322,13 @@ function modmatrix() {
         });
 
     // Load data
-    //this.getActions();
+    // this.getActions();
     };
 
     self.highlightPercentages = function () {
-        var threshold = parseInt($('#highlightpercentages').val());
+        const threshold = parseInt($('#highlightpercentages').val());
         $('#mod-matrix tr').removeClass('highlight');
-        if (threshold == 0)
+        if (threshold === 0)
             return;
         $('#mod-matrix td.action-percentage .action-number').each(function () {
             if (parseInt($(this).text()) < threshold)
@@ -339,13 +339,13 @@ function modmatrix() {
     self.submitForm = function (form) {
         self.resetData();
 
-        var from = $(form).find('input[name=from]').val();
-        var to = $(form).find('input[name=to]').val();
+        const from = $(form).find('input[name=from]').val();
+        const to = $(form).find('input[name=to]').val();
 
-        var fromUTC = this.dateToUTC(new Date(from));
-        var toDate = new Date(to);
+        const fromUTC = this.dateToUTC(new Date(from));
+        const toDate = new Date(to);
         toDate.setDate(toDate.getDate() + 1);
-        var toUTC = this.dateToUTC(toDate);
+        const toUTC = this.dateToUTC(toDate);
 
         self.maxDate = toUTC.getTime();
         self.minDate = fromUTC.getTime();
@@ -368,7 +368,7 @@ function modmatrix() {
 
     self.getRecursiveActions = function (data, hasMoreData) {
         self.iterations += 1;
-        if (hasMoreData == null || hasMoreData == true) {
+        if (hasMoreData == null || hasMoreData === true) {
             self.getActions(self.getRecursiveActions);
         } else {
             self.refreshTable();
@@ -377,14 +377,14 @@ function modmatrix() {
     };
 
     self.createModeratorRow = function (moderator) {
-        var body = $('#mod-matrix tbody');
+        const body = $('#mod-matrix tbody');
         if (body.find(`tr.moderator-${moderator}`).length > 0)
             return;
-        var row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
+        const row = $('<tr></tr>').addClass(`moderator-${moderator}`).addClass('mod-row');
 
         row.append(`<td><a href="/user/${moderator}" target="_blank" title="${moderator}">${moderator}</a></td>`);
-        for (let subredditAction in this.subredditActions) {
-            var td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
+        for (const subredditAction in this.subredditActions) {
+            const td = $(`<td class="action-cell action-${subredditAction}"><a title="${this.subredditActions[subredditAction].title} actions by ${moderator}" target="_blank" class="action-number" href="${this.subredditUrl}about/log?type=${subredditAction}&mod=${moderator}">0</a></td>`);
             row.append(td);
         }
         row.append(`<td class="action-total"><a class="action-number" target="_blank" title="total actions by ${moderator}"  href="${this.subredditUrl}about/log?mod=${moderator}">0</a></td>`);
@@ -400,9 +400,9 @@ function modmatrix() {
     };
 
     self.getActions = function (callback) {
-        var requestData = {
+        const requestData = {
             limit: this.limit,
-            count: (this.iterations - 1) * this.limit
+            count: (this.iterations - 1) * this.limit,
         };
 
         if (this.after != null) requestData.after = this.after;
@@ -411,8 +411,8 @@ function modmatrix() {
         $('#mod-matrix-statistics').text(`loading entries ${requestData.count} to ${requestData.count + requestData.limit}...`);
         $('#mod-matrix-settings input[type=submit]').prop('disabled', true);
 
-        var url = `${this.subredditUrl}about/log.json`;
-        var cacheKey = `${url}?${JSON.stringify(requestData)}`;
+        const url = `${this.subredditUrl}about/log.json`;
+        const cacheKey = `${url}?${JSON.stringify(requestData)}`;
 
         if (this.dataCache[cacheKey] != null) {
             self.processData(this.dataCache[cacheKey], callback);
@@ -420,18 +420,18 @@ function modmatrix() {
             $.getJSON(url, requestData, function (response) {
                 TBStorage.purifyObject(response);
                 self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
-                var data = response.data;
+                const data = response.data;
                 self.processData(data, callback);
                 self.dataCache[cacheKey] = data;
             })
                 .fail(function (jqxhr, textStatus, error) {
                     self.log(`Mod log request ${requestData.count}to ${requestData.count + requestData.limit} failed (${jqxhr.status}), ${textStatus}: ${error}`);
-                    if (jqxhr.status == 504) {
+                    if (jqxhr.status === 504) {
                         self.log('Retrying mod log request...');
                         self.getActions(callback);
                     }
                     else {
-                    //End and display what we have with an error
+                        // End and display what we have with an error
                         self.processData(null, callback);
                     }
                 });
@@ -441,20 +441,20 @@ function modmatrix() {
     self.updateFilters = function () {
         self.modFilter = [];
         if (!$('#modmatrixmodfilter-all').is(':checked')) {
-            var modFilters = $('#mod-matrix-settings .mod-filter:checked');
+            const modFilters = $('#mod-matrix-settings .mod-filter:checked');
 
             modFilters.each(function () {
-                if ($(this).val() != '') {
+                if ($(this).val() !== '') {
                     self.modFilter.push($(this).val());
                 }
             });
         }
         self.actionFilter = [];
         if (!$('#modmatrixactionfilter-all').is(':checked')) {
-            var actionFilters = $('#mod-matrix-settings .action-filter:checked');
+            const actionFilters = $('#mod-matrix-settings .action-filter:checked');
 
             actionFilters.each(function () {
-                if ($(this).val() != '') {
+                if ($(this).val() !== '') {
                     self.actionFilter.push($(this).val());
                 }
             });
@@ -463,30 +463,29 @@ function modmatrix() {
 
     self.refreshTable = function () {
         this.updateFilters();
-        var hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter),
-            hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter);
-        var matrix = $('#mod-matrix');
+        const hasModFilter = self.modFilter != null && !$.isEmptyObject(self.modFilter),
+              hasActionFilter = self.actionFilter != null && !$.isEmptyObject(self.actionFilter),
+              matrix = $('#mod-matrix');
 
-        //modLogMatrix.filterModeratorActions();
+        // modLogMatrix.filterModeratorActions();
 
         // Mod numbers
-        for (let mod in this.subredditModerators) {
-            var moderator = self.subredditModerators[mod];
-            var modRow = matrix.find(`.moderator-${mod}`);
-            for (let action in moderator) {
-                var value = parseInt(moderator[action]);
+        for (const mod in this.subredditModerators) {
+            const moderator = self.subredditModerators[mod],
+                  modRow = matrix.find(`.moderator-${mod}`);
+            for (const action in moderator) {
+                const value = parseInt(moderator[action]);
                 modRow.find(`.action-${action} .action-number`).text(value);
-
             }
-            modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) == -1);
-        //matrix.find(".moderator-" + mod + " .action-total").text(total);
+            modRow.toggleClass('filtered', hasModFilter && $.inArray(mod, self.modFilter) === -1);
+            // matrix.find(".moderator-" + mod + " .action-total").text(total);
         }
-        //modLogMatrix.filterModeratorActions();
+        // modLogMatrix.filterModeratorActions();
 
         // Action totals
-        for (let action in this.subredditActions) {
-        //var total = actionTotals[action] || 0;
-            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) == -1);
+        for (const action in this.subredditActions) {
+            // var total = actionTotals[action] || 0;
+            matrix.find(`.action-${action}`).toggleClass('filtered', hasActionFilter && $.inArray(action, self.actionFilter) === -1);
             let total = 0;
             matrix.find(`tbody .action-${action} .action-number:visible`).each(function () {
                 total += parseInt($(this).text());
@@ -495,22 +494,22 @@ function modmatrix() {
             matrix.find(`tfoot .action-${action} .action-number`).text(total);
         }
 
-        //modLogMatrix.filterColumnActions();
-        //modLogMatrix.highlightPercentages();
+        // modLogMatrix.filterColumnActions();
+        // modLogMatrix.highlightPercentages();
 
         matrix.find('tfoot tr, tbody tr').each(function () {
-            var rowTotal = 0;
+            let rowTotal = 0;
             $(this).find('.action-cell .action-number:visible').each(function () {
                 rowTotal += parseInt($(this).text());
             });
             $(this).find('.action-total .action-number').text(rowTotal);
         });
 
-        var allTotal = parseInt(matrix.find('tr.totals .action-total .action-number').text());
+        const allTotal = parseInt(matrix.find('tr.totals .action-total .action-number').text());
         if (allTotal > 0) {
             matrix.find('tbody tr').each(function () {
-                var total = parseInt($(this).find('.action-total .action-number').text());
-                var percentage = parseInt((total / allTotal) * 100);
+                const total = parseInt($(this).find('.action-total .action-number').text());
+                const percentage = parseInt((total / allTotal) * 100);
                 $(this).find('.action-percentage .action-number').text(percentage);
             });
         } else {
@@ -525,19 +524,19 @@ function modmatrix() {
     };
 
     self.processData = function (data, callback) {
-        var finished = data == null,
-            errored = finished;
+        let finished = data == null;
+        const errored = finished;
 
         if (!finished) {
             for (let i = 0; i < data.children.length; i++) {
-                var item = data.children[i].data;
+                const item = data.children[i].data;
 
-                var action = item.action;
-                var mod = item.mod;
-                var moderator = self.subredditModerators[mod];
+                const action = item.action;
+                const mod = item.mod;
+                let moderator = self.subredditModerators[mod];
 
                 if (self.minDate != null && self.minDate > item.created_utc * 1000) {
-                //console.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
+                // console.log("Item older than fromDate", item.created_utc, modLogMatrix.minDate);
                     finished = true;
                     break;
                 } else if (
@@ -545,13 +544,13 @@ function modmatrix() {
                 // (hasModFilter && $.inArray(mod, modLogMatrix.modFilter) == -1) ||
                 // (hasActionFilter && $.inArray(action, modLogMatrix.actionFilter)  == -1)
                 ) {
-                //console.log("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
+                // console.log("Item newer than toDate", item.created_utc, modLogMatrix.maxDate);
                     continue;
                 }
 
                 if (self.firstEntry == null) {
                     self.firstEntry = item;
-                    if (i != 0 || self.after != null) {
+                    if (i !== 0 || self.after != null) {
                         self.beforeFirst = data.children[i - 1].data;
                     }
                 }
@@ -562,15 +561,15 @@ function modmatrix() {
                     self.createModeratorRow(mod);
                 }
 
-                var actionCount = moderator[action] ? moderator[action] + 1 : 1;
+                const actionCount = moderator[action] ? moderator[action] + 1 : 1;
 
                 moderator[action] = actionCount;
 
-                //modLogMatrix.subredditActions[action].total += 1;
+                // modLogMatrix.subredditActions[action].total += 1;
                 self.total += 1;
                 self.lastEntry = item;
 
-            //Update html
+            // Update html
             // matrix.find(".moderator-" + mod + " .action-" + action + "").text(moderator[action]);
             // matrix.find(".moderator-" + mod + " .action-total").text(moderator.total);
             // matrix.find(".totals .action-" + action + "").text(modLogMatrix.subredditActions[action].total);
@@ -578,7 +577,7 @@ function modmatrix() {
             }
 
             // Are we finished, or should we keep going?
-            if (data.after == self.after || data.after == null || finished == true) {
+            if (data.after === self.after || data.after == null || finished === true) {
                 finished = true;
             } else {
                 self.after = data.after;
@@ -587,12 +586,12 @@ function modmatrix() {
 
         // Show statistics
         if (finished && self.firstEntry != null && self.lastEntry != null) {
-            var lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
-            var firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
+            const lastEntryDate = new Date(self.lastEntry.created_utc * 1000);
+            const firstEntryDate = new Date(self.firstEntry.created_utc * 1000);
             $('#mod-matrix-statistics').html(TBStorage.purify(`showing <strong>${self.total} actions</strong> between <strong title="${lastEntryDate}">${lastEntryDate.toDateString().toLowerCase()}</strong> and <strong title="${firstEntryDate}">${firstEntryDate.toDateString().toLowerCase()}</strong> ${errored ? "(<span style='color:red'>error occured</span>)" : ''} | <a id="exporttocsv">export table to CSV</a>`));
             $('#exporttocsv').click(self.exportToCSV).attr({
-                'download': `${self.subredditName}-modlog.csv`,
-                target: '_blank'
+                download: `${self.subredditName}-modlog.csv`,
+                target: '_blank',
             });
         } else {
             $('#mod-matrix-statistics').html('no actions during requested period');
@@ -606,9 +605,9 @@ function modmatrix() {
     };
 
     self.exportToCSV = function () {
-        var table = $('#mod-matrix');
+        const table = $('#mod-matrix');
 
-        var header = '';
+        let header = '';
         table.find('thead th').each(function () {
             if ($(this).find('a').length > 0)
                 header += $(this).find('a').attr('title');
@@ -617,23 +616,23 @@ function modmatrix() {
             header += ',';
         });
 
-        var body = '';
+        let body = '';
         table.find('tbody tr').each(function () {
 
-            var row = '';
+            let row = '';
             $(this).find('td').each(function () {
                 row += `${$(this).text()},`;
             });
-            if (row.charAt(row.length - 1) == ',')
+            if (row.charAt(row.length - 1) === ',')
                 row = row.substring(0, row.length - 1);
             body += `\r\n${row}`;
         });
 
-        var footer = '\r\n';
+        let footer = '\r\n';
         table.find('tfoot td').each(function () {
             footer += `${$(this).text()},`;
         });
-        var string = header + body + footer;
+        const string = header + body + footer;
         this.href = `data:text/csv;charset=utf-8,${escape(string || 'sep=, \r\n')}`;
     };
 
@@ -642,28 +641,28 @@ function modmatrix() {
     };
 
     self.getSubredditModerators = function () {
-        var modItems = $('.drop-choices.lightdrop:not(.modaction-drop) a:not(.primary)');
+        let modItems = $('.drop-choices.lightdrop:not(.modaction-drop) a:not(.primary)');
 
-        if( $('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length ) {
+        if ($('.drop-choices.lightdrop:not(.modaction-drop) a.primary').length) {
             modItems = modItems.add('.dropdown.lightdrop:not(.modaction-drop) .selected');
         }
 
         modItems = $.makeArray(modItems);
 
         modItems.sort(function (a, b) {
-            var aText = $(a).text().toLowerCase(),
-                bText = $(b).text().toLowerCase();
-            if (aText == bText)
+            const aText = $(a).text().toLowerCase(),
+                  bText = $(b).text().toLowerCase();
+            if (aText === bText)
                 return 0;
             else
                 return aText > bText ? 1 : -1;
         });
 
-        var moderators = {};
+        const moderators = {};
 
         $(modItems).each(function () {
-            var mod = $(this).text();
-            if (mod == 'all' || /\*/.test(mod)) return;
+            const mod = $(this).text();
+            if (mod === 'all' || /\*/.test(mod)) return;
 
             moderators[$(this).text()] = {};
         });
@@ -672,21 +671,21 @@ function modmatrix() {
     };
 
     self.getSubredditActions = function () {
-        var actionItems = $('.drop-choices.lightdrop.modaction-drop a');
+        let actionItems = $('.drop-choices.lightdrop.modaction-drop a');
 
-        if( $('.drop-choices.lightdrop.modaction-drop a.primary').length ) {
+        if ($('.drop-choices.lightdrop.modaction-drop a.primary').length) {
             actionItems = actionItems.add('.dropdown.lightdrop.modaction-drop .selected');
         }
 
-        var actions = {};
+        const actions = {};
 
         actionItems.each(function () {
-            if ($(this).text() == 'all')
+            if ($(this).text() === 'all')
                 return;
 
-            var actionLink = $(this).attr('href');
-            var actionCode = self.getQuerystringByName('type', actionLink);
-            actions[actionCode] = {'title': $(this).text(), 'className': actionCode};
+            const actionLink = $(this).attr('href');
+            const actionCode = self.getQuerystringByName('type', actionLink);
+            actions[actionCode] = {title: $(this).text(), className: actionCode};
         });
 
         return actions;
@@ -695,9 +694,9 @@ function modmatrix() {
     self.getQuerystringByName = function (name, url) {
         if (url == null)
             url = location.search;
-        name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-        var regex = new RegExp(`[\\?&]${name}=([^&#]*)`),
-            results = regex.exec(url);
+        name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp(`[\\?&]${name}=([^&#]*)`),
+              results = regex.exec(url);
         return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
     };
 
@@ -711,7 +710,7 @@ function modmatrix() {
         self.log('Running Mod Matrix Module');
         self.run();
 
-        var $body = $('body');
+        const $body = $('body');
 
         let lastAfter;
 
@@ -721,17 +720,17 @@ function modmatrix() {
         const parser = SnuOwnd.getParser(SnuOwnd.getRedditRenderer());
         $('.content .menuarea').append('<div class="spacer"><a href="javascript:;" class="activate-comment-load tb-general-button" >Load text of removed comments.</a></div>');
 
-        function getComments(modlogUrl) {
+        function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);
 
             $.getJSON(modlogUrl, {
-                raw_json : 1
-            }).done(function(result) {
+                raw_json: 1,
+            }).done(function (result) {
                 TBStorage.purifyObject(result);
                 lastAfter = result.data.after;
                 const $modActions = $('.modactionlisting');
-                result.data.children.forEach(function(child) {
-                    if(child.data.target_body && child.data.action === 'removecomment') {
+                result.data.children.forEach(function (child) {
+                    if (child.data.target_body && child.data.action === 'removecomment') {
                         const $listingItem = $modActions.find(`tr.modactions[data-fullname="${child.data.id}"] .description`);
 
                         // Render string markdown to HTML first.
@@ -766,7 +765,7 @@ ${renderedMarkdown}
 
         // NER support.
         window.addEventListener('TBNewThings', function () {
-            if(loadComments && nerActive) {
+            if (loadComments && nerActive) {
                 const linkUrl = new URL(location);
                 linkUrl.searchParams.set('after', lastAfter);
                 const modlogUrl = `${TBUtils.baseDomain}${linkUrl.pathname}.json${linkUrl.search}`;

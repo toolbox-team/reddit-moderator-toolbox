@@ -1954,7 +1954,7 @@ function initwrapper (userDetails, newModSubs) {
                 data,
                 sendOAuthToken,
             }, response => {
-                if (response.errorThrown === undefined) {
+                if (response.errorThrown !== undefined) {
                     reject(response);
                 } else {
                     resolve(response);

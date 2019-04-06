@@ -356,7 +356,13 @@ function betterbuttons () {
 
             // Make sure this is a post in a sub we mod by checking for the remove button.
             if ($buttons.has('.remove-button').length) {
-                $buttons.append($('<li>').addClass('sticky-button').append($('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')).append($('<span>').addClass('success').text('unstickied').hide()).append($('<span>').addClass('error').text('failed to sticky').hide()));
+                $buttons.append($(`
+                    <li class="sticky-button">
+                        <a class="tb-bracket-button" href="javascript:;">unsticky</a>
+                        <span class="success" style="display: none;">unstickied</span>
+                        <span class="error" style="display: none;">failed to unsticky</span>
+                    </li>
+                `).hide());
             }
         });
 

@@ -212,7 +212,7 @@ function notifiermod () {
             self.setting('lastSeenModmail', now);
             self.setting('modmailCount', 0);
 
-            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).done(json => {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).then(json => {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, (i, value) => {
                     const unreadmessageid = value.data.name;
@@ -418,10 +418,10 @@ function notifiermod () {
             // Messages
             //
             // The reddit api is silly sometimes, we want the title or reported comments and there is no easy way to get it, so here it goes:
-            // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
+            // a silly function to get the title anyway. The getJSON is wrapped in a function to prevent if from running async outside the loop.
 
             function getcommentitle (unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
-                $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(jsondata => {
+                TBUtils.getJSON(TBUtils.baseDomain + unreadcontexturl).then(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     const commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
@@ -435,7 +435,7 @@ function notifiermod () {
             }
 
             // getting unread messages
-            $.getJSON(`${TBUtils.baseDomain}/message/unread.json`).done(json => {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/message/unread.json`).then(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
                 self.setting('unreadMessageCount', count);
@@ -549,14 +549,16 @@ function notifiermod () {
                     }
                     self.setting('unreadPushed', pushedunread);
                 }
+            }).catch(response => {
+                console.error(response);
             });
 
             //
             // Modqueue
             //
-            // wrapper around $.getJSON so it can be part of a loop
+            // wrapper around getJSON so it can be part of a loop
             function procesmqcomments (mqlinkid, mqreportauthor, mqidname) {
-                $.getJSON(TBUtils.baseDomain + mqlinkid).done(jsondata => {
+                TBUtils.getJSON(TBUtils.baseDomain + mqlinkid).then(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     let infopermalink = jsondata.data.children[0].data.permalink;
                     const infotitle = jsondata.data.children[0].data.title,
@@ -574,7 +576,7 @@ function notifiermod () {
                 modQueueURL = `/r/${modSubreddits}/about/modqueue`;
             }
 
-            $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(json => {
+            TBUtils.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).then(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0;
                 updateModqueueCount(count);
@@ -680,7 +682,7 @@ function notifiermod () {
                     unModeratedURL = `/r/${unmoderatedSubreddits}/about/unmoderated`;
                 }
 
-                $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(json => {
+                TBUtils.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).then(json => {
                     TBStorage.purifyObject(json);
                     const count = json.data.children.length || 0;
 

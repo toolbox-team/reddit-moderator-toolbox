@@ -22,14 +22,11 @@ function initwrapper (userDetails, newModSubs) {
             }
         });
 
-        // Let's get oauth information
-        // We fetch the data on page load but we don't access the variable directly.
-
         /**
          * If we are on new modmail we use www.reddit.com for all other instances we use whatever is the current domain. Used because some browsers do not like relative urls in extensions
          * @var {string} baseDomain
          * @memberof TBUtils
-         * */
+         */
         TBUtils.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
         /**
@@ -37,7 +34,7 @@ function initwrapper (userDetails, newModSubs) {
          * @var {string} tempBaseDomain
          * @memberof TBUtils
          * @todo Once the redesign is no longer alpha/beta switch all instances that use this.
-         * */
+         */
         TBUtils.tempBaseDomain = window.location.hostname === 'new.reddit.com' ? 'https://new.reddit.com' : 'https://www.reddit.com';
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
@@ -2102,69 +2099,54 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
-        // We need to demangle the JSON ourselves, so we have to go about it this way :(
-            $.ajax(`${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`, {
-                dataType: 'json',
-                dataFilter (data) {
-                // TODO: right now a lot of functions implicitly rely on reddit
-                // returning escaped JSON to operate safely. add this back in once
-                // everything's been audited.
-
-                    // return TBUtils.unescapeJSON(data);
-                    return data;
-                },
-            })
-                .done(json => {
-                    const wikiData = json.data.content_md;
-
-                    if (!wikiData) {
+            // We need to demangle the JSON ourselves, so we have to go about it this way :(
+            TBUtils.sendRequest({
+                url: `${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`,
+            }).then(({data}) => {
+                const wikiData = data.data.content_md;
+                if (!wikiData) {
+                    callback(TBUtils.NO_WIKI_PAGE);
+                    return;
+                }
+                if (isJSON) {
+                    let parsedWikiData;
+                    try {
+                        parsedWikiData = JSON.parse(wikiData);
+                    } catch (err) {
+                    // we should really have a INVAILD_DATA error for this.
+                        $.log(err, false, SHORTNAME);
                         callback(TBUtils.NO_WIKI_PAGE);
-                        return;
                     }
-
-                    if (isJSON) {
-                        let parsedWikiData;
-                        try {
-                            parsedWikiData = JSON.parse(wikiData);
-                        } catch (err) {
-                        // we should really have a INVAILD_DATA error for this.
-                            $.log(err, false, SHORTNAME);
-                            callback(TBUtils.NO_WIKI_PAGE);
-                        }
-
-                        // Moved out of the try so random exceptions don't erase the entire wiki page
-                        if (parsedWikiData) {
-                            callback(parsedWikiData);
-                        } else {
-                            callback(TBUtils.NO_WIKI_PAGE);
-                        }
-
-                        return;
-                    }
-
-                    // We have valid data, but it's not JSON.
-                    callback(wikiData);
-                })
-                .fail((jqXHR, textStatus, e) => {
-                    $.log(`Wiki error (${subreddit}/${page}): ${e}`, false, SHORTNAME);
-                    if (jqXHR.responseText === undefined) {
-                        callback(TBUtils.WIKI_PAGE_UNKNOWN);
-                        return;
-                    }
-                    let reason;
-                    if (jqXHR.responseText.startsWith('<!doctype html>')) {
-                        reason = 'WIKI_PAGE_UNKNOWN';
+                    // Moved out of the try so random exceptions don't erase the entire wiki page
+                    if (parsedWikiData) {
+                        callback(parsedWikiData);
                     } else {
-                        reason = JSON.parse(jqXHR.responseText).reason || '';
-                    }
-
-                    if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
                         callback(TBUtils.NO_WIKI_PAGE);
-                    } else {
-                    // we don't know why it failed, we should not try to write to it.
-                        callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     }
-                });
+                    return;
+                }
+                // We have valid data, but it's not JSON.
+                callback(wikiData);
+            }).catch(({jqXHR, errorThrown}) => {
+                $.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`, false, SHORTNAME);
+                if (jqXHR.responseText === undefined) {
+                    callback(TBUtils.WIKI_PAGE_UNKNOWN);
+                    return;
+                }
+                let reason;
+                if (jqXHR.responseText.startsWith('<!doctype html>')) {
+                    reason = 'WIKI_PAGE_UNKNOWN';
+                } else {
+                    reason = JSON.parse(jqXHR.responseText).reason || '';
+                }
+
+                if (reason === 'PAGE_NOT_CREATED' || reason === 'WIKI_DISABLED') {
+                    callback(TBUtils.NO_WIKI_PAGE);
+                } else {
+                // we don't know why it failed, we should not try to write to it.
+                    callback(TBUtils.WIKI_PAGE_UNKNOWN);
+                }
+            });
         };
 
         TBUtils.getBanState = function (subreddit, user, callback) {

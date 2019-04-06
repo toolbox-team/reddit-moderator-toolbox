@@ -3231,27 +3231,34 @@ function initwrapper (userDetails, newModSubs) {
     // wait for storage
     function getModSubs (after, callback) {
         let modSubs = [];
-        TBUtils.getJSON('https://www.reddit.com/subreddits/mine/moderator.json', {
-            after,
-            limit: 100,
-        }).then(json => {
-            TBStorage.purifyObject(json);
-            modSubs = modSubs.concat(json.data.children);
+        chrome.runtime.sendMessage({
+            action: 'tb-request',
+            url: 'https://www.reddit.com/subreddits/mine/moderator.json',
+            data: {
+                after,
+                limit: 100,
+            },
+        }, response => {
+            const {errorThrown, data, jqXHR, textStatus} = response;
+            if (errorThrown) {
+                console.log(`getModSubs failed (${jqXHR.status}), ${textStatus}: ${errorThrown}`);
+                console.log(jqXHR);
+                if (jqXHR.status === 504) {
+                    console.log('504 Timeout retrying request');
+                    getModSubs(after, subs => callback(modSubs.concat(subs)));
+                } else {
+                    modSubs = [];
+                    return callback(modSubs);
+                }
+            } else {
+                TBStorage.purifyObject(data);
+                modSubs = modSubs.concat(data.data.children);
 
-            if (json.data.after) {
-                getModSubs(json.data.after, subs => callback(modSubs.concat(subs)));
-            } else {
-                return callback(modSubs);
-            }
-        }).catch((jqxhr, textStatus, error) => {
-            console.log(`getModSubs failed (${jqxhr.status}), ${textStatus}: ${error}`);
-            console.log(jqxhr);
-            if (jqxhr.status === 504) {
-                console.log('504 Timeout retrying request');
-                getModSubs(after, subs => callback(modSubs.concat(subs)));
-            } else {
-                modSubs = [];
-                return callback(modSubs);
+                if (data.data.after) {
+                    getModSubs(data.data.after, subs => callback(modSubs.concat(subs)));
+                } else {
+                    return callback(modSubs);
+                }
             }
         });
     }
@@ -3300,7 +3307,8 @@ function initwrapper (userDetails, newModSubs) {
                 window.dispatchEvent(event);
             }
         } catch (error) {
-            console.log(`Error: ${error}`);
+            console.log('Error getting user details');
+            console.log(error);
         }
     });
 })();

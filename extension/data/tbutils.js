@@ -1965,7 +1965,8 @@ function initwrapper (userDetails, newModSubs) {
         /**
          * Performs a GET request and promises the body of the request, or the
          * full request object on error. Maintains an API similar to
-         * `$.getJSON()`.
+         * `$.getJSON()` because that's what all these calls used before Chrome
+         * forced us to make all requests in the background.
          * @param {string} url The full URL to request
          * @param {object} data Query parameters as an object
          */

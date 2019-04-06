@@ -178,8 +178,8 @@ function personalnotes () {
                     </tr></table>`;
 
                         // Lets get a list of notes!
-                        $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
-                            .done(json => {
+                        TBUtils.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
+                            .then(json => {
                                 notesArray = [];
                                 let notesList;
                                 const count = json.data.length || 0;
@@ -212,7 +212,7 @@ function personalnotes () {
                                 });
                                 createPersonalNotesPopup(notesPopupContent);
                             })
-                            .fail(() => {
+                            .catch(() => {
                                 TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
                                 $this.removeClass('tb-notes-activated');
                             });

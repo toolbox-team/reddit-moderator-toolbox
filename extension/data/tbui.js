@@ -1595,7 +1595,7 @@
         commentIDs.forEach(id => {
             const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
             // Lets get the comments.
-            $.getJSON(fetchUrl, {raw_json: 1}).done(data => {
+            TBUtils.getJSON(fetchUrl, {raw_json: 1}).then(data => {
                 TBStorage.purifyObject(data);
                 const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
                 window.requestAnimationFrame(() => {

@@ -118,52 +118,50 @@ function devtools () {
                 $body.css('overflow', 'auto');
             });
 
-            $body.on('click', '.tb-testCommentUI-button', function () {
+            $body.on('click', '.tb-testCommentUI-button', async () => {
                 const $this = $(this),
                       $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, data => {
-                    TBStorage.purifyObject(data);
-                    const commentOptions = {
-                        parentLink: true,
-                        contextLink: true,
-                        fullCommentsLink: true,
-                    };
+                const data = await TBUtils.getJSON(inputURL, {raw_json: 1});
+                TBStorage.purifyObject(data);
+                const commentOptions = {
+                    parentLink: true,
+                    contextLink: true,
+                    fullCommentsLink: true,
+                };
 
-                    if ($this.hasClass('fetch-thread')) {
-                        const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
-                        $siteTable.append($comments);
-                        TBui.tbRedditEvent($comments, 'comment');
-                        $('time.timeago').timeago();
-                    } else {
-                        const $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
-                        $siteTable.append($comment);
-                        TBui.tbRedditEvent($comment, 'comment');
-                        $('time.timeago').timeago();
-                    }
-                });
+                if ($this.hasClass('fetch-thread')) {
+                    const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
+                    $siteTable.append($comments);
+                    TBui.tbRedditEvent($comments, 'comment');
+                    $('time.timeago').timeago();
+                } else {
+                    const $comment = TBui.makeSingleComment(data[1].data.children[0], commentOptions);
+                    $siteTable.append($comment);
+                    TBui.tbRedditEvent($comment, 'comment');
+                    $('time.timeago').timeago();
+                }
             });
 
-            $body.on('click', '.tb-testSubmissionUI-button', () => {
+            $body.on('click', '.tb-testSubmissionUI-button', async () => {
                 const $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, data => {
-                    TBStorage.purifyObject(data);
-                    TBUtils.forEachChunkedDynamic(data.data.children, entry => {
-                        if (entry.kind === `t3`) {
-                            const $submission = TBui.makeSubmissionEntry(entry);
-                            $siteTable.append($submission);
-                            $('time.timeago').timeago();
-                        }
-                    }).then(() => {
-                        setTimeout(() => {
-                            TBui.tbRedditEvent($siteTable, 'comment');
-                            TB.ui.longLoadSpinner(false);
-                        }, 1000);
-                    });
+                const data = await TBUtils.getJSON(inputURL, {raw_json: 1});
+                TBStorage.purifyObject(data);
+                TBUtils.forEachChunkedDynamic(data.data.children, entry => {
+                    if (entry.kind === `t3`) {
+                        const $submission = TBui.makeSubmissionEntry(entry);
+                        $siteTable.append($submission);
+                        $('time.timeago').timeago();
+                    }
+                }).then(() => {
+                    setTimeout(() => {
+                        TBui.tbRedditEvent($siteTable, 'comment');
+                        TB.ui.longLoadSpinner(false);
+                    }, 1000);
                 });
             });
         });

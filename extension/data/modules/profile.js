@@ -162,7 +162,7 @@ function profilepro () {
 
         function addTrophiesToSidebar (user, $sidebar) {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
-            $.getJSON(inputURL).done(data => {
+            TBUtils.getJSON(inputURL).then(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
                     const $userTrophies = $(`<div class="tb-user-trophies">
@@ -200,7 +200,7 @@ function profilepro () {
 
         function addModSubsToSidebar (user, $sidebar) {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
-            $.getJSON(inputURL).done(data => {
+            TBUtils.getJSON(inputURL).then(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
                     const $userModSubs = $(`<div class="tb-user-modsubs">
@@ -260,7 +260,7 @@ function profilepro () {
         function makeUserSidebar (user, $overlay) {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
             const inputURL = `${TBUtils.baseDomain}/user/${user}/about.json`;
-            $.getJSON(inputURL).done(data => {
+            TBUtils.getJSON(inputURL).then(data => {
                 TBStorage.purifyObject(data);
                 const userThumbnail = data.data.icon_img,
                       userCreated = data.data.created_utc,
@@ -297,13 +297,13 @@ function profilepro () {
                 return callback(false);
             }
             const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
-            $.getJSON(inputURL, {
+            TBUtils.getJSON(inputURL, {
                 raw_json: 1,
                 after,
                 sort: sortMethod,
                 limit: 100,
                 t: 'all',
-            }).done(data => {
+            }).then(data => {
                 TBStorage.purifyObject(data);
                 $.each(data.data.children, (i, value) => {
                     let hit = false;
@@ -573,12 +573,12 @@ function profilepro () {
 
             TBui.switchOverlayTab('tb-profile-overlay', type);
             const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
-            $.getJSON(inputURL, {
+            TBUtils.getJSON(inputURL, {
                 raw_json: 1,
                 after,
                 sort,
                 limit: 25,
-            }, data => {
+            }).then(data => {
                 TBStorage.purifyObject(data);
                 let after = false;
                 if (data.data.after) {

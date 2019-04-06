@@ -332,18 +332,17 @@ function historybutton () {
     /**
      * Show author information (Karma, How long they've been a redditor for)
      */
-    self.showAuthorInformation = function (author) {
+    self.showAuthorInformation = async function (author) {
         const $contentBox = self.fetched[author].popup;
 
-        $.get(`${TBUtils.baseDomain}/user/${author}/about.json`).done(d => {
-            TBStorage.purifyObject(d);
-            const joinedDate = new Date(d.data.created_utc * 1000),
-                  redditorTime = TBUtils.niceDateDiff(joinedDate);
+        const d = await TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/about.json`);
+        TBStorage.purifyObject(d);
+        const joinedDate = new Date(d.data.created_utc * 1000),
+              redditorTime = TBUtils.niceDateDiff(joinedDate);
 
-            requestAnimationFrame(() => {
-                $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
-                $contentBox.find('.redditorTime').text(`redditor for ${redditorTime}`);
-            });
+        requestAnimationFrame(() => {
+            $contentBox.find('.karma').text(`(${d.data.link_karma} | ${d.data.comment_karma})`);
+            $contentBox.find('.redditorTime').text(`redditor for ${redditorTime}`);
         });
     };
 
@@ -425,15 +424,15 @@ function historybutton () {
 
         TB.ui.longLoadNonPersistent(true);
 
-        $.get(`${TBUtils.baseDomain}/user/${author}/submitted.json`, {
+        TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/submitted.json`, {
             after,
             sort: 'new',
             limit: 100,
-        }).fail(() => {
+        }).catch(() => {
             self.log('Shadowbanned?');
             $error.html('unable to load userdata</br>shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
-        }).done(d => {
+        }).then(d => {
             TBStorage.purifyObject(d);
             // This is another exit point of the script. Hits this code after loading 1000 submissions for a user
             if ($.isEmptyObject(d.data.children)) {
@@ -738,14 +737,14 @@ function historybutton () {
         $contentBox.find('.tb-history-comment-stats').show();
         $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-        $.get(`${TBUtils.baseDomain}/user/${author}/comments.json`, {
+        TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/comments.json`, {
             after,
             sort: 'new',
             limit: 100,
-        }).fail(() => {
+        }).catch(() => {
             $commentTable.find('.error').html('unable to load userdata <br /> shadowbanned?');
             TB.ui.longLoadNonPersistent(false);
-        }).done(d => {
+        }).then(d => {
             TBStorage.purifyObject(d);
             $.each(d.data.children, (index, value) => {
                 const data = value.data;

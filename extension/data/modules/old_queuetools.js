@@ -233,7 +233,7 @@ function queuetoolsOld () {
                       contextUser = contextThingInfo.user;
 
                 // Get the entire context page.
-                $.get(contextUrl).done(result => {
+                TBUtils.getJSON(contextUrl).then(result => {
                     TBStorage.purifyObject(result);
                     // Put it into a jquery object and grab the comments.
                     const $result = $(result).find('.sitetable.nestedlisting');
@@ -867,7 +867,7 @@ function queuetoolsOld () {
                         }
 
                         function updateModqueueCount (sr) {
-                            $.get(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).done(d => {
+                            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).then(d => {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
@@ -1035,7 +1035,7 @@ function queuetoolsOld () {
         const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
         function getAutomodActionReason (sub) {
             self.log(sub);
-            $.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).done(json => {
+            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).then(json => {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, (i, value) => {
                     const actionReasonText = value.data.details,

@@ -76,7 +76,7 @@ function nukecomments () {
                     display: 'block',
                 });
 
-            $.getJSON(fetchURL, {raw_json: 1}).done(data => {
+            TBUtils.getJSON(fetchURL, {raw_json: 1}).then(data => {
                 TBStorage.purifyObject(data);
                 parseComments(data[1].data.children[0], postID, subreddit, () => {
                     TB.ui.longLoadSpinner(false);
@@ -198,7 +198,7 @@ function nukecomments () {
                 commentIDs.forEach(id => {
                     const fetchUrl = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
-                    $.getJSON(fetchUrl, {raw_json: 1}).done(data => {
+                    TBUtils.getJSON(fetchUrl, {raw_json: 1}).then(data => {
                         TBStorage.purifyObject(data);
                         parseComments(data[1].data.children[0], postID, subreddit, () => {
                             processCount++;

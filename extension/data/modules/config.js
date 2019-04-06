@@ -1451,17 +1451,16 @@ function tbconfig () {
         });
 
         // When the import button is clicked on the domain tags thing.
-        $body.on('click', '.domain_tags .import', () => {
-            $.getJSON(`${TBUtils.baseDomain}/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`, json => {
-                TBStorage.purifyObject(json);
-                if (json.data.content_md) {
-                    const tags = JSON.parse(json.data.content_md).domainTags;
-                    if (tags) {
-                        config.domainTags = tags;
-                        postToWiki('toolbox', config, '.import click', true);
-                    }
+        $body.on('click', '.domain_tags .import', async () => {
+            const json = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${$body.find('.domain_tags .importfrom').val()}/wiki/toolbox.json`);
+            TBStorage.purifyObject(json);
+            if (json.data.content_md) {
+                const tags = JSON.parse(json.data.content_md).domainTags;
+                if (tags) {
+                    config.domainTags = tags;
+                    postToWiki('toolbox', config, '.import click', true);
                 }
-            });
+            }
         });
 
         $body.on('click', '.save-ban-macro', () => {

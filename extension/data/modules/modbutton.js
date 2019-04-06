@@ -175,7 +175,7 @@ function modbutton () {
             self.run();
         });
 
-        function openModPopup (event, info) {
+        async function openModPopup (event, info) {
             const benbutton = event.target; // huehuehue
             const $benbutton = $(benbutton);
             $benbutton.text('loading...');
@@ -345,41 +345,38 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
-                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, data => {
-                    TBStorage.purifyObject(data);
-                    const banned = data.data.children;
-                    for (let i = 0; i < banned.length; i++) {
-                        if (banned[i].name.toLowerCase() === user.toLowerCase()) {
-                            user_fullname = banned[i].id; // we need this to extract data from the modlog
+                const data = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user});
+                TBStorage.purifyObject(data);
+                const banned = data.data.children;
+                for (let i = 0; i < banned.length; i++) {
+                    if (banned[i].name.toLowerCase() === user.toLowerCase()) {
+                        user_fullname = banned[i].id; // we need this to extract data from the modlog
 
-                            const timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
+                        const timestamp = new Date(banned[i].date * 1000); // seconds to milliseconds
 
-                            $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
-                            $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
+                        $popup.find('.current-sub').append($('<div class="already-banned">banned by <a href="#"></a> </div>'));
+                        $popup.find('.current-sub .already-banned').append($('<time>').attr('datetime', timestamp.toISOString()).timeago());
 
-                            $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
-                            $popup.find('.ban-note').val(banned[i].note);
-                            $popup.find('.tb-popup-title').css('color', 'red');
+                        $popup.find('select.mod-action option[data-api=unfriend][data-action=banned]').attr('selected', 'selected');
+                        $popup.find('.ban-note').val(banned[i].note);
+                        $popup.find('.tb-popup-title').css('color', 'red');
 
-                            // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                            $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
-                                type: 'banuser',
-                                limit: '1000',
-                            }, data => {
-                                TBStorage.purifyObject(data);
-                                const logged = data.data.children;
-                                for (let i = 0; i < logged.length; i++) {
-                                    if (logged[i].data.target_fullname === user_fullname) {
-                                        $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(logged[i].data.mod);
-                                        break;
-                                    }
-                                }
-                            });
-
-                            break;
+                        // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
+                        const logData = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
+                            type: 'banuser',
+                            limit: '1000',
+                        });
+                        TBStorage.purifyObject(logData);
+                        const logged = logData.data.children;
+                        for (let i = 0; i < logged.length; i++) {
+                            if (logged[i].data.target_fullname === user_fullname) {
+                                $popup.find('.current-sub .already-banned a').attr('href', `/u/${logged[i].data.mod}`).text(logged[i].data.mod);
+                                break;
+                            }
                         }
+                        break;
                     }
-                });
+                }
             }
 
             // if we're on the mod page, it's likely we want to mod them to another sub.
@@ -679,7 +676,7 @@ function modbutton () {
         });
 
         // Flair ALL THE THINGS
-        $body.on('click', '.tb-popup-tabs .user_flair', function () {
+        $body.on('click', '.tb-popup-tabs .user_flair', async () => {
             const $popup = $(this).parents('.mod-popup'),
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),
@@ -690,14 +687,13 @@ function modbutton () {
                 return;
             }
 
-            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, resp => {
-                if (!resp || !resp.users || resp.users.length < 1) {
-                    return;
-                }
-                TBStorage.purifyObject(resp);
-                $textinput.val(resp.users[0].flair_text);
-                $classinput.val(resp.users[0].flair_css_class);
-            });
+            const resp = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`);
+            if (!resp || !resp.users || resp.users.length < 1) {
+                return;
+            }
+            TBStorage.purifyObject(resp);
+            $textinput.val(resp.users[0].flair_text);
+            $classinput.val(resp.users[0].flair_css_class);
         });
 
         // Edit save button clicked.

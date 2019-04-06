@@ -320,7 +320,7 @@ function comments () {
             }
         });
 
-        $body.on('click', '#tb-flatview-link', () => {
+        $body.on('click', '#tb-flatview-link', async () => {
             const flatListing = {}; // This will contain all comments later on.
             let idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
@@ -412,38 +412,37 @@ function comments () {
             const jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
-            $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(data => {
-                TBStorage.purifyObject(data);
-                // put the json through our deconstructor.
-                data[1].isreply = false;
-                parseComments(data[1]);
-                // and get back a nice flat listing of ids
-                idListing = TBUtils.saneSortAs(idListing);
-                const commentOptions = {
-                    parentLink: true,
-                    contextLink: true,
-                    fullCommentsLink: true,
-                    noOddEven: true,
-                    contextPopup: openContextInPopup,
-                };
-                let count = 0;
-                // from each id in the idlisting we construct a new comment.
-                TBUtils.forEachChunkedDynamic(idListing, value => {
-                    count++;
-                    const msg = `Building comment ${count}/${idListing.length}`;
-                    TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
-                    const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
-                    $comment.find('time.timeago').timeago();
-                    $htmlCommentView.append($comment);
-                }).then(() => {
-                    $flatSearchCount.text(count);
-                    setTimeout(() => {
-                        TBui.tbRedditEvent($htmlCommentView, 'comment');
-                        TB.ui.longLoadSpinner(false);
-                        $body.css('overflow', 'hidden');
-                        $flatViewOverlay.show();
-                    }, 1000);
-                });
+            const data = await TBUtils.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
+            TBStorage.purifyObject(data);
+            // put the json through our deconstructor.
+            data[1].isreply = false;
+            parseComments(data[1]);
+            // and get back a nice flat listing of ids
+            idListing = TBUtils.saneSortAs(idListing);
+            const commentOptions = {
+                parentLink: true,
+                contextLink: true,
+                fullCommentsLink: true,
+                noOddEven: true,
+                contextPopup: openContextInPopup,
+            };
+            let count = 0;
+            // from each id in the idlisting we construct a new comment.
+            TBUtils.forEachChunkedDynamic(idListing, value => {
+                count++;
+                const msg = `Building comment ${count}/${idListing.length}`;
+                TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
+                const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
+                $comment.find('time.timeago').timeago();
+                $htmlCommentView.append($comment);
+            }).then(() => {
+                $flatSearchCount.text(count);
+                setTimeout(() => {
+                    TBui.tbRedditEvent($htmlCommentView, 'comment');
+                    TB.ui.longLoadSpinner(false);
+                    $body.css('overflow', 'hidden');
+                    $flatViewOverlay.show();
+                }, 1000);
             });
         });
         if (openContextInPopup) {
@@ -489,7 +488,7 @@ function comments () {
                 }
 
                 // Get the context
-                $.getJSON(contextUrl, {raw_json: 1}).done(data => {
+                TBUtils.getJSON(contextUrl, {raw_json: 1}).then(data => {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
                         parentLink: true,

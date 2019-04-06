@@ -218,7 +218,7 @@ function modmatrix () {
             const subredditNames = this.subredditName.split('+');
 
             for (let i = 0; i < subredditNames.length; i++) {
-                $.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`, moderatorData => {
+                TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
                     TBStorage.purifyObject(moderatorData);
                     for (let j = 0; j < moderatorData.data.children.length; j++) {
                         $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
@@ -423,7 +423,7 @@ function modmatrix () {
         if (this.dataCache[cacheKey] != null) {
             self.processData(this.dataCache[cacheKey], callback);
         } else {
-            $.getJSON(url, requestData, response => {
+            TBUtils.getJSON(url, requestData).then(response => {
                 TBStorage.purifyObject(response);
                 self.log(`Got ${requestData.count} to ${requestData.count + requestData.limit}`);
                 const data = response.data;
@@ -736,9 +736,9 @@ function modmatrix () {
         function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);
 
-            $.getJSON(modlogUrl, {
+            TBUtils.getJSOIN(modlogUrl, {
                 raw_json: 1,
-            }).done(result => {
+            }).then(result => {
                 TBStorage.purifyObject(result);
                 lastAfter = result.data.after;
                 const $modActions = $('.modactionlisting');

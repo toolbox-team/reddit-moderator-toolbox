@@ -26,7 +26,7 @@
     function runTasks (tasks) {
         $.log('run tasks', false, 'TBListener');
         let task;
-        while (task = tasks.shift()) {
+        while ((task = tasks.shift())) {
             task();
         }
     }

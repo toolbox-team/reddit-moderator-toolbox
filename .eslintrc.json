@@ -235,6 +235,13 @@
         "no-array-constructor": "error",
         "no-implied-eval": "error",
         "no-empty": "warn",
+        "no-extra-parens": [
+            "error",
+            "all",
+            {
+                "conditionalAssign": false
+            }
+        ],
         "prefer-arrow-callback": "error",
         "prefer-rest-params": "error",
         "prefer-numeric-literals": "error",

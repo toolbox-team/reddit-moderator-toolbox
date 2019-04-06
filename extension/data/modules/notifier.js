@@ -396,7 +396,7 @@ function notifiermod () {
             // Update methods
             //
 
-            if (!newLoad && (now - lastchecked) < checkInterval) {
+            if (!newLoad && now - lastchecked < checkInterval) {
                 updateMessagesCount(unreadMessageCount);
                 updateModqueueCount(modqueueCount);
                 updateUnmodCount(unmoderatedCount);

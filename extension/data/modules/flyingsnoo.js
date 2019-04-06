@@ -35,7 +35,7 @@ function flyingsnoo () {
                 background: `url(${chrome.runtime.getURL('data/images/snoo_up.png')})`,
                 position: 'absolute',
                 top: `${$(this).offset().top}px`,
-                left: `${($(window).width() * 0.49) - (width / 2)}px`,
+                left: `${$(window).width() * 0.49 - width / 2}px`,
                 zIndex: 999,
             }).appendTo('body');
 
@@ -49,10 +49,10 @@ function flyingsnoo () {
             let keepFlying = false;
 
             function startFlying () {
-                const newTop = Math.max(0, (oldTop - ((documentHeight) * 0.0002)));
+                const newTop = Math.max(0, oldTop - documentHeight * 0.0002);
 
                 if (iterations % 50 === 0) {
-                    wind = ((Math.random() * 200) - 100) * 0.02;
+                    wind = (Math.random() * 200 - 100) * 0.02;
                 }
 
                 const newLeft = Math.min(documentWidth - width, Math.max(0, oldLeft + wind));
@@ -99,8 +99,8 @@ function flyingsnoo () {
                 function dragEvent (e) {
                     const offsetX = floater.data('offsetX') || 0,
                           offsetY = floater.data('offsetY') || 0;
-                    oldLeft = (e.pageX - offsetX);
-                    oldTop = (e.pageY - offsetY);
+                    oldLeft = e.pageX - offsetX;
+                    oldTop = e.pageY - offsetY;
                     floater.css({
                         left: `${oldLeft}px`,
                         top: `${oldTop}px`,

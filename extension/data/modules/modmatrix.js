@@ -69,7 +69,7 @@ function modmatrix () {
     self.sort = function (index, direction) {
         const rows = $('#mod-matrix tbody tr');
 
-        direction = direction != null ? direction : (index === this.currentSorting.index ? this.currentSorting.direction * -1 : index === 0 ? -1 : 1);
+        direction = direction != null ? direction : index === this.currentSorting.index ? this.currentSorting.direction * -1 : index === 0 ? -1 : 1;
 
         const newArray = [];
 
@@ -514,7 +514,7 @@ function modmatrix () {
         if (allTotal > 0) {
             matrix.find('tbody tr').each(function () {
                 const total = parseInt($(this).find('.action-total .action-number').text());
-                const percentage = parseInt((total / allTotal) * 100);
+                const percentage = parseInt(total / allTotal * 100);
                 $(this).find('.action-percentage .action-number').text(percentage);
             });
         } else {
@@ -545,7 +545,7 @@ function modmatrix () {
                     finished = true;
                     break;
                 } else if (
-                    (self.maxDate != null && self.maxDate < item.created_utc * 1000)
+                    self.maxDate != null && self.maxDate < item.created_utc * 1000
                 // (hasModFilter && $.inArray(mod, modLogMatrix.modFilter) == -1) ||
                 // (hasActionFilter && $.inArray(action, modLogMatrix.actionFilter)  == -1)
                 ) {

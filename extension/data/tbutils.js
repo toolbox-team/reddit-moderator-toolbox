@@ -32,9 +32,9 @@ function initwrapper (userDetails, newModSubs) {
          * @returns {Promise} Returns the token through a promise object
          */
         TBUtils.oauthToken = function oauthToken () {
-            return new Promise((resolve => {
+            return new Promise(resolve => {
                 chrome.runtime.sendMessage({action: 'oauthToken'}, resolve);
-            })).then(response => {
+            }).then(response => {
                 const responseObject = JSON.parse(response.oauthToken);
                 if (!responseObject.ERROR) {
                     return responseObject.accessToken;
@@ -50,7 +50,7 @@ function initwrapper (userDetails, newModSubs) {
          * @var {string} baseDomain
          * @memberof TBUtils
          * */
-        TBUtils.baseDomain = ((window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com') ? 'https://www.reddit.com' : `https://${window.location.hostname}`);
+        TBUtils.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
         /**
          * Pretty much as the name suggests
@@ -76,9 +76,9 @@ function initwrapper (userDetails, newModSubs) {
               seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
               lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
-              newLogin = (cacheName !== TBUtils.logged),
-              getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
-              getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
+              newLogin = cacheName !== TBUtils.logged,
+              getnewLong = (now - lastgetLong) / (60 * 1000) > longLength || newLogin,
+              getnewShort = (now - lastgetShort) / (60 * 1000) > shortLength || newLogin,
               betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
               getModSubsCallbacks = [],
               invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -187,8 +187,8 @@ function initwrapper (userDetails, newModSubs) {
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBUtils.mySubs);
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
         } else {
-            TBUtils.mySubs = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
-            TBUtils.mySubsData = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
+            TBUtils.mySubs = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
+            TBUtils.mySubsData = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
         }
 
         const manifest = chrome.runtime.getManifest();
@@ -196,7 +196,7 @@ function initwrapper (userDetails, newModSubs) {
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`;
 
-        TBUtils.toolboxVersion = `${manifest.version}${(betaRelease) ? ' (beta)' : ''}`;
+        TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
         TBUtils.releaseName = 'New Narwhal';
         TBUtils.configSchema = 1;
@@ -234,11 +234,11 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.browser = UNKOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
-        if (typeof (InstallTrigger) !== 'undefined' || 'MozBoxSizing' in document.body.style) {
+        if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
             TBUtils.browser = FIREFOX;
-        } else if (typeof (window.browser) !== 'undefined') {
+        } else if (typeof window.browser !== 'undefined') {
             TBUtils.browser = EDGE;
-        } else if (typeof (chrome) !== 'undefined') {
+        } else if (typeof chrome !== 'undefined') {
             TBUtils.browser = CHROME;
 
             if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
@@ -286,12 +286,12 @@ function initwrapper (userDetails, newModSubs) {
             </style>`);
         }
         // Get cached info.
-        TBUtils.noteCache = (getnewShort) ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
-        TBUtils.configCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});
-        TBUtils.rulesCache = (getnewLong) ? {} : TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {});
-        TBUtils.noConfig = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
-        TBUtils.noNotes = (getnewShort) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
-        TBUtils.noRules = (getnewLong) ? [] : TBStorage.getCache(SETTINGS_NAME, 'noRules', []);
+        TBUtils.noteCache = getnewShort ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
+        TBUtils.configCache = getnewLong ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});
+        TBUtils.rulesCache = getnewLong ? {} : TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {});
+        TBUtils.noConfig = getnewShort ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
+        TBUtils.noNotes = getnewShort ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
+        TBUtils.noRules = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'noRules', []);
 
         if (TBUtils.debugMode) {
             const consoleText = `toolbox version: ${TBUtils.toolboxVersion
@@ -321,19 +321,19 @@ function initwrapper (userDetails, newModSubs) {
 
         const pushedunread = TBStorage.getSetting('Notifier', 'unreadPushed', []);
         if (pushedunread.length > 250) {
-            pushedunread.splice(150, (pushedunread.length - 150));
+            pushedunread.splice(150, pushedunread.length - 150);
             TBStorage.setSetting('Notifier', 'unreadPushed', pushedunread);
         }
 
         const pusheditems = TBStorage.getSetting('Notifier', 'modqueuePushed', []);
         if (pusheditems.length > 250) {
-            pusheditems.splice(150, (pusheditems.length - 150));
+            pusheditems.splice(150, pusheditems.length - 150);
             TBStorage.setSetting('Notifier', 'modqueuePushed', pusheditems);
         }
 
         if (seenNotes.length > 250) {
             $.log('clearing seen notes', false, SHORTNAME);
-            seenNotes.splice(150, (seenNotes.length - 150));
+            seenNotes.splice(150, seenNotes.length - 150);
             TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
         }
 
@@ -572,7 +572,7 @@ function initwrapper (userDetails, newModSubs) {
             }
             if (new_index >= array.length) {
                 let k = new_index - array.length;
-                while ((k--) + 1) {
+                while (k-- + 1) {
                     array.push(undefined);
                 }
             }
@@ -638,7 +638,7 @@ function initwrapper (userDetails, newModSubs) {
          * @returns {integer} random number
          */
         TBUtils.getRandomNumber = function (maxInt) {
-            return Math.floor((Math.random() * maxInt) + 1);
+            return Math.floor(Math.random() * maxInt + 1);
         };
 
         /**
@@ -692,11 +692,11 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.timeConverterISO = function (UNIX_timestamp) {
             const a = new Date(UNIX_timestamp * 1000);
             const year = a.getFullYear();
-            const month = (`0${a.getUTCMonth() + 1}`).slice(-2);
-            const date = (`0${a.getUTCDate()}`).slice(-2);
-            const hour = (`0${a.getUTCHours()}`).slice(-2);
-            const min = (`0${a.getUTCMinutes()}`).slice(-2);
-            const sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            const month = `0${a.getUTCMonth() + 1}`.slice(-2);
+            const date = `0${a.getUTCDate()}`.slice(-2);
+            const hour = `0${a.getUTCHours()}`.slice(-2);
+            const min = `0${a.getUTCMinutes()}`.slice(-2);
+            const sec = `0${a.getUTCSeconds()}`.slice(-2);
             return `${year}-${month}-${date}T${hour}:${min}:${sec}Z`;
         };
 
@@ -730,7 +730,7 @@ function initwrapper (userDetails, newModSubs) {
             let a1 = 0;
             let f = 28;
 
-            if (((tyear % 4 === 0) && (tyear % 100 !== 0)) || (tyear % 400 === 0)) {
+            if (tyear % 4 === 0 && tyear % 100 !== 0 || tyear % 400 === 0) {
                 f = 29;
             }
 
@@ -777,13 +777,13 @@ function initwrapper (userDetails, newModSubs) {
             if (dday === 0) {
                 d = 0;
             }
-            if ((y === 1) && (mm === 1)) {
+            if (y === 1 && mm === 1) {
                 a1 = 1;
             }
-            if ((y === 1) && (d === 1)) {
+            if (y === 1 && d === 1) {
                 a1 = 1;
             }
-            if ((mm === 1) && (d === 1)) {
+            if (mm === 1 && d === 1) {
                 a2 = 1;
             }
             if (y === 1) {
@@ -793,10 +793,10 @@ function initwrapper (userDetails, newModSubs) {
                     returnString += `${dyear} years`;
                 }
             }
-            if ((a1 === 1) && (a2 === 0)) {
+            if (a1 === 1 && a2 === 0) {
                 returnString += ' and ';
             }
-            if ((a1 === 1) && (a2 === 1)) {
+            if (a1 === 1 && a2 === 1) {
                 returnString += ', ';
             }
             if (mm === 1) {
@@ -832,11 +832,11 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.timeConverterRead = function (UNIX_timestamp) {
             const a = new Date(UNIX_timestamp * 1000);
             const year = a.getFullYear();
-            const month = (`0${a.getUTCMonth() + 1}`).slice(-2);
-            const date = (`0${a.getUTCDate()}`).slice(-2);
-            const hour = (`0${a.getUTCHours()}`).slice(-2);
-            const min = (`0${a.getUTCMinutes()}`).slice(-2);
-            const sec = (`0${a.getUTCSeconds()}`).slice(-2);
+            const month = `0${a.getUTCMonth() + 1}`.slice(-2);
+            const date = `0${a.getUTCDate()}`.slice(-2);
+            const hour = `0${a.getUTCHours()}`.slice(-2);
+            const min = `0${a.getUTCMinutes()}`.slice(-2);
+            const sec = `0${a.getUTCSeconds()}`.slice(-2);
             return `${date}-${month}-${year} ${hour}:${min}:${sec} UTC`;
         };
 
@@ -1483,7 +1483,7 @@ function initwrapper (userDetails, newModSubs) {
                 const idRegex = new RegExp('.*mod.reddit.com/mail/.*?/(.*?)$', 'i');
 
                 subreddit = $body.find('.ThreadTitle__community').text();
-                permalink = ($threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`);
+                permalink = $threadBase.find('.m-link').length ? `https://mod.reddit.com${$threadBase.find('.m-link').attr('href')}` : `https://mod.reddit.com/mail/perma/${browserUrl.match(idRegex)[1]}`;
                 id = browserUrl.match(idRegex)[1];
 
                 // Funny story, there is currently no functionality in new modmail that can make use of the body.
@@ -1537,7 +1537,7 @@ function initwrapper (userDetails, newModSubs) {
                 if (TBUtils.isModmail || $sender.closest('.message-parent')[0] !== undefined) {
                 // Change it to use the parent's title.
                     title = $sender.find('.subject-text:first').text();
-                    subreddit = (subreddit) ? subreddit : ($entry.find('.head a:last').text() || $thing.find('.head a:last').text());
+                    subreddit = subreddit ? subreddit : $entry.find('.head a:last').text() || $thing.find('.head a:last').text();
                     // This is a weird palce to go about this, and the conditions are strange,
                     // but if we're going to assume we're us, we better make damned well sure that is likely the case.
                     // if ($entry.find('.remove-button').text() === '') {
@@ -1829,7 +1829,7 @@ function initwrapper (userDetails, newModSubs) {
 
             const length = array.length,
                   delay = 100,
-                  limit = (length > chunkSize) ? 20 : 0;
+                  limit = length > chunkSize ? 20 : 0;
             let counter = 0;
 
             if (length < chunkSize) {
@@ -1933,7 +1933,7 @@ function initwrapper (userDetails, newModSubs) {
 
                   now = () => window.performance.now(),
 
-                  again = (typeof window.requestAnimationFrame === 'function') ?
+                  again = typeof window.requestAnimationFrame === 'function' ?
                       function (callback) {
                           window.requestAnimationFrame(callback);
                       } :
@@ -1945,10 +1945,10 @@ function initwrapper (userDetails, newModSubs) {
                 stop = now();
                 fr = 1000 / (stop - start);
                 size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
-                return (start = stop);
+                return start = stop;
             }
 
-            return new Promise((resolve => {
+            return new Promise(resolve => {
                 function doChunk () {
                     if (started) {
                         optimize();
@@ -1965,7 +1965,7 @@ function initwrapper (userDetails, newModSubs) {
                 }
                 start = now();
                 again(doChunk);
-            }));
+            });
         };
 
         TBUtils.reloadToolbox = function () {
@@ -2125,7 +2125,7 @@ function initwrapper (userDetails, newModSubs) {
         // reddit HTML encodes all of their JSON responses, we need to HTMLdecode
         // them before parsing.
         TBUtils.unescapeJSON = function (val) {
-            if (typeof (val) === 'string') {
+            if (typeof val === 'string') {
                 val = val.replace(/&quot;/g, '"')
                     .replace(/&gt;/g, '>').replace(/&lt;/g, '<')
                     .replace(/&amp;/g, '&');
@@ -2723,7 +2723,7 @@ function initwrapper (userDetails, newModSubs) {
             // int/hash to hex
             let color = '#';
             for (let index = 0; index < 3; index++) {
-                color += (`00${((hash >> index * 8) & 0xFF).toString(16)}`).slice(-2);
+                color += `00${(hash >> index * 8 & 0xFF).toString(16)}`.slice(-2);
             }
 
             return color;
@@ -3076,7 +3076,7 @@ function initwrapper (userDetails, newModSubs) {
                 const newMMtarget = document.querySelector('body');
 
                 // create an observer instance
-                const newMMobserver = new MutationObserver((mutations => {
+                const newMMobserver = new MutationObserver(mutations => {
                     let doAddTbModmailSidebar = false;
                     let doTBNewThings = false;
 
@@ -3111,7 +3111,7 @@ function initwrapper (userDetails, newModSubs) {
                             }, 1000);
                         }
                     }
-                }));
+                });
 
                 // configuration of the observer:
                 // We specifically want all child elements but nothing else.
@@ -3136,7 +3136,7 @@ function initwrapper (userDetails, newModSubs) {
             const target = document.querySelector('div.content');
 
             // create an observer instance
-            const observer = new MutationObserver((mutations => {
+            const observer = new MutationObserver(mutations => {
                 mutations.forEach(mutation => {
                     const $target = $(mutation.target), $parentNode = $(mutation.target.parentNode);
                     if (!($target.hasClass('sitetable') && ($target.hasClass('nestedlisting') || $target.hasClass('listing') || $target.hasClass('linklisting') ||
@@ -3157,7 +3157,7 @@ function initwrapper (userDetails, newModSubs) {
                         }, 1000);
                     }
                 });
-            }));
+            });
 
             // configuration of the observer:
             // We specifically want all child elements but nothing else.

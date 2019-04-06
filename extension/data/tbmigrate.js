@@ -11,7 +11,7 @@ function profileResults (name, number) {
         console.log('performance start:', number);
         console.log('--------------------------');
         console.log('ms:', start);
-        console.log('sec:', Math.round((start) / 1000));
+        console.log('sec:', Math.round(start / 1000));
     } else {
         const secs = Math.round((number - start) / 1000);
         const secsPrevious = Math.round((number - previous) / 1000);

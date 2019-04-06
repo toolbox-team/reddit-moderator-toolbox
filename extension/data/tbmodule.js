@@ -84,7 +84,7 @@ function tbmodule () {
                   lastExport = self.modules['Modbar'].setting('lastExport'),
                   showExportReminder = self.modules['Modbar'].setting('showExportReminder'),
                   lastExportDays = Math.round(TB.utils.millisecondsToDays(TBUtils.getTime() - lastExport)),
-                  lastExportLabel = (lastExport === 0) ? 'Never' : `${lastExportDays} days ago`;
+                  lastExportLabel = lastExport === 0 ? 'Never' : `${lastExportDays} days ago`;
 
             let lastExportState = '';
 
@@ -117,40 +117,40 @@ function tbmodule () {
                 },
                 {
                     settingName: 'showexportreminder',
-                    content: `<label><input type="checkbox" id="showExportReminder" ${(showExportReminder) ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
+                    content: `<label><input type="checkbox" id="showExportReminder" ${showExportReminder ? 'checked' : ''}> Show reminder after 30 days of no backup.</label>`,
                     display: '',
                 },
                 {
                     settingName: 'debugmode',
-                    content: `<label><input type="checkbox" id="debugMode" ${(debugMode) ? 'checked' : ''}> Enable debug mode</label>`,
-                    display: (advancedMode) ? '' : displayNone,
+                    content: `<label><input type="checkbox" id="debugMode" ${debugMode ? 'checked' : ''}> Enable debug mode</label>`,
+                    display: advancedMode ? '' : displayNone,
                 },
                 {
                     settingName: 'browserconsole',
-                    content: `<label><input type="checkbox" id="browserConsole" ${(browserConsole) ? 'checked' : ''}> Use browser's console</label>`,
-                    display: (debugMode) ? '' : displayNone,
+                    content: `<label><input type="checkbox" id="browserConsole" ${browserConsole ? 'checked' : ''}> Use browser's console</label>`,
+                    display: debugMode ? '' : displayNone,
                 },
                 {
                     settingName: 'betamode',
-                    content: `<label><input type="checkbox" id="betaMode" ${(betaMode) ? 'checked' : ''}> Enable beta features</label>`,
+                    content: `<label><input type="checkbox" id="betaMode" ${betaMode ? 'checked' : ''}> Enable beta features</label>`,
                     display: '',
                 },
                 {
                     settingName: 'advancedmode',
-                    content: `<label><input type="checkbox" id="advancedMode" ${(advancedMode) ? 'checked' : ''}> Show advanced settings</label>`,
+                    content: `<label><input type="checkbox" id="advancedMode" ${advancedMode ? 'checked' : ''}> Show advanced settings</label>`,
                     display: '',
                 },
                 {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
                         <input type="text" class="tb-input" name="longLength" value="${longLength}">`,
-                    display: (advancedMode) ? '' : displayNone,
+                    display: advancedMode ? '' : displayNone,
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>
                       <input type="text" class="tb-input" name="shortLength" value="${shortLength}">`,
-                    display: (advancedMode) ? '' : displayNone,
+                    display: advancedMode ? '' : displayNone,
                 },
                 {
                     settingName: 'clearcache',
@@ -273,8 +273,8 @@ function tbmodule () {
                     <p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
                     <p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
                         <br> See the License for the specific language governing permissions and limitations under the License.</p>
-                    <p ${(debugMode && !TB.utils.devModeLock) ? ` ` : `style="display:none;" `}>
-                        <label><input type="checkbox" id="devMode" ${(devMode) ? `checked` : ``}> DEVMODE: DON'T EVER ENABLE THIS!</label>
+                    <p ${debugMode && !TB.utils.devModeLock ? ` ` : `style="display:none;" `}>
+                        <label><input type="checkbox" id="devMode" ${devMode ? `checked` : ``}> DEVMODE: DON'T EVER ENABLE THIS!</label>
                     </p>`,
                 },
             ];
@@ -520,7 +520,7 @@ function tbmodule () {
 
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting === 'enabled') {
-                        moduleIsEnabled = (module.setting(setting) ? true : false);
+                        moduleIsEnabled = module.setting(setting) ? true : false;
                         if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) {
                             continue;
                         }
@@ -593,8 +593,8 @@ function tbmodule () {
                     moduleHasSettingTab = true;
 
                     // blank slate
-                    $setting = $(`<p ${(displaySetting) ? '' : 'style="display:none;"'}></p>`);
-                    const title = (options.title) ? options.title : `(${setting})`;
+                    $setting = $(`<p ${displaySetting ? '' : 'style="display:none;"'}></p>`);
+                    const title = options.title ? options.title : `(${setting})`;
                     let noWrap = false;
 
                     // automagical handling of input types
@@ -796,7 +796,7 @@ body {
                               redditLink = `[${setting}](#?tbsettings=${moduleName}&setting=${settingName})`,
                               internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
-                        $setting.append(`&nbsp;<a ${(displaySetting) ? '' : 'style="display:none;"'
+                        $setting.append(`&nbsp;<a ${displaySetting ? '' : 'style="display:none;"'
                         } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">link</a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>` +

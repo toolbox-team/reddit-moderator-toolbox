@@ -161,7 +161,7 @@ function banlist () {
             function _filter (value) {
                 if (!banlist_updating // don't trigger an update if we're still running
                 && (banlist_last_update === 0 // catch the first run, before last_update has been set
-                || (banlist_last_update + time_to_update) <= Date.now())
+                || banlist_last_update + time_to_update <= Date.now())
                 ) {
                     banlist_updating = true;
                     TB.ui.longLoadSpinner(true);

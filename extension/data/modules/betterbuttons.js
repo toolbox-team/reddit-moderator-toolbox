@@ -61,7 +61,7 @@ function betterbuttons () {
 
         // Watches for changes in the DOM
         let shouldSticky = false;
-        const commentObserver = new MutationObserver((mutations => {
+        const commentObserver = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
                 if (mutation.addedNodes) {
                     for (let i = 0; i < mutation.addedNodes.length; ++i) {
@@ -85,7 +85,7 @@ function betterbuttons () {
                     }
                 }
             });
-        }));
+        });
 
         // Add the mod save buttons next to each comment save button
         const $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
@@ -230,7 +230,7 @@ function betterbuttons () {
         $body.on('click', '.tb-sticky-comment', stickyClicked);
 
         // Watches for changes in DOM to add distinguish button listeners if needed
-        const commentObserver = new MutationObserver((mutations => {
+        const commentObserver = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
                 if (mutation.addedNodes) {
                     for (let i = 0; i < mutation.addedNodes.length; ++i) {
@@ -243,7 +243,7 @@ function betterbuttons () {
                     }
                 }
             });
-        }));
+        });
         commentObserver.observe(document.body, {
             childList: true,
             subtree: true,
@@ -272,7 +272,7 @@ function betterbuttons () {
 
             // Don't remove if removal reasons are enabled and the button isn't for spam
             if (!$body.hasClass('tb-removal-reasons')
-            || ($body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons'))
+            || $body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons')
             || $button.children().first().attr('value') === 'spammed'
             ) {
                 if (yes) {

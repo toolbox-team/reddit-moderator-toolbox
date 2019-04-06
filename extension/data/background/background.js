@@ -1,7 +1,7 @@
 // We store notification meta data here for later use.
 const notificationData = {};
 
-if (('MozBoxSizing' in document.body.style) === false && typeof (window.browser) !== 'undefined') {
+if ('MozBoxSizing' in document.body.style === false && typeof window.browser !== 'undefined') {
     window.chrome = window.browser;
 }
 
@@ -126,7 +126,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.action === 'tb-notification') {
-        if (typeof (chrome.notifications.getPermissionLevel) !== 'undefined') {
+        if (typeof chrome.notifications.getPermissionLevel !== 'undefined') {
             chrome.notifications.getPermissionLevel(permission => {
                 if (permission === 'granted') {
                     notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);

@@ -717,7 +717,7 @@ function removalreasons () {
                 }
 
                 // Check if a valid notification type is selected
-                if ((!notifyBy && !notifyAsSub) || (logLink == null && notifyBy === 'none')) {
+                if (!notifyBy && !notifyAsSub || logLink == null && notifyBy === 'none') {
                     popup.find('#buttons').addClass('error-highlight');
                     return status.text(NO_REPLY_TYPE_ERROR);
                 }

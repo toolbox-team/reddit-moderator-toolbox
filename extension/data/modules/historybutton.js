@@ -546,7 +546,7 @@ function historybutton () {
 
                 let cssClass = '';
                 if (percentage >= 10 && domainCount > 4) {
-                    cssClass = (percentage >= 20) ? 'tb-history-row-danger' : 'tb-history-row-warning';
+                    cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
                 let url = `/search?q=%28and+site%3A${domain}+author%3A${author}+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`;
@@ -601,7 +601,7 @@ function historybutton () {
 
                 let cssClass = '';
                 if (percentage >= 10 && subredditCount > 4) {
-                    cssClass = (percentage >= 20) ? 'tb-history-row-danger' : 'tb-history-row-warning';
+                    cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
                 if (subreddit === thisSubreddit) {
                     cssClass += ' tb-history-row-current-subreddit';
@@ -651,7 +651,7 @@ function historybutton () {
                 const percentage = Math.round(account.count / user.counters.submissions * 100);
                 let cssClass = '';
                 if (percentage >= 10 && account.count > 4) {
-                    cssClass = (percentage >= 20) ? 'tb-history-row-danger' : 'tb-history-row-warning';
+                    cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
                 requestAnimationFrame(() => {

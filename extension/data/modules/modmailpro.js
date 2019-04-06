@@ -398,7 +398,7 @@ function modmailpro () {
                   subreddit = threadInfo.subreddit,
                   title = threadInfo.title,
                   sender = threadInfo.author.toLowerCase();
-            let replyCount = ($entries.length - 1);
+            let replyCount = $entries.length - 1;
 
             // Set subreddit name.
             $thread.data('subreddit', subreddit);
@@ -970,7 +970,7 @@ function modmailpro () {
             setInterval(() => {
                 const count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
                 if (count > 0) {
-                    getNewThings((count + 2));
+                    getNewThings(count + 2);
                 }
             }, delay);
         }

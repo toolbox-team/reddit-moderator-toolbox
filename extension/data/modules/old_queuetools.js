@@ -505,15 +505,15 @@ function queuetoolsOld () {
             $(window).scroll(() => {
                 if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-sub')) {
                     $modtoolsMenu.css({
-                        top: `${($(window).scrollTop()) - offsetTop + 20}px`,
+                        top: `${$(window).scrollTop() - offsetTop + 20}px`,
                     });
                 } else if ($(window).scrollTop() > offsetTop && $body.hasClass('pinHeader-header')) {
                     $modtoolsMenu.css({
-                        top: `${($(window).scrollTop()) - offsetTop + 72}px`,
+                        top: `${$(window).scrollTop() - offsetTop + 72}px`,
                     });
                 } else if ($(window).scrollTop() > offsetTop) {
                     $modtoolsMenu.css({
-                        top: `${($(window).scrollTop()) - offsetTop + 5}px`,
+                        top: `${$(window).scrollTop() - offsetTop + 5}px`,
                     });
                 } else {
                     $modtoolsMenu.css({
@@ -548,7 +548,7 @@ function queuetoolsOld () {
             $('.sortorder-options a').click(function () {
                 const $sortOrder = $('.sortorder'),
                       order = $(this).text(),
-                      toggleAsc = (order === $sortOrder.text());
+                      toggleAsc = order === $sortOrder.text();
 
                 if (toggleAsc) {
                     sortAscending = !sortAscending;
@@ -661,7 +661,7 @@ function queuetoolsOld () {
             // Mass spam/remove/approve
             $('.pretty-button.action').click(function () {
                 const approve = this.type === 'positive',
-                      spam = !approve && (this.type === 'negative');
+                      spam = !approve && this.type === 'negative';
 
                 // Apply action
                 const $actioned = $('.thing:visible > input:checked').parent().each(function () {
@@ -682,7 +682,7 @@ function queuetoolsOld () {
                 });
                 $actioned.css('opacity', '1');
                 $actioned.removeClass('flaired spammed removed approved');
-                $actioned.addClass(approve ? 'approved' : (spam ? 'spammed' : 'removed'));
+                $actioned.addClass(approve ? 'approved' : spam ? 'spammed' : 'removed');
 
                 if (hideActionedItems) {
                     $actioned.hide();
@@ -884,7 +884,7 @@ function queuetoolsOld () {
                 );
 
                 function sortSubreddits () {
-                    const subs = $('.subscription-box li').sort((a, b) => b.lastChild.textContent - a.lastChild.textContent || (+(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase())) || -1);
+                    const subs = $('.subscription-box li').sort((a, b) => b.lastChild.textContent - a.lastChild.textContent || +(a.firstChild.nextSibling.textContent.toLowerCase() > b.firstChild.nextSibling.textContent.toLowerCase()) || -1);
                     $('.subscription-box').empty().append(subs);
                 }
             });
@@ -894,7 +894,7 @@ function queuetoolsOld () {
                 const $sitetable = $('#siteTable');
                 const things = $('#siteTable .thing').sort((a, b) => {
                     let A, B;
-                    (asc) ? (A = a, B = b) : (A = b, B = a);
+                    asc ? (A = a, B = b) : (A = b, B = a);
 
                     const $A = $(A),
                           $B = $(B);
@@ -1023,7 +1023,7 @@ function queuetoolsOld () {
             addModtools();
         }
 
-        if (($body.hasClass('listing-page') || $body.hasClass('comments-page')) || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
+        if ($body.hasClass('listing-page') || $body.hasClass('comments-page') || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
             $('.tabmenu').first().append($('<li class="tb-queuetools-tab"><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
         }
 

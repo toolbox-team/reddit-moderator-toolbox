@@ -199,7 +199,7 @@ function trouble () {
             fixFlatNER($this);
 
             const $things = $this.children('.thing').not('.morechildren')
-                .sort((a, b) => (b.dataset.nchildren - a.dataset.nchildren));
+                .sort((a, b) => b.dataset.nchildren - a.dataset.nchildren);
 
             $this.prepend($things)
                 .prepend($this.children('.thing.tb-controversy'))

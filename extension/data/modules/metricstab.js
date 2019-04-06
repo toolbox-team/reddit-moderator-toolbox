@@ -66,7 +66,7 @@ function metricstab () {
             self.log('metrics tab opened');
             const offset = $(this).offset(),
                   offsetLeft = offset.left,
-                  offsetTop = (offset.top + 20);
+                  offsetTop = offset.top + 20;
 
             $body.find('#tb-metrics-expand-list').css({
                 left: `${offsetLeft}px`,

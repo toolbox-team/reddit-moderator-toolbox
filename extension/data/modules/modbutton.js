@@ -407,7 +407,7 @@ function modbutton () {
 
             // custom sub changed.
             $popup.find(`select.${self.OTHER}`).change(function () {
-                $popup.find(`.${self.OTHER}-checkbox`).prop('checked', ($(this).val() !== self.OTHER));
+                $popup.find(`.${self.OTHER}-checkbox`).prop('checked', $(this).val() !== self.OTHER);
             });
 
             // show/hide ban reason text feild.

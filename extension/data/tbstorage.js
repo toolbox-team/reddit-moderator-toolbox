@@ -3,7 +3,7 @@ const domain = window.location.hostname.split('.')[0];
 
 // Edge fix
 // TODO: remove after Edge switches to blink engine
-if (typeof (chrome) === 'undefined' && typeof (window.browser) !== 'undefined') {
+if (typeof chrome === 'undefined' && typeof window.browser !== 'undefined') {
     chrome = window.browser;
 }
 // Reset toolbox settings support
@@ -35,7 +35,7 @@ function startReset () {
     const r = confirm('This will reset all your toolbox settings.  Would you like to proceed?');
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
-        if (typeof (chrome) !== 'undefined') {
+        if (typeof chrome !== 'undefined') {
             chrome.storage.local.remove('tbsettings', () => {
                 // Wait a sec for stuff to clear.
                 setTimeout(() => {
@@ -188,7 +188,7 @@ function storagewrapper () {
                 callback(sObject);
 
                 function undefindedOrLength (setting) {
-                    return (setting === undefined) ? 0 : setting.length;
+                    return setting === undefined ? 0 : setting.length;
                 }
 
                 function undefindedOrTrue (setting) {
@@ -273,7 +273,7 @@ function storagewrapper () {
             // Check if the oldreddit module is enabled and we also need to activate on old reddit.
             const oldRedditActive = getSetting('oldreddit', 'enabled', false);
 
-            if ((loggedinOld && oldRedditActive) || loggedinRedesign) {
+            if (loggedinOld && oldRedditActive || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(() => {
                     profileResults('storageLoaded', performance.now());
@@ -397,7 +397,7 @@ function storagewrapper () {
             const storageKey = `Toolboxv4.${module}.${setting}`;
             registerSetting(module, setting);
 
-            defaultVal = (defaultVal !== undefined) ? defaultVal : null;
+            defaultVal = defaultVal !== undefined ? defaultVal : null;
             let result;
 
             if (TBsettingsObject[storageKey] === undefined) {
@@ -450,7 +450,7 @@ function storagewrapper () {
         function getCache (module, setting, defaultVal) {
             const storageKey = `TBCachev4.${module}.${setting}`;
 
-            defaultVal = (defaultVal !== undefined) ? defaultVal : null;
+            defaultVal = defaultVal !== undefined ? defaultVal : null;
             let result;
             if (localStorage[storageKey] === undefined) {
                 return defaultVal;

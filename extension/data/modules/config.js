@@ -32,7 +32,7 @@ function tbconfig () {
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
                 </br><a href="/r/${subredditConfig}/w/pages/" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${((unManager) ? `style="display:none;"` : ``)} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
+                </br><a ${(unManager ? `style="display:none;"` : ``)} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -99,7 +99,7 @@ function tbconfig () {
                     <td>Footer:</td>
                     <td><textarea class="tb-input edit-footer" >${TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ``))}</textarea></td>
                     </tr>
-                    <tr class="advanced-enable" ${((TB.utils.advancedMode) ? `` : `style="display:none;"`)}>
+                    <tr class="advanced-enable" ${(TB.utils.advancedMode ? `` : `style="display:none;"`)}>
                     <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
                     </tr>
                     <tr class="rr-advanced">
@@ -221,14 +221,14 @@ function tbconfig () {
                     <td>
                         Ban note:
                     </td><td>
-                        <input class="banNote tb-input" type="text" value="${((configData.banMacros && configData.banMacros.banNote) ? configData.banMacros.banNote : ``)}"/>
+                        <input class="banNote tb-input" type="text" value="${(configData.banMacros && configData.banMacros.banNote ? configData.banMacros.banNote : ``)}"/>
                     </td>
                     </tr>
                     <tr>
                     <td>
                        Ban message:
                     </td><td>
-                       <textarea class="tb-input banMessage">${((configData.banMacros && configData.banMacros.banMessage) ? configData.banMacros.banMessage : ``)}</textarea>
+                       <textarea class="tb-input banMessage">${(configData.banMacros && configData.banMacros.banMessage ? configData.banMacros.banMessage : ``)}</textarea>
                     </td>
                     </tr>
                 </table>`,
@@ -585,7 +585,7 @@ function tbconfig () {
                     const removalReasonTemplateHTML = TBUtils.template(removalReasonTemplate, {
                         i,
                         subreddit,
-                        'i++': (i++),
+                        'i++': i++,
                         label,
                         'removalReasonText': TBUtils.escapeHTML(removalReasonText),
                         removalReasonTitle,
@@ -760,7 +760,7 @@ function tbconfig () {
                   textArea = $wikiContentArea.find('.edit-wikidata'),
                   text = $(textArea).val(),
                   editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val() || `updated ${page} configuration`,
-                  updateAM = (page === 'automoderator');
+                  updateAM = page === 'automoderator';
             // save the data, and blank the text area.
             // also, yes some of the pages are in JSON, but they aren't JSON objects,
             // so they don't need to be re-strinified.

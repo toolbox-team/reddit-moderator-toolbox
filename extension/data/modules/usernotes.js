@@ -377,7 +377,7 @@ function usernotes () {
                 }
 
                 $usertag.empty();
-                $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? `  (+${u.notes.length - 1})` : ''));
+                $usertag.append($('<b>').text(note)).append($('<span>').text(u.notes.length > 1 ? `  (+${u.notes.length - 1})` : ''));
 
                 let type = u.notes[0].type;
                 if (!type) {
@@ -464,7 +464,7 @@ function usernotes () {
                 self.log('Adding colors to dialog');
 
                 // Create type/color selections
-                const group = (`${Math.random().toString(36)}00000000000000000`).slice(2, 7);
+                const group = `${Math.random().toString(36)}00000000000000000`.slice(2, 7);
 
                 colors.forEach(info => {
                     self.log(`  ${info.key}`);
@@ -637,7 +637,7 @@ function usernotes () {
                     $error.show();
 
                     return;
-                } else if ((!user || !subreddit)) {
+                } else if (!user || !subreddit) {
                 // We seem to have an problem beyond the control of the user
                     return;
                 }
@@ -981,7 +981,7 @@ function usernotes () {
                                 $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
                                 emptyProfiles.push(user);
                             } else if (pruneOld) {
-                                const timeSince = now - (date * 1000),
+                                const timeSince = now - date * 1000,
                                       daysSince = TBUtils.millisecondsToDays(timeSince);
 
                                 if (daysSince > pruneLength) {

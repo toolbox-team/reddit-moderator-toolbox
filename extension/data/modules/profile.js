@@ -320,9 +320,9 @@ function profilepro () {
                     }
 
                     if (
-                        (subredditMatch && !searchPattern) ||
-                        (patternMatch && !subredditPattern) ||
-                        (subredditMatch && patternMatch)
+                        subredditMatch && !searchPattern ||
+                        patternMatch && !subredditPattern ||
+                        subredditMatch && patternMatch
                     ) {
                         hit = true;
                     }
@@ -432,7 +432,7 @@ function profilepro () {
             $body.on('focus', '.tb-subredditsearch', function () {
                 const offset = $(this).offset();
                 const offsetLeft = offset.left;
-                const offsetTop = (offset.top + 26);
+                const offsetTop = offset.top + 26;
 
                 $body.find('#tb-search-suggest').css({
                     left: `${offsetLeft}px`,

@@ -95,8 +95,8 @@
 
         const options = $.extend(defaults, opts);
 
-        meta = (typeof meta !== 'undefined') ? meta : null;
-        css_class = (typeof css_class !== 'undefined') ? css_class : '';
+        meta = typeof meta !== 'undefined' ? meta : null;
+        css_class = typeof css_class !== 'undefined' ? css_class : '';
 
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
         const $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
@@ -226,9 +226,9 @@
     };
     // Window Overlay HTML generator
     TBui.overlay = function overlay (title, tabs, buttons, css_class, single_footer, details) {
-        buttons = (typeof buttons !== 'undefined') ? buttons : '';
-        css_class = (typeof css_class !== 'undefined') ? css_class : '';
-        single_footer = (typeof single_footer !== 'undefined') ? single_footer : false;
+        buttons = typeof buttons !== 'undefined' ? buttons : '';
+        css_class = typeof css_class !== 'undefined' ? css_class : '';
+        single_footer = typeof single_footer !== 'undefined' ? single_footer : false;
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         const $overlay = $(`
@@ -258,7 +258,7 @@
 
         if (tabs.length === 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-content"></div>').append(tabs[0].content));
-            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append((single_footer ? single_footer : tabs[0].footer)));
+            $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-footer"></div>').append(single_footer ? single_footer : tabs[0].footer));
         } else if (tabs.length > 1) {
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs"></div>'));
             $overlay.find('.tb-window-wrapper').append($('<div class="tb-window-tabs-wrapper"></div>'));
@@ -266,8 +266,8 @@
             for (let i = 0; i < tabs.length; i++) {
                 const tab = tabs[i];
 
-                tab.disabled = (typeof tab.disabled === 'boolean') ? tab.disabled : false;
-                tab.help_page = (typeof tab.help_page !== 'undefined') ? tab.help_page : '';
+                tab.disabled = typeof tab.disabled === 'boolean' ? tab.disabled : false;
+                tab.help_page = typeof tab.help_page !== 'undefined' ? tab.help_page : '';
 
                 if (!TB.utils.advancedMode && tab.advanced) {
                     continue;
@@ -368,8 +368,8 @@
     };
 
     TBui.selectMultiple = function selectMultiple (available, selected) {
-        available = (available instanceof Array) ? available : [];
-        selected = (selected instanceof Array) ? selected : [];
+        available = available instanceof Array ? available : [];
+        selected = selected instanceof Array ? selected : [];
 
         const $select_multiple = $(`
                   <div class="select-multiple">
@@ -490,8 +490,8 @@
 
             switch (displayLocation) {
             case TBui.DISPLAY_CENTER: {
-                const feedbackLeftMargin = ($feedbackWindow.outerWidth() / 2),
-                      feedbackTopMargin = ($feedbackWindow.outerHeight() / 2);
+                const feedbackLeftMargin = $feedbackWindow.outerWidth() / 2,
+                      feedbackTopMargin = $feedbackWindow.outerHeight() / 2;
 
                 $feedbackWindow.css({
                     'margin-left': `-${feedbackLeftMargin}px`,
@@ -543,8 +543,8 @@
                 $body.append('<div id="tb-loading"></div>');
 
                 const $randomFeedbackWindow = $('body').find('#tb-loading-stuff'),
-                      randomFeedbackLeftMargin = ($randomFeedbackWindow.outerWidth() / 2),
-                      randomFeedbackTopMargin = ($randomFeedbackWindow.outerHeight() / 2);
+                      randomFeedbackLeftMargin = $randomFeedbackWindow.outerWidth() / 2,
+                      randomFeedbackTopMargin = $randomFeedbackWindow.outerHeight() / 2;
 
                 $randomFeedbackWindow.css({
                     'margin-left': `-${randomFeedbackLeftMargin}px`,

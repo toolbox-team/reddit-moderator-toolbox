@@ -47,71 +47,69 @@ function banlist () {
                 type: 'get',
                 dataType: 'html',
                 async: true,
-            })
-                .done(data => {
-                    console.log(data);
-                    self.log('  success!');
-                    self.log(`  ${pages_back} pages back`);
-                    const response_page = $(data);
-                    // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
-                    // var $new_banlist = $('.usertable', response_page);
-                    self.log($('.usertable table tbody tr', response_page).length);
-                    if ($('.usertable table tbody tr', response_page).length > 0) {
-                        $('.usertable table tbody tr', response_page).each(function () {
+            }).done(data => {
+                console.log(data);
+                self.log('  success!');
+                self.log(`  ${pages_back} pages back`);
+                const response_page = $(data);
+                // append to the list, using clever jQuery context parameter to create jQuery object to parse out the HTML response
+                // var $new_banlist = $('.usertable', response_page);
+                self.log($('.usertable table tbody tr', response_page).length);
+                if ($('.usertable table tbody tr', response_page).length > 0) {
+                    $('.usertable table tbody tr', response_page).each(function () {
                         // workaround for known bug in listings where "next" button is available on last page
-                            if (this.className === 'notfound') {
-                                return;
-                            }
-
-                            let t = $(this).find('.user a').text().toLowerCase(); // username
-                            if ($(this).find('input[name="note"]').length > 0) {
-                                t += ` ${$(this).find('input[name="note"]').val().toLowerCase()}`; // ban note text, if available
-                            }
-                            $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
-                            $(this).addClass('visible');
-                        });
-                        const value = $('input#user').val().toLowerCase();
-                        filter_banlist($('.usertable', response_page), value, true);
-                        $('.usertable table tbody').append($('.usertable table tbody tr', response_page));
-                        // update the results counter
-                        $num_bans.html($('.usertable tr:visible').length);
-                    } else {
-                        return;
-                    }
-
-                    const after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
-                    self.log(after_url);
-                    after = self.getURLParameter(after_url, 'after');
-                    self.log(after);
-                    if (after) {
-                    // hit the API hard the first 10, to make it more responsive on small subs
-                        if (pages_back < 10) {
-                            pages_back++;
-                            _get_next_ban_page(after, pages_back);
-                        } else {
-                            const sleep = last_request + 2000 - Date.now();
-                            setTimeout(_get_next_ban_page, sleep, after, pages_back);
+                        if (this.className === 'notfound') {
+                            return;
                         }
+
+                        let t = $(this).find('.user a').text().toLowerCase(); // username
+                        if ($(this).find('input[name="note"]').length > 0) {
+                            t += ` ${$(this).find('input[name="note"]').val().toLowerCase()}`; // ban note text, if available
+                        }
+                        $("<td class='indexColumn'></td>").hide().text(t).appendTo(this);
+                        $(this).addClass('visible');
+                    });
+                    const value = $('input#user').val().toLowerCase();
+                    filter_banlist($('.usertable', response_page), value, true);
+                    $('.usertable table tbody').append($('.usertable table tbody tr', response_page));
+                    // update the results counter
+                    $num_bans.html($('.usertable tr:visible').length);
+                } else {
+                    return;
+                }
+
+                const after_url = $('.nextprev a[rel~="next"]', response_page).prop('href');
+                self.log(after_url);
+                after = self.getURLParameter(after_url, 'after');
+                self.log(after);
+                if (after) {
+                    // hit the API hard the first 10, to make it more responsive on small subs
+                    if (pages_back < 10) {
+                        pages_back++;
+                        _get_next_ban_page(after, pages_back);
                     } else {
-                        self.log('  last page');
-                        banlist_updating = false;
-                        banlist_last_update = Date.now();
-                        TB.ui.longLoadSpinner(false);
+                        const sleep = last_request + 2000 - Date.now();
+                        setTimeout(_get_next_ban_page, sleep, after, pages_back);
                     }
-                })
-                .fail(function (data) {
-                    self.log('  failed');
-                    self.log(data.status);
-                    if (data.status === 504) {
+                } else {
+                    self.log('  last page');
+                    banlist_updating = false;
+                    banlist_last_update = Date.now();
+                    TB.ui.longLoadSpinner(false);
+                }
+            }).fail(function (data) {
+                self.log('  failed');
+                self.log(data.status);
+                if (data.status === 504) {
                     // "504, post some more"
-                        this.done(data);
-                    } else {
+                    this.done(data);
+                } else {
                     // Did we get logged out during the process, or some other error?
-                        banlist_updating = false;
-                        TB.ui.longLoadSpinner(false);
-                        $num_bans.html('Something went wrong while fetching the banlist. You should reload this page.');
-                    }
-                });
+                    banlist_updating = false;
+                    TB.ui.longLoadSpinner(false);
+                    $num_bans.html('Something went wrong while fetching the banlist. You should reload this page.');
+                }
+            });
         }
 
         function filter_banlist (banlist, value, ignore_last) {

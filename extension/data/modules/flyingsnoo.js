@@ -11,7 +11,9 @@ function flyingsnoo () {
     self.settings['enabled']['hidden'] = true; // it's an easter egg.
 
     self.init = function () {
-        if (TBUtils.isNewModmail) return;
+        if (TBUtils.isNewModmail) {
+            return;
+        }
         const $footerblock = $('body').find('#tb-footer-block');
         const $snooFooter = $('<div id="tb-snoo-footer"></div>').appendTo($footerblock);
         $snooFooter.css({
@@ -21,7 +23,6 @@ function flyingsnoo () {
         });
 
         $snooFooter.click(function () {
-
             const width = 87,
                   height = 145;
 
@@ -67,7 +68,6 @@ function flyingsnoo () {
                 }
                 oldTop = newTop;
                 oldLeft = newLeft;
-
             }
 
             function killSnoo () {
@@ -89,14 +89,14 @@ function flyingsnoo () {
                 }
             }
 
-            floater.mousedown(function (e) {
+            floater.mousedown(e => {
                 if (keepFlying) {
                     keepFlying = false;
                 }
                 floater.data('offsetX', e.offsetX);
                 floater.data('offsetY', e.offsetY);
 
-                const dragEvent = function (e) {
+                function dragEvent (e) {
                     const offsetX = floater.data('offsetX') || 0,
                           offsetY = floater.data('offsetY') || 0;
                     oldLeft = (e.pageX - offsetX);
@@ -105,20 +105,18 @@ function flyingsnoo () {
                         left: `${oldLeft}px`,
                         top: `${oldTop}px`,
                     });
-                };
+                }
 
-                const releaseEvent = function () {
+                function releaseEvent () {
                     if (!keepFlying) {
                         keepFlying = true;
                         startFlying();
                         $(document).unbind('mousemove', dragEvent);
                         $(document).unbind('mouseup', releaseEvent);
                     }
-
-                };
+                }
 
                 $(document).bind('mousemove', dragEvent).bind('mouseup', releaseEvent);
-
             }).dblclick(function () {
                 if (keepFlying) {
                     keepFlying = false;
@@ -137,6 +135,6 @@ function flyingsnoo () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     flyingsnoo();
 });

@@ -226,7 +226,9 @@
 
             try {
                 runTasks(queue);
-            } catch (e) { error = e; }
+            } catch (e) {
+                error = e;
+            }
 
             this.scheduled = false;
 
@@ -237,11 +239,13 @@
 
             if (error) {
                 console.error('task errored', error.message);
-                if (this.catch) this.catch(error);
-                else throw error;
+                if (this.catch) {
+                    this.catch(error);
+                } else {
+                    throw error;
+                }
             }
         }
-
     }
 
     window.TBListener = new TBListener();

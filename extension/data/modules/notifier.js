@@ -149,7 +149,9 @@ function notifiermod () {
     });
 
     self.init = function () {
-        if (TBUtils.isEmbedded) return;
+        if (TBUtils.isEmbedded) {
+            return;
+        }
 
         const NOTIFICATION_SOUND = 'https://raw.githubusercontent.com/creesch/reddit-moderator-toolbox/gh-pages/audio/mail.mp3',
 
@@ -210,20 +212,19 @@ function notifiermod () {
             self.setting('lastSeenModmail', now);
             self.setting('modmailCount', 0);
 
-            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/r/${modmailFilteredSubreddits}/message/moderator/unread.json`).done(json => {
                 TBStorage.purifyObject(json);
-                $.each(json.data.children, function (i, value) {
-
+                $.each(json.data.children, (i, value) => {
                     const unreadmessageid = value.data.name;
 
-                    TBUtils.markMessageRead(unreadmessageid, function () {
+                    TBUtils.markMessageRead(unreadmessageid, () => {
                         // TODO: Insert useful error handling here
                     });
                 });
             });
         }
 
-        TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, function () {
+        TB.utils.catchEvent(TB.utils.events.TB_SAMPLE_SOUND, () => {
             self.log('playing sound');
 
             const audio = new Audio(NOTIFICATION_SOUND);
@@ -279,7 +280,6 @@ function notifiermod () {
 
         // Here we update the count for new modmail. Is somewhat simpler than old modmail.
         function updateNewModMailCount (count, data) {
-
             // $modmail is native to reddit $tb_modmail in the modbar.
             const $newmodmail = $('#new_modmail'),
                   $tbNewModmail = $('#tb-new_modmail'),
@@ -287,7 +287,6 @@ function notifiermod () {
                   $tbNewModmailTooltip = $('#tb-new-modmail-tooltip');
 
             if (count < 1) {
-
                 // We are doing it like this to preserve other classes
                 $newmodmail.removeClass('havemail');
                 $tbNewModmail.removeClass('havemail');
@@ -295,7 +294,6 @@ function notifiermod () {
                 $tbNewModmail.addClass('nohavemail');
 
                 $newmodmail.attr('title', 'no new mod mail!');
-
             } else {
             // We are doing it like this to preserve other classes
                 $newmodmail.removeClass('nohavemail');
@@ -305,7 +303,6 @@ function notifiermod () {
                 // We are doing it like this to preserve other classes
                 $tbNewModmail.removeClass('nohavemail');
                 $tbNewModmail.addClass('havemail');
-
             }
             $tbNewModmailTooltip.find('#tb-new-modmail-new .tb-new-mm-count').text(data.new);
             $tbNewModmailTooltip.find('#tb-new-modmail-inprogress .tb-new-mm-count').text(data.inprogress);
@@ -335,7 +332,7 @@ function notifiermod () {
         function newModMailCheck () {
             if (!activeNewMMcheck) {
                 activeNewMMcheck = true;
-                setTimeout(function () {
+                setTimeout(() => {
                     TBUtils.apiOauthGET('api/mod/conversations/unread/count').then(response => {
                         const data = response.data;
                         const modmailFreshCount = data.highlighted + data.notifications + data.archived + data.new + data.inprogress + data.mod;
@@ -356,7 +353,6 @@ function notifiermod () {
         // New Modmail actions.
         // Whenever something is clicked that potentially changes the modmail count
         if (TBUtils.isNewModmail) {
-
             // Since this is a non ww domain counts will never be checked through the regular getMessages() function.
             // So we do a check here.
             newModMailCheck();
@@ -366,13 +362,13 @@ function notifiermod () {
                 .ThreadPreviewViewerHeader__button,
                 .ThreadPreview__headerLeft .ThreadPreview__control,
                 .ThreadViewerHeader__right
-            `, function () {
+            `, () => {
                 self.log('Checking modmail count based on click on specific element.');
                 newModMailCheck();
             });
         }
 
-        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, function (event) {
+        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, event => {
             self.log('updating counters from background');
             updateMessagesCount(event.detail.unreadMessageCount);
             updateModqueueCount(event.detail.modqueueCount);
@@ -425,7 +421,7 @@ function notifiermod () {
             // a silly function to get the title anyway. The $.getJSON is wrapped in a function to prevent if from running async outside the loop.
 
             function getcommentitle (unreadsubreddit, unreadcontexturl, unreadcontext, unreadauthor, unreadbody_html, unreadcommentid) {
-                $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(function (jsondata) {
+                $.getJSON(TBUtils.baseDomain + unreadcontexturl).done(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     const commenttitle = jsondata[0].data.children[0].data.title;
                     if (straightToInbox && messageunreadlink) {
@@ -439,7 +435,7 @@ function notifiermod () {
             }
 
             // getting unread messages
-            $.getJSON(`${TBUtils.baseDomain}/message/unread.json`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain}/message/unread.json`).done(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
                 self.setting('unreadMessageCount', count);
@@ -451,10 +447,11 @@ function notifiermod () {
                     updateAllTabs();
                 }
 
-                if (count === 0) return;
+                if (count === 0) {
+                    return;
+                }
                 // Are we allowed to show a popup?
                 if (messageNotifications && count > unreadMessageCount) {
-
                     // set up an array in which we will load the last 100 messages that have been displayed.
                     // this is done through a array since the modqueue is in chronological order of post date, so there is no real way to see what item got send to queue first.
                     const pushedunread = self.setting('unreadPushed');
@@ -462,7 +459,7 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         let notificationbody,
                             messagecount = 0;
-                        $.each(json.data.children, function (i, value) {
+                        $.each(json.data.children, (i, value) => {
                             let subreddit,
                                 subject,
                                 author;
@@ -503,14 +500,12 @@ function notifiermod () {
                         if (messagecount === 1) {
                             TBUtils.notification('One new message!', notificationbody, messageunreadurl);
                             youveGotMail();
-
                         } else if (messagecount > 1) {
                             TBUtils.notification(`${messagecount.toString()} new messages!`, notificationbody, messageunreadurl);
                             youveGotMail();
                         }
-
                     } else {
-                        $.each(json.data.children, function (i, value) {
+                        $.each(json.data.children, (i, value) => {
                             let context,
                                 body_html,
                                 author,
@@ -521,7 +516,6 @@ function notifiermod () {
                                 id;
 
                             if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
-
                                 context = value.data.context,
                                 body_html = TBUtils.htmlDecode(value.data.body_html),
                                 author = value.data.author,
@@ -562,12 +556,12 @@ function notifiermod () {
             //
             // wrapper around $.getJSON so it can be part of a loop
             function procesmqcomments (mqlinkid, mqreportauthor, mqidname) {
-                $.getJSON(TBUtils.baseDomain + mqlinkid).done(function (jsondata) {
+                $.getJSON(TBUtils.baseDomain + mqlinkid).done(jsondata => {
                     TBStorage.purifyObject(jsondata);
                     let infopermalink = jsondata.data.children[0].data.permalink;
                     const infotitle = jsondata.data.children[0].data.title,
                           infosubreddit = jsondata.data.children[0].data.subreddit;
-                    infopermalink = infopermalink + mqidname.substring(3);
+                    infopermalink += mqidname.substring(3);
                     TBUtils.notification(`Modqueue - /r/${infosubreddit} - comment: `, `${mqreportauthor}'s comment in: ${infotitle}`, `${infopermalink}?context=3`);
                 });
             }
@@ -580,7 +574,7 @@ function notifiermod () {
                 modQueueURL = `/r/${modSubreddits}/about/modqueue`;
             }
 
-            $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(function (json) {
+            $.getJSON(`${TBUtils.baseDomain + modQueueURL}.json?limit=100`).done(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0;
                 updateModqueueCount(count);
@@ -601,7 +595,7 @@ function notifiermod () {
                     if (consolidatedMessages) {
                         // $.log('here we go!');
                         let notificationbody, queuecount = 0, xmoreModqueue = 0;
-                        $.each(json.data.children, function (i, value) {
+                        $.each(json.data.children, (i, value) => {
                             let subreddit,
                                 author;
 
@@ -642,14 +636,11 @@ function notifiermod () {
                         // $.log(notificationbody);
                         if (queuecount === 1) {
                             TBUtils.notification('One new modqueue item!', notificationbody, modQueueURL);
-
                         } else if (queuecount > 1) {
                             TBUtils.notification(`${queuecount.toString()} new modqueue items!`, notificationbody, modQueueURL);
                         }
-
                     } else {
-
-                        $.each(json.data.children, function (i, value) {
+                        $.each(json.data.children, (i, value) => {
                             if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
                                 const mqpermalink = value.data.permalink,
                                       mqtitle = value.data.title,
@@ -668,13 +659,11 @@ function notifiermod () {
                                 pusheditems.push(value.data.name);
                             }
                         });
-
                     }
                     if (pusheditems.length > 100) {
                         pusheditems.splice(0, 100 - pusheditems.length);
                     }
                     self.setting('modqueuePushed', pusheditems);
-
                 }
                 self.setting('modqueueCount', count);
             });
@@ -684,7 +673,6 @@ function notifiermod () {
             //
             // getting unmoderated queue
             if (unmoderatedOn || unmoderatedNotifications) {
-
                 let unModeratedURL;
                 if (unmoderatedSubredditsFMod) {
                     unModeratedURL = '/me/f/mod/about/unmoderated';
@@ -692,7 +680,7 @@ function notifiermod () {
                     unModeratedURL = `/r/${unmoderatedSubreddits}/about/unmoderated`;
                 }
 
-                $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(function (json) {
+                $.getJSON(`${TBUtils.baseDomain + unModeratedURL}.json?limit=100`).done(json => {
                     TBStorage.purifyObject(json);
                     const count = json.data.children.length || 0;
 
@@ -702,7 +690,7 @@ function notifiermod () {
                         if (consolidatedMessages) {
                             let notificationbody, queuecount = 0, xmoreUnmod = 0;
 
-                            $.each(json.data.children, function (i, value) {
+                            $.each(json.data.children, (i, value) => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const subreddit = value.data.subreddit,
                                           author = value.data.author;
@@ -729,7 +717,7 @@ function notifiermod () {
                                 TBUtils.notification(`${queuecount.toString()} new unmoderated items!`, notificationbody, unModeratedURL);
                             }
                         } else {
-                            $.each(json.data.children, function (i, value) {
+                            $.each(json.data.children, (i, value) => {
                                 if (!lastSeen || value.data.created_utc * 1000 > lastSeen) {
                                     const uqpermalink = value.data.permalink,
                                           uqtitle = value.data.title,
@@ -781,7 +769,6 @@ function notifiermod () {
             }).catch(error => {
                 self.log(error.jqXHR.responseText);
             });
-
         }
 
         setInterval(getmessages, checkInterval);
@@ -793,6 +780,6 @@ function notifiermod () {
     TB.register_module(self);
 } // notifier() wrapper
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     notifiermod();
 });

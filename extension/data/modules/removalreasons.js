@@ -85,7 +85,6 @@ function removalreasons () {
 
         // Remote stuff retrieval
         function getRemovalReasons (subreddit, callback) {
-
             // Nothing to do if no toolbox config
             if (TBUtils.noConfig.indexOf(subreddit) !== -1) {
                 callback(false);
@@ -103,8 +102,7 @@ function removalreasons () {
                 if (reasons && reasons.getfrom) {
                     if (reasons.getfrom === subreddit) {
                         self.log("Warning: 'get from' subreddit same as current subreddit. Don't do that!");
-                    }
-                    else {
+                    } else {
                         getRemovalReasons(reasons.getfrom, callback);
                         return;
                     }
@@ -119,7 +117,7 @@ function removalreasons () {
             }
 
             // OK, they are not cached.  Try the wiki.
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+            TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || !resp.removalReasons) {
                     self.log('failed: wiki config');
                     callback(false);
@@ -154,7 +152,7 @@ function removalreasons () {
 
         // UI components
         // UI event handling
-        TB.listener.on('post', function (e) {
+        TB.listener.on('post', e => {
             if (e.detail.data.isRemoved) {
                 const $target = $(e.target);
                 $target.append(`<span class="tb-bracket-button tb-add-removal-reason" data-id="${e.detail.data.id}" data-subreddit="${e.detail.data.subreddit.name}">Add removal reason</span>`);
@@ -181,7 +179,6 @@ function removalreasons () {
 
                 thingID = $thing.attr('data-fullname');
                 thingSubreddit = $thing.attr('data-subreddit');
-
             } else {
                 if ($button.hasClass('tb-add-removal-reason')) {
                     thingID = $button.attr('data-id');
@@ -194,7 +191,7 @@ function removalreasons () {
                 }
             }
 
-            TBUtils.getApiThingInfo(thingID, thingSubreddit, false, function (info) {
+            TBUtils.getApiThingInfo(thingID, thingSubreddit, false, info => {
                 // Get link/comment attributes
                 const data = {
                     subreddit: info.subreddit,
@@ -225,17 +222,18 @@ function removalreasons () {
                 if ($popup.length) {
                 // Click yes on the removal
                     openPopup();
-                }
-                // Otherwise create the popup and open it
-                else {
+                } else {
+                    // Otherwise create the popup and open it
                 // Get removal reasons.
-                    getRemovalReasons(data.subreddit, function (response) {
+                    getRemovalReasons(data.subreddit, response => {
                     // Removal reasons not enabled
                         if (!response || response.reasons.length < 1) {
                             notEnabled.push(data.subreddit);
 
                             // we're done, unless the user has always show set.
-                            if (!alwaysShow) return;
+                            if (!alwaysShow) {
+                                return;
+                            }
 
                             // Otherwise, setup a completely empty reason.
                             self.log('Using custom reason');
@@ -318,7 +316,6 @@ function removalreasons () {
                     default:
                         reasonType = 'reply';
                         break;
-
                     }
 
                     const reasonAsSub = self.setting('reasonAsSub');
@@ -479,7 +476,7 @@ function removalreasons () {
             $body.css('overflow', 'auto');
         }
 
-        $body.on('click', '.reason-popup', function (e) {
+        $body.on('click', '.reason-popup', e => {
             e.stopPropagation();
         });
 
@@ -499,16 +496,14 @@ function removalreasons () {
                     $this.find('.flair-text-span').show();
                     $this.find('.flair-css-span').show();
                 }
-            }
-            else if (isChecked && targetIsCheckBox) {
+            } else if (isChecked && targetIsCheckBox) {
                 $this.addClass('reason-selected');
                 if (hasTitle > 0) {
                     $this.find('.reason-content').show();
                     $this.find('.flair-text-span').show();
                     $this.find('.flair-css-span').show();
                 }
-            }
-            else if (!isChecked && targetIsCheckBox) {
+            } else if (!isChecked && targetIsCheckBox) {
                 $this.removeClass('reason-selected');
                 if (hasTitle > 0) {
                     $this.find('.reason-content').hide();
@@ -530,11 +525,12 @@ function removalreasons () {
                   status = popup.find('.status'),
                   attrs = popup.find('attrs');
 
-            TBUtils.approveThing(attrs.attr('fullname'), function (successful) {
-                if (successful)
+            TBUtils.approveThing(attrs.attr('fullname'), successful => {
+                if (successful) {
                     removePopup(popup);
-                else
+                } else {
                     status.text(APPROVE_ERROR);
+                }
             });
         });
 
@@ -600,10 +596,12 @@ function removalreasons () {
                 });
 
                 // Get flair data
-                if ($this.data('flairText'))
+                if ($this.data('flairText')) {
                     flairText += ` ${$this.data('flairText')}`;
-                if ($this.data('flairCSS'))
+                }
+                if ($this.data('flairCSS')) {
                     flairCSS += ` ${$this.data('flairCSS')}`;
+                }
             });
 
             // Generate reason text
@@ -611,7 +609,7 @@ function removalreasons () {
 
             // // Add response body
             let customIndex = 0;
-            markdownReasons.forEach(function (markdownReason) {
+            markdownReasons.forEach(markdownReason => {
                 $(`<div>${markdownReason}</div>`).contents().each(function () {
                 // If an element, check for conversions
                     if (this.nodeType === Node.ELEMENT_NODE) {
@@ -628,9 +626,8 @@ function removalreasons () {
                             reason += customInput[customIndex++];
                             break;
                         }
-                    }
-                    // If a text node, get content
-                    else if (this.nodeType === Node.TEXT_NODE) {
+                    } else if (this.nodeType === Node.TEXT_NODE) {
+                        // If a text node, get content
                         reason += this.textContent;
                     }
                 });
@@ -650,7 +647,7 @@ function removalreasons () {
             }
 
             // // Convert attribs back to data.
-            for (const i in data) {
+            for (const i of Object.keys(data)) {
                 data[i] = attrs.attr(i);
             }
 
@@ -665,15 +662,15 @@ function removalreasons () {
             flairText = flairText.trim();
             flairCSS = flairCSS.trim();
             if ((flairText !== '' || flairCSS !== '') && data.kind !== 'comment') {
-                TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, function (successful) {
-                    if (!successful)
+                TBUtils.flairPost(data.fullname, data.subreddit, flairText, flairCSS, successful => {
+                    if (!successful) {
                         status.text(FLAIR_ERROR);
+                    }
                 });
             }
 
             // If logSub is not empty, log the removal and send a PM/comment
             if (data.logSub) {
-
                 // Finalize log reasons
                 if (logTitle.indexOf('{reason}') >= 0) {
                 // Check if a log reason is selected
@@ -687,7 +684,7 @@ function removalreasons () {
                 }
 
                 // Submit log post
-                TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, function (successful, response) {
+                TBUtils.postLink(data.url || data.link, TBUtils.removeQuotes(logTitle), data.logSub, (successful, response) => {
                     if (successful) {
                         const logThingId = response.json.data.name,
                               loglinkToken = response.json.data.url;
@@ -698,15 +695,12 @@ function removalreasons () {
                         } else {
                             sendRemovalMessage(loglinkToken);
                         }
-                    }
-                    else {
+                    } else {
                         status.text(LOG_POST_ERROR);
                     }
                 });
-
-            }
-            // Otherwise only send PM and/or comment
-            else {
+            } else {
+                // Otherwise only send PM and/or comment
                 sendRemovalMessage(null);
             }
 
@@ -729,8 +723,9 @@ function removalreasons () {
                 }
 
                 // Finalize the reason with optional log post link
-                if (typeof logLink !== 'undefined')
+                if (typeof logLink !== 'undefined') {
                     reason = reason.replace('{loglink}', logLink);
+                }
 
                 const notifyByPM = notifyBy === 'pm' || notifyBy === 'both',
                       notifyByReply = notifyBy === 'reply' || notifyBy === 'both';
@@ -738,22 +733,21 @@ function removalreasons () {
                 // Reply to submission/comment
                 if (notifyByReply) {
                     self.log('Sending removal message by comment reply.');
-                    TBUtils.postComment(data.fullname, reason, function (successful, response) {
+                    TBUtils.postComment(data.fullname, reason, (successful, response) => {
                         if (successful) {
                         // Check if reddit actually returned an error
                             if (response.json.errors.length > 0) {
                                 status.text(`${REPLY_ERROR}: ${response.json.errors[0][1]}`);
-                            }
-                            else {
+                            } else {
                             // Distinguish the new reply, stickying if necessary
-                                TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, function (successful) {
+                                TBUtils.distinguishThing(response.json.data.things[0].data.id, notifySticky, successful => {
                                     if (successful) {
-                                        if (notifyByPM)
+                                        if (notifyByPM) {
                                             sendPM();
-                                        else
+                                        } else {
                                             removePopup(popup);
-                                    }
-                                    else {
+                                        }
+                                    } else {
                                         status.text(DISTINGUISH_ERROR);
                                     }
                                 });
@@ -761,21 +755,20 @@ function removalreasons () {
                                 // Also lock the thread if requested
                                 if (actionLock) {
                                     self.log(`Fullname of this link: ${data.fullname}`);
-                                    TBUtils.lockThread(data.fullname, function (successful) {
-                                        if (successful)
+                                    TBUtils.lockThread(data.fullname, successful => {
+                                        if (successful) {
                                             removePopup(popup);
-                                        else
+                                        } else {
                                             status.text(LOCK_ERROR);
+                                        }
                                     });
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             status.text(REPLY_ERROR);
                         }
                     });
-                }
-                else if (notifyByPM) {
+                } else if (notifyByPM) {
                     sendPM();
                 }
 
@@ -785,22 +778,19 @@ function removalreasons () {
 
                     if (notifyAsSub) {
                         self.log(`Sending removal message by PM as ${data.subreddit}`);
-                        TBUtils.sendMessage(data.author, subject, text, data.subreddit, function (successful) {
+                        TBUtils.sendMessage(data.author, subject, text, data.subreddit, successful => {
                             if (successful) {
                                 removePopup(popup);
-                            }
-                            else {
+                            } else {
                                 status.text(PM_ERROR);
                             }
                         });
-                    }
-                    else {
+                    } else {
                         self.log('Sending removal message by PM as current user');
-                        TBUtils.sendPM(data.author, subject, text, function (successful) {
+                        TBUtils.sendPM(data.author, subject, text, successful => {
                             if (successful) {
                                 removePopup(popup);
-                            }
-                            else {
+                            } else {
                                 status.text(PM_ERROR);
                             }
                         });
@@ -818,6 +808,6 @@ function removalreasons () {
     TB.register_module(self);
 } // end removalreasons()
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     removalreasons();
 });

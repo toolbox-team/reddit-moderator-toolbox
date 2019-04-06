@@ -5,13 +5,13 @@
     TBui.longLoadArrayNonPersistent = [];
 
     // We don't want brack-buttons to propagate to parent elements as that often triggers the reddit lightbox
-    $body.on('click', '.tb-bracket-button', function (event) {
+    $body.on('click', '.tb-bracket-button', event => {
         event.stopPropagation();
     });
 
     let subredditColorSalt;
 
-    window.addEventListener('TBStorageLoaded2', function () {
+    window.addEventListener('TBStorageLoaded2', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
     });
 
@@ -116,8 +116,7 @@
         if (tabs.length === 1) {
             $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
             $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
-        }
-        else if (tabs.length > 1) {
+        } else if (tabs.length > 1) {
             const $tabs = $('<div>').addClass('tb-popup-tabs');
             $popup.append($tabs);
 
@@ -169,8 +168,9 @@
             }
         }
 
-        if (options.draggable)
+        if (options.draggable) {
             $popup.drag($popup.find('.tb-popup-title'));
+        }
 
         return $popup;
     };
@@ -247,8 +247,7 @@
 </div>`);
 
         if (details) {
-
-            $.each(details, function (key, value) {
+            $.each(details, (key, value) => {
                 $overlay.attr(`data-${key}`, value);
             });
         }
@@ -270,7 +269,9 @@
                 tab.disabled = (typeof tab.disabled === 'boolean') ? tab.disabled : false;
                 tab.help_page = (typeof tab.help_page !== 'undefined') ? tab.help_page : '';
 
-                if (!TB.utils.advancedMode && tab.advanced) continue;
+                if (!TB.utils.advancedMode && tab.advanced) {
+                    continue;
+                }
 
                 if (tab.id === 'undefined' || !tab.id) {
                     tab.id = tab.title.trim().toLowerCase();
@@ -315,7 +316,6 @@
                 $tab.append($('<div class="tb-window-content"></div>').append(tab.content));
                 // individual tab footers (as used in .tb-config)
                 if (!single_footer) {
-
                     $overlay.find('.tb-window-wrapper').append($(`<div class="tb-window-footer ${tab.id}"></div>`).append(tab.footer));
 
                     const $footer = $overlay.find(`.tb-window-footer.${tab.id}`);
@@ -332,7 +332,6 @@
 
                     $tab.show();
                 } else {
-
                     $tab.hide();
                 }
 
@@ -357,7 +356,7 @@
 
         // Add values to select
 
-        $.each(choices, function (i, keyValue) {
+        $.each(choices, (i, keyValue) => {
             const value = keyValue.toLowerCase().replace(/\s/g, '_');
             $selector_list.append($('<option>').attr('value', value).text(keyValue));
         });
@@ -382,12 +381,12 @@
               $selected_list = $select_multiple.find('.selected-list'),
               $available_list = $select_multiple.find('.available-list');
 
-        $select_multiple.on('click', '.remove-item', function (e) {
+        $select_multiple.on('click', '.remove-item', e => {
             const $select_multiple = $(e.delegateTarget);
             $select_multiple.find('.selected-list option:selected').remove();
         });
 
-        $select_multiple.on('click', '.add-item', function (e) {
+        $select_multiple.on('click', '.add-item', e => {
             const $select_multiple = $(e.delegateTarget);
             const $add_item = $select_multiple.find('.available-list option:selected');
 
@@ -405,11 +404,11 @@
             }
         });
 
-        $.each(available, function (i, value) {
+        $.each(available, (i, value) => {
             $available_list.append($('<option>').attr('value', value).text(value));
         });
 
-        $.each(selected, function (i, value) {
+        $.each(selected, (i, value) => {
             $selected_list.append($('<option>').attr('value', value).text(value));
         });
 
@@ -446,7 +445,7 @@
         });
 
         // add empty item
-        $mapInput.on('click', '.tb-map-input-add', function () {
+        $mapInput.on('click', '.tb-map-input-add', () => {
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         });
 
@@ -454,7 +453,7 @@
         if ($.isEmptyObject(items)) {
             $(emptyRow).appendTo($mapInput.find('.tb-map-input-table tbody'));
         } else {
-            $.each(items, function (key, value) {
+            $.each(items, (key, value) => {
                 const $item = $(`
                 <tr class="tb-map-input-tr">
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
@@ -471,11 +470,12 @@
     };
 
     TBui.textFeedback = function (feedbackText, feedbackKind, displayDuration, displayLocation) {
-        if (!displayLocation) displayLocation = TBui.DISPLAY_CENTER;
+        if (!displayLocation) {
+            displayLocation = TBui.DISPLAY_CENTER;
+        }
 
         // Without text we can't give feedback, the feedbackKind is required to avoid problems in the future.
         if (feedbackKind !== undefined && feedbackKind !== undefined) {
-
             // If there is still a previous feedback element on the page we remove it.
             $body.find('#tb-feedback-window').remove();
 
@@ -509,8 +509,7 @@
             }
                 break;
             case TBui.DISPLAY_CURSOR: {
-
-                $(document).mousemove(function (e) {
+                $(document).mousemove(e => {
                     const posX = e.pageX,
                           posY = e.pageY;
 
@@ -532,10 +531,8 @@
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations with a warning when leaving the page.
     TBui.longLoadSpinner = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
         if (createOrDestroy !== undefined) {
-
             // if requested and the element is not present yet
             if (createOrDestroy && TBui.longLoadArray.length === 0) {
-
                 $('head').append(`<style id="tb-long-load-style">
                 .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
@@ -570,7 +567,6 @@
                 // if done but other process still running
             } else if (!createOrDestroy && TBui.longLoadArray.length > 1) {
                 TBui.longLoadArray.pop();
-
             }
 
             // Support for text feedback removing the need to fire two function calls from a module.
@@ -583,10 +579,8 @@
     // Our awesome long load spinner that ended up not being a spinner at all. It will attend the user to ongoing background operations, this variant will NOT warn when you leave the page.
     TBui.longLoadNonPersistent = function (createOrDestroy, feedbackText, feedbackKind, feedbackDuration, displayLocation) {
         if (createOrDestroy !== undefined) {
-
             // if requested and the element is not present yet
             if (createOrDestroy && TBui.longLoadArrayNonPersistent.length === 0) {
-
                 $('head').append(`<style id="tb-long-load-style-non-persistent">
                 .mod-toolbox-rd #tb-bottombar, .mod-toolbox-rd #tb-bottombar-hidden {
                     bottom: 10px !important
@@ -610,7 +604,6 @@
                 // if done but other process still running
             } else if (!createOrDestroy && TBui.longLoadArrayNonPersistent.length > 1) {
                 TBui.longLoadArrayNonPersistent.pop();
-
             }
 
             // Support for text feedback removing the need to fire two function calls from a module.
@@ -640,7 +633,6 @@
      */
     let contextTimeout;
     TBui.contextTrigger = function contextTrigger (triggerId, options) {
-
         const addTrigger = options.addTrigger;
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
@@ -683,7 +675,7 @@
 
             // Add data attributes if needed.
             if (options.dataAttributes) {
-                $.each(options.dataAttributes, function (name, value) {
+                $.each(options.dataAttributes, (name, value) => {
                     $newMenuItem.attr(`data-${name}`, value);
                 });
             }
@@ -701,7 +693,7 @@
                 // The alternative would be to always show the entire menu.
                 $tbContextMenu.addClass('hover');
                 clearTimeout(contextTimeout);
-                contextTimeout = setTimeout(function () {
+                contextTimeout = setTimeout(() => {
                     $tbContextMenu.removeClass('hover');
                 }, 1000);
             }
@@ -719,7 +711,6 @@
             if (newLength < 1) {
                 $tbContextMenu.removeClass('show-tb-context');
             }
-
         }
     };
 
@@ -735,7 +726,7 @@
         const typesArray = types.split(',');
         if (typesArray.includes('comment')) {
             const $comments = $elements.find('.tb-comment');
-            TBUtils.forEachChunkedDynamic($comments, function (value) {
+            TBUtils.forEachChunkedDynamic($comments, value => {
                 const $element = $(value);
                 const $jsApiPlaceholderComment = $element.find('> .tb-comment-entry > .tb-jsapi-comment-container');
                 $jsApiPlaceholderComment.append('<span data-name="toolbox">');
@@ -771,7 +762,6 @@
                 // Author
                 // We don't want to send events for things already handled.
                 if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-
                     const detailObject = {
                         type: 'TBcommentAuthor',
                         data: {
@@ -791,12 +781,11 @@
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-
             }, {framerate: 40});
         }
         if (typesArray.includes('submission')) {
             const $submissions = $elements.find('.tb-submission');
-            TBUtils.forEachChunkedDynamic($submissions, function (value) {
+            TBUtils.forEachChunkedDynamic($submissions, value => {
                 const $element = $(value);
                 const $jsApiPlaceholderSubmission = $element.find('.tb-jsapi-submission-container');
                 $jsApiPlaceholderSubmission.append('<span data-name="toolbox">');
@@ -811,7 +800,6 @@
                       subredditType = $element.attr('data-subreddit-type');
 
                 if (!$jsApiPlaceholderSubmission.hasClass('tb-frontend-container')) {
-
                     const detailObject = {
                         type: 'TBpost',
                         data: {
@@ -829,7 +817,6 @@
                 }
                 // We don't want to send events for things already handled.
                 if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-
                     const detailObject = {
                         type: 'TBpostAuthor',
                         data: {
@@ -847,10 +834,8 @@
                     const tbRedditEventAuthor = new CustomEvent('tbReddit', {detail: detailObject});
                     jsApiPlaceholderAuthor.dispatchEvent(tbRedditEventAuthor);
                 }
-
             }, {framerate: 40});
         }
-
     };
 
     /**
@@ -934,7 +919,6 @@
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
             submissionStatusBy = submissionBannedBy;
             submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
-
         } else if (submissionRemoved) {
             submissionStatus = 'removed';
             submissionStatusUTC = submissionBannedAtUTC;
@@ -1045,7 +1029,7 @@
             </ul>
             `);
 
-            submissionUserReports.forEach(function (report) {
+            submissionUserReports.forEach(report => {
                 const userReport = `
                 <li class="tb-user-report">
                     <strong>
@@ -1057,7 +1041,6 @@
                 $submissionUserReports.append(userReport);
             });
             $submissionEntry.append($submissionUserReports);
-
         } else if (submissionIgnoreReports) {
             const $submissionIgnoredReports = $(`
             <span class="tb-ignored-user-reports">
@@ -1077,7 +1060,7 @@
                 </ul>
             `);
 
-            submissionModReports.forEach(function (report) {
+            submissionModReports.forEach(report => {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1089,7 +1072,6 @@
                 $submissionModReports.append(modReport);
             });
             $submissionEntry.append($submissionModReports);
-
         }
 
         if (submissionOver18) {
@@ -1100,7 +1082,6 @@
         if (canModsubmission) {
             if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
                 $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
-
             }
 
             if (submissionStatus === 'approved' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
@@ -1242,7 +1223,6 @@
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
             commentStatusBy = commentBannedBy;
             commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
-
         } else if (commentRemoved) {
             commentStatus = 'removed';
             commentStatusUTC = commentBannedAtUTC;
@@ -1364,7 +1344,7 @@
             </ul>
             `);
 
-            commentUserReports.forEach(function (report) {
+            commentUserReports.forEach(report => {
                 const userReport = `
                 <li class="tb-comment-user-report">
                     <strong>
@@ -1376,7 +1356,6 @@
                 $commentUserReports.append(userReport);
             });
             $commentEntry.append($commentUserReports);
-
         } else if (commentIgnoreReports) {
             const $commentIgnoredReports = $(`
             <span class="tb-ignored-user-reports">
@@ -1396,7 +1375,7 @@
                 </ul>
             `);
 
-            commentModReports.forEach(function (report) {
+            commentModReports.forEach(report => {
                 const modReport = `
                     <li class="tb-mod-report">
                         <strong>
@@ -1408,7 +1387,6 @@
                 $commentModReports.append(modReport);
             });
             $commentEntry.append($commentModReports);
-
         }
 
         // Now we move on to the buttons. Starting with the more general buttons depending on what the options tell us.
@@ -1436,7 +1414,6 @@
         if (canModComment) {
             if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
                 $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
-
             }
 
             if (commentStatus === 'approved' || commentStatus === 'neutral' || commentStatus === 'filtered') {
@@ -1452,7 +1429,6 @@
         }
 
         return $buildComment;
-
     };
     /**
      * Will build a comment given a reddit API comment object.
@@ -1465,7 +1441,7 @@
     TBui.makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {
         const $commentContainer = $(`<div class="tb-comment-children"></div>`);
 
-        jsonInput.forEach(function (comment) {
+        jsonInput.forEach(comment => {
             let $childComments;
 
             if (comment.kind === 't1') {
@@ -1481,7 +1457,6 @@
 
                 $commentContainer.append(`<span class="tb-more-comments"><a class="tb-load-more-comments" data-ids="${commentIDs}" href="javascript:void(0)">load more comments</a> (${count} replies)</span>`);
             }
-
         });
 
         return $commentContainer;
@@ -1492,7 +1467,7 @@
     $body.on('click', '.tb-comment-button-approve, .tb-submission-button-approve,  .tb-thing-button-approve', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.approveThing(fullname, function (succes, error) {
+        TBUtils.approveThing(fullname, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">approved</span>');
             } else if (error) {
@@ -1500,14 +1475,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-comment-button-remove, .tb-submission-button-remove, .tb-thing-button-remove', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.removeThing(fullname, false, function (succes, error) {
+        TBUtils.removeThing(fullname, false, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">removed</span>');
             } else if (error) {
@@ -1515,14 +1489,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-comment-button-spam, .tb-submission-button-spam, .tb-thing-button-spam', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.removeThing(fullname, true, function (succes, error) {
+        TBUtils.removeThing(fullname, true, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">spammed</span>');
             } else if (error) {
@@ -1530,14 +1503,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-submission-button-lock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.lockThread(fullname, function (succes, error) {
+        TBUtils.lockThread(fullname, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">locked</span>');
             } else if (error) {
@@ -1545,14 +1517,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-submission-button-unlock', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.lockThread(fullname, function (succes, error) {
+        TBUtils.lockThread(fullname, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">unlocked</span>');
             } else if (error) {
@@ -1560,14 +1531,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-submission-button-nsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.markOver18(fullname, function (succes, error) {
+        TBUtils.markOver18(fullname, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">marked nsfw</span>');
             } else if (error) {
@@ -1575,14 +1545,13 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
     $body.on('click', '.tb-submission-button-unsfw', function () {
         const $this = $(this);
         const fullname = $this.attr('data-fullname');
-        TBUtils.unMarkOver18(fullname, function (succes, error) {
+        TBUtils.unMarkOver18(fullname, (succes, error) => {
             if (succes) {
                 $this.replaceWith('<span class="tb-actioned-button">unmarked nsfw</span>');
             } else if (error) {
@@ -1590,7 +1559,6 @@
             } else {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
             }
-
         });
     });
 
@@ -1624,28 +1592,26 @@
         commentOptions.commentDepthPlus = true;
         let processCount = 0;
         TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
-        commentIDs.forEach(function (id) {
+        commentIDs.forEach(id => {
             const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
             // Lets get the comments.
-            $.getJSON(fetchUrl, {raw_json: 1}).done(function (data) {
+            $.getJSON(fetchUrl, {raw_json: 1}).done(data => {
                 TBStorage.purifyObject(data);
                 const $comments = TBui.makeCommentThread(data[1].data.children, commentOptions);
-                window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(() => {
                     $thisMoreComments.before($comments.html());
                 });
 
                 TBui.tbRedditEvent($comments, 'comment');
 
-                processCount = processCount + 1;
+                processCount += 1;
                 if (processCount === commentIDcount) {
                     $thisMoreComments.remove();
                     $('time.timeago').timeago();
                     TB.ui.longLoadSpinner(false);
                 }
-
             });
         });
-
     });
 
     $body.on('click', '.tb-self-expando-button', function () {
@@ -1673,5 +1639,4 @@
         return TBui.getBestTextColor.cache[bgColor];
     };
     TBui.getBestTextColor.cache = {};
-
-}(TBui = window.TBui || {}));
+})(TBui = window.TBui || {});

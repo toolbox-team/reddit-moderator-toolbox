@@ -54,13 +54,15 @@ function betterbuttons () {
     let newThingRunning = false;
 
     self.initModSave = function initModSave () {
-        if (TB.utils.isModmail) return;
+        if (TB.utils.isModmail) {
+            return;
+        }
         self.log('Adding mod save buttons');
 
         // Watches for changes in the DOM
         let shouldSticky = false;
-        const commentObserver = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
+        const commentObserver = new MutationObserver((mutations => {
+            mutations.forEach(mutation => {
                 if (mutation.addedNodes) {
                     for (let i = 0; i < mutation.addedNodes.length; ++i) {
                         const $item = $(mutation.addedNodes[i]);
@@ -83,7 +85,7 @@ function betterbuttons () {
                     }
                 }
             });
-        });
+        }));
 
         // Add the mod save buttons next to each comment save button
         const $usertextButtons = $('.moderator').find('.usertext-edit .usertext-buttons');
@@ -123,7 +125,6 @@ function betterbuttons () {
     };
 
     self.initDistinguishToggle = function initDistinguishToggle () {
-
         // Check for top level comments so we can add & sticky to the mix
         const stickyHtml = '<li class="toggle tb-sticky-toggle"><a class="tb-sticky-comment" href="javascript:void(0)">sticky</a></li>';
 
@@ -141,7 +142,7 @@ function betterbuttons () {
         }
 
         // Add back the sticky button after distinguishing and other DOM events.
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             addSticky();
         });
 
@@ -171,7 +172,9 @@ function betterbuttons () {
                 // Comment is already distinguished or stickied. So we'll simply undistinguish
                 if (distinguished) {
                 // Click things first
-                    if (firstDistinguishButton) firstDistinguishButton.click();
+                    if (firstDistinguishButton) {
+                        firstDistinguishButton.click();
+                    }
 
                     // Put back sticky button later.
                     $this.find('.tb-sticky-toggle').show();
@@ -179,7 +182,9 @@ function betterbuttons () {
                     // Not distinguished and we simply want to distinguish.
                 } else if (!distinguished) {
                 // Click first.
-                    if (firstDistinguishButton) firstDistinguishButton.click();
+                    if (firstDistinguishButton) {
+                        firstDistinguishButton.click();
+                    }
                     // Remove sticky button, this follows the reddit flow. Also makes it easier to deal with this shit.
                     $this.find('.tb-sticky-toggle.').hide();
                     // All that is left is neutral state, simply distinguish
@@ -189,9 +194,10 @@ function betterbuttons () {
             } else {
                 self.log('Top level comment distinguish has been clicked by a robot!');
                 // Really simple, only possible when nothing is distinguished or stickied.
-                if (secondDistinguishButton) secondDistinguishButton.click();
+                if (secondDistinguishButton) {
+                    secondDistinguishButton.click();
+                }
                 $this.find('.tb-sticky-toggle.').hide();
-
             }
 
             // Fire TBNewThings so sticky gets added back.
@@ -200,13 +206,12 @@ function betterbuttons () {
             if (!newThingRunning) {
                 newThingRunning = true;
                 // Wait a sec for stuff to load.
-                setTimeout(function () {
+                setTimeout(() => {
                     newThingRunning = false;
                     const event = new CustomEvent('TBNewThings');
                     window.dispatchEvent(event);
                 }, 1000);
             }
-
         }
 
         // Toggle the sticky state
@@ -215,7 +220,6 @@ function betterbuttons () {
 
             // DO NOT TRY TO "FIX" THIS CLICK. It needs the jquery clicky stuff for us to tell that this was a code triggered click.
             $siblingDistinguish.find('form[action="/post/distinguish"]').click();
-
         }
 
         self.log('Adding distinguish toggle events');
@@ -226,8 +230,8 @@ function betterbuttons () {
         $body.on('click', '.tb-sticky-comment', stickyClicked);
 
         // Watches for changes in DOM to add distinguish button listeners if needed
-        const commentObserver = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
+        const commentObserver = new MutationObserver((mutations => {
+            mutations.forEach(mutation => {
                 if (mutation.addedNodes) {
                     for (let i = 0; i < mutation.addedNodes.length; ++i) {
                         const item = mutation.addedNodes[i];
@@ -239,7 +243,7 @@ function betterbuttons () {
                     }
                 }
             });
-        });
+        }));
         commentObserver.observe(document.body, {
             childList: true,
             subtree: true,
@@ -254,7 +258,9 @@ function betterbuttons () {
         // Approve
         $body.on('click', '.flat-list .approve-button .togglebutton', function () {
             const yes = $(this).closest('.approve-button').find('.yes')[0];
-            if (yes) yes.click();
+            if (yes) {
+                yes.click();
+            }
         // setTimeout(function () {
         //     yes.click();
         // }, 100);
@@ -269,7 +275,9 @@ function betterbuttons () {
             || ($body.hasClass('tb-removal-reasons') && !TB.modules.RReasons.setting('commentReasons'))
             || $button.children().first().attr('value') === 'spammed'
             ) {
-                if (yes) yes.click();
+                if (yes) {
+                    yes.click();
+                }
             }
         });
     };
@@ -282,7 +290,9 @@ function betterbuttons () {
             const $button = $(this).parent().find('> span > .positive'),
                   button = $button[0];
             if (!$button.hasClass('pressed')) {
-                if (button) button.click();
+                if (button) {
+                    button.click();
+                }
             }
         });
     };
@@ -294,7 +304,9 @@ function betterbuttons () {
             const $button = $(this).closest('.big-mod-buttons').find('> .neutral'),
                   button = $button[0];
             if (!$button.hasClass('pressed')) {
-                if (button) button.click();
+                if (button) {
+                    button.click();
+                }
             }
         });
     };
@@ -344,13 +356,7 @@ function betterbuttons () {
 
             // Make sure this is a post in a sub we mod by checking for the remove button.
             if ($buttons.has('.remove-button').length) {
-                $buttons.append($('<li>').addClass('sticky-button').append(
-                    $('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')
-                ).append(
-                    $('<span>').addClass('success').text('unstickied').hide()
-                ).append(
-                    $('<span>').addClass('error').text('failed to sticky').hide()
-                ));
+                $buttons.append($('<li>').addClass('sticky-button').append($('<a>').addClass('tb-bracket-button').attr('href', 'javascript:;').addClass().text('unsticky')).append($('<span>').addClass('success').text('unstickied').hide()).append($('<span>').addClass('error').text('failed to sticky').hide()));
             }
         });
 
@@ -358,12 +364,11 @@ function betterbuttons () {
             const $button = $(this),
                   $thing = $button.parents('.thing'),
                   id = $thing.data('fullname');
-            TBUtils.unstickyThread(id, function (success, error) {
+            TBUtils.unstickyThread(id, (success, error) => {
                 $button.hide();
                 if (success) {
                     $button.siblings('.success').show();
-                }
-                else if (error) {
+                } else if (error) {
                     $button.siblings('.error').show();
                 }
             });
@@ -401,6 +406,6 @@ function betterbuttons () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     betterbuttons();
 });

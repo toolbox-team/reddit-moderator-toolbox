@@ -33,7 +33,6 @@ function oldReddit () {
 
         if (info.kind === 'submission') {
             if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
-
                 const detailObject = {
                     type: 'TBpost',
                     data: {
@@ -50,7 +49,6 @@ function oldReddit () {
             }
             // We don't want to send events for things already handled.
             if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-
                 const detailObject = {
                     type: 'TBpostAuthor',
                     data: {
@@ -92,7 +90,6 @@ function oldReddit () {
             // Author
             // We don't want to send events for things already handled.
             if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-
                 const detailObject = {
                     type: 'TBcommentAuthor',
                     data: {
@@ -130,7 +127,6 @@ function oldReddit () {
                     }
                 },
             });
-
         });
     }
 
@@ -140,15 +136,14 @@ function oldReddit () {
             setTimeout(() => {
                 thingCrawler();
 
-                window.addEventListener('TBNewThings', function () {
+                window.addEventListener('TBNewThings', () => {
                     thingCrawler();
                 });
             }, 500);
         }
     };
-
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     oldReddit();
 });

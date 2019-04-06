@@ -1,5 +1,4 @@
 function syntax () {
-
     const self = new TB.Module('Syntax Highlighter');
     self.shortname = 'Syntax';
     self.oldReddit = true;
@@ -113,8 +112,7 @@ function syntax () {
             $('#theme_selector').val(selectedTheme);
 
             // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#stylesheet_contents').each(function (index, elem) {
-
+            $('#stylesheet_contents').each((index, elem) => {
                 // Editor setup.
                 stylesheetEditor = CodeMirror.fromTextArea(elem, {
                     mode: 'text/css',
@@ -129,7 +127,9 @@ function syntax () {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
                         'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+                            if (cm.getOption('fullScreen')) {
+                                cm.setOption('fullScreen', false);
+                            }
                         },
                         'Tab': betterTab,
                         'Shift-Tab' (cm) {
@@ -150,12 +150,12 @@ function syntax () {
             $body.find('.sheets .buttons').before(tbSyntaxButtons);
 
             // When the toolbox buttons are clicked we put back the content in the text area and click the now hidden original buttons.
-            $body.delegate('.tb-syntax-button-save', 'click', function () {
+            $body.delegate('.tb-syntax-button-save', 'click', () => {
                 stylesheetEditor.save();
                 $('.sheets .buttons .btn[name="save"]').click();
             });
 
-            $body.delegate('.tb-syntax-button-preview', 'click', function () {
+            $body.delegate('.tb-syntax-button-preview', 'click', () => {
                 stylesheetEditor.save();
                 $('.sheets .buttons .btn[name="preview"]').click();
             });
@@ -163,7 +163,7 @@ function syntax () {
             // Actually dealing with the theme dropdown is done here.
             $body.on('change keydown', '#theme_selector', function () {
                 const thingy = $(this);
-                setTimeout(function () {
+                setTimeout(() => {
                     stylesheetEditor.setOption('theme', thingy.val());
                 }, 0);
             });
@@ -194,8 +194,7 @@ function syntax () {
             $('#theme_selector').val(selectedTheme);
 
             // Here apply codeMirror to the text area, the each itteration allows us to use the javascript object as codemirror works with those.
-            $('#wiki_page_content').each(function (index, elem) {
-
+            $('#wiki_page_content').each((index, elem) => {
                 // Editor setup.
                 miscEditor = CodeMirror.fromTextArea(elem, {
                     mode: defaultMode,
@@ -209,7 +208,9 @@ function syntax () {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
                         'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+                            if (cm.getOption('fullScreen')) {
+                                cm.setOption('fullScreen', false);
+                            }
                         },
                         'Tab': betterTab,
                         'Shift-Tab' (cm) {
@@ -226,7 +227,7 @@ function syntax () {
             $('#wiki_save_button').after(TB.ui.actionButton('save page', 'tb-syntax-button-save-wiki'));
 
             // When the toolbox buttons is clicked we put back the content in the text area and click the now hidden original button.
-            $body.delegate('.tb-syntax-button-save-wiki', 'click', function () {
+            $body.delegate('.tb-syntax-button-save-wiki', 'click', () => {
                 miscEditor.save();
                 $('#wiki_save_button').click();
             });
@@ -234,17 +235,16 @@ function syntax () {
             // Actually dealing with the theme dropdown is done here.
             $body.on('change keydown', '#theme_selector', function () {
                 const thingy = $(this);
-                setTimeout(function () {
+                setTimeout(() => {
                     miscEditor.setOption('theme', thingy.val());
                 }, 0);
             });
-
         }
     };
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     syntax();
 });

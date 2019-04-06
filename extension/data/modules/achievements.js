@@ -49,7 +49,9 @@ function achievements () {
                       maxValue = maxValues[i];
 
                 self.log('Registering Achievement');
-                if (TB.utils.devMode) self.log(`  name=${title}`); // spoilers
+                if (TB.utils.devMode) {
+                    self.log(`  name=${title}`);
+                } // spoilers
                 self.log(`  maxValue=${maxValue}`);
                 self.log(`  saveIndex=${saveIndex}`);
 
@@ -108,7 +110,7 @@ function achievements () {
 
         this.save = function () {
             let save = '';
-            saves.forEach(function (saveValue, saveIndex) {
+            saves.forEach((saveValue, saveIndex) => {
                 save += saveValue;
                 if (saveIndex < saves.length - 1) {
                     save += ';';
@@ -189,7 +191,7 @@ function achievements () {
         self.log('Registering achievements');
 
         // Random awesome
-        self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", function (saveIndex) {
+        self.manager.register('<a href="https://www.youtube.com/watch?v=StTqXEQ2l-Y" target="_blank">being awesome</a>', "toolbox just feels like you're awesome today", saveIndex => {
             const awesome = 7,
                   chanceOfBeingAwesome = TB.utils.getRandomNumber(10000);
 
@@ -200,7 +202,7 @@ function achievements () {
         });
 
         // Still Alive (TODO: can we make links work?)
-        self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', function (saveIndex) {
+        self.manager.register('<a href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank">not dead yet</a>', 'Spent a week away from reddit', saveIndex => {
         // BUG: this one keeps firing on default no value for lastSeen.
         // I tried defaulting to now but it's still wonky.
             const now = TBUtils.getTime(),
@@ -217,21 +219,21 @@ function achievements () {
         });
 
         // toolbox Loves You: Look at the about page
-        self.manager.register('<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">toolbox loves you</a>', 'Looked at the about page. <3', function (saveIndex) {
-            TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, function () {
+        self.manager.register('<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">toolbox loves you</a>', 'Looked at the about page. <3', saveIndex => {
+            TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, () => {
                 self.manager.unlock(saveIndex);
             });
         });
 
         // Beta testers
-        self.manager.register('bug hunter', 'Beta testing toolbox', function (saveIndex) {
+        self.manager.register('bug hunter', 'Beta testing toolbox', saveIndex => {
             if (TB.utils.betaRelease) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Judas
-        self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", function (saveIndex) {
+        self.manager.register('Judas', "Why do you hate toolbox devs? :'( ", saveIndex => {
             $body.on('click', 'form.remove-button, a.pretty-button.negative, a.pretty-button.neutral', function () {
                 const $this = $(this);
                 const auth = TB.utils.getThingInfo($this).author;
@@ -247,8 +249,7 @@ function achievements () {
         });
 
         // approving stuff
-        self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], function (saveIndex) {
-
+        self.manager.registerSeries(['too nice', 'way too nice', 'big softie', 'approvening master', 'the kinda mod reddit deserves'], 'Approved {0} things', [50, 200, 1000, 10000, 20000], saveIndex => {
             // If just the button is used.
             $body.on('click', '.pretty-button, .approve-button', function () {
                 const $this = $(this);
@@ -258,41 +259,41 @@ function achievements () {
             });
 
             // If the API is used
-            TB.utils.catchEvent(TB.utils.events.TB_APPROVE_THING, function () {
+            TB.utils.catchEvent(TB.utils.events.TB_APPROVE_THING, () => {
                 self.manager.unlock(saveIndex, 1);
             });
         });
 
         // Mod mail
-        self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=425GpjTSlS4" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], function (saveIndex) {
+        self.manager.registerSeries(['hic sunt dracones', "just checkin' the mail", '<a href="https://www.youtube.com/watch?v=425GpjTSlS4" target="_blank">Mr. Postman</a>', "You've got mail!"], 'Checked mod mail {0} times!', [1, 100, 1000, 10000], saveIndex => {
             if (TB.utils.isModmail) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Empty queue
-        self.manager.registerSeries(['kitteh get!', 'puppy power!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], function (saveIndex) {
+        self.manager.registerSeries(['kitteh get!', 'puppy power!', '<a href="https://www.youtube.com/watch?v=Fdc765l9psM" target="_blank">Dr. Jan Itor</a>', '/u/Kylde'], 'Cleared your queues {0} times!', [10, 50, 100, 700], saveIndex => {
             if (TBUtils.isModpage && $body.find('p#noresults').length > 0) {
                 self.manager.unlock(saveIndex, 1);
             }
         });
 
         // Found flying Snoo
-        self.manager.register('Cadbury Bunny', 'Found flying Snoo.', function (saveIndex) {
-            TB.utils.catchEvent(TB.utils.events.TB_FLY_SNOO, function () {
+        self.manager.register('Cadbury Bunny', 'Found flying Snoo.', saveIndex => {
+            TB.utils.catchEvent(TB.utils.events.TB_FLY_SNOO, () => {
                 self.manager.unlock(saveIndex);
             });
         });
 
         // Killed Snoo
-        self.manager.register('you bastard!', 'Killed Snoo.', function (saveIndex) {
-            TB.utils.catchEvent(TB.utils.events.TB_KILL_SNOO, function () {
+        self.manager.register('you bastard!', 'Killed Snoo.', saveIndex => {
+            TB.utils.catchEvent(TB.utils.events.TB_KILL_SNOO, () => {
                 self.manager.unlock(saveIndex);
             });
         });
 
         // New modmail access
-        self.manager.register('mannomail', 'No one knows, send hate mail to /u/thatastronautguy', function (saveIndex) {
+        self.manager.register('mannomail', 'No one knows, send hate mail to /u/thatastronautguy', saveIndex => {
             if (window.location.href.startsWith('https://mod.reddit.com/mail')) {
                 self.manager.unlock(saveIndex);
             }
@@ -302,7 +303,7 @@ function achievements () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     achievements();
 });
 

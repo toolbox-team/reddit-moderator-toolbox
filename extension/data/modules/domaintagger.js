@@ -1,5 +1,4 @@
 function domaintagger () {
-
     const self = new TB.Module('Domain Tagger');
     self.shortname = 'DTagger';
     self.oldReddit = true;
@@ -21,7 +20,7 @@ function domaintagger () {
 
         $body.addClass(`tb-dt-type-${tagType}`);
 
-        TBUtils.getModSubs(function () {
+        TBUtils.getModSubs(() => {
             self.log('run called from getModSubs');
             self.log(TBUtils.mySubs);
             run(true);
@@ -30,7 +29,7 @@ function domaintagger () {
         function postToWiki (sub, json, reason) {
             TBUtils.configCache[sub] = json;
 
-            TBUtils.postToWiki('toolbox', sub, json, reason, true, false, function done (succ, err) {
+            TBUtils.postToWiki('toolbox', sub, json, reason, true, false, (succ, err) => {
                 if (succ) {
                     $('div.thing.link.dt-processed').removeClass('dt-processed');
                     run(false);
@@ -41,7 +40,7 @@ function domaintagger () {
         }
 
         // NER support.
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             self.log('run called from NER support');
             run(true);
         });
@@ -64,7 +63,7 @@ function domaintagger () {
             self.log('Processing things');
             self.startProfile('build-object-list');
 
-            TBUtils.forEachChunkedDynamic($things, function (thing) {
+            TBUtils.forEachChunkedDynamic($things, thing => {
                 self.startProfile('build-object-list-inner');
 
                 const $thing = $(thing),
@@ -78,16 +77,16 @@ function domaintagger () {
                 subs[sub].push(thing);
 
                 self.endProfile('build-object-list-inner');
-            }).then(function () {
+            }).then(() => {
                 // Process subreddit objects' lists
                 self.endProfile('build-object-list');
 
                 self.log('Processing subreddits');
                 self.log(Object.keys(subs));
 
-                TBUtils.forEachChunkedDynamic(Object.keys(subs), function (sub) {
+                TBUtils.forEachChunkedDynamic(Object.keys(subs), sub => {
                     processSubreddit(sub, subs[sub]);
-                }).then(function () {
+                }).then(() => {
                     self.log('Done processing things');
                     self.printProfiles();
                 });
@@ -107,7 +106,7 @@ function domaintagger () {
 
         function processSubreddit (sub, things) {
             self.log(`  Processing subreddit: /r/${sub}`);
-            TBUtils.getConfig(sub, function (config) {
+            TBUtils.getConfig(sub, config => {
                 self.log(`    Config retrieved for /r/${sub}`);
                 if (config && config.domainTags && config.domainTags.length > 0) {
                     setTags(config.domainTags, things);
@@ -169,7 +168,7 @@ function domaintagger () {
 
             self.startProfile('set-tags');
             let done = false;
-            TBUtils.forEachChunkedDynamic(things, function (thing) {
+            TBUtils.forEachChunkedDynamic(things, thing => {
                 self.startProfile('set-tags-inner');
                 const $thing = $(thing),
                       $entry = $thing.find('.entry'),
@@ -178,13 +177,12 @@ function domaintagger () {
                       thingID = $thing.attr('data-fullname'),
                       tagged = [];
 
-                $.each(domainTags, function (i, d) {
+                $.each(domainTags, (i, d) => {
                 // Check if the domain ends with a tagged domain (to allow for subdomains)
                     if (domain === d.name) {
                         applyTag($domain, d, $entry);
                         tagged.push(thingID);
-                    }
-                    else if (domain.indexOf(d.name, domain.length - d.name.length) !== -1
+                    } else if (domain.indexOf(d.name, domain.length - d.name.length) !== -1
                         && tagged.indexOf(thingID) === -1) {
                         applyTag($domain, d, $entry);
                     }
@@ -193,14 +191,14 @@ function domaintagger () {
                 if (done) {
                     self.endProfile('set-tags');
                 }
-            }).then(function () {
+            }).then(() => {
                 done = true;
             });
         }
 
         // Button events
 
-        $body.on('click', '.add-domain-tag', function (e) {
+        $body.on('click', '.add-domain-tag', e => {
             const $this = $(e.target),
                   $domain = $this.siblings('.domain'),
                   currentColor = TBUtils.colorNameToHex($domain.data('color') || '#cee3f8db'),
@@ -212,23 +210,9 @@ function domaintagger () {
             subreddit = TB.utils.cleanSubredditName(subreddit);
 
             function createPopup () {
-                const popupContent = $('<div>').addClass('dt-popup-content').append(
-                    $('<span>').addClass('dt-popup-color-content').append(
-                        $('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)
-                    ).append(
-                        $('<input>').prop('type', 'color').addClass('domain-color').val(currentColor)
-                    )
-                ).append(
-                    $('<p>').text('This will tag the domain as shown.')
-                ).append(
-                    $('<p>').text('Ex: i.imgur.com is not imgur.com')
-                );
+                const popupContent = $('<div>').addClass('dt-popup-content').append($('<span>').addClass('dt-popup-color-content').append($('<input>').prop('type', 'text').addClass('domain-name').attr('value', domain).attr('data-subreddit', subreddit)).append($('<input>').prop('type', 'color').addClass('domain-color').val(currentColor))).append($('<p>').text('This will tag the domain as shown.')).append($('<p>').text('Ex: i.imgur.com is not imgur.com'));
 
-                const popupSave = $('<div>').append(
-                    $('<button>').addClass('save-domain tb-action-button').text('save')
-                ).append(
-                    $('<button>').addClass('clear-domain tb-action-button').text('clear')
-                );
+                const popupSave = $('<div>').append($('<button>').addClass('save-domain tb-action-button').text('save')).append($('<button>').addClass('clear-domain tb-action-button').text('clear'));
 
                 return TBui.popup(`Domain Tagger - /r/${subreddit}`, [{
                     id: `dtagger_popup_${subreddit}`,
@@ -249,7 +233,6 @@ function domaintagger () {
                 if (TBui.standardColors.hasOwnProperty(c)) {
                     colors.push(TBui.standardColors[c]);
                 }
-
             }
             const colorPalette = [];
             for (let i = 0; i < colors.length; i += 2) {
@@ -282,7 +265,7 @@ function domaintagger () {
                 return;
             }
 
-            TBUtils.readFromWiki(subreddit, 'toolbox', true, function (resp) {
+            TBUtils.readFromWiki(subreddit, 'toolbox', true, resp => {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                     return;
                 }
@@ -299,7 +282,7 @@ function domaintagger () {
                 TBStorage.purifyObject(config);
 
                 if (config.domainTags) {
-                    const results = $.grep(config.domainTags, function (d) {
+                    const results = $.grep(config.domainTags, d => {
                         if (d.name === domainTag.name) {
                             const idx = config.domainTags.indexOf(d);
                             let updateType;
@@ -351,6 +334,6 @@ function domaintagger () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     domaintagger();
 });

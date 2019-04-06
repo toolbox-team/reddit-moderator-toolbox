@@ -56,7 +56,7 @@ function metricstab () {
         $tabList.append($listItem);
 
         const links = metrics[page.section];
-        for (const i in links) {
+        for (const i of Object.keys(links)) {
             let url = links[i];
             url = url.replace(/\{subSection\}/g, page.subSection);
             $metricsDropDown.append(`<li><a href="${url}" target="_blank">${i}</a></li>`);
@@ -75,17 +75,16 @@ function metricstab () {
             $tbMetricsList.toggle();
         });
 
-        $(document).on('click', function (event) {
+        $(document).on('click', event => {
             if (!$(event.target).closest('.tb-metrics').length) {
                 $tbMetricsList.hide();
             }
         });
-
     };
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     metricstab();
 });

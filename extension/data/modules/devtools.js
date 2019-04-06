@@ -37,7 +37,7 @@ function devtools () {
                 api info
             </span>
             `);
-            $target.on('click', '.tb-show-api-info', function (event) {
+            $target.on('click', '.tb-show-api-info', event => {
                 const $pasteContent = $(`<pre class="tb-api-info"><code>${TBUtils.escapeHTML(JSON.stringify($target.data('tb-details'), null, '\t'))}</code></pre>`);
                 // Prepare for the popup.
                 let leftPosition;
@@ -71,7 +71,7 @@ function devtools () {
                     });
 
                 // Close the popup
-                $apiPopup.on('click', '.close', function () {
+                $apiPopup.on('click', '.close', () => {
                     $apiPopup.remove();
                 });
             });
@@ -89,7 +89,7 @@ function devtools () {
             });
         }
 
-        $body.on('click', '#tb-testCommentUI-link', function () {
+        $body.on('click', '#tb-testCommentUI-link', () => {
             TB.ui.overlay(
                 `Comment UI tester`,
                 [
@@ -113,10 +113,9 @@ function devtools () {
             ).appendTo('body');
 
             $body.css('overflow', 'hidden');
-            $body.on('click', '.tb-comment-ui-test .close', function () {
+            $body.on('click', '.tb-comment-ui-test .close', () => {
                 $('.tb-comment-ui-test').remove();
                 $body.css('overflow', 'auto');
-
             });
 
             $body.on('click', '.tb-testCommentUI-button', function () {
@@ -125,7 +124,7 @@ function devtools () {
                 $siteTable.empty();
                 // Input must be the json permalink to a comment. As this is a dev tool it doesn't try to figure it out.
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, function (data) {
+                $.getJSON(inputURL, {raw_json: 1}, data => {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
                         parentLink: true,
@@ -144,40 +143,35 @@ function devtools () {
                         TBui.tbRedditEvent($comment, 'comment');
                         $('time.timeago').timeago();
                     }
-
                 });
             });
 
-            $body.on('click', '.tb-testSubmissionUI-button', function () {
+            $body.on('click', '.tb-testSubmissionUI-button', () => {
                 const $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();
                 const inputURL = $body.find('#tb-testCommentUI-input-url').val();
-                $.getJSON(inputURL, {raw_json: 1}, function (data) {
+                $.getJSON(inputURL, {raw_json: 1}, data => {
                     TBStorage.purifyObject(data);
-                    TBUtils.forEachChunkedDynamic(data.data.children, function (entry) {
+                    TBUtils.forEachChunkedDynamic(data.data.children, entry => {
                         if (entry.kind === `t3`) {
                             const $submission = TBui.makeSubmissionEntry(entry);
                             $siteTable.append($submission);
                             $('time.timeago').timeago();
                         }
-
-                    }).then(function () {
-                        setTimeout(function () {
+                    }).then(() => {
+                        setTimeout(() => {
                             TBui.tbRedditEvent($siteTable, 'comment');
                             TB.ui.longLoadSpinner(false);
                         }, 1000);
                     });
                 });
-
             });
-
         });
-
     };
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     devtools();
 });

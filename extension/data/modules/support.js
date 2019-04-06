@@ -42,10 +42,9 @@ Info| &nbsp;
 
         // If we are on the submit page we add debug information when a user makes a post.
         if (location.pathname.match(/\/r\/toolbox\/submit\/?/) || location.pathname.match(/\/r\/tb_dev\/submit\/?/)) {
-
             const $submissionTextArea = $('.usertext-edit.md-container textarea');
 
-            $body.on('click', '.submit.content .btn[name="submit"]', function () {
+            $body.on('click', '.submit.content .btn[name="submit"]', () => {
             // First we stop the action on the button for a bit.
             // event.preventDefault();
                 const submissionText = $submissionTextArea.val();
@@ -75,15 +74,13 @@ Info| &nbsp;
                 const currentComment = $commentTextArea.val();
 
                 $commentTextArea.val(currentComment + submissionAddition);
-
             });
-
         }
     };
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     support();
 });

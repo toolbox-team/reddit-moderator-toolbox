@@ -66,9 +66,13 @@ function trouble () {
               $init_btn = $('<button id="tb-trouble-init" class="tb-action-button">Trouble Shoot</button>').click(start);
         let $sitetable;
 
-        if (!TBUtils.isMod) return;
+        if (!TBUtils.isMod) {
+            return;
+        }
 
-        if (!TBUtils.isCommentsPage) return;
+        if (!TBUtils.isCommentsPage) {
+            return;
+        }
 
         if ($body.hasClass('listing-page')) {
             $sitetable = $('.content').children('.sitetable');
@@ -85,29 +89,38 @@ function trouble () {
         }
 
         function start () {
-
             $init_btn.remove();
 
             $body.addClass('tb-trouble');
-            if (highlightControversy) $body.addClass('tb-controversy-hl');
-            if (nChildren) $body.addClass('tb-nchildren');
-            if (nChildrenTop) $body.addClass('tb-nchildrentop');
+            if (highlightControversy) {
+                $body.addClass('tb-controversy-hl');
+            }
+            if (nChildren) {
+                $body.addClass('tb-nchildren');
+            }
+            if (nChildrenTop) {
+                $body.addClass('tb-nchildrentop');
+            }
 
             $buttons.append($('<button id="tb-trouble-sort" class="tb-action-button">Sort</button>').click(sortChildren))
                 .append($('<button class="tb-action-button" id="tb-trouble-collapse">Collapse</button>').click(collapseNonDrama));
 
             if (sortOnMoreChildren) {
                 $('.commentarea').on('click', '.morecomments', function () {
-                    if (self.sorted) self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+                    if (self.sorted) {
+                        self.pending.push(sortMe.bind($(this).closest('.sitetable')));
+                    }
                 });
             }
-            window.addEventListener('TBNewThings', function () {
+            window.addEventListener('TBNewThings', () => {
                 run();
             });
 
             run();
 
-            if (expand) $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
+            if (expand) {
+                $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
+            }
         }
 
         function run () {
@@ -115,9 +128,13 @@ function trouble () {
 
             highlightComments($things);
 
-            while (self.pending.length) self.pending.pop()();
+            while (self.pending.length) {
+                self.pending.pop()();
+            }
 
-            if (expand) $('.thing.tb-controversy, .thing.tb-ncontroversy').not('.tb-pc-proc').each(uncollapseThing);
+            if (expand) {
+                $('.thing.tb-controversy, .thing.tb-ncontroversy').not('.tb-pc-proc').each(uncollapseThing);
+            }
 
             markProcessedThings();
         }
@@ -130,7 +147,9 @@ function trouble () {
             $things.find('.score.unvoted').each(score);
 
             if (highlightControversy) {
-                $things.filter(function () { return controversial.test(this.className); })
+                $things.filter(function () {
+                    return controversial.test(this.className);
+                })
                     .children('.entry').addClass('tb-controversy')
                     .parents('.thing').addClass('tb-controversy');
             }
@@ -142,8 +161,9 @@ function trouble () {
             let neg_thresh = neg_thresh_pref;
 
             // lower the threashold by one for user's comments
-            if (RegExp(`/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href))
+            if (RegExp(`/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
                 --neg_thresh;
+            }
 
             // highlighting here to avoid another .each() iteration
             if (($thing[0].dataset.score = $this.text().match(/^(-)?\d+/)[0]) <= neg_thresh) {
@@ -165,7 +185,9 @@ function trouble () {
 
         function fixFlatNER ($this) {
             const $NERs = $this.find('.linklisting');
-            if (!$NERs.length) return;
+            if (!$NERs.length) {
+                return;
+            }
 
             $this.append($NERs.children('.thing'));
             $('.NERPageMarker, .clearleft + .clearleft').remove();
@@ -177,9 +199,7 @@ function trouble () {
             fixFlatNER($this);
 
             const $things = $this.children('.thing').not('.morechildren')
-                .sort(function (a, b) {
-                    return (b.dataset.nchildren - a.dataset.nchildren);
-                });
+                .sort((a, b) => (b.dataset.nchildren - a.dataset.nchildren));
 
             $this.prepend($things)
                 .prepend($this.children('.thing.tb-controversy'))
@@ -201,7 +221,6 @@ function trouble () {
         }
 
         function collapseNonDrama () {
-
             $('.thing.tb-controversy, .thing.tb-ncontroversy').each(uncollapseThing);
 
             $('.commentarea').add($('.thing.tb-controversy, .thing.tb-ncontroversy').children('.child'))
@@ -218,6 +237,6 @@ function trouble () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     trouble(); // run
 });

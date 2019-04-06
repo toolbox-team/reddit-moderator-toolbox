@@ -13,7 +13,6 @@ function profileResults (name, number) {
         console.log('ms:', start);
         console.log('sec:', Math.round((start) / 1000));
     } else {
-
         const secs = Math.round((number - start) / 1000);
         const secsPrevious = Math.round((number - previous) / 1000);
         console.log('   ');
@@ -30,7 +29,6 @@ function profileResults (name, number) {
         previousName = name;
         previous = number;
     }
-
 }
 
 profileResults('start', start);
@@ -38,7 +36,7 @@ profileResults('start', start);
 if (location.host === 'mod.reddit.com') {
     sessionStorage.setItem('v4active', 'true');
 } else {
-    chrome.storage.local.get('tbsettings', function (sObject) {
+    chrome.storage.local.get('tbsettings', sObject => {
         if (sObject.tbsettings && sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
             sessionStorage.setItem('v4active', 'true');
         } else {
@@ -46,6 +44,6 @@ if (location.host === 'mod.reddit.com') {
         }
     });
 }
-window.addEventListener('unload', function () {
+window.addEventListener('unload', () => {
     sessionStorage.removeItem('v4active');
 });

@@ -19,7 +19,9 @@ function banlist () {
     };
 
     self.init = function () {
-        if (!TB.utils.isEditUserPage) return;
+        if (!TB.utils.isEditUserPage) {
+            return;
+        }
 
         let banlist_updating = false,
             banlist_last_update = 0,
@@ -28,7 +30,6 @@ function banlist () {
               $num_bans = $('<span id="ban_count"></span>');
 
         function _get_next_ban_page (after, pages_back) {
-
             // default parameter value handling
             after = typeof after !== 'undefined' ? after : '';
             pages_back = typeof pages_back !== 'undefined' ? pages_back : 0;
@@ -45,7 +46,7 @@ function banlist () {
                 type: 'get',
                 dataType: 'html',
                 async: true})
-                .done(function (data) {
+                .done(data => {
                     console.log(data);
                     self.log('  success!');
                     self.log(`  ${pages_back} pages back`);
@@ -108,9 +109,7 @@ function banlist () {
                         TB.ui.longLoadSpinner(false);
                         $num_bans.html('Something went wrong while fetching the banlist. You should reload this page.');
                     }
-
                 });
-
         }
 
         function filter_banlist (banlist, value, ignore_last) {
@@ -188,7 +187,7 @@ function banlist () {
                 _filter(value);
             });
 
-            $userInput.parent().submit(function (e) {
+            $userInput.parent().submit(e => {
                 _filter($('input#user').val().toLowerCase());
                 e.preventDefault();
             });
@@ -212,6 +211,6 @@ function banlist () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     banlist();
 });

@@ -77,7 +77,7 @@ function comments () {
 
             $('.comments-page .thing.comment.spam > .entry').each(function () {
                 $(this).addClass('tb-comment-spam');
-                removedCounter = removedCounter + 1;
+                removedCounter += 1;
             });
 
             self.log(removedCounter);
@@ -103,7 +103,7 @@ function comments () {
             if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
                 const $things = $('.thing.comment:not(.tb-comments-checked)');
-                TBUtils.forEachChunkedDynamic($things, function (item) {
+                TBUtils.forEachChunkedDynamic($things, item => {
                     const $thing = $(item);
                     $thing.addClass('tb-comments-checked');
 
@@ -144,16 +144,13 @@ function comments () {
                             }
                         }
                     }
-
                 });
             }
-
         }
 
         // Perform comment actions on pages where you are mod and which are not modmail.
         if (TBUtils.isMod && !TBUtils.isModmail) {
-
-            $body.on('click', '#tb-toggle-removed', function () {
+            $body.on('click', '#tb-toggle-removed', () => {
                 const $comment_spam = $('.tb-comment-spam');
                 if ($comment_spam.is(':visible')) {
                     $comment_spam.hide();
@@ -162,15 +159,14 @@ function comments () {
                     $comment_spam.show();
                     $('.action-reason').show();
                 }
-
             });
             // Let's support selfpost expandos
-            $body.on('click', '.expando-button.selftext', function () {
+            $body.on('click', '.expando-button.selftext', () => {
                 setTimeout(run, 1000);
             });
 
             // NER support.
-            window.addEventListener('TBNewThings', function () {
+            window.addEventListener('TBNewThings', () => {
                 run();
             });
 
@@ -179,7 +175,6 @@ function comments () {
 
         let hidden = false;
         function addHideModButton () {
-
             // hide mod comments option.
             if (TB.utils.isUserPage) {
                 const $modActions = $('.moderator, [data-subreddit="spam"]');
@@ -202,7 +197,7 @@ function comments () {
         addHideModButton();
 
         // NER support.
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             addHideModButton();
             if (hidden) {
                 self.log('hiding mod actions');
@@ -217,13 +212,15 @@ function comments () {
 
             $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
 
-            $body.on('click', '.tb-hide-old', function () {
+            $body.on('click', '.tb-hide-old', () => {
                 self.log('hiding old comments');
                 $('.entry').show(); // reset before hiding.
                 $('.old-expand').removeClass('old-expand'); // new old expands
 
                 // this likely isn't language safe.
-                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) return;
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
+                    return;
+                }
 
                 $('.thing:not(.new-comment,.link)').each(function () {
                     const $this = $(this);
@@ -237,7 +234,7 @@ function comments () {
                 $(this).removeClass('old-expand').children().show();
             });
 
-            $body.on('change', '#comment-visits', function () {
+            $body.on('change', '#comment-visits', () => {
                 const $hideOld = $('.tb-hide-old');
                 $hideOld.text('hide old');
                 if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
@@ -272,17 +269,16 @@ function comments () {
         if (self.setting('highlighted').length) {
             const highlighted = self.setting('highlighted');
 
-            TB.listener.on('comment', function (e) {
+            TB.listener.on('comment', e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
-                TBUtils.getModSubs(function () {
+                TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit)) {
                         console.log('okay...', subreddit);
                         $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                         $target.closest('.Comment').find('p').highlight(highlighted);
                     }
                 });
-
             });
 
             $body.on('click', '.expando-button', function () {
@@ -296,25 +292,22 @@ function comments () {
                 }
             });
 
-            window.addEventListener('TBNewPage', function (event) {
+            window.addEventListener('TBNewPage', event => {
                 const pageType = event.detail.pageType;
 
                 if (pageType === 'subredditCommentPermalink' || pageType === 'subredditCommentsPage') {
                     const subreddit = event.detail.subreddit;
-                    TBUtils.getModSubs(function () {
+                    TBUtils.getModSubs(() => {
                         if (TBUtils.modsSub(subreddit)) {
-
                             $body.find('div[data-test-id="post-content"], .link .usertext-body').find('p').highlight(highlighted);
                         }
                     });
-
                 }
-
             });
         }
 
         // Add flat view link.
-        window.addEventListener('TBNewPage', function (event) {
+        window.addEventListener('TBNewPage', event => {
             if (event.detail.pageType === 'subredditCommentsPage') {
                 TBui.contextTrigger('tb-flatview-link', {
                     addTrigger: true,
@@ -325,11 +318,9 @@ function comments () {
             } else {
                 TBui.contextTrigger('tb-flatview-link', {addTrigger: false});
             }
-
         });
 
-        $body.on('click', '#tb-flatview-link', function () {
-
+        $body.on('click', '#tb-flatview-link', () => {
             const flatListing = {}; // This will contain all comments later on.
             let idListing = []; // this will list all IDs in order from which we will rebuild the comment area.
 
@@ -337,7 +328,6 @@ function comments () {
 
             function parseComments (object) {
                 switch (object.kind) {
-
                 case 'Listing':
                     for (let i = 0; i < object.data.children.length; i++) {
                         parseComments(object.data.children[i]);
@@ -386,15 +376,14 @@ function comments () {
 
             $flatViewOverlay.hide();
 
-            $body.on('click', '.tb-flat-view .close', function () {
+            $body.on('click', '.tb-flat-view .close', () => {
                 $('.tb-flat-view').remove();
                 $body.css('overflow', 'auto');
-
             });
             const $flatSearchCount = $body.find('#tb-flatview-search-count');
             const $htmlCommentView = $body.find('#tb-sitetable'); // This will contain the new html we will add to the page.
 
-            $body.find('.tb-flatview-search-input').keyup(function () {
+            $body.find('.tb-flatview-search-input').keyup(() => {
                 self.log('typing');
                 const FlatViewSearchName = $body.find('#tb-flatview-search-name').val();
                 const FlatViewSearchContent = $body.find('#tb-flatview-search-content').val();
@@ -412,7 +401,6 @@ function comments () {
                         $this.hide();
                     } else {
                         $this.show();
-
                     }
                     $flatSearchCount.text($htmlCommentView.find(`.tb-comment:visible`).length);
                 });
@@ -424,7 +412,7 @@ function comments () {
             const jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
-            $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(function (data) {
+            $.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1}).done(data => {
                 TBStorage.purifyObject(data);
                 // put the json through our deconstructor.
                 data[1].isreply = false;
@@ -440,31 +428,28 @@ function comments () {
                 };
                 let count = 0;
                 // from each id in the idlisting we construct a new comment.
-                TBUtils.forEachChunkedDynamic(idListing, function (value) {
+                TBUtils.forEachChunkedDynamic(idListing, value => {
                     count++;
                     const msg = `Building comment ${count}/${idListing.length}`;
                     TB.ui.textFeedback(msg, TBui.FEEDBACK_NEUTRAL);
                     const $comment = TBui.makeSingleComment(flatListing[value], commentOptions);
                     $comment.find('time.timeago').timeago();
                     $htmlCommentView.append($comment);
-
-                }).then(function () {
+                }).then(() => {
                     $flatSearchCount.text(count);
-                    setTimeout(function () {
+                    setTimeout(() => {
                         TBui.tbRedditEvent($htmlCommentView, 'comment');
                         TB.ui.longLoadSpinner(false);
                         $body.css('overflow', 'hidden');
                         $flatViewOverlay.show();
                     }, 1000);
                 });
-
             });
         });
         if (openContextInPopup) {
-
             // Add context button to the queue in old reddit
             if (TBUtils.isOldReddit && (TBUtils.isModpage || TBUtils.isUserPage || TBUtils.isSubCommentsPage)) {
-                TB.listener.on('comment', function (e) {
+                TB.listener.on('comment', e => {
                     const $target = $(e.target);
                     const data = e.detail.data;
                     const commentName = data.id;
@@ -504,7 +489,7 @@ function comments () {
                 }
 
                 // Get the context
-                $.getJSON(contextUrl, {raw_json: 1}).done(function (data) {
+                $.getJSON(contextUrl, {raw_json: 1}).done(data => {
                     TBStorage.purifyObject(data);
                     const commentOptions = {
                         parentLink: true,
@@ -545,20 +530,17 @@ function comments () {
                     $('time.timeago').timeago();
                     $comments.find(`.tb-thing[data-comment-id="${commentID}"] > .tb-comment-entry`).css('background-color', '#fff8d5');
                     // Close the popup
-                    $contextPopup.on('click', '.close', function () {
+                    $contextPopup.on('click', '.close', () => {
                         $contextPopup.remove();
                     });
-
                 });
-
             });
         }
-
     };
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     comments();
 });

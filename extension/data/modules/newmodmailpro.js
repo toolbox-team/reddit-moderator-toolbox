@@ -52,7 +52,6 @@ function newmodmailpro () {
         // Let's not bother with case sensitive searching.
         searchString = searchString.toLowerCase();
         $threadPreviewerThreads.find('.ThreadPreviewViewer__thread:not(.tb-searched)').each(function () {
-
             const $this = $(this);
             // Again, let's not bother.
             const previewText = $this.text().toLowerCase();
@@ -71,7 +70,6 @@ function newmodmailpro () {
             }
             // And mark it as processed.
             $this.addClass('tb-searched');
-
         });
 
         // If the stop button has not been pressed we will do another loop.
@@ -84,7 +82,7 @@ function newmodmailpro () {
             $threadPreviewerThreads.scrollTop(scrollDistance);
 
             // Now wait a bit so we are sure they are loaded and then activate another loop of this function.
-            setTimeout(function () {
+            setTimeout(() => {
                 searchAndScroll(searchString, $threadPreviewerThreads, $searchResults, count);
             }, 1000);
         }
@@ -154,7 +152,7 @@ function newmodmailpro () {
             });
 
             // Just making sure you can still click on urls visible in the preview.
-            $searchResults.on('click', 'a', function (event) {
+            $searchResults.on('click', 'a', event => {
                 event.stopPropagation();
             });
 
@@ -179,8 +177,7 @@ function newmodmailpro () {
               searchArchive = self.setting('searcharchive');
 
         if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
-            $body.on('click', '.ThreadViewerReplyForm__replyButton', function (event) {
-
+            $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {
                 // Get all mod replies and see if they are something we need to warn the user about.
                 const $lastReply = $body.find('.Thread__messages .Thread__message:has(.m-mod)').last();
                 const replyTypeMyself = $body.find('.FancySelect__valueText').text() === 'Reply as myself';
@@ -193,7 +190,6 @@ function newmodmailpro () {
                         // Not ok, prevent the button from being clicked.
                         event.preventDefault();
                     }
-
                 }
 
                 // If it finds this class it means the last reply was a private mod note.
@@ -205,7 +201,6 @@ function newmodmailpro () {
                         event.preventDefault();
                     }
                 }
-
             });
         }
 
@@ -226,16 +221,14 @@ function newmodmailpro () {
         // Let's add search if needed.
         if (searchArchive) {
             addSearch(location.href);
-            window.addEventListener('TBNewPage', function (event) {
+            window.addEventListener('TBNewPage', event => {
                 addSearch(event.detail.locationHref);
             });
-
         }
     }
 
     // Below all stuff we do when we are NOT on new modmail.
     if (!TBUtils.isNewModmail) {
-
         // ready some variables.
         const modmailLink = self.setting('modmaillink'),
               openMailTab = self.setting('openmailtab');
@@ -277,14 +270,12 @@ function newmodmailpro () {
             break;
         case 'notifications':
             $newModmailLinkElement.attr('href', `${newModmailBaseUrl}notifications`);
-
         }
-
     }
 
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     newmodmailpro();
 });

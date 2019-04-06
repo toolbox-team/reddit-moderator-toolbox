@@ -21,7 +21,9 @@ function personalnotes () {
     });
 
     self.init = function () {
-        if (TBUtils.isEmbedded) return;
+        if (TBUtils.isEmbedded) {
+            return;
+        }
         const notewiki = self.setting('noteWiki').toLowerCase(),
               popupHeight = self.setting('popupHeight'),
               monospace = self.setting('monospace'),
@@ -70,7 +72,7 @@ function personalnotes () {
             $editArea.val('loading stuff...').attr('disabled', true);
             $editArea.css('display', 'block');
 
-            TBUtils.readFromWiki(notewiki, `notes/${wikiPage}`, false, function (resp) {
+            TBUtils.readFromWiki(notewiki, `notes/${wikiPage}`, false, resp => {
                 if (resp === TBUtils.WIKI_PAGE_UNKNOWN) {
                     $editArea.val('error getting wiki data.');
                     TB.ui.textFeedback('error getting wiki data.', TB.ui.FEEDBACK_NEGATIVE);
@@ -91,14 +93,13 @@ function personalnotes () {
 
                 $saveButton.attr('data-note', wikiPage);
                 $saveButton.show();
-
             });
         }
 
         function saveNoteWiki (page, subreddit, data, reason, newnote) {
             self.log('posting to wiki');
             TB.ui.textFeedback('saving to wiki', TB.ui.FEEDBACK_NEUTRAL);
-            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, function done (succ, err) {
+            TBUtils.postToWiki(`notes/${page}`, subreddit, data, reason, false, false, (succ, err) => {
                 self.log(`save succ = ${succ}`);
                 if (!succ) {
                     self.log(err.responseText);
@@ -134,8 +135,7 @@ function personalnotes () {
             if (!$this.hasClass('tb-notes-activated')) {
                 $this.addClass('tb-notes-activated');
                 // We need to make sure we have access to our mod subs. Since this depends on an async call we have to wrap the below code in getModSubs
-                TBUtils.getModSubs(function () {
-
+                TBUtils.getModSubs(() => {
                     // We can't expect people to get the capitalizing right.
                     const mySubsLowerCase = [];
                     $(TBUtils.mySubs).each(function () {
@@ -152,7 +152,6 @@ function personalnotes () {
                         notesPopupContent = `<span class="error">You are not a mod of /r/${notewiki}.</span>`;
                         createPersonalNotesPopup(notesPopupContent);
                     } else {
-
                         // build a template, we only need to insert one variable but this is cleaner and more feature proof.
                         const notesPopupContentTemplate = `
                     <table style="height:${popupHeight}px;"><tr>
@@ -180,7 +179,7 @@ function personalnotes () {
 
                         // Lets get a list of notes!
                         $.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
-                            .done(function (json) {
+                            .done(json => {
                                 notesArray = [];
                                 let notesList;
                                 const count = json.data.length || 0;
@@ -191,7 +190,7 @@ function personalnotes () {
                                     let notecount = 0,
                                         noteListConstruction = '<ul id="tb-personal-notes-ul"> \n';
 
-                                    $.each(json.data, function (i, value) {
+                                    $.each(json.data, (i, value) => {
                                         if (/notes\//.test(value)) {
                                             value = value.replace('notes/', '');
                                             notecount++;
@@ -206,7 +205,6 @@ function personalnotes () {
                                         noteListConstruction += '</ul>';
                                         notesList = noteListConstruction;
                                     }
-
                                 }
 
                                 notesPopupContent = TBUtils.template(notesPopupContentTemplate, {
@@ -214,10 +212,9 @@ function personalnotes () {
                                 });
                                 createPersonalNotesPopup(notesPopupContent);
                             })
-                            .fail(function () {
+                            .fail(() => {
                                 TB.ui.textFeedback('<s>Computer</s> reddit says noooo, try again.', TB.ui.FEEDBACK_NEGATIVE);
                                 $this.removeClass('tb-notes-activated');
-
                             });
                     }
                 });
@@ -254,7 +251,7 @@ function personalnotes () {
                     uh: TBUtils.modhash,
                 })
 
-                    .fail(function () {
+                    .fail(() => {
                         TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
                     });
 
@@ -276,7 +273,6 @@ function personalnotes () {
                 notesArray.push(newNotename);
                 saveNoteWiki(newNotename, notewiki, 'New note', 'toolbox new personal note', true);
             }
-
         });
 
         // when clicking 'save note'
@@ -298,6 +294,6 @@ function personalnotes () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     personalnotes();
 });

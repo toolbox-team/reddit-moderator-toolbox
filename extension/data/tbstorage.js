@@ -19,14 +19,14 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 function clearLocal () {
     // Cache.
     Object.keys(localStorage)
-        .forEach(function (key) {
+        .forEach(key => {
             if (/^(TBCachev4.)/.test(key)) {
                 localStorage.removeItem(key);
             }
         });
 
     // Wait a sec for stuff to clear.
-    setTimeout(function () {
+    setTimeout(() => {
         window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
     }, 1000);
 }
@@ -36,16 +36,16 @@ function startReset () {
     if (r === true) {
         // Chrome, Edge en firefox webextensions.
         if (typeof (chrome) !== 'undefined') {
-            chrome.storage.local.remove('tbsettings', function () {
+            chrome.storage.local.remove('tbsettings', () => {
                 // Wait a sec for stuff to clear.
-                setTimeout(function () {
+                setTimeout(() => {
                     clearLocal();
                 }, 1000);
             });
 
         // Shouldn't happen as they don't have storage if this happens. But... you never know..
         } else {
-            setTimeout(function () {
+            setTimeout(() => {
                 clearLocal();
             }, 1000);
         }
@@ -54,7 +54,6 @@ function startReset () {
 
 function storagewrapper () {
     (function (TBStorage) {
-
         profileResults('storageStart', performance.now());
 
         const SHORTNAME = 'TBStorage';
@@ -68,7 +67,7 @@ function storagewrapper () {
 
         TBStorage.isLoaded = false;
 
-        chrome.storage.local.get('tbsettings', function (sObject) {
+        chrome.storage.local.get('tbsettings', sObject => {
             if (sObject.tbsettings && sObject.tbsettings !== undefined) {
                 TBsettingsObject = sObject.tbsettings;
 
@@ -82,8 +81,7 @@ function storagewrapper () {
             }
 
             // Listen for updated settings and update the settings object.
-            chrome.runtime.onMessage.addListener(function (message) {
-
+            chrome.runtime.onMessage.addListener(message => {
                 // A complete settings object. Likely because settings have been saved or imported. Make sure to notify the user if they have settings open in this tab.
                 if (message.action === 'tb-settings-update') {
                     TBsettingsObject = message.payload.tbsettings;
@@ -97,7 +95,6 @@ function storagewrapper () {
                     TBsettingsObject[message.payload.key] = message.payload.value;
                 }
             });
-
         });
 
         // methods.
@@ -138,9 +135,10 @@ function storagewrapper () {
         };
 
         TBStorage.getAnonymizedSettingsObject = function (callback) {
-            if (!callback) return;
-            settingsToObject(function (sObject) {
-
+            if (!callback) {
+                return;
+            }
+            settingsToObject(sObject => {
                 // settings we delete
                 delete sObject['Toolboxv4.Achievements.lastSeen'];
                 delete sObject['Toolboxv4.Achievements.last_seen'];
@@ -194,16 +192,19 @@ function storagewrapper () {
                 }
 
                 function undefindedOrTrue (setting) {
-                    if (!setting || setting === undefined) return false;
-                    if (setting.length > 0) return true;
+                    if (!setting || setting === undefined) {
+                        return false;
+                    }
+                    if (setting.length > 0) {
+                        return true;
+                    }
                 }
             });
         };
 
         TBStorage.clearCache = function () {
-
             Object.keys(localStorage)
-                .forEach(function (key) {
+                .forEach(key => {
                     if (/^(TBCachev4.)/.test(key)) {
                         localStorage.removeItem(key);
                     }
@@ -220,25 +221,22 @@ function storagewrapper () {
         };
 
         // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
-        $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', function () {
+        $('body').on('click', '#RESAccountSwitcherDropdown .accountName, #header-bottom-right .logout, .toggle.moderator .option', () => {
             TBStorage.clearCache();
         });
 
         TBStorage.verifiedSettingsSave = function (callback) {
-
-            settingsToObject(function (sObject) {
+            settingsToObject(sObject => {
                 const settingsObject = sObject;
 
                 // save settings
                 chrome.storage.local.set({
                     tbsettings: sObject,
-                }, function () {
-
+                }, () => {
                     // now verify them
-                    chrome.storage.local.get('tbsettings', function (returnObject) {
+                    chrome.storage.local.get('tbsettings', returnObject => {
                         if (returnObject.tbsettings && returnObject.tbsettings !== undefined
                         && isEquivalent(returnObject.tbsettings, settingsObject)) {
-
                             // Succes, tell other browser tabs with toolbox that there are new settings.
                             chrome.runtime.sendMessage({
                                 action: 'tb-global',
@@ -252,9 +250,7 @@ function storagewrapper () {
                         }
                     });
                 });
-
             });
-
         };
 
         function SendInit () {
@@ -279,7 +275,7 @@ function storagewrapper () {
 
             if ((loggedinOld && oldRedditActive) || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
-                setTimeout(function () {
+                setTimeout(() => {
                     profileResults('storageLoaded', performance.now());
                     const event = new CustomEvent('TBStorageLoaded2');
                     window.dispatchEvent(event);
@@ -293,7 +289,9 @@ function storagewrapper () {
 
         function registerSetting (module, setting) {
         // First parse out any of the ones we never want to save.
-            if (module === undefined || module === 'cache') return;
+            if (module === undefined || module === 'cache') {
+                return;
+            }
 
             const keyName = `${module}.${setting}`;
 
@@ -317,7 +315,6 @@ function storagewrapper () {
                             const jsonObject = JSON.parse(input[key]);
                             purifyObject(jsonObject);
                             input[key] = JSON.stringify(jsonObject);
-
                         } catch (e) {
                             // Not json, simply purify
                             input[key] = TBStorage.purify(input[key]);
@@ -355,7 +352,6 @@ function storagewrapper () {
                     const jsonObject = JSON.parse(input);
                     purifyObject(jsonObject);
                     output = JSON.stringify(jsonObject);
-
                 } catch (e) {
                     // Not json, simply purify
                     output = purify(input);
@@ -380,7 +376,6 @@ function storagewrapper () {
         }
 
         function settingsToObject (callback) {
-
             // We make a deep clone of the settings object so it can safely be used and manipulated for things like anonymized exports.
             const settingsObject = JSON.parse(JSON.stringify(TBsettingsObject));
 
@@ -391,7 +386,7 @@ function storagewrapper () {
         }
 
         function saveSettingsToBrowser () {
-            settingsToObject(function (sObject) {
+            settingsToObject(sObject => {
                 chrome.storage.local.set({
                     tbsettings: sObject,
                 });
@@ -525,6 +520,5 @@ function storagewrapper () {
             // are considered equivalent
             return true;
         }
-
-    }(TBStorage = window.TBStorage || {}));
+    })(TBStorage = window.TBStorage || {});
 }

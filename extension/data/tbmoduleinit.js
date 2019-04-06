@@ -2,7 +2,7 @@
 // There's no super-clever way to trigger it automatically
 
 (function TBObjectInit () {
-    window.addEventListener('TBModuleLoaded2', function () {
+    window.addEventListener('TBModuleLoaded2', () => {
         $.log('TBModule loaded, getting TBStorage', false, 'TBinit');
         TB.init();
     });

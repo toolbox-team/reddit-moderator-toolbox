@@ -72,7 +72,7 @@ function profilepro () {
         function hideModActionsThings (hide) {
             const $things = $('.tb-thing');
             if (hide) {
-                TBUtils.forEachChunkedDynamic($things, function (thing) {
+                TBUtils.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     const modAction = $thing.find('.tb-moderator').length;
                     if (modAction) {
@@ -80,7 +80,7 @@ function profilepro () {
                     }
                 }, {framerate: 40});
             } else {
-                TBUtils.forEachChunkedDynamic($things, function (thing) {
+                TBUtils.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     const modAction = $thing.find('.tb-moderator').length;
                     if (modAction) {
@@ -93,24 +93,21 @@ function profilepro () {
         function filterModdable (hide) {
             const $things = $('.tb-thing');
             if (hide) {
-                TBUtils.getModSubs(function () {
-
-                    TBUtils.forEachChunkedDynamic($things, function (thing) {
+                TBUtils.getModSubs(() => {
+                    TBUtils.forEachChunkedDynamic($things, thing => {
                         const $thing = $(thing);
                         const subreddit = TB.utils.cleanSubredditName($thing.attr('data-subreddit'));
                         if (!TBUtils.mySubs.includes(subreddit)) {
                             $thing.addClass('tb-mod-filtered');
                         }
                     }, {framerate: 40});
-
                 });
             } else {
-                TBUtils.forEachChunkedDynamic($things, function (thing) {
+                TBUtils.forEachChunkedDynamic($things, thing => {
                     const $thing = $(thing);
                     $thing.removeClass('tb-mod-filtered');
                 }, {framerate: 40});
             }
-
         }
 
         function addToSiteTable (data, $siteTable, after, callback) {
@@ -128,7 +125,7 @@ function profilepro () {
                 commentOptions.subredditColor = true;
                 submissionOptions.subredditColor = true;
             }
-            TBUtils.forEachChunkedDynamic(data, function (entry) {
+            TBUtils.forEachChunkedDynamic(data, entry => {
                 if (entry.kind === `t1`) {
                     const $comment = TBui.makeSingleComment(entry, commentOptions);
                     if (entry.highlight) {
@@ -146,12 +143,11 @@ function profilepro () {
                     $siteTable.append($submission);
                     $('time.timeago').timeago();
                 }
-
-            }).then(function () {
+            }).then(() => {
                 if (after) {
                     $siteTable.append(`<div data-after="${after}" class="tb-load-more">load more</div>`);
                 }
-                setTimeout(function () {
+                setTimeout(() => {
                     TBui.tbRedditEvent($siteTable, 'comment,submission');
                     if (filterModThings) {
                         filterModdable(true);
@@ -166,13 +162,13 @@ function profilepro () {
 
         function addTrophiesToSidebar (user, $sidebar) {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
-            $.getJSON(inputURL).done(function (data) {
+            $.getJSON(inputURL).done(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
                     const $userTrophies = $(`<div class="tb-user-trophies">
                         <h3> Trophies </h3>
                     </div>`).appendTo($sidebar);
-                    $.each(data.data.trophies, function (i, trophy) {
+                    $.each(data.data.trophies, (i, trophy) => {
                         let tropyHTML;
 
                         const trophyInnerHTML = `
@@ -204,7 +200,7 @@ function profilepro () {
 
         function addModSubsToSidebar (user, $sidebar) {
             const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
-            $.getJSON(inputURL).done(function (data) {
+            $.getJSON(inputURL).done(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
                     const $userModSubs = $(`<div class="tb-user-modsubs">
@@ -215,7 +211,7 @@ function profilepro () {
                     const $moderatedSubListExpanded = $('<ul class="tb-user-modsubs-expand-ul"></ul>').appendTo($userModSubs);
                     let subCount = 0;
 
-                    TBUtils.forEachChunkedDynamic(data.data, function (subreddit) {
+                    TBUtils.forEachChunkedDynamic(data.data, subreddit => {
                         subCount++;
                         const subredditName = subreddit.sr,
                               iconImage = subreddit.icon_img,
@@ -233,8 +229,7 @@ function profilepro () {
                         } else {
                             $moderatedSubListExpanded.append(liElement);
                         }
-
-                    }, {framerate: 40}).then(function () {
+                    }, {framerate: 40}).then(() => {
                         if (subCount > 10) {
                             $moderatedSubListVisible.after(`<button class="tb-general-button tb-sidebar-loadmod tb-more" data-action="more">${subCount - 10} more ...</button>`);
                             $moderatedSubListExpanded.after(`<button class="tb-general-button tb-sidebar-loadmod tb-less" data-action="less">show ${subCount - 10} less</button>`);
@@ -252,24 +247,20 @@ function profilepro () {
                                     $sidebar.find('.tb-sidebar-loadmod.tb-more').show();
                                     $this.hide();
                                 }
-
                             });
                         }
 
                         addTrophiesToSidebar(user, $sidebar);
                     });
-
                 } else {
                     addTrophiesToSidebar(user, $sidebar);
                 }
-
             });
-
         }
         function makeUserSidebar (user, $overlay) {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
             const inputURL = `${TBUtils.baseDomain}/user/${user}/about.json`;
-            $.getJSON(inputURL).done(function (data) {
+            $.getJSON(inputURL).done(data => {
                 TBStorage.purifyObject(data);
                 const userThumbnail = data.data.icon_img,
                       userCreated = data.data.created_utc,
@@ -279,8 +270,7 @@ function profilepro () {
                 const readableCreatedUTC = TBUtils.timeConverterRead(userCreated),
                       createdTimeAgo = TBUtils.timeConverterISO(userCreated);
 
-                const $sidebar = $(
-                    `<div class="tb-profile-sidebar">
+                const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ``}
                     <ul class="tb-user-detail-ul">
                         <li><a href="${TBUtils.tempBaseDomain}/user/${user}">/u/${user}</a></li>
@@ -294,7 +284,6 @@ function profilepro () {
                 $sidebar.find('time.timeago').timeago();
 
                 addModSubsToSidebar(user, $sidebar);
-
             });
         }
 
@@ -314,16 +303,15 @@ function profilepro () {
                 sort: sortMethod,
                 limit: 100,
                 t: 'all',
-            }).done(function (data) {
+            }).done(data => {
                 TBStorage.purifyObject(data);
-                $.each(data.data.children, function (i, value) {
+                $.each(data.data.children, (i, value) => {
                     let hit = false;
                     let subredditMatch = false;
                     let patternMatch = false;
                     if (value.kind === 't1') {
                         subredditMatch = subredditPattern && subredditPattern.test(value.data.subreddit);
                         patternMatch = searchPattern && searchPattern.test(value.data.body);
-
                     }
 
                     if (value.kind === 't3') {
@@ -351,17 +339,12 @@ function profilepro () {
                     return callback(hits);
                 } else {
                     if (results.length > 0) {
-                        addToSiteTable(results, $siteTable, false, function () {
-                            searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, function (found) {
-                                return callback(found);
-                            });
+                        addToSiteTable(results, $siteTable, false, () => {
+                            searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, found => callback(found));
                         });
                     } else {
-                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, function (found) {
-                            return callback(found);
-                        });
+                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, found => callback(found));
                     }
-
                 }
             });
         }
@@ -403,8 +386,7 @@ function profilepro () {
                 searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');
                 searchOptions.searchString = contentsearch;
             }
-            searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, function (results) {
-
+            searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, results => {
                 if (results) {
                     TB.ui.longLoadSpinner(false);
                 } else {
@@ -413,7 +395,6 @@ function profilepro () {
                 }
             });
             return false;
-
         });
 
         function populateSearchSuggestion (subreddit) {
@@ -443,7 +424,7 @@ function profilepro () {
         function initSearchSuggestion (subreddit) {
             if (!$body.find('#tb-search-suggest').length) {
                 $body.append('<div id="tb-search-suggest" style="display: none;"><table id="tb-search-suggest-list"></table></div>');
-                TBUtils.getModSubs(function () {
+                TBUtils.getModSubs(() => {
                     populateSearchSuggestion(subreddit);
                 });
             }
@@ -470,7 +451,7 @@ function profilepro () {
                 liveSearch(liveSearchValue);
             });
 
-            $(document).on('click', function (event) {
+            $(document).on('click', event => {
                 if (!$(event.target).closest('#tb-search-suggest').length && !$(event.target).closest('.tb-subredditsearch').length) {
                     $body.find('#tb-search-suggest').hide();
                 }
@@ -535,12 +516,11 @@ function profilepro () {
                 $body.css('overflow', 'hidden');
 
                 makeUserSidebar(user, $overlay);
-                $body.on('click', '.tb-profile-overlay .tb-window-header .close', function () {
+                $body.on('click', '.tb-profile-overlay .tb-window-header .close', () => {
                     $('.tb-profile-overlay').remove();
                     $body.css('overflow', 'auto');
                     filterModThings = false;
                 });
-
             }
             const $siteTable = $overlay.find(`.tb-sitetable-${type}`);
             const $options = $overlay.find(`.tb-profile-options-${type}`);
@@ -580,7 +560,6 @@ function profilepro () {
                         <input type="submit" value=" search " class="tb-action-button">
                 </form>`);
                 initSearchSuggestion(subreddit);
-
             }
 
             const $sortSelect = $filterOptions.find('.tb-sort-select');
@@ -599,18 +578,17 @@ function profilepro () {
                 after,
                 sort,
                 limit: 25,
-            }, function (data) {
+            }, data => {
                 TBStorage.purifyObject(data);
                 let after = false;
                 if (data.data.after) {
                     after = data.data.after;
                 }
-                addToSiteTable(data.data.children, $siteTable, after, function () {
+                addToSiteTable(data.data.children, $siteTable, after, () => {
                     TB.ui.longLoadSpinner(false);
                     $options.show();
                 });
             });
-
         }
 
         $body.on('click', '.tb-load-more', function () {
@@ -631,10 +609,9 @@ function profilepro () {
                   user = $this.closest('.tb-page-overlay').attr('data-user'),
                   listing = $this.attr('data-type');
             makeProfile(user, listing, {sort: newSort, renew: true});
-
         });
 
-        $body.on('click', '.tb-filter-moddable', function () {
+        $body.on('click', '.tb-filter-moddable', () => {
             const $filterMod = $body.find('.tb-filter-moddable');
             if (filterModThings) {
                 filterModdable(false);
@@ -647,7 +624,7 @@ function profilepro () {
             }
         });
 
-        $body.on('click', '.tb-hide-mod-comments', function () {
+        $body.on('click', '.tb-hide-mod-comments', () => {
             const $hideMod = $('.tb-hide-mod-comments');
             if (hideModActions) {
                 hideModActionsThings(false);
@@ -667,7 +644,7 @@ function profilepro () {
             makeProfile(user, listing, {sort: 'new'});
         });
 
-        window.addEventListener('TBNewPage', function (event) {
+        window.addEventListener('TBNewPage', event => {
             const popupTypes = ['comments', 'submitted', 'overview'];
             if (event.detail.pageType === 'userProfile' && popupTypes.includes(event.detail.pageDetails.listing)) {
                 const user = event.detail.pageDetails.user,
@@ -685,20 +662,19 @@ function profilepro () {
                 if (alwaysTbProfile) {
                     makeProfile(user, listing, {sort: 'new', renew: false});
                 }
-
             } else {
                 TBui.contextTrigger('tb-user-profile', {addTrigger: false});
             }
         });
 
         if (profileButtonEnabled) {
-            TB.listener.on('author', function (e) {
+            TB.listener.on('author', e => {
                 const $target = $(e.target);
 
                 if (!$target.closest('.tb-profile-overlay').length && (!onlyshowInhover || TBUtils.isOldReddit)) {
                     const author = e.detail.data.author;
                     const subreddit = e.detail.data.subreddit.name;
-                    TBUtils.getModSubs(function () {
+                    TBUtils.getModSubs(() => {
                         if (TBUtils.modsSub(subreddit)) {
                             const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">P</a>`;
                             requestAnimationFrame(() => {
@@ -709,21 +685,18 @@ function profilepro () {
                 }
             });
 
-            TB.listener.on('userHovercard', function (e) {
-
+            TB.listener.on('userHovercard', e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.user.username;
 
-                TBUtils.getModSubs(function () {
+                TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit)) {
                         const profileButton = `<a href="javascript:;" class="tb-user-profile tb-bracket-button" data-listing="overview" data-user="${author}" data-subreddit="${subreddit}" title="view & filter user's profile in toolbox overlay">Toolbox Profile View</a>`;
                         $target.append(profileButton);
                     }
                 });
-
             });
-
         }
 
         $body.on('click', '#tb-user-profile, .tb-user-profile', function () {
@@ -741,11 +714,9 @@ function profilepro () {
             }
             makeProfile(user, listing, options);
         });
-
     };
-
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     profilepro();
 });

@@ -47,13 +47,13 @@ function usernotes () {
 
         const TYPE_NEW_MODMAIL = 'newmodmail';
 
-        TBUtils.getModSubs(function () {
+        TBUtils.getModSubs(() => {
             self.log('Got mod subs');
             self.log(TBUtils.mySubs);
             // In new modmail we only run on threads.
 
             if (TBUtils.isNewModmail) {
-                setTimeout(function () {
+                setTimeout(() => {
                     if ($body.find('.ThreadViewer').length > 0) {
                         run();
                     }
@@ -61,7 +61,6 @@ function usernotes () {
             } else {
                 run();
             }
-
         });
 
         function getUser (users, name) {
@@ -73,17 +72,16 @@ function usernotes () {
 
         // NER support.
         let newThingRunning = false;
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             // It is entirely possible that TBNewThings is fired multiple times.
             // That is why we use a timeout here to prevent run() from being triggered multiple times.
             if (!newThingRunning) {
                 newThingRunning = true;
-                setTimeout(function () {
+                setTimeout(() => {
                     newThingRunning = false;
                     run();
                 }, 500);
             }
-
         });
 
         // Queue the processing of usernotes.
@@ -97,7 +95,7 @@ function usernotes () {
             } else {
                 listnerSubs[subreddit] = $target;
             }
-            queueTimeout = setTimeout(function () {
+            queueTimeout = setTimeout(() => {
                 for (const sub in listnerSubs) {
                     if (listnerSubs.hasOwnProperty(sub)) {
                         processSub(sub, listnerSubs[sub]);
@@ -105,15 +103,13 @@ function usernotes () {
                 }
                 listnerSubs = {};
             }, 100);
-
         }
 
         function addTBListener () {
             const onlyshowInhover = self.setting('onlyshowInhover');
 
             // event based handling of author elements.
-            TB.listener.on('author', function (e) {
-
+            TB.listener.on('author', e => {
                 const $target = $(e.target);
                 if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
                     const subreddit = e.detail.data.subreddit.name;
@@ -122,7 +118,7 @@ function usernotes () {
                     $target.attr('data-subreddit', subreddit);
                     $target.attr('data-author', author);
 
-                    TBUtils.getModSubs(function () {
+                    TBUtils.getModSubs(() => {
                         if (TBUtils.modsSub(subreddit)) {
                             attachNoteTag($target, subreddit, author);
                             foundSubreddit(subreddit);
@@ -133,8 +129,7 @@ function usernotes () {
             });
 
             // event based handling of author elements.
-            TB.listener.on('userHovercard', function (e) {
-
+            TB.listener.on('userHovercard', e => {
                 const $target = $(e.target);
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.user.username;
@@ -142,7 +137,7 @@ function usernotes () {
                 $target.attr('data-subreddit', subreddit);
                 $target.attr('data-author', author);
 
-                TBUtils.getModSubs(function () {
+                TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit)) {
                         attachNoteTag($target, subreddit, author, {
                             customText: 'Usernotes',
@@ -151,12 +146,10 @@ function usernotes () {
                         queueProcessSub(subreddit, $target);
                     }
                 });
-
             });
         }
 
         function run () {
-
             // This can be done better, but this is for the new modmail user sidebar thing.
             if ($body.find('.ThreadViewer').length > 0) {
                 const subreddit = $body.find('.ThreadTitle__community').text(),
@@ -186,17 +179,20 @@ function usernotes () {
             if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
                 const things = findThings();
                 let done = false;
-                TBUtils.forEachChunked(things, 30, 100, processThing, function () {
-                    self.log('Done processing things');
-                    TBUtils.forEachChunked(subs, 10, 200, processSub, function () {
-                        if (done)
-                            self.printProfiles();
-                    });
-                },
-                function () {
-                    self.log('Done processing things');
-                    done = true;
-                });
+                TBUtils.forEachChunked(
+                    things, 30, 100, processThing, () => {
+                        self.log('Done processing things');
+                        TBUtils.forEachChunked(subs, 10, 200, processSub, () => {
+                            if (done) {
+                                self.printProfiles();
+                            }
+                        });
+                    },
+                    () => {
+                        self.log('Done processing things');
+                        done = true;
+                    }
+                );
             }
 
             // We only need to add the listener on pageload.
@@ -208,11 +204,9 @@ function usernotes () {
             } else if (!TBUtils.isNewModmail) {
                 TBUtils.forEachChunked(subs, 10, 200, processSub);
             }
-
         }
 
         function findThings () {
-
             let $things;
             if (TBUtils.domain === 'mod' && $body.find('.ThreadViewer').length > 0) {
                 $things = $('.Thread__message:not(.ut-thing)');
@@ -220,7 +214,6 @@ function usernotes () {
                 $things.addClass('ut-thing');
             }
             return $things;
-
         }
 
         function processThing (thing) {
@@ -279,7 +272,7 @@ function usernotes () {
             }
 
             self.log(`Processing sub: ${subreddit}`);
-            self.getUserNotes(subreddit, function (status, notes) {
+            self.getUserNotes(subreddit, (status, notes) => {
                 self.log(`Usernotes retrieved for ${subreddit}: status=${status}`);
                 if (!status) {
                     return;
@@ -293,7 +286,7 @@ function usernotes () {
                         `You are using a version of toolbox that cannot read a newer usernote data format in: /r/${subreddit}. Please update your extension.` :
                         `You are using a version of toolbox that cannot read an old usernote data format in: /r/${subreddit}, schema v${notes.ver}. Message /r/toolbox for assistance.`;
 
-                    TBUtils.alert(msg, function (clicked) {
+                    TBUtils.alert(msg, clicked => {
                         if (clicked) {
                             window.open(notes.ver > TBUtils.notesMaxSchema ? '/r/toolbox/wiki/get' :
                                 `/message/compose?to=%2Fr%2Ftoolbox&subject=Outdated%20usernotes&message=%2Fr%2F${subreddit}%20is%20using%20usernotes%20schema%20v${notes.ver}`);
@@ -301,7 +294,7 @@ function usernotes () {
                     });
                 }
 
-                self.getSubredditColors(subreddit, function (colors) {
+                self.getSubredditColors(subreddit, colors => {
                     setNotes(notes, subreddit, colors, customThings);
                 });
             });
@@ -334,7 +327,7 @@ function usernotes () {
 
             self.endProfile('set-notes-find');
 
-            TBUtils.forEachChunked(things, 20, 100, function (thing) {
+            TBUtils.forEachChunked(things, 20, 100, thing => {
                 self.startProfile('set-notes-process');
 
                 // Get all tags related to the current subreddit
@@ -345,11 +338,8 @@ function usernotes () {
                 let $usertag;
                 if (TBUtils.isEditUserPage) {
                     $usertag = $thing.parent().find(`.add-usernote-${subreddit}`);
-
-                }
-                else {
+                } else {
                     $usertag = $thing.find(`.add-usernote-${subreddit}`);
-
                 }
 
                 // Only happens if you delete the last note.
@@ -390,24 +380,24 @@ function usernotes () {
                 $usertag.append($('<b>').text(note)).append($('<span>').text((u.notes.length > 1) ? `  (+${u.notes.length - 1})` : ''));
 
                 let type = u.notes[0].type;
-                if (!type) type = 'none';
+                if (!type) {
+                    type = 'none';
+                }
 
                 const color = self._findSubredditColor(colors, type);
                 if (color) {
                     $usertag.css('color', color.color);
-                }
-                else {
+                } else {
                     $usertag.css('color', '');
                 }
 
                 self.endProfile('set-notes-process');
-            }, function () {
+            }, () => {
                 self.endProfile('set-notes');
             });
         }
 
         function createUserPopup (subreddit, user, link, disableLink, e) {
-
             const $overlay = $(e.target).closest('.tb-page-overlay');
             let $appendTo;
             if ($overlay.length) {
@@ -470,13 +460,13 @@ function usernotes () {
             $appendTo.append($popup);
 
             // Generate dynamic parts of dialog and show
-            self.getSubredditColors(subreddit, function (colors) {
+            self.getSubredditColors(subreddit, colors => {
                 self.log('Adding colors to dialog');
 
                 // Create type/color selections
                 const group = (`${Math.random().toString(36)}00000000000000000`).slice(2, 7);
 
-                colors.forEach(function (info) {
+                colors.forEach(info => {
                     self.log(`  ${info.key}`);
                     self.log(`    ${info.text}`);
                     self.log(`    ${info.color}`);
@@ -508,8 +498,10 @@ function usernotes () {
 
                 // Add notes
                 self.log('Adding notes to dialog');
-                self.getUserNotes(subreddit, function (status, notes) {
-                    if (!status) return;
+                self.getUserNotes(subreddit, (status, notes) => {
+                    if (!status) {
+                        return;
+                    }
 
                     const u = getUser(notes.users, user);
                     // User has notes
@@ -517,7 +509,7 @@ function usernotes () {
                     // FIXME: not selecting previous type
                         $popup.find(`.utagger-type .type-input-${u.notes[0].type}`).prop('checked', true);
 
-                        u.notes.forEach(function (note, i) {
+                        u.notes.forEach((note, i) => {
                         // if (!note.type) {
                         //    note.type = 'none';
                         // }
@@ -544,8 +536,7 @@ function usernotes () {
                                     note.link = `https://www.reddit.com${note.link}`;
                                 }
                                 timeDiv = `<div class="utagger-date" id="utagger-date-${i}"><a href="${note.link}">${timeString}</a></div>`;
-                            }
-                            else {
+                            } else {
                                 timeDiv = `<div class="utagger-date" id="utagger-date-${i}">${timeString}</div>`;
                             }
 
@@ -569,9 +560,8 @@ function usernotes () {
                             </tr>
                             `);
                         });
-                    }
-                    // No notes on user
-                    else {
+                    } else {
+                        // No notes on user
                         $popup.find('#utagger-user-note-input').focus();
                     }
                 });
@@ -579,7 +569,7 @@ function usernotes () {
         }
 
         // Click to open dialog
-        $body.on('click', '#add-user-tag', function (e) {
+        $body.on('click', '#add-user-tag', e => {
             const $target = $(e.target);
             const $thing = $target.closest('.ut-thing');
             const $button = $thing.find('#add-user-tag');
@@ -607,13 +597,11 @@ function usernotes () {
                     thingID = thingDetails.data.post.id;
                 }
 
-                TB.utils.getApiThingInfo(thingID, subreddit, true, function (info) {
+                TB.utils.getApiThingInfo(thingID, subreddit, true, info => {
                     link = info.permalink;
                     createUserPopup(subreddit, user, link, disableLink, e);
                 });
-
             }
-
         });
 
         // Cancel button clicked
@@ -649,8 +637,7 @@ function usernotes () {
                     $error.show();
 
                     return;
-                }
-                else if ((!user || !subreddit)) {
+                } else if ((!user || !subreddit)) {
                 // We seem to have an problem beyond the control of the user
                     return;
                 }
@@ -681,7 +668,7 @@ function usernotes () {
 
             TBui.textFeedback(`${deleteNote ? 'Removing' : 'Adding'} user note...`, TBui.FEEDBACK_NEUTRAL);
 
-            self.getUserNotes(subreddit, function (success, notes, pageError) {
+            self.getUserNotes(subreddit, (success, notes, pageError) => {
             // Only page errors git different treatment.
                 if (!success && pageError) {
                     self.log('  Page error');
@@ -691,11 +678,12 @@ function usernotes () {
                     case TBUtils.NO_WIKI_PAGE:
                         notes = noteSkel;
                         notes.users[user] = userNotes;
-                        self.saveUserNotes(subreddit, notes, 'create usernotes config', function (succ) {
-                            if (succ) run();
+                        self.saveUserNotes(subreddit, notes, 'create usernotes config', succ => {
+                            if (succ) {
+                                run();
+                            }
                         });
                         break;
-
                     }
                     return;
                 }
@@ -736,22 +724,19 @@ function usernotes () {
                             }
 
                             saveMsg = `delete note ${noteId} on user ${user}`;
-                        }
-                        // Add note
-                        else {
+                        } else {
+                            // Add note
                             self.log('Adding note');
 
                             u.notes.unshift(note);
                             saveMsg = `create new note on user ${user}`;
                         }
-                    }
-                    // New user
-                    else if (u === undefined && !deleteNote) {
+                    } else if (u === undefined && !deleteNote) {
+                        // New user
                         notes.users[user] = userNotes;
                         saveMsg = `create new note on new user ${user}`;
                     }
-                }
-                else {
+                } else {
                     self.log('  Creating new user');
 
                     // create new notes object
@@ -763,7 +748,7 @@ function usernotes () {
                 // Save notes if a message was set (the only case it isn't is if notes are corrupt)
                 if (saveMsg) {
                     self.log('Saving notes');
-                    self.saveUserNotes(subreddit, notes, saveMsg, function (succ) {
+                    self.saveUserNotes(subreddit, notes, saveMsg, succ => {
                         if (succ) {
                             run();
                         }
@@ -788,12 +773,11 @@ function usernotes () {
             fetchActive = false;
 
         if (showLink) {
-            window.addEventListener('TBNewPage', function (event) {
-
+            window.addEventListener('TBNewPage', event => {
                 if (event.detail.pageDetails.subreddit) {
                     const subreddit = event.detail.pageDetails.subreddit;
 
-                    TBUtils.getModSubs(function () {
+                    TBUtils.getModSubs(() => {
                         if (TBUtils.modsSub(subreddit)) {
                             TBui.contextTrigger('tb-un-config-link', {
                                 addTrigger: true,
@@ -811,9 +795,7 @@ function usernotes () {
                 } else {
                     TBui.contextTrigger('tb-un-config-link', {addTrigger: false});
                 }
-
             });
-
         }
 
         function showSubNotes (status, notes) {
@@ -852,11 +834,12 @@ function usernotes () {
             //    $('<div>').addClass('tb-usernotes')
             // );
 
-            self.getSubredditColors(sub, function (colors) {
+            self.getSubredditColors(sub, colors => {
                 self.startProfile('manager-render');
-                TBUtils.forEachChunked(Object.keys(notes.users), 50, 50,
-                // Process a user
-                    function (user, counter) {
+                TBUtils.forEachChunked(
+                    Object.keys(notes.users), 50, 50,
+                    // Process a user
+                    (user, counter) => {
                         if (!fetchActive) {
                             return;
                         }
@@ -873,7 +856,7 @@ function usernotes () {
 
                         self.startProfile('manager-render-notes');
                         // var notes = [];
-                        $.each(notes.users[user].notes, function (key, val) {
+                        $.each(notes.users[user].notes, (key, val) => {
                             noteCount++;
 
                             const color = self._findSubredditColor(colors, val.type);
@@ -900,7 +883,6 @@ function usernotes () {
                             }
                             $userNotes.append($note);
                             // });
-
                         });
                         // $userNotes.append(notes);
                         self.endProfile('manager-render-notes');
@@ -908,7 +890,7 @@ function usernotes () {
                         $siteTable.append($userContent);
                     },
                     // Process done
-                    function () {
+                    () => {
                         self.endProfile('manager-render');
                         fetchActive = false;
                         TB.ui.longLoadSpinner(false, 'Usernotes loaded', TB.ui.FEEDBACK_POSITIVE);
@@ -979,7 +961,7 @@ function usernotes () {
             });
 
             // Get the account status for all users.
-            $body.find('#tb-un-prune-sb').on('click', function () {
+            $body.find('#tb-un-prune-sb').on('click', () => {
                 const emptyProfiles = [],
                       pruneOld = $('.tb-prune-old').prop('checked'),
                       pruneLength = $('.tb-prune-length').val(),
@@ -989,59 +971,57 @@ function usernotes () {
 
                 TB.ui.longLoadSpinner(true, 'Pruning usernotes', TB.ui.FEEDBACK_NEUTRAL);
 
-                TBUtils.forEachChunkedRateLimit(usersPrune, 20, function (user, counter) {
+                TBUtils.forEachChunkedRateLimit(
+                    usersPrune, 20, (user, counter) => {
+                        TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
 
-                    TB.ui.textFeedback(`Pruning user ${counter} of ${userCountPrune}`, TB.ui.FEEDBACK_POSITIVE);
-
-                    TBUtils.getLastActive(user, function (succ, date) {
-
-                        if (!succ) {
-                            self.log(`${user} is deleted, suspended or shadowbanned.`);
-                            $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
-                            emptyProfiles.push(user);
-                        } else if (pruneOld) {
-                            const timeSince = now - (date * 1000),
-                                  daysSince = TBUtils.millisecondsToDays(timeSince);
-
-                            if (daysSince > pruneLength) {
-                                self.log(`${user} has not been active in: ${daysSince.toFixed()} days.`);
+                        TBUtils.getLastActive(user, (succ, date) => {
+                            if (!succ) {
+                                self.log(`${user} is deleted, suspended or shadowbanned.`);
                                 $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
                                 emptyProfiles.push(user);
+                            } else if (pruneOld) {
+                                const timeSince = now - (date * 1000),
+                                      daysSince = TBUtils.millisecondsToDays(timeSince);
+
+                                if (daysSince > pruneLength) {
+                                    self.log(`${user} has not been active in: ${daysSince.toFixed()} days.`);
+                                    $body.find(`#tb-un-note-content-wrap div[data-user="${user}"]`).css('text-decoration', 'line-through');
+                                    emptyProfiles.push(user);
+                                }
                             }
-                        }
-                    });
-                },
+                        });
+                    },
 
-                function () {
-
+                    () => {
                     // The previous calls have been async, let's wait a little while before we continue. A better fix might be needed but this might be enough.
-                    setTimeout(function () {
-                        self.log(emptyProfiles);
-                        if (emptyProfiles.length > 0) {
-                            const deleteEmptyProfile = confirm(`${emptyProfiles.length} deleted or shadowbanned users. Delete all notes for these users?`);
-                            if (deleteEmptyProfile === true) {
-                                self.log('You pressed OK!');
+                        setTimeout(() => {
+                            self.log(emptyProfiles);
+                            if (emptyProfiles.length > 0) {
+                                const deleteEmptyProfile = confirm(`${emptyProfiles.length} deleted or shadowbanned users. Delete all notes for these users?`);
+                                if (deleteEmptyProfile === true) {
+                                    self.log('You pressed OK!');
 
-                                emptyProfiles.forEach(function (emptyProfile) {
-                                    delete subUsenotes.users[emptyProfile];
-                                    $body.find(`#tb-un-note-content-wrap div[data-user="${emptyProfile}"]`).css('background-color', 'rgb(244, 179, 179)');
-                                });
+                                    emptyProfiles.forEach(emptyProfile => {
+                                        delete subUsenotes.users[emptyProfile];
+                                        $body.find(`#tb-un-note-content-wrap div[data-user="${emptyProfile}"]`).css('background-color', 'rgb(244, 179, 179)');
+                                    });
 
-                                TB.utils.noteCache[sub] = subUsenotes;
-                                self.saveUserNotes(sub, subUsenotes, 'pruned all deleted/shadowbanned users.');
+                                    TB.utils.noteCache[sub] = subUsenotes;
+                                    self.saveUserNotes(sub, subUsenotes, 'pruned all deleted/shadowbanned users.');
 
-                                TB.ui.longLoadSpinner(false, `Profiles checked, notes for ${emptyProfiles.length} missing users deleted`, TB.ui.FEEDBACK_POSITIVE);
+                                    TB.ui.longLoadSpinner(false, `Profiles checked, notes for ${emptyProfiles.length} missing users deleted`, TB.ui.FEEDBACK_POSITIVE);
+                                } else {
+                                    self.log('You pressed Cancel!');
+
+                                    TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
+                                }
                             } else {
-                                self.log('You pressed Cancel!');
-
-                                TB.ui.longLoadSpinner(false, 'Profiles checked, no notes deleted.', TB.ui.FEEDBACK_POSITIVE);
+                                TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
                             }
-                        } else {
-                            TB.ui.longLoadSpinner(false, 'Profiles checked, everyone is still here!', TB.ui.FEEDBACK_POSITIVE);
-                        }
-                    }, 2000);
-
-                });
+                        }, 2000);
+                    }
+                );
             });
 
             // Update user status.
@@ -1052,8 +1032,7 @@ function usernotes () {
                 if (!$this.hasClass('tb-un-refreshed')) {
                     $this.addClass('tb-un-refreshed');
                     self.log(`refreshing user: ${user}`);
-                    TB.utils.aboutUser(user, function (succ) {
-
+                    TB.utils.aboutUser(user, succ => {
                         const $status = TB.utils.template('&nbsp;<span class="mod">[this user account is: {{status}}]</span>', {
                             status: succ ? 'active' : 'deleted',
                         });
@@ -1099,7 +1078,6 @@ function usernotes () {
         }
 
         $body.on('click', '#tb-un-config-link', function () {
-
             TB.ui.longLoadSpinner(true, 'Loading usernotes', TB.ui.FEEDBACK_NEUTRAL);
             const sub = $(this).attr('data-subreddit');
 
@@ -1123,27 +1101,31 @@ function usernotes () {
             self.getUserNotes(sub, showSubNotes);
         });
 
-        $body.on('click', '.tb-un-editor .close', function () {
+        $body.on('click', '.tb-un-editor .close', () => {
             fetchActive = false;
             $('.tb-un-editor').remove();
             $body.css('overflow', 'auto');
-
         });
-
     };
 
     // Get usernotes from wiki
     self.getUserNotes = function (subreddit, callback, forceSkipCache) {
         self.log(`Getting usernotes (sub=${subreddit})`);
 
-        if (!callback) return;
-        if (!subreddit) return returnFalse();
+        if (!callback) {
+            return;
+        }
+        if (!subreddit) {
+            return returnFalse();
+        }
 
         // Check cache (if not skipped)
         if (!forceSkipCache) {
             if (TBUtils.noteCache[subreddit] !== undefined) {
                 self.log('notes found in cache');
-                if (callback) callback(true, TBUtils.noteCache[subreddit], subreddit);
+                if (callback) {
+                    callback(true, TBUtils.noteCache[subreddit], subreddit);
+                }
                 return;
             }
 
@@ -1155,7 +1137,7 @@ function usernotes () {
         }
 
         // Read notes from wiki page
-        TBUtils.readFromWiki(subreddit, 'usernotes', true, function (resp) {
+        TBUtils.readFromWiki(subreddit, 'usernotes', true, resp => {
         // Errors when reading notes
         // // These errors are bad
             if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN) {
@@ -1202,8 +1184,7 @@ function usernotes () {
             if (notes.ver >= TBUtils.notesMinSchema) {
                 if (notes.ver <= 5) {
                     notes = inflateNotes(notes, sub);
-                }
-                else if (notes.ver <= 6) {
+                } else if (notes.ver <= 6) {
                     notes = decompressBlob(notes);
                     notes = inflateNotes(notes, sub);
                 }
@@ -1211,11 +1192,12 @@ function usernotes () {
                 if (notes.ver <= TB.utils.notesDeprecatedSchema) {
                     self.log(`Found deprecated notes in ${subreddit}: S${notes.ver}`);
 
-                    TBUtils.alert(`The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBUtils.notesSchema}.`,
-                        function (clicked) {
+                    TBUtils.alert(
+                        `The usernotes in /r/${subreddit} are stored using schema v${notes.ver}, which is deprecated. Please click here to updated to v${TBUtils.notesSchema}.`,
+                        clicked => {
                             if (clicked) {
                             // Upgrade notes
-                                self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBUtils.notesSchema}`, function (succ) {
+                                self.saveUserNotes(subreddit, notes, `Updated notes to schema v${TBUtils.notesSchema}`, succ => {
                                     if (succ) {
                                         TB.ui.textFeedback('Notes saved!', TB.ui.FEEDBACK_POSITIVE);
                                         TB.utils.clearCache();
@@ -1223,12 +1205,12 @@ function usernotes () {
                                     }
                                 });
                             }
-                        });
+                        }
+                    );
                 }
 
                 return notes;
-            }
-            else {
+            } else {
                 returnFalse();
             }
 
@@ -1253,12 +1235,10 @@ function usernotes () {
             const mgr = new self._constManager(deflated.constants);
 
             self.log('Inflating all usernotes');
-            $.each(deflated.users, function (name, user) {
+            $.each(deflated.users, (name, user) => {
                 inflated.users[name] = {
                     name,
-                    notes: user.ns.map(function (note) {
-                        return inflateNote(deflated.ver, mgr, note, sub);
-                    }),
+                    notes: user.ns.map(note => inflateNote(deflated.ver, mgr, note, sub)),
                 };
             });
 
@@ -1283,7 +1263,6 @@ function usernotes () {
             }
             return time;
         }
-
     };
 
     // Save usernotes to wiki
@@ -1302,25 +1281,27 @@ function usernotes () {
 
         // Write to wiki page
         self.log('Saving usernotes to wiki...');
-        TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, function postToWiki (succ, jqXHR) {
+        TBUtils.postToWiki('usernotes', sub, notes, reason, true, false, (succ, jqXHR) => {
             if (succ) {
                 self.log('Success!');
                 TBui.textFeedback('Save complete!', TBui.FEEDBACK_POSITIVE, 2000);
-                if (callback) callback(true);
-            }
-            else {
+                if (callback) {
+                    callback(true);
+                }
+            } else {
                 self.log(`Failure: ${jqXHR.status}`);
                 let reason;
                 if (jqXHR.status === 413) {
                     reason = 'usernotes full';
-                }
-                else {
+                } else {
                     reason = jqXHR.responseText;
                 }
                 self.log(`  ${reason}`);
 
                 TBui.textFeedback(`Save failed: ${reason}`, TBui.FEEDBACK_NEGATIVE, 5000);
-                if (callback) callback(false);
+                if (callback) {
+                    callback(false);
+                }
             }
         });
 
@@ -1329,8 +1310,7 @@ function usernotes () {
             if (notes.ver <= 5) {
                 self.log('  Is v5');
                 return deflateNotes(notes);
-            }
-            else if (notes.ver <= 6) {
+            } else if (notes.ver <= 6) {
                 self.log('  Is v6');
                 notes = deflateNotes(notes);
                 return compressBlob(notes);
@@ -1361,16 +1341,14 @@ function usernotes () {
 
             const mgr = new self._constManager(deflated.constants);
 
-            $.each(notes.users, function (name, user) {
+            $.each(notes.users, (name, user) => {
                 deflated.users[name] = {
-                    ns: user.notes.filter(function (note) {
+                    ns: user.notes.filter(note => {
                         if (note === undefined) {
                             self.log('WARNING: undefined note removed');
                         }
                         return note !== undefined;
-                    }).map(function (note) {
-                        return deflateNote(notes.ver, note, mgr);
-                    }),
+                    }).map(note => deflateNote(notes.ver, note, mgr)),
                 };
             });
 
@@ -1409,8 +1387,9 @@ function usernotes () {
             create (poolName, constant) {
                 const pool = this._pools[poolName];
                 const id = pool.indexOf(constant);
-                if (id !== -1)
+                if (id !== -1) {
                     return id;
+                }
                 pool.push(constant);
                 return pool.length - 1;
             },
@@ -1421,8 +1400,9 @@ function usernotes () {
     };
 
     self._squashPermalink = function (permalink) {
-        if (!permalink)
+        if (!permalink) {
             return '';
+        }
 
         // Compatibility with Sweden
         const COMMENTS_LINK_RE = /\/comments\/(\w+)\/(?:[^/]+\/(?:(\w+))?)?/,
@@ -1438,37 +1418,34 @@ function usernotes () {
                 squashed += `,${linkMatches[2]}`;
             }
             return squashed;
-        }
-        else if (modMailMatches) {
+        } else if (modMailMatches) {
             return `m,${modMailMatches[1]}`;
         } else if (newModMailMatches) {
             return permalink;
-        }
-        else {
+        } else {
             return '';
         }
     };
 
     self._unsquashPermalink = function (subreddit, permalink) {
-        if (!permalink)
+        if (!permalink) {
             return '';
+        }
 
         if (permalink.startsWith('https://mod.reddit.com')) {
             return permalink;
         } else {
-
             const linkParams = permalink.split(/,/g);
             let link = `/r/${subreddit}/`;
 
             if (linkParams[0] === 'l') {
                 link += `comments/${linkParams[1]}/`;
-                if (linkParams.length > 2)
+                if (linkParams.length > 2) {
                     link += `-/${linkParams[2]}/`;
-            }
-            else if (linkParams[0] === 'm') {
-                link += `message/messages/${linkParams [1]}`;
-            }
-            else {
+                }
+            } else if (linkParams[0] === 'm') {
+                link += `message/messages/${linkParams[1]}`;
+            } else {
                 return '';
             }
 
@@ -1479,12 +1456,11 @@ function usernotes () {
     // Per-subreddit coloring
     self.getSubredditColors = function (subreddit, callback) {
         self.log(`Getting subreddit colors for /r/${subreddit}`);
-        TBUtils.getConfig(subreddit, function (config) {
+        TBUtils.getConfig(subreddit, config => {
             self.log(`  Config retrieved for /r/${subreddit}`);
             if (config && config.usernoteColors && config.usernoteColors.length > 0) {
                 callback(config.usernoteColors);
-            }
-            else {
+            } else {
                 self.log(`  Config not retrieved for ${subreddit}, using default colors`);
 
                 // Use default colors
@@ -1506,6 +1482,6 @@ function usernotes () {
     TB.register_module(self);
 } // usernotes() wrapper
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     usernotes();
 });

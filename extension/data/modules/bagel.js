@@ -19,6 +19,6 @@ function bagels () { // eslint-disable-line no-unused-vars
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     // bagels(); //disabled
 });

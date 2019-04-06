@@ -19,8 +19,7 @@ function tbmodule () {
             initLoop();
 
             function initLoop () {
-                setTimeout(function () {
-
+                setTimeout(() => {
                     $.log('TBModule has TBStorage, loading modules', false, 'TBinit');
                     // call every module's init() method on page load
                     for (let i = 0; i < TB.moduleList.length; i++) {
@@ -55,13 +54,11 @@ function tbmodule () {
                             $.log(`Loading ${module.name} module`, false, 'TBinit');
                             module.init();
                         }
-
                     }
 
                     // Start the event listener once everything else is initialized
                     TB.listener.start();
                     profileResults('tbInitDone', performance.now());
-
                 }, 50);
             }
         },
@@ -194,7 +191,6 @@ function tbmodule () {
                 if ($inputSetting.is(':visible')) {
                     $this.css('opacity', '0.5');
                     $inputSetting.hide();
-
                 } else {
                     $this.css('opacity', '1');
                     $inputSetting.show(function () {
@@ -299,13 +295,13 @@ function tbmodule () {
                 `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
 
-            $settingsDialog.on('click', '.tb-help-main', function (e) {
+            $settingsDialog.on('click', '.tb-help-main', e => {
                 const settingsDialog = e.delegateTarget;
                 const page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
                 window.open(`https://www.reddit.com/r/toolbox/wiki/livedocs/${page}`, '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
             });
 
-            $settingsDialog.on('click', '.buttons .close', function (e) {
+            $settingsDialog.on('click', '.buttons .close', e => {
                 // By binding the click handler to $settingsDialog, we get to use event.delegateTarget to refer to that element.
                 // We also encapsulate the handler to the injected content, so we don't have to worry about selector overlap between multiple open dialogs.
 
@@ -324,10 +320,9 @@ function tbmodule () {
                 if (!$('body').find('.tb-page-overlay').length) {
                     $('body').css('overflow', 'auto');
                 }
-
             });
 
-            $settingsDialog.on('click', '.tb-save, .tb-save-reload', function (e) {
+            $settingsDialog.on('click', '.tb-save, .tb-save-reload', e => {
                 const settingsDialog = e.delegateTarget,
                       reload = $(e.target).hasClass('tb-save-reload');
 
@@ -363,10 +358,10 @@ function tbmodule () {
                     $('body').css('overflow', 'auto');
                 }
 
-                TB.storage.verifiedSettingsSave(function (succ) {
+                TB.storage.verifiedSettingsSave(succ => {
                     if (succ) {
                         TB.ui.textFeedback('Settings saved and verified', TB.ui.FEEDBACK_POSITIVE);
-                        setTimeout(function () {
+                        setTimeout(() => {
                         // Only reload in dev mode if we asked to.
                             if (!devMode || reload) {
                                 window.location.reload();
@@ -378,7 +373,7 @@ function tbmodule () {
                 });
             });
 
-            $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', function (e) {
+            $settingsDialog.on('click', '.tb-settings-import, .tb-settings-export', e => {
                 let sub = $('input[name=settingssub]').val();
                 if (!sub) {
                     TB.ui.textFeedback('You have not set a subreddit to backup/restore settings', TB.ui.FEEDBACK_NEGATIVE);
@@ -394,13 +389,13 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'settingSub', sub);
 
                 if ($(e.target).hasClass('tb-settings-import')) {
-                    TBUtils.importSettings(sub, function () {
+                    TBUtils.importSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
                         TBUtils.clearCache();
-                        TB.storage.verifiedSettingsSave(function (succ) {
+                        TB.storage.verifiedSettingsSave(succ => {
                             if (succ) {
                                 TB.ui.textFeedback('Settings imported and verified', TB.ui.FEEDBACK_POSITIVE);
-                                setTimeout(function () {
+                                setTimeout(() => {
                                     window.location.reload();
                                 }, 1000);
                             } else {
@@ -408,9 +403,8 @@ function tbmodule () {
                             }
                         });
                     });
-                }
-                else {
-                    TBUtils.exportSettings(sub, function () {
+                } else {
+                    TBUtils.exportSettings(sub, () => {
                         self.modules['Modbar'].setting('lastExport', TB.utils.getTime());
                         TBUtils.clearCache();
                         window.location.reload();
@@ -418,7 +412,7 @@ function tbmodule () {
                 }
             });
 
-            $settingsDialog.on('click', '#showRawSettings', function () {
+            $settingsDialog.on('click', '#showRawSettings', () => {
                 const $viewSettings = TB.ui.overlay(
                     'toolbox raw setting display',
                     [
@@ -441,17 +435,17 @@ function tbmodule () {
 
                 const $editSettings = $('.edit-settings');
 
-                TB.storage.getSettingsObject(function (sObject) {
+                TB.storage.getSettingsObject(sObject => {
                     $editSettings.val(JSON.stringify(sObject, null, 2));
                 });
 
-                $viewSettings.on('click', '.anonymize-settings', function () {
-                    TB.storage.getAnonymizedSettingsObject(function (sObject) {
+                $viewSettings.on('click', '.anonymize-settings', () => {
+                    TB.storage.getAnonymizedSettingsObject(sObject => {
                         $editSettings.val(JSON.stringify(sObject, null, 2));
                     });
                 });
 
-                $viewSettings.on('click', '.close', function () {
+                $viewSettings.on('click', '.close', () => {
                     $viewSettings.remove(); // should we have some confirmation dialog here?
                 });
             });
@@ -527,7 +521,9 @@ function tbmodule () {
                     // "enabled" is special during the transition period, while the "Toggle Modules" tab still exists
                     if (setting === 'enabled') {
                         moduleIsEnabled = (module.setting(setting) ? true : false);
-                        if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) continue;
+                        if (options.hasOwnProperty('hidden') && options['hidden'] && !TB.utils.devMode) {
+                            continue;
+                        }
                         const name = module.shortname.toLowerCase();
 
                         $setting = $(`
@@ -605,12 +601,14 @@ function tbmodule () {
                     switch (options.type) {
                     case 'action':
                     {
-                        if (!options.event || !options.class) break;
+                        if (!options.event || !options.class) {
+                            break;
+                        }
                         const event = options.event;
 
                         $setting.append(TB.ui.actionButton(title, options.class));
 
-                        $body.on('click', `.${options.class}`, function () {
+                        $body.on('click', `.${options.class}`, () => {
                             TB.utils.sendEvent(event);
                         });
 
@@ -690,13 +688,12 @@ body {
 }
 /* This is just some example code, this time to demonstrate word wrapping. If it is enabled this line will wrap to a next line as soon as it hits the box side, if it is disabled this line will just continue creating a horizontal scrollbar */\n
                     </textarea>`));
-                        execAfterInject.push(function () {
+                        execAfterInject.push(() => {
                             // Syntax highlighter selection stuff
                             $body.addClass('mod-syntax');
                             let editorSettings;
                             const enableWordWrap = TB.storage.getSetting('Syntax', 'enableWordWrap', true);
-                            $(`#${module.shortname}_syntax_theme_css`).each(function (index, elem) {
-
+                            $(`#${module.shortname}_syntax_theme_css`).each((index, elem) => {
                                 // Editor setup.
                                 editorSettings = CodeMirror.fromTextArea(elem, {
                                     mode: 'text/css',
@@ -710,15 +707,17 @@ body {
                                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                                         },
                                         'Esc' (cm) {
-                                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+                                            if (cm.getOption('fullScreen')) {
+                                                cm.setOption('fullScreen', false);
+                                            }
                                         },
                                     },
                                     lineWrapping: enableWordWrap,
                                 });
                             });
 
-                            TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, function () {
-                                setTimeout(function () {
+                            TBUtils.catchEvent(TBUtils.events.TB_SYNTAX_SETTINGS, () => {
+                                setTimeout(() => {
                                     editorSettings.refresh();
                                 }, 5);
                             });
@@ -726,7 +725,7 @@ body {
                             $(`#${module.shortname}_syntax_theme`).val(module.setting(setting));
                             $body.on('change keydown', `#${module.shortname}_syntax_theme`, function () {
                                 const thingy = $(this);
-                                setTimeout(function () {
+                                setTimeout(() => {
                                     editorSettings.setOption('theme', thingy.val());
                                 }, 0);
                             });
@@ -818,7 +817,6 @@ body {
                             if ($inputSetting.is(':visible')) {
                                 $inputSetting.hide();
                                 $this.css('opacity', '0.5');
-
                             } else {
                                 $this.css('opacity', '1');
                                 $inputSetting.show(function () {
@@ -835,7 +833,6 @@ body {
                     } else {
                         $settings.find('.tb-window-content .tb-settings').append($setting);
                     }
-
                 }
 
                 // if ($settings.find('input').length > 0) {
@@ -889,7 +886,7 @@ body {
                 //
                 // We get one additional click handler for each module that gets injected.
                 // NOTE: For this to work properly, the event delegate has to match the primary .tb-save handler (above)
-                $('.tb-settings').bindFirst('click', '.tb-save', function () {
+                $('.tb-settings').bindFirst('click', '.tb-save', () => {
                     // handle module enable/disable on Toggle Modules first
                     const $moduleEnabled = $(`.tb-settings .tb-window-tabs-wrapper .tb-window-tab.toggle_modules #${module.shortname}Enabled`).prop('checked');
                     module.setting('enabled', $moduleEnabled);
@@ -926,9 +923,7 @@ body {
                             value = $this.find('input').val();
                             break;
                         case 'list':
-                            value = $this.find('input').val().split(',').map(function (str) {
-                                return str.trim();
-                            }).clean('');
+                            value = $this.find('input').val().split(',').map(str => str.trim()).clean('');
                             break;
                         case 'sublist':
                             value = [];
@@ -982,14 +977,13 @@ body {
             this.settings[name] = setting;
         };
 
-        this.register_setting(
-            'enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
-                type: 'boolean',
-                default: false,
-                betamode: false, // optional
-                hidden: false, // optional
-                title: `Enable ${this.name}`,
-            });
+        this.register_setting('enabled', { // this one serves as an example as well as the absolute minimum setting that every module has
+            type: 'boolean',
+            default: false,
+            betamode: false, // optional
+            hidden: false, // optional
+            title: `Enable ${this.name}`,
+        });
 
         // PUBLIC: settings interface
         this.setting = function (name, value, syncSetting = true) {
@@ -1013,8 +1007,12 @@ body {
         };
 
         this.log = function (message, skip) {
-            if (!TBUtils.debugMode) return;
-            if (skip === undefined) skip = false;
+            if (!TBUtils.debugMode) {
+                return;
+            }
+            if (skip === undefined) {
+                skip = false;
+            }
             $.log(message, skip, this.shortname);
         };
 
@@ -1024,28 +1022,30 @@ body {
               startTimes = new Map();
 
         this.startProfile = function (key) {
-            if (!TB.utils.debugMode)
+            if (!TB.utils.debugMode) {
                 return;
+            }
 
             startTimes.set(key, performance.now());
 
-            // New key: add a new profile
             if (!profile.has(key)) {
+                // New key: add a new profile
                 profile.set(key, {time: 0, calls: 1});
-            }
-            // Existing key: increment calls
-            else {
+            } else {
+                // Existing key: increment calls
                 profile.get(key).calls++;
             }
         };
 
         this.endProfile = function (key) {
-            if (!TB.utils.debugMode)
+            if (!TB.utils.debugMode) {
                 return;
+            }
 
             // Never started profiling for the key
-            if (!startTimes.has(key))
+            if (!startTimes.has(key)) {
                 return;
+            }
 
             // Get spent time
             const diff = performance.now() - startTimes.get(key);
@@ -1067,7 +1067,7 @@ body {
             this.log(`Profiling results: ${this.name}`);
             this.log('--------------------------');
             const loopthis = this;
-            this.getProfiles().forEach(function (profile, key) {
+            this.getProfiles().forEach((profile, key) => {
                 loopthis.log(`${key}:`);
                 loopthis.log(`\tTime  = ${profile.time.toFixed(4)}`);
                 loopthis.log(`\tCalls = ${profile.calls}`);
@@ -1093,7 +1093,7 @@ body {
     };
 }
 
-window.addEventListener('TBUtilsLoaded2', function () {
+window.addEventListener('TBUtilsLoaded2', () => {
     profileResults('moduleStart', performance.now());
 
     $.log('TBModule has TBUtils', false, 'TBinit');
@@ -1101,5 +1101,4 @@ window.addEventListener('TBUtilsLoaded2', function () {
     profileResults('moduleLoaded', performance.now());
     const event = new CustomEvent('TBModuleLoaded2');
     window.dispatchEvent(event);
-
 });

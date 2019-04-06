@@ -148,7 +148,9 @@ function modmailpro () {
     }
 
     self.init = function () {
-        if (!TBUtils.isModmail) return;
+        if (!TBUtils.isModmail) {
+            return;
+        }
 
         this.modmailpro();
         this.autoLoad();
@@ -286,25 +288,25 @@ function modmailpro () {
             // Start process
             if (twoPhaseProcessing) {
                 processThreads($processSlowly, 1, threadProcessRate, slowComplete, 'slow');
-            }
-            else {
+            } else {
                 processThreads($unprocessedThreads, chunkProcessSize, threadProcessRate, fastComplete, 'full');
             }
 
             function processThreads (threads, chunkSize, processRate, completeAction, profileKey) {
-                TBUtils.forEachChunked(threads, chunkSize, processRate,
-                    function (thread, count, array) {
+                TBUtils.forEachChunked(
+                    threads, chunkSize, processRate,
+                    (thread, count, array) => {
                         self.log(`Running thread batch: ${count + 1} of ${array.length}`);
                         // self.log('\tUser = ' + TB.utils.getThingInfo(thread).user);
                         processThread(thread);
                     },
-                    function complete () {
+                    () => {
                         self.endProfile(`batch-process-${profileKey}`);
                         self.log(`Batch ${profileKey} complete`);
 
                         completeAction();
                     },
-                    function start () {
+                    () => {
                         self.startProfile(`batch-process-${profileKey}`);
                     }
                 );
@@ -337,9 +339,8 @@ function modmailpro () {
                     $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
                     $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`));
                     $entries.click();
-                }
-                // Otherwise setup the view
-                else {
+                } else {
+                    // Otherwise setup the view
                     setReplied($unprocessedThreads);
                     updateView();
                 }
@@ -349,9 +350,8 @@ function modmailpro () {
                 // I can't actually imagine this happening.
                 if ($('.message-parent:not(.mmp-processed)').length > 0) {
                     initialize();
-                }
-                // Mod mail done loading
-                else {
+                } else {
+                    // Mod mail done loading
                     finalize();
                 }
             }
@@ -426,8 +426,7 @@ function modmailpro () {
 
                 $thread.addClass('has-replies');
                 $messageCount.text(replyCount);
-            }
-            else {
+            } else {
                 unansweredThreads.push(threadID);
 
                 $messageCount.text('No replies');
@@ -441,7 +440,7 @@ function modmailpro () {
             }
 
             if (filterBots) {
-                botsToFilter.forEach(function (botName) {
+                botsToFilter.forEach(botName => {
                     if (botName.toLowerCase() === sender) {
                         $thread.addClass('botspam');
                     }
@@ -473,8 +472,9 @@ function modmailpro () {
 
             // Don't parse all entries if we don't need to.
             if (fadeRecipient) {
-                TBUtils.forEachChunked($entries, 5, entryProcessRate,
-                    function (entry) {
+                TBUtils.forEachChunked(
+                    $entries, 5, entryProcessRate,
+                    entry => {
                         self.startProfile('fade-recipient-internal');
 
                         // Fade the recipient of a modmail so it is much more clear WHO send it.
@@ -493,10 +493,10 @@ function modmailpro () {
 
                         self.endProfile('fade-recipient-internal');
                     },
-                    function complete () {
+                    () => {
                         self.endProfile('fade-recipient');
                     },
-                    function starting () {
+                    () => {
                         self.startProfile('fade-recipient');
                     }
                 );
@@ -561,13 +561,15 @@ function modmailpro () {
         }
 
         function addNewThreadSupport () {
-            if (newThreadSupport) return;
+            if (newThreadSupport) {
+                return;
+            }
             newThreadSupport = true;
 
             const event = new CustomEvent('TBNewThings');
 
             // realtime support
-            $body.find('div.content').on('DOMNodeInserted', '.realtime-new', function (e) {
+            $body.find('div.content').on('DOMNodeInserted', '.realtime-new', e => {
                 self.log('realtime! realtime!');
                 const $sender = $(e.target);
                 if (!$sender.hasClass('message-parent')) {
@@ -578,7 +580,7 @@ function modmailpro () {
 
                 const attrib = $sender.data('fullname');
 
-                setTimeout(function () {
+                setTimeout(() => {
                     self.log('realtime go');
                     const thread = $(`.message-parent[data-fullname='${attrib}']`);
                     if (thread.length > 1) {
@@ -589,13 +591,12 @@ function modmailpro () {
                         window.dispatchEvent(event);
                     }
                 }, 500);
-
             });
 
             // LMC support
-            $body.on('click', '[id^=more_]', function () {
+            $body.on('click', '[id^=more_]', () => {
                 self.log('LMC! LMC!');
-                $body.find('div.content').on('DOMNodeInserted', '.message-parent', function (e) {
+                $body.find('div.content').on('DOMNodeInserted', '.message-parent', e => {
                     const $sender = $(e.target);
                     if ($.inArray($sender.data('fullname'), moreCommentThreads) === -1) {
                         return;
@@ -603,7 +604,7 @@ function modmailpro () {
 
                     start = performance.now();
 
-                    setTimeout(function () {
+                    setTimeout(() => {
                         self.log('LMC go');
                         $sender.addClass('lmc-thread');
                         processThread($sender);
@@ -611,12 +612,11 @@ function modmailpro () {
                         window.dispatchEvent(event);
                         $body.find('div.content').off('DOMNodeInserted', '.message-parent');
                     }, 500);
-
                 });
             });
 
             // NER support.
-            window.addEventListener('TBNewThings', function () {
+            window.addEventListener('TBNewThings', () => {
                 if (sentFromMMP) {
                     sentFromMMP = false;
                     return;
@@ -629,7 +629,7 @@ function modmailpro () {
         function highlightNewThreads ($threads) {
             self.startProfile('highlight-new-jquery');
 
-            $threads.find('.entry:last').each(function (key, entry) {
+            $threads.find('.entry:last').each((key, entry) => {
                 const $entry = $(entry),
                       timestamp = new Date($entry.find('.head time').attr('datetime')).getTime();
 
@@ -647,7 +647,7 @@ function modmailpro () {
 
             self.endProfile('highlight-new-jquery');
 
-            TBUtils.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, function (message) {
+            TBUtils.forEachChunked($('.process-new').find('.message'), 10, entryProcessRate, message => {
                 self.startProfile('highlight-new-internal');
 
                 const $message = $(message),
@@ -669,11 +669,11 @@ function modmailpro () {
                 }
 
                 self.endProfile('highlight-new-internal');
-            }, function complete () {
+            }, () => {
                 $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new message${newCount === 1 ? '' : 's'}`));
 
                 self.endProfile('highlight-new');
-            }, function start () {
+            }, () => {
                 self.startProfile('highlight-new');
             });
         }
@@ -695,7 +695,7 @@ function modmailpro () {
 
             self.log('Profiling results: modmail');
             self.log('--------------------------');
-            self.getProfiles().forEach(function (profile, key) {
+            self.getProfiles().forEach((profile, key) => {
                 self.log(`${key}:`);
                 self.log(`\tTime  = ${profile.time.toFixed(4)}`);
                 self.log(`\tCalls = ${profile.calls}`);
@@ -805,7 +805,6 @@ function modmailpro () {
                     if ($.inArray(subname, items) !== -1) {
                         $this.css('display', '');
                     }
-
                 } else {
                     const id = $this.data('fullname');
 
@@ -861,7 +860,7 @@ function modmailpro () {
             $body.find('.entry').css('display', '');
             $body.find('.expand-btn').css('display', '');
 
-            TBUtils.forEachChunked(threads, 10, 300, function (thread) {
+            TBUtils.forEachChunked(threads, 10, 300, thread => {
                 const $this = $(thread);
 
                 if (expandReplies) {
@@ -874,7 +873,7 @@ function modmailpro () {
         }
 
         // / EVENTS ///
-        $body.on('click', '.save', function (e) {
+        $body.on('click', '.save', e => {
             const $parent = $(e.target).closest('.message-parent'),
                   id = $parent.data('fullname'),
                   replied = getRepliedThreads();
@@ -896,7 +895,7 @@ function modmailpro () {
             setReplied();
         });
 
-        $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink, .botslink', function (e) {
+        $body.on('click', '.prioritylink, .alllink, .filteredlink, .repliedlink, .unreadlink, .unansweredlink, .botslink', e => {
         // Just unselect all, then select the caller.
             $($menuList).find('li').removeClass('selected');
 
@@ -904,7 +903,7 @@ function modmailpro () {
             setView(newView);
         });
 
-        $body.on('click', '.collapse-all-link', function () {
+        $body.on('click', '.collapse-all-link', () => {
             if (collapsed) {
                 expandall();
             } else {
@@ -936,10 +935,14 @@ function modmailpro () {
 
     self.autoLoad = function () {
     // Don't run if the page we're viewing is paginated, or if we're in the unread page.
-        if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) return;
+        if (location.search.match(/before|after/) || location.pathname.match(/\/moderator\/(?:unread)\/?/) || location.pathname.match(/\/r\/?/)) {
+            return;
+        }
 
         // autoload depends on notifier
-        if (!TB.storage.getSetting('Notifier', 'enabled', true)) return;
+        if (!TB.storage.getSetting('Notifier', 'enabled', true)) {
+            return;
+        }
 
         const delay = 5000, // Default 5 sec delay between checking for new modmail.
               refreshLimit = 15, // Default five items per request.
@@ -957,15 +960,14 @@ function modmailpro () {
         };
 
         // Add refresh button.
-        $(refreshLink).click(function () {
+        $(refreshLink).click(() => {
             getNewThings(refreshLimit);
-
         });
         menulist.append($(refreshLink).prepend('<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>'));
 
         // Run RTMM.
         if (self.setting('autoLoad') && TB.storage.getSetting('Notifier', 'enabled', true)) {
-            setInterval(function () {
+            setInterval(() => {
                 const count = TB.storage.getSetting('Notifier', 'modmailCount', 0);
                 if (count > 0) {
                     getNewThings((count + 2));
@@ -980,8 +982,10 @@ function modmailpro () {
             TB.storage.setSetting('Notifier', 'modmailCount', 0);
 
             self.log(`real time a gogo: ${limit}`);
-            TBUtils.addToSiteTable(updateURL + String(limit), function (resp) {
-                if (!resp) return;
+            TBUtils.addToSiteTable(updateURL + String(limit), resp => {
+                if (!resp) {
+                    return;
+                }
                 const $things = $(resp).find('.message-parent').hide().addClass('realtime-new');
                 const $siteTable = $('#siteTable');
 
@@ -999,7 +1003,7 @@ function modmailpro () {
               $switchSelect = $(`<li><select class="switch-mail tb-action-button inline-button"><option value="${SWITCH}">switch mod mail</option></select></li>`),
               $mmpMenu = $('.mmp-menu');
 
-        TBUtils.getModSubs(function () {
+        TBUtils.getModSubs(() => {
             populateDropDowns();
         });
 
@@ -1039,6 +1043,6 @@ function modmailpro () {
     TB.register_module(self);
 } // modmailpro() wrapper
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     modmailpro();
 });

@@ -79,10 +79,12 @@ function modbar () {
         // Doing it like this because it means we don't have to mess with reddit css
         const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
 
-        if (!TBUtils.logged || TBUtils.isEmbedded) return;
+        if (!TBUtils.logged || TBUtils.isEmbedded) {
+            return;
+        }
 
         // This prevents some weird scrollbar behavior on new reddit iframe embeds.
-        window.addEventListener('TBNewPage', function (event) {
+        window.addEventListener('TBNewPage', event => {
             const pageType = event.detail.pageType;
             if (pageType === 'oldModmail' || pageType === 'message') {
                 $footerblock.hide();
@@ -152,7 +154,6 @@ function modbar () {
             break;
         case 'notifications':
             newModmailUrl = `${newModmailBaseUrl}notifications`;
-
         }
 
         // Custom CSS for devmode/testing
@@ -170,7 +171,6 @@ function modbar () {
         // Atleast, I think.... - creesch
         let modMailUrl = $('#modmail').attr('href') || `${TBUtils.tempBaseDomain}/message/moderator/`;
         if (parseInt(modmailCustomLimit) > 0) {
-
             modMailUrl += `?limit=${modmailCustomLimit}`;
             $('#modmail').attr('href', modMailUrl);
             $('#tb-modmail').attr('href', modMailUrl);
@@ -224,11 +224,11 @@ function modbar () {
 </div>
 `);
         let hoverTimeout;
-        $modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(function () {
+        $modBar.find('#tb-new_modmail, #tb-new-modmailcount, #tb-new-modmail-tooltip').hover(() => {
             clearTimeout(hoverTimeout);
             $modBar.find('#tb-new-modmail-tooltip').show();
-        }, function () {
-            hoverTimeout = setTimeout(function () {
+        }, () => {
+            hoverTimeout = setTimeout(() => {
                 $modBar.find('#tb-new-modmail-tooltip').hide(100);
             }, 1000);
         });
@@ -241,7 +241,6 @@ function modbar () {
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">remove_red_eye</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedcount"></a>
 `);
-
         }
 
         const $modbarhid = $(`
@@ -252,7 +251,6 @@ function modbar () {
 
         let $console;
         if (debugMode) {
-
             $console = $(`
 <div class="tb-debug-window tb-popup">
     <div class="tb-popup-header">
@@ -291,7 +289,7 @@ function modbar () {
                 livefilterCount;
             const configEnabled = TB.storage.getSetting('TBConfig', 'enabled', false),
                   subredditColorSalt = self.setting('subredditColorSalt');
-            TBUtils.getModSubs(function () {
+            TBUtils.getModSubs(() => {
                 self.log('got mod subs');
                 self.log(TBUtils.mySubs.length);
                 self.log(TBUtils.mySubsData.length);
@@ -384,7 +382,7 @@ function modbar () {
         if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
             $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>`);
 
-            $body.on('click', '#tb-reload-link', function () {
+            $body.on('click', '#tb-reload-link', () => {
                 self.log('reloading chrome');
                 TB.utils.reloadToolbox();
             });
@@ -396,7 +394,7 @@ function modbar () {
             const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;
-            $('.tb-debug-console').each(function (index, elem) {
+            $('.tb-debug-console').each((index, elem) => {
             // This makes sure codemirror behaves and uses spaces instead of tabs.
             // Editor setup.
                 debugEditor = CodeMirror.fromTextArea(elem, {
@@ -413,17 +411,18 @@ function modbar () {
                             cm.setOption('fullScreen', !cm.getOption('fullScreen'));
                         },
                         'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+                            if (cm.getOption('fullScreen')) {
+                                cm.setOption('fullScreen', false);
+                            }
                         },
                     },
                     lineWrapping: true,
                 });
-
             });
 
             let logLength = 0;
             let logVisibleLength = 0;
-            setInterval(function () {
+            setInterval(() => {
             // If the console window is hidden, we don't need to handle this yet
                 if (!consoleShowing) {
                     return;
@@ -435,10 +434,8 @@ function modbar () {
                         logLength = TBUtils.log.length;
                         logVisibleLength = logLength;
                     }
-                }
-
-                // filter log by module.
-                else {
+                } else {
+                    // filter log by module.
                     const search = `[${currentModule}]`,
                           moduleLog = [];
 
@@ -479,7 +476,7 @@ function modbar () {
                         $moduleSelect.append($('<option>', {
                             value: this,
                         }).text(this));
-                    }).promise().done(function () {
+                    }).promise().done(() => {
                         $moduleSelect.val(currentModule);
                     });
                 }
@@ -488,11 +485,10 @@ function modbar () {
             if (consoleShowing && debugMode) {
                 $console.show();
             }
-
         }
 
         // Append shortcuts
-        $.each(shortcuts, function (index, value) {
+        $.each(shortcuts, (index, value) => {
             // TODO: Separators here should probably use CSS rather than having nested elements and stuff
             const $shortcut = $(`<a class="tb-no-gustavobc" href="${TBUtils.htmlEncode(unescape(value))}">${TBUtils.htmlEncode(unescape(index))}</a>`);
             $shortcut.appendTo('#tb-toolbarshortcuts');
@@ -515,7 +511,9 @@ function modbar () {
             } else {
                 $modBar.show();
                 $modbarhid.hide();
-                if (consoleShowing && debugMode) $body.find('.tb-debug-window').show();
+                if (consoleShowing && debugMode) {
+                    $body.find('.tb-debug-window').show();
+                }
                 $body.toggleClass('tb-modbar-shown', true);
             }
             self.setting('modbarHidden', hidden);
@@ -530,8 +528,10 @@ function modbar () {
 
         // Show counts on hover
         let $modBarHidTooltip = $body.find('#tb-modbar-hide-tooltip');
-        $modbarhid.mouseenter(function () {
-            if (!notifierEnabled || compactHide) return;
+        $modbarhid.mouseenter(() => {
+            if (!notifierEnabled || compactHide) {
+                return;
+            }
 
             const hoverContent = `
                 <table>
@@ -563,14 +563,14 @@ function modbar () {
             }
             $modBarHidTooltip.html(TBStorage.purify(hoverContent));
             $modBarHidTooltip.fadeIn(200);
-        }).mouseleave(function () {
+        }).mouseleave(() => {
             $modBarHidTooltip.fadeOut(200);
         });
 
         // / Console stuff
         // Show/hide console
         if (debugMode) {
-            $body.on('click', '#tb-toggle-console, #tb-debug-hide', function () {
+            $body.on('click', '#tb-toggle-console, #tb-debug-hide', () => {
                 if (consoleShowing) {
                     $console.hide();
                 } else {
@@ -582,7 +582,7 @@ function modbar () {
             });
 
             // Set console scroll
-            $body.on('click', '#tb-console-lockscroll', function () {
+            $body.on('click', '#tb-console-lockscroll', () => {
                 lockscroll = !lockscroll;
                 self.setting('lockScroll', lockscroll);
             });
@@ -596,7 +596,7 @@ function modbar () {
          */
 
             // Console clear
-            $body.on('click', '.tb-console-clear', function () {
+            $body.on('click', '.tb-console-clear', () => {
                 TBUtils.log = [];
             });
 
@@ -618,16 +618,17 @@ function modbar () {
         // / End console stuff
 
         // Open the settings
-        $body.on('click', '.tb-toolbar-new-settings', function () {
-            if ($('.tb-settings').length) return; // Don't show the window twice
-            TB.utils.getModSubs(function () {
+        $body.on('click', '.tb-toolbar-new-settings', () => {
+            if ($('.tb-settings').length) {
+                return;
+            } // Don't show the window twice
+            TB.utils.getModSubs(() => {
                 TB.showSettings();
             });
         });
 
         // check for passed settings.
         function switchTab (module) {
-
             const $this = $body.find(`[data-module="${module}"]`),
                   $tb_help_mains = $('.tb-help-main');
 
@@ -676,8 +677,7 @@ function modbar () {
                     }
 
                     // Wait a sec for stuff to load.
-                    setTimeout(function () {
-
+                    setTimeout(() => {
                         TB.showSettings();
                         switchTab(module);
                     }, 1000);
@@ -696,6 +696,6 @@ function modbar () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     modbar();
 });

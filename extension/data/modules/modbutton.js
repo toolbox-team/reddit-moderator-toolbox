@@ -1,5 +1,4 @@
 function modbutton () {
-
     const self = new TB.Module('Mod Button');
     self.shortname = 'ModButton';
 
@@ -55,7 +54,6 @@ function modbutton () {
 
             $sidebar.find('.tb-recents').not('.tb-modbutton').addClass('tb-modbutton').append(modButtonHTMLside);
         }
-
     };
 
     self.runRedesign = function () {
@@ -65,10 +63,9 @@ function modbutton () {
         }
         const onlyshowInhover = self.setting('onlyshowInhover');
 
-        TB.listener.on('author', function (e) {
+        TB.listener.on('author', e => {
             const $target = $(e.target);
             if ($target.closest('.tb-thing').length || !onlyshowInhover || TBUtils.isOldReddit) {
-
                 const subreddit = e.detail.data.subreddit.name;
                 const author = e.detail.data.author;
 
@@ -87,15 +84,13 @@ function modbutton () {
         });
 
         // event based handling of author elements.
-        TB.listener.on('userHovercard', function (e) {
-
+        TB.listener.on('userHovercard', e => {
             const $target = $(e.target);
             const subreddit = e.detail.data.subreddit.name;
             const author = e.detail.data.user.username;
             const parentID = e.detail.data.contextId;
 
             $target.append(`<a href="javascript:;" title="${titleText}" data-subreddit="${subreddit}" data-author="${author}" data-parentID="${parentID}" class="global-mod-button tb-bracket-button">Mod Button</a>`);
-
         });
     };
 
@@ -135,7 +130,7 @@ function modbutton () {
             });
         });
 
-        $.each(TB.utils.mySubs, function (i, subreddit) {
+        $.each(TB.utils.mySubs, (i, subreddit) => {
             $popups.find(`select.${self.OTHER}`)
                 .append($('<option>', {
                     value: subreddit,
@@ -145,7 +140,6 @@ function modbutton () {
     };
 
     self.init = function () {
-
         if (TBUtils.isNewModmail) {
             self.buttonName = 'Mod Button';
         } else {
@@ -163,12 +157,12 @@ function modbutton () {
 
         self.savedSubs = TB.utils.saneSort(self.savedSubs);
 
-        TB.utils.getModSubs(function () {
+        TB.utils.getModSubs(() => {
         // it's Go Time™!
 
             // Unless it is new modmail...
             if (TBUtils.isNewModmail) {
-                setTimeout(function () {
+                setTimeout(() => {
                     self.run();
                 }, 750);
             } else {
@@ -177,7 +171,7 @@ function modbutton () {
         });
 
         // NER support.
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             self.run();
         });
 
@@ -330,7 +324,7 @@ function modbutton () {
             // get pre-definded ban message/note
             if (subreddit) {
                 self.log('getting ban macros');
-                TBUtils.getConfig(subreddit, function (config) {
+                TBUtils.getConfig(subreddit, config => {
                     const macros = config.banMacros;
                     if (config && macros) {
                         if (macros.banNote) {
@@ -351,7 +345,7 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
-                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, function (data) {
+                $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}, data => {
                     TBStorage.purifyObject(data);
                     const banned = data.data.children;
                     for (let i = 0; i < banned.length; i++) {
@@ -371,7 +365,7 @@ function modbutton () {
                             $.get(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
                                 type: 'banuser',
                                 limit: '1000',
-                            }, function (data) {
+                            }, data => {
                                 TBStorage.purifyObject(data);
                                 const logged = data.data.children;
                                 for (let i = 0; i < logged.length; i++) {
@@ -447,7 +441,6 @@ function modbutton () {
             if (TBUtils.isNewModmail) {
                 const info = TB.utils.getThingInfo(this, true);
                 openModPopup(event, info);
-
             } else {
                 const subreddit = $benbutton.attr('data-subreddit');
                 const id = $benbutton.attr('data-parentID');
@@ -481,20 +474,17 @@ function modbutton () {
                     };
                     openModPopup(event, info);
                 } else {
-                    TB.utils.getApiThingInfo(id, subreddit, true, function (info) {
+                    TB.utils.getApiThingInfo(id, subreddit, true, info => {
                         openModPopup(event, info);
                     });
                 }
-
             }
 
             return false;
-
         });
 
         // 'save' button clicked...  THIS IS WHERE WE BAN PEOPLE, PEOPLE!
         $body.on('click', '.mod-popup .save, .global-button', function () {
-
             const $button = $(this),
                   $popup = $button.parents('.mod-popup'),
                   $selected = $popup.find('.mod-action :selected'),
@@ -514,52 +504,49 @@ function modbutton () {
             self.setting('lastAction', actionName);
 
             // Check dem values.
-            if (!api) return $status.text('error, no action selected');
+            if (!api) {
+                return $status.text('error, no action selected');
+            }
 
             if (!$(this).hasClass('global-button')) {
-
                 // Get dem ban subs.
                 $popup.find('.action-sub:checkbox:checked').each(function () {
                     let subname = $(this).val();
                     if (subname !== self.OTHER) {
                         subreddits.push(subname);
-                    }
-                    else {
+                    } else {
                         subname = $(`.${self.OTHER} option:selected`).val();
                         if (subname !== self.OTHER) {
                             subreddits.push(subname);
-
                         }
                     }
                 });
 
                 // Check dem values.
-                if (subreddits.length < 1) return $status.text('error, no subreddits selected');
+                if (subreddits.length < 1) {
+                    return $status.text('error, no subreddits selected');
+                }
 
                 // do it.
                 massAction(subreddits);
-            }
-            else {
+            } else {
                 if (actionName === 'ban') {
                     $status.text('Yeah...not happening');
                 } else {
-
                     let confirmban;
                     if (actionName === 'unban') {
                         confirmban = confirm(`This will ${actionName} /u/${user} from every subreddit you moderate.   \nAre you sure?`);
-                    }
-                    else {
+                    } else {
                         confirmban = confirm(`This will ${actionName} /u/${user} on every subreddit you moderate.   \nAre you sure?`);
                     }
 
                     if (confirmban) {
                         const subs = TB.utils.mySubs;
-                        excludeGlobal.forEach(function (val) {
+                        excludeGlobal.forEach(val => {
                             subs.splice(subs.indexOf(val), 1);
                         });
                         massAction(subs);
                     }
-
                 }
             }
 
@@ -583,13 +570,11 @@ function modbutton () {
                     if (retry) {
                         self.log('retrying');
                         massAction(failedSubs);
-                    }
-                    else {
+                    } else {
                         self.log('not retrying');
                         $('.mod-popup').remove();
                     }
-                }
-                else {
+                } else {
                     self.log('complete');
                     $('.mod-popup').remove();
                 // TB.ui.textFeedback('Mod actions complete' + subreddit, TB.ui.FEEDBACK_POSITIVE);
@@ -601,52 +586,49 @@ function modbutton () {
 
                 TB.ui.longLoadSpinner(true, 'Performing mod action', TB.ui.FEEDBACK_NEUTRAL);
 
-                TBUtils.forEachChunkedRateLimit(subs, 20, function (subreddit) {
-                    TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
+                TBUtils.forEachChunkedRateLimit(
+                    subs, 20, subreddit => {
+                        TB.ui.textFeedback(`${actionName}ning /u/${user} from /r/${subreddit}`, TB.ui.FEEDBACK_POSITIVE);
 
-                    self.log(`banning from: ${subreddit}`);
-                    if (settingState) {
-                        TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success, response) {
-                            if (success) {
-                                if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
-
+                        self.log(`banning from: ${subreddit}`);
+                        if (settingState) {
+                            TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, (success, response) => {
+                                if (success) {
+                                    if (!$.isEmptyObject(response) && !$.isEmptyObject(response.json.errors) && response.json.errors[0][0] === 'USER_BAN_NO_MESSAGE') {
                                     // There is probably a smarter way of doing this that doesn't involve nesting another api call within an api call.
 
-                                    self.log('no ban message allowed, falling back to no message.');
-                                    banMessage = '';
-                                    TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, function (success) {
-                                        if (!success) {
-                                            self.log('missed one');
-                                            failedSubs.push(subreddit);
-                                        }
-                                    });
+                                        self.log('no ban message allowed, falling back to no message.');
+                                        banMessage = '';
+                                        TBUtils.friendUser(user, action, subreddit, banReason, banMessage, banDuration, success => {
+                                            if (!success) {
+                                                self.log('missed one');
+                                                failedSubs.push(subreddit);
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    self.log('missed one');
+                                    failedSubs.push(subreddit);
                                 }
-                            }
-                            else {
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            }
-                        });
+                            });
+                        } else {
+                            TBUtils.unfriendUser(user, action, subreddit, success => {
+                                if (!success) {
+                                    self.log('missed one');
+                                    failedSubs.push(subreddit);
+                                }
+                            });
+                        }
+                    },
+
+                    () => {
+                        TB.ui.longLoadSpinner(false);
+
+                        window.setTimeout(() => {
+                            completeCheck(failedSubs);
+                        }, 2000);
                     }
-                    else {
-                        TBUtils.unfriendUser(user, action, subreddit, function (success) {
-                            if (!success) {
-                                self.log('missed one');
-                                failedSubs.push(subreddit);
-                            }
-                        });
-                    }
-                },
-
-                function () {
-                    TB.ui.longLoadSpinner(false);
-
-                    window.setTimeout(function () {
-                        completeCheck(failedSubs);
-                    }, 2000);
-
-                });
-
+                );
             }
         });
 
@@ -672,24 +654,21 @@ function modbutton () {
                 $callbackSpan.css('color', 'red');
                 TB.ui.longLoadSpinner(false);
                 return;
-            }
-            else {
+            } else {
                 subject = $subredditMessageSubject.val();
                 message = $subredditMessage.val();
             }
 
-            TBUtils.sendMessage(user, subject, message, subreddit, function (successful, response) {
+            TBUtils.sendMessage(user, subject, message, subreddit, (successful, response) => {
                 if (!successful) {
                     $callbackSpan.text(`an error occurred: ${response[0][1]}`);
                     TB.ui.longLoadSpinner(false);
-                }
-                else {
+                } else {
                     if (response.json.errors.length) {
                         $callbackSpan.text(response.json.errors[1]);
                         TB.ui.textFeedback(response.json.errors[1], TB.ui.FEEDBACK_NEGATIVE);
                         TB.ui.longLoadSpinner(false);
-                    }
-                    else {
+                    } else {
                         TB.ui.textFeedback('message sent.', TB.ui.FEEDBACK_POSITIVE, 1500);
                         $callbackSpan.text('message sent');
                         $callbackSpan.css('color', 'green');
@@ -697,7 +676,6 @@ function modbutton () {
                     }
                 }
             });
-
         });
 
         // Flair ALL THE THINGS
@@ -708,11 +686,14 @@ function modbutton () {
                   $textinput = $popup.find('.flair-text'),
                   $classinput = $popup.find('.flair-class');
 
-            if (!user || !subreddit)
+            if (!user || !subreddit) {
                 return;
+            }
 
-            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, function (resp) {
-                if (!resp || !resp.users || resp.users.length < 1) return;
+            $.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`, resp => {
+                if (!resp || !resp.users || resp.users.length < 1) {
+                    return;
+                }
                 TBStorage.purifyObject(resp);
                 $textinput.val(resp.users[0].flair_text);
                 $classinput.val(resp.users[0].flair_css_class);
@@ -730,11 +711,10 @@ function modbutton () {
 
             TBui.textFeedback('saving user flair...', TBui.FEEDBACK_NEUTRAL);
 
-            TBUtils.flairUser(user, subreddit, text, css_class, function (success, error) {
+            TBUtils.flairUser(user, subreddit, text, css_class, (success, error) => {
                 if (success) {
                     TBui.textFeedback('saved user flair', TBui.FEEDBACK_POSITIVE);
-                }
-                else {
+                } else {
                     self.log(error.responseText);
                     TBui.textFeedback(error.responseText, TBui.FEEDBACK_NEGATIVE);
                     $status.text(error.responseText);
@@ -746,6 +726,6 @@ function modbutton () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     modbutton();
 });

@@ -52,7 +52,7 @@ function commentsOld () {
 
             $('.comments-page .thing.comment.spam > .entry').each(function () {
                 $(this).addClass('tb-comment-spam');
-                removedCounter = removedCounter + 1;
+                removedCounter += 1;
             });
 
             self.log(removedCounter);
@@ -78,7 +78,7 @@ function commentsOld () {
             if (self.approveComments || self.spamRemoved || self.hamSpammed) {
             // only need to iterate if at least one of the options is enabled
                 const $things = $('.thing.comment:not(.tb-comments-checked)');
-                TBUtils.forEachChunkedDynamic($things, function (item) {
+                TBUtils.forEachChunkedDynamic($things, item => {
                     const $thing = $(item);
                     $thing.addClass('tb-comments-checked');
 
@@ -119,16 +119,13 @@ function commentsOld () {
                             }
                         }
                     }
-
                 });
             }
-
         }
 
         // Perform comment actions on pages where you are mod and which are not modmail.
         if (TBUtils.isMod && !TBUtils.isModmail) {
-
-            $body.on('click', '#tb-toggle-removed', function () {
+            $body.on('click', '#tb-toggle-removed', () => {
                 const $comment_spam = $('.tb-comment-spam');
                 if ($comment_spam.is(':visible')) {
                     $comment_spam.hide();
@@ -137,15 +134,14 @@ function commentsOld () {
                     $comment_spam.show();
                     $('.action-reason').show();
                 }
-
             });
             // Let's support selfpost expandos
-            $body.on('click', '.expando-button.selftext', function () {
+            $body.on('click', '.expando-button.selftext', () => {
                 setTimeout(run, 1000);
             });
 
             // NER support.
-            window.addEventListener('TBNewThings', function () {
+            window.addEventListener('TBNewThings', () => {
                 run();
             });
 
@@ -154,7 +150,6 @@ function commentsOld () {
 
         let hidden = false;
         function addHideModButton () {
-
             // hide mod comments option.
             if (TB.utils.isUserPage) {
                 const $modActions = $('.moderator, [data-subreddit="spam"]');
@@ -177,7 +172,7 @@ function commentsOld () {
         addHideModButton();
 
         // NER support.
-        window.addEventListener('TBNewThings', function () {
+        window.addEventListener('TBNewThings', () => {
             addHideModButton();
             if (hidden) {
                 self.log('hiding mod actions');
@@ -192,13 +187,15 @@ function commentsOld () {
 
             $('.comment-visits-box').css('max-width', 650).find('.title').append('&nbsp;&nbsp;<a href="javascript:;" class="tb-hide-old tb-general-button">hide old</a>');
 
-            $body.on('click', '.tb-hide-old', function () {
+            $body.on('click', '.tb-hide-old', () => {
                 self.log('hiding old comments');
                 $('.entry').show(); // reset before hiding.
                 $('.old-expand').removeClass('old-expand'); // new old expands
 
                 // this likely isn't language safe.
-                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) return;
+                if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
+                    return;
+                }
 
                 $('.thing:not(.new-comment,.link)').each(function () {
                     const $this = $(this);
@@ -212,7 +209,7 @@ function commentsOld () {
                 $(this).removeClass('old-expand').children().show();
             });
 
-            $body.on('change', '#comment-visits', function () {
+            $body.on('change', '#comment-visits', () => {
                 const $hideOld = $('.tb-hide-old');
                 $hideOld.text('hide old');
                 if ($commentvisits.find('option:selected').text() === NO_HIGHLIGHTING) {
@@ -225,6 +222,6 @@ function commentsOld () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', function () {
+window.addEventListener('TBModuleLoaded2', () => {
     commentsOld();
 });

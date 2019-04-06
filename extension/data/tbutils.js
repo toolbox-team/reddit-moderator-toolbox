@@ -1029,25 +1029,6 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.sortBy = sortBy;
 
         /**
-         * Do a Header only request
-         * @function getHead
-         * @memberof TBUtils
-         * @param {string} url input array
-         * @param {callback} doneCallback
-         * @returns {callback}
-         */
-        TBUtils.getHead = function (url, doneCallback) {
-            $.ajax({
-                type: 'HEAD',
-                url: TBUtils.baseDomain + url,
-            })
-                .done((data, status, jqxhr) => {
-                // data isn't needed; just the tip
-                    doneCallback(status, jqxhr);
-                });
-        };
-
-        /**
          * Because normal .sort() is case sensitive.
          * @function saneSort
          * @memberof TBUtils
@@ -1957,22 +1938,49 @@ function initwrapper (userDetails, newModSubs) {
             }
         };
 
-        //
-        // Reddit Oauth api stuff
-        //
+        // Generic helpers for making API and other requests
 
-        // Generic promise based POST request. Can be used to construct all api calls involving post.
-        // Example usage:
-        //
-        // TBUtils.apiOauthPOST('api/mod/conversations', {
-        //     body: 'sending this with the new api through toolbox',
-        //     subject: 'api testing',
-        //     srName: 'toolbox'
-        // }).then(function(data) {
-        //     console.log(data)
-        // }).catch(function(error) {
-        //     console.log(error)
-        // });
+        /**
+         * Sends a generic HTTP request through the background page.
+         * @param {object} options The options for the AJAX request
+         * @param {string} options.method The HTTP method to use for the request
+         * @param {string} options.url The full URL to request
+         * @param {any} options.data Data sent to the server with the request
+         * @param {boolean?} options.sendOAuthToken If true, the `Authorization`
+         * header will be set with the OAuth access token for the logged-in user
+         */
+        TBUtils.sendRequest = ({method, url, data, sendOAuthToken}) => new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({
+                action: 'tb-request',
+                method,
+                url,
+                data,
+                sendOAuthToken,
+            }, response => {
+                if (response.errorThrown === undefined) {
+                    reject(response);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+
+        /**
+         * Perform a HEAD request.
+         * @param {string} endpoint The endpoint to hit (base domain is added)
+         * @param {callback} doneCallback
+         * @returns {callback}
+         * @TODO Implement with promises (consumers need to be updated)
+         */
+        TBUtils.getHead = (endpoint, doneCallback) => {
+            TBUtils.sendRequest({
+                method: 'HEAD',
+                url: TBUtils.baseDomain + endpoint,
+            }).then(response => {
+                // data isn't needed; just the tip
+                doneCallback(response.status, response.jqXHR);
+            });
+        };
 
         /**
          * Sends an authenticated request against the OAuth API from the
@@ -1981,23 +1989,12 @@ function initwrapper (userDetails, newModSubs) {
          * @param {string} endpoint The path to request
          * @param {any} data Data passed through to the AJAX `data` option
          */
-        TBUtils.apiOauthRequest = function apiOauthRequest (method, endpoint, data) {
-            return new Promise((resolve, reject) => {
-                // let's fetch the token we need first.
-                chrome.runtime.sendMessage({
-                    action: 'tb-oauth-request',
-                    url: `https://oauth.reddit.com/${endpoint}`,
-                    method,
-                    data,
-                }, response => {
-                    if (response.errorThrown !== undefined) {
-                        reject(response);
-                    } else {
-                        resolve(response);
-                    }
-                });
-            });
-        };
+        TBUtils.apiOauthRequest = (method, endpoint, data) => TBUtils.sendRequest({
+            url: `https://oauth.reddit.com/${endpoint}`,
+            method,
+            data,
+            sendOAuthToken: true,
+        });
         /**
          * Sends an authenticated POST request against the OAuth API.
          * @param {string} endpoint The path to request

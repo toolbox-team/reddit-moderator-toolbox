@@ -96,6 +96,19 @@ function getOAuthTokens (tries = 1) {
     });
 }
 
+/**
+ * Make an AJAX request, and then send a response with the result as an object.
+ * @param options The options for the request
+ * @param sendResponse The `sendResponse` callback that will be called
+ */
+function makeRequest (options, sendResponse) {
+    $.ajax(options).then((data, textStatus, jqXHR) => {
+        sendResponse({data, textStatus, jqXHR});
+    }), (jqXHR, textStatus, errorThrown) => {
+        sendResponse({jqXHR, textStatus, errorThrown});
+    };
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log(request.action);
     console.log(request);
@@ -140,40 +153,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
-    // if (request.action === 'tb-request') {
-    //     const {url, method, data} = request;
-    //     $.ajax({
-    //         url,
-    //         method,
-    //         data,
-    //     }).then((data, textStatus, jqXHR) => {
-    //         sendResponse({data, textStatus, jqXHR});
-    //     }), (jqXHR, textStatus, errorThrown) => {
-    //         sendResponse({jqXHR, textStatus, errorThrown});
-    //     };
-    //     return true;
-    // }
-
-    if (request.action === 'tb-oauth-request') {
-        const {url, method, data} = request;
-        getOAuthTokens().then(tokens => {
-            $.ajax({
-                url,
-                method,
-                data,
-                beforeSend (xhr) {
-                    xhr.setRequestHeader('Authorization', `bearer ${tokens.accessToken}`);
-                },
-            }).then((data, textStatus, jqXHR) => {
-                sendResponse({data, textStatus, jqXHR});
-            }, (jqXHR, textStatus, errorThrown) => {
-                sendResponse({jqXHR, textStatus, errorThrown});
+    if (request.action === 'tb-request') {
+        // TODO: this is a misuse of JSDoc but at least it highlights in VS Code
+        /**
+         * For this action, `request` should have the following properties:
+         * @param {string} method The HTTP method to use for the request
+         * @param {string} url The full URL to request
+         * @param {any} data Arbitrary data passed to the AJAX `data` option
+         * @param {boolean?} sendOAuthToken If true, the `Authorization` header
+         * will be set with the OAuth access token for the logged-in user
+         */
+        const {method, url, data, sendOAuthToken} = request;
+        const options = {method, url, data}; // The options for the AJAX call
+        if (sendOAuthToken) {
+            // We have to get the OAuth token before we can send it
+            getOAuthTokens().then(tokens => {
+                // Set beforeSend to add the header
+                options.beforeSend = jqXHR => jqXHR.setRequestHeader('Authorization', `bearer ${tokens.accessToken}`);
+                // And make the request
+                makeRequest(options, sendResponse);
+            }).catch(error => {
+                // If we can't get a token, return the error as-is
+                sendResponse({errorThrown: error.toString()});
             });
-        }).catch(error => {
-            sendResponse({
-                errorThrown: error.toString(),
-            });
-        });
+        } else {
+            // We don't need to do anything extra, just make the request
+            makeRequest(options, sendResponse);
+        }
         return true;
     }
 });

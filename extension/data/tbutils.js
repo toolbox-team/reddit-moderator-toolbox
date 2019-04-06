@@ -66,71 +66,71 @@ function initwrapper (userDetails, newModSubs) {
               ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
         // Private variables
-        let modMineURL = '/subreddits/mine/moderator.json?limit=100',
-            now = new Date().getTime(),
+        const modMineURL = '/subreddits/mine/moderator.json?limit=100',
+              now = new Date().getTime(),
 
-            shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
-            longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45),
+              shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
+              longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45),
 
-            lastgetLong = TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
-            lastgetShort = TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
-            cacheName = TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
-            seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
-            lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
-            toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
-            newLogin = (cacheName !== TBUtils.logged),
-            getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
-            getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
-            betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
-            gettingModSubs = false,
-            getModSubsCallbacks = [],
-            invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
+              lastgetLong = TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
+              lastgetShort = TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
+              cacheName = TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
+              seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
+              lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
+              toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
+              newLogin = (cacheName !== TBUtils.logged),
+              getnewLong = (((now - lastgetLong) / (60 * 1000) > longLength) || newLogin),
+              getnewShort = (((now - lastgetShort) / (60 * 1000) > shortLength) || newLogin),
+              betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+              getModSubsCallbacks = [],
+              invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
 
-            randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
-                "Simple solution, don't use nightmode....",
-                'Nightmode users are a buncha nerds.',
-                "Oh, so that's where that code went, I thought i had lost it somehow.",
-                'Are all close buttons pretty now?!?!?',
-                'As a Business Analyst myself...',
-                "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
-                'You are now an approvened submitter',
-                "Translate creesch's Klingon settings to English.",
-                'Cuz Uncle Jessy was hot and knew the Beach Boys',
-                "Don't worry too much. There's always extra pieces.",
-                'Make the check actually check.',
-                "I dunno what this 'Safari' thing is.",
-                'eeeeew... why is there PHP code in this room?',
-                'nah there is an actual difference between stuff',
-                '...have you paid money *out of your own pocket* to anyone to vet this product?',
-                'first I want to make sure my thing actually does work sort of',
-                "Don't let \"perfect\" get in the way of \"good.\"",
-                'damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me',
-                "It's not even kinda bad... It's strangely awful.",
-                'Like a good neighbor, /u/andytuba is there',
-                'toolbox is build on beer',
-                'aww, i thought this was about real tools',
-                'my poop never smelled worse than when i lived off pizza bagel bites',
-                'Little dot, little dot ♪ You are not so little anymore ♫',
-                "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
-                'Luu',
-                'I go two and hope for the best.',
-                'oh dammit, I forgot to include url shit',
-                'I think I just released a broken release',
-                'BECAUSE I AM THE LAW!!!'],
+              randomQuotes = ["Dude, in like 24 months, I see you Skyping someone to watch them search someone's comments on reddit.",
+                  "Simple solution, don't use nightmode....",
+                  'Nightmode users are a buncha nerds.',
+                  "Oh, so that's where that code went, I thought i had lost it somehow.",
+                  'Are all close buttons pretty now?!?!?',
+                  'As a Business Analyst myself...',
+                  "TOOLBOX ISN'T YOUR PERSONAL TOOL!",
+                  'You are now an approvened submitter',
+                  "Translate creesch's Klingon settings to English.",
+                  'Cuz Uncle Jessy was hot and knew the Beach Boys',
+                  "Don't worry too much. There's always extra pieces.",
+                  'Make the check actually check.',
+                  "I dunno what this 'Safari' thing is.",
+                  'eeeeew... why is there PHP code in this room?',
+                  'nah there is an actual difference between stuff',
+                  '...have you paid money *out of your own pocket* to anyone to vet this product?',
+                  'first I want to make sure my thing actually does work sort of',
+                  "Don't let \"perfect\" get in the way of \"good.\"",
+                  'damnit creesch, put a spoiler tag, now the ending of toolbox is ruined for me',
+                  "It's not even kinda bad... It's strangely awful.",
+                  'Like a good neighbor, /u/andytuba is there',
+                  'toolbox is build on beer',
+                  'aww, i thought this was about real tools',
+                  'my poop never smelled worse than when i lived off pizza bagel bites',
+                  'Little dot, little dot ♪ You are not so little anymore ♫',
+                  "How great will it be that trouble's wiki page will also include pizza ordering instructions?",
+                  'Luu',
+                  'I go two and hope for the best.',
+                  'oh dammit, I forgot to include url shit',
+                  'I think I just released a broken release',
+                  'BECAUSE I AM THE LAW!!!'],
 
-            RandomFeedbackText = ['Please hold, your call is important to us.',
-                'Remember, toolbox loves you.',
-                'toolbox will be back later, gone fishing.',
-                "toolbox is 'doing things', don't ask.",
-                'Tuning probability drive parameters.',
-                'Initiating data transfer: NSA_backdoor_package. ',
-                'Please post puppy pictures, they are so fluffy!',
-                'RES is visiting for a sleepover,  no time right now',
-                'toolbox is on strike, we demand more karma!',
-                'brb... kicking Gustavobc from #toolbox',
-                'Requesting a new insurance quote from /u/andytuba',
-                "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
+              RandomFeedbackText = ['Please hold, your call is important to us.',
+                  'Remember, toolbox loves you.',
+                  'toolbox will be back later, gone fishing.',
+                  "toolbox is 'doing things', don't ask.",
+                  'Tuning probability drive parameters.',
+                  'Initiating data transfer: NSA_backdoor_package. ',
+                  'Please post puppy pictures, they are so fluffy!',
+                  'RES is visiting for a sleepover,  no time right now',
+                  'toolbox is on strike, we demand more karma!',
+                  'brb... kicking Gustavobc from #toolbox',
+                  'Requesting a new insurance quote from /u/andytuba',
+                  "/u/dakta ran out for a pack of smokes... BUT HE PROMISED HE'D BE RIGHT BACK"];
 
+        let gettingModSubs = false;
         // Public variables
 
         TBUtils.isOldReddit = $('#header').length;
@@ -662,8 +662,8 @@ function initwrapper (userDetails, newModSubs) {
          * @returns {integer} Milliseconds
          */
         TBUtils.minutesToMilliseconds = function (mins) {
-            let oneMin = 60000,
-                milliseconds = mins * 60 * 1000;
+            const oneMin = 60000;
+            let milliseconds = mins * 60 * 1000;
 
             // Never return less than one min.
             if (milliseconds < oneMin) {
@@ -1523,8 +1523,8 @@ function initwrapper (userDetails, newModSubs) {
                 const removal = ($entry.find('.flat-list.buttons li b:contains("removed by")').text() || '').match(/removed by (.+) \(((?:remove not |confirm )?spam)/) || [];
 
                 banned_by = removal[1] || '';
-                spam = removal[2] == 'spam' || removal[2] == 'confirm spam';
-                ham = removal[2] == 'remove not spam';
+                spam = removal[2] === 'spam' || removal[2] === 'confirm spam';
+                ham = removal[2] === 'remove not spam';
 
                 if (TBUtils.isEditUserPage && !user) {
                     user = $sender.closest('.user').find('a:first').text() || $entry.closest('.user').find('a:first').text() || $thing.closest('.user').find('a:first').text();
@@ -1810,10 +1810,10 @@ function initwrapper (userDetails, newModSubs) {
             if (chunkSize === null || chunkSize < 1) finish();
             if (call === null) finish();
 
-            let length = array.length,
-                counter = 0,
-                delay = 100,
-                limit = (length > chunkSize) ? 20 : 0;
+            const length = array.length,
+                  delay = 100,
+                  limit = (length > chunkSize) ? 20 : 0;
+            let counter = 0;
 
             if (length < chunkSize) {
                 chunkSize = length;
@@ -1895,32 +1895,32 @@ function initwrapper (userDetails, newModSubs) {
 
         TBUtils.forEachChunkedDynamic = function (array, process, options) {
             if (typeof process !== 'function') return;
-            let arr = Array.from(array),
-                start,
+            const arr = Array.from(array);
+            let start,
                 stop,
                 fr,
-                started = false,
-                opt = Object.assign({
-                    size: 25, // starting size
-                    framerate: 30, // target framerate
-                    nerf: 0.9, // Be careful with this one
-                }, options),
-                size = opt.size,
-                nerf = opt.nerf,
-                framerate = opt.framerate,
+                started = false;
+            const opt = Object.assign({
+                size: 25, // starting size
+                framerate: 30, // target framerate
+                nerf: 0.9, // Be careful with this one
+            }, options);
+            let size = opt.size;
+            const nerf = opt.nerf,
+                  framerate = opt.framerate,
 
-                now = function () { return window.performance.now(); },
+                  now = function () { return window.performance.now(); },
 
-                again = (typeof window.requestAnimationFrame === 'function') ?
-                    function (callback) { window.requestAnimationFrame(callback); } :
-                    function (callback) { setTimeout(callback, 1000 / opt.framerate); },
+                  again = (typeof window.requestAnimationFrame === 'function') ?
+                      function (callback) { window.requestAnimationFrame(callback); } :
+                      function (callback) { setTimeout(callback, 1000 / opt.framerate); };
 
-                optimize = function () {
-                    stop = now();
-                    fr = 1000 / (stop - start);
-                    size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
-                    return (start = stop);
-                };
+            function optimize () {
+                stop = now();
+                fr = 1000 / (stop - start);
+                size = Math.ceil(size * (1 + (fr / framerate - 1) * nerf));
+                return (start = stop);
+            }
 
             return new Promise(function (resolve) {
                 const doChunk = function () {

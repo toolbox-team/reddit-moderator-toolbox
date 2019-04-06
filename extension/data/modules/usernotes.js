@@ -39,11 +39,11 @@ function usernotes () {
     };
 
     self.usernotes = function usernotes () {
-        let subs = [],
-            $body = $('body'),
-            maxChars = self.setting('maxChars'),
-            showDate = self.setting('showDate'),
-            firstRun = true;
+        const subs = [],
+              $body = $('body'),
+              maxChars = self.setting('maxChars'),
+              showDate = self.setting('showDate');
+        let firstRun = true;
 
         const TYPE_NEW_MODMAIL = 'newmodmail';
 
@@ -367,9 +367,9 @@ function usernotes () {
                     return;
                 }
 
-                let noteData = u.notes[0],
-                    note = noteData.note,
-                    date = new Date(noteData.time);
+                const noteData = u.notes[0],
+                      date = new Date(noteData.time);
+                let note = noteData.note;
 
                 // Add title before note concat.
                 $usertag.attr('title', `${note} (${date.toLocaleString()})`);
@@ -584,10 +584,10 @@ function usernotes () {
             const $thing = $target.closest('.ut-thing');
             const $button = $thing.find('#add-user-tag');
 
-            let subreddit = $button.attr('data-subreddit'),
-                user = $button.attr('data-author'),
-                link,
-                disableLink = false; // FIXME: change to thing type
+            const subreddit = $button.attr('data-subreddit'),
+                  user = $button.attr('data-author'),
+                  disableLink = false; // FIXME: change to thing type
+            let link;
 
             if (TBUtils.isNewModmail) {
                 link = TBUtils.getThingInfo($thing).permalink;
@@ -624,15 +624,15 @@ function usernotes () {
         // Save or delete button clicked
         $body.on('click', '.utagger-save-user, .utagger-remove-note', function (e) {
             self.log('Save or delete pressed');
-            let $popup = $(this).closest('.utagger-popup'),
-                $unote = $popup.find('.utagger-user-note'),
-                subreddit = $unote.attr('data-subreddit'),
-                user = $unote.attr('data-user'),
-                noteId = $(e.target).attr('data-note-id'),
-                noteText = $unote.val(),
-                deleteNote = $(e.target).hasClass('utagger-remove-note'),
-                type = $popup.find('.utagger-type input:checked').val(),
-                link = '';
+            const $popup = $(this).closest('.utagger-popup'),
+                  $unote = $popup.find('.utagger-user-note'),
+                  subreddit = $unote.attr('data-subreddit'),
+                  user = $unote.attr('data-user'),
+                  noteId = $(e.target).attr('data-note-id'),
+                  noteText = $unote.val(),
+                  deleteNote = $(e.target).hasClass('utagger-remove-note'),
+                  type = $popup.find('.utagger-type input:checked').val();
+            let link = '';
 
             if ($popup.find('.utagger-include-link input').is(':checked')) {
                 link = $unote.attr('data-link');
@@ -722,7 +722,7 @@ function usernotes () {
                             for (let n = 0; n < u.notes.length; n++) {
                                 note = u.notes[n];
                                 self.log(`  ${note.time}`);
-                                if (note.time == noteId) {
+                                if (note.time === noteId) {
                                     self.log(`  Note found: ${noteId}`);
                                     u.notes.splice(n, 1);
                                     self.log(u.notes);
@@ -774,7 +774,7 @@ function usernotes () {
 
         // Enter key pressed when adding new note
         $body.on('keyup', '.utagger-user-note', function (event) {
-            if (event.keyCode == 13) {
+            if (event.keyCode === 13) {
                 const popup = $(this).closest('.utagger-popup');
                 popup.find('.utagger-save-user').click();
             }
@@ -782,9 +782,9 @@ function usernotes () {
     };
 
     self.usernotesManager = function () {
-        let $body = $('body'),
-            showLink = self.setting('unManagerLink'),
-            subUsenotes,
+        const $body = $('body'),
+              showLink = self.setting('unManagerLink');
+        let subUsenotes,
             fetchActive = false;
 
         if (showLink) {
@@ -835,8 +835,8 @@ function usernotes () {
             subUsenotes = notes;
             self.log('showing notes');
 
-            let userCount = Object.keys(notes.users).length,
-                noteCount = 0;
+            const userCount = Object.keys(notes.users).length;
+            let noteCount = 0;
 
             const $userContentTemplate = $(`<div class="tb-un-user" data-user="NONE">
                 <div class="tb-un-user-header">
@@ -1019,7 +1019,7 @@ function usernotes () {
                         self.log(emptyProfiles);
                         if (emptyProfiles.length > 0) {
                             const deleteEmptyProfile = confirm(`${emptyProfiles.length} deleted or shadowbanned users. Delete all notes for these users?`);
-                            if (deleteEmptyProfile == true) {
+                            if (deleteEmptyProfile === true) {
                                 self.log('You pressed OK!');
 
                                 emptyProfiles.forEach(function (emptyProfile) {
@@ -1070,7 +1070,7 @@ function usernotes () {
                       $userSpan = $this.parent();
 
                 const r = confirm(`This will delete all notes for /u/${user}.  Would you like to proceed?`);
-                if (r == true) {
+                if (r === true) {
                     self.log(`deleting notes for ${user}`);
                     delete subUsenotes.users[user];
                     TB.utils.noteCache[sub] = subUsenotes;
@@ -1147,7 +1147,7 @@ function usernotes () {
                 return;
             }
 
-            if (TBUtils.noNotes.indexOf(subreddit) != -1) {
+            if (TBUtils.noNotes.indexOf(subreddit) !== -1) {
                 self.log('found in NoNotes cache');
                 returnFalse();
                 return;
@@ -1460,12 +1460,12 @@ function usernotes () {
             const linkParams = permalink.split(/,/g);
             let link = `/r/${subreddit}/`;
 
-            if (linkParams[0] == 'l') {
+            if (linkParams[0] === 'l') {
                 link += `comments/${linkParams[1]}/`;
                 if (linkParams.length > 2)
                     link += `-/${linkParams[2]}/`;
             }
-            else if (linkParams[0] == 'm') {
+            else if (linkParams[0] === 'm') {
                 link += `message/messages/${linkParams [1]}`;
             }
             else {

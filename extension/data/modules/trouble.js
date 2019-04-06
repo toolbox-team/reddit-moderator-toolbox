@@ -142,7 +142,7 @@ function trouble () {
             let neg_thresh = neg_thresh_pref;
 
             // lower the threashold by one for user's comments
-            if (RegExp(`\/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href))
+            if (RegExp(`/${TBUtils.logged}\\b`).test($thing.children('.entry').find('.author')[0].href))
                 --neg_thresh;
 
             // highlighting here to avoid another .each() iteration

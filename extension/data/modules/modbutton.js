@@ -676,7 +676,7 @@ function modbutton () {
         });
 
         // Flair ALL THE THINGS
-        $body.on('click', '.tb-popup-tabs .user_flair', async () => {
+        $body.on('click', '.tb-popup-tabs .user_flair', async function () {
             const $popup = $(this).parents('.mod-popup'),
                   user = $popup.find('.user').text(),
                   subreddit = $popup.find('.subreddit').text(),

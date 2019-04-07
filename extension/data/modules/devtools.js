@@ -118,7 +118,7 @@ function devtools () {
                 $body.css('overflow', 'auto');
             });
 
-            $body.on('click', '.tb-testCommentUI-button', async () => {
+            $body.on('click', '.tb-testCommentUI-button', async function () {
                 const $this = $(this),
                       $siteTable = $body.find('#tb-comment-sitetable');
                 $siteTable.empty();

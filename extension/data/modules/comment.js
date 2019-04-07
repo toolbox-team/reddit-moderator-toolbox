@@ -274,7 +274,6 @@ function comments () {
                 const subreddit = e.detail.data.subreddit.name;
                 TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit)) {
-                        console.log('okay...', subreddit);
                         $target.closest('.tb-comment, .entry').find('.md').highlight(highlighted);
                         $target.closest('.Comment').find('p').highlight(highlighted);
                     }

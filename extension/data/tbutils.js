@@ -1837,8 +1837,8 @@ function initwrapper (userDetails, newModSubs) {
                     '/r/toolbox/wiki/ratelimit.json',
                     (status, jqxhr) => {
                         const $body = $('body'),
-                              ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
-                              ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+                              ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
+                              ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
                         $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                         if (!$body.find('#ratelimit-counter').length) {
@@ -2027,8 +2027,8 @@ function initwrapper (userDetails, newModSubs) {
             TBUtils.getHead(
                 '/r/toolbox/wiki/ratelimit.json',
                 (status, jqxhr) => {
-                    const ratelimitRemaining = jqxhr.getResponseHeader('x-ratelimit-remaining'),
-                          ratelimitReset = jqxhr.getResponseHeader('x-ratelimit-reset');
+                    const ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
+                          ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
                     $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
 
                     if (typeof callback !== 'undefined') {

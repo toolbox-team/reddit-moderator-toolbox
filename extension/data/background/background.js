@@ -97,14 +97,37 @@ function getOAuthTokens (tries = 1) {
 }
 
 /**
+ * Convert the string from getAllResponseHeaders() to a nice object.
+ * @param headerString The input string
+ * @returns {headerObject} An object containing all header values.
+ */
+function makeHeaderObject(headerString) {
+    const headerArray = headerString.split('\r\n');
+    const headerObject = {};
+
+    headerArray.forEach((item) => {
+        if(item) {
+            const itemArray = item.split(': ');
+            const itemName = itemArray[0];
+            const itemValue = /^[0-9]+$/.test(itemArray[1]) ? parseInt(itemArray[1], 10) : itemArray[1];
+            headerObject[itemName] = itemValue;
+        }
+    });
+
+    return headerObject;
+}
+
+/**
  * Make an AJAX request, and then send a response with the result as an object.
  * @param options The options for the request
  * @param sendResponse The `sendResponse` callback that will be called
  */
 function makeRequest (options, sendResponse) {
     $.ajax(options).then((data, textStatus, jqXHR) => {
+        jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
         sendResponse({data, textStatus, jqXHR});
     }), (jqXHR, textStatus, errorThrown) => {
+        jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
         sendResponse({jqXHR, textStatus, errorThrown});
     };
 }

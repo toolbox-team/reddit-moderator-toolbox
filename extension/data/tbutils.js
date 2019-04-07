@@ -1963,8 +1963,8 @@ function initwrapper (userDetails, newModSubs) {
         });
 
         /**
-         * Performs a GET request and promises the body of the request, or the
-         * full request object on error. Maintains an API similar to
+         * Performs a GET request and promises the body of the response, or the
+         * full response object on error. Maintains an API similar to
          * `$.getJSON()` because that's what all these calls used before Chrome
          * forced us to make all requests in the background.
          * @param {string} url The full URL to request
@@ -1973,7 +1973,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.getJSON = (url, data) => TBUtils.sendRequest({method: 'GET', url, data})
             .then(response => response.data)
             .catch(response => {
-                throw response.errorThrown;
+                throw response.jqXHR;
             });
 
         /**

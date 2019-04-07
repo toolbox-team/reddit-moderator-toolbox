@@ -238,7 +238,7 @@
         $('#' + uniqID + ':not(.tb-sticky-close)').click(function () {
             if(url) {
                 if (typeof settings.markreadid !== 'undefined') {
-                    $.post(TBUtils.baseDomain + '/api/read_message', {
+                    TBUtils.post(TBUtils.baseDomain + '/api/read_message', {
                         id: settings.markreadid,
                         uh: TBUtils.modhash,
                         api_type: 'json'

@@ -1977,6 +1977,20 @@ function initwrapper (userDetails, newModSubs) {
             });
 
         /**
+         * Performs a POST request and promises the body of the response, or the
+         * full response object on error. Maintains an API similar to `$.post`.
+         * @param {string} url The full URL to request
+         * @param {object} data The body of the request.
+         */
+        TBUtils.post = (url, data) => TBUtils.sendRequest({
+            method: 'POST',
+            url,
+            data,
+        }).then(response => response.data).catch(response => {
+            throw response.jqXHR;
+        });
+
+        /**
          * Perform a HEAD request.
          * @param {string} endpoint The endpoint to hit (base domain is added)
          * @param {callback} doneCallback
@@ -2065,19 +2079,19 @@ function initwrapper (userDetails, newModSubs) {
                 data = data.replace(/\t/g, '    ');
             }
 
-            $.post(`${TBUtils.baseDomain}/r/${subreddit}/api/wiki/edit`, {
+            TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/api/wiki/edit`, {
                 content: data,
                 page,
                 reason,
                 uh: TBUtils.modhash,
             })
 
-                .fail(jqXHR => {
+                .catch(jqXHR => {
                     $.log(jqXHR.responseText, false, SHORTNAME);
                     callback(false, jqXHR);
                 })
 
-                .done(() => {
+                .then(() => {
                     setTimeout(() => {
                     // Callback regardless of what happens next.  We wrote to the page.
                     // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
@@ -2087,7 +2101,7 @@ function initwrapper (userDetails, newModSubs) {
 
                     setTimeout(() => {
                         // Set page access to 'mod only'.
-                        $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
+                        TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
                             page,
                             listed: true, // hrm, may need to make this a config setting.
                             permlevel: 2,
@@ -2095,7 +2109,7 @@ function initwrapper (userDetails, newModSubs) {
                         })
 
                         // Super extra double-secret secure, just to be safe.
-                            .fail(() => {
+                            .catch(() => {
                                 alert('error setting wiki page to mod only access');
                                 window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
                             });
@@ -2180,7 +2194,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-            $.post(`${TBUtils.baseDomain}/api/flair`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/flair`, {
                 api_type: 'json',
                 link: postLink,
                 text,
@@ -2188,12 +2202,12 @@ function initwrapper (userDetails, newModSubs) {
                 r: subreddit,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2201,7 +2215,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
-            $.post(`${TBUtils.baseDomain}/api/flair`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/flair`, {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
@@ -2209,12 +2223,12 @@ function initwrapper (userDetails, newModSubs) {
                 css_class: cssClass,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2233,7 +2247,7 @@ function initwrapper (userDetails, newModSubs) {
                 }
             }
 
-            $.post(`${TBUtils.baseDomain}/api/friend`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/friend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -2243,12 +2257,12 @@ function initwrapper (userDetails, newModSubs) {
                 ban_message: trimmedBanMessage,
                 duration: banDuration,
             })
-                .done(response => {
+                .then(response => {
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2256,19 +2270,19 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unfriendUser = function (user, action, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain}/api/unfriend`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/unfriend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
                 name: user,
                 r: subreddit,
             })
-                .done(response => {
+                .then(response => {
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2276,17 +2290,17 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.distinguishThing = function (id, sticky, callback) {
-            $.post(`${TBUtils.baseDomain}/api/distinguish/yes`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/distinguish/yes`, {
                 id,
                 sticky,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2294,16 +2308,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.approveThing = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/approve`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/approve`, {
                 id,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2311,17 +2325,17 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.removeThing = function (id, spam, callback) {
-            $.post(`${TBUtils.baseDomain}/api/remove`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/remove`, {
                 uh: TBUtils.modhash,
                 id,
                 spam,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2329,16 +2343,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markOver18 = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/marknsfw`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/marknsfw`, {
                 id,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2346,16 +2360,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unMarkOver18 = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/unmarknsfw`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/unmarknsfw`, {
                 uh: TBUtils.modhash,
                 id,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2363,16 +2377,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.lockThread = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/lock`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/lock`, {
                 id,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2380,16 +2394,16 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unlockThread = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/unlock`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/unlock`, {
                 uh: TBUtils.modhash,
                 id,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2401,17 +2415,17 @@ function initwrapper (userDetails, newModSubs) {
                 state = true;
             }
 
-            $.post(`${TBUtils.baseDomain}/api/set_subreddit_sticky`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/set_subreddit_sticky`, {
                 id,
                 state,
                 uh: TBUtils.modhash,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2423,13 +2437,13 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postComment = function (parent, text, callback) {
-            $.post(`${TBUtils.baseDomain}/api/comment`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/comment`, {
                 parent,
                 uh: TBUtils.modhash,
                 text,
                 api_type: 'json',
             })
-                .done(response => {
+                .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
                         $.log(`Failed to post comment to on ${parent}`, false, SHORTNAME);
                         $.log(response.json.fails, false, SHORTNAME);
@@ -2444,7 +2458,7 @@ function initwrapper (userDetails, newModSubs) {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     $.log(`Failed to post link to on${parent}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined') {
@@ -2454,7 +2468,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postLink = function (link, title, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain}/api/submit`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/submit`, {
                 kind: 'link',
                 resubmit: 'true',
                 url: link,
@@ -2464,7 +2478,7 @@ function initwrapper (userDetails, newModSubs) {
                 sendreplies: 'true', // this is the default on reddit.com, so it should be our default.
                 api_type: 'json',
             })
-                .done(response => {
+                .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
                         $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
@@ -2479,7 +2493,7 @@ function initwrapper (userDetails, newModSubs) {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined') {
@@ -2489,7 +2503,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
-            $.post(`${TBUtils.baseDomain}/api/compose`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/compose`, {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
                 text: message,
@@ -2497,7 +2511,7 @@ function initwrapper (userDetails, newModSubs) {
                 uh: TBUtils.modhash,
                 api_type: 'json',
             })
-                .done(response => {
+                .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
                         $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
                         $.log(response.json.errors, false, SHORTNAME);
@@ -2512,7 +2526,7 @@ function initwrapper (userDetails, newModSubs) {
                         callback(true, response);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
                     $.log(error, false, SHORTNAME);
                     if (typeof callback !== 'undefined') {
@@ -2522,18 +2536,18 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendPM = function (to, subject, message, callback) {
-            $.post(`${TBUtils.baseDomain}/api/compose`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/compose`, {
                 to,
                 uh: TBUtils.modhash,
                 subject,
                 text: message,
             })
-                .done(() => {
+                .then(() => {
                     if (typeof callback !== 'undefined') {
                         callback(true);
                     }
                 })
-                .fail(error => {
+                .catch(error => {
                     if (typeof callback !== 'undefined') {
                         callback(false, error.responseText);
                     }
@@ -2541,11 +2555,11 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markMessageRead = function (id, callback) {
-            $.post(`${TBUtils.baseDomain}/api/read_message`, {
+            TBUtils.post(`${TBUtils.baseDomain}/api/read_message`, {
                 api_type: 'json',
                 id,
                 uh: TBUtils.modhash,
-            }).done(() => {
+            }).then(() => {
                 if (typeof callback !== 'undefined') {
                     callback(true);
                 }
@@ -2822,14 +2836,14 @@ function initwrapper (userDetails, newModSubs) {
 
         // private functions
         function setWikiPrivate (subreddit, page, failAlert) {
-            $.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
+            TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
                 page,
                 listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
                 uh: TBUtils.modhash,
             })
             // Super extra double-secret secure, just to be safe.
-                .fail(() => {
+                .then(() => {
                 // used if it is important for the user to know that a wiki page has not been set to private.
                     if (failAlert) {
                         alert('error setting wiki page to mod only access');

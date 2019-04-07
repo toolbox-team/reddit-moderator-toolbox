@@ -244,14 +244,14 @@ function personalnotes () {
 
             const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
-                $.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
+                TBUtils.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,
                     uh: TBUtils.modhash,
                 })
 
-                    .fail(() => {
+                    .catch(() => {
                         TB.ui.textFeedback('Could not de-list the note, try again in a bit.', TB.ui.FEEDBACK_NEGATIVE);
                     });
 

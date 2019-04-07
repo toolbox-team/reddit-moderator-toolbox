@@ -101,12 +101,12 @@ function getOAuthTokens (tries = 1) {
  * @param headerString The input string
  * @returns {headerObject} An object containing all header values.
  */
-function makeHeaderObject(headerString) {
+function makeHeaderObject (headerString) {
     const headerArray = headerString.split('\r\n');
     const headerObject = {};
 
-    headerArray.forEach((item) => {
-        if(item) {
+    headerArray.forEach(item => {
+        if (item) {
             const itemArray = item.split(': ');
             const itemName = itemArray[0];
             const itemValue = /^[0-9]+$/.test(itemArray[1]) ? parseInt(itemArray[1], 10) : itemArray[1];

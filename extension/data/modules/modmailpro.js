@@ -560,6 +560,7 @@ function modmailpro () {
             $subArea.after(infoArea);
         }
 
+        let start;
         function addNewThreadSupport () {
             if (newThreadSupport) {
                 return;

@@ -49,8 +49,11 @@ chrome.notifications.onClicked.addListener(notificationID => {
     }
 
     // Open up in new tab.
-    chrome.tabs.create({
-        url: notificationData[notificationID].baseDomain + notificationData[notificationID].url,
+    chrome.windows.getLastFocused(window => {
+        chrome.tabs.create({
+            url: notificationData[notificationID].baseDomain + notificationData[notificationID].url,
+            windowId: window.id,
+        });
     });
     // Notification no longer needed, clear it.
     chrome.notifications.clear(notificationID);

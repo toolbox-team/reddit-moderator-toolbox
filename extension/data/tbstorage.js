@@ -1,11 +1,6 @@
 // This is here because we load even before TBUtils.
 const domain = window.location.hostname.split('.')[0];
 
-// Edge fix
-// TODO: remove after Edge switches to blink engine
-if (typeof chrome === 'undefined' && typeof window.browser !== 'undefined') {
-    chrome = window.browser;
-}
 // Reset toolbox settings support
 // load storage if we're not on the reset page.
 if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_reset_all_your_toolbox_settings/') < 0) {

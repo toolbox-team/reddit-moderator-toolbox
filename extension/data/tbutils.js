@@ -213,13 +213,15 @@ function initwrapper (userDetails, newModSubs) {
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
         if (typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) {
             TBUtils.browser = FIREFOX;
-        } else if (typeof window.browser !== 'undefined') {
-            TBUtils.browser = EDGE;
         } else if (typeof chrome !== 'undefined') {
             TBUtils.browser = CHROME;
 
             if (navigator.userAgent.indexOf(' OPR/') >= 0) { // always check after Chrome
                 TBUtils.browser = OPERA;
+            }
+
+            if (navigator.userAgent.indexOf(' Edg/') >= 0) { // always check after Chrome
+                TBUtils.browser = EDGE;
             }
         }
 
@@ -244,24 +246,20 @@ function initwrapper (userDetails, newModSubs) {
         $('body').addClass('mod-toolbox-extra');
 
         // Add icon font
-        // Edge seems to think cross origins rules apply for locally loaded fonds.
-        if (TBUtils.browser === EDGE) {
-            $('head').append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">');
-        } else {
-            $('head').append(`<style>
-            @font-face {
-                font-family: 'Material Icons';
-                font-style: normal;
-                font-weight: 400;
-                src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
-                src: local('Material Icons'),
-                    local('MaterialIcons-Regular'),
-                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
-                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
-                    url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
-            }
-            </style>`);
+        $('head').append(`<style>
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(MaterialIcons-Regular.eot); /* For IE6-8 */
+            src: local('Material Icons'),
+                local('MaterialIcons-Regular'),
+                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff2')}) format('woff2'),
+                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.woff')}) format('woff'),
+                url(${chrome.runtime.getURL('data/styles/font/MaterialIcons-Regular.ttf')}) format('truetype');
         }
+        </style>`);
+
         // Get cached info.
         TBUtils.noteCache = getnewShort ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
         TBUtils.configCache = getnewLong ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});
@@ -484,7 +482,7 @@ function initwrapper (userDetails, newModSubs) {
                 break;
             }
             case EDGE: {
-                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edge\/([0-9.]*?)$/);
+                browserMatchedInfo = browserUserAgent.match(/\((.*?)\).*Edg\/([0-9.]*).*$/);
                 debugObject.browser = 'Edge';
                 debugObject.browserVersion = browserMatchedInfo[2];
                 debugObject.platformInformation = browserMatchedInfo[1];

@@ -560,7 +560,7 @@ function modmailpro () {
             $subArea.after(infoArea);
         }
 
-        let start;
+        let profileStart;
         function addNewThreadSupport () {
             if (newThreadSupport) {
                 return;
@@ -577,7 +577,7 @@ function modmailpro () {
                     return;
                 }
 
-                start = performance.now();
+                profileStart = performance.now();
 
                 const attrib = $sender.data('fullname');
 
@@ -603,7 +603,7 @@ function modmailpro () {
                         return;
                     }
 
-                    start = performance.now();
+                    profileStart = performance.now();
 
                     setTimeout(() => {
                         self.log('LMC go');
@@ -684,7 +684,7 @@ function modmailpro () {
 
             // Tell the user how quick and awesome we are.
             const nowTime = performance.now();
-            let secs = (nowTime - start) / 1000;
+            let secs = (nowTime - profileStart) / 1000;
 
             // Round time
             secs = Math.round(secs * 100) / 100;

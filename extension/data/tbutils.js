@@ -315,7 +315,11 @@ function initwrapper (userDetails, newModSubs) {
         }
 
         if (!toolboxDevs || toolboxDevs.length < 1) {
-            getToolboxDevs();
+            // TODO: getToolboxDevs relies on TBUtils.getJSON, which is only set
+            //       after this code gets called. So, we use setTimeout to queue
+            //       the call and execute it after the methods we need are all
+            //       defined.
+            setTimeout(getToolboxDevs, 0);
         }
 
         // First run changes.
@@ -323,7 +327,7 @@ function initwrapper (userDetails, newModSubs) {
             // These need to happen for every version change
             TBUtils.firstRun = true; // for use by other modules.
             TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', TBUtils.shortVersion); // set last version to this version.
-            getToolboxDevs(); // always repopulate tb devs for each version change
+            setTimeout(getToolboxDevs, 0); // always repopulate tb devs for each version change
 
             //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 

@@ -143,7 +143,7 @@ function modbutton () {
         if (TBUtils.isNewModmail) {
             self.buttonName = 'Mod Button';
         } else {
-            self.buttonName = 'mod';
+            self.buttonName = 'M';
         }
 
         self.saveButton = 'Save';

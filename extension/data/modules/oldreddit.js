@@ -18,114 +18,124 @@ function oldReddit () {
         }
     }
 
-    function handleThing ($thing, info) {
-        const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
-        $jsApiThingPlaceholder.append('<span data-name="toolbox">');
-        const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
-        $thing.find('.entry:first .author:first').after('<span class="tb-jsapi-author-container"></span>');
-        const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
-        $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
-        const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
-
-        if (!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
-            return;
-        }
-
-        if (info.kind === 'submission') {
-            if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
-                const detailObject = {
-                    type: 'TBpost',
-                    data: {
-                        author: info.author,
-                        id: info.id,
-                        subreddit: {
-                            name: info.subreddit,
-                            type: info.subredditType,
-                        },
-                    },
-                };
-
-                dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+    function handleThing (entries, observer) {
+        entries.forEach(entry => {
+            // The observer fires for everything on page load.
+            // This makes sure that we really only act on those items that are visible.
+            if (!entry.isIntersecting) {
+                return;
             }
-            // We don't want to send events for things already handled.
-            if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-                const detailObject = {
-                    type: 'TBpostAuthor',
-                    data: {
-                        author: info.author,
-                        post: {
-                            id: info.id,
-                        },
-                        subreddit: {
-                            name: info.subreddit,
-                            type: info.subredditType,
-                        },
-                    },
-                };
 
-                dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
-            }
-        }
+            // Element is visible, we only want to handle it once. Stop observing.
+            observer.unobserve(entry.target);
+            const $thing = $(entry.target);
+            const info = TBUtils.getThingInfo($thing);
 
-        if (info.kind === 'comment') {
-            // Comment
-            if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
-                const detailObject = {
-                    type: 'TBcommentOldReddit',
-                    data: {
-                        author: info.author,
-                        post: {
-                            id: info.postID,
-                        },
-                        id: info.id,
-                        subreddit: {
-                            name: info.subreddit,
-                            type: info.subredditType,
-                        },
-                    },
-                };
+            requestAnimationFrame(() => {
+                const $jsApiThingPlaceholder = $('<div class="tb-jsapi-container"></div>').appendTo($thing.find('.entry:first'));
+                $jsApiThingPlaceholder.append('<span data-name="toolbox">');
+                const jsApiThingPlaceholder = $jsApiThingPlaceholder[0];
+                $thing.find('.entry:first .author:first').after('<span class="tb-jsapi-author-container"></span>');
+                const $jsApiPlaceholderAuthor = $thing.find('.tb-jsapi-author-container');
+                $jsApiPlaceholderAuthor.append('<span data-name="toolbox">');
+                const jsApiPlaceholderAuthor = $jsApiPlaceholderAuthor[0];
 
-                dispatchApiEvent(jsApiThingPlaceholder, detailObject);
-            }
-            // Author
-            // We don't want to send events for things already handled.
-            if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
-                const detailObject = {
-                    type: 'TBcommentAuthor',
-                    data: {
-                        author: info.author,
-                        post: {
-                            id: info.postID,
-                        },
-                        comment: {
-                            id: info.id,
-                        },
-                        subreddit: {
-                            name: info.subreddit,
-                            type: info.subredditType,
-                        },
-                    },
-                };
-                dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
-            }
-        }
+                if (!$jsApiThingPlaceholder.length || !$jsApiPlaceholderAuthor.length) {
+                    return;
+                }
+
+                if (info.kind === 'submission') {
+                    if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
+                        const detailObject = {
+                            type: 'TBpost',
+                            data: {
+                                author: info.author,
+                                id: info.id,
+                                subreddit: {
+                                    name: info.subreddit,
+                                    type: info.subredditType,
+                                },
+                            },
+                        };
+
+                        dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+                    }
+                    // We don't want to send events for things already handled.
+                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                        const detailObject = {
+                            type: 'TBpostAuthor',
+                            data: {
+                                author: info.author,
+                                post: {
+                                    id: info.id,
+                                },
+                                subreddit: {
+                                    name: info.subreddit,
+                                    type: info.subredditType,
+                                },
+                            },
+                        };
+
+                        dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
+                    }
+                }
+
+                if (info.kind === 'comment') {
+                    // Comment
+                    if (!$jsApiThingPlaceholder.hasClass('tb-frontend-container')) {
+                        const detailObject = {
+                            type: 'TBcommentOldReddit',
+                            data: {
+                                author: info.author,
+                                post: {
+                                    id: info.postID,
+                                },
+                                id: info.id,
+                                subreddit: {
+                                    name: info.subreddit,
+                                    type: info.subredditType,
+                                },
+                            },
+                        };
+
+                        dispatchApiEvent(jsApiThingPlaceholder, detailObject);
+                    }
+                    // Author
+                    // We don't want to send events for things already handled.
+                    if (!$jsApiPlaceholderAuthor.hasClass('tb-frontend-container')) {
+                        const detailObject = {
+                            type: 'TBcommentAuthor',
+                            data: {
+                                author: info.author,
+                                post: {
+                                    id: info.postID,
+                                },
+                                comment: {
+                                    id: info.id,
+                                },
+                                subreddit: {
+                                    name: info.subreddit,
+                                    type: info.subredditType,
+                                },
+                            },
+                        };
+                        dispatchApiEvent(jsApiPlaceholderAuthor, detailObject);
+                    }
+                }
+            });
+        });
     }
+
+    const viewportObserver = new IntersectionObserver(handleThing, {
+        rootMargin: '200px',
+    });
 
     function thingCrawler () {
         const $things = $('div.content .thing:not(.tb-seen) .entry').closest('.thing');
-        requestAnimationFrame(() => {
-            $things.viewportChecker({
-                classToAdd: 'tb-seen',
-                offset: -100,
-                callbackFunction (thing) {
-                    const $thing = $(thing);
-                    const info = TBUtils.getThingInfo($thing);
-                    if (info.kind === 'submission' || info.kind === 'comment') {
-                        requestAnimationFrame(() => {
-                            handleThing($thing, info);
-                        });
-                    }
-                },
+        $things.each(function () {
+            requestAnimationFrame(() => {
+                $(this).addClass('tb-seen');
+                viewportObserver.observe(this);
             });
         });
     }

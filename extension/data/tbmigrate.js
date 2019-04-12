@@ -33,6 +33,11 @@ function profileResults (name, number) {
 
 profileResults('start', start);
 
+document.addEventListener('readystatechange', event => {
+    console.log(event);
+    console.log(`readystate: ${document.readyState}`, Date.now());
+});
+
 if (location.host === 'mod.reddit.com') {
     sessionStorage.setItem('v4active', 'true');
 } else {

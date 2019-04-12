@@ -249,33 +249,95 @@ function storagewrapper () {
         };
 
         function SendInit () {
-            // Check if we are logged in and if we want to activate on old reddit as well.
-            let loggedinRedesign = false,
-                loggedinOld = false;
-
-            const $body = $('body');
-
-            // Check for redesign
-            if (($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) && !$('.mod-toolbox-rd').length) {
-                loggedinRedesign = true;
-            }
-
-            // Check for old reddit
-            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
-                loggedinOld = true;
-            }
-
             // Check if the oldreddit module is enabled and we also need to activate on old reddit.
             const oldRedditActive = getSetting('oldreddit', 'enabled', false);
+            const detail = {
+                isOldReddit: false,
+                isEmbedded: false,
+            };
 
-            if (loggedinOld && oldRedditActive || loggedinRedesign) {
-                $body.addClass('mod-toolbox-rd');
-                setTimeout(() => {
-                    profileResults('storageLoaded', performance.now());
-                    const event = new CustomEvent('TBStorageLoaded2');
-                    window.dispatchEvent(event);
-                }, 10);
+            function sendInitEvent () {
+                const event = new CustomEvent('TBStorageLoaded2', {
+                    detail,
+                });
+                window.dispatchEvent(event);
             }
+
+            function checkInitConditions (node) {
+                let continueWatching = true;
+
+                if (node.nodeName === 'BODY') {
+                    console.log('body', Date.now());
+                    console.log(node.classList.toString());
+                    if (node.classList.contains('embedded-page')) {
+                        detail.embedded = true;
+                    }
+
+                    // loggedin class, assume old reddit.
+                    if (node.classList.contains('loggedin')) {
+                        detail.oldreddit = true;
+
+                        if (node.getElementsByClassName('content').length) {
+                            console.log('old reddit body and content div is already there');
+                            sendInitEvent();
+                            continueWatching = false;
+                        }
+                    } else {
+                        console.log('assume new reddit or new modmail.');
+                        sendInitEvent();
+                        // No need to watch any longer at this point.
+                        continueWatching = false;
+                    }
+
+                    // No need to continue watching
+                    if (!oldRedditActive && detail.oldreddit) {
+                        console.log('old reddit but toolbox disabled.');
+                        continueWatching = false;
+                    }
+                }
+
+                // For old reddit we wait for the div with `content` class to be there. This makes things easier later down the line.
+                if (detail.oldreddit && node.nodeName === 'DIV' && node.classList && node.classList.length && node.classList.contains('content')) {
+                    if (oldRedditActive) {
+                        console.log('old reddit content div found.');
+                        sendInitEvent();
+                    }
+                    // No need to watch any longer at this point. Disconnect observer.
+                    continueWatching = false;
+                }
+
+                return continueWatching;
+            }
+
+            const initObserver = new MutationObserver((mutations, observer) => {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (!checkInitConditions(node)) {
+                            observer.disconnect();
+                        }
+                    });
+                });
+            });
+
+            // configuration of the observer:
+            // We specifically want all child elements but nothing else.
+            const initObserveConfig = {
+                attributes: false,
+                childList: true,
+                characterData: false,
+                subtree: true,
+            };
+
+            if (!document.body) {
+                console.log('no body yet. Start observer');
+                initObserver.observe(document, initObserveConfig);
+            } else {
+                console.log('Body is already there, check if we still need to further observe');
+                if (checkInitConditions(document.body)) {
+                    initObserver.observe(document, initObserveConfig);
+                }
+            }
+            // pass in the target node, as well as the observer options;
         }
 
         function purify (input) {

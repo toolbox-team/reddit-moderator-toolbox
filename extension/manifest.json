@@ -43,6 +43,10 @@
                 "http://*.reddit.com/*",
                 "https://*.reddit.com/*"
             ],
+            "exclude_matches" : [
+                "http://*.reddit.com/chat/*",
+                "https://*.reddit.com/chat/*"
+            ],
             "js": [
                 "data/tbmigrate.js",
                 "data/libs/jquery-3.3.1.min.js",
@@ -66,44 +70,7 @@
                 "data/libs/codemirror/mode/markdown.js",
                 "data/libs/codemirror/mode/yaml.js",
                 "data/libs/codemirror/mode/javascript.js",
-                "data/libs/pako.js"
-            ]
-        },
-        {
-            "run_at": "document_end",
-            "all_frames": true,
-            "matches": [
-                "http://*.reddit.com/*",
-                "https://*.reddit.com/*"
-            ],
-            "css": [
-                "data/styles/toolbox.css",
-                "data/styles/tbui.css",
-                "data/styles/devtools.css",
-                "data/styles/support.css",
-                "data/styles/comment.css",
-                "data/styles/old_comment.css",
-                "data/styles/newmodmailpro.css",
-                "data/styles/removalreasons.css",
-                "data/styles/nukecomments.css",
-                "data/styles/personalnotes.css",
-                "data/styles/queuetools.css",
-                "data/styles/old_queuetools.css",
-                "data/styles/modbar.css",
-                "data/styles/historybutton.css",
-                "data/styles/notifier.css",
-                "data/styles/usernotes.css",
-                "data/styles/config.css",
-                "data/styles/profile.css",
-                "data/styles/modmatrix.css",
-                "data/styles/codemirror/codemirror.css",
-                "data/styles/codemirror/dialog.css",
-                "data/styles/codemirror/fullscreen.css",
-                "data/styles/codemirror/matchesonscrollbar.css",
-                "data/styles/codemirror/show-hint.css",
-                "data/styles/codemirror/themes.css"
-            ],
-            "js": [
+                "data/libs/pako.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbui.js",
@@ -137,6 +104,33 @@
                 "data/modules/queuetools.js",
                 "data/modules/oldreddit.js",
                 "data/tbmoduleinit.js"
+            ],
+            "css": [
+                "data/styles/toolbox.css",
+                "data/styles/tbui.css",
+                "data/styles/devtools.css",
+                "data/styles/support.css",
+                "data/styles/comment.css",
+                "data/styles/old_comment.css",
+                "data/styles/newmodmailpro.css",
+                "data/styles/removalreasons.css",
+                "data/styles/nukecomments.css",
+                "data/styles/personalnotes.css",
+                "data/styles/queuetools.css",
+                "data/styles/old_queuetools.css",
+                "data/styles/modbar.css",
+                "data/styles/historybutton.css",
+                "data/styles/notifier.css",
+                "data/styles/usernotes.css",
+                "data/styles/config.css",
+                "data/styles/profile.css",
+                "data/styles/modmatrix.css",
+                "data/styles/codemirror/codemirror.css",
+                "data/styles/codemirror/dialog.css",
+                "data/styles/codemirror/fullscreen.css",
+                "data/styles/codemirror/matchesonscrollbar.css",
+                "data/styles/codemirror/show-hint.css",
+                "data/styles/codemirror/themes.css"
             ]
         }
     ],

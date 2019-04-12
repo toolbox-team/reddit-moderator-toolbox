@@ -1,4 +1,4 @@
-function initwrapper (userDetails, newModSubs) {
+function initwrapper (userDetails, newModSubs, redditDetails) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
         // We need these before we can do anything.
@@ -108,8 +108,8 @@ function initwrapper (userDetails, newModSubs) {
         let gettingModSubs = false;
         // Public variables
 
-        TBUtils.isOldReddit = $('#header').length;
-        TBUtils.isEmbedded = $('body').hasClass('embedded-page');
+        TBUtils.isOldReddit = redditDetails.isOldReddit;
+        TBUtils.isEmbedded = redditDetails.isEmbedded;
 
         TBUtils.isEditUserPage = location.pathname.match(/\/about\/(?:contributors|moderator|banned)\/?/);
         TBUtils.isModmail = location.pathname.match(/(\/message\/(?:moderator)\/?)|(\/r\/.*?\/about\/message\/inbox\/?)/);
@@ -3112,7 +3112,7 @@ function initwrapper (userDetails, newModSubs) {
                     newMMobserver.disconnect();
                 }, 2000);
             });
-        } else if ($('#header').length) {
+        } else if (TBUtils.isOldReddit) {
             let newThingRunning = false;
             // NER, load more comments, and mod frame support.
             const target = document.querySelector('div.content');
@@ -3304,7 +3304,8 @@ function initwrapper (userDetails, newModSubs) {
             });
         });
     }
-    window.addEventListener('TBStorageLoaded2', async () => {
+    window.addEventListener('TBStorageLoaded2', async loadEvent => {
+        console.log(loadEvent);
         profileResults('utilsStart', performance.now());
         try {
             const userDetails = await getUserDetails();
@@ -3312,13 +3313,13 @@ function initwrapper (userDetails, newModSubs) {
             if (modSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, subs => {
-                    initwrapper(userDetails, subs);
+                    initwrapper(userDetails, subs, loadEvent.detail);
                     profileResults('utilsLoaded', performance.now());
                     const event = new CustomEvent('TBUtilsLoaded2');
                     window.dispatchEvent(event);
                 });
             } else {
-                initwrapper(userDetails);
+                initwrapper(userDetails, false, loadEvent.detail);
                 profileResults('utilsLoaded', performance.now());
                 const event = new CustomEvent('TBUtilsLoaded2');
                 window.dispatchEvent(event);

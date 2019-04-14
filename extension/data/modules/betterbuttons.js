@@ -314,11 +314,11 @@ function betterbuttons () {
     self.initAddRemoveButtons = function initRemoveButtons () {
     // only need to iterate if at least one of the options is enabled
         const $things = $('.thing.link:not(.tb-removebuttons-checked)');
-        TBUtils.forEachChunkedDynamic($things, function (item) {
+        TBUtils.forEachChunkedDynamic($things, item => {
             const $thing = $(item);
             $thing.addClass('tb-removebuttons-checked');
 
-            const thing = TBUtils.getThingInfo(this, true);
+            const thing = TBUtils.getThingInfo(item, true);
 
             if (self.setting('spamRemoved')) {
             // only for subreddits we mod

@@ -23,6 +23,11 @@ function modbar () {
         default: true,
         title: 'Show Moderated Subreddits in the modbar',
     });
+    self.register_setting('enableOldNewToggle', {
+        type: 'boolean',
+        default: true,
+        title: 'Include a button in the modbar to swap between old and new Reddit',
+    });
     self.register_setting('shortcuts', {
         type: 'map',
         default: {},
@@ -100,6 +105,7 @@ function modbar () {
               compactHide = self.setting('compactHide'),
               unmoderatedOn = self.setting('unmoderatedOn'),
               enableModSubs = self.setting('enableModSubs'),
+              enableOldNewToggle = self.setting('enableOldNewToggle'),
               customCSS = self.setting('customCSS'),
 
               debugMode = TBUtils.debugMode,
@@ -373,6 +379,28 @@ function modbar () {
                 // only show the button once it's populated.
                 $('#tb-toolbar-mysubs').show();
             });
+        }
+
+        // Swap old/new reddit button
+        if (enableOldNewToggle && !TBUtils.isNewModmail) {
+            let url = window.location.href.replace(/^http:/, 'https:'),
+                directingTo;
+            if (url.startsWith('https://old.')) {
+                url = url.replace('old.', 'www.');
+                directingTo = 'new Reddit';
+            } else if (url.startsWith('https://new.')) {
+                url = url.replace('new.', 'www.');
+                directingTo = 'old Reddit';
+            } else {
+                // Redirect to old Reddit on the redesign, new Reddit otherwise
+                const onRedesign = $('#2x-container').length;
+                url = url.replace(/https:\/\/.*?\.reddit/, onRedesign ? 'https://old.reddit' : 'https://new.reddit');
+                directingTo = onRedesign ? 'old Reddit' : 'new Reddit';
+            }
+            // Append the link
+            $('#tb-bottombar-contentleft').append(`
+                <a href="${url}" id="tb-old-new-reddit-toggle" class="tb-modbar-button" title="View this page in ${directingTo}">Open in ${directingTo}</a>
+            `);
         }
 
         if (TBUtils.firstRun) {

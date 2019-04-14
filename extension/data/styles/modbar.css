@@ -80,8 +80,14 @@
     background: #9FBAD6;
 }
 
+/* Individual button ordering */
+.mod-toolbox-rd #tb-toolbar-mysubs {order: 0} /* Moderated subreddits */
+.mod-toolbox-rd #tb-old-new-reddit-button {order: 1} /* Old/new Reddit toggle */
+.mod-toolbox-rd #tb-personal-notes-button {order: 2} /* Personal notes */
+
 /* User-defined shortcut list */
 .mod-toolbox-rd #tb-toolbarshortcuts {
+    order: 99; /* This has to be after all the other buttons */
     display: flex;
     align-items: center;
     margin-left: 6px;

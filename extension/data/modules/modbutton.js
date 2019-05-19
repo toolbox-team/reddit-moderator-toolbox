@@ -345,7 +345,7 @@ function modbutton () {
 
                 // Show if current user is banned, and why. - thanks /u/LowSociety
                 // TODO: Display *when* they were banned, along with ban note. #194
-                const data = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user});
+                const data = await TBUtils.getJSON(`/r/${subreddit}/about/banned/.json`, {user});
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
                 for (let i = 0; i < banned.length; i++) {
@@ -362,7 +362,7 @@ function modbutton () {
                         $popup.find('.tb-popup-title').css('color', 'red');
 
                         // get the mod who banned them (need to pull request to get this in the banlist data to avoid this kind of stupid request)
-                        const logData = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/log/.json`, {
+                        const logData = await TBUtils.getJSON(`/r/${subreddit}/about/log/.json`, {
                             type: 'banuser',
                             limit: '1000',
                         });
@@ -687,7 +687,7 @@ function modbutton () {
                 return;
             }
 
-            const resp = await TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/flairlist.json?name=${user}`);
+            const resp = await TBUtils.getJSON(`/r/${subreddit}/api/flairlist.json?name=${user}`);
             if (!resp || !resp.users || resp.users.length < 1) {
                 return;
             }

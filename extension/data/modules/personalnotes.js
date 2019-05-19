@@ -178,7 +178,7 @@ function personalnotes () {
                     </tr></table>`;
 
                         // Lets get a list of notes!
-                        TBUtils.getJSON(`${TBUtils.baseDomain}/r/${notewiki}/wiki/pages.json`)
+                        TBUtils.getJSON(`/r/${notewiki}/wiki/pages.json`)
                             .then(json => {
                                 notesArray = [];
                                 let notesList;
@@ -244,7 +244,7 @@ function personalnotes () {
 
             const confirmDelete = confirm(`This will de-list "${page}", are you sure?`);
             if (confirmDelete) {
-                TBUtils.post(`${TBUtils.baseDomain}/r/${notewiki}/wiki/settings/`, {
+                TBUtils.post(`/r/${notewiki}/wiki/settings/`, {
                     page: `notes/${page}`,
                     listed: false,
                     permlevel: 2,

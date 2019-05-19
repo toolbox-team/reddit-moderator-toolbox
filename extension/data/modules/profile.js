@@ -161,7 +161,7 @@ function profilepro () {
         }
 
         function addTrophiesToSidebar (user, $sidebar) {
-            const inputURL = `${TBUtils.baseDomain}/user/${user}/trophies.json`;
+            const inputURL = `/user/${user}/trophies.json`;
             TBUtils.getJSON(inputURL).then(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
@@ -199,7 +199,7 @@ function profilepro () {
         }
 
         function addModSubsToSidebar (user, $sidebar) {
-            const inputURL = `${TBUtils.baseDomain}/user/${user}/moderated_subreddits.json`;
+            const inputURL = `/user/${user}/moderated_subreddits.json`;
             TBUtils.getJSON(inputURL).then(data => {
                 if (Object.keys(data).length > 0 && data.constructor === Object) {
                     TBStorage.purifyObject(data);
@@ -259,7 +259,7 @@ function profilepro () {
         }
         function makeUserSidebar (user, $overlay) {
             const $tabWrapper = $overlay.find('.tb-window-tabs-wrapper');
-            const inputURL = `${TBUtils.baseDomain}/user/${user}/about.json`;
+            const inputURL = `/user/${user}/about.json`;
             TBUtils.getJSON(inputURL).then(data => {
                 TBStorage.purifyObject(data);
                 const userThumbnail = data.data.icon_img,
@@ -296,7 +296,7 @@ function profilepro () {
             if (!subredditPattern && !searchPattern) {
                 return callback(false);
             }
-            const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
+            const inputURL = `/user/${user}/${type}.json`;
             TBUtils.getJSON(inputURL, {
                 raw_json: 1,
                 after,
@@ -572,7 +572,7 @@ function profilepro () {
             }
 
             TBui.switchOverlayTab('tb-profile-overlay', type);
-            const inputURL = `${TBUtils.baseDomain}/user/${user}/${type}.json`;
+            const inputURL = `/user/${user}/${type}.json`;
             TBUtils.getJSON(inputURL, {
                 raw_json: 1,
                 after,

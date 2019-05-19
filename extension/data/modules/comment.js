@@ -408,7 +408,7 @@ function comments () {
             TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
 
             // construct the url from which we grab the comments json.
-            const jsonurl = `${TBUtils.baseDomain}${location.pathname}.json`;
+            const jsonurl = `${location.pathname}.json`;
             TB.ui.textFeedback('Fetching comment data.', TBui.FEEDBACK_NEUTRAL);
             // Lets get the comments.
             const data = await TBUtils.getJSON(`${jsonurl}.json?limit=1500`, {raw_json: 1});
@@ -482,8 +482,8 @@ function comments () {
                 const commentID = $this.attr('data-comment-id');
                 // Grab the url.
                 let contextUrl = $this.attr('data-context-json-url');
-                if (contextUrl.indexOf('.reddit.com') < 0) {
-                    contextUrl = `${TBUtils.baseDomain}${contextUrl}`;
+                if (contextUrl.indexOf('.reddit.com') >= 0) {
+                    contextUrl = contextUrl.replace(/https?:\/\/[^.]+\.reddit\.com/, '');
                 }
 
                 // Get the context

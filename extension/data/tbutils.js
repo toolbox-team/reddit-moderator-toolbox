@@ -1314,7 +1314,7 @@ function initwrapper (userDetails, newModSubs) {
             }
 
             function getSubs (URL) {
-                TBUtils.getJSON(TBUtils.baseDomain + URL).then(json => {
+                TBUtils.getJSON(URL).then(json => {
                     TBStorage.purifyObject(json);
                     getSubsResult(json.data.children, json.data.after);
                 });
@@ -1613,7 +1613,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.getApiThingInfo = function (id, subreddit, modCheck, callback) {
             if (id.startsWith('t4_')) {
                 const shortID = id.substr(3);
-                TBUtils.getJSON(`${TBUtils.baseDomain}/message/messages/${shortID}.json`).then(response => {
+                TBUtils.getJSON(`/message/messages/${shortID}.json`).then(response => {
                     TBStorage.purifyObject(response);
                     const message = findMessage(response, shortID);
                     const body = message.data.body,
@@ -1657,7 +1657,7 @@ function initwrapper (userDetails, newModSubs) {
                 });
             } else {
                 const permaCommentLinkRegex = /(\/r\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-                TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/api/info.json`, {id}).then(response => {
+                TBUtils.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
                     TBStorage.purifyObject(response);
                     const data = response.data;
 
@@ -1948,13 +1948,13 @@ function initwrapper (userDetails, newModSubs) {
          * @param {boolean?} options.sendOAuthToken If true, the `Authorization`
          * header will be set with the OAuth access token for the logged-in user
          */
-        TBUtils.sendRequest = ({method, url, data, sendOAuthToken}) => new Promise((resolve, reject) => {
+        TBUtils.sendRequest = ({method, endpoint, data, oauth}) => new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
                 method,
-                url,
+                endpoint,
                 data,
-                sendOAuthToken,
+                oauth,
             }, response => {
                 if (response.errorThrown !== undefined) {
                     reject(response);
@@ -1972,7 +1972,7 @@ function initwrapper (userDetails, newModSubs) {
          * @param {string} url The full URL to request
          * @param {object} data Query parameters as an object
          */
-        TBUtils.getJSON = (url, data) => TBUtils.sendRequest({method: 'GET', url, data})
+        TBUtils.getJSON = (endpoint, data) => TBUtils.sendRequest({method: 'GET', endpoint, data})
             .then(response => response.data)
             .catch(response => {
                 throw response.jqXHR;
@@ -2003,7 +2003,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.getHead = (endpoint, doneCallback) => {
             TBUtils.sendRequest({
                 method: 'HEAD',
-                url: TBUtils.baseDomain + endpoint,
+                endpoint,
             }).then(response => {
                 // data isn't needed; just the tip
                 doneCallback(response.status, response.jqXHR);
@@ -2018,10 +2018,10 @@ function initwrapper (userDetails, newModSubs) {
          * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthRequest = (method, endpoint, data) => TBUtils.sendRequest({
-            url: `https://oauth.reddit.com/${endpoint}`,
+            endpoint,
             method,
             data,
-            sendOAuthToken: true,
+            oauth: true,
         });
         /**
          * Sends an authenticated POST request against the OAuth API.
@@ -2081,7 +2081,7 @@ function initwrapper (userDetails, newModSubs) {
                 data = data.replace(/\t/g, '    ');
             }
 
-            TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/api/wiki/edit`, {
+            TBUtils.post(`/r/${subreddit}/api/wiki/edit`, {
                 content: data,
                 page,
                 reason,
@@ -2103,7 +2103,7 @@ function initwrapper (userDetails, newModSubs) {
 
                     setTimeout(() => {
                         // Set page access to 'mod only'.
-                        TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
+                        TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
                             page,
                             listed: true, // hrm, may need to make this a config setting.
                             permlevel: 2,
@@ -2133,7 +2133,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
             // We need to demangle the JSON ourselves, so we have to go about it this way :(
             TBUtils.sendRequest({
-                url: `${TBUtils.baseDomain}/r/${subreddit}/wiki/${page}.json`,
+                url: `/r/${subreddit}/wiki/${page}.json`,
             }).then(({data}) => {
                 const wikiData = data.data.content_md;
                 if (!wikiData) {
@@ -2182,7 +2182,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getBanState = function (subreddit, user, callback) {
-            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subreddit}/about/banned/.json`, {user}).then(data => {
+            TBUtils.getJSON(`/r/${subreddit}/about/banned/.json`, {user}).then(data => {
                 TBStorage.purifyObject(data);
                 const banned = data.data.children;
 
@@ -2196,7 +2196,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/flair`, {
+            TBUtils.post(`/api/flair`, {
                 api_type: 'json',
                 link: postLink,
                 text,
@@ -2217,7 +2217,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/flair`, {
+            TBUtils.post(`/api/flair`, {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
@@ -2249,7 +2249,7 @@ function initwrapper (userDetails, newModSubs) {
                 }
             }
 
-            TBUtils.post(`${TBUtils.baseDomain}/api/friend`, {
+            TBUtils.post(`/api/friend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -2272,7 +2272,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unfriendUser = function (user, action, subreddit, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/unfriend`, {
+            TBUtils.post(`/api/unfriend`, {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -2292,7 +2292,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.distinguishThing = function (id, sticky, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/distinguish/yes`, {
+            TBUtils.post(`/api/distinguish/yes`, {
                 id,
                 sticky,
                 uh: TBUtils.modhash,
@@ -2310,7 +2310,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.approveThing = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/approve`, {
+            TBUtils.post(`/api/approve`, {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2327,7 +2327,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.removeThing = function (id, spam, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/remove`, {
+            TBUtils.post(`/api/remove`, {
                 uh: TBUtils.modhash,
                 id,
                 spam,
@@ -2345,7 +2345,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markOver18 = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/marknsfw`, {
+            TBUtils.post(`/api/marknsfw`, {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2362,7 +2362,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unMarkOver18 = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/unmarknsfw`, {
+            TBUtils.post(`/api/unmarknsfw`, {
                 uh: TBUtils.modhash,
                 id,
             })
@@ -2379,7 +2379,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.lockThread = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/lock`, {
+            TBUtils.post(`/api/lock`, {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2396,7 +2396,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unlockThread = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/unlock`, {
+            TBUtils.post(`/api/unlock`, {
                 uh: TBUtils.modhash,
                 id,
             })
@@ -2417,7 +2417,7 @@ function initwrapper (userDetails, newModSubs) {
                 state = true;
             }
 
-            TBUtils.post(`${TBUtils.baseDomain}/api/set_subreddit_sticky`, {
+            TBUtils.post(`/api/set_subreddit_sticky`, {
                 id,
                 state,
                 uh: TBUtils.modhash,
@@ -2439,7 +2439,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postComment = function (parent, text, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/comment`, {
+            TBUtils.post(`/api/comment`, {
                 parent,
                 uh: TBUtils.modhash,
                 text,
@@ -2470,7 +2470,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postLink = function (link, title, subreddit, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/submit`, {
+            TBUtils.post(`/api/submit`, {
                 kind: 'link',
                 resubmit: 'true',
                 url: link,
@@ -2505,7 +2505,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/compose`, {
+            TBUtils.post(`/api/compose`, {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
                 text: message,
@@ -2538,7 +2538,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendPM = function (to, subject, message, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/compose`, {
+            TBUtils.post(`/api/compose`, {
                 to,
                 uh: TBUtils.modhash,
                 subject,
@@ -2557,7 +2557,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markMessageRead = function (id, callback) {
-            TBUtils.post(`${TBUtils.baseDomain}/api/read_message`, {
+            TBUtils.post(`/api/read_message`, {
                 api_type: 'json',
                 id,
                 uh: TBUtils.modhash,
@@ -2569,7 +2569,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.aboutUser = function (user, callback) {
-            TBUtils.getJSON(`${TBUtils.baseDomain}/user/${user}/about.json`, {
+            TBUtils.getJSON(`/user/${user}/about.json`, {
                 uh: TBUtils.modhash,
             })
                 .then(response => {
@@ -2586,7 +2586,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getLastActive = function (user, callback) {
-            TBUtils.getJSON(`${TBUtils.baseDomain}/user/${user}.json?limit=1&sort=new`, {
+            TBUtils.getJSON(`/user/${user}.json?limit=1&sort=new`, {
                 uh: TBUtils.modhash,
             })
                 .then(response => {
@@ -2603,7 +2603,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.getRules = function (sub, callback) {
-            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/rules.json`, {
+            TBUtils.getJSON(`/r/${sub}/about/rules.json`, {
                 uh: TBUtils.modhash,
             })
                 .then(response => {
@@ -2621,7 +2621,7 @@ function initwrapper (userDetails, newModSubs) {
 
         TBUtils.getReportReasons = function (postURL, callback) {
             $.log('getting reports', false, SHORTNAME);
-            TBUtils.getJSON(`${TBUtils.baseDomain + postURL}.json?limit=1`, {
+            TBUtils.getJSON(`${postURL}.json?limit=1`, {
                 uh: TBUtils.modhash,
             })
                 .then(response => {
@@ -2838,7 +2838,7 @@ function initwrapper (userDetails, newModSubs) {
 
         // private functions
         function setWikiPrivate (subreddit, page, failAlert) {
-            TBUtils.post(`${TBUtils.baseDomain}/r/${subreddit}/wiki/settings/`, {
+            TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
                 page,
                 listed: true, // hrm, may need to make this a config setting.
                 permlevel: 2,
@@ -2857,7 +2857,7 @@ function initwrapper (userDetails, newModSubs) {
         }
 
         function getToolboxDevs () {
-            TBUtils.getJSON(`${TBUtils.baseDomain}/r/toolbox/about/moderators.json`).then(resp => {
+            TBUtils.getJSON(`/r/toolbox/about/moderators.json`).then(resp => {
                 TBStorage.purifyObject(resp);
                 const children = resp.data.children,
                       devs = [];
@@ -3250,7 +3250,7 @@ function initwrapper (userDetails, newModSubs) {
         let modSubs = [];
         chrome.runtime.sendMessage({
             action: 'tb-request',
-            url: 'https://www.reddit.com/subreddits/mine/moderator.json',
+            endpoint: '/subreddits/mine/moderator.json',
             data: {
                 after,
                 limit: 100,
@@ -3284,7 +3284,7 @@ function initwrapper (userDetails, newModSubs) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
-                url: 'https://www.reddit.com/api/me.json',
+                endpoint: '/api/me.json',
             }, response => {
                 const {errorThrown, data, jqXHR, textStatus} = response;
                 if (errorThrown) {

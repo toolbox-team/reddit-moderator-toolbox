@@ -218,7 +218,7 @@ function modmatrix () {
             const subredditNames = this.subredditName.split('+');
 
             for (let i = 0; i < subredditNames.length; i++) {
-                TBUtils.getJSON(`${TBUtils.baseDomain}/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
+                TBUtils.getJSON(`/r/${subredditNames[i]}/about/moderators.json`).then(moderatorData => {
                     TBStorage.purifyObject(moderatorData);
                     for (let j = 0; j < moderatorData.data.children.length; j++) {
                         $(`#modmatrixmodfilter-${moderatorData.data.children[j].name}`).prop('checked', 'checked');
@@ -770,7 +770,7 @@ ${renderedMarkdown}
         $body.on('click', '.activate-comment-load', function () {
             loadComments = true;
             $(this).hide();
-            const modlogUrl = `${TBUtils.baseDomain}${location.pathname}.json${location.search}`;
+            const modlogUrl = `${location.pathname}.json${location.search}`;
             getComments(modlogUrl);
         });
 
@@ -779,7 +779,7 @@ ${renderedMarkdown}
             if (loadComments && nerActive) {
                 const linkUrl = new URL(location);
                 linkUrl.searchParams.set('after', lastAfter);
-                const modlogUrl = `${TBUtils.baseDomain}${linkUrl.pathname}.json${linkUrl.search}`;
+                const modlogUrl = `${linkUrl.pathname}.json${linkUrl.search}`;
                 getComments(modlogUrl);
             }
         });

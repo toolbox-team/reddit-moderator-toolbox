@@ -1593,7 +1593,7 @@
         let processCount = 0;
         TB.ui.longLoadSpinner(true); // We are doing stuff, fire up the spinner that isn't a spinner!
         commentIDs.forEach(id => {
-            const fetchUrl = `${TBUtils.baseDomain}/${threadPermalink}${id}.json?limit=1500`;
+            const fetchUrl = `/${threadPermalink}${id}.json?limit=1500`;
             // Lets get the comments.
             TBUtils.getJSON(fetchUrl, {raw_json: 1}).then(data => {
                 TBStorage.purifyObject(data);

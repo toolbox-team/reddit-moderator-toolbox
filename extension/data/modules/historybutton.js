@@ -335,7 +335,7 @@ function historybutton () {
     self.showAuthorInformation = async function (author) {
         const $contentBox = self.fetched[author].popup;
 
-        const d = await TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/about.json`);
+        const d = await TBUtils.getJSON(`/user/${author}/about.json`);
         TBStorage.purifyObject(d);
         const joinedDate = new Date(d.data.created_utc * 1000),
               redditorTime = TBUtils.niceDateDiff(joinedDate);
@@ -424,7 +424,7 @@ function historybutton () {
 
         TB.ui.longLoadNonPersistent(true);
 
-        TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/submitted.json`, {
+        TBUtils.getJSON(`/user/${author}/submitted.json`, {
             after,
             sort: 'new',
             limit: 100,
@@ -737,7 +737,7 @@ function historybutton () {
         $contentBox.find('.tb-history-comment-stats').show();
         $commentTable.append(`<tr><td colspan="6" class="error">Loading... (${user.counters.comments})</td></tr>`);
 
-        TBUtils.getJSON(`${TBUtils.baseDomain}/user/${author}/comments.json`, {
+        TBUtils.getJSON(`/user/${author}/comments.json`, {
             after,
             sort: 'new',
             limit: 100,

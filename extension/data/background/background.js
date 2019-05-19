@@ -185,9 +185,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
          * @param {boolean?} sendOAuthToken If true, the `Authorization` header
          * will be set with the OAuth access token for the logged-in user
          */
-        const {method, url, data, sendOAuthToken} = request;
-        const options = {method, url, data}; // The options for the AJAX call
-        if (sendOAuthToken) {
+        const {method, endpoint, data, oauth} = request;
+        if (!endpoint.startsWith('/')) {
+            // Old code used to send a full URL to these methods, so this check
+            // is to identify old uses of the code
+            return sendResponse({errorThrown: `Request endpoint '${endpoint}' does not start with a slash`});
+        }
+
+        const host = `https://${oauth ? 'oauth' : 'old'}.reddit.com`;
+        const options = {
+            method,
+            url: host + endpoint,
+            data,
+        };
+
+        if (oauth) {
             // We have to get the OAuth token before we can send it
             getOAuthTokens().then(tokens => {
                 // Set beforeSend to add the header

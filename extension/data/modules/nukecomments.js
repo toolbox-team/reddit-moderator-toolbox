@@ -46,7 +46,7 @@ function nukecomments () {
             const subreddit = $this.attr('data-subreddit');
             const positions = TBui.drawPosition(event);
 
-            const fetchURL = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${commentID}.json?limit=1500`;
+            const fetchURL = `/r/${subreddit}/comments/${postID}/slug/${commentID}.json?limit=1500`;
 
             const $popupContents = $(`<div class="tb-nuke-popup-content">
                 <div class="tb-nuke-feedback">Fetching all comments belonging to chain.</div>
@@ -196,7 +196,7 @@ function nukecomments () {
                 let processCount = 0;
 
                 commentIDs.forEach(id => {
-                    const fetchUrl = `${TBUtils.baseDomain}/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
+                    const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
                     TBUtils.getJSON(fetchUrl, {raw_json: 1}).then(data => {
                         TBStorage.purifyObject(data);

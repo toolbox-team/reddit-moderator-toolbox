@@ -15,8 +15,10 @@
         }
     },
     "permissions": [
-        "https://*.reddit.com/",
-        "http://*.reddit.com/",
+        "https://www.reddit.com/",
+        "https://old.reddit.com/",
+        "https://new.reddit.com/",
+        "https://oauth.reddit.com/",
         "cookies",
         "tabs",
         "storage",

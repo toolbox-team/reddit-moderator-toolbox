@@ -224,8 +224,8 @@ function queuetoolsOld () {
                 const $this = $(this);
                 // Grab the url.
                 let contextUrl = $this.attr('href');
-                if (contextUrl.indexOf('.reddit.com') < 0) {
-                    contextUrl = TBUtils.baseDomain + contextUrl;
+                if (contextUrl.indexOf('.reddit.com') >= 0) {
+                    contextUrl = contextUrl.replace(/https?:\/\/[^.]+\.reddit\.com/, '');
                 }
                 // Grab the subreddit.
                 const contextThingInfo = TBUtils.getThingInfo($this.closest('.thing'), false);
@@ -867,7 +867,7 @@ function queuetoolsOld () {
                         }
 
                         function updateModqueueCount (sr) {
-                            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sr}/about/${page}.json?limit=100`).then(d => {
+                            TBUtils.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
@@ -1035,7 +1035,7 @@ function queuetoolsOld () {
         const highlightEnabled = TB.storage.getSetting('Comments', 'highlighted', []);
         function getAutomodActionReason (sub) {
             self.log(sub);
-            TBUtils.getJSON(`${TBUtils.baseDomain}/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).then(json => {
+            TBUtils.getJSON(`/r/${sub}/about/log/.json?limit=100&mod=AutoModerator`).then(json => {
                 TBStorage.purifyObject(json);
                 $.each(json.data.children, (i, value) => {
                     const actionReasonText = value.data.details,

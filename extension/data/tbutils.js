@@ -1943,10 +1943,11 @@ function initwrapper (userDetails, newModSubs) {
          * Sends a generic HTTP request through the background page.
          * @param {object} options The options for the AJAX request
          * @param {string} options.method The HTTP method to use for the request
-         * @param {string} options.url The full URL to request
+         * @param {string} options.endpoint The path of the URL to request
          * @param {object} options.data Query parameters as an object
-         * @param {boolean?} options.sendOAuthToken If true, the `Authorization`
-         * header will be set with the OAuth access token for the logged-in user
+         * @param {boolean?} options.oauth If true, the request will be sent on
+         * oauth.reddit.com, and the `Authorization` header will be set with the
+         * OAuth access token for the logged-in user
          */
         TBUtils.sendRequest = ({method, endpoint, data, oauth}) => new Promise((resolve, reject) => {
             chrome.runtime.sendMessage({
@@ -1969,7 +1970,7 @@ function initwrapper (userDetails, newModSubs) {
          * full response object on error. Maintains an API similar to
          * `$.getJSON()` because that's what all these calls used before Chrome
          * forced us to make all requests in the background.
-         * @param {string} url The full URL to request
+         * @param {string} endpoint The endpoint to request
          * @param {object} data Query parameters as an object
          */
         TBUtils.getJSON = (endpoint, data) => TBUtils.sendRequest({method: 'GET', endpoint, data})
@@ -1981,7 +1982,7 @@ function initwrapper (userDetails, newModSubs) {
         /**
          * Performs a POST request and promises the body of the response, or the
          * full response object on error. Maintains an API similar to `$.post`.
-         * @param {string} url The full URL to request
+         * @param {string} endpoint The endpoint to request
          * @param {object} data The body of the request.
          */
         TBUtils.post = (url, data) => TBUtils.sendRequest({
@@ -1994,7 +1995,7 @@ function initwrapper (userDetails, newModSubs) {
 
         /**
          * Perform a HEAD request.
-         * @param {string} endpoint The endpoint to hit (base domain is added)
+         * @param {string} endpoint The endpoint to request
          * @param {callback} doneCallback
          * @returns {callback}
          * @TODO Implement with promises (consumers need to be updated)
@@ -2014,7 +2015,7 @@ function initwrapper (userDetails, newModSubs) {
          * Sends an authenticated request against the OAuth API from the
          * background page.
          * @param {string} method An HTTP verb
-         * @param {string} endpoint The path to request
+         * @param {string} endpoint The endpoint to request
          * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthRequest = (method, endpoint, data) => TBUtils.sendRequest({
@@ -2025,13 +2026,13 @@ function initwrapper (userDetails, newModSubs) {
         });
         /**
          * Sends an authenticated POST request against the OAuth API.
-         * @param {string} endpoint The path to request
+         * @param {string} endpoint The endpoint to request
          * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthPOST = TBUtils.apiOauthRequest.bind(null, 'POST');
         /**
          * Sends an authenticated GET request against the OAuth API.
-         * @param {string} endpoint The path to request
+         * @param {string} endpoint The endpoint to request
          * @param {object} data Query parameters as an object
          */
         TBUtils.apiOauthGET = TBUtils.apiOauthRequest.bind(null, 'GET');

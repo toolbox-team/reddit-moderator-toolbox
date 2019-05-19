@@ -1943,7 +1943,7 @@ function initwrapper (userDetails, newModSubs) {
          * Sends a generic HTTP request through the background page.
          * @param {object} options The options for the AJAX request
          * @param {string} options.method The HTTP method to use for the request
-         * @param {string} options.endpoint The path of the URL to request
+         * @param {string} options.endpoint The endpoint to request
          * @param {object} options.data Query parameters as an object
          * @param {boolean?} options.oauth If true, the request will be sent on
          * oauth.reddit.com, and the `Authorization` header will be set with the

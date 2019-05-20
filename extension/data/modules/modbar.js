@@ -393,9 +393,8 @@ function modbar () {
                 directingTo = 'old Reddit';
             } else {
                 // Redirect to old Reddit on the redesign, new Reddit otherwise
-                const onRedesign = $('#2x-container').length;
-                url = url.replace(/https:\/\/.*?\.reddit/, onRedesign ? 'https://old.reddit' : 'https://new.reddit');
-                directingTo = onRedesign ? 'old Reddit' : 'new Reddit';
+                url = url.replace(/https:\/\/.*?\.reddit/, TBUtils.isOldReddit ? 'https://new.reddit' : 'https://old.reddit');
+                directingTo = TBUtils.isOldReddit ? 'new Reddit' : 'old Reddit';
             }
             // Append the link
             $('#tb-bottombar-contentleft').append(`

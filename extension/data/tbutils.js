@@ -1985,9 +1985,9 @@ function initwrapper (userDetails, newModSubs) {
          * @param {string} endpoint The endpoint to request
          * @param {object} data The body of the request.
          */
-        TBUtils.post = (url, data) => TBUtils.sendRequest({
+        TBUtils.post = (endpoint, data) => TBUtils.sendRequest({
             method: 'POST',
-            url,
+            endpoint,
             data,
         }).then(response => response.data).catch(response => {
             throw response.jqXHR;
@@ -2134,7 +2134,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.readFromWiki = function (subreddit, page, isJSON, callback) {
             // We need to demangle the JSON ourselves, so we have to go about it this way :(
             TBUtils.sendRequest({
-                url: `/r/${subreddit}/wiki/${page}.json`,
+                endpoint: `/r/${subreddit}/wiki/${page}.json`,
             }).then(({data}) => {
                 const wikiData = data.data.content_md;
                 if (!wikiData) {

@@ -15,9 +15,8 @@
         }
     },
     "permissions": [
-        "https://www.reddit.com/",
+        "https://*.reddit.com/",
         "https://old.reddit.com/",
-        "https://new.reddit.com/",
         "https://oauth.reddit.com/",
         "https://mod.reddit.com/",
         "cookies",

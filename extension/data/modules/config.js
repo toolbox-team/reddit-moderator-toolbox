@@ -32,7 +32,7 @@ function tbconfig () {
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
                 </br><a href="/r/${subredditConfig}/w/pages/" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${(unManager ? `style="display:none;"` : ``)} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
+                </br><a ${(unManager ? 'style="display:none;"' : '')} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -94,53 +94,53 @@ function tbconfig () {
                         content: `
                 <table>
                     <td>Header:</td>
-                    <td><textarea class="tb-input edit-header" >${TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ``))}</textarea></td>
+                    <td><textarea class="tb-input edit-header" >${TBUtils.htmlEncode(unescape(configData.removalReasons.header ? configData.removalReasons.header : ''))}</textarea></td>
                     </tr><tr>
                     <td>Footer:</td>
-                    <td><textarea class="tb-input edit-footer" >${TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ``))}</textarea></td>
+                    <td><textarea class="tb-input edit-footer" >${TBUtils.htmlEncode(unescape(configData.removalReasons.footer ? configData.removalReasons.footer : ''))}</textarea></td>
                     </tr>
-                    <tr class="advanced-enable" ${(TB.utils.advancedMode ? `` : `style="display:none;"`)}>
+                    <tr class="advanced-enable" ${(TB.utils.advancedMode ? '' : 'style="display:none;"')}>
                     <td><a href="javascript:;" class="show-advanced tb-general-button">show advanced settings</a></td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         get reason from /r/:
                     </td><td>
-                        <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : ``)}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
+                        <input class="getfrom tb-input" type="text" value="${(configData.removalReasons.getfrom ? configData.removalReasons.getfrom : '')}"/> (<span style="color:red">WARNING:</span> this setting overrides all other settings.)  &nbsp;
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logsub /r/:
                     </td><td>
-                        <input class="logsub tb-input" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : ``)}"/>
+                        <input class="logsub tb-input" type="text" value="${(configData.removalReasons.logsub ? configData.removalReasons.logsub : '')}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                        pmsubject:
                     </td><td>
-                       <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : ``)}"/>
+                       <input class="pmsubject tb-input" type="text" value="${(configData.removalReasons.pmsubject ? configData.removalReasons.pmsubject : '')}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logtitle:
                     </td><td>
-                        <input class="logtitle tb-input" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : ``)}"/>
+                        <input class="logtitle tb-input" type="text" value="${(configData.removalReasons.logtitle ? configData.removalReasons.logtitle : '')}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         bantitle:
                     </td><td>
-                        <input class="bantitle tb-input" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : ``)}"/>
+                        <input class="bantitle tb-input" type="text" value="${(configData.removalReasons.bantitle ? configData.removalReasons.bantitle : '')}"/>
                     </td>
                     </tr>
                     <tr class="rr-advanced">
                     <td>
                         logreason:
                     </td><td>
-                        <input class="logreason tb-input" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : ``)}"/>
+                        <input class="logreason tb-input" type="text" value="${(configData.removalReasons.logreason ? configData.removalReasons.logreason : '')}"/>
                     </td>
                     </tr><tr>
                 </table>`,
@@ -221,14 +221,14 @@ function tbconfig () {
                     <td>
                         Ban note:
                     </td><td>
-                        <input class="banNote tb-input" type="text" value="${(configData.banMacros && configData.banMacros.banNote ? configData.banMacros.banNote : ``)}"/>
+                        <input class="banNote tb-input" type="text" value="${(configData.banMacros && configData.banMacros.banNote ? configData.banMacros.banNote : '')}"/>
                     </td>
                     </tr>
                     <tr>
                     <td>
                        Ban message:
                     </td><td>
-                       <textarea class="tb-input banMessage">${(configData.banMacros && configData.banMacros.banMessage ? configData.banMacros.banMessage : ``)}</textarea>
+                       <textarea class="tb-input banMessage">${(configData.banMacros && configData.banMacros.banMessage ? configData.banMacros.banMessage : '')}</textarea>
                     </td>
                     </tr>
                 </table>`,

@@ -867,7 +867,7 @@ function initwrapper (userDetails, newModSubs) {
         TBUtils.alert = function (message, callback, showClose) {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
-                $noteDiv.append(`<i class="note-close tb-icons" title="Close">close</i>`);
+                $noteDiv.append('<i class="note-close tb-icons" title="Close">close</i>');
             }
             $noteDiv.appendTo('body');
 
@@ -966,7 +966,7 @@ function initwrapper (userDetails, newModSubs) {
                     markreadid: markreadid ? markreadid : false,
                 },
             }, response => {
-                if (response.permission === `denied`) {
+                if (response.permission === 'denied') {
                     // They have the option enabled, but won't grant permissions, so fall back.
                     body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
                     body = body.substring(0, 600);
@@ -2197,7 +2197,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairPost = function (postLink, subreddit, text, cssClass, callback) {
-            TBUtils.post(`/api/flair`, {
+            TBUtils.post('/api/flair', {
                 api_type: 'json',
                 link: postLink,
                 text,
@@ -2218,7 +2218,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.flairUser = function (user, subreddit, text, cssClass, callback) {
-            TBUtils.post(`/api/flair`, {
+            TBUtils.post('/api/flair', {
                 api_type: 'json',
                 name: user,
                 r: subreddit,
@@ -2250,7 +2250,7 @@ function initwrapper (userDetails, newModSubs) {
                 }
             }
 
-            TBUtils.post(`/api/friend`, {
+            TBUtils.post('/api/friend', {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -2273,7 +2273,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unfriendUser = function (user, action, subreddit, callback) {
-            TBUtils.post(`/api/unfriend`, {
+            TBUtils.post('/api/unfriend', {
                 api_type: 'json',
                 uh: TBUtils.modhash,
                 type: action,
@@ -2293,7 +2293,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.distinguishThing = function (id, sticky, callback) {
-            TBUtils.post(`/api/distinguish/yes`, {
+            TBUtils.post('/api/distinguish/yes', {
                 id,
                 sticky,
                 uh: TBUtils.modhash,
@@ -2311,7 +2311,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.approveThing = function (id, callback) {
-            TBUtils.post(`/api/approve`, {
+            TBUtils.post('/api/approve', {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2328,7 +2328,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.removeThing = function (id, spam, callback) {
-            TBUtils.post(`/api/remove`, {
+            TBUtils.post('/api/remove', {
                 uh: TBUtils.modhash,
                 id,
                 spam,
@@ -2346,7 +2346,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markOver18 = function (id, callback) {
-            TBUtils.post(`/api/marknsfw`, {
+            TBUtils.post('/api/marknsfw', {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2363,7 +2363,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unMarkOver18 = function (id, callback) {
-            TBUtils.post(`/api/unmarknsfw`, {
+            TBUtils.post('/api/unmarknsfw', {
                 uh: TBUtils.modhash,
                 id,
             })
@@ -2380,7 +2380,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.lockThread = function (id, callback) {
-            TBUtils.post(`/api/lock`, {
+            TBUtils.post('/api/lock', {
                 id,
                 uh: TBUtils.modhash,
             })
@@ -2397,7 +2397,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.unlockThread = function (id, callback) {
-            TBUtils.post(`/api/unlock`, {
+            TBUtils.post('/api/unlock', {
                 uh: TBUtils.modhash,
                 id,
             })
@@ -2418,7 +2418,7 @@ function initwrapper (userDetails, newModSubs) {
                 state = true;
             }
 
-            TBUtils.post(`/api/set_subreddit_sticky`, {
+            TBUtils.post('/api/set_subreddit_sticky', {
                 id,
                 state,
                 uh: TBUtils.modhash,
@@ -2440,7 +2440,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postComment = function (parent, text, callback) {
-            TBUtils.post(`/api/comment`, {
+            TBUtils.post('/api/comment', {
                 parent,
                 uh: TBUtils.modhash,
                 text,
@@ -2471,7 +2471,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.postLink = function (link, title, subreddit, callback) {
-            TBUtils.post(`/api/submit`, {
+            TBUtils.post('/api/submit', {
                 kind: 'link',
                 resubmit: 'true',
                 url: link,
@@ -2506,7 +2506,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendMessage = function (user, subject, message, subreddit, callback) {
-            TBUtils.post(`/api/compose`, {
+            TBUtils.post('/api/compose', {
                 from_sr: subreddit,
                 subject: subject.substr(0, 99),
                 text: message,
@@ -2539,7 +2539,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.sendPM = function (to, subject, message, callback) {
-            TBUtils.post(`/api/compose`, {
+            TBUtils.post('/api/compose', {
                 to,
                 uh: TBUtils.modhash,
                 subject,
@@ -2558,7 +2558,7 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.markMessageRead = function (id, callback) {
-            TBUtils.post(`/api/read_message`, {
+            TBUtils.post('/api/read_message', {
                 api_type: 'json',
                 id,
                 uh: TBUtils.modhash,
@@ -2858,7 +2858,7 @@ function initwrapper (userDetails, newModSubs) {
         }
 
         function getToolboxDevs () {
-            TBUtils.getJSON(`/r/toolbox/about/moderators.json`).then(resp => {
+            TBUtils.getJSON('/r/toolbox/about/moderators.json').then(resp => {
                 TBStorage.purifyObject(resp);
                 const children = resp.data.children,
                       devs = [];

@@ -90,7 +90,7 @@ function comments () {
                     $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]`);
                 }
             } else if (removedCounter === 1) {
-                $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[1]</a>`);
+                $('#tb-bottombar').find('#tb-toolbarcounters').prepend('<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[1]</a>');
             } else if (removedCounter > 1) {
                 $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">chat</span>[${removedCounter.toString()}]</a>`);
             }
@@ -311,7 +311,7 @@ function comments () {
                 TBui.contextTrigger('tb-flatview-link', {
                     addTrigger: true,
                     title: 'View comments for this thread in chronological flat view.',
-                    triggerText: `comment flat view`,
+                    triggerText: 'comment flat view',
                     triggerIcon: 'list',
                 });
             } else {
@@ -359,7 +359,7 @@ function comments () {
 
             // add the new comment list to the page.
             const $flatViewOverlay = TB.ui.overlay(
-                `Flatview`,
+                'Flatview',
                 [
                     {
                         title: 'Flatview',
@@ -390,7 +390,7 @@ function comments () {
                 self.log(FlatViewSearchName);
                 self.log(FlatViewSearchContent);
 
-                $htmlCommentView.find(`.tb-comment`).each(function () {
+                $htmlCommentView.find('.tb-comment').each(function () {
                     const $this = $(this);
 
                     const flatUserName = $this.find('.tb-tagline a.tb-comment-author').text();
@@ -401,7 +401,7 @@ function comments () {
                     } else {
                         $this.show();
                     }
-                    $flatSearchCount.text($htmlCommentView.find(`.tb-comment:visible`).length);
+                    $flatSearchCount.text($htmlCommentView.find('.tb-comment:visible').length);
                 });
             });
 

@@ -61,7 +61,7 @@ Info| &nbsp;
             const $tbUsertextButtons = $saveButton.parent().find('.tb-usertext-buttons');
 
             // This needs to be a div otherwise reddit thinks a save button is clicked.
-            const $debugInsertButton = $(`<div class="tb-action-button tb-insert-debug">Insert debug info</div>`);
+            const $debugInsertButton = $('<div class="tb-action-button tb-insert-debug">Insert debug info</div>');
             if ($tbUsertextButtons.length) {
                 $tbUsertextButtons.before($debugInsertButton);
             } else {

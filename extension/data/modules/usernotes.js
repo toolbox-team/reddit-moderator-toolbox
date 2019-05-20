@@ -428,7 +428,7 @@ function usernotes () {
                             <div class="utagger-input-wrapper">
                                 <input type="text" class="utagger-user-note tb-input" id="utagger-user-note-input" placeholder="something about the user..." data-link="${link}" data-subreddit="${subreddit}" data-user="${user}">
                                 <label class="utagger-include-link">
-                                    <input type="checkbox" ${!disableLink ? `checked` : ``}${disableLink ? `disabled` : ``}>
+                                    <input type="checkbox" ${!disableLink ? 'checked' : ''}${disableLink ? 'disabled' : ''}>
                                     <span>Include link</span>
                                 </label>
                             </div>
@@ -781,7 +781,7 @@ function usernotes () {
                         if (TBUtils.modsSub(subreddit)) {
                             TBui.contextTrigger('tb-un-config-link', {
                                 addTrigger: true,
-                                triggerText: `edit usernotes`,
+                                triggerText: 'edit usernotes',
                                 triggerIcon: 'note',
                                 title: `edit usernotes for /r/${subreddit}`,
                                 dataAttributes: {

@@ -246,7 +246,7 @@ function modbutton () {
                     <option class="mod-action-negative" data-action="moderator" data-api="unfriend" >demod</option>
                 </select>
                 <button class="save tb-action-button">${self.saveButton}</button>
-                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? `` : `style="display:none!important;"`}>Global Action</button>`,
+                <button title="Global Action (perform action on all subs)" class="tb-action-button global-button inline-button"${showglobal ? '' : 'style="display:none!important;"'}>Global Action</button>`,
                     },
                     {
                         title: 'User Flair',
@@ -452,7 +452,7 @@ function modbutton () {
                         url: location.href,
                         domain: '',
                         id,
-                        body: `>`,
+                        body: '>',
                         raw_body: '',
                         uri_body: '',
                         approved_by: '',

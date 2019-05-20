@@ -184,7 +184,7 @@ function notifiermod () {
             newModmailCount = self.setting('newModmailCount'),
             newModmailCategoryCount = self.setting('newModmailCategoryCount'),
 
-            messageunreadurl = `/message/inbox/`,
+            messageunreadurl = '/message/inbox/',
             activeNewMMcheck = false;
 
         // use filter subs from MMP, if appropriate
@@ -435,7 +435,7 @@ function notifiermod () {
             }
 
             // getting unread messages
-            TBUtils.getJSON(`/message/unread.json`).then(json => {
+            TBUtils.getJSON('/message/unread.json').then(json => {
                 TBStorage.purifyObject(json);
                 const count = json.data.children.length || 0; // TODO: what does `|| 0` do in this case? if children is an array, length will alwaus be a number, so `|| 0` does nothing
                 self.setting('unreadMessageCount', count);

@@ -59,7 +59,7 @@ function profilepro () {
                 if (userProfileRegex.test(thisHref) && !userProfileRegex.test(window.location.href)) {
                     event.preventDefault();
                     const lastChar = thisHref.substr(-1);
-                    const newHref = `${thisHref}${lastChar === `/` ? `` : `/`}overview`;
+                    const newHref = `${thisHref}${lastChar === '/' ? '' : '/'}overview`;
                     if (event.ctrlKey || event.metaKey) {
                         window.open(newHref, '_blank');
                     } else {
@@ -126,7 +126,7 @@ function profilepro () {
                 submissionOptions.subredditColor = true;
             }
             TBUtils.forEachChunkedDynamic(data, entry => {
-                if (entry.kind === `t1`) {
+                if (entry.kind === 't1') {
                     const $comment = TBui.makeSingleComment(entry, commentOptions);
                     if (entry.highlight) {
                         $comment.find('.md p').highlight(entry.highlight, '', true);
@@ -135,7 +135,7 @@ function profilepro () {
                     $('time.timeago').timeago();
                 }
 
-                if (entry.kind === `t3`) {
+                if (entry.kind === 't3') {
                     const $submission = TBui.makeSubmissionEntry(entry, submissionOptions);
                     if (entry.highlight) {
                         $submission.find('.tb-title, .md').highlight(entry.highlight, '', true);
@@ -176,7 +176,7 @@ function profilepro () {
                             <br>
                             <span class="tb-trophy-name">${trophy.data.name}</span>
                             <br>
-                            ${trophy.data.description ? `<span class="tb-trophy-description">${trophy.data.description}</span>` : ``}
+                            ${trophy.data.description ? `<span class="tb-trophy-description">${trophy.data.description}</span>` : ''}
                             <br>`;
 
                         if (trophy.data.url) {
@@ -220,8 +220,8 @@ function profilepro () {
 
                         const liElement = `<li>
                             <a href="${TBUtils.tempBaseDomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
-                            ${over18 ? `<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>` : ''}
-                            ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ``}
+                            ${over18 ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>' : ''}
+                            ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ''}
                         </li>`;
 
                         if (subCount < 10) {
@@ -271,13 +271,13 @@ function profilepro () {
                       createdTimeAgo = TBUtils.timeConverterISO(userCreated);
 
                 const $sidebar = $(`<div class="tb-profile-sidebar">
-                    ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ``}
+                    ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
                     <ul class="tb-user-detail-ul">
                         <li><a href="${TBUtils.tempBaseDomain}/user/${user}">/u/${user}</a></li>
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
                         <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>
-                        <li>${verifiedMail ? `Verified mail` : `No verified mail`}</li>
+                        <li>${verifiedMail ? 'Verified mail' : 'No verified mail'}</li>
                     </ul>
                 </div>`);
                 $tabWrapper.after($sidebar);
@@ -550,8 +550,8 @@ function profilepro () {
                         <option value="controversial">controversial</option>
                         <option value="hot">hot</option>
                     </select>
-                    <button class="tb-general-button tb-filter-moddable">${filterModThings ? 'Show unmoddable' : `Hide unmoddable`}</button>
-                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : `Hide mod actions`}</a>
+                    <button class="tb-general-button tb-filter-moddable">${filterModThings ? 'Show unmoddable' : 'Hide unmoddable'}</button>
+                    <button name="hideModComments" class="tb-hide-mod-comments tb-general-button">${hideModActions ? 'Show mod actions' : 'Hide mod actions'}</a>
                 </div>`).appendTo($options);
 
                 $options.append(`<form class="tb-searchuser">
@@ -615,7 +615,7 @@ function profilepro () {
             const $filterMod = $body.find('.tb-filter-moddable');
             if (filterModThings) {
                 filterModdable(false);
-                $filterMod.text(`Hide unmoddable`);
+                $filterMod.text('Hide unmoddable');
                 filterModThings = false;
             } else {
                 filterModdable(true);
@@ -628,7 +628,7 @@ function profilepro () {
             const $hideMod = $('.tb-hide-mod-comments');
             if (hideModActions) {
                 hideModActionsThings(false);
-                $hideMod.text(`Hide mod actions`);
+                $hideMod.text('Hide mod actions');
                 hideModActions = false;
             } else {
                 hideModActionsThings(true);
@@ -651,7 +651,7 @@ function profilepro () {
                       listing = event.detail.pageDetails.listing;
                 TBui.contextTrigger('tb-user-profile', {
                     addTrigger: true,
-                    triggerText: `toolbox profile`,
+                    triggerText: 'toolbox profile',
                     triggerIcon: 'account_circle',
                     title: `Show toolbox profile for /u/${user}`,
                     dataAttributes: {

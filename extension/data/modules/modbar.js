@@ -198,8 +198,8 @@ function modbar () {
             <a href="${TBUtils.tempBaseDomain}/message/inbox/" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
             <a href="${modMailUrl}" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? `target="_blank"` : ``}>move_to_inbox</a>
-            <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}></a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>move_to_inbox</a>
+            <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
             <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">report_problem</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>
         </span>
@@ -207,23 +207,23 @@ function modbar () {
     <div id="tb-new-modmail-tooltip">
         <table>
             <tr id="tb-new-modmail-new">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>New</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/new" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>New</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-inprogress">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>In Progress</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/inprogress" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>In Progress</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-highlighted">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Highlighted</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/highlighted" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Highlighted</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-mod">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Mod Discussions</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/mod" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Mod Discussions</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
             <tr id="tb-new-modmail-notifications">
-                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" id="tb-new-modmailcount" ${openMailTab ? `target="_blank"` : ``}>Notifications</a></td>
+                <td class="tb-new-mm-category"><a href="https://mod.reddit.com/mail/notifications" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}>Notifications</a></td>
                 <td class="tb-new-mm-count"></td>
             </tr>
     </div>
@@ -408,7 +408,7 @@ function modbar () {
         }
 
         if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>');
 
             $body.on('click', '#tb-reload-link', () => {
                 self.log('reloading chrome');
@@ -418,7 +418,7 @@ function modbar () {
 
         // Debug mode/console
         if (debugMode) {
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>`);
+            $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>');
             const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;

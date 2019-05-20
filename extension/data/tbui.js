@@ -232,7 +232,7 @@
 
         // tabs = [{id:"", title:"", tooltip:"", help_page:"", content:"", footer:""}];
         const $overlay = $(`
-<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ``}">
+<div class="tb-page-overlay ${css_class ? ` ${css_class}` : ''}">
     <div class="tb-window-wrapper">
         <div class="tb-window-header">
             <div class="tb-window-title">${title}</div>
@@ -936,7 +936,7 @@
             submissionStatusUTC = submissionBannedAtUTC;
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
             submissionStatusBy = submissionBannedBy;
-            submissionActionByOn = `${submissionStatusBy ? `by ${submissionStatusBy}` : ``} on ${submissionStatusReadableUTC} [${submissionBanNote}]`;
+            submissionActionByOn = `${submissionStatusBy ? `by ${submissionStatusBy}` : ''} on ${submissionStatusReadableUTC} [${submissionBanNote}]`;
         } else {
             submissionStatus = 'neutral';
         }
@@ -951,7 +951,7 @@
         if (submissionDistinguished) {
             authorStatus = `tb-${submissionDistinguished}`;
             if (submissionDistinguished === 'admin') {
-                authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
+                authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
             } else if (submissionDistinguished === 'moderator') {
                 authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="/r/${submissionSubreddit}/about/moderators">M</a>`);
             } else {
@@ -987,11 +987,11 @@
                             (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
                         </span>
                     </div>
-                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ``}
+                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ''}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
-                        ${submissionPinned ? `- <span class="tb-pinned-tagline" title="pinned to this user's profile">pinned</span>` : ''}
+                        ${submissionPinned ? '- <span class="tb-pinned-tagline" title="pinned to this user\'s profile">pinned</span>' : ''}
                         ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
                     </div>
                     <div class="tb-submission-buttons">
@@ -1075,7 +1075,7 @@
         }
 
         if (submissionOver18) {
-            $(`<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>`).prependTo($submissionButtonList);
+            $('<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>').prependTo($submissionButtonList);
         }
 
         // Now add mod action buttons if applicable.
@@ -1104,7 +1104,7 @@
         $buildsubmission.find('p').addClass('tb-comment-p');
         if (submissionOptions && submissionOptions.subredditColor) {
             const subColor = TBUtils.stringToColor(submissionSubreddit + subredditColorSalt);
-            $buildsubmission.css(`border-left`, `solid 3px ${subColor}`);
+            $buildsubmission.css('border-left', `solid 3px ${subColor}`);
         }
 
         return $buildsubmission;
@@ -1240,7 +1240,7 @@
             commentStatusUTC = commentBannedAtUTC;
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
             commentStatusBy = commentBannedBy;
-            commentActionByOn = `${commentStatusBy ? `by ${commentStatusBy}` : ``}  on ${commentStatusReadableUTC} [${commentBanNote}]`;
+            commentActionByOn = `${commentStatusBy ? `by ${commentStatusBy}` : ''}  on ${commentStatusReadableUTC} [${commentBanNote}]`;
         } else {
             commentStatus = 'neutral';
         }
@@ -1255,7 +1255,7 @@
         if (commentDistinguished) {
             authorStatus = `tb-${commentDistinguished}`;
             if (commentDistinguished === 'admin') {
-                authorAttributes.push(`<span class="tb-admin" title="reddit admin, speaking officially">A</span>`);
+                authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
             } else if (commentDistinguished === 'moderator') {
                 authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="/r/${commentSubreddit}/about/moderators">M</a>`);
             } else {
@@ -1425,7 +1425,7 @@
 
         if (commentOptions.subredditColor) {
             const subColor = TBUtils.stringToColor(commentSubreddit + subredditColorSalt);
-            $buildComment.css(`border-left`, `solid 3px ${subColor}`);
+            $buildComment.css('border-left', `solid 3px ${subColor}`);
         }
 
         return $buildComment;
@@ -1439,7 +1439,7 @@
      * @returns {object} jquery object with the build comment thread.
      */
     TBui.makeCommentThread = function makeCommentThread (jsonInput, commentOptions) {
-        const $commentContainer = $(`<div class="tb-comment-children"></div>`);
+        const $commentContainer = $('<div class="tb-comment-children"></div>');
 
         jsonInput.forEach(comment => {
             let $childComments;
@@ -1473,7 +1473,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1487,7 +1487,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1501,7 +1501,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1515,7 +1515,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1529,7 +1529,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1543,7 +1543,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });
@@ -1557,7 +1557,7 @@
             } else if (error) {
                 $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">${error}</span>`);
             } else {
-                $this.replaceWith(`<span class="tb-actioned-button tb-actioned-error">something went wrong</span>`);
+                $this.replaceWith('<span class="tb-actioned-button tb-actioned-error">something went wrong</span>');
             }
         });
     });

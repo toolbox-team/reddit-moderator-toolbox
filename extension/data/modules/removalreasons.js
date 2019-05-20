@@ -363,25 +363,25 @@ function removalreasons () {
                     <div id="buttons">
                     <ul>
                         <li>
-                            <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === `reply` ? ` checked="1"` : ``} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
+                            <input class="reason-type" type="radio" id="type-reply-${data.subreddit}" value="reply" name="type-${data.subreddit}"${reasonType === 'reply' ? ' checked="1"' : ''} /><label for="type-reply-${data.subreddit}">Reply with a comment to the item that is removed.</label>
                             <ul>
                                 <li>
-                                    <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? `checked` : ``}${data.kind === `submission` ? `` : ` disabled`}/><label for="type-stickied">Sticky the removal comment.</label>
+                                    <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                             </ul>
                         </li><li>
-                            <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === `pm` ? ` checked="1"` : ``} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
+                            <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
                             <ul>
                                 <li>
-                                    <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? `checked ` : ``} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
+                                    <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
                                 </li>
                             </ul>
                         </li><li>
-                            <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === `both` ? ` checked="1"` : ``} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
+                            <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
                         </li><li style="display:${selectNoneDisplay}"> /
-                            <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === `none` ? ` checked="1"` : ``} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
+                            <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li><li>
-                            <input class="action-lock" type="checkbox"${actionLock ? `checked` : ``}${data.kind === `submission` ? `` : ` disabled`}/><label for="action-lock">Lock the removed thread.</label>
+                            <input class="action-lock" type="checkbox"${actionLock ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="action-lock">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>
@@ -418,11 +418,11 @@ function removalreasons () {
                     <div class="reason-num">${index + 1}</div>
                     </td>
                     <td class="reason">
-                    <div class="removal-reason-title">${this.title ? this.title : ``}</div>
+                    <div class="removal-reason-title">${this.title ? this.title : ''}</div>
                     <div class="styled-reason reason-content ${data.subreddit}-${index}">${reasonHtml}<br /></div>
                     </td>
-                    <td class="flair-text"><span class="flair-text-span">${this.flairText ? this.flairText : ``}</span></td>
-                    <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ``}</span></td>
+                    <td class="flair-text"><span class="flair-text-span">${this.flairText ? this.flairText : ''}</span></td>
+                    <td class="flair-css"><span class="flair-css-span">${this.flairCSS ? this.flairCSS : ''}</span></td>
                     </tr>`);
 
                         tr.data({

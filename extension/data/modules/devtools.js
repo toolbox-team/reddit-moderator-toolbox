@@ -82,16 +82,16 @@ function devtools () {
         }
 
         if (commentUItester) {
-            TBui.contextTrigger(`tb-testCommentUI-link`, {
+            TBui.contextTrigger('tb-testCommentUI-link', {
                 addTrigger: true,
-                triggerText: `Show ze overlay!`,
+                triggerText: 'Show ze overlay!',
                 triggerIcon: 'view_array',
             });
         }
 
         $body.on('click', '#tb-testCommentUI-link', () => {
             TB.ui.overlay(
-                `Comment UI tester`,
+                'Comment UI tester',
                 [
                     {
                         title: 'Flatview',
@@ -152,7 +152,7 @@ function devtools () {
                 const data = await TBUtils.getJSON(inputURL, {raw_json: 1});
                 TBStorage.purifyObject(data);
                 TBUtils.forEachChunkedDynamic(data.data.children, entry => {
-                    if (entry.kind === `t3`) {
+                    if (entry.kind === 't3') {
                         const $submission = TBui.makeSubmissionEntry(entry);
                         $siteTable.append($submission);
                         $('time.timeago').timeago();

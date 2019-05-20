@@ -89,7 +89,7 @@ function nukecomments () {
                     $popup.find('.tb-nuke-details').html(TBStorage.purify(`
                     <p>${removalChainLength + distinguishedCommentsLength} comments found (Already removed comments not included).</p>
                     <p>${distinguishedCommentsLength} distinguished comments found.</p>
-                    <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ` checked="checked"` : ``}>Ignore distinguished comments from mods and admins</label></p>
+                    <p><label><input type="checkbox" class="tb-ignore-distinguished-checkbox" ${ignoreDistinguished ? ' checked="checked"' : ''}>Ignore distinguished comments from mods and admins</label></p>
                     `));
                     $popup.find('.tb-execute-nuke').show();
                 });
@@ -116,7 +116,7 @@ function nukecomments () {
                 }
 
                 $nukeFeedback.text('Removing comments.');
-                $nukeDetails.html(``);
+                $nukeDetails.html('');
 
                 // Oldest comments first.
                 removalArray = TBUtils.saneSort(removalArray);

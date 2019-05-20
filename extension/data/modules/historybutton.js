@@ -59,11 +59,11 @@ function historybutton () {
                 $this.addClass('tb-history').find('.Message__divider').eq(0).after('<span class="tb-attr"></span>');
             }
             const $tbAttrs = $this.find('.tb-attr');
-            const UserButtonHTMLnewMM = `<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user's submission and comment history">H</a></span>`;
+            const UserButtonHTMLnewMM = '<span class="tb-history-button" >&nbsp;<a href="javascript:;" class="user-history-button tb-bracket-button" title="view & analyze user\'s submission and comment history">H</a></span>';
             $tbAttrs.append(UserButtonHTMLnewMM);
         });
 
-        const userButtonHTMLside = `<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user's submission and comment history">User History</a></span></span>`;
+        const userButtonHTMLside = '<span class="tb-attr-history InfoBar__recent"><span class="tb-history-button"><a href="javascript:;" class="user-history-button tb-bracket-button modmail-sidebar" title="view & analyze user\'s submission and comment history">User History</a></span></span>';
 
         const $sidebar = $body.find('.ThreadViewer__infobar');
 
@@ -100,7 +100,7 @@ function historybutton () {
                 const user = event.detail.pageDetails.user;
                 TBui.contextTrigger('tb-user-history', {
                     addTrigger: true,
-                    triggerText: `user history`,
+                    triggerText: 'user history',
                     triggerIcon: 'history',
                     title: `Show history for /u/${user}`,
                     dataAttributes: {
@@ -117,19 +117,19 @@ function historybutton () {
      * Initiate the module
      */
     self.init = function () {
-        self.log(`init`);
+        self.log('init');
         const $body = $('body');
         TBUtils.modSubCheck(modSubCheck => {
             self.log(`mscheck: ${modSubCheck}`);
             if (modSubCheck) {
-                self.log(`passed`);
+                self.log('passed');
 
                 if (TBUtils.isNewModmail) {
                     setTimeout(() => {
                         self.attachToModmail();
                     }, 750);
                 } else {
-                    self.log(`not new modmail`);
+                    self.log('not new modmail');
                     self.runJsAPI();
                 }
 

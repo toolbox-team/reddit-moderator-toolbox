@@ -112,7 +112,7 @@ function personalnotes () {
                         $body.find('.tb-personal-notes-active').removeClass('tb-personal-notes-active');
 
                         if (!$body.find('#tb-personal-notes-ul').length) {
-                            $body.find('#tb-personal-notes-nonotes').replaceWith(`<ul id="tb-personal-notes-ul"></ul>`);
+                            $body.find('#tb-personal-notes-nonotes').replaceWith('<ul id="tb-personal-notes-ul"></ul>');
                         }
                         const $noteItem = $(TBUtils.template(noteListTemplate, {name: page}));
                         $noteItem.toggleClass('tb-personal-notes-active', true);

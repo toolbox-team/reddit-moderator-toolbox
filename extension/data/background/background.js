@@ -150,7 +150,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         chrome.tabs.query({}, tabs => {
             for (let i = 0; i < tabs.length; ++i) {
-                if (sender.tab.id !== tabs[i].id) {
+                if (sender.tab.id !== tabs[i].id && tabs[i].url.includes('reddit.com')) {
                     chrome.tabs.sendMessage(tabs[i].id, message);
                 }
             }

@@ -219,7 +219,7 @@ function achievements () {
         });
 
         // toolbox Loves You: Look at the about page
-        self.manager.register('<a href="/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F" target="_blank">toolbox loves you</a>', 'Looked at the about page. <3', saveIndex => {
+        self.manager.register(`<a href="${TBUtils.link('/message/compose?to=%2Fr%2Ftoolbox&subject=toolbox%20loves%20me!&message=i%20can%20haz%20flair%3F')}" target="_blank">toolbox loves you</a>`, 'Looked at the about page. <3', saveIndex => {
             TB.utils.catchEvent(TB.utils.events.TB_ABOUT_PAGE, () => {
                 self.manager.unlock(saveIndex);
             });

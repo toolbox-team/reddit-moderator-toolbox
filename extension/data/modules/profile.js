@@ -219,7 +219,7 @@ function profilepro () {
                               subscribers = subreddit.subscribers;
 
                         const liElement = `<li>
-                            <a href="${TBUtils.tempBaseDomain}/r/${subredditName}" title="${subscribers} subscribers">/r/${subredditName}</a>
+                            <a href="${TBUtils.link(`/r/${subredditName}`)}" title="${subscribers} subscribers">/r/${subredditName}</a>
                             ${over18 ? '<span class="tb-nsfw-stamp tb-stamp"><acronym title="Adult content: Not Safe For Work">NSFW</acronym></span>' : ''}
                             ${iconImage ? `<img src="${iconImage}" class="tb-subreddit-icon">` : ''}
                         </li>`;
@@ -273,7 +273,7 @@ function profilepro () {
                 const $sidebar = $(`<div class="tb-profile-sidebar">
                     ${userThumbnail ? `<img src="${userThumbnail}" class="tb-user-thumbnail">` : ''}
                     <ul class="tb-user-detail-ul">
-                        <li><a href="${TBUtils.tempBaseDomain}/user/${user}">/u/${user}</a></li>
+                        <li><a href="${TBUtils.link(`/user/${user}`)}">/u/${user}</a></li>
                         <li>Link karma: ${linkKarma}</li>
                         <li>Comment karma: ${commentKarma}</li>
                         <li>Joined <time title="${readableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time></li>

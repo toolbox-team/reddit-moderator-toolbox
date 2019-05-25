@@ -175,7 +175,7 @@ function modbar () {
 
         // This is here in case notifier is disabled which is where this normally is set.
         // Atleast, I think.... - creesch
-        let modMailUrl = $('#modmail').attr('href') || `${TBUtils.tempBaseDomain}/message/moderator/`;
+        let modMailUrl = $('#modmail').attr('href') || TBUtils.link('/message/moderator/');
         if (parseInt(modmailCustomLimit) > 0) {
             modMailUrl += `?limit=${modmailCustomLimit}`;
             $('#modmail').attr('href', modMailUrl);
@@ -183,7 +183,7 @@ function modbar () {
             $('#tb-modmailcount').attr('href', modMailUrl);
         }
 
-        const modQueueUrl = TBUtils.tempBaseDomain + (modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
+        const modQueueUrl = TBUtils.link(modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
         const $modBar = $(`
 <div id="tb-bottombar">
     <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
@@ -194,8 +194,8 @@ function modbar () {
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBUtils.tempBaseDomain}/message/inbox/" class="nohavemail tb-icons" id="tb-mail">email</a>
-            <a href="${TBUtils.tempBaseDomain}/message/inbox/" id="tb-mailCount"></a>
+            <a title="no mail" href="${TBUtils.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">email</a>
+            <a href="${TBUtils.link('/message/inbox/')}" id="tb-mailCount"></a>
             <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
             <a href="${modMailUrl}" id="tb-modmailcount"></a>
             <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>move_to_inbox</a>
@@ -242,7 +242,7 @@ function modbar () {
         // Add unmoderated icon if it is enabled.
 
         if (unmoderatedOn) {
-            const unModQueueUrl = TBUtils.tempBaseDomain + (unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
+            const unModQueueUrl = TBUtils.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             $modBar.find('#tb-toolbarcounters').append(`
 <a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">remove_red_eye</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedcount"></a>
@@ -303,13 +303,13 @@ function modbar () {
                     const subColor = TBUtils.stringToColor(this.subreddit + subredditColorSalt);
                     subList = `${subList}
 <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
-    <td class="tb-my-subreddits-name"><a href="${TBUtils.tempBaseDomain}/r/${this.subreddit}" target="_blank">/r/${this.subreddit}</a></td>
+    <td class="tb-my-subreddits-name"><a href="${TBUtils.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
-        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/message/moderator" class="tb-icons">inbox</a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.tempBaseDomain}/r/mod/about/modqueue?subreddit=${this.subreddit}" class="tb-icons">report_problem</a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.tempBaseDomain}/r/mod/about/unmoderated?subreddit=${this.subreddit}" class="tb-icons">remove_red_eye</a>
-        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/log" class="tb-icons">grid_on</a>
-        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.baseDomain}/r/${this.subreddit}/about/traffic" class="tb-icons">show_chart</a>
+        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/message/moderator`)}" class="tb-icons">inbox</a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.link(`/r/mod/about/modqueue?subreddit=${this.subreddit}`)}" class="tb-icons">report_problem</a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.link(`/r/mod/about/unmoderated?subreddit=${this.subreddit}`)}" class="tb-icons">remove_red_eye</a>
+        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/log`)}" class="tb-icons">grid_on</a>
+        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/traffic`)}" class="tb-icons">show_chart</a>
         ${configEnabled ? `<a title="/r/${this.subreddit} config" target="_blank" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">build</a>` : ''}
     </td>
 </tr>

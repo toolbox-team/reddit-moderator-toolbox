@@ -173,7 +173,7 @@ function historybutton () {
 
                           popupContent = `
                             <div>
-                                <a href="${TBUtils.baseDomain}/user/${author}" target="_blank">${author}</a>
+                                <a href="${TBUtils.link(`/user/${author}`)}" target="_blank">${author}</a>
                                 <span class="karma" />
                                 <a class="comment-report tb-general-button" href="javascript:;">comment history</a>
                                 <a class="markdown-report tb-general-button" href="javascript:;">view report in markdown</a>

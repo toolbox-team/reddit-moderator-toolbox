@@ -953,7 +953,7 @@
             if (submissionDistinguished === 'admin') {
                 authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
             } else if (submissionDistinguished === 'moderator') {
-                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="/r/${submissionSubreddit}/about/moderators">M</a>`);
+                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${submissionSubreddit}, speaking officially" href="${TBUtils.link(`/r/${submissionSubreddit}/about/moderators`)}">M</a>`);
             } else {
                 authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${submissionDistinguished}">${submissionDistinguished}</a>`);
             }
@@ -984,13 +984,13 @@
                     <div class="tb-submission-title">
                         <a class="tb-title" href="${submissionUrl}">${submissionTitle}</a>
                         <span class="tb-domain">
-                            (<a href="/domain/${submissionDomain}">${submissionDomain}</a>)
+                            (<a href="${TBUtils.link(`/domain/${submissionDomain}`)}">${submissionDomain}</a>)
                         </span>
                     </div>
                     ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ''}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
-                        <span class="tb-jsapi-author-container"></span> to <a href="/r/${submissionSubreddit}">/r/${submissionSubreddit}</a>
+                        <span class="tb-jsapi-author-container"></span> to <a href="${TBUtils.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? '- <span class="tb-pinned-tagline" title="pinned to this user\'s profile">pinned</span>' : ''}
                         ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
                     </div>
@@ -1186,7 +1186,7 @@
             parentHtml = `
             <div class="tb-parent">
                 <a class="tb-link-title" href="${linkUrl}">${linkTitle}</a>
-                by <a class="tb-link-author" href="/user/${linkAuthor}">${linkAuthor}</a> in <a class="subreddit hover" href="/r/${commentSubreddit}/">${commentSubreddit}</a>
+                by <a class="tb-link-author" href="${TBUtils.link(`/user/${linkAuthor}`)}">${linkAuthor}</a> in <a class="subreddit hover" href="${TBUtils.link(`/r/${commentSubreddit}/`)}">${commentSubreddit}</a>
             </div>
             `;
         }
@@ -1257,7 +1257,7 @@
             if (commentDistinguished === 'admin') {
                 authorAttributes.push('<span class="tb-admin" title="reddit admin, speaking officially">A</span>');
             } else if (commentDistinguished === 'moderator') {
-                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="/r/${commentSubreddit}/about/moderators">M</a>`);
+                authorAttributes.push(`<a class="tb-moderator" title="moderator of /r/${commentSubreddit}, speaking officially" href="${TBUtils.link(`/r/${commentSubreddit}/about/moderators`)}">M</a>`);
             } else {
                 authorAttributes.push(`<a class="tb-unknown" title="Unknown distinguish type ${commentDistinguished}">${commentDistinguished}</a>`);
             }
@@ -1295,7 +1295,7 @@
                     ${commentOptions.overviewData ? parentHtml : ''}
                     <div class="tb-tagline">
                         <a class="tb-comment-toggle" href="javascript:void(0)">[–]</a>
-                        <a class="tb-comment-author ${authorStatus}" href="/user/${commentAuthor}">${commentAuthor}</a>
+                        <a class="tb-comment-author ${authorStatus}" href="${TBUtils.link(`/user/${commentAuthor}`)}">${commentAuthor}</a>
                         ${commentAuthorFlairText ? `<span class="tb-comment-flair ${commentAuthorFlairCssClass}" title="${commentAuthorFlairText}">${commentAuthorFlairText}</span>` : ''}
                         ${authorAttributes.length ? `<span class="tb-userattrs">[${authorAttributes.join(' ')}]</span>` : ''}
                         <span class="tb-jsapi-author-container"></span>

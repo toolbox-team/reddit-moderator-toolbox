@@ -247,12 +247,12 @@ function notifiermod () {
                 $mailCount.empty();
                 $mail.attr('class', 'nohavemail');
                 $mail.attr('title', 'no new mail!');
-                $mail.attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
+                $mail.attr('href', TBUtils.link('/message/inbox/'));
                 $mailcount.attr('href', messageunreadurl);
                 $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
                 $tb_mail.attr('title', 'no new mail!');
-                $tb_mail.attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
-                $('#tb-mailCount').attr('href', `${TBUtils.tempBaseDomain}/message/inbox/`);
+                $tb_mail.attr('href', TBUtils.link('/message/inbox/'));
+                $('#tb-mailCount').attr('href', TBUtils.link('/message/inbox/'));
             } else {
                 $mail.attr('class', 'havemail');
                 $mail.attr('title', 'new mail!');

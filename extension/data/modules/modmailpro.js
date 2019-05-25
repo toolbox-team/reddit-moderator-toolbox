@@ -336,7 +336,7 @@ function modmailpro () {
                           newCount = $entries.length;
 
                     setView(ALL);
-                    $menuList.html('<a href="/message/moderator/">go to full mod mail</a>');
+                    $menuList.html(`<a href="${TBUtils.link('/message/moderator/')}">go to full mod mail</a>`);
                     $('.unread-count').html(TBStorage.purify(`<b>${newCount}</b> - new mod mail thread${newCount === 1 ? '' : 's'}`));
                     $entries.click();
                 } else {

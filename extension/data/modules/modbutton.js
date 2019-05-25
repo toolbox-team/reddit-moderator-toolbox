@@ -464,9 +464,9 @@ function modbutton () {
                         banned_by: '',
                         spam: '',
                         ham: '',
-                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        rules: subreddit ? TBUtils.link(`/r/${subreddit}/about/rules`) : '',
+                        sidebar: subreddit ? TBUtils.link(`/r/${subreddit}/about/sidebar`) : '',
+                        wiki: subreddit ? TBUtils.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBUtils.logged,
                     };
                     openModPopup(event, info);

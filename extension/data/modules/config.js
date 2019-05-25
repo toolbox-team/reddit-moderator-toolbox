@@ -31,8 +31,8 @@ function tbconfig () {
                 Through this window you can edit the settings for /r/${subredditConfig}. </br>
                 </br>Settings you change here will apply to the entire subreddit and by extension other moderators.
                 </br>
-                </br><a href="/r/${subredditConfig}/w/pages/" class="tb-general-button">All Wiki Pages</a>
-                </br><a ${(unManager ? 'style="display:none;"' : '')} href="/r/${subredditConfig}/about/usernotes/" class="tb-general-button">Manage Usernotes</a>
+                </br><a href="${TBUtils.link(`/r/${subredditConfig}/w/pages/`)}" class="tb-general-button">All Wiki Pages</a>
+                </br><a ${(unManager ? 'style="display:none;"' : '')} href="${TBUtils.link(`/r/${subredditConfig}/about/usernotes/`)}" class="tb-general-button">Manage Usernotes</a>
 
                 </span>
                 `,
@@ -80,7 +80,7 @@ function tbconfig () {
                         tooltip: 'Edit the automoderator config.',
                         content: `
                 <p>
-                    <a href="/wiki/automoderator/full-documentation" target="_blank">Full automoderator documentation</a>
+                    <a href="${TBUtils.link('/wiki/automoderator/full-documentation')}" target="_blank">Full automoderator documentation</a>
                 </p>
                 <div class="error" style="display:none"><b>Config not saved!</b><br> <pre class="errorMessage"></pre></div>
                 <textarea class="tb-input edit-wikidata" rows="20" cols="20"></textarea><br>

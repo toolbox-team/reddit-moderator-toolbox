@@ -397,6 +397,15 @@ function initwrapper (userDetails, newModSubs) {
          */
 
         /**
+          * Takes an absolute path for a link and prepends the www.reddit.com
+          * domain if we're in new modmail (mod.reddit.com). Makes absolute path
+          * links work everywhere.
+          * @param {string} link The link path, starting with "/"
+          * @returns {string}
+          */
+        TBUtils.link = link => TBUtils.isNewModmail ? `https://mod.reddit.com${link}` : link;
+
+        /**
          * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
          * @function debugInformation
          * @memberof TBUtils
@@ -1565,9 +1574,9 @@ function initwrapper (userDetails, newModSubs) {
                 banned_by,
                 spam,
                 ham,
-                rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                rules: subreddit ? TBUtils.link(`/r/${subreddit}/about/rules`) : '',
+                sidebar: subreddit ? TBUtils.link(`/r/${subreddit}/about/sidebar`) : '',
+                wiki: subreddit ? TBUtils.link(`/r/${subreddit}/wiki/index`) : '',
                 mod: TBUtils.logged,
             };
 
@@ -1641,9 +1650,9 @@ function initwrapper (userDetails, newModSubs) {
                         banned_by: '',
                         spam: '',
                         ham: '',
-                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        rules: subreddit ? TBUtils.link(`/r/${subreddit}/about/rules`) : '',
+                        sidebar: subreddit ? TBUtils.link(`/r/${subreddit}/about/sidebar`) : '',
+                        wiki: subreddit ? TBUtils.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBUtils.logged,
                     };
 
@@ -1708,9 +1717,9 @@ function initwrapper (userDetails, newModSubs) {
                         banned_by: data.children[0].data.banned_by,
                         spam: data.children[0].data.spam,
                         ham: data.children[0].data.removed,
-                        rules: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/rules` : '',
-                        sidebar: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/about/sidebar` : '',
-                        wiki: subreddit ? `${TBUtils.baseDomain}/r/${subreddit}/wiki/index` : '',
+                        rules: subreddit ? TBUtils.link(`/r/${subreddit}/about/rules`) : '',
+                        sidebar: subreddit ? TBUtils.link(`/r/${subreddit}/about/sidebar`) : '',
+                        wiki: subreddit ? TBUtils.link(`/r/${subreddit}/wiki/index`) : '',
                         mod: TBUtils.logged,
                     };
                     callback(info);

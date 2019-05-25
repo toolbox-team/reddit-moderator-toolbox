@@ -407,7 +407,7 @@ function usernotes () {
             }
             const $popup = TB.ui.popup(
                 `<div class="utagger-title">
-                    <span>User Notes - <a href="${TBUtils.baseDomain}/u/${user}" id="utagger-user-link">/u/${user}</a></span>
+                    <span>User Notes - <a href="${TBUtils.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a></span>
                 </div>`,
                 [{
                     content: `
@@ -825,7 +825,7 @@ function usernotes () {
                     <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">refresh</a>
                     <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">delete</a>
                     <span class="user">
-                        <a href="/u/NONE">/u/NONE</a>
+                        <a href="${TBUtils.link('/u/NONE')}">/u/NONE</a>
                     </span>
                 </div>
             </div>`);

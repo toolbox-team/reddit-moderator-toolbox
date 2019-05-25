@@ -220,7 +220,7 @@ function tbmodule () {
                     id: 'about',
                     content: `
                 <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>
-                <h3>About:</h3> <a href="/r/toolbox" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>
+                <h3>About:</h3> <a href="${TBUtils.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>
                     <h3> made and maintained by: </h3>
                     <table class="tb-about-credits">
                         <tr>
@@ -261,8 +261,8 @@ function tbmodule () {
                     <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
                     <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>
                     <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>
-                    <a href="/user/DEADB33F" target="_blank">Modtools and realtime base code by DEADB33F</a><br>
-                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="/u/djimbob" target="_blank">/u/djimbob</a><br>
+                    <a href="${TBUtils.link('/user/DEADB33F')}" target="_blank">Modtools and realtime base code by DEADB33F</a><br>
+                    <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${TBUtils.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>

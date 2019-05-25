@@ -779,7 +779,7 @@ function queuetools () {
                         TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
                         // Update count and re-cache data if more than an hour old.
-                        $elem.parent().append(`<a href="/r/${sr}/about/${page}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
+                        $elem.parent().append(`<a href="${TBUtils.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
                         if (now > data[1]) {
                             updateModqueueCount(sr);
                         }

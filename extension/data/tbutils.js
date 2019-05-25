@@ -2914,6 +2914,7 @@ function initwrapper (userDetails, newModSubs) {
         const subredditCommentListingReg = /^\/r\/([^/]*?)\/comments\/?$/;
         const subredditCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/?$/;
         const subredditPermalinkCommentsPageReg = /^\/r\/([^/]*?)\/comments\/([^/]*?)\/([^/]*?)\/([^/]*?)\/?$/;
+        const subredditWikiPageReg = /^\/r\/([^/]*?)\/wiki\/?(edit|revisions|settings|discussions)?\/(.+)\/?$/;
         const queuePageReg = /^\/r\/([^/]*?)\/about\/(modqueue|reports|edited|unmoderated|spam)\/?$/;
         const userProfile = /^\/user\/([^/]*?)\/?(overview|submitted|posts|comments|saved|upvoted|downvoted|hidden|gilded)?\/?$/;
         const userModMessage = /^\/message\/([^/]*?)\/([^/]*?)?\/?$/;
@@ -2994,6 +2995,14 @@ function initwrapper (userDetails, newModSubs) {
                             submissionID: matchDetails[2],
                             linkSafeTitle: matchDetails[3],
                             commentID: matchDetails[4],
+                        };
+                    } else if (subredditWikiPageReg.test(location.pathname)) {
+                        const matchDetails = location.pathname.match(subredditWikiPageReg);
+                        contextObject.pageType = 'subredditWiki';
+                        contextObject.pageDetails = {
+                            subreddit: matchDetails[1],
+                            action: matchDetails[2],
+                            page: matchDetails[3],
                         };
                     } else if (queuePageReg.test(location.pathname)) {
                         const matchDetails = location.pathname.match(queuePageReg);

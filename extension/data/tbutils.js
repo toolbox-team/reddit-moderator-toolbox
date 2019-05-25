@@ -382,12 +382,6 @@ function initwrapper (userDetails, newModSubs) {
 
         // Methods and stuff
 
-        if (!String.prototype.format) {
-            String.prototype.format = function (...args) {
-                return this.replace(/{(\d+)}/g, (match, number) => typeof args[number] !== 'undefined' ? args[number] : match);
-            };
-        }
-
         /**
          * @typedef {Object} debugObject
          * @memberof TBUtils

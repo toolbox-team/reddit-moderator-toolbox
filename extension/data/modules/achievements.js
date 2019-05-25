@@ -57,7 +57,7 @@ function achievements () {
 
                 achievementsBlock.push({
                     title,
-                    descr: description.format(maxValue),
+                    descr: description.replace(/\{0}/g, maxValue),
                     maxValue,
                     saveIndex,
                 });
@@ -306,4 +306,3 @@ function achievements () {
 window.addEventListener('TBModuleLoaded2', () => {
     achievements();
 });
-

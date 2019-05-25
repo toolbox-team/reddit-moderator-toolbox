@@ -98,7 +98,7 @@ function achievements () {
                     }
 
                     self.log(`${title} Unlocked!`);
-                    TBUtils.notification('Mod achievement unlocked!', title, `${window.location}#?tbsettings=${self.shortname}`);
+                    TBUtils.notification('Mod achievement unlocked!', title, `${window.location.pathname}#?tbsettings=${self.shortname}`);
                 }
             }
 

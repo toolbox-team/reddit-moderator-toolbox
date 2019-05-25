@@ -939,15 +939,18 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         /**
-         * Shows a notification, uses native browser notifications if the user allows it or falls back on html notifications.
+         * Shows a notification, uses native browser notifications if the user
+         * allows it or falls back on html notifications.
          * @function notification
          * @memberof TBUtils
          * @param {string} title Notification title
          * @param {string} body Body text
-         * @param {string} url Url to be opend when clicking the notification
-         * @param {string} markreadid When given will call the reddit api to mark the thing as read.
+         * @param {string} path Absolute path to be opend when clicking the
+         * notification
+         * @param {string?} markreadid The ID of a conversation to mark as read
+         * when the notification is clicked
          */
-        TBUtils.notification = function (title, body, url, markreadid = false) {
+        TBUtils.notification = function (title, body, path, markreadid = false) {
             const timeout = 10000;
 
             const toolboxnotificationenabled = true;
@@ -963,8 +966,7 @@ function initwrapper (userDetails, newModSubs) {
                 details: {
                     title,
                     body,
-                    baseDomain: TBUtils.tempBaseDomain,
-                    url,
+                    url: TBUtils.link(path),
                     modHash: TBUtils.modhash,
                     markreadid: markreadid ? markreadid : false,
                 },
@@ -973,7 +975,7 @@ function initwrapper (userDetails, newModSubs) {
                     // They have the option enabled, but won't grant permissions, so fall back.
                     body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
                     body = body.substring(0, 600);
-                    $.sticky(`<p>${body}</p>`, title, url, {autoclose: timeout, markreadid});
+                    $.sticky(`<p>${body}</p>`, title, path, {autoclose: timeout, markreadid});
                 }
             });
         };

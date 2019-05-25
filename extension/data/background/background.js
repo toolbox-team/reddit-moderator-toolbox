@@ -6,7 +6,7 @@ function uuidv4 () {
 }
 
 // Send notifications
-function notification (title, body, baseDomain, url, modHash, markreadid) {
+function notification ({title, body, url, modHash, markreadid}) {
     const notificationTimeout = 6000;
     // send the notification.
     console.log('send notification');
@@ -22,7 +22,6 @@ function notification (title, body, baseDomain, url, modHash, markreadid) {
             url,
             modHash,
             markreadid,
-            baseDomain,
         };
 
         // Clearing is needed because they are otherwise retained by chrome.
@@ -47,7 +46,7 @@ chrome.notifications.onClicked.addListener(notificationID => {
     // Open up in new tab.
     chrome.windows.getLastFocused(window => {
         chrome.tabs.create({
-            url: notificationData[notificationID].baseDomain + notificationData[notificationID].url,
+            url: notificationData[notificationID].url,
             windowId: window.id,
         });
     });
@@ -162,13 +161,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (typeof chrome.notifications.getPermissionLevel !== 'undefined') {
             chrome.notifications.getPermissionLevel(permission => {
                 if (permission === 'granted') {
-                    notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
+                    notification(request.details);
                 }
                 sendResponse({permission});
             });
             // Firefox being the outlier doesn't support getting the permissionlevel. So we just act as if we do.
         } else {
-            notification(request.details.title, request.details.body, request.details.baseDomain, request.details.url, request.details.modHash, request.details.markreadid);
+            notification(request.details);
             sendResponse({permission: true});
         }
 

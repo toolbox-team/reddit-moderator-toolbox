@@ -32,6 +32,7 @@
         "no-useless-escape": "warn",
         "no-constant-condition": "warn",
         "space-infix-ops": "error",
+        "no-sequences": "error",
         "no-multiple-empty-lines": [
             "error",
             {

@@ -406,17 +406,16 @@ function modbar () {
             $('.tb-first-run').show().css('display', 'inline-block');
         }
 
-        if (debugMode && TB.utils.browser === TB.utils.browsers.CHROME) {
+        if (debugMode) {
+            // Reload button
             $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>');
 
             $body.on('click', '#tb-reload-link', () => {
                 self.log('reloading chrome');
                 TB.utils.reloadToolbox();
             });
-        }
 
-        // Debug mode/console
-        if (debugMode) {
+            // Console stuff
             $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>');
             const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 

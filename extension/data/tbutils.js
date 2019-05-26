@@ -1934,12 +1934,10 @@ function initwrapper (userDetails, newModSubs) {
         };
 
         TBUtils.reloadToolbox = function () {
-            if (typeof chrome !== 'undefined') {
-                TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
-                chrome.runtime.sendMessage({action: 'tb-reload'}, () => {
-                    window.location.reload();
-                });
-            }
+            TBui.textFeedback('toolbox is reloading', TBui.FEEDBACK_POSITIVE, 10000, TBui.DISPLAY_BOTTOM);
+            chrome.runtime.sendMessage({action: 'tb-reload'}, () => {
+                window.location.reload();
+            });
         };
 
         // Generic helpers for making API and other requests

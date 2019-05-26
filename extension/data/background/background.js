@@ -124,10 +124,10 @@ function makeRequest (options, sendResponse) {
     $.ajax(options).then((data, textStatus, jqXHR) => {
         jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
         sendResponse({data, textStatus, jqXHR});
-    }), (jqXHR, textStatus, errorThrown) => {
+    }, (jqXHR, textStatus, errorThrown) => {
         jqXHR.allResponseHeaders = makeHeaderObject(jqXHR.getAllResponseHeaders());
         sendResponse({jqXHR, textStatus, errorThrown});
-    };
+    });
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {

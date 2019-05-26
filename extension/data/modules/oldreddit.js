@@ -51,6 +51,7 @@ function oldReddit () {
                             data: {
                                 author: info.author,
                                 id: info.id,
+                                isRemoved: info.ham,
                                 subreddit: {
                                     name: info.subreddit,
                                     type: info.subredditType,

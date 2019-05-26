@@ -226,7 +226,7 @@ function usernotes () {
             // self.log("Processing thing: " + thingType);
 
             if (thingType === TYPE_NEW_MODMAIL) {
-                subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text(),
+                subreddit = $thing.closest('.Thread').find('.ThreadTitle__community').text();
                 author = $thing.find('.Message__author').text().substring(2);
 
                 $thing.attr('data-author', author);

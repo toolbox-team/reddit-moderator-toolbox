@@ -464,7 +464,7 @@ function notifiermod () {
                                 subject,
                                 author;
                             if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
-                                subreddit = value.data.subreddit,
+                                subreddit = value.data.subreddit;
                                 author = value.data.author;
 
                                 if (!notificationbody) {
@@ -476,7 +476,7 @@ function notifiermod () {
                                 pushedunread.push(value.data.name);
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                             } else if ($.inArray(value.data.name, pushedunread) === -1) {
-                                subject = value.data.subject,
+                                subject = value.data.subject;
                                 author = value.data.author;
 
                                 // When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
@@ -516,11 +516,11 @@ function notifiermod () {
                                 id;
 
                             if ($.inArray(value.data.name, pushedunread) === -1 && value.kind === 't1') {
-                                context = value.data.context,
-                                body_html = TBUtils.htmlDecode(value.data.body_html),
-                                author = value.data.author,
-                                subreddit = value.data.subreddit,
-                                commentid = value.data.name,
+                                context = value.data.context;
+                                body_html = TBUtils.htmlDecode(value.data.body_html);
+                                author = value.data.author;
+                                subreddit = value.data.subreddit;
+                                commentid = value.data.name;
                                 contexturl = `${context.slice(0, -10)}.json`;
 
                                 getcommentitle(subreddit, contexturl, context, author, body_html, commentid);
@@ -528,9 +528,9 @@ function notifiermod () {
 
                             // if it is a personal message, or some other unknown idea(future proof!)  we use this code block
                             } else if ($.inArray(value.data.name, pushedunread) === -1) {
-                                author = value.data.author,
-                                body_html = TBUtils.htmlDecode(value.data.body_html),
-                                subject = value.data.subject,
+                                author = value.data.author;
+                                body_html = TBUtils.htmlDecode(value.data.body_html);
+                                subject = value.data.subject;
                                 id = value.data.id;
 
                                 // When the JSON doesn't return an author, but has a subreddit instead, assume it's a PM
@@ -602,7 +602,7 @@ function notifiermod () {
                                 author;
 
                             if ($.inArray(value.data.name, pusheditems) === -1 && value.kind === 't3') {
-                                subreddit = value.data.subreddit,
+                                subreddit = value.data.subreddit;
                                 author = value.data.author;
 
                                 if (!notificationbody) {
@@ -616,7 +616,7 @@ function notifiermod () {
                                 queuecount++;
                                 pusheditems.push(value.data.name);
                             } else if ($.inArray(value.data.name, pusheditems) === -1) {
-                                subreddit = value.data.subreddit,
+                                subreddit = value.data.subreddit;
                                 author = value.data.author;
 
                                 if (!notificationbody) {

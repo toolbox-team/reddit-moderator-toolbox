@@ -38,9 +38,9 @@ function commentsOld () {
         //
         // preload some generic variables
         //
-        self.hideRemoved = self.setting('hideRemoved'),
-        self.approveComments = self.setting('approveComments'),
-        self.spamRemoved = self.setting('spamRemoved'),
+        self.hideRemoved = self.setting('hideRemoved');
+        self.approveComments = self.setting('approveComments');
+        self.spamRemoved = self.setting('spamRemoved');
         self.hamSpammed = self.setting('hamSpammed');
 
         function run () {

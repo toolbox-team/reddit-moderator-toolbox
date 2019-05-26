@@ -870,7 +870,7 @@
               submissionLikes = submission.data.likes, // boolean or null
               submissionIsSelf = submission.data.is_self,
               submissionEdited = submission.data.edited,
-              submissionGilded = submission.data.gilded,
+              submissionGildings = submission.data.gildings,
               submissionPinned = submission.data.pinned,
               submissionLocked = submission.data.locked,
               submissionOver18 = submission.data.over_18,
@@ -992,7 +992,9 @@
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="${TBUtils.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
                         ${submissionPinned ? '- <span class="tb-pinned-tagline" title="pinned to this user\'s profile">pinned</span>' : ''}
-                        ${submissionGilded ? `- <span class="tb-comment-gilded">gilded ${submissionGilded}x</span>` : ''}
+                        ${submissionGildings.gid_1 ? `- <span class="tb-award-silver">silver x${submissionGildings.gid_1}</span>` : ''}
+                        ${submissionGildings.gid_2 ? `- <span class="tb-award-gold">gold x${submissionGildings.gid_2}</span>` : ''}
+                        ${submissionGildings.gid_3 ? `- <span class="tb-award-platinum">platinum x${submissionGildings.gid_3}</span>` : ''}
                     </div>
                     <div class="tb-submission-buttons">
                         <a class="tb-submission-button tb-submission-button-comments" href="${submissionPermalink}">${commentsButtonText}</a>
@@ -1146,7 +1148,7 @@
               commentScore = comment.data.score, // integer
               commentControversiality = comment.data.controversiality, // integer
               commentEdited = comment.data.edited,
-              commentGilded = comment.data.gilded,
+              commentGildings = comment.data.gildings,
               // commentNumReports = comment.data.num_reports,
               commentUserReports = comment.data.user_reports, // array with reports by users
 
@@ -1303,7 +1305,9 @@
                         <time title="${commentReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time>
                         ${commentEdited ? editedHtml : ''}
                         ${commentStickied ? '<span class="tb-comment-stickied">stickied</span>' : ''}
-                        ${commentGilded ? `<span class="tb-comment-gilded">gilded ${commentGilded}x</span>` : ''}
+                        ${commentGildings.gid_1 ? `<span class="tb-award-silver">silver x${commentGildings.gid_1}</span>` : ''}
+                        ${commentGildings.gid_2 ? `<span class="tb-award-gold">gold x${commentGildings.gid_2}</span>` : ''}
+                        ${commentGildings.gid_3 ? `<span class="tb-award-platinum">platinum x${commentGildings.gid_3}</span>` : ''}
                     </div>
                     <div class="tb-comment-body">
                         ${commentBodyHTML}

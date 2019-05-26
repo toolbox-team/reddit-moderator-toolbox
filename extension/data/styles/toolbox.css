@@ -1113,9 +1113,14 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     padding: 2px;
 }
 
-.mod-toolbox-rd .tb-submission-gilded,
-.mod-toolbox-rd .tb-comment-gilded {
-    color: #f78a17
+.mod-toolbox-rd .tb-award-silver {
+    color: #7e7e7e;
+}
+.mod-toolbox-rd .tb-award-gold {
+    color: #f78a17;
+}
+.mod-toolbox-rd .tb-award-platinum {
+    color: #48a59a;
 }
 
 .mod-toolbox-rd .tb-submission-edited,

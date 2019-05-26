@@ -966,7 +966,7 @@ function initwrapper (userDetails, newModSubs) {
                 details: {
                     title,
                     body,
-                    url: TBUtils.link(path),
+                    url: TBUtils.isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
                     modHash: TBUtils.modhash,
                     markreadid: markreadid ? markreadid : false,
                 },

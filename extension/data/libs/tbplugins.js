@@ -1,6 +1,11 @@
 (function ($) {
+    let skipLocalConsole = false;
+    window.addEventListener('TBStorageLoaded2', () => {
+        skipLocalConsole = TBStorage.getSetting('Utils', 'skipLocalConsole', false);
+    });
+
     $.fn.log = function (message, caller, orignalMessage) {
-        if (TBUtils.log !== undefined && !JSON.parse(localStorage['Toolbox.Utils.skipLocalConsole'] || 'false')) {
+        if (TBUtils.log !== undefined && !skipLocalConsole) {
             TBUtils.log.push(message);
 
             // add module to list.
@@ -9,8 +14,7 @@
             }
 
         } else {
-            console.log(' [' + caller + ']: ');
-            console.log(orignalMessage);
+            console.debug(` [${caller}]: `, orignalMessage);
         }
     };
     $.log = function (message, skip, callerName) {

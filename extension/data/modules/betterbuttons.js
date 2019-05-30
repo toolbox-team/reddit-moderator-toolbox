@@ -48,6 +48,12 @@ function betterbuttons () {
         advanced: true,
         title: 'Add unsticky button to stickied posts.',
     });
+    self.register_setting('addCommentLockbutton', {
+        type: 'boolean',
+        default: true,
+        advanced: false,
+        title: 'Add comment lock button to comments.',
+    });
 
     // Bread and buttons
     const $body = $('body');
@@ -381,6 +387,70 @@ function betterbuttons () {
         });
     };
 
+    self.initCommentLock = function () {
+        if (TBUtils.isModmail) {
+            return;
+        }
+        if (!TB.utils.isMod) {
+            return;
+        }
+
+        function commentLockRun () {
+            const $comments = $('div.comment:not(.tb-lock-button)');
+            TBUtils.forEachChunkedDynamic($comments, processComment);
+        }
+
+        function processComment (comment) {
+            const $comment = $(comment);
+            if (!$comment.hasClass('tb-lock-button')) {
+            // Add the class so we don't add buttons twice.
+                $comment.addClass('tb-lock-button');
+                let action = 'lock';
+                if ($comment.find('.locked-tagline').length > 0) {
+                    action = 'unlock';
+                }
+
+                $comment.find('ul.buttons li.toggle:last')
+                    .after(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
+            }
+        }
+
+        $('body').on('click', '.tb-comment-lock-button', async function (event) {
+            const $lockButton = $(event.target);
+
+            const action = $lockButton.attr('tb-action');
+            const info = TB.utils.getThingInfo(this, true);
+            const data = {
+                id: info.id,
+            };
+
+            try {
+                await TBUtils.apiOauthPOST(`/api/${action}`, data);
+                let newAction;
+                if (action === 'lock') {
+                    newAction = 'unlock';
+                    const lockedTaglineHTML = '<span class="locked-tagline" title="locked by this subreddit\'s moderators">locked comment</span>';
+                    $lockButton.closest('.entry').find('.tagline').append(lockedTaglineHTML);
+                } else {
+                    newAction = 'lock';
+                    $lockButton.closest('.entry').find('.locked-tagline').remove();
+                }
+
+                $lockButton.attr('tb-action', newAction);
+                $lockButton.text(newAction);
+            } catch (error) {
+                self.log(`Error toggling lock on comment: ${error}`);
+            }
+        });
+
+        // NER support.
+        window.addEventListener('TBNewThings', () => {
+            commentLockRun();
+        });
+
+        commentLockRun();
+    };
+
     // Module init
 
     self.init = function () {
@@ -406,6 +476,9 @@ function betterbuttons () {
         }
         if (self.setting('addStickyButton')) {
             self.initStickyButtons();
+        }
+        if (self.setting('addCommentLockbutton')) {
+            self.initCommentLock();
         }
     };
 

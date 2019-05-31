@@ -53,7 +53,7 @@ div#tb-snoo-footer {
 */
 
 html body.mod-toolbox-rd .tb-icons {
-    font-family: 'Material Icons';
+    font-family: 'Material Icons' !important;
     font-weight: normal;
     font-style: normal;
     font-size: 19px;  /* Preferred icon size */

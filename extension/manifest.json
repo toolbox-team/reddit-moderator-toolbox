@@ -137,6 +137,7 @@
                 "data/modules/profile.js",
                 "data/modules/flyingsnoo.js",
                 "data/modules/queuetools.js",
+                "data/modules/achievements.js",
                 "data/modules/oldreddit.js",
                 "data/tbmoduleinit.js"
             ]

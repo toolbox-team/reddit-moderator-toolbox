@@ -201,8 +201,8 @@ function tbmodule () {
 
             const settingsTabs = [
                 {
-                    title: 'General Settings',
-                    tooltip: 'Edit toolbox general settings',
+                    title: 'Core Settings',
+                    tooltip: 'Edit toolbox core settings',
                     help_page: 'toolbox',
                     id: 'toolbox',
                     content: settingContent,
@@ -853,12 +853,18 @@ body {
                     $('.tb-settings .tb-window-tabs a').each(function () {
                         const $this = $(this);
                         // Keep general settings and module toggles at the top, and about tab at the bottom
-                        if ($tab.attr('data-module') === 'toolbox' || $tab.attr('data-module') === 'toggle_modules' || $this.attr('data-module') === 'about') {
+                        if ($tab.attr('data-module') === 'toggle_modules' ||
+                                $tab.attr('data-module') === 'toolbox' ||
+                                $this.attr('data-module') === 'gensettings' ||
+                                $this.attr('data-module') === 'about') {
                             $this.before($tab);
                             added = true;
                             return false;
                         }
-                        if ($this.attr('data-module') === 'toolbox' || $this.attr('data-module') === 'toggle_modules' || $tab.attr('data_module') === 'about') {
+                        if ($this.attr('data-module') === 'toggle_modules' ||
+                                $this.attr('data-module') === 'toolbox' ||
+                                $tab.attr('data-module') === 'gensettings' ||
+                                $tab.attr('data_module') === 'about') {
                             return; // Can't insert here, so move to the next position and try again
                         }
                         // Compare everything else normally

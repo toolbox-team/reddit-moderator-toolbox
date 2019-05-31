@@ -417,7 +417,9 @@ function modmatrix () {
         $('#mod-matrix-statistics').text(`loading entries ${requestData.count} to ${requestData.count + requestData.limit}...`);
         $('#mod-matrix-settings input[type=submit]').prop('disabled', true);
 
-        const url = `${this.subredditUrl}about/log.json`;
+        const relativeSubredditUrl = this.subredditUrl.replace(/https?:\/\/...?\.reddit\.com/, '');
+
+        const url = `${relativeSubredditUrl}about/log.json`;
         const cacheKey = `${url}?${JSON.stringify(requestData)}`;
 
         if (this.dataCache[cacheKey] != null) {

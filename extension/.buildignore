@@ -1,16 +1,3 @@
 .*
 *.zip
 *.xpi
-/data/Icon.png
-/manifest-*.json
-/data/libs/redditapi.js
-/data/modules/bagel.js
-/data/modules/banlist.js
-/data/modules/betterbuttons.js
-/data/modules/domaintagger.js
-/data/modules/macro.js
-/data/modules/metricstab.js
-/data/modules/modmailpro.js
-/data/modules/modmatrix.js
-/data/modules/syntax.js
-/data/modules/trouble.js

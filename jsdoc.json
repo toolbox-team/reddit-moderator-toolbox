@@ -1,8 +1,6 @@
 {
     "opts": {
-        "template": "node_modules/docdash",
-        "encoding": "utf8",
-        "destination": "docs/"
+        "encoding": "utf8"
     },
     "plugins": [
         "plugins/markdown"

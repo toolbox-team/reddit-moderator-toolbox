@@ -1,3 +1,0 @@
-@echo off
-echo Building extension...
-gulp

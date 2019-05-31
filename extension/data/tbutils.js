@@ -169,7 +169,7 @@ function initwrapper (userDetails, newModSubs) {
         }
 
         const manifest = chrome.runtime.getManifest();
-        const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d).*?"(.*?)"/;
+        const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
         const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`;
 

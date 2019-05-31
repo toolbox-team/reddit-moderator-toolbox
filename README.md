@@ -35,15 +35,9 @@ Reload the addon when needed.
 
 **Note that it is not needed to use the build process for development purposes, all supported browsers can run the unpacked version of toolbox directly from the `/extension` directory**
 
-Building is relatively easy through [nodejs](https://nodejs.org/) with gulp.
+Building is relatively easy through [nodejs](https://nodejs.org/)
 
-Install gulp globally.
-
-```sh
-$ npm install --global gulp manifoldjs
-```
-
-Then navigate to the root of the toolbox folder and install the dependencies
+Navigate to the root of the toolbox folder and install the dependencies
 
 ```sh
 $ npm install
@@ -52,12 +46,16 @@ $ npm install
 To build toolbox now simply run
 
 ```sh
-$ gulp
+$ npm run build
 ```
 
-Or if you have followed these steps before and are on windows click the build.bat file.
-
 This will create a zip file which can be used in both Chrome as well as Firefox versions that support web extensions.
+
+If you also want to update the code documentation you run
+
+```sh
+$ npm run docs
+```
 
 ### Third party support
 

@@ -52,6 +52,21 @@ function newmodmailpro () {
         if (searchhelp) {
             const $header = $body.find('.Header');
             const $helpButton = $('<a href="javascript:;" class="tb-search-help tb-bracket-button" title="Open help popup" style="">?</a>').appendTo($header);
+            const $searchButton = $body.find('.Search__button');
+
+            let helpButtonLeft = $searchButton.offset().left - 28;
+
+            $helpButton.css({
+                left: `${helpButtonLeft}px`,
+            });
+
+            $(window).on('resize', () => {
+                helpButtonLeft = $searchButton.offset().left - 28;
+
+                $helpButton.css({
+                    left: `${helpButtonLeft}px`,
+                });
+            });
 
             $helpButton.on('click', e => {
                 e.preventDefault();

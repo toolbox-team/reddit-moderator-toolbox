@@ -14,9 +14,10 @@
     display:none;
 }
 
-.mod-toolbox-rd div#tb-search-header {
-    margin-left: 10px;
-    float: left;
+.mod-toolbox-rd .tb-search-help.tb-bracket-button {
+    left: 813px;
+    top: 15px;
+    position: absolute;
 }
 
 /* nightmode for regular browser

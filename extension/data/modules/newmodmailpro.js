@@ -31,6 +31,12 @@ function newmodmailpro () {
         title: 'Open modmail in nightmode',
     });
 
+    self.register_setting('searchhelp', {
+        type: 'boolean',
+        default: true,
+        title: 'Add button next to search that opens a help popup explaining all search options.',
+    });
+
     const $body = $('body');
 
     // All stuff we want to do when we are on new modmail
@@ -40,7 +46,18 @@ function newmodmailpro () {
 
         // ready some variables.
         const modMailNightmode = self.setting('modmailnightmode'),
-              lastReplyTypeCheck = self.setting('lastreplytypecheck');
+              lastReplyTypeCheck = self.setting('lastreplytypecheck'),
+              searchhelp = self.setting('searchhelp');
+
+        if (searchhelp) {
+            const $header = $body.find('.Header');
+            const $helpButton = $('<a href="javascript:;" class="tb-search-help tb-bracket-button" title="Open help popup" style="">?</a>').appendTo($header);
+
+            $helpButton.on('click', e => {
+                e.preventDefault();
+                window.open('https://mods.reddithelp.com/hc/en-us/articles/360018564511', '', 'width=500,height=600,location=0,menubar=0,top=100,left=100');
+            });
+        }
 
         if (lastReplyTypeCheck && TBUtils.isNewMMThread) {
             $body.on('click', '.ThreadViewerReplyForm__replyButton', event => {

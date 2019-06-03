@@ -1451,9 +1451,6 @@ body.mod-toolbox-rd #tb-bottombar a:not(.tb-action-button):not(.tb-icons) {
 .mod-toolbox-rd .tb-highlight-action-reason {
     background-color: #ffd016;
 }
-.mod-toolbox.res-nightmode .tb-highlight-action-reason {
-    background-color:
-}
 
 /*
 ------------
@@ -2003,4 +2000,10 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 {
     filter: invert(90%)hue-rotate(180deg);
     color: #2f2f2f
+}
+
+
+.res-nightmode .mod-toolbox-rd .tb-input.tb-input {
+    color: #ffffff;
+    background-color: #000;
 }

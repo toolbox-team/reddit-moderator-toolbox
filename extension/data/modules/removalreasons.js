@@ -445,9 +445,9 @@ function removalreasons () {
                     });
 
                     // Pre-fill reason input elements which have IDs.
-                    popup.find('.reason-content input[id], .reason-content textarea[id]').each(function () {
+                    popup.find('.reason-content input[id], .reason-content textarea[id]').each(async function () {
                         this.id = `reason-input-${data.subreddit}-${this.id}`;
-                        this.value = TB.storage.getCache('RReasons', this.id, this.value);
+                        this.value = await TB.storage.getCache('RReasons', this.id, this.value);
                     });
                 }
 

@@ -108,7 +108,8 @@ function storagewrapper () {
         };
 
         TBStorage.getCache = async function (module, setting, defaultVal) {
-            return await getCache(module, setting, defaultVal);
+            const cacheValue = await getCache(module, setting, defaultVal);
+            return cacheValue;
         };
 
         TBStorage.unloading = function () {
@@ -436,9 +437,9 @@ function storagewrapper () {
         }
 
         function getCache (module, setting, defaultVal) {
-            const storageKey = `TBCachev4.${module}.${setting}`;
-            const inputValue = defaultVal !== undefined ? defaultVal : null;
             return new Promise(resolve => {
+                const storageKey = `TBCachev4.${module}.${setting}`;
+                const inputValue = defaultVal !== undefined ? defaultVal : null;
                 chrome.runtime.sendMessage({
                     action: 'tb-cache',
                     method: 'get',

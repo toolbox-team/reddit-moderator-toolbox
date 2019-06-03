@@ -770,10 +770,10 @@ function queuetools () {
                 TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
                 TB.utils.forEachChunked(
-                    $('.subscription-box a.title'), 20, 100, elem => {
+                    $('.subscription-box a.title'), 20, 100, async elem => {
                         const $elem = $(elem),
                               sr = $elem.text(),
-                              data = JSON.parse(TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
+                              data = JSON.parse(await TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
 
                         modSubs.push(sr);
                         TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);

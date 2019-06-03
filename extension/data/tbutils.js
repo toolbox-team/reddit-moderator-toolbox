@@ -1,4 +1,4 @@
-function initwrapper (userDetails, newModSubs) {
+function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
         // We need these before we can do anything.
@@ -47,9 +47,9 @@ function initwrapper (userDetails, newModSubs) {
               shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
               longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45),
 
-              lastgetLong = TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
-              lastgetShort = TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
-              cacheName = TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
+              lastgetLong = cacheDetails.lastGetLong,
+              lastgetShort = cacheDetails.lastGetShort,
+              cacheName = cacheDetails.cacheName,
               seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
               lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
@@ -164,8 +164,8 @@ function initwrapper (userDetails, newModSubs) {
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBUtils.mySubs);
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
         } else {
-            TBUtils.mySubs = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []);
-            TBUtils.mySubsData = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []);
+            TBUtils.mySubs = getnewLong ? [] : cacheDetails.moderatedSubs;
+            TBUtils.mySubsData = getnewLong ? [] : cacheDetails.moderatedSubsData;
         }
 
         const manifest = chrome.runtime.getManifest();
@@ -261,12 +261,12 @@ function initwrapper (userDetails, newModSubs) {
         </style>`);
 
         // Get cached info.
-        TBUtils.noteCache = getnewShort ? {} : TBStorage.getCache(SETTINGS_NAME, 'noteCache', {});
-        TBUtils.configCache = getnewLong ? {} : TBStorage.getCache(SETTINGS_NAME, 'configCache', {});
-        TBUtils.rulesCache = getnewLong ? {} : TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {});
-        TBUtils.noConfig = getnewShort ? [] : TBStorage.getCache(SETTINGS_NAME, 'noConfig', []);
-        TBUtils.noNotes = getnewShort ? [] : TBStorage.getCache(SETTINGS_NAME, 'noNotes', []);
-        TBUtils.noRules = getnewLong ? [] : TBStorage.getCache(SETTINGS_NAME, 'noRules', []);
+        TBUtils.noteCache = getnewShort ? {} : cacheDetails.noteCache;
+        TBUtils.configCache = getnewLong ? {} : cacheDetails.configCache;
+        TBUtils.rulesCache = getnewLong ? {} : cacheDetails.rulesCache;
+        TBUtils.noConfig = getnewShort ? [] : cacheDetails.noConfig;
+        TBUtils.noNotes = getnewShort ? [] : cacheDetails.noNotes;
+        TBUtils.noRules = getnewLong ? [] : cacheDetails.noRules;
 
         if (TBUtils.debugMode) {
             const consoleText = `toolbox version: ${TBUtils.toolboxVersion
@@ -3319,19 +3319,38 @@ function initwrapper (userDetails, newModSubs) {
     }
     window.addEventListener('TBStorageLoaded2', async () => {
         profileResults('utilsStart', performance.now());
+        const SETTINGS_NAME = 'utils';
+        const cacheDetails = {
+            lastgetLong: await TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
+            lastgetShort: await TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
+            cacheName: await TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
+            moderatedSubs: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []),
+            moderatedSubsData: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []),
+            noteCache: await TBStorage.getCache(SETTINGS_NAME, 'noteCache', {}),
+            configCache: await TBStorage.getCache(SETTINGS_NAME, 'configCache', {}),
+            rulesCache: await TBStorage.getCache(SETTINGS_NAME, 'rulesCache', {}),
+            noConfig: await TBStorage.getCache(SETTINGS_NAME, 'noConfig', []),
+            noNotes: await TBStorage.getCache(SETTINGS_NAME, 'noNotes', []),
+            noRules: await TBStorage.getCache(SETTINGS_NAME, 'noRules', []),
+        };
+
         try {
             const userDetails = await getUserDetails();
             const modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
             if (modSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, subs => {
-                    initwrapper(userDetails, subs);
+                    initwrapper({
+                        userDetails,
+                        newModSubs: subs,
+                        cacheDetails,
+                    });
                     profileResults('utilsLoaded', performance.now());
                     const event = new CustomEvent('TBUtilsLoaded2');
                     window.dispatchEvent(event);
                 });
             } else {
-                initwrapper(userDetails);
+                initwrapper({userDetails, cacheDetails});
                 profileResults('utilsLoaded', performance.now());
                 const event = new CustomEvent('TBUtilsLoaded2');
                 window.dispatchEvent(event);

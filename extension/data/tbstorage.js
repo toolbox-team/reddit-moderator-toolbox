@@ -13,17 +13,15 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
 // After that direct users to a page confirming settings have been reset.
 function clearLocal () {
     // Cache.
-    Object.keys(localStorage)
-        .forEach(key => {
-            if (/^(TBCachev4.)/.test(key)) {
-                localStorage.removeItem(key);
-            }
-        });
-
-    // Wait a sec for stuff to clear.
-    setTimeout(() => {
-        window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
-    }, 1000);
+    chrome.runtime.sendMessage({
+        action: 'tb-cache',
+        method: 'clear',
+    }, () => {
+        // Wait a sec for stuff to clear.
+        setTimeout(() => {
+            window.location.href = `//${domain}.reddit.com/r/tb_reset/comments/26jwpl/your_toolbox_settings_have_been_reset/`;
+        }, 1000);
+    });
 }
 
 function startReset () {
@@ -197,22 +195,17 @@ function storagewrapper () {
             });
         };
 
-        TBStorage.clearCache = function () {
-            Object.keys(localStorage)
-                .forEach(key => {
-                    if (/^(TBCachev4.)/.test(key)) {
-                        localStorage.removeItem(key);
-                    }
-                });
+        TBStorage.clearCache = async function () {
+            await clearCache();
 
-            setCache('Utils', 'configCache', {});
-            setCache('Utils', 'noteCache', {});
-            setCache('Utils', 'rulesCache', {});
-            setCache('Utils', 'noConfig', []);
-            setCache('Utils', 'noNotes', []);
-            setCache('Utils', 'noRules', []);
-            setCache('Utils', 'moderatedSubs', []);
-            setCache('Utils', 'moderatedSubsData', []);
+            await setCache('Utils', 'configCache', {});
+            await setCache('Utils', 'noteCache', {});
+            await setCache('Utils', 'rulesCache', {});
+            await setCache('Utils', 'noConfig', []);
+            await setCache('Utils', 'noNotes', []);
+            await setCache('Utils', 'noRules', []);
+            await setCache('Utils', 'moderatedSubs', []);
+            await setCache('Utils', 'moderatedSubsData', []);
         };
 
         // The below block of code will keep watch for events that require clearing the cache like account switching and people accepting mod invites.
@@ -444,37 +437,48 @@ function storagewrapper () {
 
         function getCache (module, setting, defaultVal) {
             const storageKey = `TBCachev4.${module}.${setting}`;
-
-            defaultVal = defaultVal !== undefined ? defaultVal : null;
-            let result;
-            if (localStorage[storageKey] === undefined) {
-                return defaultVal;
-            } else {
-                const storageString = localStorage[storageKey];
-                try {
-                    result = JSON.parse(storageString);
-                } catch (e) {
-                    $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
-                    result = defaultVal; // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
-                }
-
-                // send back the default if, somehow, someone stored `null`
-                // NOTE: never, EVER store `null`!
-                if (result === null
-                && defaultVal !== null
-                ) {
-                    result = defaultVal;
-                }
-                return result;
-            }
+            const inputValue = defaultVal !== undefined ? defaultVal : null;
+            return new Promise(resolve => {
+                chrome.runtime.sendMessage({
+                    action: 'tb-cache',
+                    method: 'get',
+                    storageKey,
+                    inputValue,
+                }, response => {
+                    if (response.errorThrown !== undefined) {
+                        $.log(`${storageKey} is corrupted.  Sending default.`, false, SHORTNAME);
+                        resolve(defaultVal);
+                    } else {
+                        resolve(response.value);
+                    }
+                });
+            });
         }
 
-        function setCache (module, setting, value) {
+        function setCache (module, setting, inputValue) {
             const storageKey = `TBCachev4.${module}.${setting}`;
+            return new Promise(resolve => {
+                chrome.runtime.sendMessage({
+                    action: 'tb-cache',
+                    method: 'set',
+                    storageKey,
+                    inputValue,
+                }, async () => {
+                    const value = await getCache(module, setting);
+                    resolve(value);
+                });
+            });
+        }
 
-            localStorage[storageKey] = JSON.stringify(value);
-
-            return getSetting(module, setting);
+        function clearCache () {
+            return new Promise(resolve => {
+                chrome.runtime.sendMessage({
+                    action: 'tb-cache',
+                    method: 'clear',
+                }, () => {
+                    resolve();
+                });
+            });
         }
 
         // based on: http://designpepper.com/blog/drips/object-equality-in-javascript.html

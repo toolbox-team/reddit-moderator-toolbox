@@ -35,6 +35,14 @@ function profileResults (name, number) {
 
 profileResults('start', start);
 
+// Let's do some housecleaning to make sure leftovers of previous versions are no longer lingering.
+Object.keys(localStorage)
+    .forEach(key => {
+        if (/^(TBCachev4.|Toolboxv4.)/.test(key)) {
+            localStorage.removeItem(key);
+        }
+    });
+
 if (location.host === 'mod.reddit.com') {
     sessionStorage.setItem('v4active', 'true');
 } else {

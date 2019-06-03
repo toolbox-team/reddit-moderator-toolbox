@@ -215,4 +215,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
         return true;
     }
+
+    if (request.action === 'tb-cache') {
+        const {method, storageKey, inputValue} = request;
+
+        if (method === 'get') {
+            const result = {};
+            if (localStorage[storageKey] === undefined) {
+                result.value = inputValue;
+            } else {
+                const storageString = localStorage[storageKey];
+                try {
+                    result.value = JSON.parse(storageString);
+                } catch (error) { // if everything gets strignified, it's always JSON.  If this happens, the storage val is corrupted.
+                    result.errorThrown = error.toString();
+                    result.value = inputValue;
+                }
+
+                // send back the default if, somehow, someone stored `null`
+                // NOTE: never, EVER store `null`!
+                if (result.value === null
+                && inputValue !== null
+                ) {
+                    result.value = inputValue;
+                }
+            }
+
+            sendResponse(result);
+        }
+
+        if (method === 'set') {
+            localStorage[storageKey] = JSON.stringify(inputValue);
+            sendResponse();
+        }
+
+        if (method === 'clear') {
+            localStorage.clear();
+            sendResponse();
+        }
+        return true;
+    }
 });

@@ -103,12 +103,12 @@ function storagewrapper () {
         };
 
         // methods.
-        TBStorage.setCache = function (module, setting, value) {
-            return setCache(module, setting, value, true);
+        TBStorage.setCache = async function (module, setting, value) {
+            return await setCache(module, setting, value, true);
         };
 
-        TBStorage.getCache = function (module, setting, defaultVal) {
-            return getCache(module, setting, defaultVal);
+        TBStorage.getCache = async function (module, setting, defaultVal) {
+            return await getCache(module, setting, defaultVal);
         };
 
         TBStorage.unloading = function () {

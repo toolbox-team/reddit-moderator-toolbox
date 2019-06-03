@@ -3319,7 +3319,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     }
     window.addEventListener('TBStorageLoaded2', async () => {
         profileResults('utilsStart', performance.now());
-        const SETTINGS_NAME = 'utils';
+        const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
             lastgetLong: await TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
             lastgetShort: await TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
@@ -3336,8 +3336,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         try {
             const userDetails = await getUserDetails();
-            const modSubs = TBStorage.getCache('Utils', 'moderatedSubs', []);
-            if (modSubs.length === 0) {
+            if (cacheDetails.moderatedSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, subs => {
                     initwrapper({

@@ -88,6 +88,13 @@ function createZip () {
     const outputName = `toolbox_v${toolboxVersion}.zip`;
     const outputPath = path.resolve(buildOutputDir, outputName);
 
+    // Check if the build directory is a thing and if it isn't make it
+    try {
+        fs.statSync(buildOutputDir);
+    } catch (e) {
+        fs.mkdirSync(buildOutputDir);
+    }
+
     // Check for and delete excisting zip with the same name.
     if (fs.existsSync(outputPath)) {
         fs.unlinkSync(outputPath);

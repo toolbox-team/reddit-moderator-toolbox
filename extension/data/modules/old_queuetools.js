@@ -852,29 +852,32 @@ function queuetoolsOld () {
                 TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TB.ui.FEEDBACK_NEUTRAL);
 
                 TB.utils.forEachChunked(
-                    $('.subscription-box a.title'), 20, 100, async elem => {
+                    $('.subscription-box a.title'), 20, 100, elem => {
                         const $elem = $(elem),
-                              sr = $elem.text(),
-                              data = JSON.parse(await TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]'));
+                              sr = $elem.text();
 
-                        modSubs.push(sr);
-                        TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
+                        TB.storage.getCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, '[0,0]').then(cacheData => {
+                            const data = JSON.parse(cacheData);
 
-                        // Update count and re-cache data if more than an hour old.
-                        $elem.parent().append(`<a href="${TBUtils.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
-                        if (now > data[1]) {
-                            updateModqueueCount(sr);
-                        }
+                            modSubs.push(sr);
+                            TB.ui.textFeedback(`Getting items for: ${sr}`, TB.ui.FEEDBACK_POSITIVE, null, TB.ui.DISPLAY_BOTTOM);
 
-                        function updateModqueueCount (sr) {
-                            TBUtils.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
-                                TBStorage.purifyObject(d);
-                                const items = d.data.children.length;
-                                self.log(`  subreddit: ${sr} items: ${items}`);
-                                TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
-                                $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
-                            });
-                        }
+                            // Update count and re-cache data if more than an hour old.
+                            $elem.parent().append(`<a href="${TBUtils.link(`/r/${sr}/about/${page}`)}" count="${data[0]}" class="tb-subreddit-item-count">${data[0]}</a>`);
+                            if (now > data[1]) {
+                                updateModqueueCount(sr);
+                            }
+
+                            function updateModqueueCount (sr) {
+                                TBUtils.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
+                                    TBStorage.purifyObject(d);
+                                    const items = d.data.children.length;
+                                    self.log(`  subreddit: ${sr} items: ${items}`);
+                                    TB.storage.setCache('QueueTools', `${prefix + TBUtils.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                                    $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
+                                });
+                            }
+                        });
                     },
 
                     () => {

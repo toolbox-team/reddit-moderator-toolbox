@@ -100,9 +100,9 @@ function tbmodule () {
 
             // Template for 'general settings'.
             const displayNone = 'display: none;';
-            let settingContent = '';
+            let coreSettingsContent = '';
 
-            const settings = [
+            const coreSettings = [
                 {
                     settingName: 'settingssub',
                     content: `
@@ -164,12 +164,12 @@ function tbmodule () {
                 },
             ];
 
-            $.each(settings, function () {
+            $.each(coreSettings, function () {
                 const settingName = this.settingName,
                       content = this.content,
                       display = this.display;
 
-                settingContent = `${settingContent}
+                coreSettingsContent += `
                 <p id="tb-toolbox-${settingName}" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
@@ -205,7 +205,7 @@ function tbmodule () {
                     tooltip: 'Edit toolbox core settings',
                     help_page: 'toolbox',
                     id: 'toolbox',
-                    content: settingContent,
+                    content: coreSettingsContent,
                 },
                 {
                     title: 'Toggle Modules',
@@ -459,11 +459,6 @@ function tbmodule () {
             $settingsDialog.appendTo('body').show();
             $body.css('overflow', 'hidden');
 
-            // and finally...
-            this.injectSettings();
-        },
-
-        injectSettings () {
             this.moduleList.forEach(moduleName => {
                 const module = this.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled

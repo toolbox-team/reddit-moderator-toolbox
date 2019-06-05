@@ -932,7 +932,7 @@
             submissionStatusBy = submissionApprovedBy;
             submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
         } else if (submissionBanNote && !submissionSpam && !submissionRemoved && !submissionApproved) {
-            submissionStatus = 'filtered';
+            submissionStatus = 'removed';
             submissionStatusUTC = submissionBannedAtUTC;
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
             submissionStatusBy = submissionBannedBy;
@@ -1082,11 +1082,11 @@
 
         // Now add mod action buttons if applicable.
         if (canModsubmission) {
-            if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
+            if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral') {
                 $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
             }
 
-            if (submissionStatus === 'approved' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
+            if (submissionStatus === 'approved' || submissionStatus === 'neutral') {
                 $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
                 <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
             }
@@ -1238,7 +1238,7 @@
             commentStatusBy = commentApprovedBy;
             commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
         } else if (commentBanNote && !commentRemoved && !commentSpam && !commentApproved) {
-            commentStatus = 'filtered';
+            commentStatus = 'removed';
             commentStatusUTC = commentBannedAtUTC;
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
             commentStatusBy = commentBannedBy;
@@ -1416,11 +1416,11 @@
 
         // Now add mod action buttons if applicable.
         if (canModComment) {
-            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
+            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
             }
 
-            if (commentStatus === 'approved' || commentStatus === 'neutral' || commentStatus === 'filtered') {
+            if (commentStatus === 'approved' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
             }

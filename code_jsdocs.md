@@ -6,7 +6,7 @@
 <dt><a href="#module_QueueTools">QueueTools</a></dt>
 <dd></dd>
 <dt><a href="#module_BackgroundPage">BackgroundPage</a></dt>
-<dd></dd>
+<dd><p>This refers to the webextension background page.</p></dd>
 </dl>
 
 ## Classes
@@ -111,6 +111,8 @@
 <a name="module_BackgroundPage"></a>
 
 ## BackgroundPage
+<p>This refers to the webextension background page.</p>
+
 
 * [BackgroundPage](#module_BackgroundPage)
     * [~getOAuthTokens([tries])](#module_BackgroundPage..getOAuthTokens) ⇒ <code>Promise.&lt;Object&gt;</code>

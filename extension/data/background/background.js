@@ -1,4 +1,6 @@
-/** @module BackgroundPage **/
+/**
+ * This refers to the webextension background page.
+ *  @module BackgroundPage **/
 // We store notification meta data here for later use.
 const notificationData = {};
 

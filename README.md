@@ -1,7 +1,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/e4uru1b498486cdo/branch/master?svg=true)](https://ci.appveyor.com/project/creesch/reddit-moderator-toolbox-redesign/branch/master)
   
 
-[![Discord](https://img.shields.io/discord/535490452066009090.svg?color=blue&label=Discord&logo=Discord)](https://discord.gg/8fGCykQ) [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
+[![Discord](https://img.shields.io/discord/535490452066009090.svg?color=blue&label=discord&logo=discord&logoColor=fff)](https://discord.gg/8fGCykQ) [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
 
 
 toolbox for reddit

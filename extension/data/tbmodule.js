@@ -295,6 +295,15 @@ function tbmodule () {
                 `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
 
+            // This div contains the module links, separate from everything else
+            const $moduleCategory = $(`
+                <div class="tb-window-tabs-category">
+                    <h2 class="tb-window-tabs-header">Modules</h2>
+                </div>
+            `);
+            // TODO: un-hardcode this
+            $settingsDialog.find('.tb-window-tabs [data-module="about"]').before($moduleCategory);
+
             $settingsDialog.on('click', '.tb-help-main', e => {
                 const settingsDialog = e.delegateTarget;
                 const page = $(settingsDialog).find('.tb-window-tabs a.active').data('help_page');
@@ -459,7 +468,8 @@ function tbmodule () {
             $settingsDialog.appendTo('body').show();
             $body.css('overflow', 'hidden');
 
-            this.moduleList.forEach(moduleName => {
+            // Sort the module list alphabetically
+            this.moduleList.sort((a, b) => a.localeCompare(b)).forEach(moduleName => {
                 const module = this.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
@@ -843,34 +853,17 @@ body {
                         $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                     }
                     $('.tb-settings .tb-window-tabs-wrapper').append($settings);
-                    // Add each tab in its place in ABC order, with exceptions
-                    let added = false;
-                    $('.tb-settings .tb-window-tabs a').each(function () {
-                        const $this = $(this);
-                        // Keep general settings and module toggles at the top, and about tab at the bottom
-                        if ($tab.attr('data-module') === 'toggle_modules' ||
-                                $tab.attr('data-module') === 'toolbox' ||
-                                $this.attr('data-module') === 'gensettings' ||
-                                $this.attr('data-module') === 'about') {
-                            $this.before($tab);
-                            added = true;
-                            return false;
-                        }
-                        if ($this.attr('data-module') === 'toggle_modules' ||
-                                $this.attr('data-module') === 'toolbox' ||
-                                $tab.attr('data-module') === 'gensettings' ||
-                                $tab.attr('data_module') === 'about') {
-                            return; // Can't insert here, so move to the next position and try again
-                        }
-                        // Compare everything else normally
-                        if ($this.text().localeCompare($tab.text()) > 0) {
-                            $this.before($tab);
-                            added = true;
-                            return false;
-                        }
-                    });
-                    if (!added) {
-                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($tab);
+                    // Add the tab where it belongs
+                    // TODO: un-hardcode this
+                    if (module.shortname === 'GenSettings') {
+                        // General settings isn't really a module, we put it above the modules list
+                        $moduleCategory.before($tab);
+                    } else if (module.shortname === 'Achievements') {
+                        // Achievements also isn't really a module, we put it below with About
+                        $moduleCategory.after($tab);
+                    } else {
+                        // Other modules get added to the list
+                        $moduleCategory.append($tab);
                     }
 
                     // stuff to exec after inject:

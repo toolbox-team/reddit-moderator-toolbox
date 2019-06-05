@@ -5,6 +5,8 @@
 <dd></dd>
 <dt><a href="#module_QueueTools">QueueTools</a></dt>
 <dd></dd>
+<dt><a href="#module_BackgroundPage">BackgroundPage</a></dt>
+<dd></dd>
 </dl>
 
 ## Classes
@@ -105,6 +107,52 @@
 | Param | Type | Description |
 | --- | --- | --- |
 | result | <code>Boolean</code> \| <code>Object</code> | <p>Either false or an object with actions</p> |
+
+<a name="module_BackgroundPage"></a>
+
+## BackgroundPage
+
+* [BackgroundPage](#module_BackgroundPage)
+    * [~getOAuthTokens([tries])](#module_BackgroundPage..getOAuthTokens) ⇒ <code>Promise.&lt;Object&gt;</code>
+    * [~makeHeaderObject(headerString)](#module_BackgroundPage..makeHeaderObject) ⇒ <code>headerObject</code>
+    * [~makeRequest(options, sendResponse)](#module_BackgroundPage..makeRequest)
+
+<a name="module_BackgroundPage..getOAuthTokens"></a>
+
+### BackgroundPage~getOAuthTokens([tries]) ⇒ <code>Promise.&lt;Object&gt;</code>
+<p>Retrieves the user's OAuth tokens from cookies.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - <p>An object with properties <code>accessToken</code>,
+<code>refreshToken</code>, <code>scope</code>, and some others</p>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [tries] | <code>number</code> | <code>1</code> | <p>Number of tries to get the token (recursive)</p> |
+
+<a name="module_BackgroundPage..makeHeaderObject"></a>
+
+### BackgroundPage~makeHeaderObject(headerString) ⇒ <code>headerObject</code>
+<p>Convert the string from getAllResponseHeaders() to a nice object.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+**Returns**: <code>headerObject</code> - <p>An object containing all header values.</p>  
+
+| Param | Description |
+| --- | --- |
+| headerString | <p>The input string</p> |
+
+<a name="module_BackgroundPage..makeRequest"></a>
+
+### BackgroundPage~makeRequest(options, sendResponse)
+<p>Make an AJAX request, and then send a response with the result as an object.</p>
+
+**Kind**: inner method of [<code>BackgroundPage</code>](#module_BackgroundPage)  
+
+| Param | Description |
+| --- | --- |
+| options | <p>The options for the request</p> |
+| sendResponse | <p>The <code>sendResponse</code> callback that will be called</p> |
 
 <a name="TBListener"></a>
 

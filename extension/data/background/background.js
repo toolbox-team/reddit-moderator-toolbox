@@ -1,3 +1,4 @@
+/** @module BackgroundPage **/
 // We store notification meta data here for later use.
 const notificationData = {};
 

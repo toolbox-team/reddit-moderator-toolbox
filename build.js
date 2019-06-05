@@ -16,7 +16,11 @@ const versionName = argv.version_name;
 //
 // Documentation constants
 //
-const docInput = ['./extension/data/modules/*.js', './extension/data/*.js'];
+const docInput = [
+    './extension/data/modules/*.js',
+    './extension/data/*.js',
+    './extension/data/background/*.js',
+];
 const docOutput = path.resolve(__dirname, 'code_jsdocs.md');
 const jsdocConfig = path.resolve(__dirname, 'jsdoc.json');
 

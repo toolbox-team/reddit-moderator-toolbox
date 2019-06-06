@@ -1,4 +1,3 @@
-/modules/modtalkadvisory.js
 *.bak
 /.idea
 /.settings
@@ -9,7 +8,6 @@
 *.nex
 /node_modules
 /build
-extension/data/modules/trollatroll.js
 /scratch.js
 /ftpconfig.json
 .DS_Store

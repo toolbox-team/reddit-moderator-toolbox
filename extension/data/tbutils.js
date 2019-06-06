@@ -870,7 +870,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.alert = function (message, callback, showClose) {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
-                $noteDiv.append('<i class="note-close tb-icons" title="Close">close</i>');
+                $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
             }
             $noteDiv.appendTo('body');
 

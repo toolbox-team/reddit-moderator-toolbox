@@ -212,7 +212,7 @@
                     <div rel="${uniqID}" class="tb-sticky-title">${title}</div>
                     <div class="tb-sticky-button" rel="${uniqID}" title="Close">
                         <a class="tb-sticky-close" href="javascript:;" rel="${uniqID}" title="Close">
-                            <i class="tb-icons">close</i>
+                            <i class="tb-icons">${TBui.icons.close}</i>
                         </a>
                     </div>
                 </div>

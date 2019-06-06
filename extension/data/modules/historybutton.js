@@ -101,7 +101,7 @@ function historybutton () {
                 TBui.contextTrigger('tb-user-history', {
                     addTrigger: true,
                     triggerText: 'user history',
-                    triggerIcon: 'history',
+                    triggerIcon: TBui.icons.history,
                     title: `Show history for /u/${user}`,
                     dataAttributes: {
                         author: user,

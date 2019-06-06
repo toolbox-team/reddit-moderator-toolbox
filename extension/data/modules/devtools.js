@@ -85,7 +85,7 @@ function devtools () {
             TBui.contextTrigger('tb-testCommentUI-link', {
                 addTrigger: true,
                 triggerText: 'Show ze overlay!',
-                triggerIcon: 'view_array',
+                triggerIcon: TBui.icons.overlay,
             });
         }
 

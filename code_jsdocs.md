@@ -234,12 +234,20 @@ The callback's <code>this</code> is event.target</p>
 **Kind**: global namespace  
 
 * [TBui](#TBui) : <code>object</code>
+    * [.icons](#TBui.icons) : <code>object</code>
     * [.contextTrigger(triggerId, options)](#TBui.contextTrigger)
     * [.tbRedditEvent($elements, types)](#TBui.tbRedditEvent)
     * [.makeSubmissionEntry(submission, submissionOptions)](#TBui.makeSubmissionEntry) ⇒ <code>object</code>
     * [.makeSingleComment(comment, commentOptions)](#TBui.makeSingleComment) ⇒ <code>object</code>
     * [.makeCommentThread(jsonInput, commentOptions)](#TBui.makeCommentThread) ⇒ <code>object</code>
 
+<a name="TBui.icons"></a>
+
+### TBui.icons : <code>object</code>
+<p>Material design icons mapped to toolbox names through their hexcode.</p>
+<p>Usage <code>&lt;div class=&quot;tb-icon&quot;&gt;${TBui.icons.NAME}&lt;/div&gt;</code></p>
+
+**Kind**: static property of [<code>TBui</code>](#TBui)  
 <a name="TBui.contextTrigger"></a>
 
 ### TBui.contextTrigger(triggerId, options)

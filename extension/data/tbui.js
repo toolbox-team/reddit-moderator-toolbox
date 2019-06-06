@@ -15,6 +15,46 @@
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
     });
 
+    /**
+   * Material design icons mapped to toolbox names through their hexcode.
+   *
+   * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
+   * @type {object}
+   */
+    TBui.icons = {
+        add: '&#xe145;', // add
+        addBox: '&#xe146;', // add_box
+        addCircle: '&#xe148;', // add_circle_outline
+        arrowLeft: '&#xe314;', // keyboard_arrow_left
+        arrowRight: '&#xe315;', // keyboard_arrow_right
+        close: '&#xe5cd;', // close
+        comments: '&#xe0b7;', // chat
+        delete: '&#xe872;', // delete
+        dotMenu: '&#xe5d4;', // more_vert
+        edit: '&#xe3c9;', // edit
+        help: '&#xe8fd;', // help_outline
+        history: '&#xe889;', // history
+        list: '&#xe896;', // list
+        modlog: '&#xe3ec;', // grid_on
+        modqueue: '&#xe8b2;', // report_problem
+        newModmail: '&#xe168;', // move_to_inbox
+        oldModmail: '&#xe156;', // inbox
+        overlay: '&#xe8ea;', // view_array
+        profile: '&#xe853;', // account_circle
+        refresh: '&#xe5d5;', // refresh
+        remove: '&#xe15b;', // remove
+        settings: '&#xe8b8;', // settings
+        sortDown: '&#xe5db;', // arrow_downward
+        sortUp: '&#xe5d8;', // arrow_upward
+        subTraffic: '&#xe6e1;', // show_chart
+        tbConsole: '&#xe868;', // bug_report
+        tbReload: '&#xe86a;', // cached
+        tbSettingLink: '&#xe157;', // link
+        tbSubConfig: '&#xe869;', // build
+        unmoderated: '&#xe417;', // remove_red_eye
+        userInbox: '&#xe0be;', // email
+        usernote: '&#xe06f;', // note
+    };
     // Icons NOTE: string line length is ALWAYS 152 chars
 
     TBui.logo64 = `iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsRAAALEQF/ZF+R
@@ -108,7 +148,7 @@
                 <div class="tb-popup-title">${title}</div>
                 <div class="buttons">
                     <a class="close" href="javascript:;">
-                        <i class="tb-icons">close</i>
+                        <i class="tb-icons">${TBui.icons.close}</i>
                     </a>
                 </div>
             </div>
@@ -239,7 +279,7 @@
             <div class="buttons">
                 ${buttons}
                 <a class="close" href="javascript:;">
-                    <i class="tb-icons">close</i>
+                    <i class="tb-icons">${TBui.icons.close}</i>
                 </a>
             </div>
         </div>
@@ -428,7 +468,7 @@
                 </tr></thead>
                 <tbody></tbody>
             </table>
-            <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">add_box</a></div>`);
+            <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">${TBui.icons.addBox}</a></div>`);
 
         const emptyRow = `
             <tr class="tb-map-input-tr">
@@ -459,7 +499,7 @@
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
                     <td class="tb-map-input-td-remove">
-                        <a class="tb-map-input-remove tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:void(0)">delete</a>
+                        <a class="tb-map-input-remove tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:void(0)">${TBui.icons.delete}</a>
                     </td>
                 </tr>`);
                 $item.appendTo($mapInput.find('.tb-map-input-table tbody'));
@@ -644,7 +684,7 @@
                         <div id="tb-context-header">Toolbox context menu</div>
                         <ul id="tb-context-menu-list"></ul>
                     </div>
-                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right</i>
+                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">${TBui.icons.arrowRight}</i>
                 </div>
             `).appendTo($body);
         }
@@ -987,7 +1027,7 @@
                             (<a href="${TBUtils.link(`/domain/${submissionDomain}`)}">${submissionDomain}</a>)
                         </span>
                     </div>
-                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ''}
+                    ${submissionIsSelf && submissionSelfTextHTML ? `<div class="tb-self-expando-button"><i class="tb-icons">${TBui.icons.add}</i></div>` : ''}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="${TBUtils.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
@@ -1625,10 +1665,10 @@
         $selfText.toggle();
 
         if (thisState === 'collapsed') {
-            $this.html('<i class="tb-icons">remove</i>');
+            $this.html(`<i class="tb-icons">${TBui.icons.remove}</i>`);
             $this.attr('data-state', 'expanded');
         } else {
-            $this.html('<i class="tb-icons">add</i>');
+            $this.html(`<i class="tb-icons">${TBui.icons.add}</i>`);
             $this.attr('data-state', 'collapsed');
         }
     });

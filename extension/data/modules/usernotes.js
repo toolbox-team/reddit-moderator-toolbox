@@ -556,7 +556,7 @@ function usernotes () {
                                     ${typeSpan}
                                     <span class="note-text">${noteString}</span>
                                 </td>
-                                <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">delete</i></td>
+                                <td class="utagger-notes-td3"><i class="utagger-remove-note tb-icons tb-icons-negative" data-note-id="${noteId}">${TBui.icons.delete}</i></td>
                             </tr>
                             `);
                         });
@@ -782,7 +782,7 @@ function usernotes () {
                             TBui.contextTrigger('tb-un-config-link', {
                                 addTrigger: true,
                                 triggerText: 'edit usernotes',
-                                triggerIcon: 'note',
+                                triggerIcon: TBui.icons.usernote,
                                 title: `edit usernotes for /r/${subreddit}`,
                                 dataAttributes: {
                                     subreddit,
@@ -822,8 +822,8 @@ function usernotes () {
 
             const $userContentTemplate = $(`<div class="tb-un-user" data-user="NONE">
                 <div class="tb-un-user-header">
-                    <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">refresh</a>
-                    <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">delete</a>
+                    <a class="tb-un-refresh tb-icons" data-user="NONE" href="javascript:;">${TBui.icons.refresh}</a>
+                    <a class="tb-un-delete tb-icons tb-icons-negative" data-user="NONE" href="javascript:;">${TBui.icons.delete}</a>
                     <span class="user">
                         <a href="${TBUtils.link('/u/NONE')}">/u/NONE</a>
                     </span>
@@ -866,7 +866,7 @@ function usernotes () {
                                   timeHuman = TBUtils.timeConverterRead(timeUTC);
 
                             const $note = $(`<div class="tb-un-note-details">
-                                <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user}" href="javascript:;">delete</a>
+                                <a class="tb-un-notedelete tb-icons tb-icons-negative" data-note="${key}" data-user="${user}" href="javascript:;">${TBui.icons.delete}</a>
                                 <span class="note">
                                     <span class="note-type">[${color.text}]</span>
                                     <a class="note-content" href="${val.link}">${val.note}</a>

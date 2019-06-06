@@ -173,7 +173,7 @@ function tbmodule () {
                 <p id="tb-toolbox-${settingName}" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
-                        link
+                    ${TBui.icons.tbSettingLink}
                     </a>&nbsp;
                 </p>
                 <div style="display: none;" class="tb-setting-input tb-setting-input-${settingName}">
@@ -288,7 +288,7 @@ function tbmodule () {
                 // tabs
                 settingsTabs,
                 // extra header buttons TODO: make this generic
-                '<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">help_outline</i></a>',
+                `<a class="tb-help-main" href="javascript:;" currentpage="" title="Help"><i class="tb-icons">${TBui.icons.help}</i></a>`,
                 // overlay main class
                 'tb-settings tb-personal-settings', // TODO: remove tb-settings from this after port is complete
                 // optional, overriding single footer
@@ -531,7 +531,7 @@ function tbmodule () {
                                 <label><input type="checkbox" id="${module.shortname}Enabled" ${module.setting(setting) ? ' checked="checked"' : ''}>${options.title}</label>
                                         <a class="tb-help-toggle" href="javascript:;" data-module="${module.shortname}" title="Help">?</a>
                                 <a data-setting="${name}" href="javascript:;" class="tb-module-setting-link tb-setting-link-${name}  tb-icons">
-                                    link
+                                    ${TBui.icons.tbSettingLink}
                                 </a>&nbsp;
                                 ${module.oldReddit ? '<span class="tb-oldReddit-module">Only works on old reddit</span>' : ''}
                             </p>
@@ -797,7 +797,7 @@ body {
                               internetLink = `https://www.reddit.com/#?tbsettings=${moduleName}&setting=${settingName}`;
 
                         $setting.append(`&nbsp;<a ${displaySetting ? '' : 'style="display:none;"'
-                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">link</a>` +
+                        } data-setting="${settingName}" href="javascript:;"" class="tb-setting-link ${linkClass} tb-icons">${TBui.icons.tbSettingLink}</a>` +
                             `&nbsp;<div style="display:none;" class="tb-setting-input ${inputClass}">` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${redditLink}"/><br>` +
                             `<input  type="text" class="tb-input" readonly="readonly" value="${internetLink}"/></div>`);

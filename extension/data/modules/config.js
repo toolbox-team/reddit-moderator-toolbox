@@ -150,7 +150,7 @@ function tbconfig () {
                         title: 'edit removal reasons',
                         tooltip: 'Edit and add your removal reasons here.',
                         content: `
-                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">add_circle_outline</i> Add new removal reason</a>
+                <a href="javascript:;" id="tb-add-removal-reason" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new removal reason</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="rreasons">help</a></br>
                 <span id="tb-add-removal-reason-form">
                     <textarea class="tb-input edit-area" placeholder="reason comment text (optional if you\`re using flair only)"></textarea><br/>
@@ -185,7 +185,7 @@ function tbconfig () {
                         title: 'edit mod macros',
                         tooltip: 'Edit and add your mod macros here.',
                         content: `
-                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">add_circle_outline</i> Add new mod macro</a>
+                <a href="javascript:;" id="tb-add-mod-macro" class="tb-general-button"><i class="tb-icons">${TBui.icons.addCircle}</i> Add new mod macro</a>
                 <a href="javascript:;" id="tb-config-help" class="tb-general-button" data-module="modmacros">help</a></br>
                 <span id="tb-add-mod-macro-form">
                     <textarea class="tb-input edit-area"></textarea><br/>
@@ -263,7 +263,7 @@ function tbconfig () {
                         TBui.contextTrigger('tb-config-link', {
                             addTrigger: true,
                             triggerText: `/r/${subreddit} config`,
-                            triggerIcon: 'build',
+                            triggerIcon: TBui.icons.tbSubConfig,
                             title: `toolbox configuration for /r/${subreddit}`,
                             dataAttributes: {
                                 subreddit,
@@ -533,7 +533,7 @@ function tbconfig () {
                 <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${text}"></td>
                 <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
                 <td>
-                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">arrow_upward</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">arrow_downward</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">delete</a>
+                    <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${TBui.icons.delete}</a>
                 </td>
                 <td class="usernote-error error"></td>
 		    </tr>
@@ -566,8 +566,8 @@ function tbconfig () {
                     const removalReasonTemplate = `
                 <tr class="removal-reason" data-reason="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="removal-reasons-buttons">
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">edit</a> <br>
-                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">delete</a>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
+                        <a href="javascript:;" data-reason="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
                     </td>
                     <td class="removal-reasons-content" data-reason="{{i}}">
                         <span class="removal-reason-label" data-for="reason-{{subreddit}}-{{i++}}"><span><h3 class="removal-title">{{removalReasonTitle}}</h3>{{label}}</span></span><br>
@@ -622,8 +622,8 @@ function tbconfig () {
                     const removalReasonTemplateHTML = `
                 <tr class="removal-reason" data-reason="${index}" data-subreddit="${subreddit}">
                     <td class="removal-reasons-sort-buttons">
-                        <a href="javascript:;" class="tb-sort-up tb-icons">arrow_upward</a>
-                        <a href="javascript:;" class="tb-sort-down tb-icons">arrow_downward</a>
+                        <a href="javascript:;" class="tb-sort-up tb-icons">${TBui.icons.sortUp}</a>
+                        <a href="javascript:;" class="tb-sort-down tb-icons">${TBui.icons.sortDown}</a>
                     </td>
                     <td class="removal-reasons-content">
                         <span class="removal-reason-label">${removalReasonTitle}</span>
@@ -657,8 +657,8 @@ function tbconfig () {
                     const modMacroTemplate = `
                 <tr class="mod-macro" data-macro="{{i}}" data-subreddit="{{subreddit}}">
                     <td class="mod-macros-buttons">
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">edit</a> <br>
-                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">delete</a>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="edit tb-icons">${TBui.icons.edit}</a> <br>
+                        <a href="javascript:;" data-macro="{{i}}" data-subreddit="{{subreddit}}" class="delete tb-icons tb-icons-negative">${TBui.icons.delete}</a>
                     </td>
                     <td class="mod-macros-content" data-macro="{{i}}">
                         <span class="mod-macro-label" data-for="macro-{{subreddit}}-{{i}}"><span><h3 class="macro-title">{{modMacroTitle}}</h3>{{label}}</span></span><br>

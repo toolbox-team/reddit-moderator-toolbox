@@ -2666,8 +2666,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 }
             });
 
-            TBUtils.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, () => {
-                callback();
+            TBUtils.postToWiki('tbsettings', subreddit, settingsObject, 'exportSettings', true, false, (success, response) => {
+                callback(success, response);
             });
         };
 
@@ -3292,6 +3292,28 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
         });
     }
+    function getMigrationStatus () {
+        // Always resolve, if we get an error we assume reddit is at fault and don't want to obther the user.
+        return new Promise(resolve => {
+            chrome.runtime.sendMessage({
+                action: 'tb-request',
+                endpoint: '/r/tb_dev/wiki/tbmigrate.json',
+            }, response => {
+                const {errorThrown, data} = response;
+                if (errorThrown) {
+                    resolve(false);
+                } else {
+                    const wikiData = data.data.content_md;
+                    try {
+                        const parsedWikiData = JSON.parse(wikiData);
+                        resolve(parsedWikiData.migrate);
+                    } catch (err) {
+                        resolve(false);
+                    }
+                }
+            });
+        });
+    }
 
     function getUserDetails () {
         return new Promise((resolve, reject) => {
@@ -3335,7 +3357,22 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         try {
+            const migrateWikiActivated = await getMigrationStatus();
             const userDetails = await getUserDetails();
+            const v5active = sessionStorage.getItem('v5active');
+
+            let activationEvent;
+
+            // Check if we need to disable toolbox because of migration reasons.
+            if (migrateWikiActivated || v5active) {
+                activationEvent = new CustomEvent('TbMigrationActive', {
+                    detail: {
+                        migrationType: v5active ? 'sessionStorageActivated' : 'wikiActivated', // Toolbox conflict takes precedence over simply outdated.
+                    },
+                });
+            } else {
+                activationEvent = new CustomEvent('TBUtilsLoaded2');
+            }
             if (cacheDetails.moderatedSubs.length === 0) {
                 console.log('No modsubs in cache, getting mod subs before initalizing');
                 getModSubs(null, subs => {
@@ -3345,14 +3382,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         cacheDetails,
                     });
                     profileResults('utilsLoaded', performance.now());
-                    const event = new CustomEvent('TBUtilsLoaded2');
-                    window.dispatchEvent(event);
+                    window.dispatchEvent(activationEvent);
                 });
             } else {
                 initwrapper({userDetails, cacheDetails});
                 profileResults('utilsLoaded', performance.now());
-                const event = new CustomEvent('TBUtilsLoaded2');
-                window.dispatchEvent(event);
+                window.dispatchEvent(activationEvent);
             }
         } catch (error) {
             console.log('Error getting user details');

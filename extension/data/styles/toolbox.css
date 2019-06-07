@@ -1,9 +1,88 @@
+/*
+========================
+
+    TB migration CSS
+
+========================
+*/
+
+.mod-toolbox-rd .tb-popup.migrate-popup .buttons {
+    display: none;
+}
+
+.mod-toolbox-rd #tb-migration-info {
+    padding: 10px;
+    border: solid 5px #ff7f4f;
+}
+
+.mod-toolbox-rd #tb-migration-info  p {
+    font-size: 13px;
+    line-height: 1.32;
+    margin: 5px 0;
+}
+
+.mod-toolbox-rd #tb-migration-info  strong {
+    font-weight: 600;
+    font-style: inherit;
+}
+
+
+.mod-toolbox-rd #tb-migration-info   ol {
+    font-size: 13px;
+    list-style-type: decimal;
+    padding-left: 40px;
+    margin: 5px 0;
+}
+
+.mod-toolbox-rd #tb-migration-info  ul {
+    font-size: 13px;
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.mod-toolbox-rd #tb-migration-info  li {
+    line-height: 1.32;
+    margin-bottom: 3px;
+}
+
+.mod-toolbox-rd #tb-migration-info  hr {
+    border: solid 2px #c7d6e6;
+    margin: 20px;
+}
+
+.mod-toolbox-rd .tb-popup.migrate-popup #tb-migration-info a,
+.mod-toolbox-rd .tb-popup.migrate-popup #tb-migration-info a:visited {
+    color: rgb(51, 102, 153);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.mod-toolbox-rd .tb-popup.migrate-popup #tb-migration-info a:hover {
+    text-decoration: none;
+}
+
+.mod-toolbox-rd .tb-popup.migrate-popup input.tb-input[name="settingssub"] {
+    width: calc(100% - 90px)
+}
+
+
+
+/*
+========================
+
+    End TB migration CSS
+
+========================
+*/
+
+
 div#tb-snoo-footer {
     position: relative;
     height: 100px;
     width: 100px;
     margin: 50px auto auto auto;
 }
+
 
 /*
 ========================

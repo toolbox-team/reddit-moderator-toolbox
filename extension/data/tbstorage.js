@@ -9,7 +9,7 @@ if (window.location.href.indexOf('/r/tb_reset/comments/26jwfh/click_here_to_rese
     startReset();
 }
 
-// Clear all toolbox related localstorage items.
+// Clear all toolbox related items.
 // After that direct users to a page confirming settings have been reset.
 function clearLocal () {
     // Cache.
@@ -51,7 +51,7 @@ function storagewrapper () {
 
         const SHORTNAME = 'TBStorage';
 
-        TBStorage.settings = JSON.parse(localStorage['Toolboxv4.Storage.settings'] || '[]'); // always use local storage.
+        TBStorage.settings = [];
 
         let TBsettingsObject;
         TBStorage.domain = window.location.hostname.split('.')[0];
@@ -134,50 +134,50 @@ function storagewrapper () {
             }
             settingsToObject(sObject => {
                 // settings we delete
-                delete sObject['Toolboxv4.Achievements.lastSeen'];
-                delete sObject['Toolboxv4.Achievements.last_seen'];
-                delete sObject['Toolboxv4.Bagels.bagelType'];
-                delete sObject['Toolboxv4.Bagels.enabled'];
-                delete sObject['Toolboxv4.Modbar.customCSS'];
-                delete sObject['Toolboxv4.ModMail.lastVisited'];
-                delete sObject['Toolboxv4.ModMail.replied'];
-                delete sObject['Toolboxv4.ModMail.subredditColorSalt'];
-                delete sObject['Toolboxv4.Notifier.lastChecked'];
-                delete sObject['Toolboxv4.Notifier.lastSeenModmail'];
-                delete sObject['Toolboxv4.Notifier.lastSeenUnmoderated'];
-                delete sObject['Toolboxv4.Notifier.modmailCount'];
-                delete sObject['Toolboxv4.Notifier.modqueueCount'];
-                delete sObject['Toolboxv4.Notifier.modqueuePushed'];
-                delete sObject['Toolboxv4.Notifier.unmoderatedCount'];
-                delete sObject['Toolboxv4.Notifier.unreadMessageCount'];
-                delete sObject['Toolboxv4.Notifier.unreadPushed'];
-                delete sObject['Toolboxv4.QueueTools.kitteh'];
-                delete sObject['Toolboxv4.RReasons.customRemovalReason'];
-                delete sObject['Toolboxv4.Snoo.enabled'];
-                delete sObject['Toolboxv4.Storage.settings'];
-                delete sObject['Toolboxv4.Utils.echoTest'];
-                delete sObject['Toolboxv4.Utils.tbDevs'];
+                delete sObject['Toolbox.Achievements.lastSeen'];
+                delete sObject['Toolbox.Achievements.last_seen'];
+                delete sObject['Toolbox.Bagels.bagelType'];
+                delete sObject['Toolbox.Bagels.enabled'];
+                delete sObject['Toolbox.Modbar.customCSS'];
+                delete sObject['Toolbox.ModMail.lastVisited'];
+                delete sObject['Toolbox.ModMail.replied'];
+                delete sObject['Toolbox.ModMail.subredditColorSalt'];
+                delete sObject['Toolbox.Notifier.lastChecked'];
+                delete sObject['Toolbox.Notifier.lastSeenModmail'];
+                delete sObject['Toolbox.Notifier.lastSeenUnmoderated'];
+                delete sObject['Toolbox.Notifier.modmailCount'];
+                delete sObject['Toolbox.Notifier.modqueueCount'];
+                delete sObject['Toolbox.Notifier.modqueuePushed'];
+                delete sObject['Toolbox.Notifier.unmoderatedCount'];
+                delete sObject['Toolbox.Notifier.unreadMessageCount'];
+                delete sObject['Toolbox.Notifier.unreadPushed'];
+                delete sObject['Toolbox.QueueTools.kitteh'];
+                delete sObject['Toolbox.RReasons.customRemovalReason'];
+                delete sObject['Toolbox.Snoo.enabled'];
+                delete sObject['Toolbox.Storage.settings'];
+                delete sObject['Toolbox.Utils.echoTest'];
+                delete sObject['Toolbox.Utils.tbDevs'];
 
                 // these settings we want the length of the val.
-                sObject['Toolboxv4.Comments.highlighted'] = undefindedOrLength(sObject['Toolboxv4.Comments.highlighted']);
-                sObject['Toolboxv4.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolboxv4.ModButton.savedSubs']);
-                sObject['Toolboxv4.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolboxv4.ModMail.botsToFilter']);
-                sObject['Toolboxv4.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolboxv4.ModMail.filteredSubs']);
-                sObject['Toolboxv4.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolboxv4.Modbar.shortcuts']);
-                sObject['Toolboxv4.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolboxv4.QueueTools.botCheckmark']);
-                sObject['Toolboxv4.Utils.seenNotes'] = undefindedOrLength(sObject['Toolboxv4.Utils.seenNotes']);
+                sObject['Toolbox.Comments.highlighted'] = undefindedOrLength(sObject['Toolbox.Comments.highlighted']);
+                sObject['Toolbox.ModButton.savedSubs'] = undefindedOrLength(sObject['Toolbox.ModButton.savedSubs']);
+                sObject['Toolbox.ModMail.botsToFilter'] = undefindedOrLength(sObject['Toolbox.ModMail.botsToFilter']);
+                sObject['Toolbox.ModMail.filteredSubs'] = undefindedOrLength(sObject['Toolbox.ModMail.filteredSubs']);
+                sObject['Toolbox.Modbar.shortcuts'] = undefindedOrLength(sObject['Toolbox.Modbar.shortcuts']);
+                sObject['Toolbox.QueueTools.botCheckmark'] = undefindedOrLength(sObject['Toolbox.QueueTools.botCheckmark']);
+                sObject['Toolbox.Utils.seenNotes'] = undefindedOrLength(sObject['Toolbox.Utils.seenNotes']);
 
                 // these settings we just want to know if they are populated at all
-                sObject['Toolboxv4.Achievements.save'] = undefindedOrTrue(sObject['Toolboxv4.Achievements.save']);
-                sObject['Toolboxv4.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolboxv4.ModButton.lastAction']);
-                sObject['Toolboxv4.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolboxv4.Modbar.lastExport']);
-                sObject['Toolboxv4.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolboxv4.Notifier.modSubreddits']);
-                sObject['Toolboxv4.Notifier.modmailSubreddits'] = undefindedOrTrue(sObject['Toolboxv4.Notifier.modmailSubreddits']);
-                sObject['Toolboxv4.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(sObject['Toolboxv4.Notifier.unmoderatedSubreddits']);
-                sObject['Toolboxv4.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolboxv4.PNotes.noteWiki']);
-                sObject['Toolboxv4.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolboxv4.QueueTools.queueCreature']);
-                sObject['Toolboxv4.QueueTools.subredditColorSalt'] = undefindedOrTrue(sObject['Toolboxv4.QueueTools.subredditColorSalt']);
-                sObject['Toolboxv4.Utils.settingSub'] = undefindedOrTrue(sObject['Toolboxv4.Utils.settingSub']);
+                sObject['Toolbox.Achievements.save'] = undefindedOrTrue(sObject['Toolbox.Achievements.save']);
+                sObject['Toolbox.ModButton.lastAction'] = undefindedOrTrue(sObject['Toolbox.ModButton.lastAction']);
+                sObject['Toolbox.Modbar.lastExport'] = undefindedOrTrue(sObject['Toolbox.Modbar.lastExport']);
+                sObject['Toolbox.Notifier.modSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modSubreddits']);
+                sObject['Toolbox.Notifier.modmailSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.modmailSubreddits']);
+                sObject['Toolbox.Notifier.unmoderatedSubreddits'] = undefindedOrTrue(sObject['Toolbox.Notifier.unmoderatedSubreddits']);
+                sObject['Toolbox.PNotes.noteWiki'] = undefindedOrTrue(sObject['Toolbox.PNotes.noteWiki']);
+                sObject['Toolbox.QueueTools.queueCreature'] = undefindedOrTrue(sObject['Toolbox.QueueTools.queueCreature']);
+                sObject['Toolbox.QueueTools.subredditColorSalt'] = undefindedOrTrue(sObject['Toolbox.QueueTools.subredditColorSalt']);
+                sObject['Toolbox.Utils.settingSub'] = undefindedOrTrue(sObject['Toolbox.Utils.settingSub']);
 
                 callback(sObject);
 
@@ -383,7 +383,7 @@ function storagewrapper () {
         }
 
         function getSetting (module, setting, defaultVal) {
-            const storageKey = `Toolboxv4.${module}.${setting}`;
+            const storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             defaultVal = defaultVal !== undefined ? defaultVal : null;
@@ -411,7 +411,7 @@ function storagewrapper () {
         // SyncSetting is responsible for saving the setting from the local object to extension storage.
         // As such it should ALMOST ALWAYS be left default. You only use false if you are 100% sure all settings will be stored later.
         function setSetting (module, setting, value, syncSettings = true) {
-            const storageKey = `Toolboxv4.${module}.${setting}`;
+            const storageKey = `Toolbox.${module}.${setting}`;
             registerSetting(module, setting);
 
             // Sanitize the setting
@@ -438,7 +438,7 @@ function storagewrapper () {
 
         function getCache (module, setting, defaultVal) {
             return new Promise(resolve => {
-                const storageKey = `TBCachev4.${module}.${setting}`;
+                const storageKey = `TBCache.${module}.${setting}`;
                 const inputValue = defaultVal !== undefined ? defaultVal : null;
                 chrome.runtime.sendMessage({
                     action: 'tb-cache',
@@ -457,7 +457,7 @@ function storagewrapper () {
         }
 
         function setCache (module, setting, inputValue) {
-            const storageKey = `TBCachev4.${module}.${setting}`;
+            const storageKey = `TBCache.${module}.${setting}`;
             return new Promise(resolve => {
                 chrome.runtime.sendMessage({
                     action: 'tb-cache',

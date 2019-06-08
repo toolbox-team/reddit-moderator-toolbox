@@ -2,10 +2,14 @@ function oldReddit () {
     const self = new TB.Module('Old reddit');
     self.shortname = 'oldreddit';
 
-    // //Default settings
-    self.settings['enabled']['default'] = false;
+    // Default settings
+    self.settings['enabled']['default'] = true;
 
-    self.config['betamode'] = true;
+    self.config['betamode'] = false;
+
+    // How about you don't disable the general settings module?  No other module should ever do this. Well except for the support module and the old reddit module..
+    // So yeah it depends... But seriously normal modules should not do this.
+    self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
     TB.register_module(self);
 

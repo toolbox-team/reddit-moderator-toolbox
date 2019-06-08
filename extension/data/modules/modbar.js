@@ -4,7 +4,8 @@ function modbar () {
 
     self.settings['enabled']['default'] = true;
 
-    // How about you don't disable modbar?  No other module should ever do this. Well except for the support module.
+    // How about you don't disable the modbar?  No other module should ever do this. Well except for the support module and the old reddit module..
+    // So yeah it depends... But seriously normal modules should not do this.
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
     self.register_setting('compactHide', {

@@ -808,6 +808,6 @@ function removalreasons () {
     TB.register_module(self);
 } // end removalreasons()
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     removalreasons();
 });

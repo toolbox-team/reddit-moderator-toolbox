@@ -1,6 +1,6 @@
 (function ($) {
     let skipLocalConsole = false;
-    window.addEventListener('TBStorageLoaded2', () => {
+    window.addEventListener('TBStorageLoaded', () => {
         skipLocalConsole = TBStorage.getSetting('Utils', 'skipLocalConsole', false);
     });
 

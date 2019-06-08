@@ -782,6 +782,6 @@ function notifiermod () {
     TB.register_module(self);
 } // notifier() wrapper
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     notifiermod();
 });

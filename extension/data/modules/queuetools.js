@@ -1333,6 +1333,6 @@ Action reason: ${value.data.details}
     TB.register_module(self);
 }// queuetools() wrapper
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     queuetools();
 });

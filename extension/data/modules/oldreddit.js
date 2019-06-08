@@ -155,6 +155,6 @@ function oldReddit () {
     };
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     oldReddit();
 });

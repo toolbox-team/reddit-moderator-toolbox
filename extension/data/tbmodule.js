@@ -1099,12 +1099,12 @@ body {
     };
 }
 
-window.addEventListener('TBUtilsLoaded2', () => {
+window.addEventListener('TBUtilsLoaded', () => {
     profileResults('moduleStart', performance.now());
 
     $.log('TBModule has TBUtils', false, 'TBinit');
     tbmodule();
     profileResults('moduleLoaded', performance.now());
-    const event = new CustomEvent('TBModuleLoaded2');
+    const event = new CustomEvent('TBModuleLoaded');
     window.dispatchEvent(event);
 });

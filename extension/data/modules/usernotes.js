@@ -1482,6 +1482,6 @@ function usernotes () {
     TB.register_module(self);
 } // usernotes() wrapper
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     usernotes();
 });

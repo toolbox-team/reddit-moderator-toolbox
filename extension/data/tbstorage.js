@@ -266,7 +266,7 @@ function storagewrapper () {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(() => {
                     profileResults('storageLoaded', performance.now());
-                    const event = new CustomEvent('TBStorageLoaded2');
+                    const event = new CustomEvent('TBStorageLoaded');
                     window.dispatchEvent(event);
                 }, 10);
             }

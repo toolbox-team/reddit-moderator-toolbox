@@ -85,6 +85,6 @@ function metricstab () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     metricstab();
 });

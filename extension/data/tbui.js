@@ -11,7 +11,7 @@
 
     let subredditColorSalt;
 
-    window.addEventListener('TBStorageLoaded2', () => {
+    window.addEventListener('TBStorageLoaded', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
     });
 

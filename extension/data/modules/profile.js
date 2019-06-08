@@ -717,6 +717,6 @@ function profilepro () {
     };
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     profilepro();
 });

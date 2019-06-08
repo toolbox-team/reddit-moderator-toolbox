@@ -170,6 +170,6 @@ function devtools () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     devtools();
 });

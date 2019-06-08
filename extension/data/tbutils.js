@@ -3317,7 +3317,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         });
     }
-    window.addEventListener('TBStorageLoaded2', async () => {
+    window.addEventListener('TBStorageLoaded', async () => {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
@@ -3345,13 +3345,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         cacheDetails,
                     });
                     profileResults('utilsLoaded', performance.now());
-                    const event = new CustomEvent('TBUtilsLoaded2');
+                    const event = new CustomEvent('TBUtilsLoaded');
                     window.dispatchEvent(event);
                 });
             } else {
                 initwrapper({userDetails, cacheDetails});
                 profileResults('utilsLoaded', performance.now());
-                const event = new CustomEvent('TBUtilsLoaded2');
+                const event = new CustomEvent('TBUtilsLoaded');
                 window.dispatchEvent(event);
             }
         } catch (error) {

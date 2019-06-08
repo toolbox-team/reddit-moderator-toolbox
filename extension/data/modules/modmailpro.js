@@ -1044,6 +1044,6 @@ function modmailpro () {
     TB.register_module(self);
 } // modmailpro() wrapper
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     modmailpro();
 });

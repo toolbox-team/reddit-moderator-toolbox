@@ -3201,23 +3201,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     return;
                 }
                 TBStorage.purifyObject(resp);
-                // Custom FF nag for updates.
-                if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser === FIREFOX && TBUtils.isExtension) {
-                    TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', clicked => {
-                        if (clicked) {
-                            window.open(`http://toolbox-team.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
-                        }
-                    });
-                    return; // don't spam the user with notes until they have the current version.
-                }
-
-                if (TBUtils.debugMode && resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
-                    TBUtils.alert('There is a new development version of toolbox!  Click here to update.', clicked => {
-                        if (clicked) {
-                            window.open('https://github.com/toolbox-team/reddit-moderator-toolbox');
-                        }
-                    });
-                }
 
                 $(resp.notes).each(function () {
                     TBUtils.showNote(this);
@@ -3225,7 +3208,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
 
             if (betaRelease) {
-                TBUtils.readFromWiki('tb_redesign', 'tbnotes', true, resp => {
+                TBUtils.readFromWiki('tb_beta', 'tbnotes', true, resp => {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }

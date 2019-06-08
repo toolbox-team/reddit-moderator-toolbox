@@ -5,7 +5,7 @@ function trouble () {
 
     // Default settings
     self.settings['enabled']['default'] = false;
-    self.config['betamode'] = true;
+    self.config['betamode'] = false;
 
     self.register_setting('highlightAuto', {
         type: 'boolean',

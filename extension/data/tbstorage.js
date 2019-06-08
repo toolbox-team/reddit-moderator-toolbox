@@ -259,10 +259,7 @@ function storagewrapper () {
                 loggedinOld = true;
             }
 
-            // Check if the oldreddit module is enabled and we also need to activate on old reddit.
-            const oldRedditActive = getSetting('oldreddit', 'enabled', false);
-
-            if (loggedinOld && oldRedditActive || loggedinRedesign) {
+            if (loggedinOld || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 setTimeout(() => {
                     profileResults('storageLoaded', performance.now());

@@ -6,7 +6,7 @@ let previousName = 'start';
 let previous = start;
 
 function profileResults (name, number) {
-    console.groupCollapsed('Profiling thing:', name, number);
+    console.groupCollapsed('Profiling thing v5:', name, number);
     if (name === 'start') {
         console.log('   ');
         console.log('performance start:', number);

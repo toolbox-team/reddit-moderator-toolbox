@@ -250,12 +250,12 @@ function storagewrapper () {
             const $body = $('body');
 
             // Check for redesign
-            if (($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) && !$('.mod-toolbox-rd').length) {
+            if ($body.find('#USER_DROPDOWN_ID').text() || $body.find('.BlueBar__account a.BlueBar__username').text() || $body.find('.Header__profile').length) {
                 loggedinRedesign = true;
             }
 
             // Check for old reddit
-            if (($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) && !$('.mod-toolbox').length && !$('.mod-toolbox-rd').length) {
+            if ($body.find('form.logout input[name=uh]').val() || $body.find('.Header__profile').length || $body.hasClass('loggedin')) {
                 loggedinOld = true;
             }
 

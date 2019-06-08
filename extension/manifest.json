@@ -4,14 +4,13 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "4.0.20",
-    "version_name": "4.0.20: \"New Narwhal\"",
+    "version": "5.0.0",
+    "version_name": "5.0.0: \"New Narwhal\"",
     "options_page": "data/background/options.html",
     "applications": {
         "gecko": {
-            "id": "toolboxredesign@toolbox.team",
-            "strict_min_version": "57.0",
-            "update_url": "https://www.creesch.com/tb/update.json"
+            "id": "yes@jetpack",
+            "strict_min_version": "57.0"
         }
     },
     "permissions": [

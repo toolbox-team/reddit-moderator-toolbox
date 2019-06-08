@@ -2688,10 +2688,19 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     return;
                 }
 
+                const doNotImport = [
+                    'oldreddit.enabled',
+                ];
+
                 $.each(resp, (fullKey, value) => {
                     const key = fullKey.split('.');
 
-                    TBStorage.setSetting(key[0], key[1], value, false);
+                    // Do not import certain legacy settings.
+                    if (doNotImport.includes(fullKey)) {
+                        $.log(`Skipping ${fullKey} import`, false, SHORTNAME);
+                    } else {
+                        TBStorage.setSetting(key[0], key[1], value, false);
+                    }
                 });
 
                 callback();

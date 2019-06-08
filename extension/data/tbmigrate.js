@@ -43,17 +43,8 @@ Object.keys(localStorage)
         }
     });
 
-if (location.host === 'mod.reddit.com') {
-    sessionStorage.setItem('v4active', 'true');
-} else {
-    chrome.storage.local.get('tbsettings', sObject => {
-        if (sObject.tbsettings && sObject.tbsettings['Toolboxv4.oldreddit.enabled']) {
-            sessionStorage.setItem('v4active', 'true');
-        } else {
-            sessionStorage.removeItem('v4active');
-        }
-    });
-}
+sessionStorage.setItem('v5active', 'true');
+
 window.addEventListener('unload', () => {
-    sessionStorage.removeItem('v4active');
+    sessionStorage.removeItem('v5active');
 });

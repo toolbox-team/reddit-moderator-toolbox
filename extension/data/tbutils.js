@@ -339,7 +339,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             // This is a super extra check to make sure the wiki page for settings export really is private.
             const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
             if (settingSubEnabled) {
-                setWikiPrivate('tbsettings', settingSubEnabled, false);
+                // Depends on TBUtils functionality that has not been defined yet.
+                // The timeout queues execution.
+                setTimeout(() => {
+                    setWikiPrivate('tbsettings', settingSubEnabled, false);
+                }, 0);
             }
 
             // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.

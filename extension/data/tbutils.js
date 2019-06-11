@@ -407,7 +407,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
           * @param {string} link The link path, starting with "/"
           * @returns {string}
           */
-        TBUtils.link = link => TBUtils.isNewModmail ? `https://mod.reddit.com${link}` : link;
+        TBUtils.link = link => TBUtils.isNewModmail ? `https://www.reddit.com${link}` : link;
 
         /**
          * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.

@@ -381,7 +381,7 @@ function removalreasons () {
                         </li><li style="display:${selectNoneDisplay}"> /
                             <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
                         </li><li>
-                            <input class="action-lock" type="checkbox"${actionLock ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="action-lock">Lock the removed thread.</label>
+                            <input class="action-lock" id="type-action-lock" type="checkbox"${actionLock ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>

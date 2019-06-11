@@ -3297,7 +3297,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         return new Promise(resolve => {
             chrome.runtime.sendMessage({
                 action: 'tb-request',
-                endpoint: '/r/tb_dev/wiki/tbmigrate.json',
+                endpoint: '/r/toolbox/wiki/tbmigrate.json',
             }, response => {
                 const {errorThrown, data} = response;
                 if (errorThrown) {

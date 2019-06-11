@@ -410,8 +410,8 @@ function betterbuttons () {
                     action = 'unlock';
                 }
 
-                $comment.find('> .entry ul.buttons > li.report-button')
-                    .before(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
+                $comment.find('> .entry ul.buttons a[data-event-action="remove"]').closest('li')
+                    .after(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
             }
         }
 

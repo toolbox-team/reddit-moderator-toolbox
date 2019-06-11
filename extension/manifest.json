@@ -41,8 +41,15 @@
             "run_at": "document_start",
             "all_frames": true,
             "matches": [
-                "http://*.reddit.com/*",
                 "https://*.reddit.com/*"
+            ],
+            "exclude_matches": [
+                "https://*.reddit.com/framedGild/*",
+                "https://ads.reddit.com/*",
+                "https://*.reddit.com/*.json",
+                "https://*.reddit.com/*.json?*",
+                "https://*.reddit.com/*.json-html",
+                "https://*.reddit.com/*.json-html?*"
             ],
             "js": [
                 "data/tbmigrate.js",
@@ -74,8 +81,15 @@
             "run_at": "document_end",
             "all_frames": true,
             "matches": [
-                "http://*.reddit.com/*",
                 "https://*.reddit.com/*"
+            ],
+            "exclude_matches": [
+                "https://*.reddit.com/framedGild/*",
+                "https://ads.reddit.com/*",
+                "https://*.reddit.com/*.json",
+                "https://*.reddit.com/*.json?*",
+                "https://*.reddit.com/*.json-html",
+                "https://*.reddit.com/*.json-html?*"
             ],
             "css": [
                 "data/styles/toolbox.css",

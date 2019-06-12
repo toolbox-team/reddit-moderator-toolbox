@@ -1802,8 +1802,8 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     margin: 2px;
 }
 
-.mod-toolbox-rd .removal_reasons_settings .edit-header,
-.mod-toolbox-rd .removal_reasons_settings .edit-footer {
+.mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-header,
+.mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-footer {
     width: 600px;
     height: 100px;
     margin: 2px;

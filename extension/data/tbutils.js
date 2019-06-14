@@ -868,7 +868,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * USE SPARINGLY
          * @function alert
          * @memberof TBUtils
-         * @param {object} options gotta document this
+         * @param {object} options The options for the alert
+         * @param {string} options.message The text of the alert
+         * @param {number} options.noteID The ID of the note we're displaying
+         * @param {boolean} options.showClose Whether to show a close button
          * @param {callback} callback callback function
          * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
          */

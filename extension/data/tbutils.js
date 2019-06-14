@@ -882,7 +882,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
             $noteDiv.appendTo('body');
 
-            window.addEventListener('tbSettingUpdate', event => {
+            window.addEventListener('tbSingleSettingUpdate', event => {
                 const settingDetail = event.detail;
                 if (settingDetail.module === SETTINGS_NAME && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
                     seenNotes = settingDetail.value;

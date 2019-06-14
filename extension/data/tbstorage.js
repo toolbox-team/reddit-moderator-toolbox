@@ -93,7 +93,7 @@ function storagewrapper () {
                         value: message.payload.value,
                     };
 
-                    window.dispatchEvent(new CustomEvent('tbSettingUpdate', {
+                    window.dispatchEvent(new CustomEvent('tbSingleSettingUpdate', {
                         detail: detailObject,
                     }));
                 }

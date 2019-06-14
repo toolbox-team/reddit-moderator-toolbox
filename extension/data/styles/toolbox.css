@@ -8,6 +8,26 @@ div#tb-snoo-footer {
 /*
 ========================
 
+    TB warning
+
+========================
+*/
+
+body.mod-toolbox[toolbox-warning]::before {
+    position: fixed;
+    content: attr(toolbox-warning);
+    right: 40px;
+    bottom: 50px;
+    z-index: 2147483644;
+    color: #ec1313d6;
+    background-color: rgba(206, 227, 248, 0.86);
+    padding: 5px;
+    font-size: 14px;
+}
+
+/*
+========================
+
     TB reddit css fixes
 
 ========================
@@ -146,7 +166,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     border: 1px solid #B6C9DD;
     border-left: 0;
     text-align: left;
-    z-index: 501;
     background-repeat: no-repeat;
     background-position-y: 3px;
 }

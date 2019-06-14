@@ -259,8 +259,17 @@ function storagewrapper () {
                 loggedinOld = true;
             }
 
+            // When firefox updates extension they get reloaded including all content scripts. Old elements remain on the page though.
+            // Toolbox doesn't like this very much.
+            // We are using this class because of the migration mess with v4.
+            if ($body.hasClass('mod-toolbox')) {
+                $body.attr('toolbox-warning', 'This page must be reloaded for toolbox to function correctly.');
+                return;
+            }
+
             if (loggedinOld || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
+                $body.addClass('mod-toolbox');
                 setTimeout(() => {
                     profileResults('storageLoaded', performance.now());
                     const event = new CustomEvent('TBStorageLoaded');

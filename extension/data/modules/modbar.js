@@ -270,7 +270,6 @@ function modbar () {
     </div>
     <div class="tb-popup-content">
         <textarea class="tb-input tb-debug-console" rows="20" cols="20"></textarea>
-        <input type="text" class="tb-debug-input tb-input" placeholder="eval() in toolbox scope" />
     </div>
     <div class="tb-popup-footer">
         <select class="module-select tb-action-button inline-button"><option value="${DEFAULT_MODULE}">all modules</option></select>
@@ -625,14 +624,6 @@ function modbar () {
             // Console clear
             $body.on('click', '.tb-console-clear', () => {
                 TBUtils.log = [];
-            });
-
-            // Run console input
-            $('.tb-debug-input').keyup(function (e) {
-                if (e.keyCode === 13) {
-                    self.log(eval($(this).val()));
-                    $(this).val(''); // clear line
-                }
             });
 
             // change modules

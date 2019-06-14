@@ -1,7 +1,7 @@
 /* footer block element that makes sure modbar never is in the way of content lower on the page */
 #tb-footer-block {
     height: 200px;
-    width: 100vw;
+    width: 98%;
     order: 100;
     display: block;
 }

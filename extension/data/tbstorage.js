@@ -86,6 +86,16 @@ function storagewrapper () {
                 // Single setting. Usually reserved for background operations as such we'll simply update it in the backround.
                 if (message.action === 'tb-single-setting-update') {
                     TBsettingsObject[message.payload.key] = message.payload.value;
+                    const keySplit = message.payload.key.split('.');
+                    const detailObject = {
+                        module: keySplit[1],
+                        setting: keySplit[2],
+                        value: message.payload.value,
+                    };
+
+                    window.dispatchEvent(new CustomEvent('tbSettingUpdate', {
+                        detail: detailObject,
+                    }));
                 }
             });
         });
@@ -290,7 +300,7 @@ function storagewrapper () {
 
             const keyName = `${module}.${setting}`;
 
-            if ($.inArray(keyName, TBStorage.settings) === -1) {
+            if (!TBStorage.settings.includes(keyName)) {
                 TBStorage.settings.push(keyName);
             }
         }

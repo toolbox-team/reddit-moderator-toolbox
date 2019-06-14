@@ -41,6 +41,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
               ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
         // Private variables
+        let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []);
+
         const modMineURL = '/subreddits/mine/moderator.json?limit=100',
               now = new Date().getTime(),
 
@@ -50,7 +52,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
               lastgetLong = cacheDetails.lastGetLong,
               lastgetShort = cacheDetails.lastGetShort,
               cacheName = cacheDetails.cacheName,
-              seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
+
               lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
               newLogin = cacheName !== TBUtils.logged,
@@ -866,17 +868,26 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * USE SPARINGLY
          * @function alert
          * @memberof TBUtils
-         * @param {string} message
+         * @param {object} options gotta document this
          * @param {callback} callback callback function
-         * @param {boolean} showClose If true the alert can be dismissed by a clost button otherwise it needs to be clicked.
          * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
          */
-        TBUtils.alert = function (message, callback, showClose) {
+        TBUtils.alert = function ({message, noteID, showClose}, callback) {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
                 $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
             }
             $noteDiv.appendTo('body');
+
+            window.addEventListener('tbSettingUpdate', event => {
+                const settingDetail = event.detail;
+                if (settingDetail.module === SETTINGS_NAME && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
+                    seenNotes = settingDetail.value;
+                    $noteDiv.remove();
+                    callback(false);
+                    return;
+                }
+            });
 
             $noteDiv.click(e => {
                 $noteDiv.remove();
@@ -894,16 +905,20 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             function show () {
-                if ($.inArray(note.id, seenNotes) === -1) {
-                // TBStorage.setSetting(SETTINGS_NAME, 'noteLastShown', now);
-
-                    TBUtils.alert(note.text, resp => {
-                        seenNotes.push(note.id);
-                        TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
+                if (!seenNotes.includes(note.id)) {
+                    TBUtils.alert({
+                        message: note.text,
+                        noteID: note.id,
+                        showClose: false,
+                    }, resp => {
                         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
-                            window.open(note.link);
+                            seenNotes.push(note.id);
+                            TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
+                            window.setTimeout(() => {
+                                window.open(note.link);
+                            }, 100);
                         }
-                    }, false);
+                    });
                 }
             }
 

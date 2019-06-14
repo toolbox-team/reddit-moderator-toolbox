@@ -4,8 +4,9 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.0.0",
-    "version_name": "5.0.0: \"Harmonizing Hare\"",
+    "version": "5.0.3",
+    "version_name": "5.0.3: \"Harmonizing Hare\"",
+    "incognito": "split",
     "applications": {
         "gecko": {
             "id": "yes@jetpack",
@@ -33,7 +34,7 @@
             "data/libs/jquery-3.3.1.min.js",
             "data/background/background.js"
         ],
-        "persistent": false
+        "persistent": true
     },
     "content_scripts": [
         {

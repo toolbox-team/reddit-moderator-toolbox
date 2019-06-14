@@ -220,6 +220,11 @@ function tbmodule () {
                     content: `
                 <h1 id="tb-random-about-quote">"${TBUtils.RandomQuote}"</h1>
                 <h3>About:</h3> <a href="${TBUtils.link('/r/toolbox')}" target="_blank">/r/toolbox v${TBUtils.toolboxVersion}: "${TBUtils.releaseName}"</a>
+                    <h3> Open source </h3>
+                    Toolbox is an open source software project. The source code and project can be found on <a href="https://github.com/toolbox-team" target="_blank">GitHub</a>.
+                    <h3> Privacy </h3>
+                    The toolbox development team highly values privacy. <br>
+                    The toolbox privacy policy can be <a href="https://www.reddit.com/r/toolbox/wiki/privacy" target="_blank">found on this wiki page</a>.
                     <h3> made and maintained by: </h3>
                     <table class="tb-about-credits">
                         <tr>
@@ -258,14 +263,12 @@ function tbmodule () {
                     <h3>Credits:</h3>
                     <a href="https://www.reddit.com/user/ShaneH7646">/u/ShaneH7646 for the snoo running gif</a><br>
                     <a href="https://material.io/tools/icons/" target="_blank">Material icons</a><br>
-                    <a href="http://p.yusukekamiyamane.com/" target="_blank">Diagona icon set by Yusuke Kamiyamane</a><br>
-                    <a href="http://momentumdesignlab.com/" target="_blank">Momentum Matte icons</a><br>
-                    <a href="${TBUtils.link('/user/DEADB33F')}" target="_blank">Modtools and realtime base code by DEADB33F</a><br>
+                    <a href="${TBUtils.link('/user/DEADB33F')}" target="_blank">Modtools base code by DEADB33F</a><br>
                     <a href="https://chrome.google.com/webstore/detail/reddit-mod-nuke-extension/omndholfgmbafjdodldjlekckdneggll?hl=en" target="_blank">Comment Thread Nuke Script</a> by <a href="${TBUtils.link('/u/djimbob')}" target="_blank">/u/djimbob</a><br>
                     <a href="https://github.com/gamefreak/snuownd" target="_blank">snuownd.js by gamefreak</a><br>
                     <a href="https://codemirror.net/ target="_blank">CodeMirror code editor</a><br>
                     <h3>License:</h3>
-                    <span>© 2013-2018 toolbox development team. </span>
+                    <span>© 2013-2019 toolbox development team. </span>
                     <p>Licensed under the Apache License, Version 2.0 (the "License");
                         <br> you may not use this file except in compliance with the License.
                         <br> You may obtain a copy of the License at </p>

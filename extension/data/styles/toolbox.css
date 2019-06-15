@@ -213,11 +213,25 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     transition: 300ms;
 }
 .mod-toolbox-rd #tb-context-menu:hover #tb-context-menu-wrap,
-.mod-toolbox-rd #tb-context-menu.hover #tb-context-menu-wrap {
+.mod-toolbox-rd #tb-context-menu.open #tb-context-menu-wrap {
     width: auto;
     height: auto;
     opacity: 1;
 }
+
+#tb-context-menu.fade:not(:hover) {
+    animation: tb-context-fade 3s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes tb-context-fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100%{opacity: 0.2}
+}
+
+
+
 .mod-toolbox-rd #tb-context-menu-list li {
     background: rgba(247, 250, 253, 1);
     border-top: 1px solid #CCD1D7;

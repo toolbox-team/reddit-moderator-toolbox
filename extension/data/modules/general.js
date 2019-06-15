@@ -20,7 +20,15 @@ function generalSettings () {
         default: 'left',
         values: ['left', 'right'],
         advanced: false,
-        title: 'On what side of the screen should the context menu be shown?',
+        title: 'Side of the screen the context menu is shown',
+    });
+
+    self.register_setting('contextMenuAttention', {
+        type: 'selector',
+        default: 'open',
+        values: ['open', 'fade'],
+        advanced: false,
+        title: 'Select how the context menu shows that new items are available',
     });
 
     self.init = function () {

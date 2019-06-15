@@ -11,10 +11,12 @@
 
     let subredditColorSalt;
     let contextMenuLocation = 'left';
+    let contextMenuAttention = 'open';
 
     window.addEventListener('TBStorageLoaded', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
         contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
+        contextMenuAttention = TBStorage.getSetting('GenSettings', 'contextMenuAttention', 'open');
     });
 
     /**
@@ -734,11 +736,11 @@
 
                 // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
                 // The alternative would be to always show the entire menu.
-                $tbContextMenu.addClass('hover');
+                $tbContextMenu.addClass(contextMenuAttention);
                 clearTimeout(contextTimeout);
                 contextTimeout = setTimeout(() => {
-                    $tbContextMenu.removeClass('hover');
-                }, 1000);
+                    $tbContextMenu.removeClass(contextMenuAttention);
+                }, contextMenuAttention === 'fade' ? 6000 : 1000);
             }
 
             // If the menu was empty it was hidden and we need to show it.

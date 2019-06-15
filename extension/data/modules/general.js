@@ -26,9 +26,16 @@ function generalSettings () {
     self.register_setting('contextMenuAttention', {
         type: 'selector',
         default: 'open',
-        values: ['open', 'fade'],
+        values: ['open', 'fade', 'none'],
         advanced: false,
-        title: 'Select how the context menu shows that new items are available',
+        title: 'Select what effect the context menu uses to show that new items are available',
+    });
+
+    self.register_setting('contextMenuClick', {
+        type: 'boolean',
+        default: false,
+        advanced: false,
+        title: 'Make the context menu only open when you click on it',
     });
 
     self.init = function () {

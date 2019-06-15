@@ -12,11 +12,13 @@
     let subredditColorSalt;
     let contextMenuLocation = 'left';
     let contextMenuAttention = 'open';
+    let contextMenuClick = false;
 
     window.addEventListener('TBStorageLoaded', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
         contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
         contextMenuAttention = TBStorage.getSetting('GenSettings', 'contextMenuAttention', 'open');
+        contextMenuClick = TBStorage.getSetting('GenSettings', 'contextMenuClick', false);
     });
 
     /**
@@ -692,6 +694,20 @@
                     <i class="tb-icons tb-context-arrow-left" href="javascript:void(0)">${TBui.icons.arrowRight}</i>
                 </div>
             `).appendTo($body);
+
+            if (contextMenuClick) {
+                $tbContextMenu.addClass('click-activated');
+
+                $tbContextMenu.on('click', () => {
+                    if ($tbContextMenu.hasClass('open')) {
+                        $tbContextMenu.removeClass('open');
+                    } else {
+                        $tbContextMenu.addClass('open');
+                    }
+                });
+            } else {
+                $tbContextMenu.addClass('hover-activated');
+            }
         }
         const $tbContextMenuList = $body.find('#tb-context-menu-list');
         // We are adding a menu item.

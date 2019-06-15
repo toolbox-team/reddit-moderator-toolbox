@@ -212,7 +212,12 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     overflow: hidden;
     transition: 300ms;
 }
-.mod-toolbox-rd #tb-context-menu:hover #tb-context-menu-wrap,
+
+.mod-toolbox-rd #tb-context-menu.click-activated {
+    cursor: pointer;
+}
+
+.mod-toolbox-rd #tb-context-menu.hover-activated:hover #tb-context-menu-wrap,
 .mod-toolbox-rd #tb-context-menu.open #tb-context-menu-wrap {
     width: auto;
     height: auto;

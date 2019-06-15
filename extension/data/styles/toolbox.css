@@ -156,7 +156,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     min-height: 30px;
     display: none;
     position: fixed;
-    left: 0px;
     bottom: 60px;
     z-index: 6000;
     padding: 0;
@@ -164,11 +163,35 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     font-size: 11px;
     color: #696969;
     border: 1px solid #B6C9DD;
-    border-left: 0;
     text-align: left;
     background-repeat: no-repeat;
     background-position-y: 3px;
 }
+
+.mod-toolbox-rd #tb-context-menu .tb-context-arrow-left,
+.mod-toolbox-rd #tb-context-menu .tb-context-arrow-right {
+    display: none;
+}
+
+.mod-toolbox-rd #tb-context-menu.show-context-left {
+    left: 0px;
+    border-left: 0;
+}
+
+.mod-toolbox-rd #tb-context-menu.show-context-left .tb-context-arrow-left {
+    display: block;
+}
+
+.mod-toolbox-rd #tb-context-menu.show-context-right {
+    right: 0px;
+    border-right: 0;
+}
+
+.mod-toolbox-rd #tb-context-menu.show-context-right .tb-context-arrow-right {
+    display: block;
+}
+
+
 .mod-toolbox-rd #tb-context-menu.show-tb-context {
     display: flex;
 }

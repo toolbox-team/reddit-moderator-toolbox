@@ -10,9 +10,11 @@
     });
 
     let subredditColorSalt;
+    let contextMenuLocation = 'left';
 
     window.addEventListener('TBStorageLoaded', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
+        contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
     });
 
     /**
@@ -679,12 +681,13 @@
         if (!$tbContextMenu.length) {
             // Toolbox context action menu.
             $tbContextMenu = $(`
-                <div id="tb-context-menu">
+                <div id="tb-context-menu" class="show-context-${contextMenuLocation}">
+                    <i class="tb-icons tb-context-arrow-right" href="javascript:void(0)">${TBui.icons.arrowLeft}</i>
                     <div id="tb-context-menu-wrap">
                         <div id="tb-context-header">Toolbox context menu</div>
                         <ul id="tb-context-menu-list"></ul>
                     </div>
-                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">${TBui.icons.arrowRight}</i>
+                    <i class="tb-icons tb-context-arrow-left" href="javascript:void(0)">${TBui.icons.arrowRight}</i>
                 </div>
             `).appendTo($body);
         }

@@ -15,6 +15,14 @@ function generalSettings () {
         title: 'Only show user related buttons (mod, history, usernotes) in the hover card',
     });
 
+    self.register_setting('contextMenuLocation', {
+        type: 'selector',
+        default: 'left',
+        values: ['left', 'right'],
+        advanced: false,
+        title: 'On what side of the screen should the context menu be shown?',
+    });
+
     self.init = function () {
         self.log('general reporting for duty!');
     };

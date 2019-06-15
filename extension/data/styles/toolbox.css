@@ -240,19 +240,19 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
 .mod-toolbox-rd #tb-context-menu-list li {
     background: rgba(247, 250, 253, 1);
     border-top: 1px solid #CCD1D7;
-    border-right: 1px solid #CCD1D7;
     display: flex;
     align-items: center;
     padding: 2px 10px;
     cursor: pointer;
     font-size: 12px;
 }
-.mod-toolbox-rd #tb-context-menu-list li:hover {
-    background-color: rgba(174, 212, 250, 0.5);
+.mod-toolbox-rd .show-context-left #tb-context-menu-list li {
+    border-right: 1px solid #CCD1D7;
 }
-.mod-toolbox-rd #tb-context-menu-list .tb-icons {
-    margin-right: 5px;
+.mod-toolbox-rd .show-context-right #tb-context-menu-list li {
+    border-left: 1px solid #CCD1D7;
 }
+
 
 /*
 ------------

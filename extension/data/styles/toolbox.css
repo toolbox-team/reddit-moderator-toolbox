@@ -168,27 +168,14 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     background-position-y: 3px;
 }
 
-.mod-toolbox-rd #tb-context-menu .tb-context-arrow-left,
-.mod-toolbox-rd #tb-context-menu .tb-context-arrow-right {
-    display: none;
-}
-
 .mod-toolbox-rd #tb-context-menu.show-context-left {
     left: 0px;
     border-left: 0;
 }
-
-.mod-toolbox-rd #tb-context-menu.show-context-left .tb-context-arrow-left {
-    display: block;
-}
-
 .mod-toolbox-rd #tb-context-menu.show-context-right {
     right: 0px;
     border-right: 0;
-}
-
-.mod-toolbox-rd #tb-context-menu.show-context-right .tb-context-arrow-right {
-    display: block;
+    flex-direction: row-reverse; /* So the arrow shows up on the other side */
 }
 
 
@@ -224,7 +211,7 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     opacity: 1;
 }
 
-#tb-context-menu.fade:not(:hover) {
+.mod-toolbox-rd #tb-context-menu.fade:not(:hover) {
     animation: tb-context-fade 3s;
     animation-iteration-count: infinite;
 }
@@ -233,6 +220,15 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     0% {opacity: 0.2}
     50% {opacity: 1}
     100%{opacity: 0.2}
+}
+
+/* When the menu is opened on click, flip the arrow around to indicate clicking it again closes it */
+.mod-toolbox-rd #tb-context-menu .tb-context-arrow {
+    transition: 300ms;
+}
+.mod-toolbox-rd #tb-context-menu.open .tb-context-arrow {
+    transform: rotate(180deg);
+    transform-origin: center;
 }
 
 

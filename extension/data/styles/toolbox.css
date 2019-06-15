@@ -1993,21 +1993,51 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 ------------
 */
 
+.res-nightmode .mod-toolbox-rd #tb-loading-stuff,
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
+.res-nightmode .mod-toolbox-rd .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-action-table,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
-.res-nightmode .mod-toolbox-rd #reason-popup-toolbox,
+.res-nightmode .mod-toolbox-rd .reason-popup,
 .res-nightmode .mod-toolbox-rd .tb-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
-.res-nightmode .mod-toolbox-rd .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd > *:not(.tb-page-overlay):not(.tb-popup):not(#reason-popup-toolbox) .tb-action-button,
 .res-nightmode .mod-toolbox-rd .tb-input,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools,
-.res-nightmode .mod-toolbox-rd .tb-action-details,
-.res-nightmode .mod-toolbox-rd .action-reason
+.res-nightmode .mod-toolbox-rd #tb-notification-alert
 {
     filter: invert(90%)hue-rotate(180deg);
+}
+
+.res-nightmode .mod-toolbox-rd .tb-loading-content img,
+.res-nightmode .mod-toolbox-rd .tb-trophy-icon,
+.res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-expand-ul li img,
+.res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-ul li img,
+.res-nightmode .mod-toolbox-rd .tb-user-thumbnail,
+.res-nightmode .mod-toolbox-rd a.tb-submission-thumbnail {
+    filter: invert(90%)hue-rotate(180deg);
+}
+
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-table {
+    filter: invert(0%);
+}
+
+/* Do text colors in a more fine grained controlled manner */
+.res-nightmode .mod-toolbox-rd .tb-feedback-text,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper,
+.res-nightmode .mod-toolbox-rd .reason-popup,
+.res-nightmode .mod-toolbox-rd .tb-popup,
+.res-nightmode .mod-toolbox-rd #tb-bottombar,
+.res-nightmode .mod-toolbox-rd #tb-context-menu,
+.res-nightmode .mod-toolbox-rd .menuarea.modtools
+{
     color: #2f2f2f
+}
+
+.res-nightmode .mod-toolbox-rd .tb-bracket-button {
+    color: #353131;
+    background-color: #d3dae2;
 }
 
 

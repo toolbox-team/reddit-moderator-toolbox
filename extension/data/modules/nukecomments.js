@@ -240,7 +240,6 @@ function nukecomments () {
 
                 TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit) && (pageType === 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
-
                         const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
 
                         if (showNextToUser && TBUtils.isOldReddit) {

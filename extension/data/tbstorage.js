@@ -277,6 +277,13 @@ function storagewrapper () {
                 return;
             }
 
+            // https://bugzilla.mozilla.org/show_bug.cgi?id=1380812#c7
+            // https://github.com/toolbox-team/reddit-moderator-toolbox/issues/98
+            if ((typeof InstallTrigger !== 'undefined' || 'MozBoxSizing' in document.body.style) && chrome.extension.inIncognitoContext) {
+                console.log('firefox is in incognito mode, toolbox will not work.');
+                return;
+            }
+
             if (loggedinOld || loggedinRedesign) {
                 $body.addClass('mod-toolbox-rd');
                 $body.addClass('mod-toolbox');

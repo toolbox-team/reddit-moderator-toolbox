@@ -52,7 +52,7 @@ function updateDocs () {
 }
 
 // Update the manifest with new versions and versionnames.
-function updateManifest ({version, versionName, incognito}) {
+function updateManifest ({version, versionName, browser}) {
     console.log('Updating manifest:');
 
     let manifestContent = fs.readFileSync(manifestFile).toString();
@@ -72,9 +72,16 @@ function updateManifest ({version, versionName, incognito}) {
         manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\")New Narwhal(\\"",)/, `$1${versionName}$2`);
     }
 
-    if (incognito) {
-        console.log(` - Incognito: ${incognito}`);
-        manifestContent = manifestContent.replace(/("incognito": ").+?(",)/, `$1${incognito}$2`);
+    if (browser === 'chrome') {
+        console.log('Make sure chrome manifest is complete');
+        if (!manifestContent.includes('"incognito":')) {
+            manifestContent = manifestContent.replace(/(\s*?"applications":)/, '\n    "incognito": "split",$1');
+        }
+    }
+
+    if (browser === 'firefox') {
+        console.log('Make sure firefox manifest is complete');
+        manifestContent = manifestContent.replace(/\s*"incognito":.*?\n/, '\n');
     }
 
     fs.writeFileSync(manifestFile, manifestContent, 'utf8', err => {
@@ -91,7 +98,7 @@ function createZip (browser) {
         updateManifest({
             version,
             versionName,
-            incognito: browser === 'firefox' ? 'not_allowed' : 'split',
+            browser,
         });
 
         // Then pull up the toolbox version.

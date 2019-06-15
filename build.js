@@ -82,62 +82,69 @@ function updateManifest ({version, versionName, incognito}) {
             throw err;
         }
     });
-    console.log('Manifest has been updated with new version information.\n');
+    console.log('Manifest has been updated with new information.\n');
 }
 
 function createZip (browser) {
-    // Update the manifest first if needed.
-    updateManifest({
-        version,
-        versionName,
-        incognito: browser === 'firefox' ? 'not_allowed' : 'split',
+    return new Promise((resolve, reject) => {
+        // Update the manifest first if needed.
+        updateManifest({
+            version,
+            versionName,
+            incognito: browser === 'firefox' ? 'not_allowed' : 'split',
+        });
+
+        // Then pull up the toolbox version.
+        const manifestContent = fs.readFileSync(manifestFile).toString();
+        const toolboxVersion = manifestContent.match(/"version": "(\d\d?\.\d\d?\.\d\d?)"/)[1];
+
+        // Determine what the output filename will be.
+        const outputName = `toolbox_v${toolboxVersion}_${browser}.zip`;
+        const outputPath = path.resolve(buildOutputDir, outputName);
+
+        // Check if the build directory is a thing and if it isn't make it
+        try {
+            fs.statSync(buildOutputDir);
+        } catch (e) {
+            fs.mkdirSync(buildOutputDir);
+        }
+
+        // Check for and delete excisting zip with the same name.
+        if (fs.existsSync(outputPath)) {
+            fs.unlinkSync(outputPath);
+        }
+
+        // Start zipping
+        console.log(`Creating zip file for toolbox ${toolboxVersion} and browser ${browser}.`);
+        const output = fs.createWriteStream(outputPath);
+        const archive = archiver('zip');
+
+        output.on('close', () => {
+            setTimeout(() => {
+                console.log(`Zip created: ${archive.pointer()} total bytes`);
+                console.log('Build done.', new Date().toISOString());
+                resolve();
+            }, 200);
+        });
+
+        archive.on('error', err => {
+            reject(err);
+        });
+
+        archive.pipe(output);
+        archive.directory(extensionDir, false);
+
+        archive.finalize();
     });
-
-    // Then pull up the toolbox version.
-    const manifestContent = fs.readFileSync(manifestFile).toString();
-    const toolboxVersion = manifestContent.match(/"version": "(\d\d?\.\d\d?\.\d\d?)"/)[1];
-
-    // Determine what the output filename will be.
-    const outputName = `toolbox_v${toolboxVersion}_${browser}.zip`;
-    const outputPath = path.resolve(buildOutputDir, outputName);
-
-    // Check if the build directory is a thing and if it isn't make it
-    try {
-        fs.statSync(buildOutputDir);
-    } catch (e) {
-        fs.mkdirSync(buildOutputDir);
-    }
-
-    // Check for and delete excisting zip with the same name.
-    if (fs.existsSync(outputPath)) {
-        fs.unlinkSync(outputPath);
-    }
-
-    // Start zipping
-    console.log(`Creating zip file for toolbox ${toolboxVersion} and browser ${browser}.`);
-    const output = fs.createWriteStream(outputPath);
-    const archive = archiver('zip');
-
-    output.on('close', () => {
-        console.log(`Zip created: ${archive.pointer()} total bytes`);
-        console.log('Build done.');
-    });
-
-    archive.on('error', err => {
-        throw err;
-    });
-
-    archive.pipe(output);
-    archive.directory(extensionDir, false);
-
-    archive.finalize();
 }
 
 if (makeDocs) {
     updateDocs();
 }
 
-createZip('firefox');
+async function doZips () {
+    await createZip('firefox');
+    await createZip('chrome');
+}
 
-createZip('chrome');
-
+doZips();

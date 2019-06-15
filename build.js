@@ -52,7 +52,7 @@ function updateDocs () {
 }
 
 // Update the manifest with new versions and versionnames.
-function updateManifest ({version, versionName}) {
+function updateManifest ({version, versionName, incognito}) {
     console.log('Updating manifest:');
 
     let manifestContent = fs.readFileSync(manifestFile).toString();
@@ -67,6 +67,16 @@ function updateManifest ({version, versionName}) {
         manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\")New Narwhal(\\"",)/, `$1${versionName}$2`);
     }
 
+    if (versionName) {
+        console.log(` - Version name: ${versionName}`);
+        manifestContent = manifestContent.replace(/("version_name": "\d\d?\.\d\d?\.\d\d?: \\")New Narwhal(\\"",)/, `$1${versionName}$2`);
+    }
+
+    if (incognito) {
+        console.log(` - Incognito: ${incognito}`);
+        manifestContent = manifestContent.replace(/("incognito": ").+?(",)/, `$1${incognito}$2`);
+    }
+
     fs.writeFileSync(manifestFile, manifestContent, 'utf8', err => {
         if (err) {
             throw err;
@@ -75,21 +85,20 @@ function updateManifest ({version, versionName}) {
     console.log('Manifest has been updated with new version information.\n');
 }
 
-function createZip () {
+function createZip (browser) {
     // Update the manifest first if needed.
-    if (version || versionName) {
-        updateManifest({
-            version,
-            versionName,
-        });
-    }
+    updateManifest({
+        version,
+        versionName,
+        incognito: browser === 'firefox' ? 'not_allowed' : 'split',
+    });
 
     // Then pull up the toolbox version.
     const manifestContent = fs.readFileSync(manifestFile).toString();
     const toolboxVersion = manifestContent.match(/"version": "(\d\d?\.\d\d?\.\d\d?)"/)[1];
 
     // Determine what the output filename will be.
-    const outputName = `toolbox_v${toolboxVersion}.zip`;
+    const outputName = `toolbox_v${toolboxVersion}_${browser}.zip`;
     const outputPath = path.resolve(buildOutputDir, outputName);
 
     // Check if the build directory is a thing and if it isn't make it
@@ -105,7 +114,7 @@ function createZip () {
     }
 
     // Start zipping
-    console.log(`Creating zip file for toolbox ${toolboxVersion}.`);
+    console.log(`Creating zip file for toolbox ${toolboxVersion} and browser ${browser}.`);
     const output = fs.createWriteStream(outputPath);
     const archive = archiver('zip');
 
@@ -128,5 +137,7 @@ if (makeDocs) {
     updateDocs();
 }
 
-createZip();
+createZip('firefox');
+
+createZip('chrome');
 

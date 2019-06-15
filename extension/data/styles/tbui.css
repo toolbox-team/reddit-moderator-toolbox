@@ -13,9 +13,10 @@
 }
 
 /* Headers */
-/* TODO: generic classname that windows/popups can share? */
+/* TODO: generic classname that windows/popups/notifications can share? */
 .mod-toolbox-rd .tb-window-header,
-.mod-toolbox-rd .tb-popup-header {
+.mod-toolbox-rd .tb-popup-header,
+.mod-toolbox-rd .tb-notification-header {
     display: flex;
     background-color: #CEE3F8;
     line-height: 26px;
@@ -30,7 +31,8 @@
 }
 
 .mod-toolbox-rd .tb-window-title,
-.mod-toolbox-rd .tb-popup-title {
+.mod-toolbox-rd .tb-popup-title,
+.mod-toolbox-rd .tb-notification-title {
     text-align: center;
     font-weight: bold;
     flex-grow: 1;
@@ -41,12 +43,14 @@
 }
 
 .mod-toolbox-rd .tb-window-header .buttons,
-.mod-toolbox-rd .tb-popup-header .buttons {
+.mod-toolbox-rd .tb-popup-header .buttons,
+.mod-toolbox-rd .tb-notification-header .buttons {
     display: flex;
 }
 
 .mod-toolbox-rd .tb-window-header .buttons a,
-.mod-toolbox-rd .tb-popup-header .buttons a {
+.mod-toolbox-rd .tb-popup-header .buttons a,
+.mod-toolbox-rd .tb-notification-header .buttons a {
     display: flex;
     background-color: #C7D6E6;
     width: 36px;
@@ -57,16 +61,19 @@
     align-items: center;
 }
 .mod-toolbox-rd .tb-window-header .buttons a:hover,
-.mod-toolbox-rd .tb-popup-header .buttons a:hover {
+.mod-toolbox-rd .tb-popup-header .buttons a:hover,
+.mod-toolbox-rd .tb-notification-header .buttons a:hover {
     background-color: #9FBAD6;
 }
 
 /* Content resets */
 .mod-toolbox-rd .tb-window-wrapper,
-.mod-toolbox-rd .tb-popup-content {
+.mod-toolbox-rd .tb-popup-content,
+.mod-toolbox-rd .tb-notification-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
 }
-.mod-toolbox-rd .tb-popup-content {
+.mod-toolbox-rd .tb-popup-content,
+.mod-toolbox-rd .tb-notification-content {
     overflow: auto;
     padding: 5px !important;
 }
@@ -144,4 +151,16 @@
 .mod-toolbox-rd .tb-overlay-horizontal-tabs .tb-window-tabs-wrapper {
     /* No tabs on the left, so content gets full width */
     width: 100%;
+}
+
+/* In-page notifications */
+.mod-toolbox-rd #tb-notifications-wrapper {
+    position: fixed;
+    bottom: 37px;
+    right: 10px;
+}
+.mod-toolbox-rd .tb-notification {
+    background: #FFF;
+    margin-top: 5px;
+    cursor: default;
 }

@@ -22,11 +22,11 @@
     });
 
     /**
-   * Material design icons mapped to toolbox names through their hexcode.
-   *
-   * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
-   * @type {object}
-   */
+     * Material design icons mapped to toolbox names through their hexcode.
+     *
+     * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
+     * @type {object}
+     */
     TBui.icons = {
         add: '&#xe145;', // add
         addBox: '&#xe146;', // add_box
@@ -132,6 +132,53 @@
     TBui.actionButton = function button (text, classes) {
         return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
+
+    // Notification stuff
+    TBui.showNotification = ({id, title, body}) => {
+        let $notificationDiv = $('#tb-notifications-wrapper');
+        if (!$notificationDiv.length) {
+            $notificationDiv = $(`
+                <div id="tb-notifications-wrapper"></div>
+            `).appendTo($body);
+        }
+        $notificationDiv.prepend(`
+            <div class="tb-notification" data-id="${id}">
+                <div class="tb-notification-header">
+                    <div class="tb-notification-title">${title}</div>
+                    <div class="buttons">
+                        <a class="close">
+                            <i class="tb-icons">${TBui.icons.close}</i>
+                        </a>
+                    </div>
+                </div>
+                <div class="tb-notification-content">${body}</div>
+            </div>
+        `);
+    };
+    TBui.clearNotification = idOrJQuery => {
+        let $notification, id;
+        if (idOrJQuery instanceof jQuery) {
+            $notification = idOrJQuery;
+            id = $notification.attr('data-id');
+        } else {
+            id = idOrJQuery;
+            $notification = $(`.tb-notification[data-id="${id}"]`);
+        }
+        $notification.remove();
+    };
+    $body.click('.tb-notification .buttons .close', function () {
+        const $notification = $(this).closest('.tb-notification');
+        TBui.clearNotification($notification);
+    });
+    chrome.runtime.onMessage.addListener(message => {
+        if (message.action === 'tb-show-page-notification') {
+            console.log('Notifier message get:', message);
+            TBui.showNotification(message.details);
+        } else if (message.action === 'tb-clear-page-notification') {
+            console.log('Notifier message clear:', message);
+            TBui.clearNotification(message.id);
+        }
+    });
 
     // Popup HTML generator
     TBui.popup = function popup (title, tabs, meta, css_class, opts) {

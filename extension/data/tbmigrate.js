@@ -141,7 +141,7 @@ window.addEventListener('TbMigrationActive', event => {
 
     $popup.on('click', '.tb-migrate-export', () => {
         let subreddit = $popup.find('input[name=settingssub]').val();
-        subreddit = TB.utils.cleanSubredditName(subreddit);
+        subreddit = TBUtils.cleanSubredditName(subreddit);
 
         TBUtils.exportSettings(subreddit, success => {
             if (!success) {
@@ -150,7 +150,6 @@ window.addEventListener('TbMigrationActive', event => {
             } else {
                 TBui.textFeedback('Settings exported!', TBui.FEEDBACK_POSITIVE, 2000);
             }
-
         });
     });
 });

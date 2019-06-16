@@ -285,7 +285,7 @@ function tbmodule () {
             // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
             const $settingsDialog = TB.ui.overlay(
-            // title
+                // title
                 'toolbox Settings',
                 // tabs
                 settingsTabs,
@@ -297,14 +297,21 @@ function tbmodule () {
                 `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
 
+            // Add ordering attributes to the existing tabs so we can insert other special tabs around them
+            $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);
+            $settingsDialog.find('a[data-module="toggle_modules"]').attr('data-order', 3);
+            $settingsDialog.find('a[data-module="about"]').attr('data-order', 2);
+
             // This div contains the module links, separate from everything else
             const $moduleCategory = $(`
                 <div class="tb-window-tabs-category">
                     <h2 class="tb-window-tabs-header">Modules</h2>
                 </div>
             `);
-            // TODO: un-hardcode this
-            $settingsDialog.find('.tb-window-tabs [data-module="about"]').before($moduleCategory);
+            // TODO: this basically hardcodes where in the list the modules
+            // category goes, but if we wanted it to not be hardcoded then we'd
+            // have to rewrite how this window is generated, so it's good enough
+            $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
 
             $settingsDialog.on('click', '.tb-help-main', e => {
                 const settingsDialog = e.delegateTarget;
@@ -855,16 +862,45 @@ body {
                         $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                     }
                     $('.tb-settings .tb-window-tabs-wrapper').append($settings);
-                    // Add the tab where it belongs
-                    // TODO: un-hardcode this
-                    if (module.shortname === 'GenSettings') {
-                        // General settings isn't really a module, we put it above the modules list
-                        $moduleCategory.before($tab);
-                    } else if (module.shortname === 'Achievements') {
-                        // Achievements also isn't really a module, we put it below with About
-                        $moduleCategory.after($tab);
+                    if (module.sort) {
+                        $tab.attr('data-order', module.sort.order);
+                        // If the module specifies a sort, then we do that
+                        if (module.sort.location === 'beforeModules') {
+                            // Loop through the tabs above the modules list
+                            $settingsDialog.find('.tb-window-tabs > *').each(function () {
+                                const $existingTab = $(this);
+                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                    // We found a tab bigger than us! We should be before it.
+                                    $existingTab.before($tab);
+                                    // Break out of the loop since we're done.
+                                    return false;
+                                } else if ($existingTab.is('div')) {
+                                    // We hit the module list! If it hasn't been added yet, add it here.
+                                    $existingTab.before($tab);
+                                    // Break the loop so we don't go into the bottom elements.
+                                    return false;
+                                }
+                            });
+                        } else if (module.sort.location === 'afterModules') {
+                            // Loop through the tabs below the modules list
+                            let added = false;
+                            $settingsDialog.find('.tb-window-tabs > div ~ a').each(function () {
+                                const $existingTab = $(this);
+                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                    // We found a tab bigger than us!
+                                    $existingTab.before($tab);
+                                    added = true;
+                                    // We're added, so we don't need to continue
+                                    return false;
+                                }
+                            });
+                            if (!added) {
+                                // Not added yet? To the bottom we go.
+                                $('.tb-window-tabs').append($tab);
+                            }
+                        }
                     } else {
-                        // Other modules get added to the list
+                        // Modules without a special sort just get added here
                         $moduleCategory.append($tab);
                     }
 

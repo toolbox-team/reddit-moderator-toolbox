@@ -16,6 +16,13 @@ function achievements () {
         hidden: true,
     });
 
+    // This isn't really a module you do things with - we sort it to the bottom
+    // of the settings list
+    self.sort = {
+        location: 'afterModules',
+        order: 1, // should be the first item after the module list
+    };
+
     // Saves
     function Manager () {
         let saves = [],

@@ -86,12 +86,6 @@ function notifiermod () {
         title: 'Get unmoderated queue notifications',
     });
 
-    self.register_setting('nativeNotifications', {
-        type: 'boolean',
-        default: true,
-        title: 'Display native operating system notifications rather than in-page notifications',
-    });
-
     self.register_setting('checkInterval', {
         type: 'number',
         default: 1, // 60 secs.

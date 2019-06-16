@@ -975,7 +975,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.notification = function (title, body, path, markreadid = false) {
             chrome.runtime.sendMessage({
                 action: 'tb-notification',
-                native: TBStorage.getSetting('Notifier', 'nativeNotifications', true),
+                native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
                 details: {
                     title,
                     body,

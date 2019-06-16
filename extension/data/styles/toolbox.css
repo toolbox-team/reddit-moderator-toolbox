@@ -2040,18 +2040,25 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 ------------
 */
 
+.res-nightmode .mod-toolbox-rd .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-action-button,
 .res-nightmode .mod-toolbox-rd #tb-loading-stuff,
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
 .res-nightmode .mod-toolbox-rd .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-bracket-button:hover,
 .res-nightmode .mod-toolbox-rd .tb-action-table,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
 .res-nightmode .mod-toolbox-rd .reason-popup,
 .res-nightmode .mod-toolbox-rd .tb-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
+.res-nightmode .mod-toolbox-rd #tb-bottombar-hidden,
+.res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
 .res-nightmode .mod-toolbox-rd .tb-input,
 .res-nightmode .mod-toolbox-rd .menuarea.modtools,
 .res-nightmode .mod-toolbox-rd #tb-notification-alert
+
 {
     filter: invert(90%)hue-rotate(180deg);
 }
@@ -2065,12 +2072,24 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
     filter: invert(90%)hue-rotate(180deg);
 }
 
+/* exceptions*/
+.res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button,
+.res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-button,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-action-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-bracket-button,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-table {
     filter: invert(0%);
 }
 
-/* Do text colors in a more fine grained controlled manner */
+/* Do some text and background colors in a more fine grained and controlled manner */
+.res-nightmode .mod-toolbox-rd .menuarea.modtools [for="modtab-threshold"],
+.res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
 .res-nightmode .mod-toolbox-rd .reason-popup,
@@ -2091,4 +2110,18 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .tb-input.tb-input {
     color: #ffffff;
     background-color: #000;
+}
+
+.res-nightmode .mod-toolbox-rd .tb-highlight-action-reason {
+    background-color: rgb(113, 68, 30);
+    color: #fff;
+}
+
+.res-nightmode .mod-toolbox-rd .tb-highlight {
+    background-color: rgb(156, 156, 65);
+    color: #fff;
+}
+
+.res-nightmode .mod-toolbox-rd .action-reason {
+    background-color: #56565680;
 }

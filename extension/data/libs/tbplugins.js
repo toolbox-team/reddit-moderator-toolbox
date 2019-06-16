@@ -14,15 +14,18 @@
             }
 
         } else {
-            console.debug(` [${caller}]: `, orignalMessage);
+            console.groupCollapsed(` [${caller}]: `, orignalMessage);
+            console.trace();
+            console.groupEnd();
         }
     };
     $.log = function (message, skip, callerName) {
         var orignalMessage = message;
         // NO TBU, just push to console.
         if (typeof (TBUtils) == 'undefined') {
-            console.log('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']');
-            console.log(message);
+            console.groupCollapsed('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']', message);
+            console.trace();
+            console.groupEnd();
             return;
         }
 
@@ -31,8 +34,9 @@
             caller = (callerName !== undefined) ? callerName : caller;
 
         if (skip) {
-            console.log(' [' + caller + ']: ');
-            console.log(message);
+            console.groupCollapsed(` [${caller}]: `, message);
+            console.trace();
+            console.groupEnd();
             return;
         }
         if (typeof message === 'object') {

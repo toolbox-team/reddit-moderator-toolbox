@@ -7,14 +7,15 @@
 
 // We store notification meta data here for later use.
 const notificationData = {};
-let lastNotificationID = 0;
 
 /**
- * Generates incrementing unique ID strings.
+ * Generates a UUID. We use this instead of something simpler because Firefox
+ * requires notification IDs to be UUIDs.
  * @returns {string}
  */
-function newNotificationID () {
-    return `${lastNotificationID++}`;
+
+function uuidv4 () {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
 }
 
 /**
@@ -22,7 +23,7 @@ function newNotificationID () {
  * @param {object} options The notification options
  */
 function sendNativeNotification ({title, body, url, modHash, markreadid}) {
-    const id = newNotificationID();
+    const id = uuidv4();
     notificationData[id] = {
         type: 'native',
         url,
@@ -58,7 +59,7 @@ function sendNativeNotification ({title, body, url, modHash, markreadid}) {
  * @param {object} options The notification options
  */
 function sendPageNotification ({title, body, url, modHash, markreadid}) {
-    const notificationID = newNotificationID();
+    const notificationID = uuidv4();
     notificationData[notificationID] = {
         type: 'page',
         url,

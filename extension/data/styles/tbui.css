@@ -72,7 +72,8 @@
 .mod-toolbox-rd .tb-notification-content {
     line-height: normal; /* Reset for new Reddit, fixes lots of stupid things */
 }
-.mod-toolbox-rd .tb-popup-content {
+.mod-toolbox-rd .tb-popup-content,
+.mod-toolbox-rd .tb-notification-content {
     overflow: auto;
     padding: 5px !important;
 }
@@ -157,6 +158,7 @@
     position: fixed;
     bottom: 42px;
     right: 10px;
+    width: 300px;
     /* TODO: move the wrapper another 20px to the left when the context menu is there */
 }
 .mod-toolbox-rd .tb-notification {
@@ -166,6 +168,8 @@
     box-shadow: rgba(160, 177, 193, 0.4) 0px 1px 3px 1px;
 }
 .mod-toolbox-rd .tb-notification-content {
-    padding: 10px;
     font-size: 11px;
+}
+.mod-toolbox-rd .tb-notification-content p + p {
+    margin-top: 0.5em;
 }

@@ -141,6 +141,11 @@
                 <div id="tb-notifications-wrapper"></div>
             `).appendTo($body);
         }
+        body = body
+            .split('\n')
+            .filter(line => line)
+            .map(line => `<p>${TBUtils.escapeHTML(line)}</p>`)
+            .join('');
         $notificationDiv.prepend(`
             <div class="tb-notification" data-id="${id}">
                 <div class="tb-notification-header">

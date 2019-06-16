@@ -85,9 +85,9 @@ function comments () {
             if ($('#tb-bottombar').find('#tb-toggle-removed').length) {
                 const $tbToggle = $('#tb-bottombar').find('#tb-toggle-removed');
                 if (removedCounter === 1) {
-                    $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[1]`);
+                    $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]`);
                 } else if (removedCounter > 1) {
-                    $tbToggle.html(`<img src="data:image/png;base64,${TBui.iconCommentsRemove}" />[${removedCounter.toString()}]`);
+                    $tbToggle.html(`<span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[${removedCounter.toString()}]`);
                 }
             } else if (removedCounter === 1) {
                 $('#tb-bottombar').find('#tb-toolbarcounters').prepend(`<a id="tb-toggle-removed" title="Toggle hide/view removed comments" href="javascript:void(0)"><span class="tb-icons tb-icons-align-middle">${TBui.icons.comments}</span>[1]</a>`);

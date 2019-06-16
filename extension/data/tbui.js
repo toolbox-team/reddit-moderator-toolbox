@@ -22,11 +22,11 @@
     });
 
     /**
-   * Material design icons mapped to toolbox names through their hexcode.
-   *
-   * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
-   * @type {object}
-   */
+     * Material design icons mapped to toolbox names through their hexcode.
+     *
+     * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
+     * @type {object}
+     */
     TBui.icons = {
         add: '&#xe145;', // add
         addBox: '&#xe146;', // add_box
@@ -132,6 +132,80 @@
     TBui.actionButton = function button (text, classes) {
         return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
+
+    // Notification stuff
+
+    /**
+     * Show an in-page notification on the current tab.
+     * @param {object} options The options for the notification
+     * @param {string} options.id The notification's ID
+     * @param {string} options.title The notification's title
+     * @param {string} options.body The notification's body
+     */
+    TBui.showNotification = ({id, title, body}) => {
+        let $notificationDiv = $('#tb-notifications-wrapper');
+        if (!$notificationDiv.length) {
+            // Create the wrapper element if it's not already there
+            $notificationDiv = $(`
+                <div id="tb-notifications-wrapper"></div>
+            `).appendTo($body);
+        }
+
+        // Make lines of the message into paragraphs
+        body = body
+            .split('\n')
+            .filter(line => line) // Ignore empty lines
+            .map(line => `<p>${TBUtils.escapeHTML(line)}</p>`)
+            .join('');
+
+        $notificationDiv.prepend(`
+            <div class="tb-notification" data-id="${id}">
+                <div class="tb-notification-header">
+                    <div class="tb-notification-title">${title}</div>
+                    <div class="buttons">
+                        <a class="close">
+                            <i class="tb-icons">${TBui.icons.close}</i>
+                        </a>
+                    </div>
+                </div>
+                <div class="tb-notification-content">${body}</div>
+            </div>
+        `);
+    };
+
+    /**
+     * Clears an in-page notification on the current tab.
+     * @param {string} id The ID of the notification to clear
+     */
+    TBui.clearNotification = id => {
+        $(`.tb-notification[data-id="${id}"]`).remove();
+    };
+
+    // Handle notification updates from the background page
+    chrome.runtime.onMessage.addListener(message => {
+        if (message.action === 'tb-show-page-notification') {
+            console.log('Notifier message get:', message);
+            TBui.showNotification(message.details);
+        } else if (message.action === 'tb-clear-page-notification') {
+            console.log('Notifier message clear:', message);
+            TBui.clearNotification(message.id);
+        }
+    });
+
+    // Notification click handlers
+    $body.on('click', '.tb-notification .close', function (event) {
+        event.stopPropagation(); // don't open the linked page
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-close',
+            id: $(this).closest('.tb-notification').attr('data-id'),
+        });
+    });
+    $body.on('click', '.tb-notification', function () {
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-click',
+            id: $(this).attr('data-id'),
+        });
+    });
 
     // Popup HTML generator
     TBui.popup = function popup (title, tabs, meta, css_class, opts) {
@@ -693,6 +767,7 @@
                     <i class="tb-icons tb-context-arrow" href="javascript:void(0)">${contextMenuLocation === 'left' ? TBui.icons.arrowRight : TBui.icons.arrowLeft}</i>
                 </div>
             `).appendTo($body);
+            $body.addClass(`tb-has-context-${contextMenuLocation}`);
 
             if (contextMenuClick) {
                 $tbContextMenu.addClass('click-activated');

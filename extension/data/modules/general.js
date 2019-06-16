@@ -8,6 +8,12 @@ function generalSettings () {
     // So yeah it depends... But seriously normal modules should not do this.
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
+    self.register_setting('nativeNotifications', {
+        type: 'boolean',
+        default: true,
+        title: 'Display native operating system notifications rather than in-page notifications',
+    });
+
     self.register_setting('onlyshowInhover', {
         type: 'boolean',
         default: true,

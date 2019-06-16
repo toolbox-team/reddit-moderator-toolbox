@@ -973,32 +973,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * when the notification is clicked
          */
         TBUtils.notification = function (title, body, path, markreadid = false) {
-            const timeout = 10000;
-
-            const toolboxnotificationenabled = true;
-
-            // check if notifications are enabled. When they are not we simply abort the function.
-            if (toolboxnotificationenabled === false) {
-            // console.log('notifications disabled, stopping function');
-                return;
-            }
-
             chrome.runtime.sendMessage({
                 action: 'tb-notification',
+                native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
                 details: {
                     title,
                     body,
+                    // We can't use TBUtils.link for this since the background page has to have an absolute URL
                     url: TBUtils.isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
                     modHash: TBUtils.modhash,
-                    markreadid: markreadid ? markreadid : false,
+                    markreadid: markreadid || false,
                 },
-            }, response => {
-                if (response.permission === 'denied') {
-                    // They have the option enabled, but won't grant permissions, so fall back.
-                    body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                    body = body.substring(0, 600);
-                    $.sticky(`<p>${body}</p>`, title, path, {autoclose: timeout, markreadid});
-                }
             });
         };
 

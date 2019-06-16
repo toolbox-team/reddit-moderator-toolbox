@@ -979,6 +979,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 details: {
                     title,
                     body,
+                    // We can't use TBUtils.link for this since the background page has to have an absolute URL
                     url: TBUtils.isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
                     modHash: TBUtils.modhash,
                     markreadid: markreadid || false,

@@ -410,8 +410,8 @@ function betterbuttons () {
                     action = 'unlock';
                 }
 
-                $comment.find('> .entry ul.buttons > li.report-button')
-                    .before(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
+                $comment.find('> .entry ul.buttons a[data-event-action="remove"]').closest('li')
+                    .after(`<li><a href="javascript:;" tb-action="${action}" class="tb-comment-lock-button">${action}</a></li>`);
             }
         }
 
@@ -425,7 +425,7 @@ function betterbuttons () {
             };
 
             try {
-                await TBUtils.apiOauthPOST(`api/${action}`, data);
+                await TBUtils.apiOauthPOST(`/api/${action}`, data);
                 let newAction;
                 if (action === 'lock') {
                     newAction = 'unlock';
@@ -487,6 +487,6 @@ function betterbuttons () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     betterbuttons();
 });

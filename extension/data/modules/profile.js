@@ -652,7 +652,7 @@ function profilepro () {
                 TBui.contextTrigger('tb-user-profile', {
                     addTrigger: true,
                     triggerText: 'toolbox profile',
-                    triggerIcon: 'account_circle',
+                    triggerIcon: TBui.icons.profile,
                     title: `Show toolbox profile for /u/${user}`,
                     dataAttributes: {
                         user,
@@ -717,6 +717,6 @@ function profilepro () {
     };
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     profilepro();
 });

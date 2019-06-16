@@ -1,5 +1,6 @@
 
 .mod-toolbox-rd #tb-bottombar  #tb-toggle-removed {
+    display: flex;
     opacity: 0.8;
     margin-right: 1em;
 }

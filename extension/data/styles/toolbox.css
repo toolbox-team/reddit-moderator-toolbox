@@ -8,6 +8,26 @@ div#tb-snoo-footer {
 /*
 ========================
 
+    TB warning
+
+========================
+*/
+
+body.mod-toolbox[toolbox-warning]::before {
+    position: fixed;
+    content: attr(toolbox-warning);
+    right: 40px;
+    bottom: 50px;
+    z-index: 2147483644;
+    color: #ec1313d6;
+    background-color: rgba(206, 227, 248, 0.86);
+    padding: 5px;
+    font-size: 14px;
+}
+
+/*
+========================
+
     TB reddit css fixes
 
 ========================
@@ -37,6 +57,7 @@ div#tb-snoo-footer {
 .mod-toolbox-rd.mod-toolbox-extra .tb-page-overlay,
 .mod-toolbox-rd #tb-bottombar,
 .mod-toolbox-rd #tb-context-menu,
+.mod-toolbox-rd #tb-notifications-wrapper,
 .mod-toolbox-rd .tb-input {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 12px !important;
@@ -136,7 +157,6 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     min-height: 30px;
     display: none;
     position: fixed;
-    left: 0px;
     bottom: 60px;
     z-index: 6000;
     padding: 0;
@@ -144,12 +164,22 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     font-size: 11px;
     color: #696969;
     border: 1px solid #B6C9DD;
-    border-left: 0;
     text-align: left;
-    z-index: 501;
     background-repeat: no-repeat;
     background-position-y: 3px;
 }
+
+.mod-toolbox-rd #tb-context-menu.show-context-left {
+    left: 0px;
+    border-left: 0;
+}
+.mod-toolbox-rd #tb-context-menu.show-context-right {
+    right: 0px;
+    border-right: 0;
+    flex-direction: row-reverse; /* So the arrow shows up on the other side */
+}
+
+
 .mod-toolbox-rd #tb-context-menu.show-tb-context {
     display: flex;
 }
@@ -170,28 +200,65 @@ body.mod-toolbox-rd.mod-toolbox-extra .tb-input:focus {
     overflow: hidden;
     transition: 300ms;
 }
-.mod-toolbox-rd #tb-context-menu:hover #tb-context-menu-wrap,
-.mod-toolbox-rd #tb-context-menu.hover #tb-context-menu-wrap {
+
+.mod-toolbox-rd #tb-context-menu.click-activated {
+    cursor: pointer;
+}
+
+.mod-toolbox-rd #tb-context-menu.hover-activated:hover #tb-context-menu-wrap,
+.mod-toolbox-rd #tb-context-menu.open #tb-context-menu-wrap {
     width: auto;
     height: auto;
     opacity: 1;
 }
+
+.mod-toolbox-rd #tb-context-menu.fade:not(:hover) {
+    animation: tb-context-fade 3s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes tb-context-fade {
+    0% {opacity: 0.2}
+    50% {opacity: 1}
+    100%{opacity: 0.2}
+}
+
+/* When the menu is opened on click, flip the arrow around to indicate clicking it again closes it */
+.mod-toolbox-rd #tb-context-menu .tb-context-arrow {
+    transition: 300ms;
+}
+.mod-toolbox-rd #tb-context-menu.open .tb-context-arrow {
+    transform: rotate(180deg);
+    transform-origin: center;
+}
+
+
+
 .mod-toolbox-rd #tb-context-menu-list li {
     background: rgba(247, 250, 253, 1);
     border-top: 1px solid #CCD1D7;
-    border-right: 1px solid #CCD1D7;
     display: flex;
     align-items: center;
     padding: 2px 10px;
     cursor: pointer;
     font-size: 12px;
 }
+
 .mod-toolbox-rd #tb-context-menu-list li:hover {
     background-color: rgba(174, 212, 250, 0.5);
 }
+
 .mod-toolbox-rd #tb-context-menu-list .tb-icons {
     margin-right: 5px;
 }
+
+.mod-toolbox-rd .show-context-left #tb-context-menu-list li {
+    border-right: 1px solid #CCD1D7;
+}
+.mod-toolbox-rd .show-context-right #tb-context-menu-list li {
+    border-left: 1px solid #CCD1D7;
+}
+
 
 /*
 ------------
@@ -1138,16 +1205,9 @@ body.mod-toolbox-rd .tb-frontend-container[data-tb-type="userHovercard"] .tb-bra
     border: solid 2px #a03030;
 }
 
-.mod-toolbox-rd  .tb-submission.filtered,
-.mod-toolbox-rd  .tb-comment-entry.filtered {
-    border: dashed 2px #a03030;
-}
-
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-remove,
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-remove,
-body.mod-toolbox-rd a.tb-big-button.tb-submission-button-remove,
-body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-remove,
-body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-remove {
+body.mod-toolbox-rd a.tb-big-button.tb-submission-button-remove {
     border: 1px solid #666;
     color: #000;
     padding: 1px 6px;
@@ -1157,9 +1217,7 @@ body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-remove {
 
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-spam,
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-spam,
-body.mod-toolbox-rd a.tb-big-button.tb-submission-button-spam,
-body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-spam,
-body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-spam {
+body.mod-toolbox-rd a.tb-big-button.tb-submission-button-spam {
     border: 1px solid #666;
     color: #000;
     padding: 1px 6px;
@@ -1168,9 +1226,7 @@ body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-spam {
 
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-approve,
 body.mod-toolbox-rd a.tb-big-button.tb-comment-button-approve,
-body.mod-toolbox-rd a.tb-big-button.tb-submission-button-approve ,
-body.mod-toolbox-rd .tb-comment-entry.filtered a.tb-comment-button-approve,
-body.mod-toolbox-rd .tb-submission.filtered a.tb-submission-button-approve  {
+body.mod-toolbox-rd a.tb-big-button.tb-submission-button-approve {
     border: 1px solid #666;
     color: #000;
     padding: 1px 6px;
@@ -1813,8 +1869,8 @@ TODO: Find out what this is supposed to fix and put that in the comment instead.
     margin: 2px;
 }
 
-.mod-toolbox-rd .removal_reasons_settings .edit-header,
-.mod-toolbox-rd .removal_reasons_settings .edit-footer {
+.mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-header,
+.mod-toolbox-rd .removal_reasons_settings .tb-window-content .edit-footer {
     width: 600px;
     height: 100px;
     margin: 2px;
@@ -1985,25 +2041,88 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 ------------
 */
 
+.res-nightmode .mod-toolbox-rd .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-action-button,
+.res-nightmode .mod-toolbox-rd #tb-loading-stuff,
+.res-nightmode .mod-toolbox-rd .tb-feedback-text,
+.res-nightmode .mod-toolbox-rd .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-bracket-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-action-table,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper,
+.res-nightmode .mod-toolbox-rd .reason-popup,
+.res-nightmode .mod-toolbox-rd .tb-popup,
+.res-nightmode .mod-toolbox-rd #tb-bottombar,
+.res-nightmode .mod-toolbox-rd #tb-bottombar-hidden,
+.res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
+.res-nightmode .mod-toolbox-rd #tb-context-menu,
+.res-nightmode .mod-toolbox-rd .tb-input,
+.res-nightmode .mod-toolbox-rd .menuarea.modtools,
+.res-nightmode .mod-toolbox-rd #tb-notification-alert
+
+{
+    filter: invert(90%)hue-rotate(180deg);
+}
+
+.res-nightmode .mod-toolbox-rd .tb-loading-content img,
+.res-nightmode .mod-toolbox-rd .tb-trophy-icon,
+.res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-expand-ul li img,
+.res-nightmode .mod-toolbox-rd ul.tb-user-modsubs-ul li img,
+.res-nightmode .mod-toolbox-rd .tb-user-thumbnail,
+.res-nightmode .mod-toolbox-rd a.tb-submission-thumbnail {
+    filter: invert(90%)hue-rotate(180deg);
+}
+
+/* exceptions*/
+.res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button,
+.res-nightmode .mod-toolbox-rd .menuarea.modtools .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button:hover,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-general-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-button,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-action-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-popup .tb-bracket-button,
+.res-nightmode .mod-toolbox-rd .tb-window-wrapper .tb-action-table {
+    filter: invert(0%);
+}
+
+/* Do some text and background colors in a more fine grained and controlled manner */
+.res-nightmode .mod-toolbox-rd .menuarea.modtools [for="modtab-threshold"],
+.res-nightmode .mod-toolbox-rd #tb-modbar-hide-tooltip,
 .res-nightmode .mod-toolbox-rd .tb-feedback-text,
 .res-nightmode .mod-toolbox-rd .tb-window-wrapper,
-.res-nightmode .mod-toolbox-rd #reason-popup-toolbox,
+.res-nightmode .mod-toolbox-rd .reason-popup,
 .res-nightmode .mod-toolbox-rd .tb-popup,
 .res-nightmode .mod-toolbox-rd #tb-bottombar,
 .res-nightmode .mod-toolbox-rd #tb-context-menu,
-.res-nightmode .mod-toolbox-rd .tb-bracket-button,
-.res-nightmode .mod-toolbox-rd > *:not(.tb-page-overlay):not(.tb-popup):not(#reason-popup-toolbox) .tb-action-button,
-.res-nightmode .mod-toolbox-rd .tb-input,
-.res-nightmode .mod-toolbox-rd .menuarea.modtools,
-.res-nightmode .mod-toolbox-rd .tb-action-details,
-.res-nightmode .mod-toolbox-rd .action-reason
+.res-nightmode .mod-toolbox-rd .menuarea.modtools
 {
-    filter: invert(90%)hue-rotate(180deg);
     color: #2f2f2f
+}
+
+.res-nightmode .mod-toolbox-rd .tb-bracket-button {
+    color: #353131;
+    background-color: #d3dae2;
 }
 
 
 .res-nightmode .mod-toolbox-rd .tb-input.tb-input {
     color: #ffffff;
     background-color: #000;
+}
+
+.res-nightmode .mod-toolbox-rd .tb-highlight-action-reason {
+    background-color: rgb(113, 68, 30);
+    color: #fff;
+}
+
+.res-nightmode .mod-toolbox-rd .tb-highlight {
+    background-color: rgb(156, 156, 65);
+    color: #fff;
+}
+
+.res-nightmode .mod-toolbox-rd .action-reason {
+    background-color: #56565680;
 }

@@ -4,7 +4,8 @@ function modbar () {
 
     self.settings['enabled']['default'] = true;
 
-    // How about you don't disable modbar?  No other module should ever do this. Well except for the support module.
+    // How about you don't disable the modbar?  No other module should ever do this. Well except for the support module and the old reddit module..
+    // So yeah it depends... But seriously normal modules should not do this.
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
     self.register_setting('compactHide', {
@@ -186,21 +187,21 @@ function modbar () {
         const modQueueUrl = TBUtils.link(modSubredditsFMod ? '/me/f/mod/about/modqueue/' : `/r/${modSubreddits}/about/modqueue`);
         const $modBar = $(`
 <div id="tb-bottombar">
-    <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">keyboard_arrow_left</a>
-    <a class="tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">settings</a>
+    <a class="tb-bottombar-hide tb-icons" href="javascript:void(0)">${TBui.icons.arrowLeft}</a>
+    <a class="tb-toolbar-new-settings tb-icons" href="javascript:void(0)" title="toolbox settings">${TBui.icons.settings}</a>
     <label class="tb-first-run">&#060;-- Click for settings</label>
     <span id="tb-bottombar-contentleft">
         <span id="tb-toolbarshortcuts"></span>
     </span>
     <span id="tb-bottombar-contentright">
         <span id="tb-toolbarcounters">
-            <a title="no mail" href="${TBUtils.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">email</a>
+            <a title="no mail" href="${TBUtils.link('/message/inbox/')}" class="nohavemail tb-icons" id="tb-mail">${TBui.icons.userInbox}</a>
             <a href="${TBUtils.link('/message/inbox/')}" id="tb-mailCount"></a>
-            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">inbox</a>
+            <a title="modmail" href="${modMailUrl}" id="tb-modmail" class="nohavemail tb-icons">${TBui.icons.oldModmail}</a>
             <a href="${modMailUrl}" id="tb-modmailcount"></a>
-            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>move_to_inbox</a>
+            <a href="${newModmailUrl}" class="nohavemail access-required tb-icons" id="tb-new_modmail" ${openMailTab ? 'target="_blank"' : ''}>${TBui.icons.newModmail}</a>
             <a href="${newModmailUrl}" id="tb-new-modmailcount" ${openMailTab ? 'target="_blank"' : ''}></a>
-            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">report_problem</a>
+            <a title="modqueue" href="${modQueueUrl}" id="tb-modqueue" class="tb-icons">${TBui.icons.modqueue}</a>
             <a href="${modQueueUrl}" id="tb-queueCount"></a>
         </span>
     </span>
@@ -244,14 +245,14 @@ function modbar () {
         if (unmoderatedOn) {
             const unModQueueUrl = TBUtils.link(unmoderatedSubredditsFMod ? '/me/f/mod/about/unmoderated/' : `/r/${unmoderatedSubreddits}/about/unmoderated`);
             $modBar.find('#tb-toolbarcounters').append(`
-<a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">remove_red_eye</a>
+<a title="unmoderated" href="${unModQueueUrl}" class="tb-icons" id="tb-unmoderated">${TBui.icons.unmoderated}</a>
 <a href="${unModQueueUrl}" id="tb-unmoderatedcount"></a>
 `);
         }
 
         const $modbarhid = $(`
 <div id="tb-bottombar-hidden" class="${compactHide ? 'tb-bottombar-compact' : ''}">
-    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? 'more_vert' : 'keyboard_arrow_right'}</a>
+    <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? TBui.icons.dotMenu : TBui.icons.arrowRight}</a>
 </div>
 `);
 
@@ -263,13 +264,12 @@ function modbar () {
         <div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div>
         <span class="buttons">
             <a class="close" id="tb-debug-hide" href="javascript:;">
-                <i class="tb-icons">close</i>
+                <i class="tb-icons">${TBui.icons.close}</i>
             </a>
         </span>
     </div>
     <div class="tb-popup-content">
         <textarea class="tb-input tb-debug-console" rows="20" cols="20"></textarea>
-        <input type="text" class="tb-debug-input tb-input" placeholder="eval() in toolbox scope" />
     </div>
     <div class="tb-popup-footer">
         <select class="module-select tb-action-button inline-button"><option value="${DEFAULT_MODULE}">all modules</option></select>
@@ -305,12 +305,12 @@ function modbar () {
 <tr style="border-left: solid 3px ${subColor} !important;" data-subreddit="${this.subreddit}">
     <td class="tb-my-subreddits-name"><a href="${TBUtils.link(`/r/${this.subreddit}`)}" target="_blank">/r/${this.subreddit}</a></td>
     <td class="tb-my-subreddits-subreddit">
-        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/message/moderator`)}" class="tb-icons">inbox</a>
-        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.link(`/r/mod/about/modqueue?subreddit=${this.subreddit}`)}" class="tb-icons">report_problem</a>
-        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.link(`/r/mod/about/unmoderated?subreddit=${this.subreddit}`)}" class="tb-icons">remove_red_eye</a>
-        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/log`)}" class="tb-icons">grid_on</a>
-        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/traffic`)}" class="tb-icons">show_chart</a>
-        ${configEnabled ? `<a title="/r/${this.subreddit} config" target="_blank" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">build</a>` : ''}
+        <a title="/r/${this.subreddit} modmail!" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/message/moderator`)}" class="tb-icons">${TBui.icons.oldModmail}</a>
+        <a title="/r/${this.subreddit} modqueue" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/modqueue`)}" class="tb-icons">${TBui.icons.modqueue}</a>
+        <a title="/r/${this.subreddit} unmoderated" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/unmoderated`)}" class="tb-icons">${TBui.icons.unmoderated}</a>
+        <a title="/r/${this.subreddit} moderation log" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/log`)}" class="tb-icons">${TBui.icons.modlog}</a>
+        <a title="/r/${this.subreddit} traffic stats" target="_blank" href="${TBUtils.link(`/r/${this.subreddit}/about/traffic`)}" class="tb-icons">${TBui.icons.subTraffic}</a>
+        ${configEnabled ? `<a title="/r/${this.subreddit} config" href="javascript:;" class="tb-config-link tb-icons" data-subreddit="${this.subreddit}">${TBui.icons.tbSubConfig}</a>` : ''}
     </td>
 </tr>
 `;
@@ -408,7 +408,7 @@ function modbar () {
 
         if (debugMode) {
             // Reload button
-            $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">cached</a>');
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-reload-link" class="tb-icons" title="reload toolbox">${TBui.icons.tbReload}</a>`);
 
             $body.on('click', '#tb-reload-link', () => {
                 self.log('reloading chrome');
@@ -416,7 +416,7 @@ function modbar () {
             });
 
             // Console stuff
-            $('#tb-bottombar').find('#tb-toolbarcounters').before('<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >bug_report</a>');
+            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >${TBui.icons.tbConsole}</a>`);
             const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
 
             let debugEditor;
@@ -626,14 +626,6 @@ function modbar () {
                 TBUtils.log = [];
             });
 
-            // Run console input
-            $('.tb-debug-input').keyup(function (e) {
-                if (e.keyCode === 13) {
-                    self.log(eval($(this).val()));
-                    $(this).val(''); // clear line
-                }
-            });
-
             // change modules
             $('.module-select').change(function () {
                 currentModule = $(this).val();
@@ -722,6 +714,6 @@ function modbar () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     modbar();
 });

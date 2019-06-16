@@ -10,11 +10,57 @@
     });
 
     let subredditColorSalt;
+    let contextMenuLocation = 'left';
+    let contextMenuAttention = 'open';
+    let contextMenuClick = false;
 
-    window.addEventListener('TBStorageLoaded2', () => {
+    window.addEventListener('TBStorageLoaded', () => {
         subredditColorSalt = TBStorage.getSetting('QueueTools', 'subredditColorSalt', 'PJSalt');
+        contextMenuLocation = TBStorage.getSetting('GenSettings', 'contextMenuLocation', 'left');
+        contextMenuAttention = TBStorage.getSetting('GenSettings', 'contextMenuAttention', 'open');
+        contextMenuClick = TBStorage.getSetting('GenSettings', 'contextMenuClick', false);
     });
 
+    /**
+     * Material design icons mapped to toolbox names through their hexcode.
+     *
+     * Usage `<div class="tb-icon">${TBui.icons.NAME}</div>`
+     * @type {object}
+     */
+    TBui.icons = {
+        add: '&#xe145;', // add
+        addBox: '&#xe146;', // add_box
+        addCircle: '&#xe148;', // add_circle_outline
+        arrowLeft: '&#xe314;', // keyboard_arrow_left
+        arrowRight: '&#xe315;', // keyboard_arrow_right
+        close: '&#xe5cd;', // close
+        comments: '&#xe0b7;', // chat
+        delete: '&#xe872;', // delete
+        dotMenu: '&#xe5d4;', // more_vert
+        edit: '&#xe3c9;', // edit
+        help: '&#xe8fd;', // help_outline
+        history: '&#xe889;', // history
+        list: '&#xe896;', // list
+        modlog: '&#xe3ec;', // grid_on
+        modqueue: '&#xe8b2;', // report_problem
+        newModmail: '&#xe168;', // move_to_inbox
+        oldModmail: '&#xe156;', // inbox
+        overlay: '&#xe8ea;', // view_array
+        profile: '&#xe853;', // account_circle
+        refresh: '&#xe5d5;', // refresh
+        remove: '&#xe15b;', // remove
+        settings: '&#xe8b8;', // settings
+        sortDown: '&#xe5db;', // arrow_downward
+        sortUp: '&#xe5d8;', // arrow_upward
+        subTraffic: '&#xe6e1;', // show_chart
+        tbConsole: '&#xe868;', // bug_report
+        tbReload: '&#xe86a;', // cached
+        tbSettingLink: '&#xe157;', // link
+        tbSubConfig: '&#xe869;', // build
+        unmoderated: '&#xe417;', // remove_red_eye
+        userInbox: '&#xe0be;', // email
+        usernote: '&#xe06f;', // note
+    };
     // Icons NOTE: string line length is ALWAYS 152 chars
 
     TBui.logo64 = `iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsRAAALEQF/ZF+R
@@ -87,6 +133,80 @@
         return `<a href="javascript:;" class="tb-action-button ${classes}">${text}</a>`;
     };
 
+    // Notification stuff
+
+    /**
+     * Show an in-page notification on the current tab.
+     * @param {object} options The options for the notification
+     * @param {string} options.id The notification's ID
+     * @param {string} options.title The notification's title
+     * @param {string} options.body The notification's body
+     */
+    TBui.showNotification = ({id, title, body}) => {
+        let $notificationDiv = $('#tb-notifications-wrapper');
+        if (!$notificationDiv.length) {
+            // Create the wrapper element if it's not already there
+            $notificationDiv = $(`
+                <div id="tb-notifications-wrapper"></div>
+            `).appendTo($body);
+        }
+
+        // Make lines of the message into paragraphs
+        body = body
+            .split('\n')
+            .filter(line => line) // Ignore empty lines
+            .map(line => `<p>${TBUtils.escapeHTML(line)}</p>`)
+            .join('');
+
+        $notificationDiv.prepend(`
+            <div class="tb-notification" data-id="${id}">
+                <div class="tb-notification-header">
+                    <div class="tb-notification-title">${title}</div>
+                    <div class="buttons">
+                        <a class="close">
+                            <i class="tb-icons">${TBui.icons.close}</i>
+                        </a>
+                    </div>
+                </div>
+                <div class="tb-notification-content">${body}</div>
+            </div>
+        `);
+    };
+
+    /**
+     * Clears an in-page notification on the current tab.
+     * @param {string} id The ID of the notification to clear
+     */
+    TBui.clearNotification = id => {
+        $(`.tb-notification[data-id="${id}"]`).remove();
+    };
+
+    // Handle notification updates from the background page
+    chrome.runtime.onMessage.addListener(message => {
+        if (message.action === 'tb-show-page-notification') {
+            console.log('Notifier message get:', message);
+            TBui.showNotification(message.details);
+        } else if (message.action === 'tb-clear-page-notification') {
+            console.log('Notifier message clear:', message);
+            TBui.clearNotification(message.id);
+        }
+    });
+
+    // Notification click handlers
+    $body.on('click', '.tb-notification .close', function (event) {
+        event.stopPropagation(); // don't open the linked page
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-close',
+            id: $(this).closest('.tb-notification').attr('data-id'),
+        });
+    });
+    $body.on('click', '.tb-notification', function () {
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-click',
+            id: $(this).attr('data-id'),
+        });
+    });
+
     // Popup HTML generator
     TBui.popup = function popup (title, tabs, meta, css_class, opts) {
         const defaults = {
@@ -108,7 +228,7 @@
                 <div class="tb-popup-title">${title}</div>
                 <div class="buttons">
                     <a class="close" href="javascript:;">
-                        <i class="tb-icons">close</i>
+                        <i class="tb-icons">${TBui.icons.close}</i>
                     </a>
                 </div>
             </div>
@@ -239,7 +359,7 @@
             <div class="buttons">
                 ${buttons}
                 <a class="close" href="javascript:;">
-                    <i class="tb-icons">close</i>
+                    <i class="tb-icons">${TBui.icons.close}</i>
                 </a>
             </div>
         </div>
@@ -428,7 +548,7 @@
                 </tr></thead>
                 <tbody></tbody>
             </table>
-            <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">add_box</a></div>`);
+            <a class="tb-map-input-add tb-icons tb-icons-positive" href="javascript:void(0)">${TBui.icons.addBox}</a></div>`);
 
         const emptyRow = `
             <tr class="tb-map-input-tr">
@@ -459,7 +579,7 @@
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(key))}" name="key"></td>
                     <td><input type="text" class="tb-input" value="${TBUtils.htmlEncode(unescape(value))}" name="value"></td>
                     <td class="tb-map-input-td-remove">
-                        <a class="tb-map-input-remove tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:void(0)">delete</a>
+                        <a class="tb-map-input-remove tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:void(0)">${TBui.icons.delete}</a>
                     </td>
                 </tr>`);
                 $item.appendTo($mapInput.find('.tb-map-input-table tbody'));
@@ -633,20 +753,39 @@
      */
     let contextTimeout;
     TBui.contextTrigger = function contextTrigger (triggerId, options) {
+        // We really don't need two context menus side by side.
+        if (TBUtils.isEmbedded) {
+            return;
+        }
         const addTrigger = options.addTrigger;
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');
         if (!$tbContextMenu.length) {
             // Toolbox context action menu.
             $tbContextMenu = $(`
-                <div id="tb-context-menu">
+                <div id="tb-context-menu" class="show-context-${contextMenuLocation}">
                     <div id="tb-context-menu-wrap">
                         <div id="tb-context-header">Toolbox context menu</div>
                         <ul id="tb-context-menu-list"></ul>
                     </div>
-                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">keyboard_arrow_right</i>
+                    <i class="tb-icons tb-context-arrow" href="javascript:void(0)">${contextMenuLocation === 'left' ? TBui.icons.arrowRight : TBui.icons.arrowLeft}</i>
                 </div>
             `).appendTo($body);
+            $body.addClass(`tb-has-context-${contextMenuLocation}`);
+
+            if (contextMenuClick) {
+                $tbContextMenu.addClass('click-activated');
+
+                $tbContextMenu.on('click', () => {
+                    if ($tbContextMenu.hasClass('open')) {
+                        $tbContextMenu.removeClass('open');
+                    } else {
+                        $tbContextMenu.addClass('open');
+                    }
+                });
+            } else {
+                $tbContextMenu.addClass('hover-activated');
+            }
         }
         const $tbContextMenuList = $body.find('#tb-context-menu-list');
         // We are adding a menu item.
@@ -691,11 +830,11 @@
 
                 // We are going a bit annoying here to draw attention to the fact that there is a new item in the menu.
                 // The alternative would be to always show the entire menu.
-                $tbContextMenu.addClass('hover');
+                $tbContextMenu.addClass(contextMenuAttention);
                 clearTimeout(contextTimeout);
                 contextTimeout = setTimeout(() => {
-                    $tbContextMenu.removeClass('hover');
-                }, 1000);
+                    $tbContextMenu.removeClass(contextMenuAttention);
+                }, contextMenuAttention === 'fade' ? 6000 : 1000);
             }
 
             // If the menu was empty it was hidden and we need to show it.
@@ -932,7 +1071,7 @@
             submissionStatusBy = submissionApprovedBy;
             submissionActionByOn = `by ${submissionStatusBy} on ${submissionStatusReadableUTC}`;
         } else if (submissionBanNote && !submissionSpam && !submissionRemoved && !submissionApproved) {
-            submissionStatus = 'filtered';
+            submissionStatus = 'removed';
             submissionStatusUTC = submissionBannedAtUTC;
             submissionStatusReadableUTC = TBUtils.timeConverterRead(submissionStatusUTC);
             submissionStatusBy = submissionBannedBy;
@@ -987,7 +1126,7 @@
                             (<a href="${TBUtils.link(`/domain/${submissionDomain}`)}">${submissionDomain}</a>)
                         </span>
                     </div>
-                    ${submissionIsSelf && submissionSelfTextHTML ? '<div class="tb-self-expando-button"><i class="tb-icons">add</i></div>' : ''}
+                    ${submissionIsSelf && submissionSelfTextHTML ? `<div class="tb-self-expando-button"><i class="tb-icons">${TBui.icons.add}</i></div>` : ''}
                     <div class="tb-tagline">
                         submitted <time title="${submissionReadableCreatedUTC}" datetime="${createdTimeAgo}" class="tb-live-timestamp timeago">${createdTimeAgo}</time> ${submissionEdited ? editedHtml : ''} by <a href="https://www.reddit.com/user/${submissionAuthor}" class="tb-submission-author ${authorStatus}">${submissionAuthor}</a><span class="tb-userattrs">${authorAttributes}</span>
                         <span class="tb-jsapi-author-container"></span> to <a href="${TBUtils.link(`/r/${submissionSubreddit}`)}">/r/${submissionSubreddit}</a>
@@ -1082,11 +1221,11 @@
 
         // Now add mod action buttons if applicable.
         if (canModsubmission) {
-            if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
+            if (submissionStatus === 'removed' || submissionStatus === 'spammed' || submissionStatus === 'neutral') {
                 $(`<a class="tb-submission-button tb-submission-button-approve" data-fullname="${submissionName}" href="javascript:void(0)">approve</a>`).appendTo($submissionButtonList);
             }
 
-            if (submissionStatus === 'approved' || submissionStatus === 'neutral' || submissionStatus === 'filtered') {
+            if (submissionStatus === 'approved' || submissionStatus === 'neutral') {
                 $(`<a class="tb-submission-button tb-submission-button-spam" data-fullname="${submissionName}" href="javascript:void(0)">spam</a>
                 <a class="tb-submission-button tb-submission-button-remove" data-fullname="${submissionName}" href="javascript:void(0)">remove</a>`).appendTo($submissionButtonList);
             }
@@ -1238,7 +1377,7 @@
             commentStatusBy = commentApprovedBy;
             commentActionByOn = `by ${commentStatusBy} on ${commentStatusReadableUTC}`;
         } else if (commentBanNote && !commentRemoved && !commentSpam && !commentApproved) {
-            commentStatus = 'filtered';
+            commentStatus = 'removed';
             commentStatusUTC = commentBannedAtUTC;
             commentStatusReadableUTC = TBUtils.timeConverterRead(commentStatusUTC);
             commentStatusBy = commentBannedBy;
@@ -1416,11 +1555,11 @@
 
         // Now add mod action buttons if applicable.
         if (canModComment) {
-            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral' || commentStatus === 'filtered') {
+            if (commentStatus === 'removed' || commentStatus === 'spammed' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-approve" data-fullname="${commentName}" href="javascript:void(0)">approve</a>`).appendTo($commentButtonList);
             }
 
-            if (commentStatus === 'approved' || commentStatus === 'neutral' || commentStatus === 'filtered') {
+            if (commentStatus === 'approved' || commentStatus === 'neutral') {
                 $(`<a class="tb-comment-button tb-comment-button-spam" data-fullname="${commentName}" href="javascript:void(0)">spam</a>
                 <a class="tb-comment-button tb-comment-button-remove" data-fullname="${commentName}" href="javascript:void(0)">remove</a>`).appendTo($commentButtonList);
             }
@@ -1625,10 +1764,10 @@
         $selfText.toggle();
 
         if (thisState === 'collapsed') {
-            $this.html('<i class="tb-icons">remove</i>');
+            $this.html(`<i class="tb-icons">${TBui.icons.remove}</i>`);
             $this.attr('data-state', 'expanded');
         } else {
-            $this.html('<i class="tb-icons">add</i>');
+            $this.html(`<i class="tb-icons">${TBui.icons.add}</i>`);
             $this.attr('data-state', 'collapsed');
         }
     });

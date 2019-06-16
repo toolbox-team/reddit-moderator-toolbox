@@ -19,7 +19,7 @@ function devtools () {
         type: 'boolean',
         default: false,
         advanced: true,
-        title: 'Add a button to the context menu that opens an overlay to test the TBui comment constructors.',
+        title: 'Add a button to the context menu that opens an overlay to test a variety of UI things.',
     });
     // Module init
     self.init = function () {
@@ -85,7 +85,7 @@ function devtools () {
             TBui.contextTrigger('tb-testCommentUI-link', {
                 addTrigger: true,
                 triggerText: 'Show ze overlay!',
-                triggerIcon: 'view_array',
+                triggerIcon: TBui.icons.overlay,
             });
         }
 
@@ -94,8 +94,8 @@ function devtools () {
                 'Comment UI tester',
                 [
                     {
-                        title: 'Flatview',
-                        tooltip: 'commentFlatview.',
+                        title: 'UI tester',
+                        tooltip: 'UItester.',
                         content: `
                             <div id="tb-comment-sitetable"></div>
                             <div id="tb-testCommentUI-input tb-input">
@@ -103,6 +103,19 @@ function devtools () {
                                 <button class="tb-action-button tb-testCommentUI-button fetch-single">fetch single</button>
                                 <button class="tb-action-button tb-testCommentUI-button fetch-thread">fetch thread</button>
                                 <button class="tb-action-button tb-testSubmissionUI-button fetch-listing">fetch submission listing</button>
+                            </div>
+                            <div id="notification">
+                                <h1> Notification tester </h1>
+                                <code>
+                                    TBUtils.notification = function (title, body, path, markreadid = false)
+                                </code>
+                                <hr>
+                                <input type="text" placeholder="title" id="tb-test-notification-title" class="tb-input"><br>
+                                <input type="text" placeholder="body" id="tb-test-notification-body" class="tb-input"><br>
+                                <input type="text" placeholder="path" id="tb-test-notification-path" class="tb-input"><br>
+                                <input type="text" placeholder="markreadid" id="tb-test-notification-markreadid" class="tb-input"><br>
+                                <button class="tb-action-button tb-test-notification-button">notification</button>
+                            </div>
                         `,
                         footer: '',
                     },
@@ -116,6 +129,15 @@ function devtools () {
             $body.on('click', '.tb-comment-ui-test .close', () => {
                 $('.tb-comment-ui-test').remove();
                 $body.css('overflow', 'auto');
+            });
+
+            $body.on('click', '.tb-test-notification-button', () => {
+                const title = $body.find('#tb-test-notification-title').val(),
+                      body = $body.find('#tb-test-notification-body').val(),
+                      path = $body.find('#tb-test-notification-path').val(),
+                      markreadid = $body.find('#tb-test-notification-markreadid').val() || false;
+
+                TBUtils.notification(title, body, path, markreadid);
             });
 
             $body.on('click', '.tb-testCommentUI-button', async function () {
@@ -170,6 +192,6 @@ function devtools () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     devtools();
 });

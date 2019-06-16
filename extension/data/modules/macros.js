@@ -239,12 +239,11 @@ function modmacros () {
 
         function editMacro (dropdown, info, macro, topLevel) {
         // get some placement variables
-
             const remove = macro.remove,
                   approve = macro.approve,
                   ban = macro.ban,
                   mute = macro.mute,
-                  distinguish = macro.distinguish === undefined ? true : macro.distunguish,
+                  distinguish = macro.distinguish === undefined ? true : macro.distinguish,
                   lock = macro.lockthread,
                   sticky = macro.sticky,
                   archivemodmail = macro.archivemodmail,
@@ -522,6 +521,6 @@ function modmacros () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     modmacros();
 });

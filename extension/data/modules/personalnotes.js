@@ -35,7 +35,7 @@ function personalnotes () {
         const noteListTemplate = `
             <li>
                 <a href="javascript:void(0)" class="tb-personal-note-delete tb-icons tb-icons-negative" data-wiki="{{name}}">
-                    delete
+                    ${TBui.icons.delete}
                 </a>
                 <a href="javascript:void(0)" class="tb-personal-note-link" data-wiki="{{name}}">
                     {{name}}
@@ -294,6 +294,6 @@ function personalnotes () {
     TB.register_module(self);
 }
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     personalnotes();
 });

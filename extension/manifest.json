@@ -1,17 +1,16 @@
 {
     "manifest_version": 2,
-    "name": "Moderator toolbox for reddit - ALPHA",
+    "name": "Moderator toolbox for reddit",
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "4.0.19",
-    "version_name": "4.0.19: \"New Narwhal\"",
-    "options_page": "data/background/options.html",
+    "version": "5.0.5",
+    "version_name": "5.0.5: \"Harmonizing Hare\"",
+    "incognito": "split",
     "applications": {
         "gecko": {
-            "id": "toolboxredesign@toolbox.team",
-            "strict_min_version": "57.0",
-            "update_url": "https://www.creesch.com/tb/update.json"
+            "id": "yes@jetpack",
+            "strict_min_version": "57.0"
         }
     },
     "permissions": [
@@ -35,15 +34,22 @@
             "data/libs/jquery-3.3.1.min.js",
             "data/background/background.js"
         ],
-        "persistent": false
+        "persistent": true
     },
     "content_scripts": [
         {
             "run_at": "document_start",
             "all_frames": true,
             "matches": [
-                "http://*.reddit.com/*",
                 "https://*.reddit.com/*"
+            ],
+            "exclude_matches": [
+                "https://*.reddit.com/framedGild/*",
+                "https://ads.reddit.com/*",
+                "https://*.reddit.com/*.json",
+                "https://*.reddit.com/*.json?*",
+                "https://*.reddit.com/*.json-html",
+                "https://*.reddit.com/*.json-html?*"
             ],
             "js": [
                 "data/tbmigrate.js",
@@ -75,8 +81,15 @@
             "run_at": "document_end",
             "all_frames": true,
             "matches": [
-                "http://*.reddit.com/*",
                 "https://*.reddit.com/*"
+            ],
+            "exclude_matches": [
+                "https://*.reddit.com/framedGild/*",
+                "https://ads.reddit.com/*",
+                "https://*.reddit.com/*.json",
+                "https://*.reddit.com/*.json?*",
+                "https://*.reddit.com/*.json-html",
+                "https://*.reddit.com/*.json-html?*"
             ],
             "css": [
                 "data/styles/toolbox.css",

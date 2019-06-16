@@ -41,6 +41,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
               ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
 
         // Private variables
+        let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []);
+
         const modMineURL = '/subreddits/mine/moderator.json?limit=100',
               now = new Date().getTime(),
 
@@ -50,13 +52,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
               lastgetLong = cacheDetails.lastGetLong,
               lastgetShort = cacheDetails.lastGetShort,
               cacheName = cacheDetails.cacheName,
-              seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
+
               lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
               newLogin = cacheName !== TBUtils.logged,
               getnewLong = (now - lastgetLong) / (60 * 1000) > longLength || newLogin,
               getnewShort = (now - lastgetShort) / (60 * 1000) > shortLength || newLogin,
-              betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+              betaRelease = false, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
               getModSubsCallbacks = [],
               invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
 
@@ -175,7 +177,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
-        TBUtils.releaseName = 'New Narwhal';
+        TBUtils.releaseName = 'Harmonizing Hare';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;
@@ -339,7 +341,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             // This is a super extra check to make sure the wiki page for settings export really is private.
             const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
             if (settingSubEnabled) {
-                setWikiPrivate('tbsettings', settingSubEnabled, false);
+                // Depends on TBUtils functionality that has not been defined yet.
+                // The timeout queues execution.
+                setTimeout(() => {
+                    setWikiPrivate('tbsettings', settingSubEnabled, false);
+                }, 0);
             }
 
             // These two should be left for every new release. If there is a new beta feature people want, it should be opt-in, not left to old settings.
@@ -403,7 +409,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
           * @param {string} link The link path, starting with "/"
           * @returns {string}
           */
-        TBUtils.link = link => TBUtils.isNewModmail ? `https://mod.reddit.com${link}` : link;
+        TBUtils.link = link => TBUtils.isNewModmail ? `https://www.reddit.com${link}` : link;
 
         /**
          * Puts important debug information in a object so we can easily include it in /r/toolbox posts and comments when people need support.
@@ -862,17 +868,29 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * USE SPARINGLY
          * @function alert
          * @memberof TBUtils
-         * @param {string} message
+         * @param {object} options The options for the alert
+         * @param {string} options.message The text of the alert
+         * @param {number} options.noteID The ID of the note we're displaying
+         * @param {boolean} options.showClose Whether to show a close button
          * @param {callback} callback callback function
-         * @param {boolean} showClose If true the alert can be dismissed by a clost button otherwise it needs to be clicked.
          * @returns {callback} callback with true or false in parameter which will be called when the alert is closed.
          */
-        TBUtils.alert = function (message, callback, showClose) {
+        TBUtils.alert = function ({message, noteID, showClose}, callback) {
             const $noteDiv = $(`<div id="tb-notification-alert"><span>${message}</span></div>`);
             if (showClose) {
-                $noteDiv.append('<i class="note-close tb-icons" title="Close">close</i>');
+                $noteDiv.append(`<i class="note-close tb-icons" title="Close">${TBui.icons.close}</i>`);
             }
             $noteDiv.appendTo('body');
+
+            window.addEventListener('tbSingleSettingUpdate', event => {
+                const settingDetail = event.detail;
+                if (settingDetail.module === SETTINGS_NAME && settingDetail.setting === 'seenNotes' && settingDetail.value.includes(noteID)) {
+                    seenNotes = settingDetail.value;
+                    $noteDiv.remove();
+                    callback(false);
+                    return;
+                }
+            });
 
             $noteDiv.click(e => {
                 $noteDiv.remove();
@@ -890,16 +908,20 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
 
             function show () {
-                if ($.inArray(note.id, seenNotes) === -1) {
-                // TBStorage.setSetting(SETTINGS_NAME, 'noteLastShown', now);
-
-                    TBUtils.alert(note.text, resp => {
-                        seenNotes.push(note.id);
-                        TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
+                if (!seenNotes.includes(note.id)) {
+                    TBUtils.alert({
+                        message: note.text,
+                        noteID: note.id,
+                        showClose: false,
+                    }, resp => {
                         if (note.link && note.link.match(/^(https?:|\/)/i) && resp) {
-                            window.open(note.link);
+                            seenNotes.push(note.id);
+                            TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
+                            window.setTimeout(() => {
+                                window.open(note.link);
+                            }, 100);
                         }
-                    }, false);
+                    });
                 }
             }
 
@@ -951,32 +973,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * when the notification is clicked
          */
         TBUtils.notification = function (title, body, path, markreadid = false) {
-            const timeout = 10000;
-
-            const toolboxnotificationenabled = true;
-
-            // check if notifications are enabled. When they are not we simply abort the function.
-            if (toolboxnotificationenabled === false) {
-            // console.log('notifications disabled, stopping function');
-                return;
-            }
-
             chrome.runtime.sendMessage({
                 action: 'tb-notification',
+                native: TBStorage.getSetting('GenSettings', 'nativeNotifications', true),
                 details: {
                     title,
                     body,
+                    // We can't use TBUtils.link for this since the background page has to have an absolute URL
                     url: TBUtils.isNewModmail ? `https://www.reddit.com${path}` : `${location.origin}${path}`,
                     modHash: TBUtils.modhash,
-                    markreadid: markreadid ? markreadid : false,
+                    markreadid: markreadid || false,
                 },
-            }, response => {
-                if (response.permission === 'denied') {
-                    // They have the option enabled, but won't grant permissions, so fall back.
-                    body = body.replace(/(?:\r\n|\r|\n)/g, '<br />');
-                    body = body.substring(0, 600);
-                    $.sticky(`<p>${body}</p>`, title, path, {autoclose: timeout, markreadid});
-                }
             });
         };
 
@@ -2090,37 +2097,33 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 page,
                 reason,
                 uh: TBUtils.modhash,
-            })
+            }).then(() => {
+                setTimeout(() => {
+                // Callback regardless of what happens next.  We wrote to the page.
+                // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
 
-                .catch(jqXHR => {
-                    $.log(jqXHR.responseText, false, SHORTNAME);
-                    callback(false, jqXHR);
-                })
+                    callback(true);
+                }, 750);
 
-                .then(() => {
-                    setTimeout(() => {
-                    // Callback regardless of what happens next.  We wrote to the page.
-                    // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
+                setTimeout(() => {
+                    // Set page access to 'mod only'.
+                    TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
+                        page,
+                        listed: true, // hrm, may need to make this a config setting.
+                        permlevel: 2,
+                        uh: TBUtils.modhash,
+                    })
 
-                        callback(true);
-                    }, 750);
-
-                    setTimeout(() => {
-                        // Set page access to 'mod only'.
-                        TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
-                            page,
-                            listed: true, // hrm, may need to make this a config setting.
-                            permlevel: 2,
-                            uh: TBUtils.modhash,
-                        })
-
-                        // Super extra double-secret secure, just to be safe.
-                            .catch(() => {
-                                alert('error setting wiki page to mod only access');
-                                window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
-                            });
-                    }, 500);
-                });
+                    // Super extra double-secret secure, just to be safe.
+                        .catch(() => {
+                            alert('error setting wiki page to mod only access');
+                            window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
+                        });
+                }, 500);
+            }).catch(jqXHR => {
+                $.log(jqXHR.responseText, false, SHORTNAME);
+                callback(false, jqXHR);
+            });
         };
 
         // reddit HTML encodes all of their JSON responses, we need to HTMLdecode
@@ -2684,10 +2687,19 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     return;
                 }
 
+                const doNotImport = [
+                    'oldreddit.enabled',
+                ];
+
                 $.each(resp, (fullKey, value) => {
                     const key = fullKey.split('.');
 
-                    TBStorage.setSetting(key[0], key[1], value, false);
+                    // Do not import certain legacy settings.
+                    if (doNotImport.includes(fullKey)) {
+                        $.log(`Skipping ${fullKey} import`, false, SHORTNAME);
+                    } else {
+                        TBStorage.setSetting(key[0], key[1], value, false);
+                    }
                 });
 
                 callback();
@@ -3197,23 +3209,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     return;
                 }
                 TBStorage.purifyObject(resp);
-                // Custom FF nag for updates.
-                if (resp.ffVersion > TBUtils.shortVersion && TBUtils.browser === FIREFOX && TBUtils.isExtension) {
-                    TBUtils.alert('There is a new version of toolbox for Firefox!  Click here to update.', clicked => {
-                        if (clicked) {
-                            window.open(`http://toolbox-team.github.io/reddit-moderator-toolbox/downloads/reddit_mod_tb_${resp.ffVersion}.xpi`);
-                        }
-                    });
-                    return; // don't spam the user with notes until they have the current version.
-                }
-
-                if (TBUtils.debugMode && resp.devVersion > TBUtils.shortVersion && TBUtils.isExtension) {
-                    TBUtils.alert('There is a new development version of toolbox!  Click here to update.', clicked => {
-                        if (clicked) {
-                            window.open('https://github.com/toolbox-team/reddit-moderator-toolbox');
-                        }
-                    });
-                }
 
                 $(resp.notes).each(function () {
                     TBUtils.showNote(this);
@@ -3221,7 +3216,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
 
             if (betaRelease) {
-                TBUtils.readFromWiki('tb_redesign', 'tbnotes', true, resp => {
+                TBUtils.readFromWiki('tb_beta', 'tbnotes', true, resp => {
                     if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE || resp.length < 1) {
                         return;
                     }
@@ -3317,7 +3312,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         });
     }
-    window.addEventListener('TBStorageLoaded2', async () => {
+    window.addEventListener('TBStorageLoaded', async () => {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
@@ -3345,13 +3340,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         cacheDetails,
                     });
                     profileResults('utilsLoaded', performance.now());
-                    const event = new CustomEvent('TBUtilsLoaded2');
+                    const event = new CustomEvent('TBUtilsLoaded');
                     window.dispatchEvent(event);
                 });
             } else {
                 initwrapper({userDetails, cacheDetails});
                 profileResults('utilsLoaded', performance.now());
-                const event = new CustomEvent('TBUtilsLoaded2');
+                const event = new CustomEvent('TBUtilsLoaded');
                 window.dispatchEvent(event);
             }
         } catch (error) {

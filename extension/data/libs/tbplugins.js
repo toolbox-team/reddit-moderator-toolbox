@@ -1,6 +1,6 @@
 (function ($) {
     let skipLocalConsole = false;
-    window.addEventListener('TBStorageLoaded2', () => {
+    window.addEventListener('TBStorageLoaded', () => {
         skipLocalConsole = TBStorage.getSetting('Utils', 'skipLocalConsole', false);
     });
 
@@ -14,15 +14,18 @@
             }
 
         } else {
-            console.debug(` [${caller}]: `, orignalMessage);
+            console.groupCollapsed(` [${caller}]: `, orignalMessage);
+            console.trace();
+            console.groupEnd();
         }
     };
     $.log = function (message, skip, callerName) {
         var orignalMessage = message;
         // NO TBU, just push to console.
         if (typeof (TBUtils) == 'undefined') {
-            console.log('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']');
-            console.log(message);
+            console.groupCollapsed('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']', message);
+            console.trace();
+            console.groupEnd();
             return;
         }
 
@@ -31,8 +34,9 @@
             caller = (callerName !== undefined) ? callerName : caller;
 
         if (skip) {
-            console.log(' [' + caller + ']: ');
-            console.log(message);
+            console.groupCollapsed(` [${caller}]: `, message);
+            console.trace();
+            console.groupEnd();
             return;
         }
         if (typeof message === 'object') {
@@ -149,134 +153,6 @@
         }).end();
     };
 }(window.jQuery);
-
-
-// fallback notifications if the browser does not support notifications or the users does not allow them.
-// Adapted from Sticky v1.0 by Daniel Raftery
-// http://thrivingkings.com/sticky
-(function ($) {
-
-    // Using it without an object
-    $.sticky = function (note, title='-', url=false, options, callback) {
-        return $.fn.sticky(note, title, url, options, callback);
-    };
-
-    $.fn.sticky = function (note, title, url, options, callback) {
-        // Default settings
-        var position = 'bottom-right'; // top-left, top-right, bottom-left, or bottom-right
-
-        var settings = {
-            'speed': 'fast', // animations: fast, slow, or integer
-            'duplicates': true, // true or false
-            'autoclose': false // integer or false
-        };
-
-        // Passing in the object instead of specifying a note
-        if (!note) {
-            note = this.html();
-        }
-
-        if (options) {
-            $.extend(settings, options);
-        }
-
-        // Variables
-        var display = true,
-            duplicate = 'no',
-            uniqID = Math.floor(Math.random() * 99999);
-
-        // Handling duplicate notes and IDs
-        $('.tb-sticky-note').each(function () {
-            if ($(this).html() == note && $(this).is(':visible')) {
-                duplicate = 'yes';
-                if (!settings.duplicates) {
-                    display = false;
-                }
-            }
-            if ($(this).attr('id') == uniqID) {
-                uniqID = Math.floor(Math.random() * 9999999);
-            }
-        });
-
-        // Make sure the sticky queue exists
-        if (!$('body').find('.tb-sticky-queue').html()) {
-            $('body').append('<div class="tb-sticky-queue ' + position + '"></div>');
-        }
-
-        // Can it be displayed?
-        if (display) {
-            // Building and inserting sticky note
-            $('.tb-sticky-queue').prepend('<div class="tb-sticky border-' + position + '" id="' + uniqID + '"></div>');
-            $('#' + uniqID).append(`
-                <div rel="${uniqID}" class="tb-sticky-header">
-                    <div rel="${uniqID}" class="tb-sticky-title">${title}</div>
-                    <div class="tb-sticky-button" rel="${uniqID}" title="Close">
-                        <a class="tb-sticky-close" href="javascript:;" rel="${uniqID}" title="Close">
-                            <i class="tb-icons">close</i>
-                        </a>
-                    </div>
-                </div>
-            `);
-            $('#' + uniqID).append('<div class="tb-sticky-note" rel="' + uniqID + '">' + note + '</div>');
-
-            // Smoother animation
-            var height = $('#' + uniqID).height();
-            $('#' + uniqID).css('height', height);
-
-            $('#' + uniqID).slideDown(settings.speed);
-            display = true;
-        }
-
-        // Listeners
-        $('.tb-sticky').ready(function () {
-            // If 'autoclose' is enabled, set a timer to close the sticky
-            if (settings.autoclose) {
-                $('#' + uniqID).delay(settings.autoclose).fadeOut(settings.speed);
-            }
-        });
-        // Closing a sticky
-        $('.tb-sticky-close').click(function (event) {
-            event.stopPropagation();
-            $('body').find('#' + $(this).attr('rel')).dequeue().fadeOut(settings.speed);
-        });
-        $('#' + uniqID + ':not(.tb-sticky-close)').click(function () {
-            if(url) {
-                if (typeof settings.markreadid !== 'undefined') {
-                    TBUtils.post('/api/read_message', {
-                        id: settings.markreadid,
-                        uh: TBUtils.modhash,
-                        api_type: 'json'
-                    });
-                }
-                $(this).dequeue().fadeOut(settings.speed);
-                window.open(url);
-
-
-
-            }
-
-        });
-
-
-
-
-        // Callback data
-        var response = {
-            'id': uniqID,
-            'duplicate': duplicate,
-            'displayed': display,
-            'position': position
-        };
-
-        // Callback function?
-        if (callback) {
-            callback(response);
-        } else {
-            return (response);
-        }
-    };
-})(jQuery);
-
 
 /**
  * Timeago is a jQuery plugin that makes it easy to support automatically

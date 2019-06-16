@@ -13,6 +13,15 @@ function nukecomments () {
         title: 'Ignore distinguished comments from mods and admins when nuking a chain.',
     });
 
+    // Settings for old reddit only
+    self.register_setting('showNextToUser', {
+        type: 'boolean',
+        default: true,
+        advanced: true,
+        title: 'Show nuke button next to the username instead of under the comment.',
+        oldReddit: true,
+    });
+
     self.init = function () {
         // This will contain a flat listing of all comments to be removed.
         let removalChain = [];
@@ -24,7 +33,8 @@ function nukecomments () {
         let nukeOpen = false;
         const $body = $('body');
 
-        const ignoreDistinguished = self.setting('ignoreDistinguished');
+        const ignoreDistinguished = self.setting('ignoreDistinguished'),
+              showNextToUser = self.setting('showNextToUser');
 
         // Nuke button clicked
         $body.on('click', '.tb-nuke-button', function (event) {
@@ -230,9 +240,14 @@ function nukecomments () {
 
                 TBUtils.getModSubs(() => {
                     if (TBUtils.modsSub(subreddit) && (pageType === 'subredditCommentsPage' || pageType === 'subredditCommentPermalink')) {
-                        const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' ? 'Nuke' : 'R'}</span>`;
+                        const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
 
-                        $target.append(NukeButtonHTML);
+                        if (showNextToUser && TBUtils.isOldReddit) {
+                            const $userContainter = $target.closest('.entry').find('.tb-jsapi-author-container');
+                            $userContainter.append(NukeButtonHTML);
+                        } else {
+                            $target.append(NukeButtonHTML);
+                        }
                     }
                 });
             }
@@ -242,6 +257,6 @@ function nukecomments () {
     TB.register_module(self);
 } // nukecomments() wrapper
 
-window.addEventListener('TBModuleLoaded2', () => {
+window.addEventListener('TBModuleLoaded', () => {
     nukecomments();
 });

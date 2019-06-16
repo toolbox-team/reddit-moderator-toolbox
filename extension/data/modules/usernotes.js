@@ -626,6 +626,7 @@ function usernotes () {
                 link = $unote.attr('data-link');
             }
 
+            console.log('deleteNote', deleteNote);
             // Check new note data states
             if (!deleteNote) {
                 if (!noteText) {
@@ -710,7 +711,8 @@ function usernotes () {
                             for (let n = 0; n < u.notes.length; n++) {
                                 note = u.notes[n];
                                 self.log(`  ${note.time}`);
-                                if (note.time === noteId) {
+
+                                if (note.time.toString() === noteId) {
                                     self.log(`  Note found: ${noteId}`);
                                     u.notes.splice(n, 1);
                                     self.log(u.notes);

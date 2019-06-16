@@ -753,6 +753,10 @@
      */
     let contextTimeout;
     TBui.contextTrigger = function contextTrigger (triggerId, options) {
+        // We really don't need two context menus side by side.
+        if (TBUtils.isEmbedded) {
+            return;
+        }
         const addTrigger = options.addTrigger;
         // These elements we will need in the future.
         let $tbContextMenu = $body.find('#tb-context-menu');

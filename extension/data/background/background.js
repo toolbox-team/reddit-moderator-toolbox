@@ -23,13 +23,6 @@ function uuidv4 () {
  * @param {object} options The notification options
  */
 function sendNativeNotification ({title, body, url, modHash, markreadid}) {
-    const id = uuidv4();
-    notificationData[id] = {
-        type: 'native',
-        url,
-        modHash,
-        markreadid,
-    };
     return new Promise((resolve, reject) => {
         if (typeof chrome.notifications.getPermissionLevel === 'undefined') {
             send();
@@ -44,12 +37,20 @@ function sendNativeNotification ({title, body, url, modHash, markreadid}) {
         }
 
         function send () {
-            chrome.notifications.create(id, {
+            chrome.notifications.create(uuidv4(), {
                 type: 'basic',
                 iconUrl: chrome.runtime.getURL('data/images/icon48.png'),
                 title,
                 message: body,
-            }, resolve);
+            }, notificationID => {
+                notificationData[notificationID] = {
+                    type: 'native',
+                    url,
+                    modHash,
+                    markreadid,
+                };
+                resolve(notificationID);
+            });
         }
     });
 }
@@ -108,8 +109,10 @@ function clearNotification (notificationID) {
                 chrome.tabs.sendMessage(tab.id, message);
             }
         });
+        // We don't get a callback when the notifications are closed, so we just
+        // clean up the data here
+        delete notificationData[notificationID];
     }
-    delete notificationData[notificationID];
 }
 
 /**
@@ -143,6 +146,10 @@ function onClickNotification (notificationID) {
 
 // Handle events on native notifications
 chrome.notifications.onClicked.addListener(onClickNotification);
+chrome.notifications.onClosed.addListener(id => {
+    // Now that the notification is closed, we're done with its metadata
+    delete notificationData[id];
+});
 
 // Request stuff
 

@@ -78,6 +78,21 @@
     padding: 5px !important;
 }
 
+/* Footer stuff */
+.mod-toolbox-rd .tb-popup-footer,
+.mod-toolbox-rd .tb-window-footer {
+    width: 100%;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #CEE3F8;
+}
+/* Window footers are slightly larger */
+.mod-toolbox-rd .tb-window-footer {
+    heoght: 40px;
+}
+
 /** Window-specific stuff **/
 
 /* Window tabs */
@@ -126,21 +141,6 @@
 /* TODO: why? */
 .mod-toolbox-rd .tb-window-wrapper a:not(.tb-comment-author):hover {
     color: #000 !important;
-}
-
-/* Window footer */
-/* Can be child or sibling of .tb-window-tab/.tb-window-tabs */
-.mod-toolbox-rd .tb-window-footer {
-    width: 100%;
-    height: 30px;
-    line-height: 30px;
-    display: block;
-    background-color: #CEE3F8;
-    text-align: center;
-    border-top: 0;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    box-sizing: content-box;
 }
 
 /* Horizontal tabs for stuff like the profile */

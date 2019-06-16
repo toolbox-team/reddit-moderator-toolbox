@@ -1,0 +1,32 @@
+.mod-toolbox-rd .tb-queue-overlay .tb-window-wrapper {
+    max-width: 1350px;
+}
+
+.mod-toolbox-rd iframe.tb-queue-iframe {
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100vh - 275px);
+    border: 0;
+}
+
+.mod-toolbox-rd.tb-embedded-queues .menuarea.modtools {
+    margin-right: 5px !important;
+}
+
+.embedded-page.moderator  #header .pagename {
+    padding: 0;
+    font-size: 1em;
+}
+
+.embedded-page.moderator #header .tabmenu {
+    margin: 0;
+}
+
+.embedded-page.moderator .content>.sitetable {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.embedded-page.moderator .side {
+    display: none;
+}

@@ -767,6 +767,7 @@
                     <i class="tb-icons tb-context-arrow" href="javascript:void(0)">${contextMenuLocation === 'left' ? TBui.icons.arrowRight : TBui.icons.arrowLeft}</i>
                 </div>
             `).appendTo($body);
+            $body.addClass(`tb-has-context-${contextMenuLocation}`);
 
             if (contextMenuClick) {
                 $tbContextMenu.addClass('click-activated');

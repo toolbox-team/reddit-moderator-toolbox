@@ -159,7 +159,10 @@
     bottom: 42px;
     right: 10px;
     width: 300px;
-    /* TODO: move the wrapper another 20px to the left when the context menu is there */
+}
+/* Leave space for the context menu handle when it's on the right side */
+.mod-toolbox-rd.tb-has-context-right #tb-notifications-wrapper {
+    right: 30px;
 }
 .mod-toolbox-rd .tb-notification {
     background: #FFF;

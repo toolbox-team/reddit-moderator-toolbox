@@ -134,18 +134,30 @@
     };
 
     // Notification stuff
+
+    /**
+     * Show an in-page notification on the current tab.
+     * @param {object} options The options for the notification
+     * @param {string} options.id The notification's ID
+     * @param {string} options.title The notification's title
+     * @param {string} options.body The notification's body
+     */
     TBui.showNotification = ({id, title, body}) => {
         let $notificationDiv = $('#tb-notifications-wrapper');
         if (!$notificationDiv.length) {
+            // Create the wrapper element if it's not already there
             $notificationDiv = $(`
                 <div id="tb-notifications-wrapper"></div>
             `).appendTo($body);
         }
+
+        // Make lines of the message into paragraphs
         body = body
             .split('\n')
-            .filter(line => line)
+            .filter(line => line) // Ignore empty lines
             .map(line => `<p>${TBUtils.escapeHTML(line)}</p>`)
             .join('');
+
         $notificationDiv.prepend(`
             <div class="tb-notification" data-id="${id}">
                 <div class="tb-notification-header">
@@ -160,21 +172,16 @@
             </div>
         `);
     };
-    TBui.clearNotification = idOrJQuery => {
-        let $notification, id;
-        if (idOrJQuery instanceof jQuery) {
-            $notification = idOrJQuery;
-            id = $notification.attr('data-id');
-        } else {
-            id = idOrJQuery;
-            $notification = $(`.tb-notification[data-id="${id}"]`);
-        }
-        $notification.remove();
+
+    /**
+     * Clears an in-page notification on the current tab.
+     * @param {string} id The ID of the notification to clear
+     */
+    TBui.clearNotification = id => {
+        $(`.tb-notification[data-id="${id}"]`).remove();
     };
-    $body.click('.tb-notification .buttons .close', function () {
-        const $notification = $(this).closest('.tb-notification');
-        TBui.clearNotification($notification);
-    });
+
+    // Handle notification updates from the background page
     chrome.runtime.onMessage.addListener(message => {
         if (message.action === 'tb-show-page-notification') {
             console.log('Notifier message get:', message);
@@ -183,6 +190,21 @@
             console.log('Notifier message clear:', message);
             TBui.clearNotification(message.id);
         }
+    });
+
+    // Notification click handlers
+    $body.on('click', '.tb-notification .close', function (event) {
+        event.stopPropagation(); // don't open the linked page
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-close',
+            id: $(this).closest('.tb-notification').attr('data-id'),
+        });
+    });
+    $body.on('click', '.tb-notification', function () {
+        chrome.runtime.sendMessage({
+            action: 'tb-page-notification-click',
+            id: $(this).attr('data-id'),
+        });
     });
 
     // Popup HTML generator

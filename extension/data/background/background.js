@@ -111,11 +111,14 @@ function clearNotification (notificationID) {
  * @param {string} notificationID The ID of the notification
  */
 function onClickNotification (notificationID) {
+    // Store the metadata so we can work with it after clearing the notification
+    const metadata = notificationData[notificationID];
+
     // Mark as read if needed.
     if (notificationData[notificationID].markreadid) {
         $.post('https://www.reddit.com/api/read_message', {
-            id: notificationData[notificationID].markreadid,
-            uh: notificationData[notificationID].modHash,
+            id: metadata.markreadid,
+            uh: metadata.modHash,
             api_type: 'json',
         });
     }
@@ -123,7 +126,7 @@ function onClickNotification (notificationID) {
     // Open up in new tab.
     chrome.windows.getLastFocused(window => {
         chrome.tabs.create({
-            url: notificationData[notificationID].url,
+            url: metadata.url,
             windowId: window.id,
         });
     });
@@ -233,13 +236,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.action === 'tb-notification') {
-        console.log('notification get', request);
         const notificationTimeout = 6000;
         const sendNotification = request.native ? sendNativeNotification : sendPageNotification;
         sendNotification(request.details).then(id => {
-            console.log('created notification', id);
             setTimeout(() => {
-                console.log('clearing notification', id);
                 clearNotification(id);
             }, notificationTimeout);
         });
@@ -247,13 +247,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.action === 'tb-page-notification-click') {
-        console.log('page notification click', request);
         onClickNotification(request.id);
         return; // no response needed
     }
 
     if (request.action === 'tb-page-notification-close') {
-        console.log('page notification close', request);
         clearNotification(request.id);
         return; // no response needed
     }

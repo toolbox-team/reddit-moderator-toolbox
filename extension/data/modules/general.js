@@ -8,6 +8,13 @@ function generalSettings () {
     // So yeah it depends... But seriously normal modules should not do this.
     self.settings['enabled']['hidden'] = true; // Don't disable it, either!
 
+    // This controls settings for multiple modules, so we sort it outside the
+    // module list in the settings window
+    self.sort = {
+        location: 'beforeModules',
+        order: 2, // below core settings, above toggle modules
+    };
+
     self.register_setting('nativeNotifications', {
         type: 'boolean',
         default: true,

@@ -99,9 +99,9 @@ function tbmodule () {
 
             // Template for 'general settings'.
             const displayNone = 'display: none;';
-            let settingContent = '';
+            let coreSettingsContent = '';
 
-            const settings = [
+            const coreSettings = [
                 {
                     settingName: 'settingssub',
                     content: `
@@ -163,12 +163,12 @@ function tbmodule () {
                 },
             ];
 
-            $.each(settings, function () {
+            $.each(coreSettings, function () {
                 const settingName = this.settingName,
                       content = this.content,
                       display = this.display;
 
-                settingContent = `${settingContent}
+                coreSettingsContent += `
                 <p id="tb-toolbox-${settingName}" style="${display}">
                     ${content}&nbsp;
                     <a data-setting="${settingName}" href="javascript:;" class="tb-gen-setting-link tb-setting-link-${settingName} tb-icons">
@@ -204,7 +204,7 @@ function tbmodule () {
                     tooltip: 'Edit toolbox core settings',
                     help_page: 'toolbox',
                     id: 'toolbox',
-                    content: settingContent,
+                    content: coreSettingsContent,
                 },
                 {
                     title: 'Toggle Modules',
@@ -285,7 +285,7 @@ function tbmodule () {
             // settingsTabs.push.apply(settingsTabs, this.generateSettings());
 
             const $settingsDialog = TB.ui.overlay(
-            // title
+                // title
                 'toolbox Settings',
                 // tabs
                 settingsTabs,
@@ -296,6 +296,22 @@ function tbmodule () {
                 // optional, overriding single footer
                 `<input class="tb-save tb-action-button" type="button" value="save">${TBUtils.devMode ? '&nbsp;<input class="tb-save-reload tb-action-button" type="button" value="save and reload">' : ''}`
             );
+
+            // Add ordering attributes to the existing tabs so we can insert other special tabs around them
+            $settingsDialog.find('a[data-module="toolbox"]').attr('data-order', 1);
+            $settingsDialog.find('a[data-module="toggle_modules"]').attr('data-order', 3);
+            $settingsDialog.find('a[data-module="about"]').attr('data-order', 2);
+
+            // This div contains the module links, separate from everything else
+            const $moduleCategory = $(`
+                <div class="tb-window-tabs-category">
+                    <h2 class="tb-window-tabs-header">Modules</h2>
+                </div>
+            `);
+            // TODO: this basically hardcodes where in the list the modules
+            // category goes, but if we wanted it to not be hardcoded then we'd
+            // have to rewrite how this window is generated, so it's good enough
+            $settingsDialog.find('a[data-module="about"]').before($moduleCategory);
 
             $settingsDialog.on('click', '.tb-help-main', e => {
                 const settingsDialog = e.delegateTarget;
@@ -461,12 +477,8 @@ function tbmodule () {
             $settingsDialog.appendTo('body').show();
             $body.css('overflow', 'hidden');
 
-            // and finally...
-            this.injectSettings();
-        },
-
-        injectSettings () {
-            this.moduleList.forEach(moduleName => {
+            // Sort the module list alphabetically
+            this.moduleList.sort((a, b) => a.localeCompare(b)).forEach(moduleName => {
                 const module = this.modules[moduleName];
                 // Don't do anything with beta modules unless beta mode is enabled
                 // Need TB.setting() call for non-module settings
@@ -850,34 +862,46 @@ body {
                         $settings.prepend('<span class="tb-module-disabled">This module only works on old reddit.</span>');
                     }
                     $('.tb-settings .tb-window-tabs-wrapper').append($settings);
-                    // Add each tab in its place in ABC order, with exceptions
-                    let added = false;
-                    $('.tb-settings .tb-window-tabs a').each(function () {
-                        const $this = $(this);
-                        // Keep general settings and module toggles at the top, and about tab at the bottom
-                        if ($tab.attr('data-module') === 'toggle_modules' ||
-                                $tab.attr('data-module') === 'toolbox' ||
-                                $this.attr('data-module') === 'gensettings' ||
-                                $this.attr('data-module') === 'about') {
-                            $this.before($tab);
-                            added = true;
-                            return false;
+                    if (module.sort) {
+                        $tab.attr('data-order', module.sort.order);
+                        // If the module specifies a sort, then we do that
+                        if (module.sort.location === 'beforeModules') {
+                            // Loop through the tabs above the modules list
+                            $settingsDialog.find('.tb-window-tabs > *').each(function () {
+                                const $existingTab = $(this);
+                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                    // We found a tab bigger than us! We should be before it.
+                                    $existingTab.before($tab);
+                                    // Break out of the loop since we're done.
+                                    return false;
+                                } else if ($existingTab.is('div')) {
+                                    // We hit the module list! If it hasn't been added yet, add it here.
+                                    $existingTab.before($tab);
+                                    // Break the loop so we don't go into the bottom elements.
+                                    return false;
+                                }
+                            });
+                        } else if (module.sort.location === 'afterModules') {
+                            // Loop through the tabs below the modules list
+                            let added = false;
+                            $settingsDialog.find('.tb-window-tabs > div ~ a').each(function () {
+                                const $existingTab = $(this);
+                                if (module.sort.order < parseInt($existingTab.attr('data-order'), 10)) {
+                                    // We found a tab bigger than us!
+                                    $existingTab.before($tab);
+                                    added = true;
+                                    // We're added, so we don't need to continue
+                                    return false;
+                                }
+                            });
+                            if (!added) {
+                                // Not added yet? To the bottom we go.
+                                $('.tb-window-tabs').append($tab);
+                            }
                         }
-                        if ($this.attr('data-module') === 'toggle_modules' ||
-                                $this.attr('data-module') === 'toolbox' ||
-                                $tab.attr('data-module') === 'gensettings' ||
-                                $tab.attr('data_module') === 'about') {
-                            return; // Can't insert here, so move to the next position and try again
-                        }
-                        // Compare everything else normally
-                        if ($this.text().localeCompare($tab.text()) > 0) {
-                            $this.before($tab);
-                            added = true;
-                            return false;
-                        }
-                    });
-                    if (!added) {
-                        $('.tb-settings .tb-window-tab.toggle_modules .tb-window-content').append($tab);
+                    } else {
+                        // Modules without a special sort just get added here
+                        $moduleCategory.append($tab);
                     }
 
                     // stuff to exec after inject:

@@ -98,7 +98,20 @@
 .mod-toolbox-rd .tb-window-tabs a:hover {
     background-color: #9FBAD6;
 }
-.mod-toolbox-rd .tb-window-tabs a + a {
+.mod-toolbox-rd .tb-window-tabs-header {
+    padding: 7px 0;
+    font-size: 11px;
+    font-weight: normal;
+    font-style: italic;
+}
+.mod-toolbox-rd .tb-window-tabs-category {
+    background-color: #C7D6E6;
+    padding-left: 7px;
+}
+.mod-toolbox-rd .tb-window-tabs-category a {
+    border-left: 1px solid #FFF;
+}
+.mod-toolbox-rd .tb-window-tabs * + * {
     border-top: 1px solid #FFF;
 }
 

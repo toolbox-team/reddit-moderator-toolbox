@@ -30,3 +30,13 @@
 .embedded-page.moderator .side {
     display: none;
 }
+
+/* spam spam delicious spam */
+.embedded-page.moderator .thing.spam.spam {
+    background-color: #fa8072
+}
+
+.embedded-page.moderator .thing.banned-user.banned-user {
+    overflow: hidden;
+    background-color: rgba(250,128,114,0.5)
+}

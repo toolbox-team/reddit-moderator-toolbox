@@ -2112,37 +2112,33 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 page,
                 reason,
                 uh: TBUtils.modhash,
-            })
+            }).then(() => {
+                setTimeout(() => {
+                // Callback regardless of what happens next.  We wrote to the page.
+                // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
 
-                .catch(jqXHR => {
-                    $.log(jqXHR.responseText, false, SHORTNAME);
-                    callback(false, jqXHR);
-                })
+                    callback(true);
+                }, 750);
 
-                .then(() => {
-                    setTimeout(() => {
-                    // Callback regardless of what happens next.  We wrote to the page.
-                    // In order to make sure the callback followup doesn't mess with the mod only call we let it wait a bit longer.
+                setTimeout(() => {
+                    // Set page access to 'mod only'.
+                    TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
+                        page,
+                        listed: true, // hrm, may need to make this a config setting.
+                        permlevel: 2,
+                        uh: TBUtils.modhash,
+                    })
 
-                        callback(true);
-                    }, 750);
-
-                    setTimeout(() => {
-                        // Set page access to 'mod only'.
-                        TBUtils.post(`/r/${subreddit}/wiki/settings/`, {
-                            page,
-                            listed: true, // hrm, may need to make this a config setting.
-                            permlevel: 2,
-                            uh: TBUtils.modhash,
-                        })
-
-                        // Super extra double-secret secure, just to be safe.
-                            .catch(() => {
-                                alert('error setting wiki page to mod only access');
-                                window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
-                            });
-                    }, 500);
-                });
+                    // Super extra double-secret secure, just to be safe.
+                        .catch(() => {
+                            alert('error setting wiki page to mod only access');
+                            window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
+                        });
+                }, 500);
+            }).catch(jqXHR => {
+                $.log(jqXHR.responseText, false, SHORTNAME);
+                callback(false, jqXHR);
+            });
         };
 
         // reddit HTML encodes all of their JSON responses, we need to HTMLdecode

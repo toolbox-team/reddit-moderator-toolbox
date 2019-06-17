@@ -548,10 +548,10 @@ function historybutton () {
                     cssClass = percentage >= 20 ? 'tb-history-row-danger' : 'tb-history-row-warning';
                 }
 
-                let url = `/search?q=%28and+site%3A${domain}+author%3A${author}+is_self%3A0+%29&restrict_sr=off&sort=new&syntax=cloudsearch&feature=legacy_search`;
+                let url = TBUtils.link(`/search?q=site%3A${domain}+author%3A${author}+is_self%3A0&restrict_sr=off&sort=new&feature=legacy_search`);
                 // If the domain is a self post, change the URL
                 if (match) {
-                    url = `/r/${match[1]}/search?q=%28and+author%3A${author}+is_self%3A1+%29&restrict_sr=on&sort=new&syntax=cloudsearch&feature=legacy_search`;
+                    url = TBUtils.link(`/r/${match[1]}/search?q=author%3A${author}+is_self%3A1&restrict_sr=on&sort=new&feature=legacy_search`);
                 }
 
                 // Append domain to the table
@@ -595,7 +595,7 @@ function historybutton () {
             user.subredditList.forEach((subreddit, index) => {
                 const subredditCount = user.subreddits.submissions[subreddit].count,
                       subredditKarma = user.subreddits.submissions[subreddit].karma,
-                      url = `/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`,
+                      url = TBUtils.link(`/r/${subreddit}/search?q=author%3A${author}&restrict_sr=on&sort=new&feature=legacy_search`),
                       percentage = Math.round(subredditCount / totalSubredditCount * 100);
 
                 let cssClass = '';
@@ -826,7 +826,7 @@ function historybutton () {
                     $rtsLink.after(`<span class="error" style="font-size:x-small">${submission.json.errors[0][1]}</error>`);
                     // $rtsLink.hide();
                     if (submission.json.errors[0][0] === 'ALREADY_SUB') {
-                        rtsNativeLink.href = `/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`;
+                        rtsNativeLink.href = TBUtils.link(`/r/${self.SPAM_REPORT_SUB}/search?q=http%3A%2F%2Fwww.reddit.com%2Fuser%2F${author}&restrict_sr=on&feature=legacy_search`);
                     }
                     return;
                 }

@@ -317,7 +317,7 @@ function notifiermod () {
             self.log('updating all counters accross tabs');
             chrome.runtime.sendMessage({
                 action: 'tb-global',
-                globalEvent: TBUtils.TB_UPDATE_COUNTERS,
+                globalEvent: TBUtils.events.TB_UPDATE_COUNTERS,
                 payload: {
                     unreadMessageCount: self.setting('unreadMessageCount'),
                     modqueueCount: self.setting('modqueueCount'),
@@ -368,7 +368,7 @@ function notifiermod () {
             });
         }
 
-        window.addEventListener(TBUtils.TB_UPDATE_COUNTERS, event => {
+        window.addEventListener(TBUtils.events.TB_UPDATE_COUNTERS, event => {
             self.log('updating counters from background');
             updateMessagesCount(event.detail.unreadMessageCount);
             updateModqueueCount(event.detail.modqueueCount);

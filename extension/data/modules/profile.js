@@ -287,7 +287,8 @@ function profilepro () {
             });
         }
 
-        function searchProfile (user, type, sortMethod, $siteTable, options, after, match, callback) {
+        function searchProfile (user, type, sortMethod, $siteTable, options, after, match, pageCount, callback) {
+            pageCount++;
             let hits = match || false;
             const results = [];
             const subredditPattern = options.subredditPattern || false;
@@ -304,8 +305,9 @@ function profilepro () {
                 limit: 100,
                 t: 'all',
             }).then(data => {
+                TB.ui.textFeedback(`Searching profile page ${pageCount} with ${data.data.children.length} items`, TB.ui.FEEDBACK_NEUTRAL);
                 TBStorage.purifyObject(data);
-                $.each(data.data.children, (i, value) => {
+                data.data.children.forEach(value => {
                     let hit = false;
                     let subredditMatch = false;
                     let patternMatch = false;
@@ -336,14 +338,18 @@ function profilepro () {
                     }
                 });
                 if (!data.data.after) {
-                    return callback(hits);
+                    if (results.length > 0) {
+                        addToSiteTable(results, $siteTable, false, () => callback(hits));
+                    } else {
+                        return callback(hits);
+                    }
                 } else {
                     if (results.length > 0) {
                         addToSiteTable(results, $siteTable, false, () => {
-                            searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, found => callback(found));
+                            searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, hits, pageCount, found => callback(found));
                         });
                     } else {
-                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, match, found => callback(found));
+                        searchProfile(user, type, sortMethod, $siteTable, options, data.data.after, hits, pageCount, found => callback(found));
                     }
                 }
             });
@@ -386,7 +392,8 @@ function profilepro () {
                 searchOptions.searchPattern = new RegExp(regExpEscape(contentsearch), 'gi');
                 searchOptions.searchString = contentsearch;
             }
-            searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, results => {
+            searchProfile(usersearch, typeListing, sortMethod, $siteTable, searchOptions, null, false, 0, results => {
+                TB.ui.textFeedback('Search complete', TB.ui.FEEDBACK_POSITIVE);
                 if (results) {
                     TB.ui.longLoadSpinner(false);
                 } else {

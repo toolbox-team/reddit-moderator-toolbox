@@ -2115,3 +2115,12 @@ body[class*="wiki-page-livedocs"] h1.wikititle {
 .res-nightmode .mod-toolbox-rd .action-reason {
     background-color: #56565680;
 }
+
+.res-nightmode .mod-toolbox-rd #mod-matrix-wrapper {
+    background-color: #262626;
+}
+
+.res-nightmode .mod-toolbox-rd #mod-matrix-settings input,
+.res-nightmode .mod-toolbox-rd #mod-matrix .action-number {
+    color: #CCCCCC;
+}

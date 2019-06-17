@@ -738,7 +738,7 @@ function modmatrix () {
         function getComments (modlogUrl) {
             TB.ui.longLoadSpinner(true);
 
-            TBUtils.getJSOIN(modlogUrl, {
+            TBUtils.getJSON(modlogUrl, {
                 raw_json: 1,
             }).then(result => {
                 TBStorage.purifyObject(result);

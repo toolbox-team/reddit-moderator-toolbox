@@ -454,6 +454,11 @@ function tbconfig () {
 
                     resp = TBUtils.unescapeJSON(resp);
 
+                    if (page !== 'automoderator') {
+                        resp = JSON.parse(resp);
+                        resp = JSON.stringify(resp, null, 4);
+                    }
+
                     // Found it, show it.
                     $textArea.val(resp);
                     configEditor.setValue(resp);
@@ -758,9 +763,23 @@ function tbconfig () {
 
             const $wikiContentArea = $body.find(`.tb-window-tab.${tabname}`),
                   textArea = $wikiContentArea.find('.edit-wikidata'),
-                  text = $(textArea).val(),
                   editNote = $wikiContentArea.find('input[name=edit-wikidata-note]').val() || `updated ${page} configuration`,
                   updateAM = page === 'automoderator';
+
+            let text = $(textArea).val();
+
+            // efficiently save json instead of pretty.
+            if (!updateAM) {
+                try {
+                    text = JSON.parse(text);
+                } catch (e) {
+                    self.log(`Error saving JSON page ${e.toString()}`);
+                    TB.ui.textFeedback(`Page not saved, JSON is not correct.<br> ${e.toString()}`, TB.ui.FEEDBACK_NEGATIVE);
+                    return;
+                }
+
+                text = JSON.stringify(text);
+            }
             // save the data, and blank the text area.
             // also, yes some of the pages are in JSON, but they aren't JSON objects,
             // so they don't need to be re-strinified.

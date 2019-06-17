@@ -58,7 +58,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
               newLogin = cacheName !== TBUtils.logged,
               getnewLong = (now - lastgetLong) / (60 * 1000) > longLength || newLogin,
               getnewShort = (now - lastgetShort) / (60 * 1000) > shortLength || newLogin,
-              betaRelease = false, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+              betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
               getModSubsCallbacks = [],
               invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
 
@@ -177,7 +177,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
-        TBUtils.releaseName = 'Harmonizing Hare';
+        TBUtils.releaseName = 'Developing Dachshund';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;

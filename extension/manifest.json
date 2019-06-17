@@ -4,8 +4,8 @@
     "author": "toolbox team",
     "short_name": "toolbox",
     "description": "A set of tools to be used by moderators on reddit in order to make their jobs easier.",
-    "version": "5.0.5",
-    "version_name": "5.0.5: \"Harmonizing Hare\"",
+    "version": "5.1.0",
+    "version_name": "5.1.0: \"Developing Dachshund\"",
     "incognito": "split",
     "applications": {
         "gecko": {

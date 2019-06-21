@@ -122,10 +122,11 @@ function clearNotification (notificationID) {
 function onClickNotification (notificationID) {
     // Store the metadata so we can work with it after clearing the notification
     const metadata = notificationData[notificationID];
+    console.log('notification clikcked: ', metadata);
 
     // Mark as read if needed.
     if (notificationData[notificationID].markreadid) {
-        $.post('https://www.reddit.com/api/read_message', {
+        $.post('https://old.reddit.com/api/read_message', {
             id: metadata.markreadid,
             uh: metadata.modHash,
             api_type: 'json',

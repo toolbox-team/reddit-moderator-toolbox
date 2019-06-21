@@ -39,7 +39,7 @@ function notification ({title, body, url, modHash, markreadid}) {
 chrome.notifications.onClicked.addListener(notificationID => {
     // Mark as read if needed.
     if (notificationData[notificationID].markreadid) {
-        $.post('https://www.reddit.com/api/read_message', {
+        $.post('https://old.reddit.com/api/read_message', {
             id: notificationData[notificationID].markreadid,
             uh: notificationData[notificationID].modHash,
             api_type: 'json',

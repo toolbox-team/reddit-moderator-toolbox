@@ -270,6 +270,26 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.noNotes = getnewShort ? [] : cacheDetails.noNotes;
         TBUtils.noRules = getnewLong ? [] : cacheDetails.noRules;
 
+        /**
+         * Updates in page cache and background page.
+         * @function updateCache
+         * @memberof TBUtils
+         * @param {string} cacheNAme the cache to be written.
+         * @param {} value the cache value to be updated
+         * @param {string} subreddit when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.
+         */
+        TBUtils.updateCache = function updateCache (cacheName, value, subreddit) {
+            console.log('update cache', cacheName, subreddit, value);
+
+            if (subreddit) {
+                TBUtils[cacheName][subreddit] = value;
+            } else {
+                TBUtils[cacheName].push(value);
+            }
+
+            TBStorage.setCache('Utils', cacheName, TBUtils[cacheName]);
+        };
+
         if (TBUtils.debugMode) {
             const consoleText = `toolbox version: ${TBUtils.toolboxVersion
             }, Browser: ${TBUtils.browser
@@ -2841,12 +2861,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         callback(false, sub);
                     } else if (resp === TBUtils.NO_WIKI_PAGE) {
                         // Subreddit not configured yet
-                        TBUtils.noConfig.push(sub);
+                        TBUtils.updateCache('noConfig', sub, false);
                         callback(false, sub);
                     } else {
                         // It works!
                         TBStorage.purifyObject(resp);
-                        TBUtils.configCache[sub] = resp;
+                        TBUtils.updateCache('configCache', resp, sub);
                         callback(resp, sub);
                     }
                 });
@@ -3204,14 +3224,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             if (TBui.longLoadArray.length > 0) {
                 return 'toolbox is still busy!';
             }
-
-            // Cache data.
-            TBStorage.setCache(SETTINGS_NAME, 'configCache', TBUtils.configCache);
-            TBStorage.setCache(SETTINGS_NAME, 'noteCache', TBUtils.noteCache);
-            TBStorage.setCache(SETTINGS_NAME, 'noConfig', TBUtils.noConfig);
-            TBStorage.setCache(SETTINGS_NAME, 'noNotes', TBUtils.noNotes);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBUtils.mySubs);
-            TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
 
         // Just in case.
         // TBStorage.unloading();

@@ -1009,7 +1009,7 @@ function usernotes () {
                                         $body.find(`#tb-un-note-content-wrap div[data-user="${emptyProfile}"]`).css('background-color', 'rgb(244, 179, 179)');
                                     });
 
-                                    TB.utils.noteCache[sub] = subUsenotes;
+                                    TBUtils.updateCache('noteCache', subUsenotes, sub);
                                     self.saveUserNotes(sub, subUsenotes, 'pruned all deleted/shadowbanned users.');
 
                                     TB.ui.longLoadSpinner(false, `Profiles checked, notes for ${emptyProfiles.length} missing users deleted`, TB.ui.FEEDBACK_POSITIVE);
@@ -1054,7 +1054,7 @@ function usernotes () {
                 if (r === true) {
                     self.log(`deleting notes for ${user}`);
                     delete subUsenotes.users[user];
-                    TB.utils.noteCache[sub] = subUsenotes;
+                    TBUtils.updateCache('noteCache', subUsenotes, sub);
                     self.saveUserNotes(sub, subUsenotes, `deleted all notes for /u/${user}`);
                     $userSpan.parent().remove();
                     TB.ui.textFeedback(`Deleted all notes for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -1070,7 +1070,7 @@ function usernotes () {
 
                 self.log(`deleting note for ${user}`);
                 subUsenotes.users[user].notes.splice(note, 1);
-                TB.utils.noteCache[sub] = subUsenotes;
+                TBUtils.updateCache('noteCache', subUsenotes, sub);
                 self.saveUserNotes(sub, subUsenotes, `deleted a note for /u/${user}`);
                 $noteSpan.remove();
                 TB.ui.textFeedback(`Deleted note for /u/${user}`, TB.ui.FEEDBACK_POSITIVE);
@@ -1148,14 +1148,14 @@ function usernotes () {
                 return;
             }
             if (resp === TBUtils.NO_WIKI_PAGE) {
-                TBUtils.noNotes.push(subreddit);
+                TBUtils.updateCache('noNotes', subreddit, false);
                 self.log('Usernotes read error: NO_WIKI_PAGE');
                 returnFalse(TBUtils.NO_WIKI_PAGE);
                 return;
             }
             // // No notes exist in wiki page
             if (resp.length < 1) {
-                TBUtils.noNotes.push(subreddit);
+                TBUtils.updateCache('noNotes', subreddit, false);
                 self.log('Usernotes read error: wiki empty');
                 returnFalse();
                 return;
@@ -1167,7 +1167,7 @@ function usernotes () {
             const notes = convertNotes(resp, subreddit);
 
             // We have notes, cache them and return them.
-            TBUtils.noteCache[subreddit] = notes;
+            TBUtils.updateCache('noteCache', notes, subreddit);
             if (callback) {
                 callback(true, notes, subreddit);
             }
@@ -1277,7 +1277,7 @@ function usernotes () {
         }
 
         // Update cache
-        TBUtils.noteCache[sub] = notes;
+        TBUtils.updateCache('noteCache', notes, sub);
         // Deconvert notes to wiki format
         notes = deconvertNotes(notes);
 

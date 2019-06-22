@@ -127,7 +127,8 @@ function removalreasons () {
                 TBStorage.purifyObject(resp);
 
                 // We have a valid config, cache it.
-                TBUtils.configCache[subreddit] = resp;
+                TBUtils.updateCache('configCache', resp, subreddit);
+
                 reasons = resp.removalReasons;
 
                 // Again, check if there is a fallback sub, and recurse.
@@ -145,7 +146,7 @@ function removalreasons () {
                 }
 
                 self.log('failed: all');
-                TBUtils.noConfig.push(subreddit);
+                TBUtils.updateCache('noConfig', subreddit, false);
                 callback(false);
             });
         }

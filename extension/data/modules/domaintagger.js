@@ -27,7 +27,7 @@ function domaintagger () {
         });
 
         function postToWiki (sub, json, reason) {
-            TBUtils.configCache[sub] = json;
+            TBUtils.updateCache('configCache', json, sub);
 
             TBUtils.postToWiki('toolbox', sub, json, reason, true, false, (succ, err) => {
                 if (succ) {

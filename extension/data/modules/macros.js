@@ -26,13 +26,13 @@ function modmacros () {
 
                     if (resp === TBUtils.NO_WIKI_PAGE) {
                         self.log('resp === TBUtils.NO_WIKI_PAGE');
-                        TBUtils.noConfig.push(sub);
+                        TBUtils.updateCache('noConfig', sub, false);
                         callback(false);
                     }
                     TBStorage.purifyObject(resp);
 
                     // We likely have a good config, but maybe not domain tags.
-                    TBUtils.configCache[sub] = resp;
+                    TBUtils.updateCache('configCache', resp, sub);
                     callback(checkConfig(TBUtils.configCache[sub]), TBUtils.configCache[sub].modMacros);
                 });
             }

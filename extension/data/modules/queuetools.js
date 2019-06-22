@@ -47,6 +47,13 @@ function queuetools () {
     // Old reddit specific settings go below.
     //
 
+    self.register_setting('autoActivate', {
+        type: 'boolean',
+        default: true,
+        title: 'Automatically activate mass queuetools on queue pages.',
+        oldReddit: true,
+    });
+
     self.register_setting('highlightNegativePosts', {
         type: 'boolean',
         default: false,
@@ -139,7 +146,8 @@ function queuetools () {
         const $body = $('body');
 
         // Cached data
-        const highlightNegativePosts = self.setting('highlightNegativePosts'),
+        const autoActivate = self.setting('autoActivate'),
+              highlightNegativePosts = self.setting('highlightNegativePosts'),
               hideActionedItems = self.setting('hideActionedItems'),
               showAutomodActionReason = self.setting('showAutomodActionReason'),
               linkToQueues = self.setting('linkToQueues'),
@@ -312,7 +320,7 @@ function queuetools () {
 
             removeUnmoddable();
 
-            $('.modtools-on').parent().remove();
+            $body.find('.modtools-on').parent().remove();
 
             // Make visible any collapsed things (stuff below /prefs/ threshold)
             $('.entry .collapsed:visible a.expand:contains("[+]")').click();
@@ -939,13 +947,13 @@ function queuetools () {
             }
         }
 
-        // Add mod tools or mod tools toggle button if applicable
-        if (TBUtils.isModpage) {
-            addModtools();
+        if ($body.hasClass('listing-page') || $body.hasClass('comments-page') || $body.hasClass('search-page') || TBUtils.isModpage && (!TBUtils.post_site || TBUtils.isMod)) {
+            $('.tabmenu').first().append($('<li class="tb-queuetools-tab"><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
         }
 
-        if ($body.hasClass('listing-page') || $body.hasClass('comments-page') || $body.hasClass('search-page') && (!TBUtils.post_site || TBUtils.isMod)) {
-            $('.tabmenu').first().append($('<li class="tb-queuetools-tab"><a href="javascript:;" accesskey="M" class="modtools-on">queue tools</a></li>').click(addModtools));
+        // Add mod tools or mod tools toggle button if applicable
+        if (TBUtils.isModpage && autoActivate) {
+            addModtools();
         }
 
         // Show automod action reasons

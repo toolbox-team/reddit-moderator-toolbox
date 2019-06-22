@@ -2846,12 +2846,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         callback(false, sub);
                     } else if (resp === TBUtils.NO_WIKI_PAGE) {
                         // Subreddit not configured yet
-                        TBUtils.noConfig.push(sub);
+                        TBUtils.updateCache('noConfig', sub, false);
                         callback(false, sub);
                     } else {
                         // It works!
                         TBStorage.purifyObject(resp);
-                        TBUtils.configCache[sub] = resp;
+                        TBUtils.updateCache('configCache', resp, sub);
                         callback(resp, sub);
                     }
                 });

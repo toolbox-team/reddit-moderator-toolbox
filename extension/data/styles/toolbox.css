@@ -43,6 +43,7 @@ body.mod-toolbox[toolbox-warning]::before {
     margin-bottom: 3px;
 }
 
+.mod-toolbox-rd.tb-modbar-shown .jowVts,
 .mod-toolbox-rd.tb-modbar-shown .pinned-to-bottom {
     bottom: 31px
 }

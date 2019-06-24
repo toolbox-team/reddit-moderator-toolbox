@@ -45,6 +45,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
                 "https://*.reddit.com/*.json?*",
@@ -85,6 +86,7 @@
             ],
             "exclude_matches": [
                 "https://*.reddit.com/framedGild/*",
+                "https://*.reddit.com/chat/*",
                 "https://ads.reddit.com/*",
                 "https://*.reddit.com/*.json",
                 "https://*.reddit.com/*.json?*",

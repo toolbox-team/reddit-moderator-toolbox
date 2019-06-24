@@ -3339,6 +3339,28 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             });
         });
     }
+
+    function modsubInit (cacheDetails, userDetails) {
+        if (cacheDetails.moderatedSubs.length === 0) {
+            console.log('No modsubs in cache, getting mod subs before initalizing');
+            getModSubs(null, subs => {
+                initwrapper({
+                    userDetails,
+                    newModSubs: subs,
+                    cacheDetails,
+                });
+                profileResults('utilsLoaded', performance.now());
+                const event = new CustomEvent('TBUtilsLoaded');
+                window.dispatchEvent(event);
+            });
+        } else {
+            initwrapper({userDetails, cacheDetails});
+            profileResults('utilsLoaded', performance.now());
+            const event = new CustomEvent('TBUtilsLoaded');
+            window.dispatchEvent(event);
+        }
+    }
+
     window.addEventListener('TBStorageLoaded', async () => {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
@@ -3356,29 +3378,28 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             noRules: await TBStorage.getCache(SETTINGS_NAME, 'noRules', []),
         };
 
+        let userDetails;
+
         try {
-            const userDetails = await getUserDetails();
-            if (cacheDetails.moderatedSubs.length === 0) {
-                console.log('No modsubs in cache, getting mod subs before initalizing');
-                getModSubs(null, subs => {
-                    initwrapper({
-                        userDetails,
-                        newModSubs: subs,
-                        cacheDetails,
-                    });
-                    profileResults('utilsLoaded', performance.now());
-                    const event = new CustomEvent('TBUtilsLoaded');
-                    window.dispatchEvent(event);
-                });
-            } else {
-                initwrapper({userDetails, cacheDetails});
-                profileResults('utilsLoaded', performance.now());
-                const event = new CustomEvent('TBUtilsLoaded');
-                window.dispatchEvent(event);
+            userDetails = await getUserDetails();
+            if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
+                TBStorage.setCache(SETTINGS_NAME, 'userDetails', userDetails);
+            }
+
+            if (!userDetails) {
+                throw new Error('User details are empty');
             }
         } catch (error) {
-            console.log('Error getting user details');
-            console.log(error);
+            console.warn('Could not get user details through API.', error);
+
+            console.log('Attempting to use user detail cache.');
+            userDetails = await TBStorage.getCache(SETTINGS_NAME, 'userDetails', {});
+        }
+
+        if (userDetails && userDetails.constructor === Object && Object.keys(userDetails).length > 0) {
+            modsubInit(cacheDetails, userDetails);
+        } else {
+            console.error('Toolbox does not have user details and cannot not start.');
         }
     });
 })();

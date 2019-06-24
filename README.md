@@ -69,3 +69,9 @@ Examples:
 
 - https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/JSON:-usernotes
 - https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/JSON:-toolbox-config
+
+### Big Thanks
+
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][homepage]
+
+[homepage]: https://saucelabs.com

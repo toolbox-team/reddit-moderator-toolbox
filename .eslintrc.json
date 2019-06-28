@@ -25,6 +25,10 @@
     },
     "extends": "eslint:recommended",
     "rules": {
+        "strict": [
+            "warn",
+            "global"
+        ],
         "no-console": 0,
         "no-multi-spaces": "error",
         "no-inner-declarations": "warn",

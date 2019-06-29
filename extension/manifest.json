@@ -54,7 +54,7 @@
             ],
             "js": [
                 "data/tbmigrate.js",
-                "data/libs/jquery-3.3.1.min.js",
+                "data/libs/jquery-3.4.1.min.js",
                 "data/libs/snuownd.js",
                 "data/libs/purify.js",
                 "data/libs/codemirror/codemirror.js",

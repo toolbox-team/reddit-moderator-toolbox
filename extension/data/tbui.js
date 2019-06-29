@@ -1,3 +1,4 @@
+'use strict';
 /** @namespace  TBui */
 (function (TBui) {
     const $body = $('body');
@@ -1782,4 +1783,4 @@
         return TBui.getBestTextColor.cache[bgColor];
     };
     TBui.getBestTextColor.cache = {};
-})(TBui = window.TBui || {});
+})(window.TBui = window.TBui || {});

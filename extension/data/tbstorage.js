@@ -1,3 +1,4 @@
+'use strict';
 // This is here because we load even before TBUtils.
 const domain = window.location.hostname.split('.')[0];
 
@@ -543,5 +544,5 @@ function storagewrapper () {
             // are considered equivalent
             return true;
         }
-    })(TBStorage = window.TBStorage || {});
+    })(window.TBStorage = window.TBStorage || {});
 }

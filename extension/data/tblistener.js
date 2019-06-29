@@ -1,3 +1,4 @@
+'use strict';
 (function () {
     /**
      * Event listener aliases. Allows you to listen for `author` and get `postAuthor` and `commentAuthor` events,

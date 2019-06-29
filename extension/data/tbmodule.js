@@ -1,5 +1,6 @@
+'use strict';
 function tbmodule () {
-    TB = {
+    window.TB = {
         utils: TBUtils,
         ui: TBui,
         storage: TBStorage,

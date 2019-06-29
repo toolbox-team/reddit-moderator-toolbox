@@ -1,3 +1,4 @@
+'use strict';
 function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
@@ -3253,7 +3254,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBUtils.getRatelimit();
             })();
         }
-    })(TBUtils = window.TBUtils || {});
+    })(window.TBUtils = window.TBUtils || {});
 }
 
 (function () {

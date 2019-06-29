@@ -1,3 +1,4 @@
+'use strict';
 function devtools () {
     const self = new TB.Module('Developer Tools');
     self.shortname = 'DevTools';

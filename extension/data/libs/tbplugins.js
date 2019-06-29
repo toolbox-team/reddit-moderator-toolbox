@@ -30,8 +30,7 @@
         }
 
         if (!TBUtils.debugMode) return;
-        var caller = (arguments.callee.caller && arguments.callee.caller.name !== "") ? arguments.callee.caller.name : 'anonymous function';
-            caller = (callerName !== undefined) ? callerName : caller;
+        var caller = (callerName !== undefined) ? callerName : 'anonymous function';
 
         if (skip) {
             console.groupCollapsed(` [${caller}]: `, message);

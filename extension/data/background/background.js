@@ -1,3 +1,4 @@
+'use strict';
 /**
  * This refers to the webextension background page.
  *  @module BackgroundPage

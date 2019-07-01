@@ -1,3 +1,4 @@
+'use strict';
 function modbar () {
     const self = new TB.Module('Modbar');
     self.shortname = 'Modbar';

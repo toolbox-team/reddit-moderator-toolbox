@@ -530,7 +530,7 @@ function tbconfig () {
             const $thing = $(`
             <tr class="usernote-type">
                 <td><input class="name tb-input" name="type-name" placeholder="name (shown when adding a note)" type="text" value="${text}"></td>
-                <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${text}"></td>
+                <td><input class="key tb-input" name="type-key" placeholder="key (should be unique)" type="text" value="${key}"></td>
                 <td><input class="color" name="type-color" type="color" value="${safeColor}"></td>
                 <td>
                     <a class="up-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortUp}</a><a class="down-usernote-type tb-icons tb-icons-align-middle" href="javascript:;">${TBui.icons.sortDown}</a><a class="remove-usernote-type tb-icons tb-icons-negative tb-icons-align-middle" href="javascript:;">${TBui.icons.delete}</a>

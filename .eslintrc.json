@@ -13,7 +13,7 @@
         "TBUtils": true,
         "TBui": true,
         "TBStorage": true,
-        "TBLog": true
+        "TBLog": true,
         "CodeMirror": true,
         "redditapi": true,
         "chrome": true,

@@ -1,9 +1,6 @@
 (function ($) {
-    let skipLocalConsole = false;
-    window.addEventListener('TBStorageLoaded', () => {
-        skipLocalConsole = TBStorage.getSetting('Utils', 'skipLocalConsole', false);
-    });
-
+    // `skip` refers to skipping the old HTML console, which we no longer have, so
+    // it goes unused here
     $.log = function (message, skip, callerName) {
         if (callerName) {
           // TODO - this is wasteful, we shouldn't have to create a new object

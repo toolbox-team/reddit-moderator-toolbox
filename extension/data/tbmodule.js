@@ -76,7 +76,6 @@ function tbmodule () {
                   advancedMode = TBUtils.advancedMode,
 
                   settingSub = TB.storage.getSetting('Utils', 'settingSub', ''),
-                  browserConsole = TB.storage.getSetting('Utils', 'skipLocalConsole', false),
                   shortLength = TB.storage.getSetting('Utils', 'shortLength', 15),
                   longLength = TB.storage.getSetting('Utils', 'longLength', 45),
 
@@ -124,11 +123,6 @@ function tbmodule () {
                     settingName: 'debugmode',
                     content: `<label><input type="checkbox" id="debugMode" ${debugMode ? 'checked' : ''}> Enable debug mode</label>`,
                     display: advancedMode ? '' : displayNone,
-                },
-                {
-                    settingName: 'browserconsole',
-                    content: `<label><input type="checkbox" id="browserConsole" ${browserConsole ? 'checked' : ''}> Use browser's console</label>`,
-                    display: debugMode ? '' : displayNone,
                 },
                 {
                     settingName: 'betamode',
@@ -359,7 +353,6 @@ function tbmodule () {
                 TB.storage.setSetting('Utils', 'betaMode', $('#betaMode').prop('checked'), false);
                 TB.storage.setSetting('Utils', 'devMode', $('#devMode').prop('checked'), false);
                 TB.storage.setSetting('Utils', 'advancedMode', $('#advancedMode').prop('checked'), false);
-                TB.storage.setSetting('Utils', 'skipLocalConsole', $('#browserConsole').prop('checked'), false);
 
                 self.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
 

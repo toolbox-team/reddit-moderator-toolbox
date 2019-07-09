@@ -12,8 +12,9 @@
         "TBListener": true,
         "TBUtils": true,
         "TBui": true,
-        "CodeMirror": true,
         "TBStorage": true,
+        "TBLog": true
+        "CodeMirror": true,
         "redditapi": true,
         "chrome": true,
         "safari": true,

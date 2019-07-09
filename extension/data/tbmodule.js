@@ -1039,15 +1039,8 @@ body {
             }
         };
 
-        this.log = function (message, skip) {
-            if (!TBUtils.debugMode) {
-                return;
-            }
-            if (skip === undefined) {
-                skip = false;
-            }
-            $.log(message, skip, this.shortname);
-        };
+        // Logging utilities
+        Object.assign(this, TBLog(this));
 
         // Profiling
 

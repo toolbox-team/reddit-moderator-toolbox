@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    /** @module tbLog */
+    /** @module TBLog */
 
     // The various log types by name, and their colors applied via CSS
     const logTypes = {
@@ -82,7 +82,7 @@
      * @param {string|object} caller A module serving as the caller, or a string
      * representing the name of non-module callers
      */
-    function tbLog (caller) {
+    function TBLog (caller) {
         // Create a new object
         const obj = {};
         // The object gets a function for every log type
@@ -96,12 +96,12 @@
     // This is a bit of cleverness - we make a logger with no caller, and then
     // assign that logger's properties to the function, so it can be used as a
     // default logger instance
-    Object.assign(tbLog, tbLog());
+    Object.assign(TBLog, TBLog());
 
     // Properties to allow for manipulation of filtered callers/types
-    tbLog.filteredCallers = filteredCallers;
-    tbLog.filteredTypes = filteredTypes;
+    TBLog.filteredCallers = filteredCallers;
+    TBLog.filteredTypes = filteredTypes;
 
     // Huzzah!
-    window.tbLog = tbLog;
+    window.TBLog = TBLog;
 })();

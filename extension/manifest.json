@@ -122,6 +122,7 @@
                 "data/styles/codemirror/themes.css"
             ],
             "js": [
+                "data/tblog.js",
                 "data/libs/tbplugins.js",
                 "data/tbstorage.js",
                 "data/tbui.js",

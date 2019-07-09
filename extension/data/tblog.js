@@ -11,11 +11,17 @@
         },
         log: {
             color: '#fff',
+            background: '#387fa780',
+            text: 'debug'
+        },
+        info: {
+            color: '#fff',
             background: '#38a76280',
         },
         warn: {
             color: '#fff',
             background: '#ce821a80',
+            text: 'warning',
         },
         error: {
             color: '#fff',
@@ -60,10 +66,10 @@
             return;
         }
         // Get the appropriate styles for this log type, and send the message
-        const {color, background} = logTypes[type];
+        const {color, background, text} = logTypes[type];
         console.groupCollapsed(
             // First part of the message line
-            `%c${timestamp()} %c${callerName} %c${type}`,
+            `%c${timestamp()} %c${callerName} %c${text || type}`,
             // Timestamp style
             'font-weight: normal',
             // Caller style

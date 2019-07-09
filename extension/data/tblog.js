@@ -9,11 +9,6 @@
             color: '#fff',
             background: '#387fa780',
         },
-        log: {
-            color: '#fff',
-            background: '#387fa780',
-            text: 'debug'
-        },
         info: {
             color: '#fff',
             background: '#38a76280',
@@ -30,7 +25,7 @@
     };
 
     // Objects recording which callers and log types are being filtered
-    const filteredTypes = {};
+    const filteredTypes = {debug: true};
     const filteredCallers = {};
 
     /**
@@ -96,6 +91,9 @@
             // `this` arg is the caller, first arg is the log type
             obj[type] = log.bind(caller, type);
         }
+        // This isn't a type, but we map it to debug for backwards compatibility
+        // Eventually we should remove this
+        obj.log = obj.debug;
         return obj;
     }
 

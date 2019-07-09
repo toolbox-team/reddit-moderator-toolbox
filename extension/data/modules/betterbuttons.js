@@ -355,34 +355,35 @@ function betterbuttons () {
     };
 
     self.initStickyButtons = function initStickyButtons () {
-        const $things = $('.listing-page .content .thing.link.stickied');
+        if (!TBUtils.isMod) {
+            return;
+        }
+        const $things = $('.listing-page .content .thing.link');
         $things.each(function () {
             const $thing = $(this),
                   $buttons = $thing.find('.flat-list');
+            const unsticky = $thing.hasClass('stickied');
 
             // Make sure this is a post in a sub we mod by checking for the remove button.
-            if ($buttons.has('.remove-button').length) {
-                $buttons.append($(`
-                    <li class="sticky-button">
-                        <a class="tb-bracket-button" href="javascript:;">unsticky</a>
-                        <span class="success" style="display: none;">unstickied</span>
-                        <span class="error" style="display: none;">failed to unsticky</span>
-                    </li>
-                `).hide());
-            }
+            $buttons.append(`
+                <li class="sticky-button">
+                    <a class="tb-bracket-button" href="javascript:;">${unsticky ? 'unsticky' : 'sticky'}</a>
+                    <span class="success" style="display: none;">${unsticky ? 'unstickied' : 'stickied'}</span>
+                    <span class="error" style="display: none;">failed to ${unsticky ? 'unsticky' : 'sticky'}</span>
+                </li>
+            `);
         });
 
         $('.thing .sticky-button a').click(function () {
             const $button = $(this),
                   $thing = $button.parents('.thing'),
-                  id = $thing.data('fullname');
-            TBUtils.unstickyThread(id, (success, error) => {
+                  id = $thing.attr('data-fullname');
+            TBUtils.stickyThread(id, $button.text() === 'sticky').then(() => {
+                $button.siblings('.success').show();
+            }).catch(error => {
+                $button.siblings('.error').show();
+            }).finally(() => {
                 $button.hide();
-                if (success) {
-                    $button.siblings('.success').show();
-                } else if (error) {
-                    $button.siblings('.error').show();
-                }
             });
         });
     };

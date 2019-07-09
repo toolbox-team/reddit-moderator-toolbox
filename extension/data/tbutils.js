@@ -2416,31 +2416,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
         };
 
-        TBUtils.stickyThread = function (id, callback, state) {
-            if (state === undefined) {
-                state = true;
-            }
+        TBUtils.stickyThread = (id, state = true) => TBUtils.post('/api/set_subreddit_sticky', {
+            id,
+            state,
+            uh: TBUtils.modhash,
+        });
 
-            TBUtils.post('/api/set_subreddit_sticky', {
-                id,
-                state,
-                uh: TBUtils.modhash,
-            })
-                .then(() => {
-                    if (typeof callback !== 'undefined') {
-                        callback(true);
-                    }
-                })
-                .catch(error => {
-                    if (typeof callback !== 'undefined') {
-                        callback(false, error);
-                    }
-                });
-        };
-
-        TBUtils.unstickyThread = function (id, callback) {
-            TBUtils.stickyThread(id, callback, false);
-        };
+        TBUtils.unstickyThread = id => TBUtils.stickyThread(id, false);
 
         TBUtils.postComment = function (parent, text, callback) {
             TBUtils.post('/api/comment', {

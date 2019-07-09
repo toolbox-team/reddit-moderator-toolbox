@@ -291,8 +291,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }, Extension: ${TBUtils.isExtension
             }, Beta features: ${TBUtils.betaMode
             }\n\n"${TBUtils.RandomQuote}"\n`;
-
             TBUtils.log.push(consoleText);
+        } else {
+            TBLog.filterType('debug');
         }
 
         // Update cache vars as needed.

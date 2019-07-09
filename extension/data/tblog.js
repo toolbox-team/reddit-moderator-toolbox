@@ -25,7 +25,7 @@
     };
 
     // Objects recording which callers and log types are being filtered
-    const filteredTypes = {debug: true};
+    const filteredTypes = {};
     const filteredCallers = {};
 
     /**
@@ -105,6 +105,12 @@
     // Properties to allow for manipulation of filtered callers/types
     TBLog.filteredCallers = filteredCallers;
     TBLog.filteredTypes = filteredTypes;
+
+    // Methods to make filtering and unfiltering easier
+    TBLog.filterType = type => filteredTypes[type] = true;
+    TBLog.unfilterType = type => delete filteredTypes[type];
+    TBLog.filterCaller = caller => filteredCallers[caller] = true;
+    TBLog.unfilterCaller = caller => delete filteredCallers[caller];
 
     // Huzzah!
     window.TBLog = TBLog;

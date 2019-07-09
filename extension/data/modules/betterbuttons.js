@@ -45,8 +45,8 @@ function betterbuttons () {
     self.register_setting('addStickyButton', {
         type: 'boolean',
         default: false,
-        advanced: true,
-        title: 'Add unsticky button to stickied posts.',
+        advanced: false,
+        title: 'Add sticky/unsticky buttons to post listings.',
     });
     self.register_setting('addCommentLockbutton', {
         type: 'boolean',

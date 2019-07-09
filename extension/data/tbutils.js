@@ -2,8 +2,6 @@
 function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
-        const logger = TBLog("TBUtils");
-
         // We need these before we can do anything.
         TBUtils.userDetails = userDetails;
         TBUtils.modhash = userDetails.data.modhash;
@@ -34,6 +32,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
               ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
+
+        const logger = TBLog(SHORTNAME);
 
         // Private variables
         let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []);
@@ -297,17 +297,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // Update cache vars as needed.
         if (newLogin) {
-            $.log('Account changed', false, SHORTNAME);
+            logger.log('Account changed');
             TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBUtils.logged);
         }
 
         if (getnewLong) {
-            $.log('Long cache expired', false, SHORTNAME);
+            logger.log('Long cache expired');
             TBStorage.setCache(SETTINGS_NAME, 'lastGetLong', now);
         }
 
         if (getnewShort) {
-            $.log('Short cache expired', false, SHORTNAME);
+            logger.log('Short cache expired');
             TBStorage.setCache(SETTINGS_NAME, 'lastGetShort', now);
         }
 
@@ -324,7 +324,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
 
         if (seenNotes.length > 250) {
-            $.log('clearing seen notes', false, SHORTNAME);
+            logger.log('clearing seen notes');
             seenNotes.splice(150, seenNotes.length - 150);
             TBStorage.setSetting(SETTINGS_NAME, 'seenNotes', seenNotes);
         }
@@ -540,7 +540,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBUtils.sendEvent = function (tbuEvent) {
-            $.log(`Sending event: ${tbuEvent}`, false, SHORTNAME);
+            logger.log('Sending event:', tbuEvent);
             window.dispatchEvent(new CustomEvent(tbuEvent));
         };
 
@@ -1314,17 +1314,17 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBUtils.getModSubs = function (callback) {
-            $.log('getting mod subs', false, SHORTNAME);
+            logger.log('getting mod subs');
             // If it has been more than ten minutes, refresh mod cache.
             if (TBUtils.mySubs.length < 1 || TBUtils.mySubsData.length < 1) {
             // time to refresh
                 if (gettingModSubs) {
                 // we're already fetching a new list, so enqueue the callback
-                    $.log('Enqueueing getModSubs callback', false, SHORTNAME);
+                    logger.log('Enqueueing getModSubs callback');
                     getModSubsCallbacks.push(callback);
                 } else {
                 // start the process
-                    $.log('getting new subs.', false, SHORTNAME);
+                    logger.log('getting new subs.');
 
                     gettingModSubs = true;
                     TBUtils.mySubs = []; // reset
@@ -1390,7 +1390,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     // Go!
                     while (getModSubsCallbacks.length > 0) {
                     // call them in the order they were added
-                        $.log(`calling callback ${getModSubsCallbacks[0].name}`, false, SHORTNAME);
+                        logger.log('calling callback', getModSubsCallbacks[0].name);
                         getModSubsCallbacks[0]();
                         getModSubsCallbacks.splice(0, 1); // pop first element
                     }
@@ -1751,7 +1751,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBUtils.replaceTokens = function (info, content) {
-            $.log(info, false, SHORTNAME);
+            logger.log(info);
             for (const i of Object.keys(info)) {
                 const pattern = new RegExp(`{${i}}`, 'mig');
                 content = content.replace(pattern, info[i]);
@@ -1867,7 +1867,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         const $body = $('body'),
                               ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
                               ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
-                        $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
+                        logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
                         if (!$body.find('#ratelimit-counter').length) {
                             $('div[role="main"].content').append('<span id="ratelimit-counter"></span>');
@@ -2070,7 +2070,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 (status, jqxhr) => {
                     const ratelimitRemaining = jqxhr.allResponseHeaders['x-ratelimit-remaining'],
                           ratelimitReset = jqxhr.allResponseHeaders['x-ratelimit-reset'];
-                    $.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`, false, SHORTNAME);
+                    logger.log(`ratelimitRemaining: ${ratelimitRemaining} ratelimitReset: ${ratelimitReset / 60}`);
 
                     if (typeof callback !== 'undefined') {
                         callback({
@@ -2099,7 +2099,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 data = JSON.stringify(data);
             }
 
-            $.log(`Posting /r/${subreddit}/api/wiki/edit/${page}`, false, SHORTNAME);
+            logger.log(`Posting /r/${subreddit}/api/wiki/edit/${page}`);
 
             // If we update automoderator we want to replace any tabs with four spaces.
             if (updateAM) {
@@ -2135,7 +2135,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         });
                 }, 500);
             }).catch(jqXHR => {
-                $.log(jqXHR.responseText, false, SHORTNAME);
+                logger.log(jqXHR.responseText);
                 callback(false, jqXHR);
             });
         };
@@ -2167,7 +2167,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         parsedWikiData = JSON.parse(wikiData);
                     } catch (err) {
                     // we should really have a INVAILD_DATA error for this.
-                        $.log(err, false, SHORTNAME);
+                        logger.log(err);
                         callback(TBUtils.NO_WIKI_PAGE);
                     }
                     // Moved out of the try so random exceptions don't erase the entire wiki page
@@ -2181,7 +2181,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 // We have valid data, but it's not JSON.
                 callback(wikiData);
             }).catch(({jqXHR, errorThrown}) => {
-                $.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`, false, SHORTNAME);
+                logger.log(`Wiki error (${subreddit}/${page}): ${errorThrown}`);
                 if (jqXHR.responseText === undefined) {
                     callback(TBUtils.WIKI_PAGE_UNKNOWN);
                     return;
@@ -2468,22 +2468,22 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             })
                 .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to post comment to on ${parent}`, false, SHORTNAME);
-                        $.log(response.json.fails, false, SHORTNAME);
+                        logger.log(`Failed to post comment to on ${parent}`);
+                        logger.log(response.json.fails);
                         if (typeof callback !== 'undefined') {
                             callback(false, response.json.errors);
                         }
                         return;
                     }
 
-                    $.log(`Successfully posted comment on ${parent}`, false, SHORTNAME);
+                    logger.log(`Successfully posted comment on ${parent}`);
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
                 .catch(error => {
-                    $.log(`Failed to post link to on${parent}`, false, SHORTNAME);
-                    $.log(error, false, SHORTNAME);
+                    logger.log(`Failed to post link to on${parent}`);
+                    logger.log(error);
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2503,22 +2503,22 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             })
                 .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
-                        $.log(response.json.errors, false, SHORTNAME);
+                        logger.log(`Failed to post link to /r/${subreddit}`);
+                        logger.log(response.json.errors);
                         if (typeof callback !== 'undefined') {
                             callback(false, response.json.errors);
                         }
                         return;
                     }
 
-                    $.log(`Successfully posted link to /r/${subreddit}`, false, SHORTNAME);
+                    logger.log(`Successfully posted link to /r/${subreddit}`);
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
                 .catch(error => {
-                    $.log(`Failed to post link to /r/${subreddit}`, false, SHORTNAME);
-                    $.log(error, false, SHORTNAME);
+                    logger.log(`Failed to post link to /r/${subreddit}`);
+                    logger.log(error);
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2536,22 +2536,22 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             })
                 .then(response => {
                     if (response.json.hasOwnProperty('errors') && response.json.errors.length > 0) {
-                        $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
-                        $.log(response.json.errors, false, SHORTNAME);
+                        logger.log(`Failed to send link to /u/${user}`);
+                        logger.log(response.json.errors);
                         if (typeof callback !== 'undefined') {
                             callback(false, response.json.errors);
                         }
                         return;
                     }
 
-                    $.log(`Successfully send link to /u/${user}`, false, SHORTNAME);
+                    logger.log(`Successfully send link to /u/${user}`);
                     if (typeof callback !== 'undefined') {
                         callback(true, response);
                     }
                 })
                 .catch(error => {
-                    $.log(`Failed to send link to /u/${user}`, false, SHORTNAME);
-                    $.log(error, false, SHORTNAME);
+                    logger.log(`Failed to send link to /u/${user}`);
+                    logger.log(error);
                     if (typeof callback !== 'undefined') {
                         callback(false, error);
                     }
@@ -2641,7 +2641,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         };
 
         TBUtils.getReportReasons = function (postURL, callback) {
-            $.log('getting reports', false, SHORTNAME);
+            logger.log('getting reports');
             TBUtils.getJSON(`${postURL}.json?limit=1`, {
                 uh: TBUtils.modhash,
             })
@@ -2691,13 +2691,13 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.importSettings = function (subreddit, callback) {
             TBUtils.readFromWiki(subreddit, 'tbsettings', true, resp => {
                 if (!resp || resp === TBUtils.WIKI_PAGE_UNKNOWN || resp === TBUtils.NO_WIKI_PAGE) {
-                    $.log('Error loading wiki page', false, SHORTNAME);
+                    logger.log('Error loading wiki page');
                     return;
                 }
                 TBStorage.purifyObject(resp);
                 if (resp['Utils.lastversion'] < 300) {
                     TBui.textFeedback('Cannot import from a toolbox version under 3.0');
-                    $.log('Cannot import from a toolbox version under 3.0', false, SHORTNAME);
+                    logger.log('Cannot import from a toolbox version under 3.0');
                     return;
                 }
 
@@ -2710,7 +2710,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
                     // Do not import certain legacy settings.
                     if (doNotImport.includes(fullKey)) {
-                        $.log(`Skipping ${fullKey} import`, false, SHORTNAME);
+                        logger.log(`Skipping ${fullKey} import`);
                     } else {
                         TBStorage.setSetting(key[0], key[1], value, false);
                     }
@@ -2799,7 +2799,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         // Cache manipulation
 
         TBUtils.clearCache = function (calledFromBackground) {
-            $.log('TBUtils.clearCache()', false, SHORTNAME);
+            logger.log('TBUtils.clearCache()');
 
             TBUtils.noteCache = {};
             TBUtils.configCache = {};
@@ -2881,7 +2881,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         alert('error setting wiki page to mod only access');
                         window.location = `https://www.reddit.com/r/${subreddit}/wiki/settings/${page}`;
                     } else {
-                        $.log('error setting wiki page to mod only access');
+                        logger.log('error setting wiki page to mod only access');
                     }
                 });
         }
@@ -3113,12 +3113,12 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     });
 
                     if (doAddTbModmailSidebar) {
-                        $.log('DOM: new modmail sidebar found.', false, SHORTNAME);
+                        logger.log('DOM: new modmail sidebar found.');
                         addTbModmailSidebar();
                     }
 
                     if (doTBNewThings) {
-                        $.log('DOM: processable elements found.', false, SHORTNAME);
+                        logger.log('DOM: processable elements found.');
 
                         // It is entirely possible that TBNewThings is fired multiple times.
                         // That is why we only set a new timeout if there isn't one set already.
@@ -3165,7 +3165,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                         return;
                     }
 
-                    $.log(`TBNewThings firing from: ${$target.attr('class')}`, false, SHORTNAME);
+                    logger.log(`TBNewThings firing from: ${$target.attr('class')}`);
                     // It is entirely possible that TBNewThings is fired multiple times.
                     // That is why we only set a new timeout if there isn't one set already.
                     if (!newThingRunning) {
@@ -3195,7 +3195,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         // NER support. todo: finish this.
         // window.addEventListener("neverEndingLoad", function () {
-        //    $.log('NER! NER! NER! NER!');
+        //    logger.log('NER! NER! NER! NER!');
         // });
 
         window.onbeforeunload = function () {

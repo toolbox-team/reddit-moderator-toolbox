@@ -4,66 +4,15 @@
         skipLocalConsole = TBStorage.getSetting('Utils', 'skipLocalConsole', false);
     });
 
-    $.fn.log = function (message, caller, orignalMessage) {
-        if (TBUtils.log !== undefined && !skipLocalConsole) {
-            TBUtils.log.push(message);
-
-            // add module to list.
-            if (TBUtils.logModules.indexOf(caller) == -1) {
-                TBUtils.logModules.push(caller);
-            }
-
-        } else {
-            console.groupCollapsed(` [${caller}]: `, orignalMessage);
-            console.trace();
-            console.groupEnd();
-        }
-    };
     $.log = function (message, skip, callerName) {
-        var orignalMessage = message;
-        // NO TBU, just push to console.
-        if (typeof (TBUtils) == 'undefined') {
-            console.groupCollapsed('[' + ((callerName !== undefined) ? callerName : 'TB Preinit') + ']', message);
-            console.trace();
-            console.groupEnd();
-            return;
-        }
-
-        if (!TBUtils.debugMode) return;
-        var caller = (callerName !== undefined) ? callerName : 'anonymous function';
-
-        if (skip) {
-            console.groupCollapsed(` [${caller}]: `, message);
-            console.trace();
-            console.groupEnd();
-            return;
-        }
-        if (typeof message === 'object') {
-            if (message instanceof jQuery) {
-                message = 'jQuery object (see browser console) :\n' + $('<div>').append($(message).clone()).html();
-                console.log(orignalMessage);
-            } else {
-                try {
-                    message = 'Object (see browser console):\n' + JSON.stringify(message);
-                    console.log(orignalMessage);
-                } catch (e) {
-                    console.log('TB Console could not convert: ');
-                    console.log(orignalMessage);
-                    message = String(message) + ' (error converting object see browser console)\nError Message: ' + e.message;
-                }
-            }
-        }
-
-        var lines = String(TBUtils.log.length); //String(TBUtils.log.split('\n').length);
-        if (lines !== '0') {
-            if (lines.length === 1) lines = '0' + lines;
-            if (lines.length === 2) lines = '0' + lines;
+        if (callerName) {
+          // TODO - this is wasteful, we shouldn't have to create a new object
+          // every time. However, $.log is deprecated anyway, so it's good
+          // enough for now.
+          return TBLog(callerName).log(message);
         } else {
-            lines = '';
+          return TBLog.log(message);
         }
-
-        var msg = lines + ' [' + caller + ']: ' + message;
-        return $.fn.log(msg, caller, orignalMessage);
     };
 })(jQuery);
 

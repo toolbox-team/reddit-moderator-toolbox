@@ -186,8 +186,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.isExtension = true;
         TBUtils.RandomQuote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
         TBUtils.RandomFeedback = RandomFeedbackText[Math.floor(Math.random() * RandomFeedbackText.length)];
-        TBUtils.log = [];
-        TBUtils.logModules = [];
         TBUtils.debugMode = TBStorage.getSetting(SETTINGS_NAME, 'debugMode', false);
         TBUtils.devMode = TBStorage.getSetting(SETTINGS_NAME, 'devMode', false);
         TBUtils.betaMode = TBStorage.getSetting(SETTINGS_NAME, 'betaMode', false);
@@ -285,14 +283,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache('Utils', cacheName, TBUtils[cacheName]);
         };
 
-        if (TBUtils.debugMode) {
-            const consoleText = `toolbox version: ${TBUtils.toolboxVersion
-            }, Browser: ${TBUtils.browser
-            }, Extension: ${TBUtils.isExtension
-            }, Beta features: ${TBUtils.betaMode
-            }\n\n"${TBUtils.RandomQuote}"\n`;
-            TBUtils.log.push(consoleText);
-        } else {
+        if (!TBUtils.debugMode) {
             TBLog.filterType('debug');
         }
 

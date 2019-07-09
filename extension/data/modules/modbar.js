@@ -77,10 +77,7 @@ function modbar () {
     });
 
     self.init = function () {
-        const $body = $('body'),
-              DEFAULT_MODULE = 'DEFAULT_MODULE';
-        let moduleCount = 0,
-            currentModule = DEFAULT_MODULE;
+        const $body = $('body');
 
         // Footer element below the page so toolbox never should be in the way.
         // Doing it like this because it means we don't have to mess with reddit css
@@ -126,8 +123,7 @@ function modbar () {
               unmoderatedSubredditsFMod = TB.storage.getSetting('Notifier', 'unmoderatedSubredditsFMod', false);
 
         let modbarHidden = self.setting('modbarHidden'),
-            consoleShowing = self.setting('consoleShowing'),
-            lockscroll = self.setting('lockScroll');
+            consoleShowing = self.setting('consoleShowing');
 
         // Ready some details for new modmail linking
         const modmailLink = TB.storage.getSetting('NewModMail', 'modmaillink', 'all_modmail'),
@@ -256,35 +252,6 @@ function modbar () {
     <a class="tb-bottombar-unhide tb-icons" href="javascript:void(0)">${compactHide ? TBui.icons.dotMenu : TBui.icons.arrowRight}</a>
 </div>
 `);
-
-        let $console;
-        if (debugMode) {
-            $console = $(`
-<div class="tb-debug-window tb-popup">
-    <div class="tb-popup-header">
-        <div id="tb-debug-header-handle" class="tb-popup-title"> Debug Console </div>
-        <span class="buttons">
-            <a class="close" id="tb-debug-hide" href="javascript:;">
-                <i class="tb-icons">${TBui.icons.close}</i>
-            </a>
-        </span>
-    </div>
-    <div class="tb-popup-content">
-        <textarea class="tb-input tb-debug-console" rows="20" cols="20"></textarea>
-    </div>
-    <div class="tb-popup-footer">
-        <select class="module-select tb-action-button inline-button"><option value="${DEFAULT_MODULE}">all modules</option></select>
-        <label><input type="checkbox" id="tb-console-lockscroll" ${lockscroll ? 'checked' : ''}> lock scroll</label>
-        <!--input class="tb-console-copy" type="button" value="copy text"-->
-        <input class="tb-console-clear tb-action-button inline-button" type="button" value="clear console">
-    </div>
-</div>
-`);
-
-            $console.appendTo('body').hide();
-
-            $console.drag('#tb-debug-header-handle');
-        }
 
         $body.append($modBar);
 
@@ -415,103 +382,6 @@ function modbar () {
                 self.log('reloading chrome');
                 TB.utils.reloadToolbox();
             });
-
-            // Console stuff
-            $('#tb-bottombar').find('#tb-toolbarcounters').before(`<a href="javascript:;" id="tb-toggle-console" title="debug console" class="tb-icons" >${TBui.icons.tbConsole}</a>`);
-            const selectedTheme = TB.storage.getSetting('Syntax', 'selectedTheme') || 'dracula';
-
-            let debugEditor;
-            $('.tb-debug-console').each((index, elem) => {
-            // This makes sure codemirror behaves and uses spaces instead of tabs.
-            // Editor setup.
-                debugEditor = CodeMirror.fromTextArea(elem, {
-                    mode: 'text/x-yaml',
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                    theme: selectedTheme,
-                    indentUnit: 4,
-                    readOnly: true,
-                    viewportMargin: Infinity,
-                    extraKeys: {
-                        'Ctrl-Alt-F': 'findPersistent',
-                        'F11' (cm) {
-                            cm.setOption('fullScreen', !cm.getOption('fullScreen'));
-                        },
-                        'Esc' (cm) {
-                            if (cm.getOption('fullScreen')) {
-                                cm.setOption('fullScreen', false);
-                            }
-                        },
-                    },
-                    lineWrapping: true,
-                });
-            });
-
-            let logLength = 0;
-            let logVisibleLength = 0;
-            setInterval(() => {
-            // If the console window is hidden, we don't need to handle this yet
-                if (!consoleShowing) {
-                    return;
-                }
-
-                if (currentModule === DEFAULT_MODULE) {
-                    if (logLength < TBUtils.log.length) {
-                        debugEditor.setValue(TBUtils.log.join('\n'));
-                        logLength = TBUtils.log.length;
-                        logVisibleLength = logLength;
-                    }
-                } else {
-                    // filter log by module.
-                    const search = `[${currentModule}]`,
-                          moduleLog = [];
-
-                    // hack-y substring search for arrays.
-                    for (let i = 0; i < TB.utils.log.length; i++) {
-                        if (TB.utils.log[i].indexOf(search) > -1) {
-                            moduleLog.push(TB.utils.log[i]);
-                        }
-                    }
-                    if (logLength < TBUtils.log.length) {
-                        logLength = TBUtils.log.length;
-                        logVisibleLength = moduleLog.length;
-                        debugEditor.setValue(moduleLog.join('\n'));
-                    }
-                }
-
-                if (lockscroll) {
-                    const bottom = debugEditor.charCoords({line: logVisibleLength, ch: 0}, 'local').bottom;
-                    debugEditor.scrollTo(null, bottom);
-                // $consoleText.scrollTop($consoleText[0].scrollHeight);
-                }
-
-                // add new modules to dropdown.
-                if (TB.utils.logModules.length > moduleCount) {
-                    moduleCount = TB.utils.logModules.length;
-
-                    const $moduleSelect = $('.module-select');
-
-                    // clear old list
-                    $('.module-select option').remove();
-
-                    // re-add default option
-                    $moduleSelect.append($('<option>', {
-                        value: DEFAULT_MODULE,
-                    }).text('all modules'));
-
-                    $(TB.utils.logModules).each(function () {
-                        $moduleSelect.append($('<option>', {
-                            value: this,
-                        }).text(this));
-                    }).promise().done(() => {
-                        $moduleSelect.val(currentModule);
-                    });
-                }
-            }, 500);
-
-            if (consoleShowing && debugMode) {
-                $console.show();
-            }
         }
 
         // Append shortcuts
@@ -593,48 +463,6 @@ function modbar () {
         }).mouseleave(() => {
             $modBarHidTooltip.fadeOut(200);
         });
-
-        // / Console stuff
-        // Show/hide console
-        if (debugMode) {
-            $body.on('click', '#tb-toggle-console, #tb-debug-hide', () => {
-                if (consoleShowing) {
-                    $console.hide();
-                } else {
-                    $console.show();
-                }
-
-                consoleShowing = !consoleShowing;
-                self.setting('consoleShowing', consoleShowing);
-            });
-
-            // Set console scroll
-            $body.on('click', '#tb-console-lockscroll', () => {
-                lockscroll = !lockscroll;
-                self.setting('lockScroll', lockscroll);
-            });
-
-            /*
-         // Console copy... needs work
-         $body.on('click', '#tb-console-copy', function () {
-         lockscroll = !lockscroll;
-         TBUtils.setSetting('Notifier', 'lockscroll', lockscroll)
-         });
-         */
-
-            // Console clear
-            $body.on('click', '.tb-console-clear', () => {
-                TBUtils.log = [];
-            });
-
-            // change modules
-            $('.module-select').change(function () {
-                currentModule = $(this).val();
-                self.log(`selected module: ${currentModule}`);
-            });
-        }
-
-        // / End console stuff
 
         // Open the settings
         $body.on('click', '.tb-toolbar-new-settings', () => {

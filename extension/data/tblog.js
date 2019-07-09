@@ -64,7 +64,7 @@
         const {color, background, text} = logTypes[type];
         console.groupCollapsed(
             // First part of the message line
-            `%c${timestamp()} %c${callerName} %c${text || type}`,
+            `%c${timestamp()} %c[${callerName}] %c${text || type}`,
             // Timestamp style
             'font-weight: normal',
             // Caller style

@@ -83,27 +83,6 @@
                     dD3jhgmDRCIBDQ2NsLho80ql0tsMwzio6enpa0h5Wam8JyXuz829gerqG2iijNBlqefk5MDBQRTm563Q3a0Gu90OCwvv3Bi4GmpoaGgVDauvra2B7e2vpAEtLS1QXn6ZBSCD+BEOh2F29jkolUqoqKiA
                     9fXPsLT04RM1PDzsV6lU4ng8DlarNcLn82kMDxwfH2dIwHUgD/qRaG1t5eXm5oLFYglQY2Nj9filtxRFEe3a4uLi1+3tHZBMpmBlZRmczl+QXm9sfHmGjB78lXafNRHzLUCXKdR6FRubbW0PWQBiqMvl
                     hPTa7f7NINsXkUgkhediGVHGf0HB5fI2Ozs70TwgGpGBE9JrBMyeA8IEg8TH69zPy8u7SGqMbQgZxdPrkhLZTbX68fczg/4A1KNbXBApXrkAAAAASUVORK5CYII=`;
-    // Do we ever care about loading image assets from disk?
-    // (Probably not, given there are none anymore -Geo)
-    // Here's how:
-    // switch (TBUtils.browser) {
-    //     case TBUtils.browsers.CHROME:
-    //     case TBUtils.browsers.OPERA: // yep, same name and everything
-    //         TBui.iconNuke = chrome.extension.getURL('images/nuke.png')
-    //         break;
-    //     case TBUtils.browsers.FIREFOX:
-    //         TBui.iconNuke = self.data.nukeIcon;
-    //         break;
-    //     case TBUtils.browsers.UNKOWN_BROWSER:
-    //     default:
-    //         TBui.iconNuke = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAB8UlEQVR42lXP20uTYQCA8ed9v81tzLkmeMCPnDHNC+0geMCV1Fx2I5lgybxK0xCMNdQIHDMiLBJv6rKMA
-    //                          kMUsYN4FxKa2bLMMLCN1BlEKRLURQ0q2ldzu+n3Dzw80K8JefEnCRpuV7bNX0fepZPkut12G2hw7bqgVwMtxn9chbr2W63m4aE2Zu+dY/6Oz3L/Qq2uC5Ia/whI2p0p+nPTeTzaztyXmzz7NszckI83
-    //                          HS7CPbViEECXrQninA7pq85nCWHWdmWkvN+6y9TXcV5UFOo3wax1HSXcUiW7iXPkZlkbSo2TFoOMgtRA/PA4CXkqWZFS9xsUbYdZRJsPGyaKHJlWyu2orgI2ECJi0LMGYiNwnLfeGpZBftbpCJn0rJ+
-    //                          pZvNUFSqpKajOPCKDp5lausLMWTfzbYfEatO/gvcIwZkepke9TPvr+egqQkVaVGtjqZyY8fNydYCFR528korxl1T00ZEOnn+4wcLiVYLdx5RxW5opjW17zufcblEmVwYIVhYoW8mXmDOfT6/7ePrkMo
-    //                          v77KKXBI24kp086GsgmJVuWk9JtX43WGxRNcMcGfERrC3hIUC5A4jFYK+BbfvtSqC9xjTmKeNdaxWhzjrjWHWJEgBoOiBJOkGccW2ZuLLi+BNq80HUiuIcK4DZGCahXv4FY4eX45ww+AQAAAAASUVORK
-    //                          5CYII=";
-    //         break;
-    // }
 
     TBui.standardColors = {
         red: '#FF0000',

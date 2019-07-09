@@ -30,8 +30,9 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBUtils.baseDomain = window.location.hostname === 'mod.reddit.com' || window.location.hostname === 'new.reddit.com' ? 'https://www.reddit.com' : `https://${window.location.hostname}`;
 
-        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown',
-              ECHO = 'echo', SHORTNAME = 'TBUtils', SETTINGS_NAME = 'Utils';
+        const CHROME = 'chrome', FIREFOX = 'firefox', OPERA = 'opera', EDGE = 'edge', UNKOWN_BROWSER = 'unknown';
+        const SHORTNAME = 'TBUtils';
+        const SETTINGS_NAME = 'Utils';
 
         const logger = TBLog(SHORTNAME);
 
@@ -195,14 +196,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         TBUtils.tbDevs = toolboxDevs;
         TBUtils.betaRelease = betaRelease;
 
-        TBUtils.browsers = {
-            CHROME,
-            FIREFOX,
-            OPERA,
-            EDGE,
-            UNKOWN_BROWSER,
-        };
-
         TBUtils.browser = UNKOWN_BROWSER;
 
         // Get our browser.  Hints: http://jsfiddle.net/9zxvE/383/
@@ -229,9 +222,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         }
 
         // Do settings echo before anything else.  If it fails, exit toolbox.
-        const ret = TBStorage.setSetting(SETTINGS_NAME, 'echoTest', ECHO);
-        console.log(ret, ECHO);
-        if (ret !== ECHO) {
+        if (TBStorage.setSetting(SETTINGS_NAME, 'echoTest', 'echo') !== 'echo') {
             alert('toolbox can not save settings\n\ntoolbox will now exit');
             return;
         }

@@ -2,6 +2,8 @@
 function initwrapper ({userDetails, newModSubs, cacheDetails}) {
     /** @namespace  TBUtils */
     (function (TBUtils) {
+        const logger = TBLog("TBUtils");
+
         // We need these before we can do anything.
         TBUtils.userDetails = userDetails;
         TBUtils.modhash = userDetails.data.modhash;
@@ -432,7 +434,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          */
         TBUtils.debugInformation = function debugInformation () {
         // Using console log so we are more likely to get this information if toolbox is failing.
-            console.log('debug information for browser');
             const debugObject = {
                 toolboxVersion: TBUtils.toolboxVersion,
                 browser: '',
@@ -524,7 +525,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             }
             }
 
-            console.log(debugObject);
+            logger.info('Version/browser information:', debugObject);
             return debugObject;
         };
 

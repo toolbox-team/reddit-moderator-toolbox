@@ -639,10 +639,10 @@ function queuetools () {
             });
 
             // Set reports threshold (hide reports with less than X reports)
-            $('#modtab-threshold').keypress(function (e) {
+            $('#modtab-threshold').on("input", function (e) {
                 e.preventDefault();
 
-                const threshold = +String.fromCharCode(e.which);
+                const threshold = +$(this).val();
                 if (isNaN(threshold)) {
                     return;
                 }

@@ -659,6 +659,10 @@ function queuetools () {
                         $(this).closest('.thing').hide();
                     }
                 });
+                // treat modqueue entries without .reported-stamp as 0 reports
+                if (threshold > 0) {
+                    things.not(":has(.reported-stamp)").hide();
+                }
             }
 
             setThreshold($things);

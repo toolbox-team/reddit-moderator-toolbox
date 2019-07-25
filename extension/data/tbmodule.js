@@ -137,13 +137,13 @@ function tbmodule () {
                 {
                     settingName: 'longlength',
                     content: `Cache subreddit config (removal reasons, domain tags, mod macros) time (in minutes):<br>
-                        <input type="text" class="tb-input" name="longLength" value="${longLength}">`,
+                        <input type="number" class="tb-input" name="longLength" value="${longLength}">`,
                     display: advancedMode ? '' : displayNone,
                 },
                 {
                     settingName: 'shortlength',
                     content: `Cache subreddit user notes time (in minutes):<br>
-                      <input type="text" class="tb-input" name="shortLength" value="${shortLength}">`,
+                      <input type="number" class="tb-input" name="shortLength" value="${shortLength}">`,
                     display: advancedMode ? '' : displayNone,
                 },
                 {
@@ -357,8 +357,9 @@ function tbmodule () {
                 self.modules['Modbar'].setting('showExportReminder', $('#showExportReminder').prop('checked'));
 
                 // save cache settings.
-                TB.storage.setSetting('Utils', 'longLength', $('input[name=longLength]').val(), false);
-                TB.storage.setSetting('Utils', 'shortLength', $('input[name=shortLength]').val(), false);
+                TB.storage.setSetting('Utils', 'longLength', parseInt($('input[name=longLength]').val()), false);
+
+                TB.storage.setSetting('Utils', 'shortLength', parseInt($('input[name=shortLength]').val()), false);
 
                 if ($('#clearcache').prop('checked')) {
                     TBUtils.clearCache();

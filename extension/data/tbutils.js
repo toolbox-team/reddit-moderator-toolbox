@@ -37,23 +37,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         const logger = TBLog(SHORTNAME);
 
         // Private variables
-        let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []);
+        let seenNotes = TBStorage.getSetting(SETTINGS_NAME, 'seenNotes', []),
+            lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0);
 
         const modMineURL = '/subreddits/mine/moderator.json?limit=100',
-              now = new Date().getTime(),
-
-              shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
-              longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45),
-
-              lastgetLong = cacheDetails.lastGetLong,
-              lastgetShort = cacheDetails.lastGetShort,
               cacheName = cacheDetails.cacheName,
 
-              lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0),
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
               newLogin = cacheName !== TBUtils.logged,
-              getnewLong = (now - lastgetLong) / (60 * 1000) > longLength || newLogin,
-              getnewShort = (now - lastgetShort) / (60 * 1000) > shortLength || newLogin,
               betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
               getModSubsCallbacks = [],
               invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
@@ -162,14 +153,14 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubs', TBUtils.mySubs);
             TBStorage.setCache(SETTINGS_NAME, 'moderatedSubsData', TBUtils.mySubsData);
         } else {
-            TBUtils.mySubs = getnewLong ? [] : cacheDetails.moderatedSubs;
-            TBUtils.mySubsData = getnewLong ? [] : cacheDetails.moderatedSubsData;
+            TBUtils.mySubs = cacheDetails.moderatedSubs;
+            TBUtils.mySubsData = cacheDetails.moderatedSubsData;
         }
 
         const manifest = chrome.runtime.getManifest();
         const versionRegex = /(\d\d?)\.(\d\d?)\.(\d\d?).*?"(.*?)"/;
         const matchVersion = manifest.version_name.match(versionRegex);
-        const shortVersion = `${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`;
+        const shortVersion = JSON.parse(`${matchVersion[1]}${matchVersion[2].padStart(2, '0')}${matchVersion[3].padStart(2, '0')}`);
 
         TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
@@ -247,12 +238,15 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         </style>`);
 
         // Get cached info.
-        TBUtils.noteCache = getnewShort ? {} : cacheDetails.noteCache;
-        TBUtils.configCache = getnewLong ? {} : cacheDetails.configCache;
-        TBUtils.rulesCache = getnewLong ? {} : cacheDetails.rulesCache;
-        TBUtils.noConfig = getnewShort ? [] : cacheDetails.noConfig;
-        TBUtils.noNotes = getnewShort ? [] : cacheDetails.noNotes;
-        TBUtils.noRules = getnewLong ? [] : cacheDetails.noRules;
+        // Get cached info. Short stored.
+        TBUtils.noteCache = cacheDetails.noteCache;
+        TBUtils.noConfig = cacheDetails.noConfig;
+        TBUtils.noNotes = cacheDetails.noNotes;
+
+        // Get cached info. Long stored.
+        TBUtils.configCache = cacheDetails.configCache;
+        TBUtils.rulesCache = cacheDetails.rulesCache;
+        TBUtils.noRules = cacheDetails.noRules;
 
         /**
          * Updates in page cache and background page.
@@ -282,16 +276,11 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         if (newLogin) {
             logger.log('Account changed');
             TBStorage.setCache(SETTINGS_NAME, 'cacheName', TBUtils.logged);
-        }
 
-        if (getnewLong) {
-            logger.log('Long cache expired');
-            TBStorage.setCache(SETTINGS_NAME, 'lastGetLong', now);
-        }
-
-        if (getnewShort) {
-            logger.log('Short cache expired');
-            TBStorage.setCache(SETTINGS_NAME, 'lastGetShort', now);
+            // Force refresh of timed cache
+            chrome.runtime.sendMessage({
+                action: 'tb-cache-force-timeout',
+            });
         }
 
         const pushedunread = TBStorage.getSetting('Notifier', 'unreadPushed', []);
@@ -320,7 +309,27 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             setTimeout(getToolboxDevs, 0);
         }
 
+        // Extra checks on old faults
+        if (typeof lastVersion !== 'number') {
+            lastVersion = parseInt(lastVersion);
+            TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', lastVersion);
+        }
+
+        let shortLength = TBStorage.getSetting(SETTINGS_NAME, 'shortLength', 15),
+            longLength = TBStorage.getSetting(SETTINGS_NAME, 'longLength', 45);
+
+        if (typeof shortLength !== 'number') {
+            shortLength = parseInt(shortLength);
+            TBStorage.setSetting(SETTINGS_NAME, 'shortLength', shortLength);
+        }
+
+        if (typeof longLength !== 'number') {
+            longLength = parseInt(longLength);
+            TBStorage.setSetting(SETTINGS_NAME, 'longLength', longLength);
+        }
+
         // First run changes.
+
         if (TBUtils.shortVersion > lastVersion) {
             // These need to happen for every version change
             TBUtils.firstRun = true; // for use by other modules.
@@ -330,11 +339,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
             //* * This should be a per-release section of stuff we want to change in each update.  Like setting/converting data/etc.  It should always be removed before the next release. **//
 
             // Start: version changes.
-            /* TBUtils.[get/set]Setting IS NOT DEFINDED YET!!!  Use TBStorage.[get/set]settings */
-
-            // 3.7 version changes
-
-            // End: version changes.
 
             // This is a super extra check to make sure the wiki page for settings export really is private.
             const settingSubEnabled = TBStorage.getSetting('Utils', 'settingSub', '');
@@ -2824,6 +2828,25 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 TBUtils.clearCache(true);
                 break;
             }
+            case 'tb-settings-update': {
+                logger.log('Timed cache update', message.payload);
+                // Cache has timed out
+                if (message.payload === 'short') {
+                    TBUtils.noteCache = {};
+                    TBUtils.noConfig = [];
+                    TBUtils.noNotes = [];
+                }
+
+                if (message.payload === 'long') {
+                    TBUtils.configCache = {};
+                    TBUtils.rulesCache = {};
+                    TBUtils.noRules = [];
+                    TBUtils.mySubs = [];
+                    TBUtils.mySubsData = [];
+                }
+
+                break;
+            }
             default: {
                 const event = new CustomEvent(message.action, {detail: message.payload});
                 window.dispatchEvent(event);
@@ -3309,8 +3332,6 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
         profileResults('utilsStart', performance.now());
         const SETTINGS_NAME = 'Utils';
         const cacheDetails = {
-            lastgetLong: await TBStorage.getCache(SETTINGS_NAME, 'lastGetLong', -1),
-            lastgetShort: await TBStorage.getCache(SETTINGS_NAME, 'lastGetShort', -1),
             cacheName: await TBStorage.getCache(SETTINGS_NAME, 'cacheName', ''),
             moderatedSubs: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubs', []),
             moderatedSubsData: await TBStorage.getCache(SETTINGS_NAME, 'moderatedSubsData', []),

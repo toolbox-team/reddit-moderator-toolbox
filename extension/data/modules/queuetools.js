@@ -561,7 +561,7 @@ function queuetools () {
             });
 
             $('.unhide-selected').click(() => {
-                $things.show();
+                $('.thing').show();
             });
 
             // Expand reports on click.

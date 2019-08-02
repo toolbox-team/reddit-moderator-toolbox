@@ -360,7 +360,7 @@ function queuetools () {
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a>
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a>
         </span>
-        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" value="${reportsThreshold}" /></a></span>
+        ${viewingspam ? '' : `<span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" value="${reportsThreshold}" /></a></span>`}
         <span class="dropdown-title lightdrop" style="float:right"> sort:
             <div class="tb-dropdown lightdrop">
                 <span class="selected sortorder">${listingOrder}</span>
@@ -661,7 +661,9 @@ function queuetools () {
                 });
             }
 
-            setThreshold($things);
+            if (!viewingspam) {
+                setThreshold($things);
+            }
 
             function replaceSubLinks () {
                 const $this = $(this).find('a.subreddit');

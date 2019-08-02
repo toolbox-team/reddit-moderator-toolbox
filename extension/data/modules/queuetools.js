@@ -649,7 +649,9 @@ function queuetools () {
 
                 $(this).val(threshold);
                 self.setting('reportsThreshold', threshold);
-                setThreshold($things);
+                
+                const $allThings = $('.thing');
+                setThreshold($allThings);
             });
 
             function setThreshold (things) {

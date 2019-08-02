@@ -732,6 +732,9 @@ function queuetools () {
                 }
                 if (!viewingspam) {
                     setThreshold(things);
+                }                    
+                if (linkToQueues && QUEUE_URL) {
+                    $(things).each(replaceSubLinks);
                 }
 
                 removeUnmoddable();

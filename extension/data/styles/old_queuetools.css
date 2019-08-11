@@ -5,7 +5,7 @@
 .mod-toolbox-rd .menuarea.modtools {
     background-color: rgba(237, 241, 245, 0.8);
     border: 1px solid #B6C9DD;
-    z-index: 500;
+    z-index: 98;
     overflow: visible;
 }
 

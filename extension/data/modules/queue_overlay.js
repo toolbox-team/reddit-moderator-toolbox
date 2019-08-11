@@ -1,3 +1,4 @@
+'use strict';
 function queueOverlay () {
     const self = new TB.Module('Queue Overlay');
     self.shortname = 'queueOverlay';
@@ -5,7 +6,7 @@ function queueOverlay () {
     // //Default settings
     self.settings['enabled']['default'] = true;
 
-    self.config['betamode'] = false;
+    self.config['betamode'] = true;
 
     TB.register_module(self);
 

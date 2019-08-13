@@ -43,6 +43,12 @@ body.mod-toolbox[toolbox-warning]::before {
     margin-bottom: 3px;
 }
 
+.mod-toolbox-rd .tb-frontend-container[data-tb-type="TBcommentAuthor"] {
+    /* Spacing fix for user buttons on old Reddit (why is whitespace significant in HTML reeeee) */
+    display: inline-flex;
+    margin-right: 0.5em;
+}
+
 .mod-toolbox-rd.tb-modbar-shown .jowVts,
 .mod-toolbox-rd.tb-modbar-shown .pinned-to-bottom {
     bottom: 31px

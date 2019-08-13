@@ -26,8 +26,6 @@
   },
   "nodemonConfig": {
     "watch": "extension",
-    "ignore": [
-      "manifest.json"
-    ]
+    "ext": "js,css"
   }
 }

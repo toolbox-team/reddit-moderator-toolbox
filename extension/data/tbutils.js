@@ -45,7 +45,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
               toolboxDevs = TBStorage.getSetting(SETTINGS_NAME, 'tbDevs', []),
               newLogin = cacheName !== TBUtils.logged,
-              betaRelease = true, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
+              betaRelease = false, // / DO NOT FORGET TO SET FALSE BEFORE FINAL RELEASE! ///
               getModSubsCallbacks = [],
               invalidPostSites = ['subreddits you moderate', 'mod (filtered)', 'all'],
 
@@ -79,7 +79,8 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                   'I go two and hope for the best.',
                   'oh dammit, I forgot to include url shit',
                   'I think I just released a broken release',
-                  'BECAUSE I AM THE LAW!!!'],
+                  'BECAUSE I AM THE LAW!!!',
+                  'Run, Snoo, Run!'],
 
               RandomFeedbackText = ['Please hold, your call is important to us.',
                   'Remember, toolbox loves you.',
@@ -164,7 +165,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
 
         TBUtils.toolboxVersion = `${manifest.version}${betaRelease ? ' (beta)' : ''}`;
         TBUtils.shortVersion = shortVersion;
-        TBUtils.releaseName = 'Developing Dachshund';
+        TBUtils.releaseName = 'Harmonizing Hare';
         TBUtils.configSchema = 1;
         TBUtils.notesSchema = 6;
         TBUtils.notesMinSchema = 4;

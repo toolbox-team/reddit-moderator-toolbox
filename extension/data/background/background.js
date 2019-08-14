@@ -330,7 +330,6 @@ function initCachetimeout (forceRefresh) {
         cachedata.currentDurations.short = storageShortLength;
         emptyCacheTimeout(storageLongLength, 'long');
     }
-
 }
 
 chrome.storage.local.get('tbsettings', sObject => {

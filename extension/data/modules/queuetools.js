@@ -360,7 +360,7 @@ function queuetools () {
             <a href="javascript:;" class="pretty-button action neutral"  accesskey="R" type="neutral"  tabindex="4">remove&nbsp;selected</a>
             <a href="javascript:;" class="pretty-button action positive" accesskey="A" type="positive" tabindex="5">approve&nbsp;selected</a>
         </span>
-        <span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" value="${reportsThreshold}" /></a></span>
+        ${viewingspam ? '' : `<span><a><label for="modtab-threshold">Report threshold: </label><input id="modtab-threshold" type="number" min="0" value="${reportsThreshold}" /></a></span>`}
         <span class="dropdown-title lightdrop" style="float:right"> sort:
             <div class="tb-dropdown lightdrop">
                 <span class="selected sortorder">${listingOrder}</span>
@@ -561,7 +561,7 @@ function queuetools () {
             });
 
             $('.unhide-selected').click(() => {
-                $things.show();
+                $('.thing').show();
             });
 
             // Expand reports on click.
@@ -649,7 +649,9 @@ function queuetools () {
 
                 $(this).val(threshold);
                 self.setting('reportsThreshold', threshold);
-                setThreshold($things);
+                
+                const $allThings = $('.thing');
+                setThreshold($allThings);
             });
 
             function setThreshold (things) {
@@ -659,9 +661,15 @@ function queuetools () {
                         $(this).closest('.thing').hide();
                     }
                 });
+                // treat modqueue entries without .reported-stamp as 0 reports
+                if (threshold > 0) {
+                    things.not(":has(.reported-stamp)").hide();
+                }
             }
 
-            setThreshold($things);
+            if (!viewingspam) {
+                setThreshold($things);
+            }
 
             function replaceSubLinks () {
                 const $this = $(this).find('a.subreddit');
@@ -730,6 +738,9 @@ function queuetools () {
                 }
                 if (!viewingspam) {
                     setThreshold(things);
+                }                    
+                if (linkToQueues && QUEUE_URL) {
+                    $(things).each(replaceSubLinks);
                 }
 
                 removeUnmoddable();

@@ -201,7 +201,12 @@ function nukecomments () {
 
             case 'more': {
                 self.log('"load more" encountered, going even deeper');
-                const commentIDs = object.data.children;
+                let commentIDs = object.data.children;
+                if (!commentIDs.length) {
+                    // "continue this thread" links generated when a thread gets
+                    // too deep return empty `children` lists, thanks Reddit
+                    commentIDs = [object.data.parent_id.substring(3)];
+                }
                 const commentIDcount = commentIDs.length;
                 let processCount = 0;
 

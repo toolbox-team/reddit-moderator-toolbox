@@ -298,9 +298,9 @@ function modbar () {
                     const $this = $(this);
                     if (!$this.hasClass('tb-mysubs-activated')) {
                         $this.addClass('tb-mysubs-activated');
-                        TB.ui.popup(
-                            'Subreddits you moderate',
-                            [
+                        TB.ui.popup({
+                            title: 'Subreddits you moderate',
+                            tabs: [
                                 {
                                     title: 'Subreddits you moderate',
                                     id: 'sub-you-mod', // reddit has things with class .role, so it's easier to do this than target CSS
@@ -309,9 +309,8 @@ function modbar () {
                                     footer: '',
                                 },
                             ],
-                            '',
-                            'subreddits-you-mod-popup' // class
-                        ).appendTo('body').css({
+                            cssClass: 'subreddits-you-mod-popup',
+                        }).appendTo('body').css({
                             position: 'fixed',
                             bottom: '41px',
                             left: '20px',

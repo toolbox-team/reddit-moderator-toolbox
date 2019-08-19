@@ -266,9 +266,9 @@ function historybutton () {
                         $appendTo = $('body');
                     }
 
-                    const $popup = TB.ui.popup(
-                        'History Button',
-                        [
+                    const $popup = TB.ui.popup({
+                        title: 'History Button',
+                        tabs: [
                             {
                                 title: 'Tab1',
                                 tooltip: 'Tooltip shown when hovering tab.',
@@ -276,12 +276,9 @@ function historybutton () {
                                 footer: '',
                             },
                         ],
-                        '',
-                        'history-button-popup',
-                        {
-                            draggable: true,
-                        }
-                    ).appendTo($appendTo)
+                        cssClass: 'history-button-popup',
+                        draggable: true,
+                    }).appendTo($appendTo)
                         .css({
                             left: positions.leftPosition,
                             top: positions.topPosition,

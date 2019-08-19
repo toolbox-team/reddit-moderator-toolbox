@@ -187,19 +187,27 @@
         });
     });
 
-    // Popup HTML generator
-    TBui.popup = function popup (title, tabs, meta, css_class, opts) {
-        const defaults = {
-            draggable: true,
-        };
-
-        const options = $.extend(defaults, opts);
-
-        meta = typeof meta !== 'undefined' ? meta : null;
-        css_class = typeof css_class !== 'undefined' ? css_class : '';
-
+    /**
+     * Generate a popup.
+     *
+     * @param {object} options Options for the popup
+     * @param {string} options.title The popup's title (raw HTML)
+     * @param {object[]} options.tabs The tabs for the popup
+     * @param {string?} options.cssClass Extra CSS class to add to the popup
+     * @param {string?} options.meta Raw HTML to add to a "meta" container
+     * @param {boolean?} [draggable=true] Whether the user can move the popup
+     *
+     * @returns {jQuery}
+     */
+    TBui.popup = function popup ({
+        title,
+        tabs,
+        cssClass = '',
+        meta,
+        draggable = true,
+    }) {
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        const $popup = $('<div>').addClass(`tb-popup${css_class ? ` ${css_class}` : ''}`);
+        const $popup = $('<div>').addClass(`tb-popup ${cssClass}`);
         if (meta) {
             $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
         }
@@ -268,7 +276,7 @@
             }
         }
 
-        if (options.draggable) {
+        if (draggable) {
             $popup.drag($popup.find('.tb-popup-title'));
         }
 

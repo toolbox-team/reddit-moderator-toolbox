@@ -214,15 +214,19 @@ function domaintagger () {
 
                 const popupSave = $('<div>').append($('<button>').addClass('save-domain tb-action-button').text('save')).append($('<button>').addClass('clear-domain tb-action-button').text('clear'));
 
-                return TBui.popup(`Domain Tagger - /r/${subreddit}`, [{
-                    id: `dtagger_popup_${subreddit}`,
-                    title: '',
-                    tooltip: '',
-                    help_text: '',
-                    help_url: '',
-                    content: popupContent,
-                    footer: popupSave,
-                }], null, 'dtagger-popup');
+                return TBui.popup({
+                    title: `Domain Tagger - /r/${subreddit}`,
+                    tabs: [{
+                        id: `dtagger_popup_${subreddit}`,
+                        title: '',
+                        tooltip: '',
+                        help_text: '',
+                        help_url: '',
+                        content: popupContent,
+                        footer: popupSave,
+                    }],
+                    cssClass: 'dtagger-popup',
+                });
             }
 
             const $popup = createPopup().hide();

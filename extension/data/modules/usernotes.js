@@ -1,4 +1,5 @@
 'use strict';
+
 function usernotes () {
     const self = new TB.Module('User Notes');
     self.shortname = 'UserNotes';
@@ -405,11 +406,11 @@ function usernotes () {
             } else {
                 $appendTo = $('body');
             }
-            const $popup = TB.ui.popup(
-                `<div class="utagger-title">
+            const $popup = TB.ui.popup({
+                title: `<div class="utagger-title">
                     <span>User Notes - <a href="${TBUtils.link(`/user/${user}`)}" id="utagger-user-link">/u/${user}</a></span>
                 </div>`,
-                [{
+                tabs: [{
                     content: `
                         <div class="utagger-content">
                             <table class="utagger-notes">
@@ -442,9 +443,8 @@ function usernotes () {
                         </div>
                     `,
                 }],
-                '', // meta to inject in popup header; just a placeholder
-                'utagger-popup' // class
-            );
+                cssClasS: 'utagger-popup',
+            });
 
             // defined so we can easily add things to these specific areas after loading the notes.
             const $noteList = $popup.find('.utagger-content .utagger-notes tbody'),

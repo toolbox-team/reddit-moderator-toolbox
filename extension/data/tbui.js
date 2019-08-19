@@ -207,25 +207,30 @@
         draggable = true,
     }) {
         // tabs = [{id:"", title:"", tooltip:"", help_text:"", help_url:"", content:"", footer:""}];
-        const $popup = $('<div>').addClass(`tb-popup ${cssClass}`);
-        if (meta) {
-            $popup.append($('<div>').addClass('meta').css('display', 'none').append(meta));
-        }
-        $popup.append(`
-            <div class="tb-popup-header">
-                <div class="tb-popup-title">${title}</div>
-                <div class="buttons">
-                    <a class="close" href="javascript:;">
-                        <i class="tb-icons">${TBui.icons.close}</i>
-                    </a>
+        const $popup = $(`
+            <div class="tb-popup ${cssClass}">
+                ${meta ? `<div class="meta" style="display: none;">${meta}</div>` : ''}
+                <div class="tb-popup-header">
+                    <div class="tb-popup-title">${title}</div>
+                    <div class="buttons">
+                        <a class="close" href="javascript:;">
+                            <i class="tb-icons">${TBui.icons.close}</i>
+                        </a>
+                    </div>
                 </div>
             </div>
         `);
         if (tabs.length === 1) {
-            $popup.append($('<div>').addClass('tb-popup-content').append(tabs[0].content));
-            $popup.append($('<div>').addClass('tb-popup-footer').append(tabs[0].footer));
-        } else if (tabs.length > 1) {
-            const $tabs = $('<div>').addClass('tb-popup-tabs');
+            $popup.append(`
+                <div class="tb-popup-content">
+                    ${tabs[0].content}
+                </div>
+                <div class="tb-popup-footer">
+                    ${tabs[0].footer}
+                </div>
+            `);
+        } else {
+            const $tabs = $('<div class="tb-popup-tabs"></div>');
             $popup.append($tabs);
 
             for (let i = 0; i < tabs.length; i++) {
@@ -235,10 +240,11 @@
                 }
 
                 // Create tab button
-                const $button = $('<a>').addClass(tab.id).text(tab.title);
-                if (tab.tooltip) {
-                    $button.attr('title', tab.tooltip);
-                }
+                const $button = $(`
+                    <a class="${tab.id}" title="${tab.tooltip || ''}">
+                        ${tab.title}
+                    </a>
+                `);
 
                 $button.click({tab}, function (e) {
                     const tab = e.data.tab;
@@ -261,9 +267,16 @@
 
                 $button.appendTo($tabs);
 
-                const $tab = $('<div>').addClass(`tb-popup-tab ${tab.id}`);
-                $tab.append($('<div>').addClass('tb-popup-content').append(tab.content));
-                $tab.append($('<div>').addClass('tb-popup-footer').append(tab.footer));
+                const $tab = $(`
+                    <div class="tb-popup-tab ${tab.id}">
+                        <div class="tb-popup-content">
+                            ${tab.content}
+                        </div>
+                        <div class="tb-popup-footer">
+                            ${tab.footer}
+                        </div>
+                    </div>
+                `);
 
                 // default first tab is visible; hide others
                 if (i === 0) {

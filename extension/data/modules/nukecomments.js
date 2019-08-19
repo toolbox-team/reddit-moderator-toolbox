@@ -1,3 +1,5 @@
+'use strict';
+
 /** @module CommentNuke **/
 function nukecomments () {
     const self = new TB.Module('Comment Nuke');

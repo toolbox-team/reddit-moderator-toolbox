@@ -178,7 +178,6 @@ function getOAuthTokens (tries = 1) {
             } else if (!rawCookie && tries > 2) {
                 reject(new Error('user not logged into new modmail'));
             } else {
-                console.log('raw cookie:', rawCookie);
                 // The cookie we grab has a base64 encoded string with data. Sometimes is invalid data at the end.
                 // This RegExp should take care of that.
                 const invalidChar = new RegExp('[^A-Za-z0-9+/].*?$');
@@ -330,7 +329,6 @@ function initCachetimeout (forceRefresh) {
         cachedata.currentDurations.short = storageShortLength;
         emptyCacheTimeout(storageLongLength, 'long');
     }
-
 }
 
 chrome.storage.local.get('tbsettings', sObject => {

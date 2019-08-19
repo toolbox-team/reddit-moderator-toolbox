@@ -5,7 +5,7 @@ function nukecomments () {
     const self = new TB.Module('Comment Nuke');
     self.shortname = 'CommentNuke';
 
-    // //Default settings
+    // Default settings
     self.settings['enabled']['default'] = false;
     self.config['betamode'] = false;
 
@@ -143,16 +143,18 @@ function nukecomments () {
                         }
                     });
                 }, () => {
-                    setTimeout(() => {
-                        removalRunning = false;
-                        TB.ui.longLoadSpinner(false);
-                        $nukeFeedback.text('Done removing comments.');
-                        const missedLength = missedComments.length;
-                        if (missedLength) {
-                            $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
-                            $popup.find('.tb-retry-nuke').show;
-                        }
-                    }, 1000);
+                    removalRunning = false;
+                    TB.ui.longLoadSpinner(false);
+                    $nukeFeedback.text('Done removing comments.');
+                    const missedLength = missedComments.length;
+                    if (missedLength) {
+                        $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
+                        $popup.find('.tb-retry-nuke').show;
+                    } else {
+                        setTimeout(() => {
+                            $popup.find('.close').click();
+                        }, 1500);
+                    }
                 });
             });
 

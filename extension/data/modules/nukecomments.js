@@ -256,7 +256,7 @@ function nukecomments () {
 
                 const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
                 if (showNextToUser && TBUtils.isOldReddit) {
-                    const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container');
+                    const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
                     $userContainter.append(NukeButtonHTML);
                 } else {
                     $target.append(NukeButtonHTML);

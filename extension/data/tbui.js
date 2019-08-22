@@ -221,14 +221,9 @@
             </div>
         `);
         if (tabs.length === 1) {
-            $popup.append(`
-                <div class="tb-popup-content">
-                    ${tabs[0].content}
-                </div>
-                <div class="tb-popup-footer">
-                    ${tabs[0].footer}
-                </div>
-            `);
+            // We don't use template literals here as the content can be a jquery object.
+            $popup.append($('<div class="tb-popup-content"></div>').append(tabs[0].content));
+            $popup.append($('<div class="tb-popup-footer""></div>').append(tabs[0].footer));
         } else {
             const $tabs = $('<div class="tb-popup-tabs"></div>');
             $popup.append($tabs);
@@ -267,16 +262,10 @@
 
                 $button.appendTo($tabs);
 
-                const $tab = $(`
-                    <div class="tb-popup-tab ${tab.id}">
-                        <div class="tb-popup-content">
-                            ${tab.content}
-                        </div>
-                        <div class="tb-popup-footer">
-                            ${tab.footer}
-                        </div>
-                    </div>
-                `);
+                // We don't use template literals here as the content can be a jquery object.
+                const $tab = $(`<div class="tb-popup-tab ${tab.id}"></div>`);
+                $tab.append($('<div class="tb-popup-content"></div>').append(tab.content));
+                $tab.append($('<div class="tb-popup-footer""></div>').append(tab.footer));
 
                 // default first tab is visible; hide others
                 if (i === 0) {

@@ -1,3 +1,4 @@
+'use strict';
 function comments () {
     const self = new TB.Module('Comments');
     self.shortname = 'Comments'; // historical precedent for settings

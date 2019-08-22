@@ -1,9 +1,11 @@
+'use strict';
+
 /** @module CommentNuke **/
 function nukecomments () {
     const self = new TB.Module('Comment Nuke');
     self.shortname = 'CommentNuke';
 
-    // //Default settings
+    // Default settings
     self.settings['enabled']['default'] = false;
     self.config['betamode'] = false;
 
@@ -64,9 +66,9 @@ function nukecomments () {
             </div>`);
 
             // Pop-up
-            const $popup = TB.ui.popup(
-                'Nuke comment chain',
-                [
+            const $popup = TB.ui.popup({
+                title: 'Nuke comment chain',
+                tabs: [
                     {
                         title: 'Nuke tab',
                         tooltip: '',
@@ -74,12 +76,9 @@ function nukecomments () {
                         footer: '<button class="tb-execute-nuke tb-action-button">Execute</button> <button class="tb-retry-nuke tb-action-button">Retry</button>',
                     },
                 ],
-                '',
-                'nuke-button-popup',
-                {
-                    draggable: true,
-                }
-            ).appendTo($body)
+                cssClass: 'nuke-button-popup',
+                draggable: true,
+            }).appendTo($body)
                 .css({
                     left: positions.leftPosition,
                     top: positions.topPosition,
@@ -88,7 +87,7 @@ function nukecomments () {
 
             TBUtils.getJSON(fetchURL, {raw_json: 1}).then(data => {
                 TBStorage.purifyObject(data);
-                parseComments(data[1].data.children[0], postID, subreddit, () => {
+                parseComments(data[1].data.children[0], postID, subreddit).then(() => {
                     TB.ui.longLoadSpinner(false);
                     $popup.find('.tb-nuke-feedback').text('Finished analyzing comments.');
 
@@ -141,16 +140,18 @@ function nukecomments () {
                         }
                     });
                 }, () => {
-                    setTimeout(() => {
-                        removalRunning = false;
-                        TB.ui.longLoadSpinner(false);
-                        $nukeFeedback.text('Done removing comments.');
-                        const missedLength = missedComments.length;
-                        if (missedLength) {
-                            $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
-                            $popup.find('.tb-retry-nuke').show;
-                        }
-                    }, 1000);
+                    removalRunning = false;
+                    TB.ui.longLoadSpinner(false);
+                    $nukeFeedback.text('Done removing comments.');
+                    const missedLength = missedComments.length;
+                    if (missedLength) {
+                        $nukeDetails.text(`${missedLength}: not removed because of API errors. Hit retry to attempt removing them again.`);
+                        $popup.find('.tb-retry-nuke').show;
+                    } else {
+                        setTimeout(() => {
+                            $popup.find('.close').click();
+                        }, 1500);
+                    }
                 });
             });
 
@@ -170,17 +171,17 @@ function nukecomments () {
          * @param {object} object Comment chain object
          * @param {string} postID Post id the comments belong to
          * @param {string} subreddit Subreddit the comment chain belongs to.
-         * @param {function} callback
+         * @returns {Promise}
          */
 
-        function parseComments (object, postID, subreddit, callback) {
+        async function parseComments (object, postID, subreddit) {
             switch (object.kind) {
             case 'Listing': {
                 for (let i = 0; i < object.data.children.length; i++) {
-                    parseComments(object.data.children[i], postID, subreddit, () => callback());
+                    await parseComments(object.data.children[i], postID, subreddit);
                 }
-            }
                 break;
+            }
 
             case 't1': {
                 const distinguishedType = object.data.distinguished;
@@ -192,39 +193,32 @@ function nukecomments () {
                 }
 
                 if (object.data.hasOwnProperty('replies') && object.data.replies && typeof object.data.replies === 'object') {
-                    parseComments(object.data.replies, postID, subreddit, () => callback()); // we need to go deeper.
-                } else {
-                    return callback();
+                    await parseComments(object.data.replies, postID, subreddit); // we need to go deeper.
                 }
-            }
                 break;
+            }
 
             case 'more': {
                 self.log('"load more" encountered, going even deeper');
-                const commentIDs = object.data.children;
-                const commentIDcount = commentIDs.length;
-                let processCount = 0;
+                let commentIDs = object.data.children;
+                if (!commentIDs.length) {
+                    // "continue this thread" links generated when a thread gets
+                    // too deep return empty `children` lists, thanks Reddit
+                    commentIDs = [object.data.parent_id.substring(3)];
+                }
 
-                commentIDs.forEach(id => {
+                for (const id of commentIDs) {
                     const fetchUrl = `/r/${subreddit}/comments/${postID}/slug/${id}.json?limit=1500`;
                     // Lets get the comments.
-                    TBUtils.getJSON(fetchUrl, {raw_json: 1}).then(data => {
-                        TBStorage.purifyObject(data);
-                        parseComments(data[1].data.children[0], postID, subreddit, () => {
-                            processCount++;
-
-                            if (processCount === commentIDcount) {
-                                return callback();
-                            }
-                        });
-                    });
-                });
+                    const data = await TBUtils.getJSON(fetchUrl, {raw_json: 1});
+                    TBStorage.purifyObject(data);
+                    await parseComments(data[1].data.children[0], postID, subreddit);
+                }
             }
                 break;
             default: {
                 self.log('default, this should not happen...');
                 // This shouldn't actually happen...
-                return callback();
             }
             }
         }
@@ -249,7 +243,7 @@ function nukecomments () {
 
                 const NukeButtonHTML = `<span class="tb-nuke-button tb-bracket-button" data-comment-id="${commentID}" data-post-id="${postID}" data-subreddit="${subreddit}" title="Remove comment chain starting with this comment">${e.detail.type === 'TBcommentOldReddit' && !showNextToUser ? 'Nuke' : 'R'}</span>`;
                 if (showNextToUser && TBUtils.isOldReddit) {
-                    const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container');
+                    const $userContainter = $target.closest('.entry, .tb-comment-entry').find('.tb-jsapi-author-container .tb-frontend-container');
                     $userContainter.append(NukeButtonHTML);
                 } else {
                     $target.append(NukeButtonHTML);

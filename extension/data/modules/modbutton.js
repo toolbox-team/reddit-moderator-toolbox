@@ -210,9 +210,9 @@ function modbutton () {
                 $appendTo = $('body');
             }
 
-            const $popup = TB.ui.popup(
-                `Mod Actions  - /u/${user}`,
-                [
+            const $popup = TB.ui.popup({
+                title: `Mod Actions  - /u/${user}`,
+                tabs: [
                     {
                         title: 'Role',
                         id: 'user-role', // reddit has things with class .role, so it's easier to do this than target CSS
@@ -271,9 +271,9 @@ function modbutton () {
                 <button class="message-send tb-action-button">Send Message</button>`,
                     },
                 ],
-                `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
-                'mod-popup' // class
-            ).appendTo($appendTo)
+                cssClass: 'mod-popup',
+                meta: `<label class="user">${user}</label><label class="subreddit">${subreddit}</label><label class="thing_id">${thing_id}</label>`,
+            }).appendTo($appendTo)
                 .css({
                     left: positions.leftPosition,
                     top: positions.topPosition,

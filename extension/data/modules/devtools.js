@@ -49,9 +49,9 @@ function devtools () {
                 }
 
                 // Build the context popup and once that is done append it to the body.
-                const $apiPopup = TB.ui.popup(
-                    'front-end api info',
-                    [
+                const $apiPopup = TB.ui.popup({
+                    title: 'front-end api info',
+                    tabs: [
                         {
                             title: 'Context tab',
                             tooltip: 'Tab with context for comment.',
@@ -59,12 +59,9 @@ function devtools () {
                             footer: '',
                         },
                     ],
-                    '',
-                    'context-button-popup',
-                    {
-                        draggable: true,
-                    }
-                ).appendTo($('body'))
+                    cssClass: 'context-button-popup',
+                    draggable: true,
+                }).appendTo($('body'))
                     .css({
                         left: leftPosition,
                         top: event.pageY - 10,

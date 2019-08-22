@@ -45,9 +45,9 @@ function personalnotes () {
 
         // Here we create the popup containing all relevant information
         function createPersonalNotesPopup (notesPopupContent) {
-            TB.ui.popup(
-                'Personal notes',
-                [
+            TB.ui.popup({
+                title: 'Personal notes',
+                tabs: [
                     {
                         title: 'Personal notes',
                         id: 'personal-notes', // reddit has things with class .role, so it's easier to do this than target CSS
@@ -56,9 +56,8 @@ function personalnotes () {
                         footer: '<input type="button" class="tb-action-button" id="save-personal-note" value="save note">',
                     },
                 ],
-                '',
-                'personal-notes-popup' // class
-            ).appendTo('body');
+                cssClass: 'personal-notes-popup',
+            }).appendTo('body');
 
             $body.find('.personal-notes-popup').drag('.personal-notes-popup .tb-popup-title');
         }

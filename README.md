@@ -1,10 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/e4uru1b498486cdo/branch/master?svg=true)](https://ci.appveyor.com/project/creesch/reddit-moderator-toolbox-redesign/branch/master)
-  
 
-[![Discord](https://img.shields.io/discord/535490452066009090.svg?color=blue&label=discord&logo=discord&logoColor=fff)](https://discord.gg/8fGCykQ) [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox)
-
-
-toolbox for reddit
+toolbox for reddit [![Build status](https://ci.appveyor.com/api/projects/status/e4uru1b498486cdo/branch/master?svg=true)](https://ci.appveyor.com/project/creesch/reddit-moderator-toolbox-redesign/branch/master) [![Chat on IRC](https://img.shields.io/badge/irc-%23toolbox-blue.svg)](http://webchat.snoonet.org/#toolbox) [![Discord](https://img.shields.io/discord/535490452066009090.svg?color=blue&label=discord&logo=discord&logoColor=fff)](https://discord.gg/8fGCykQ)
 ========================
 
 Bundled extension of the /r/toolbox moderator tools for reddit.com
@@ -12,66 +7,45 @@ Bundled extension of the /r/toolbox moderator tools for reddit.com
 Documentation: https://www.reddit.com/r/toolbox/w/docs
 
 
-# Contributing 
+## Contributing 
 
-Thinking about contributing to toolbox? Awesome! [Here is some information to get you started!](/CONTRIBUTING.md)
+Thinking about contributing to toolbox? Awesome! [Here is some information to get you started!][contributing]
 
-# Development
+## Development
 
-## Chrome
+Building the extension is relatively easy through [Node.js][nodejs].
+
+```sh
+$ npm install          # Install dependencies
+$ npm run build        # Build extension .zip files for Chrome and Firefox
+$ npm run build-watch  # Automatically rebuild on file changes
+$ npm run docs         # Build documentation of internal interfaces
+```
+
+Once you've built a .zip for your platform, you're ready to test! Remeber to reload the extension between builds.
+
+### Testing on Chrome
 
 - Go to `chrome://extensions`.
 - Check the "Developer mode" checkbox if it's not already checked.
 - Click the "Load unpacked extension..." button.
 - Load the `extension` directory.
 
-Reload the extension when needed.
-
-## Firefox (developer or nightly edition)
+### Testing on Firefox (Developer or Nightly Editions)
 
 - Go to `about:debugging`.
 - Click the "Load Temporary Add-on" button.
 - Point to `extension/manifest.json`.
 
-Reload the addon when needed.
+## Third-party Application Support
 
-# Building
+All shared features settings and data are stored in subreddit wikis through versioned JSON. Third party applications can use this data to hook into toolbox features like usernotes. Documentation for third-party application developers looking to integrate with toolbox can be found [on the wiki][third-party-docs].
 
-**Note that it is not needed to use the build process for development purposes, all supported browsers can run the unpacked version of toolbox directly from the `/extension` directory**
+## Big Thanks
 
-Building is relatively easy through [nodejs](https://nodejs.org/)
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][saucelabs]
 
-Navigate to the root of the toolbox folder and install the dependencies
-
-```sh
-$ npm install
-```
-
-To build toolbox now simply run
-
-```sh
-$ npm run build
-```
-
-This will create a zip file which can be used in both Chrome as well as Firefox versions that support web extensions.
-
-If you also want to update the code documentation you run
-
-```sh
-$ npm run docs
-```
-
-### Third party support
-
-All shared features settings and data are stored in subreddit wikis through versioned json. Third party applications can use this data to hook into toolbox features like usernotes.
-
-Examples:
-
-- https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/JSON:-usernotes
-- https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/JSON:-toolbox-config
-
-### Big Thanks
-
-Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][homepage]
-
-[homepage]: https://saucelabs.com
+[nodejs]: https://nodejs.org/
+[contributing]: /CONTRIBUTING.md
+[third-party-docs]: https://github.com/toolbox-team/reddit-moderator-toolbox/wiki/Subreddit-Wikis
+[saucelabs]: https://saucelabs.com

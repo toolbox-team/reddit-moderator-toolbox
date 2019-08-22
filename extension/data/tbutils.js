@@ -258,7 +258,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
          * @param {string} subreddit when present cache is threated as an object and the value will be written to subreddit property. If missing the value is pushed.
          */
         TBUtils.updateCache = function updateCache (cacheName, value, subreddit) {
-            console.log('update cache', cacheName, subreddit, value);
+            logger.debug('update cache', cacheName, subreddit, value);
 
             if (subreddit) {
                 TBUtils[cacheName][subreddit] = value;

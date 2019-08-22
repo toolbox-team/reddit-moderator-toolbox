@@ -316,9 +316,9 @@ function modmacros () {
 
             const title = dropdown.find('option:selected').text();
             self.log(title);
-            const $macroPopup = TB.ui.popup(
-                `Mod Macro: ${title}`,
-                [
+            const $macroPopup = TB.ui.popup({
+                title: `Mod Macro: ${title}`,
+                tabs: [
                     {
                         title: 'Mod Macro:',
                         id: `macro${info.id}`, // reddit has things with class .role, so it's easier to do this than target CSS
@@ -328,10 +328,8 @@ function modmacros () {
                         footer: `<button class="macro-send-${info.id} tb-action-button">Post Macro</button>`,
                     },
                 ],
-                '',
-                'macro-popup', // class
-                `macro-${info.id}` // id
-            ).appendTo('body')
+                cssClass: 'macro-popup',
+            }).appendTo('body')
                 .css({
 
                     'left': `${offsetLeft}px`,

@@ -17,3 +17,7 @@
 .mod-toolbox-rd .tb-nuke-details p {
     margin-bottom: 5px;
 }
+
+.mod-toolbox-rd [data-tb-type="TBcommentAuthor"] .tb-nuke-button {
+    order: 5;
+}

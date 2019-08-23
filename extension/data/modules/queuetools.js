@@ -1,3 +1,4 @@
+'use strict';
 /** @module QueueTools */
 function queuetools () {
     const self = new TB.Module('Queue Tools');
@@ -97,7 +98,7 @@ function queuetools () {
         min: 0,
         max: null,
         step: 1,
-        default: 1,
+        default: 0,
         title: 'Reports threshold.',
         oldReddit: true,
     });
@@ -649,7 +650,7 @@ function queuetools () {
 
                 $(this).val(threshold);
                 self.setting('reportsThreshold', threshold);
-                
+
                 const $allThings = $('.thing');
                 setThreshold($allThings);
             });
@@ -738,7 +739,7 @@ function queuetools () {
                 }
                 if (!viewingspam) {
                     setThreshold(things);
-                }                    
+                }
                 if (linkToQueues && QUEUE_URL) {
                     $(things).each(replaceSubLinks);
                 }

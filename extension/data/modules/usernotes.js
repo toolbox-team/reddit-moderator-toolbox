@@ -443,7 +443,7 @@ function usernotes () {
                         </div>
                     `,
                 }],
-                cssClasS: 'utagger-popup',
+                cssClass: 'utagger-popup',
             });
 
             // defined so we can easily add things to these specific areas after loading the notes.

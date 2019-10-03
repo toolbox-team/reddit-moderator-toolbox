@@ -35,7 +35,7 @@ Once you've built a .zip for your platform, you're ready to test! Remember to re
 
 - Go to `about:debugging`.
 - Click the "Load Temporary Add-on" button.
-- Point to `/build/toolbox_v<version>_firefox.zip` file.
+- Load the `/build/toolbox_v<version>_firefox.zip` file.
 
 ## Third-party Application Support
 

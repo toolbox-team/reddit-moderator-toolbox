@@ -25,11 +25,12 @@ $ npm run docs         # Build documentation of internal interfaces
 Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
 
 ### Testing on Chrome
+**Note:** It is not needed to build for chrome as it can be run directly from source. 
 
 - Go to `chrome://extensions`.
 - Check the "Developer mode" checkbox if it's not already checked.
 - Click the "Load unpacked extension..." button.
-- Load the `/build/toolbox_v<version>_chrome.zip` file.
+- Load the `extension` directory.
 
 ### Testing on Firefox (Developer or Nightly Editions)
 

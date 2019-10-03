@@ -95,6 +95,7 @@ function oldReddit () {
                                 post: {
                                     id: info.postID,
                                 },
+                                isRemoved: info.ham,
                                 id: info.id,
                                 subreddit: {
                                     name: info.subreddit,

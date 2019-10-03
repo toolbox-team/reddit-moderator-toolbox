@@ -22,20 +22,20 @@ $ npm run build-watch  # Automatically rebuild on file changes
 $ npm run docs         # Build documentation of internal interfaces
 ```
 
-Once you've built a .zip for your platform, you're ready to test! Remeber to reload the extension between builds.
+Once you've built a .zip for your platform, you're ready to test! Remember to reload the extension between builds.
 
 ### Testing on Chrome
 
 - Go to `chrome://extensions`.
 - Check the "Developer mode" checkbox if it's not already checked.
 - Click the "Load unpacked extension..." button.
-- Load the `extension` directory.
+- Load the `/build/toolbox_v<version>_chrome.zip` file.
 
 ### Testing on Firefox (Developer or Nightly Editions)
 
 - Go to `about:debugging`.
 - Click the "Load Temporary Add-on" button.
-- Point to `extension/manifest.json`.
+- Load the `/build/toolbox_v<version>_firefox.zip` file.
 
 ## Third-party Application Support
 

@@ -54,12 +54,14 @@ You can find the documentation for all this on the following locations:
 
 ##### Chrome
 
+1. Run `npm install && npm build`
 1. Go to `Menu->Tools->Extensions` and tick the `Developer Mode` checkbox.
-1. Click `Load unpacked extension` and select the `/extension` folder.
+1. Click `Load unpacked extension` and select the `/build/toolbox_v<version>_chrome.zip`.
 1. Any time you make changes, you must go back to the `Menu->Tools->Extensions` page and `Reload` the extension.
 
 ##### Firefox
 
+1. Run `npm install && npm build`
 1. Go to `about:debugging` and tick the `Enable add-on debugging` checkbox.
-1. Click `Load Temporary Add-on` and select `/extension`/manifest.json`.
+1. Click `Load Temporary Add-on` and select `/build/toolbox_v<version>_firefox.zip`.
 1. Any time you make changes, you must go back to the `about:debugging` page and `Reload` the extension.

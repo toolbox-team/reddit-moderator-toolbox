@@ -30,6 +30,7 @@
             "warn",
             "global"
         ],
+        "no-prototype-builtins": "warn",
         "no-console": 0,
         "no-multi-spaces": "error",
         "no-inner-declarations": "warn",

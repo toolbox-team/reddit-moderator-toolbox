@@ -2421,9 +2421,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
         };
 
-        TBUtils.stickyThread = (id, state = true) => TBUtils.post('/api/set_subreddit_sticky', {
+        TBUtils.stickyThread = (id, state = true, num = undefined) => TBUtils.post('/api/set_subreddit_sticky', {
             id,
             state,
+            num,
             uh: TBUtils.modhash,
         });
 

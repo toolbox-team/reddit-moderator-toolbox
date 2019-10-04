@@ -1,3 +1,5 @@
+'use strict';
+
 function betterbuttons () {
     const self = new TB.Module('Better Buttons');
     self.shortname = 'BButtons';
@@ -367,23 +369,51 @@ function betterbuttons () {
             // Make sure this is a post in a sub we mod by checking for the remove button.
             $buttons.append(`
                 <li class="sticky-button">
-                    <a class="tb-bracket-button" href="javascript:;">${unsticky ? 'unsticky' : 'sticky'}</a>
+                    <a class="tb-sticky-choice tb-bracket-button" href="javascript:;" ${unsticky ? 'data-tb-stickied' : ''}>${unsticky ? 'unsticky' : 'sticky'}</a>
+                    ${!unsticky ? `
+                    <span class="tb-sticky-position" style="display: none;">
+                        <span class="error close" style="">sticky?</span>
+                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="1" href="javascript:;">top</a>
+                        <span class="error" style="">/</span>
+                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="2" href="javascript:;">bottom</a>
+                    </span>
+                    ` : ''}
                     <span class="success" style="display: none;">${unsticky ? 'unstickied' : 'stickied'}</span>
                     <span class="error" style="display: none;">failed to ${unsticky ? 'unsticky' : 'sticky'}</span>
                 </li>
             `);
         });
 
-        $('.thing .sticky-button a').click(function () {
+        $('.thing .sticky-button .tb-sticky-choice').click(function () {
+            const $button = $(this),
+                  $positionButton = $button.siblings('.tb-sticky-position'),
+                  attr = $button.attr('data-tb-stickied');
+            if (typeof attr !== typeof undefined && attr !== false) {
+                const id = $button.parents('.thing').attr('data-fullname');
+                TBUtils.unstickyThread(id).then(() => {
+                    $button.siblings('.success').show();
+                }).catch(() => {
+                    $button.siblings('.error').show();
+                }).finally(() => {
+                    $button.hide();
+                });
+            } else {
+                $positionButton.show();
+                $button.hide();
+            }
+        });
+
+        $('.thing .sticky-button .tb-sticky-post').click(function () {
             const $button = $(this),
                   $thing = $button.parents('.thing'),
                   id = $thing.attr('data-fullname');
-            TBUtils.stickyThread(id, $button.text() === 'sticky').then(() => {
-                $button.siblings('.success').show();
-            }).catch(error => {
-                $button.siblings('.error').show();
+            const position = $button.attr('data-sticky-spot');
+            TBUtils.stickyThread(id, true, position).then(() => {
+                $button.parent().siblings('.success').show();
+            }).catch(() => {
+                $button.parent().siblings('.error').show();
             }).finally(() => {
-                $button.hide();
+                $button.parent().hide();
             });
         });
     };

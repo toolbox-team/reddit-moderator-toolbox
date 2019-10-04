@@ -373,9 +373,9 @@ function betterbuttons () {
                     ${!unsticky ? `
                     <span class="tb-sticky-position" style="display: none;">
                         <span class="error close" style="">sticky?</span>
-                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="1" href="javascript:;">1</a>
+                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="1" href="javascript:;">top</a>
                         <span class="error" style="">/</span>
-                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="2" href="javascript:;">2</a>
+                        <a class="tb-bracket-button tb-sticky-post" data-sticky-spot="2" href="javascript:;">bottom</a>
                     </span>
                     ` : ''}
                     <span class="success" style="display: none;">${unsticky ? 'unstickied' : 'stickied'}</span>

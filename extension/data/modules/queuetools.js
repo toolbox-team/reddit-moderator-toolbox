@@ -640,7 +640,7 @@ function queuetools () {
             });
 
             // Set reports threshold (hide reports with less than X reports)
-            $('#modtab-threshold').on("input", function (e) {
+            $('#modtab-threshold').on('input', function (e) {
                 e.preventDefault();
 
                 const threshold = +$(this).val();
@@ -664,7 +664,7 @@ function queuetools () {
                 });
                 // treat modqueue entries without .reported-stamp as 0 reports
                 if (threshold > 0) {
-                    things.not(":has(.reported-stamp)").hide();
+                    things.not(':has(.reported-stamp)').hide();
                 }
             }
 

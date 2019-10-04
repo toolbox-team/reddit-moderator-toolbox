@@ -243,12 +243,13 @@ function notifiermod () {
                   $mailcount = $('#mailcount'),
                   $tb_mail = $('#tb-mail'),
                   $tb_mailCount = $('#tb-mailCount');
+            // TODO: only call TBUtils.link once per string literal in this section
             if (count < 1) {
                 $mailCount.empty();
                 $mail.attr('class', 'nohavemail');
                 $mail.attr('title', 'no new mail!');
                 $mail.attr('href', TBUtils.link('/message/inbox/'));
-                $mailcount.attr('href', messageunreadurl);
+                $mailcount.attr('href', TBUtils.link(messageunreadurl));
                 $tb_mail.toggleClass('nohavemail', true).toggleClass('havemail', false);
                 $tb_mail.attr('title', 'no new mail!');
                 $tb_mail.attr('href', TBUtils.link('/message/inbox/'));
@@ -256,12 +257,12 @@ function notifiermod () {
             } else {
                 $mail.attr('class', 'havemail');
                 $mail.attr('title', 'new mail!');
-                $mail.attr('href', messageunreadurl);
-                $mailcount.attr('href', messageunreadurl);
+                $mail.attr('href', TBUtils.link(messageunreadurl));
+                $mailcount.attr('href', TBUtils.link(messageunreadurl));
                 $tb_mail.toggleClass('havemail', true).toggleClass('nohavemail', false);
                 $tb_mail.attr('title', 'new mail!');
-                $tb_mail.attr('href', messageunreadurl);
-                $tb_mailCount.attr('href', messageunreadurl);
+                $tb_mail.attr('href', TBUtils.link(messageunreadurl));
+                $tb_mailCount.attr('href', TBUtils.link(messageunreadurl));
             }
             $tb_mailCount.text(`[${count}]`);
 

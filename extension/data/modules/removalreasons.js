@@ -72,7 +72,8 @@ function removalreasons () {
               REPLY_ERROR = 'error, failed to post reply',
               PM_ERROR = 'error, failed to send PM',
               DISTINGUISH_ERROR = 'error, failed to distinguish reply',
-              LOCK_ERROR = 'error, failed to lock post',
+              LOCK_POST_ERROR = 'error, failed to lock post',
+              LOCK_COMMENT_ERROR = 'error, failed to lock reply',
               LOG_REASON_MISSING_ERROR = 'error, public log reason missing',
               LOG_POST_ERROR = 'error, failed to create log post';
 
@@ -783,7 +784,7 @@ function removalreasons () {
                                         if (successful) {
                                             removePopup(popup);
                                         } else {
-                                            status.text(LOCK_ERROR);
+                                            status.text(LOCK_POST_ERROR);
                                         }
                                     });
                                 }
@@ -794,7 +795,7 @@ function removalreasons () {
                                         if (successful) {
                                             removePopup(popup);
                                         } else {
-                                            status.text(LOCK_ERROR);
+                                            status.text(LOCK_COMMENT_ERROR);
                                         }
                                     });
                                 }

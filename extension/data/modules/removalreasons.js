@@ -41,6 +41,11 @@ function removalreasons () {
         default: false,
         title: 'Lock threads after leaving a removal reason.',
     });
+    self.register_setting('actionLockComment', {
+        type: 'boolean',
+        default: false,
+        title: 'Lock removal reasons when replying as a comment.',
+    });
     // Default is escape()'d: <textarea id="customTextarea" placeholder="Enter Custom reason"></textarea>
     // May make this a user setting, one day.
     self.register_setting('customRemovalReason', {
@@ -330,7 +335,8 @@ function removalreasons () {
 
                     const reasonAsSub = self.setting('reasonAsSub');
                     const reasonSticky = self.setting('reasonSticky');
-                    const actionLock = self.setting('actionLock');
+                    const actionLockThread = self.setting('actionLock');
+                    const actionLockComment = self.setting('actionLockComment');
 
                     // Set up markdown renderer
                     SnuOwnd.DEFAULT_HTML_ELEMENT_WHITELIST.push('select', 'option', 'textarea', 'input');
@@ -378,20 +384,27 @@ function removalreasons () {
                                 <li>
                                     <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
+                                <li>
+                                    <input class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                </li>
                             </ul>
-                        </li><li>
+                        </li>
+                        <li>
                             <input class="reason-type" type="radio" id="type-PM-${data.subreddit}" value="pm" name="type-${data.subreddit}"${reasonType === 'pm' ? ' checked="1"' : ''} /><label for="type-PM-${data.subreddit}">Send as PM (personal message)</label>
                             <ul>
                                 <li>
                                     <input class="reason-as-sub" type="checkbox" id="type-as-sub"${reasonAsSub ? 'checked ' : ''} /><label for="type-as-sub">Send pm via modmail as /r/${data.subreddit} <b>Note:</b> This will clutter up modmail.</label>
                                 </li>
                             </ul>
-                        </li><li>
+                        </li>
+                        <li>
                             <input class="reason-type" type="radio" id="type-both-${data.subreddit}" value="both"  name="type-${data.subreddit}"${reasonType === 'both' ? ' checked="1"' : ''} /><label for="type-both-${data.subreddit}">Send as both PM and reply.</label>
-                        </li><li style="display:${selectNoneDisplay}"> /
+                        </li>
+                        <li style="display:${selectNoneDisplay}"> /
                             <input class="reason-type" type="radio" id="type-none-${data.subreddit}" value="none"  name="type-${data.subreddit}"${reasonType === 'none' ? ' checked="1"' : ''} /><label for="type-none-${data.subreddit}">none, will only log the removal.</label>
-                        </li><li>
-                            <input class="action-lock" id="type-action-lock" type="checkbox"${actionLock ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock">Lock the removed thread.</label>
+                        </li>
+                        <li>
+                            <input class="action-lock-thread" id="type-action-lock-thread" type="checkbox"${actionLockThread ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-thread">Lock the removed thread.</label>
                         </li>
                     </ul>
                     </div>
@@ -550,7 +563,8 @@ function removalreasons () {
                   notifyBy = popup.find('.reason-type:checked').val(),
                   notifyAsSub = popup.find('.reason-as-sub').prop('checked'),
                   notifySticky = popup.find('.reason-sticky').prop('checked') && !popup.find('.reason-sticky').prop('disabled'),
-                  actionLock = popup.find('.action-lock').prop('checked') && !popup.find('.action-lock').prop('disabled'),
+                  actionLockThread = popup.find('.action-lock-thread').prop('checked') && !popup.find('.action-lock-thread').prop('disabled'),
+                  actionLockComment = popup.find('.action-lock-comment').prop('checked') && !popup.find('.action-lock-comment').prop('disabled'),
                   checked = popup.find('.reason-check:checked'),
                   status = popup.find('.status'),
                   attrs = popup.find('attrs'),
@@ -763,9 +777,20 @@ function removalreasons () {
                                 });
 
                                 // Also lock the thread if requested
-                                if (actionLock) {
+                                if (actionLockThread) {
                                     self.log(`Fullname of this link: ${data.fullname}`);
                                     TBUtils.lockThread(data.fullname, successful => {
+                                        if (successful) {
+                                            removePopup(popup);
+                                        } else {
+                                            status.text(LOCK_ERROR);
+                                        }
+                                    });
+                                }
+                                if (actionLockComment) {
+                                    const commentId = response.json.data.things[0].data.id;
+                                    self.log(`Fullname of reply: ${commentId}`);
+                                    TBUtils.lockThread(commentId, successful => {
                                         if (successful) {
                                             removePopup(popup);
                                         } else {

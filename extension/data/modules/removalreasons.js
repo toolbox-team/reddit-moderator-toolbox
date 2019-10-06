@@ -385,7 +385,7 @@ function removalreasons () {
                                     <input class="reason-sticky" type="checkbox" id="type-stickied"${reasonSticky ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-stickied">Sticky the removal comment.</label>
                                 </li>
                                 <li>
-                                    <input class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}${data.kind === 'submission' ? '' : ' disabled'}/><label for="type-action-lock-comment">Lock the removal comment.</label>
+                                    <input class="action-lock-comment" id="type-action-lock-comment" type="checkbox"${actionLockComment ? 'checked' : ''}/><label for="type-action-lock-comment">Lock the removal comment.</label>
                                 </li>
                             </ul>
                         </li>

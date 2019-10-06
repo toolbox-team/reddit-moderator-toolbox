@@ -196,6 +196,7 @@ function tbconfig () {
                     <label><input type="checkbox" id="removeitem">remove item</label>
                     <label><input type="checkbox" id="approveitem">approve item</label>
                     <label><input type="checkbox" id="lockthread">lock post</label>
+                    <label><input type="checkbox" id="lockcomment">lock comment</label>
                     <label><input type="checkbox" id="sticky">sticky comment</label>
                     <label><input type="checkbox" id="archivemodmail">archive modmail</label>
                     <label><input type="checkbox" id="highlightmodmail">highlight modmail</label><br>
@@ -676,6 +677,7 @@ function tbconfig () {
                             <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
                             <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
                             <label><input type="checkbox" class="{{i}}-lockthread" id="lockthread">lock post</label>
+                            <label><input type="checkbox" class="{{i}}-lockcomment" id="lockcomment">lock comment</label>
                             <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
                             <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                             <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
@@ -702,6 +704,7 @@ function tbconfig () {
                     $(`.${i}-removeitem`).prop('checked', macro.remove);
                     $(`.${i}-approveitem`).prop('checked', macro.approve);
                     $(`.${i}-lockthread`).prop('checked', macro.lockthread);
+                    $(`.${i}-lockcomment`).prop('checked', macro.lockcomment);
                     $(`.${i}-sticky`).prop('checked', macro.sticky);
                     $(`.${i}-archivemodmail`).prop('checked', macro.archivemodmail);
                     $(`.${i}-highlightmodmail`).prop('checked', macro.highlightmodmail);
@@ -1274,6 +1277,7 @@ function tbconfig () {
             $macroContent.find('#removeitem').prop('checked', macro.remove);
             $macroContent.find('#approveitem').prop('checked', macro.approve);
             $macroContent.find('#lockthread').prop('checked', macro.lockthread);
+            $macroContent.find('#lockcomment').prop('checked', macro.lockcomment);
             $macroContent.find('#sticky').prop('checked', macro.sticky);
             $macroContent.find('#archivemodmail').prop('checked', macro.archivemodmail);
             $macroContent.find('#highlightmodmail').prop('checked', macro.highlightmodmail);
@@ -1296,6 +1300,7 @@ function tbconfig () {
                   removeitem = $macroContent.find('#removeitem').prop('checked'),
                   approveitem = $macroContent.find('#approveitem').prop('checked'),
                   lockthread = $macroContent.find('#lockthread').prop('checked'),
+                  lockcomment = $macroContent.find('#lockcomment').prop('checked'),
                   sticky = $macroContent.find('#sticky').prop('checked'),
                   archivemodmail = $macroContent.find('#archivemodmail').prop('checked'),
                   highlightmodmail = $macroContent.find('#highlightmodmail').prop('checked'),
@@ -1321,6 +1326,7 @@ function tbconfig () {
             macro.remove = removeitem;
             macro.approve = approveitem;
             macro.lockthread = lockthread;
+            macro.lockcomment = lockcomment;
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
@@ -1397,6 +1403,7 @@ function tbconfig () {
                   removeitem = $body.find('#removeitem').prop('checked'),
                   approveitem = $body.find('#approveitem').prop('checked'),
                   lockthread = $body.find('#lockthread').prop('checked'),
+                  lockcomment = $body.find('#lockcomment').prop('checked'),
                   sticky = $body.find('#sticky').prop('checked'),
                   archivemodmail = $body.find('#archivemodmail').prop('checked'),
                   highlightmodmail = $body.find('#highlightmodmail').prop('checked');
@@ -1420,6 +1427,7 @@ function tbconfig () {
             macro.remove = removeitem;
             macro.approve = approveitem;
             macro.lockthread = lockthread;
+            macro.lockcomment = lockcomment;
             macro.sticky = sticky;
             macro.archivemodmail = archivemodmail;
             macro.highlightmodmail = highlightmodmail;
@@ -1446,6 +1454,7 @@ function tbconfig () {
             $body.find('#removeitem').prop('checked', false);
             $body.find('#approveitem').prop('checked', false);
             $body.find('#lockthread').prop('checked', false);
+            $body.find('#lockcomment').prop('checked', false);
             $body.find('#sticky').prop('checked', false);
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);
@@ -1464,6 +1473,7 @@ function tbconfig () {
             $body.find('#removeitem').prop('checked', false);
             $body.find('#approveitem').prop('checked', false);
             $body.find('#lockthread').prop('checked', false);
+            $body.find('#lockcomment').prop('checked', false);
             $body.find('#sticky').prop('checked', false);
             $body.find('#archivemodmail').prop('checked', false);
             $body.find('#highlightmodmail').prop('checked', false);

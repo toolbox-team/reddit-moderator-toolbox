@@ -30,6 +30,11 @@ function modbar () {
         default: true,
         title: 'Include a button in the modbar to swap between old and new Reddit',
     });
+    self.register_setting('expandedNewModmailCount', {
+        type: 'boolean',
+        default: true,
+        title: 'Expands new modmail count to display unread, highlighted, and mod discussions.',
+    });
     self.register_setting('shortcuts', {
         type: 'map',
         default: {},

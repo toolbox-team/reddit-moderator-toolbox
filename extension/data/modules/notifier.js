@@ -1,3 +1,5 @@
+'use strict';
+
 function notifiermod () {
     const self = new TB.Module('Notifier');
     self.shortname = 'Notifier';
@@ -166,6 +168,7 @@ function notifiermod () {
               unmoderatedSubreddits = self.setting('unmoderatedSubreddits'),
               unmoderatedSubredditsFMod = self.setting('unmoderatedSubredditsFMod'),
               modmailSubreddits = self.setting('modmailSubreddits'),
+              expandedNewModmailCount = TB.storage.getSetting('Modbar', 'expandedNewModmailCount', true),
 
               modmailSubredditsFromPro = self.setting('modmailSubredditsFromPro'),
 
@@ -311,7 +314,12 @@ function notifiermod () {
             $tbNewModmailTooltip.find('#tb-new-modmail-mod .tb-new-mm-count').text(data.mod);
             $tbNewModmailTooltip.find('#tb-new-modmail-notifications .tb-new-mm-count').text(data.notifications);
 
-            $tbNewModmailCount.text(`[${count}]`);
+            if (expandedNewModmailCount) {
+                $tbNewModmailCount.html(`[<span class="tb-new-mm-count-number">${count - data.highlighted - data.mod}</span>, <span class="tb-new-mm-count-highlighted">${data.highlighted}</span>, <span class="tb-new-mm-count-mod">${data.mod}</span>]`);
+            }
+            else {
+                $tbNewModmailCount.html(`[${count}]`);
+            }
         }
 
         function updateAllTabs () {

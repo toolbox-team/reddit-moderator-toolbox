@@ -197,13 +197,13 @@ function tbconfig () {
                             <h2>Reply</h2>
                             <label><input type="checkbox" id="distinguish" checked>distinguish</label>
                             <label><input type="checkbox" id="sticky">sticky comment</label>
+                            <label><input type="checkbox" id="lockreply">lock reply</label>
                         </div>
                         <div class="tb-macro-actions-row">
                             <h2>Item</h2>
                             <label><input type="checkbox" id="approveitem">approve item</label>
                             <label><input type="checkbox" id="removeitem">remove item</label>
                             <label><input type="checkbox" id="lockitem">lock item</label>
-                            <label><input type="checkbox" id="lockreply">lock reply</label>
                             <label><input type="checkbox" id="archivemodmail">archive modmail</label>
                             <label><input type="checkbox" id="highlightmodmail">highlight modmail</label>
                         </div>
@@ -689,13 +689,13 @@ function tbconfig () {
                                     <h2>Reply</h2>
                                     <label><input type="checkbox" class="{{i}}-distinguish" id="distinguish">distinguish</label>
                                     <label><input type="checkbox" class="{{i}}-sticky" id="sticky">sticky comment</label>
+                                        <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
                                 </div>
                                 <div class="tb-macro-actions-row">
                                     <h2>Item</h2>
                                     <label><input type="checkbox" class="{{i}}-approveitem" id="approveitem">approve item</label>
                                     <label><input type="checkbox" class="{{i}}-removeitem" id="removeitem">remove item</label>
                                         <label><input type="checkbox" class="{{i}}-lockitem" id="lockitem">lock item</label>
-                                        <label><input type="checkbox" class="{{i}}-lockreply" id="lockreply">lock reply</label>
                                     <label><input type="checkbox" class="{{i}}-archivemodmail" id="archivemodmail">archive modmail</label>
                                     <label><input type="checkbox" class="{{i}}-highlightmodmail" id="highlightmodmail">highlight modmail</label><br>
                                 </div>

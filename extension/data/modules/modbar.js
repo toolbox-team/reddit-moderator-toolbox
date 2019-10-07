@@ -94,6 +94,8 @@ function modbar () {
                 $footerblock.hide();
             } else {
                 $footerblock.show();
+                const {url} = getDirectingTo();
+                $('#tb-old-new-reddit-toggle').attr('href', url);
             }
         });
 
@@ -350,19 +352,7 @@ function modbar () {
 
         // Swap old/new reddit button
         if (enableOldNewToggle && !TBUtils.isNewModmail) {
-            let url = window.location.href.replace(/^http:/, 'https:'),
-                directingTo;
-            if (url.startsWith('https://old.')) {
-                url = url.replace('old.', 'www.');
-                directingTo = 'new Reddit';
-            } else if (url.startsWith('https://new.')) {
-                url = url.replace('new.', 'www.');
-                directingTo = 'old Reddit';
-            } else {
-                // Redirect to old Reddit on the redesign, new Reddit otherwise
-                url = url.replace(/https:\/\/.*?\.reddit/, TBUtils.isOldReddit ? 'https://new.reddit' : 'https://old.reddit');
-                directingTo = TBUtils.isOldReddit ? 'new Reddit' : 'old Reddit';
-            }
+            const {url, directingTo} = getDirectingTo();
             // Append the link
             $('#tb-bottombar-contentleft').append(`
                 <a href="${url}" id="tb-old-new-reddit-toggle" class="tb-modbar-button" title="View this page in ${directingTo}">Open in ${directingTo}</a>
@@ -545,3 +535,19 @@ function modbar () {
 window.addEventListener('TBModuleLoaded', () => {
     modbar();
 });
+function getDirectingTo () {
+    let url = window.location.href.replace(/^http:/, 'https:'),
+        directingTo;
+    if (url.startsWith('https://old.')) {
+        url = url.replace('old.', 'www.');
+        directingTo = 'new Reddit';
+    } else if (url.startsWith('https://new.')) {
+        url = url.replace('new.', 'www.');
+        directingTo = 'old Reddit';
+    } else {
+        // Redirect to old Reddit on the redesign, new Reddit otherwise
+        url = url.replace(/https:\/\/.*?\.reddit/, TBUtils.isOldReddit ? 'https://new.reddit' : 'https://old.reddit');
+        directingTo = TBUtils.isOldReddit ? 'new Reddit' : 'old Reddit';
+    }
+    return {url, directingTo};
+}

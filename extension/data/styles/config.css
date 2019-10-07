@@ -64,3 +64,18 @@ tr.removal-reason:last-of-type a.tb-sort-down {
     list-style-type: disc;
     margin: 5px 0;
 }
+
+.mod-toolbox-rd .tb-macro-actions {
+    display: table;
+}
+.mod-toolbox-rd .tb-macro-actions-row {
+    display: table-row;
+}
+
+.mod-toolbox-rd .tb-macro-actions-row > * {
+    display: table-cell;
+}
+
+.mod-toolbox-rd .tb-macro-actions-row > *:not(:first-child) {
+    padding: 0 5px;
+}

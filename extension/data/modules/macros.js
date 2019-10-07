@@ -244,7 +244,9 @@ function modmacros () {
                   ban = macro.ban,
                   mute = macro.mute,
                   distinguish = macro.distinguish === undefined ? true : macro.distinguish,
-                  lock = macro.lockthread,
+                  // saved as lockthread for legacy reasons
+                  lockitem = macro.lockthread,
+                  lockreply = macro.lockreply,
                   sticky = macro.sticky,
                   archivemodmail = macro.archivemodmail,
                   highlightmodmail = macro.highlightmodmail,
@@ -277,8 +279,12 @@ function modmacros () {
                     actionList += '<br>- This reply will be distinguished';
                 }
 
-                if (lock) {
-                    actionList += '<br>- This post will be locked';
+                if (lockitem) {
+                    actionList += `<br>- This ${kind} will be locked`;
+                }
+
+                if (lockreply) {
+                    actionList += '<br>- This reply will be locked';
                 }
 
                 if (sticky && topLevel) {
@@ -414,11 +420,19 @@ function modmacros () {
                                     $selectElement.closest('.usertext-buttons').find('.cancel').trigger('click');
                                 }
 
-                                if (distinguish && !TB.utils.isModmail) {
-                                // Distinguish the new reply
-                                    TBUtils.distinguishThing(response.json.data.things[0].data.id, sticky && topLevel, successful => {
+                                const commentId = response.json.data.things[0].data.id;
+
+                                if (lockreply) {
+                                    TBUtils.lock(commentId, successful => {
                                         if (!successful) {
-                                            $currentMacroPopup.remove();
+                                            TB.ui.textFeedback('Failed to lock reply', TB.ui.FEEDBACK_NEGATIVE);
+                                        }
+                                    });
+                                }
+                                if (distinguish && !TB.utils.isModmail) {
+                                    // Distinguish the new reply
+                                    TBUtils.distinguishThing(commentId, sticky && topLevel, successful => {
+                                        if (!successful) {
                                             TB.ui.textFeedback('Failed to distinguish reply', TB.ui.FEEDBACK_NEGATIVE);
                                         }
                                     });
@@ -437,8 +451,8 @@ function modmacros () {
                                 TB.utils.approveThing(info.id);
                             }
 
-                            if (lock) {
-                                TB.utils.lockThread(info.id);
+                            if (lockitem) {
+                                TB.utils.lock(info.id);
                             }
                         }
 

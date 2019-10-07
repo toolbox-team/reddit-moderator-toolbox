@@ -2387,7 +2387,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
         };
 
-        TBUtils.lockThread = function (id, callback) {
+        TBUtils.lock = function (id, callback) {
             TBUtils.post('/api/lock', {
                 id,
                 uh: TBUtils.modhash,
@@ -2404,7 +2404,7 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                 });
         };
 
-        TBUtils.unlockThread = function (id, callback) {
+        TBUtils.unlock = function (id, callback) {
             TBUtils.post('/api/unlock', {
                 uh: TBUtils.modhash,
                 id,
@@ -2420,6 +2420,10 @@ function initwrapper ({userDetails, newModSubs, cacheDetails}) {
                     }
                 });
         };
+
+        TBUtils.lockThread = TBUtils.lock;
+
+        TBUtils.unlockThread = TBUtils.unlock;
 
         TBUtils.stickyThread = (id, state = true, num = undefined) => TBUtils.post('/api/set_subreddit_sticky', {
             id,
